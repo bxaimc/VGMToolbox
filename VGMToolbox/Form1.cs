@@ -20,6 +20,8 @@ namespace VGMToolbox
 {
     public partial class Form1 : Form
     {
+        DatafileCreatorWorker datCreator = new DatafileCreatorWorker();
+        
         public Form1()
         {
             InitializeComponent();
@@ -32,6 +34,9 @@ namespace VGMToolbox
             //Thread.Sleep(1000);
             //th.Abort();
             //Thread.Sleep(1000);            
+
+            datCreator.ProgressChanged += backgroundWorker_ReportProgress;
+            datCreator.RunWorkerCompleted += datafileCreatorWorker_WorkComplete;
 
             this.loadLanguages();
         }
@@ -116,6 +121,7 @@ namespace VGMToolbox
 
         # region DATAFILE CREATOR
 
+        /*
         private void btnDatCreator_BuildDat_Click(object sender, EventArgs e)
         {
             doCleanup();
@@ -152,7 +158,34 @@ namespace VGMToolbox
                 textWriter = null;
             }
         }
+        */
 
+        private void btnDatCreator_BuildDat_Click(object sender, EventArgs e)
+        {
+            doCleanup();
+
+            if (checkDatafileCreatorInputs())
+            {
+                toolStripStatusLabel1.Text = "Building Datafile...";
+                // toolStripProgressBar.Maximum = Directory.GetFiles(tbDatCreator_SourceFolder.Text, "*.*", SearchOption.AllDirectories).Length;
+
+                string outputMessage = "";
+                
+                //DatafileCreatorWorker datCreator = new DatafileCreatorWorker();
+                //datCreator.ProgressChanged += backgroundWorker_ReportProgress;
+                //datCreator.RunWorkerCompleted += datafileCreatorWorker_WorkComplete;
+
+                DatafileCreatorWorker.GetGameParamsStruct vGetGameParamsStruct = new DatafileCreatorWorker.GetGameParamsStruct();
+                vGetGameParamsStruct.pDir = tbDatCreator_SourceFolder.Text;
+                vGetGameParamsStruct.pOutputMessage = "";
+                vGetGameParamsStruct.pStreamInput = cbDatCreator_UseLessRam.Checked;
+                vGetGameParamsStruct.pUseLibHash = false;
+                vGetGameParamsStruct.totalFiles = Directory.GetFiles(tbDatCreator_SourceFolder.Text, "*.*", SearchOption.AllDirectories).Length;
+                
+                datCreator.RunWorkerAsync(vGetGameParamsStruct);               
+            }
+        }
+        
         private void btnDatCreator_BrowseSource_Click(object sender, EventArgs e)
         {
             folderBrowserDialog = new FolderBrowserDialog();
@@ -223,7 +256,7 @@ namespace VGMToolbox
             }
         }
 
-        private void btnRebuilder_Rebuild_Click(object sender, EventArgs e)
+         private void btnRebuilder_Rebuild_Click(object sender, EventArgs e)
         {
             doCleanup();
             if (checkRebuilderInputs())
@@ -401,6 +434,8 @@ namespace VGMToolbox
             }
         }
 
+        #region INI File
+
         private void loadLanguages()
         {
             string iniPath = "languages.ini";
@@ -457,5 +492,63 @@ namespace VGMToolbox
             return pIniFile.IniReadValue(pSection, pKey).Trim().Length > 0 ?
                 pIniFile.IniReadValue(pSection, pKey) : pLabelText;
         }
+
+        # endregion
+
+        
+        #region BACKGROUND WORKER
+        private void backgroundWorker_ReportProgress(object sender, ProgressChangedEventArgs e)
+        {
+            toolStripProgressBar.Value = e.ProgressPercentage;
+        }
+
+        private void datafileCreatorWorker_WorkComplete(object sender,
+                                     RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled)
+            {
+                tbOutput.Text += "Operation cancelled, outputing partial datafile.";
+            }
+            
+            Datafile datafile = new Datafile();
+            datafile.header = DatafileCreatorWorker.buildHeader(tbDatCreator_Author.Text, tbDatCreator_Category.Text,
+                tbDatCreator_Comment.Text, tbDatCreator_Date.Text, tbDatCreator_Description.Text,
+                tbDatCreator_Email.Text, tbDatCreator_Homepage.Text, tbDatCreator_Name.Text,
+                tbDatCreator_Url.Text, tbDatCreator_Version.Text);
+
+            datafile.game = (game[])e.Result;
+
+            XmlSerializer serializer = new XmlSerializer(typeof(Datafile));
+            TextWriter textWriter = new StreamWriter(tbDatCreator_OutputDat.Text);
+            serializer.Serialize(textWriter, datafile);
+            textWriter.Close();
+            textWriter.Dispose();
+            
+            toolStripStatusLabel1.Text = "Building Datafile...Complete";
+
+            //Cleanup
+            datafile = null;
+            serializer = null;
+            textWriter = null;        
+        }
+
+        private void btnDatCreator_Cancel_Click(object sender, EventArgs e)
+        {
+            datCreator.CancelAsync();
+        }
+
+        /*
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            string task = (string) e.Argument;
+
+            if (task.Equals("REBUILD"))
+            {
+                doRebuild();
+            }
+        }
+        */
+        #endregion
+        
     }
 }

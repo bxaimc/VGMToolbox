@@ -110,6 +110,8 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.btnDatCreator_Cancel = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -141,6 +143,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.btnDatCreator_Cancel);
             this.tabPage2.Controls.Add(this.btnDatCreator_BrowseDestination);
             this.tabPage2.Controls.Add(this.btnDatCreator_BrowseSource);
             this.tabPage2.Controls.Add(this.lblDatCreator_DestinationFolder);
@@ -443,7 +446,7 @@
             // 
             // btnDatCreator_BuildDat
             // 
-            this.btnDatCreator_BuildDat.Location = new System.Drawing.Point(611, 171);
+            this.btnDatCreator_BuildDat.Location = new System.Drawing.Point(611, 154);
             this.btnDatCreator_BuildDat.Name = "btnDatCreator_BuildDat";
             this.btnDatCreator_BuildDat.Size = new System.Drawing.Size(65, 20);
             this.btnDatCreator_BuildDat.TabIndex = 0;
@@ -887,6 +890,16 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
+            // btnDatCreator_Cancel
+            // 
+            this.btnDatCreator_Cancel.Location = new System.Drawing.Point(611, 175);
+            this.btnDatCreator_Cancel.Name = "btnDatCreator_Cancel";
+            this.btnDatCreator_Cancel.Size = new System.Drawing.Size(65, 20);
+            this.btnDatCreator_Cancel.TabIndex = 9;
+            this.btnDatCreator_Cancel.Text = "Cancel";
+            this.btnDatCreator_Cancel.UseVisualStyleBackColor = true;
+            this.btnDatCreator_Cancel.Click += new System.EventHandler(this.btnDatCreator_Cancel_Click);
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1016,6 +1029,8 @@
         private System.Windows.Forms.CheckBox cbRebuilder_UseLessRam;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.CheckBox cbRebuilder_CompressOutput;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.Button btnDatCreator_Cancel;
     }
 }
 
