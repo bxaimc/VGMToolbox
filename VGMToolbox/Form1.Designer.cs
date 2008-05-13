@@ -32,6 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.btnDatCreator_Cancel = new System.Windows.Forms.Button();
             this.btnDatCreator_BrowseDestination = new System.Windows.Forms.Button();
             this.btnDatCreator_BrowseSource = new System.Windows.Forms.Button();
             this.lblDatCreator_DestinationFolder = new System.Windows.Forms.Label();
@@ -65,6 +66,7 @@
             this.tbDatCreator_Name = new System.Windows.Forms.TextBox();
             this.btnDatCreator_BuildDat = new System.Windows.Forms.Button();
             this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.btnRebuilder_Cancel = new System.Windows.Forms.Button();
             this.label24 = new System.Windows.Forms.Label();
             this.grpRebuilder_Options = new System.Windows.Forms.GroupBox();
             this.cbRebuilder_CompressOutput = new System.Windows.Forms.CheckBox();
@@ -111,7 +113,6 @@
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.btnDatCreator_Cancel = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -160,6 +161,16 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Datafile Creator";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // btnDatCreator_Cancel
+            // 
+            this.btnDatCreator_Cancel.Location = new System.Drawing.Point(611, 175);
+            this.btnDatCreator_Cancel.Name = "btnDatCreator_Cancel";
+            this.btnDatCreator_Cancel.Size = new System.Drawing.Size(65, 20);
+            this.btnDatCreator_Cancel.TabIndex = 9;
+            this.btnDatCreator_Cancel.Text = "Cancel";
+            this.btnDatCreator_Cancel.UseVisualStyleBackColor = true;
+            this.btnDatCreator_Cancel.Click += new System.EventHandler(this.btnDatCreator_Cancel_Click);
             // 
             // btnDatCreator_BrowseDestination
             // 
@@ -456,6 +467,7 @@
             // 
             // tabPage5
             // 
+            this.tabPage5.Controls.Add(this.btnRebuilder_Cancel);
             this.tabPage5.Controls.Add(this.label24);
             this.tabPage5.Controls.Add(this.grpRebuilder_Options);
             this.tabPage5.Controls.Add(this.btnRebuilder_Rebuild);
@@ -467,6 +479,16 @@
             this.tabPage5.TabIndex = 2;
             this.tabPage5.Text = "Rebuilder";
             this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // btnRebuilder_Cancel
+            // 
+            this.btnRebuilder_Cancel.Location = new System.Drawing.Point(611, 175);
+            this.btnRebuilder_Cancel.Name = "btnRebuilder_Cancel";
+            this.btnRebuilder_Cancel.Size = new System.Drawing.Size(65, 20);
+            this.btnRebuilder_Cancel.TabIndex = 7;
+            this.btnRebuilder_Cancel.Text = "Cancel";
+            this.btnRebuilder_Cancel.UseVisualStyleBackColor = true;
+            this.btnRebuilder_Cancel.Click += new System.EventHandler(this.btnRebuilder_Cancel_Click);
             // 
             // label24
             // 
@@ -486,7 +508,7 @@
             this.grpRebuilder_Options.Controls.Add(this.cbRebuilder_RemoveSource);
             this.grpRebuilder_Options.Location = new System.Drawing.Point(318, 69);
             this.grpRebuilder_Options.Name = "grpRebuilder_Options";
-            this.grpRebuilder_Options.Size = new System.Drawing.Size(361, 89);
+            this.grpRebuilder_Options.Size = new System.Drawing.Size(361, 79);
             this.grpRebuilder_Options.TabIndex = 4;
             this.grpRebuilder_Options.TabStop = false;
             this.grpRebuilder_Options.Text = "Options";
@@ -535,11 +557,9 @@
             // 
             // btnRebuilder_Rebuild
             // 
-            this.btnRebuilder_Rebuild.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRebuilder_Rebuild.AutoSize = true;
-            this.btnRebuilder_Rebuild.Location = new System.Drawing.Point(611, 171);
+            this.btnRebuilder_Rebuild.Location = new System.Drawing.Point(611, 154);
             this.btnRebuilder_Rebuild.Name = "btnRebuilder_Rebuild";
-            this.btnRebuilder_Rebuild.Size = new System.Drawing.Size(65, 23);
+            this.btnRebuilder_Rebuild.Size = new System.Drawing.Size(65, 20);
             this.btnRebuilder_Rebuild.TabIndex = 3;
             this.btnRebuilder_Rebuild.Text = "Rebuild";
             this.btnRebuilder_Rebuild.UseVisualStyleBackColor = true;
@@ -890,16 +910,6 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
-            // btnDatCreator_Cancel
-            // 
-            this.btnDatCreator_Cancel.Location = new System.Drawing.Point(611, 175);
-            this.btnDatCreator_Cancel.Name = "btnDatCreator_Cancel";
-            this.btnDatCreator_Cancel.Size = new System.Drawing.Size(65, 20);
-            this.btnDatCreator_Cancel.TabIndex = 9;
-            this.btnDatCreator_Cancel.Text = "Cancel";
-            this.btnDatCreator_Cancel.UseVisualStyleBackColor = true;
-            this.btnDatCreator_Cancel.Click += new System.EventHandler(this.btnDatCreator_Cancel_Click);
-            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1031,6 +1041,7 @@
         private System.Windows.Forms.CheckBox cbRebuilder_CompressOutput;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.Button btnDatCreator_Cancel;
+        private System.Windows.Forms.Button btnRebuilder_Cancel;
     }
 }
 

@@ -21,6 +21,7 @@ namespace VGMToolbox
     public partial class Form1 : Form
     {
         DatafileCreatorWorker datCreator = new DatafileCreatorWorker();
+        RebuilderWorker rebuilder = new RebuilderWorker();
         
         public Form1()
         {
@@ -37,6 +38,9 @@ namespace VGMToolbox
 
             datCreator.ProgressChanged += backgroundWorker_ReportProgress;
             datCreator.RunWorkerCompleted += datafileCreatorWorker_WorkComplete;
+
+            rebuilder.ProgressChanged += backgroundWorker_ReportProgress;
+            rebuilder.RunWorkerCompleted += rebuilderWorker_WorkComplete;
 
             this.loadLanguages();
         }
@@ -259,6 +263,7 @@ namespace VGMToolbox
             }
         }
 
+        /*
         private void btnRebuilder_Rebuild_Click(object sender, EventArgs e)
         {
             doCleanup();
@@ -280,6 +285,34 @@ namespace VGMToolbox
 
                 tbOutput.Text += outputMessage;
                 toolStripStatusLabel1.Text = "Rebuilding...Done";
+            }
+        }
+        */
+
+        private void btnRebuilder_Rebuild_Click(object sender, EventArgs e)
+        {
+            doCleanup();
+            if (checkRebuilderInputs())
+            {
+                toolStripStatusLabel1.Text = "Rebuilding...";
+
+                Datafile datafile = new Datafile();
+                XmlSerializer serializer = new XmlSerializer(typeof(Datafile));
+                TextReader textReader = new StreamReader(tbRebuilder_Datafile.Text);
+                datafile = (Datafile)serializer.Deserialize(textReader);
+                textReader.Close();
+
+                RebuilderWorker.RebuildSetsStruct vRebuildSetsStruct = new RebuilderWorker.RebuildSetsStruct();
+                vRebuildSetsStruct.pSourceDir = tbRebuilder_SourceDir.Text;
+                vRebuildSetsStruct.pDestinationDir = tbRebuilder_DestinationDir.Text;
+                vRebuildSetsStruct.pDatFile = datafile;
+                vRebuildSetsStruct.pRemoveSource = cbRebuilder_RemoveSource.Checked;
+                vRebuildSetsStruct.pOverwriteExisting = cbRebuilder_Overwrite.Checked;
+                vRebuildSetsStruct.pStreamInput = cbRebuilder_UseLessRam.Checked;
+                vRebuildSetsStruct.pCompressOutput = cbRebuilder_CompressOutput.Checked;
+                vRebuildSetsStruct.totalFiles = Directory.GetFiles(tbRebuilder_SourceDir.Text, "*.*", SearchOption.AllDirectories).Length;
+
+                rebuilder.RunWorkerAsync(vRebuildSetsStruct);
             }
         }
 
@@ -323,6 +356,11 @@ namespace VGMToolbox
             {
                 cbRebuilder_CompressOutput.Checked = false;
             }
+        }
+
+        private void btnRebuilder_Cancel_Click(object sender, EventArgs e)
+        {
+            rebuilder.CancelAsync();
         }
 
         # endregion
@@ -477,6 +515,7 @@ namespace VGMToolbox
                 cbRebuilder_UseLessRam.Text = getGuiIniLabel(iniFile, cbRebuilder_UseLessRam.Text, "REBUILDER", "CHECKBOX_USE_LESS_RAM");
                 cbRebuilder_CompressOutput.Text = getGuiIniLabel(iniFile, cbRebuilder_CompressOutput.Text, "REBUILDER", "CHECKBOX_COMPRESS_OUTPUT");
                 btnRebuilder_Rebuild.Text = getGuiIniLabel(iniFile, btnRebuilder_Rebuild.Text, "REBUILDER", "REBUILD_BUTTON");
+                btnRebuilder_Cancel.Text = getGuiIniLabel(iniFile, btnRebuilder_Cancel.Text, "REBUILDER", "CANCEL_BUTTON");
 
                 // EXAMINE - MDX
                 grpExamineMdx_PdxDiscovery.Text = getGuiIniLabel(iniFile, grpExamineMdx_PdxDiscovery.Text, "EXAMINE_MDX", "PDX_DISCOVERY_GROUP");
@@ -505,14 +544,29 @@ namespace VGMToolbox
             toolStripProgressBar.Value = e.ProgressPercentage;
         }
 
-        private void datafileCreatorWorker_WorkComplete(object sender,
+        private void rebuilderWorker_WorkComplete(object sender,
                                      RunWorkerCompletedEventArgs e)
         {
             if (e.Cancelled)
             {
                 doCleanup();
-                toolStripStatusLabel1.Text = "Building Datafile...Cancelled";
+                toolStripStatusLabel1.Text = "Rebuilding...Cancelled";
                 tbOutput.Text += "Operation cancelled.";
+            }
+            else
+            {
+                toolStripStatusLabel1.Text = "Rebuilding...Complete";
+            }
+        }
+
+        private void datafileCreatorWorker_WorkComplete(object sender,
+                                    RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled)
+            {
+                doCleanup();
+                toolStripStatusLabel1.Text = "Building Datafile...Canceled";
+                tbOutput.Text += "Operation canceled.";
             }
             else
             {
@@ -533,7 +587,6 @@ namespace VGMToolbox
                 toolStripStatusLabel1.Text = "Building Datafile...Complete";
             }
         }
-        #endregion
-        
+        #endregion        
     }
 }
