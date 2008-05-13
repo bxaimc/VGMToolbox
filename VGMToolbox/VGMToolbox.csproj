@@ -161,6 +161,8 @@
     <Content Include="languages.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\toolbox.bmp" />
+    <None Include="Resources\ToolBox-2.ico" />
     <None Include="Resources\fs.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
