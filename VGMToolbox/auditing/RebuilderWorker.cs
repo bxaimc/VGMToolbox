@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+
 using System.Windows.Forms;
 
 using ICSharpCode.SharpZipLib.Checksums;
@@ -13,15 +15,31 @@ using VGMToolbox.util.ObjectPooling;
 
 namespace VGMToolbox.auditing
 {
-    class Rebuilder
+    class RebuilderWorker : BackgroundWorker
     {
-        // Fields
-        // private Hashtable checksumHash;
         private Dictionary<string, ByteArray> libHash;
         private const string CACHE_DB_FILENAME = "cache.db";
         private ArrayList libFilesForDeletion = new ArrayList();
+        private int fileCount = 0;
 
-        // Methods
+        public struct RebuildSetsStruct
+        { 
+            public string pSourceDir; 
+            public string pDestinationDir; 
+            public Datafile pDatFile;
+            public bool pRemoveSource; 
+            public bool pOverwriteExisting;
+            public bool pStreamInput; 
+            public bool pCompressOutput;
+            public int totalFiles;
+        }
+
+        public RebuilderWorker()
+        {
+            WorkerReportsProgress = true;
+            WorkerSupportsCancellation = true;
+        }
+
         private string buildFilePath(string pSetName, string pFilePath)
         {
             return (pSetName + Path.DirectorySeparatorChar + pFilePath);
@@ -35,10 +53,10 @@ namespace VGMToolbox.auditing
             }
             libFilesForDeletion.Clear();
         }
-        
+
         private void moveFile(string pDestination, ArrayList pDestinationFiles, FileStream pSourceFile,
             string pSourceName, bool pOverwriteExisting, AuditingUtil pAuditingUtil, bool pCompressOutput)
-        {            
+        {
             int readSize = 0;
             byte[] data = new byte[4096];
             string pZipFilePath = String.Empty;
@@ -77,7 +95,7 @@ namespace VGMToolbox.auditing
                         {
                             Directory.CreateDirectory(path);
                         }
-                        
+
                         if (pOverwriteExisting || !File.Exists(pDestination + filePath))
                         {
                             File.Delete(pDestination + filePath);
@@ -100,7 +118,7 @@ namespace VGMToolbox.auditing
                             streamWriter.Dispose();
                         }
                     }
-                }                                
+                }
             }
             catch (Exception exception)
             {
@@ -109,8 +127,7 @@ namespace VGMToolbox.auditing
         }
 
         private void rebuildFile(string pFilePath, string pDestination, bool pRemoveSource,
-            bool pOverwriteExisting, ToolStripProgressBar pToolStripProgressBar, AuditingUtil pAuditingUtil,
-            bool pStreamInput, ref string pOutputMessage, bool pCompressOutput)
+            bool pOverwriteExisting, AuditingUtil pAuditingUtil, bool pStreamInput, bool pCompressOutput)
         {
             ArrayList pDestinationFiles = new ArrayList();
             bool isFileLibrary = false;
@@ -120,13 +137,13 @@ namespace VGMToolbox.auditing
             FileStream fs = File.OpenRead(pFilePath);
             Type formatType = FormatUtil.getObjectType(fs);
             fs.Seek(0, SeekOrigin.Begin);
-            
+
             // CRC32
             string crc32Value = String.Empty;
             Crc32 crc32Generator = new Crc32();
 
             // @TODO - Change to file streams?  Out of memory errors on repeat runs
-            
+
             /*
             // MD5
             string md5FileName = Path.GetTempFileName();
@@ -175,21 +192,24 @@ namespace VGMToolbox.auditing
                 }
                 catch (EndOfStreamException e)
                 {
-                    pOutputMessage += String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: [{2}]", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
+                    // pOutputMessage += String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: [{2}]", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
+                    MessageBox.Show(String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: [{2}]", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine);
                     // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
                     //    ref md5CryptoStream, ref sha1CryptoStream);
                     ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
                 }
                 catch (System.OutOfMemoryException e)
                 {
-                    pOutputMessage += String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: [{2}]", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
+                    // pOutputMessage += String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: [{2}]", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
+                    MessageBox.Show(String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: [{2}]", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine);
                     // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
                     //    ref md5CryptoStream, ref sha1CryptoStream);
                     ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
                 }
                 catch (IOException e)
                 {
-                    pOutputMessage += String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: [{2}]", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
+                    // pOutputMessage += String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: [{2}]", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
+                    MessageBox.Show(String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: [{2}]", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine);
                     // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
                     //    ref md5CryptoStream, ref sha1CryptoStream);
                     ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
@@ -208,11 +228,11 @@ namespace VGMToolbox.auditing
             pDestinationFiles = (ArrayList)pAuditingUtil.ChecksumHash[crc32Value];
             if (pDestinationFiles != null)
             {
-                this.moveFile(pDestination, pDestinationFiles, fs, pFilePath, pOverwriteExisting, 
+                this.moveFile(pDestination, pDestinationFiles, fs, pFilePath, pOverwriteExisting,
                     pAuditingUtil, pCompressOutput);
                 pAuditingUtil.AddChecksumToCache(crc32Value);
             }
-            
+
             fs.Close();
             fs.Dispose();
 
@@ -230,7 +250,7 @@ namespace VGMToolbox.auditing
             File.Delete(md5FileName);
             File.Delete(sha1FileName);
             */
-            
+
             // Remove Source only if copied
             if (pDestinationFiles != null && pRemoveSource && File.Exists(pFilePath))
             {
@@ -242,12 +262,11 @@ namespace VGMToolbox.auditing
                 {
                     libFilesForDeletion.Add(pFilePath);
                 }
-            } 
+            }
         }
-        
-        private void rebuildSets(string pSourceDir, string pDestination, int pDepth, bool pRemoveSource,
-            bool pOverwriteExisting, ToolStripProgressBar pToolStripProgressBar, AuditingUtil pAuditingUtil,
-            bool pStreamInput, ref string pOutputMessage, bool pCompressOutput)
+
+        private void rebuildSets(RebuildSetsStruct pRebuildSetsStruct, AuditingUtil pAuditingUtil,
+            uint pDepth, DoWorkEventArgs e)
         {
             try
             {
@@ -255,97 +274,115 @@ namespace VGMToolbox.auditing
                 {
                     // process top level files
                     libFilesForDeletion.Clear();
-                    foreach (string f in Directory.GetFiles(pSourceDir))
+                    foreach (string f in Directory.GetFiles(pRebuildSetsStruct.pSourceDir))
                     {
-                        pToolStripProgressBar.PerformStep();
-                        Application.DoEvents();
-                        this.rebuildFile(f, pDestination, pRemoveSource, pOverwriteExisting, pToolStripProgressBar, pAuditingUtil, pStreamInput, ref pOutputMessage, pCompressOutput);
+                        if (!CancellationPending)
+                        {
+                            int progress = (++fileCount * 100) / pRebuildSetsStruct.totalFiles;
+                            ReportProgress(progress);
+
+                            this.rebuildFile(f, pRebuildSetsStruct.pDestinationDir, pRebuildSetsStruct.pRemoveSource,
+                                pRebuildSetsStruct.pOverwriteExisting, pAuditingUtil, pRebuildSetsStruct.pStreamInput,
+                                pRebuildSetsStruct.pCompressOutput);
+                        }
+                        else
+                        {
+                            e.Cancel = true;
+                            break;
+                        }
                     }
                     this.deleteQueuedLibFiles();
                 }
 
                 // process subdirs                                
-                foreach (string d in Directory.GetDirectories(pSourceDir))
+                if (!CancellationPending)
                 {
-                    /*
-                    var sortedFileList = from f in Directory.GetFiles(d)
-                                         let fs = File.OpenRead(f)     
-                                         orderby fs.Length
-                                         select f;
-                    string[] fileList = sortedFileList.ToArray<string>();
-                    sortedFileList = null;
-
-                    foreach (string f in fileList)
-                    */
-                    libFilesForDeletion.Clear();
-                    
-                    foreach (string f in Directory.GetFiles(d))
-                    {                        
-                        try
-                        {
-                            pToolStripProgressBar.PerformStep();
-                            Application.DoEvents();
-                            this.rebuildFile(f, pDestination, pRemoveSource, pOverwriteExisting, 
-                                pToolStripProgressBar, pAuditingUtil, pStreamInput, 
-                                ref pOutputMessage, pCompressOutput);
-                        }
-                        catch (Exception e)
-                        {
-                            MessageBox.Show("[" + f + "] " + e.Message);
-                        }
-                    }
-
-                    this.rebuildSets(d, pDestination, pDepth, pRemoveSource, 
-                        pOverwriteExisting, pToolStripProgressBar, pAuditingUtil, pStreamInput, 
-                        ref pOutputMessage, pCompressOutput);
-                    
-                    // Remove Queued Lib Files
-                    this.deleteQueuedLibFiles();
-
-                    // remove empty directory
-                    if (pRemoveSource &&
-                        Directory.GetFiles(d, "*.*", SearchOption.AllDirectories).Length == 0)
+                    foreach (string d in Directory.GetDirectories(pRebuildSetsStruct.pSourceDir))
                     {
-                        Directory.Delete(d);
-                    }
-                }
+                        libFilesForDeletion.Clear();
+
+                        foreach (string f in Directory.GetFiles(d))
+                        {
+                            if (!CancellationPending)
+                            {
+                                try
+                                {
+                                    int progress = (++fileCount * 100) / pRebuildSetsStruct.totalFiles;
+                                    ReportProgress(progress);
+
+                                    this.rebuildFile(f, pRebuildSetsStruct.pDestinationDir, pRebuildSetsStruct.pRemoveSource,
+                                        pRebuildSetsStruct.pOverwriteExisting, pAuditingUtil, pRebuildSetsStruct.pStreamInput,
+                                        pRebuildSetsStruct.pCompressOutput);
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show("[" + f + "] " + ex.Message);
+                                }
+                            }
+                            else
+                            {
+                                e.Cancel = true;
+                                break;
+                            }
+                        }
+
+                        if (!CancellationPending)
+                        {
+                            RebuildSetsStruct subdirRebuildSetsStruct = pRebuildSetsStruct;
+                            subdirRebuildSetsStruct.pSourceDir = d;
+                            this.rebuildSets(subdirRebuildSetsStruct, pAuditingUtil, pDepth, e);
+                        }
+
+                        // Remove Queued Lib Files
+                        this.deleteQueuedLibFiles();
+
+                        // remove empty directory
+                        if (pRebuildSetsStruct.pRemoveSource &&
+                            Directory.GetFiles(d, "*.*", SearchOption.AllDirectories).Length == 0)
+                        {
+                            Directory.Delete(d);
+                        }
+
+                    } // (string d in Directory.GetDirectories(pRebuildSetsStruct.pSourceDir))
+                } //if (!CancellationPending)
             }
-            
             catch (Exception exception2)
             {
                 MessageBox.Show(exception2.Message);
             }
-             
         }
 
-        public void rebuildSets(string pSourceDir, string pDestinationDir, Datafile pDatFile, 
-            bool pRemoveSource, bool pOverwriteExisting, ToolStripProgressBar pToolStripProgressBar,
-            bool pStreamInput, bool pCompressOutput, ref string pOutputMessage)
+        public void rebuildSets(RebuildSetsStruct pRebuildSetsStruct, DoWorkEventArgs e)
         {
             // Setup output directory
-            pDestinationDir = pDestinationDir + Path.DirectorySeparatorChar;
-            
+            pRebuildSetsStruct.pDestinationDir += Path.DirectorySeparatorChar;
+
             // Setup AuditingUtil
-            AuditingUtil auditingUtil = new AuditingUtil(pDatFile);
+            AuditingUtil auditingUtil = new AuditingUtil(pRebuildSetsStruct.pDatFile);
 
             // Load/Create cache db
-            string cacheDbPath = pDestinationDir + CACHE_DB_FILENAME;
+            string cacheDbPath = pRebuildSetsStruct.pDestinationDir + CACHE_DB_FILENAME;
             FileStream cacheFileStream = new FileStream(cacheDbPath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
             auditingUtil.ReadChecksumHashFromFile(cacheFileStream);
             cacheFileStream.Close();
             cacheFileStream.Dispose();
 
             // Rebuild
-            this.rebuildSets(pSourceDir, pDestinationDir, 0, pRemoveSource, pOverwriteExisting,
-                pToolStripProgressBar, auditingUtil, pStreamInput, ref pOutputMessage, pCompressOutput);
+            this.rebuildSets(pRebuildSetsStruct, auditingUtil, 0, e);
 
             // Finish rebuilding
             cacheFileStream = new FileStream(cacheDbPath, FileMode.Open, FileAccess.ReadWrite);
             auditingUtil.WriteChecksumHashToFile(cacheFileStream);
-            auditingUtil.WriteHaveMissLists(pDestinationDir);
+            auditingUtil.WriteHaveMissLists(pRebuildSetsStruct.pDestinationDir);
 
             cacheFileStream.Close();
             cacheFileStream.Dispose();
+        }
+
+        protected override void OnDoWork(DoWorkEventArgs e)
+        {
+            RebuildSetsStruct vRebuildSetsStruct = (RebuildSetsStruct)e.Argument;
+            this.rebuildSets(vRebuildSetsStruct, e);
         }
     }
 }
