@@ -203,26 +203,23 @@ namespace VGMToolbox.auditing
                 // Directories
                 foreach (string d in Directory.GetDirectories(pGetGameParamsStruct.pDir))
                 {
-                    if (!CancellationPending)
+                    if (Directory.GetFiles(d, "*.*", SearchOption.AllDirectories).Length > 0)
                     {
-                        if (Directory.GetFiles(d, "*.*", SearchOption.AllDirectories).Length > 0)
+                        if (pDepth == 1)
                         {
-                            if (pDepth == 1)
-                            {
-                                this.romList = new ArrayList();
-                                this.libHash = new Dictionary<string, ByteArray>();
-                                this.dir = d;
-                            }
+                            this.romList = new ArrayList();
+                            this.libHash = new Dictionary<string, ByteArray>();
+                            this.dir = d;
+                        }
 
-                            // Application.DoEvents();
-                            game set = new game();
+                        game set = new game();
 
-                            foreach (string f in Directory.GetFiles(d))
+                        foreach (string f in Directory.GetFiles(d))
+                        {
+                            if (!CancellationPending)
                             {
                                 int progress = (++fileCount * 100) / pGetGameParamsStruct.totalFiles;
                                 ReportProgress(progress);
-                                // pToolStripProgressBar.PerformStep();
-                                // Application.DoEvents();
 
                                 try
                                 {
@@ -239,7 +236,15 @@ namespace VGMToolbox.auditing
                                     //pOutputMessage += "Error processing <" + f + "> (" + _ex.Message + ")" + "...Skipped" + Environment.NewLine;
                                 }
                             }
+                            else
+                            {
+                                e.Cancel = true;
+                                break;
+                            }
+                        }
 
+                        if (!CancellationPending)
+                        {
                             GetGameParamsStruct subdirGetGameParamsStruct = pGetGameParamsStruct;
                             subdirGetGameParamsStruct.pDir = d;
                             this.buildGames(subdirGetGameParamsStruct, pDepth, e);
@@ -256,13 +261,12 @@ namespace VGMToolbox.auditing
                                         ObjectPooler.Instance.DoneWithByteArray(i);
                                 }
                             }
-                        } // if ((Directory.GetFiles(d, "*.*", SearchOption.AllDirectories).Length - 1) > 0)
-                    }
-                    else
-                    {
-                        e.Cancel = true;
-                        break;
-                    } // (!CancellationPending)
+                        }
+                        else 
+                        { 
+                            break; 
+                        }
+                    } // if ((Directory.GetFiles(d, "*.*", SearchOption.AllDirectories).Length - 1) > 0)              
                 } // foreach (string d in Directory.GetDirectories(pDir))
 
                 if (gameList.Count > 0)

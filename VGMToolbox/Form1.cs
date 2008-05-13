@@ -167,7 +167,6 @@ namespace VGMToolbox
             if (checkDatafileCreatorInputs())
             {
                 toolStripStatusLabel1.Text = "Building Datafile...";
-                // toolStripProgressBar.Maximum = Directory.GetFiles(tbDatCreator_SourceFolder.Text, "*.*", SearchOption.AllDirectories).Length;
 
                 string outputMessage = "";
                 
@@ -208,6 +207,11 @@ namespace VGMToolbox
             }
         }
 
+        private void btnDatCreator_Cancel_Click(object sender, EventArgs e)
+        {
+            datCreator.CancelAsync();
+        }
+
         private bool checkDatafileCreatorInputs()
         {
             bool ret = true;
@@ -227,7 +231,6 @@ namespace VGMToolbox
         # endregion
         
         #region REBUILDER
-        // REBUILDER 
 
         private void btnRebuilder_BrowseSourceDir_Click(object sender, EventArgs e)
         {
@@ -256,7 +259,7 @@ namespace VGMToolbox
             }
         }
 
-         private void btnRebuilder_Rebuild_Click(object sender, EventArgs e)
+        private void btnRebuilder_Rebuild_Click(object sender, EventArgs e)
         {
             doCleanup();
             if (checkRebuilderInputs())
@@ -304,6 +307,22 @@ namespace VGMToolbox
             }
 
             return ret;
+        }
+
+        private void cbRebuilder_CompressOutput_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbRebuilder_CompressOutput.Checked)
+            {
+                cbRebuilder_Overwrite.Checked = false;
+            }
+        }
+
+        private void cbRebuilder_Overwrite_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbRebuilder_Overwrite.Checked)
+            {
+                cbRebuilder_CompressOutput.Checked = false;
+            }
         }
 
         # endregion
@@ -418,22 +437,6 @@ namespace VGMToolbox
 
         # endregion
 
-        private void cbRebuilder_CompressOutput_CheckedChanged(object sender, EventArgs e)
-        {
-            if (cbRebuilder_CompressOutput.Checked)
-            {
-                cbRebuilder_Overwrite.Checked = false;
-            }
-        }
-
-        private void cbRebuilder_Overwrite_CheckedChanged(object sender, EventArgs e)
-        {
-            if (cbRebuilder_Overwrite.Checked)
-            {
-                cbRebuilder_CompressOutput.Checked = false;
-            }
-        }
-
         #region INI File
 
         private void loadLanguages()
@@ -461,6 +464,7 @@ namespace VGMToolbox
                 lblDatCreator_SourceFolder.Text = getGuiIniLabel(iniFile, lblDatCreator_SourceFolder.Text, "DATAFILE_BUILDER", "SOURCE_FOLDER_LABEL");
                 lblDatCreator_DestinationFolder.Text = getGuiIniLabel(iniFile, lblDatCreator_DestinationFolder.Text, "DATAFILE_BUILDER", "DESTINATION_FOLDER_LABEL");
                 btnDatCreator_BuildDat.Text = getGuiIniLabel(iniFile, btnDatCreator_BuildDat.Text, "DATAFILE_BUILDER", "BUILD_BUTTON");
+                btnDatCreator_Cancel.Text = getGuiIniLabel(iniFile, btnDatCreator_Cancel.Text, "DATAFILE_BUILDER", "CANCEL_BUTTON");
 
                 // Rebuilder Text
                 grpRebuilder_Directories.Text = getGuiIniLabel(iniFile, grpRebuilder_Directories.Text, "REBUILDER", "DIRECTORY_GROUP_TAG");
@@ -494,7 +498,6 @@ namespace VGMToolbox
         }
 
         # endregion
-
         
         #region BACKGROUND WORKER
         private void backgroundWorker_ReportProgress(object sender, ProgressChangedEventArgs e)
@@ -507,47 +510,29 @@ namespace VGMToolbox
         {
             if (e.Cancelled)
             {
-                tbOutput.Text += "Operation cancelled, outputing partial datafile.";
+                doCleanup();
+                toolStripStatusLabel1.Text = "Building Datafile...Cancelled";
+                tbOutput.Text += "Operation cancelled.";
             }
-            
-            Datafile datafile = new Datafile();
-            datafile.header = DatafileCreatorWorker.buildHeader(tbDatCreator_Author.Text, tbDatCreator_Category.Text,
-                tbDatCreator_Comment.Text, tbDatCreator_Date.Text, tbDatCreator_Description.Text,
-                tbDatCreator_Email.Text, tbDatCreator_Homepage.Text, tbDatCreator_Name.Text,
-                tbDatCreator_Url.Text, tbDatCreator_Version.Text);
-
-            datafile.game = (game[])e.Result;
-
-            XmlSerializer serializer = new XmlSerializer(typeof(Datafile));
-            TextWriter textWriter = new StreamWriter(tbDatCreator_OutputDat.Text);
-            serializer.Serialize(textWriter, datafile);
-            textWriter.Close();
-            textWriter.Dispose();
-            
-            toolStripStatusLabel1.Text = "Building Datafile...Complete";
-
-            //Cleanup
-            datafile = null;
-            serializer = null;
-            textWriter = null;        
-        }
-
-        private void btnDatCreator_Cancel_Click(object sender, EventArgs e)
-        {
-            datCreator.CancelAsync();
-        }
-
-        /*
-        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
-        {
-            string task = (string) e.Argument;
-
-            if (task.Equals("REBUILD"))
+            else
             {
-                doRebuild();
+                Datafile datafile = new Datafile();
+                datafile.header = DatafileCreatorWorker.buildHeader(tbDatCreator_Author.Text, tbDatCreator_Category.Text,
+                    tbDatCreator_Comment.Text, tbDatCreator_Date.Text, tbDatCreator_Description.Text,
+                    tbDatCreator_Email.Text, tbDatCreator_Homepage.Text, tbDatCreator_Name.Text,
+                    tbDatCreator_Url.Text, tbDatCreator_Version.Text);
+
+                datafile.game = (game[])e.Result;
+
+                XmlSerializer serializer = new XmlSerializer(typeof(Datafile));
+                TextWriter textWriter = new StreamWriter(tbDatCreator_OutputDat.Text);
+                serializer.Serialize(textWriter, datafile);
+                textWriter.Close();
+                textWriter.Dispose();
+
+                toolStripStatusLabel1.Text = "Building Datafile...Complete";
             }
         }
-        */
         #endregion
         
     }
