@@ -32,6 +32,7 @@ namespace VGMToolbox.auditing
             public bool pStreamInput; 
             public bool pCompressOutput;
             public int totalFiles;
+
         }
 
         public RebuilderWorker()
@@ -131,150 +132,169 @@ namespace VGMToolbox.auditing
             }
         }
 
-        private void rebuildFile(string pFilePath, string pDestination, bool pRemoveSource,
-            bool pOverwriteExisting, AuditingUtil pAuditingUtil, bool pStreamInput, bool pCompressOutput)
+        //private void rebuildFile(string pFilePath, string pDestination, bool pRemoveSource,
+        //    bool pOverwriteExisting, AuditingUtil pAuditingUtil, bool pStreamInput, 
+        //    bool pCompressOutput)
+        private void rebuildFile(string pFilePath, RebuildSetsStruct pRebuildSetsStruct, AuditingUtil pAuditingUtil, 
+            DoWorkEventArgs ea)
         {
             ArrayList pDestinationFiles = new ArrayList();
             bool isFileLibrary = false;
+            Type formatType = null;
 
-            Application.DoEvents();
-
-            FileStream fs = File.OpenRead(pFilePath);
-            Type formatType = FormatUtil.getObjectType(fs);
-            fs.Seek(0, SeekOrigin.Begin);
-
-            // CRC32
-            string crc32Value = String.Empty;
-            Crc32 crc32Generator = new Crc32();
-
-            // @TODO - Change to file streams?  Out of memory errors on repeat runs
-
-            /*
-            // MD5
-            string md5FileName = Path.GetTempFileName();
-            MD5CryptoServiceProvider md5Hash = new MD5CryptoServiceProvider();
-            //MemoryStream md5MemoryStream = new MemoryStream();
-            FileStream md5MemoryStream = new FileStream(md5FileName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-            CryptoStream md5CryptoStream = new CryptoStream(md5MemoryStream, md5Hash, CryptoStreamMode.Write);
-
-            // SHA1
-            string sha1FileName = Path.GetTempFileName();
-            SHA1CryptoServiceProvider sha1Hash = new SHA1CryptoServiceProvider();
-            //MemoryStream sha1MemoryStream = new MemoryStream();
-            FileStream sha1MemoryStream = new FileStream(sha1FileName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-            CryptoStream sha1CryptoStream = new CryptoStream(sha1MemoryStream, sha1Hash, CryptoStreamMode.Write);
-            */
-
-            if (formatType != null)
+            if (FormatUtil.IsZipFile(pFilePath))
             {
-                try
-                {
-                    IFormat vgmData = (IFormat)Activator.CreateInstance(formatType);
-
-                    if (!pStreamInput)
-                    {
-                        int dataArrayindex = -1;
-                        ByteArray dataArray = ObjectPooler.Instance.GetFreeByteArray(ref dataArrayindex);
-
-                        ParseFile.ReadWholeArray(fs, dataArray.ByArray, (int)fs.Length);
-                        dataArray.ArrayLength = (int)fs.Length;
-
-                        vgmData.initialize(dataArray);
-
-                        ObjectPooler.Instance.DoneWithByteArray(dataArrayindex);
-                    }
-                    else
-                    {
-                        vgmData.initialize(fs);
-                    }
-
-                    isFileLibrary = vgmData.IsFileLibrary(pFilePath);
-                    // vgmData.getDatFileCrc32(pFilePath, ref libHash, ref crc32Generator,
-                    //    ref md5CryptoStream, ref sha1CryptoStream, false, pStreamInput);                    
-                    vgmData.getDatFileCrc32(pFilePath, ref libHash, ref crc32Generator,
-                        false, pStreamInput);
-                    vgmData = null;
-                }
-                catch (EndOfStreamException e)
-                {
-                    AuditingUtil.ProgressStruct exProgressStruct = new AuditingUtil.ProgressStruct();
-                    exProgressStruct.filename = pFilePath;
-                    exProgressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
-                    ReportProgress(AuditingUtil.IGNORE_PROGRESS, exProgressStruct);
-                    
-                    // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
-                    //    ref md5CryptoStream, ref sha1CryptoStream);
-                    ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
-                }
-                catch (System.OutOfMemoryException e)
-                {
-                    AuditingUtil.ProgressStruct exProgressStruct = new AuditingUtil.ProgressStruct();
-                    exProgressStruct.filename = pFilePath;
-                    exProgressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
-                    ReportProgress(AuditingUtil.IGNORE_PROGRESS, exProgressStruct);
-                                        
-                    // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
-                    //    ref md5CryptoStream, ref sha1CryptoStream);
-                    ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
-                }
-                catch (IOException e)
-                {
-                    AuditingUtil.ProgressStruct exProgressStruct = new AuditingUtil.ProgressStruct();
-                    exProgressStruct.filename = pFilePath;
-                    exProgressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
-                    ReportProgress(AuditingUtil.IGNORE_PROGRESS, exProgressStruct);
-                    
-                    // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
-                    //    ref md5CryptoStream, ref sha1CryptoStream);
-                    ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
-                }
+                FastZip fz = new FastZip();
+                string tempDir = System.IO.Path.GetTempPath() + Path.GetFileNameWithoutExtension(pFilePath);
+                fz.ExtractZip(pFilePath, tempDir, String.Empty);
+                
+                pRebuildSetsStruct.totalFiles += Directory.GetFiles(tempDir, "*.*", SearchOption.AllDirectories).Length;
+                RebuildSetsStruct zipRebuildSetsStruct = pRebuildSetsStruct;
+                zipRebuildSetsStruct.pSourceDir = tempDir;
+                this.rebuildSets(zipRebuildSetsStruct, ea);
+                
+                Directory.Delete(tempDir, true);
             }
             else
             {
-                // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
-                //    ref md5CryptoStream, ref sha1CryptoStream);
-                ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
-            }
+                FileStream fs = File.OpenRead(pFilePath);
+                formatType = FormatUtil.getObjectType(fs);
+                fs.Seek(0, SeekOrigin.Begin);
 
-            // @TODO Add MD5/SHA1 to make checksum hash correct String(CRC32 + MD5 + SHA1)
-            crc32Value = crc32Generator.Value.ToString("X2");
+                // CRC32
+                string crc32Value = String.Empty;
+                Crc32 crc32Generator = new Crc32();
 
-            pDestinationFiles = (ArrayList)pAuditingUtil.ChecksumHash[crc32Value];
-            if (pDestinationFiles != null)
-            {
-                this.moveFile(pDestination, pDestinationFiles, fs, pFilePath, pOverwriteExisting,
-                    pAuditingUtil, pCompressOutput);
-                pAuditingUtil.AddChecksumToCache(crc32Value);
-            }
+                // @TODO - Change to file streams?  Out of memory errors on repeat runs
 
-            fs.Close();
-            fs.Dispose();
+                /*
+                // MD5
+                string md5FileName = Path.GetTempFileName();
+                MD5CryptoServiceProvider md5Hash = new MD5CryptoServiceProvider();
+                //MemoryStream md5MemoryStream = new MemoryStream();
+                FileStream md5MemoryStream = new FileStream(md5FileName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                CryptoStream md5CryptoStream = new CryptoStream(md5MemoryStream, md5Hash, CryptoStreamMode.Write);
 
-            /*
-            md5CryptoStream.Close();
-            md5CryptoStream.Dispose();
-            sha1CryptoStream.Close();
-            sha1CryptoStream.Dispose();
-            
-            md5MemoryStream.Close();
-            md5MemoryStream.Dispose();
-            sha1MemoryStream.Close();
-            sha1MemoryStream.Dispose();
-           
-            File.Delete(md5FileName);
-            File.Delete(sha1FileName);
-            */
+                // SHA1
+                string sha1FileName = Path.GetTempFileName();
+                SHA1CryptoServiceProvider sha1Hash = new SHA1CryptoServiceProvider();
+                //MemoryStream sha1MemoryStream = new MemoryStream();
+                FileStream sha1MemoryStream = new FileStream(sha1FileName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                CryptoStream sha1CryptoStream = new CryptoStream(sha1MemoryStream, sha1Hash, CryptoStreamMode.Write);
+                */
 
-            // Remove Source only if copied
-            if (pDestinationFiles != null && pRemoveSource && File.Exists(pFilePath))
-            {
-                if (!isFileLibrary)
+
+                if (formatType != null)
                 {
-                    File.Delete(pFilePath);
+                    try
+                    {
+                        IFormat vgmData = (IFormat)Activator.CreateInstance(formatType);
+
+                        if (!pRebuildSetsStruct.pStreamInput)
+                        {
+                            int dataArrayindex = -1;
+                            ByteArray dataArray = ObjectPooler.Instance.GetFreeByteArray(ref dataArrayindex);
+
+                            ParseFile.ReadWholeArray(fs, dataArray.ByArray, (int)fs.Length);
+                            dataArray.ArrayLength = (int)fs.Length;
+
+                            vgmData.initialize(dataArray);
+
+                            ObjectPooler.Instance.DoneWithByteArray(dataArrayindex);
+                        }
+                        else
+                        {
+                            vgmData.initialize(fs);
+                        }
+
+                        isFileLibrary = vgmData.IsFileLibrary(pFilePath);
+                        // vgmData.getDatFileCrc32(pFilePath, ref libHash, ref crc32Generator,
+                        //    ref md5CryptoStream, ref sha1CryptoStream, false, pStreamInput);                    
+                        vgmData.getDatFileCrc32(pFilePath, ref libHash, ref crc32Generator,
+                            false, pRebuildSetsStruct.pStreamInput);
+                        vgmData = null;
+                    }
+                    catch (EndOfStreamException e)
+                    {
+                        AuditingUtil.ProgressStruct exProgressStruct = new AuditingUtil.ProgressStruct();
+                        exProgressStruct.filename = pFilePath;
+                        exProgressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
+                        ReportProgress(AuditingUtil.IGNORE_PROGRESS, exProgressStruct);
+
+                        // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
+                        //    ref md5CryptoStream, ref sha1CryptoStream);
+                        ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
+                    }
+                    catch (System.OutOfMemoryException e)
+                    {
+                        AuditingUtil.ProgressStruct exProgressStruct = new AuditingUtil.ProgressStruct();
+                        exProgressStruct.filename = pFilePath;
+                        exProgressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
+                        ReportProgress(AuditingUtil.IGNORE_PROGRESS, exProgressStruct);
+
+                        // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
+                        //    ref md5CryptoStream, ref sha1CryptoStream);
+                        ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
+                    }
+                    catch (IOException e)
+                    {
+                        AuditingUtil.ProgressStruct exProgressStruct = new AuditingUtil.ProgressStruct();
+                        exProgressStruct.filename = pFilePath;
+                        exProgressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
+                        ReportProgress(AuditingUtil.IGNORE_PROGRESS, exProgressStruct);
+
+                        // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
+                        //    ref md5CryptoStream, ref sha1CryptoStream);
+                        ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
+                    }
                 }
-                else // Add to List for deletion later
+                else
                 {
-                    libFilesForDeletion.Add(pFilePath);
+                    // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
+                    //    ref md5CryptoStream, ref sha1CryptoStream);
+                    ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
+                }
+
+                // @TODO Add MD5/SHA1 to make checksum hash correct String(CRC32 + MD5 + SHA1)
+                crc32Value = crc32Generator.Value.ToString("X2");
+
+                pDestinationFiles = (ArrayList)pAuditingUtil.ChecksumHash[crc32Value];
+                if (pDestinationFiles != null)
+                {
+                    this.moveFile(pRebuildSetsStruct.pDestinationDir, pDestinationFiles, fs, pFilePath, pRebuildSetsStruct.pOverwriteExisting,
+                        pAuditingUtil, pRebuildSetsStruct.pCompressOutput);
+                    pAuditingUtil.AddChecksumToCache(crc32Value);
+                }
+
+                fs.Close();
+                fs.Dispose();
+
+                /*
+                md5CryptoStream.Close();
+                md5CryptoStream.Dispose();
+                sha1CryptoStream.Close();
+                sha1CryptoStream.Dispose();
+            
+                md5MemoryStream.Close();
+                md5MemoryStream.Dispose();
+                sha1MemoryStream.Close();
+                sha1MemoryStream.Dispose();
+           
+                File.Delete(md5FileName);
+                File.Delete(sha1FileName);
+                */
+
+                // Remove Source only if copied
+                if (pDestinationFiles != null && pRebuildSetsStruct.pRemoveSource && File.Exists(pFilePath))
+                {
+                    if (!isFileLibrary)
+                    {
+                        File.Delete(pFilePath);
+                    }
+                    else // Add to List for deletion later
+                    {
+                        libFilesForDeletion.Add(pFilePath);
+                    }
                 }
             }
         }
@@ -286,6 +306,7 @@ namespace VGMToolbox.auditing
             {
                 if (pDepth++ == 0)
                 {
+                    
                     // process top level files
                     libFilesForDeletion.Clear();
                     foreach (string f in Directory.GetFiles(pRebuildSetsStruct.pSourceDir))
@@ -297,9 +318,7 @@ namespace VGMToolbox.auditing
                             vProgressStruct.filename = f;
                             ReportProgress(progress, vProgressStruct);
 
-                            this.rebuildFile(f, pRebuildSetsStruct.pDestinationDir, pRebuildSetsStruct.pRemoveSource,
-                                pRebuildSetsStruct.pOverwriteExisting, pAuditingUtil, pRebuildSetsStruct.pStreamInput,
-                                pRebuildSetsStruct.pCompressOutput);
+                            this.rebuildFile(f, pRebuildSetsStruct, pAuditingUtil, e);
                         }
                         else
                         {
@@ -328,9 +347,7 @@ namespace VGMToolbox.auditing
                                     vProgressStruct.filename = f;
                                     ReportProgress(progress, vProgressStruct);
 
-                                    this.rebuildFile(f, pRebuildSetsStruct.pDestinationDir, pRebuildSetsStruct.pRemoveSource,
-                                        pRebuildSetsStruct.pOverwriteExisting, pAuditingUtil, pRebuildSetsStruct.pStreamInput,
-                                        pRebuildSetsStruct.pCompressOutput);
+                                    this.rebuildFile(f, pRebuildSetsStruct, pAuditingUtil, e);
                                 }
                                 catch (Exception ex)
                                 {
