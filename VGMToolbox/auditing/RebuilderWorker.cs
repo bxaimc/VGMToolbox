@@ -20,7 +20,9 @@ namespace VGMToolbox.auditing
         private Dictionary<string, ByteArray> libHash;
         private const string CACHE_DB_FILENAME = "cache.db";
         private ArrayList libFilesForDeletion = new ArrayList();
+        private ArrayList tempDirsForDeletion = new ArrayList();
         private int fileCount = 0;
+        private int maxFiles = 0;
 
         public struct RebuildSetsStruct
         { 
@@ -38,6 +40,8 @@ namespace VGMToolbox.auditing
         public RebuilderWorker()
         {
             fileCount = 0;
+            maxFiles = 0;
+
             WorkerReportsProgress = true;
             WorkerSupportsCancellation = true;
         }
@@ -148,9 +152,9 @@ namespace VGMToolbox.auditing
                 string tempDir = System.IO.Path.GetTempPath() + Path.GetFileNameWithoutExtension(pFilePath);
                 fz.ExtractZip(pFilePath, tempDir, String.Empty);
                 
-                pRebuildSetsStruct.totalFiles += Directory.GetFiles(tempDir, "*.*", SearchOption.AllDirectories).Length;
                 RebuildSetsStruct zipRebuildSetsStruct = pRebuildSetsStruct;
                 zipRebuildSetsStruct.pSourceDir = tempDir;
+                zipRebuildSetsStruct.totalFiles = Directory.GetFiles(tempDir, "*.*", SearchOption.AllDirectories).Length;
                 this.rebuildSets(zipRebuildSetsStruct, ea);
                 
                 Directory.Delete(tempDir, true);
@@ -313,7 +317,7 @@ namespace VGMToolbox.auditing
                     {
                         if (!CancellationPending)
                         {
-                            int progress = (++fileCount * 100) / pRebuildSetsStruct.totalFiles;
+                            int progress = (++fileCount * 100) / maxFiles;
                             AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
                             vProgressStruct.filename = f;
                             ReportProgress(progress, vProgressStruct);
@@ -323,6 +327,10 @@ namespace VGMToolbox.auditing
                         else
                         {
                             e.Cancel = true;
+                            foreach (string d in tempDirsForDeletion)
+                            {
+                                Directory.Delete(d, true);
+                            }
                             break;
                         }
                     }
@@ -342,7 +350,7 @@ namespace VGMToolbox.auditing
                             {
                                 try
                                 {
-                                    int progress = (++fileCount * 100) / pRebuildSetsStruct.totalFiles;
+                                    int progress = (++fileCount * 100) / maxFiles;
                                     AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
                                     vProgressStruct.filename = f;
                                     ReportProgress(progress, vProgressStruct);
@@ -395,6 +403,9 @@ namespace VGMToolbox.auditing
 
         public void rebuildSets(RebuildSetsStruct pRebuildSetsStruct, DoWorkEventArgs e)
         {
+            // Set Max sets
+            maxFiles += pRebuildSetsStruct.totalFiles;
+            
             // Setup output directory
             pRebuildSetsStruct.pDestinationDir += Path.DirectorySeparatorChar;
 
