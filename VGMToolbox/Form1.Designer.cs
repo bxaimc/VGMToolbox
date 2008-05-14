@@ -497,9 +497,9 @@
             this.label24.ForeColor = System.Drawing.Color.Red;
             this.label24.Location = new System.Drawing.Point(3, 182);
             this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(129, 13);
+            this.label24.Size = new System.Drawing.Size(256, 13);
             this.label24.TabIndex = 6;
-            this.label24.Text = ".zip files not yet supported";
+            this.label24.Text = "remove rebuilt source from .zip files not yet supported";
             // 
             // grpRebuilder_Options
             // 

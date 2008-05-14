@@ -60,6 +60,15 @@ namespace VGMToolbox.auditing
             libFilesForDeletion.Clear();
         }
 
+        private void deleteQueuedTempDirs()
+        {
+            foreach (string d in tempDirsForDeletion)
+            {
+                Directory.Delete(d, true);
+                tempDirsForDeletion.Remove(d);
+            }
+        }
+
         private void moveFile(string pDestination, ArrayList pDestinationFiles, FileStream pSourceFile,
             string pSourceName, bool pOverwriteExisting, AuditingUtil pAuditingUtil, bool pCompressOutput)
         {
@@ -151,6 +160,8 @@ namespace VGMToolbox.auditing
                 FastZip fz = new FastZip();
                 string tempDir = System.IO.Path.GetTempPath() + Path.GetFileNameWithoutExtension(pFilePath);
                 fz.ExtractZip(pFilePath, tempDir, String.Empty);
+
+                tempDirsForDeletion.Add(tempDir);           // Add in case of cancel button
                 
                 RebuildSetsStruct zipRebuildSetsStruct = pRebuildSetsStruct;
                 zipRebuildSetsStruct.pSourceDir = tempDir;
@@ -158,6 +169,7 @@ namespace VGMToolbox.auditing
                 this.rebuildSets(zipRebuildSetsStruct, ea);
                 
                 Directory.Delete(tempDir, true);
+                tempDirsForDeletion.Remove(tempDir);
             }
             else
             {
@@ -327,10 +339,8 @@ namespace VGMToolbox.auditing
                         else
                         {
                             e.Cancel = true;
-                            foreach (string d in tempDirsForDeletion)
-                            {
-                                Directory.Delete(d, true);
-                            }
+                            this.deleteQueuedTempDirs();
+                            this.deleteQueuedLibFiles();
                             break;
                         }
                     }
@@ -368,6 +378,8 @@ namespace VGMToolbox.auditing
                             else
                             {
                                 e.Cancel = true;
+                                this.deleteQueuedTempDirs();
+                                this.deleteQueuedLibFiles();
                                 break;
                             }
                         }
