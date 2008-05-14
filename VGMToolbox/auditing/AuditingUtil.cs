@@ -16,6 +16,9 @@ namespace VGMToolbox.auditing
     class AuditingUtil
     {
         private const string ROM_SPACER = "  ";         // Simple spacer for formatting output lists
+
+        public static readonly int IGNORE_PROGRESS = -1;
+     
         private Hashtable haveList = new Hashtable();   // Stores list of present files
         private Hashtable missList = new Hashtable();   // Stores list of missing files
         private Datafile datafile;                      // Datafile used for building lists
@@ -51,16 +54,11 @@ namespace VGMToolbox.auditing
             public bool isFilePresent;
         }
 
-        /// <summary>
-        /// Struct used to maintain Have/Miss lists.
-        /// </summary>
-        /*
-        public struct HaveMissStruct
+        public struct ProgressStruct
         {
-            public string name;
-            public ArrayList roms;
+            public string filename;
+            public string errorMessage;
         }
-        */
          
         #endregion
 

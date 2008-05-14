@@ -31,6 +31,7 @@ namespace VGMToolbox.auditing
         
         public DatafileCreatorWorker()
         {
+            fileCount = 0;
             WorkerReportsProgress = true;
             WorkerSupportsCancellation = true;
         }
@@ -109,24 +110,34 @@ namespace VGMToolbox.auditing
                 }
                 catch (EndOfStreamException _es)
                 {
-                    // pOutputMessage += String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: [{2}]", pFileName, formatType.Name, _es.Message) + Environment.NewLine;
-                    MessageBox.Show(String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: [{2}]", pFileName, formatType.Name, _es.Message) + Environment.NewLine);
+                    AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                    vProgressStruct.filename = pFileName;
+                    vProgressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFileName, formatType.Name, _es.Message) + Environment.NewLine;
+                    ReportProgress(AuditingUtil.IGNORE_PROGRESS , vProgressStruct);
+                    
                     // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator, 
                     //    ref md5CryptoStream, ref sha1CryptoStream);
                     ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
                 }
                 catch (System.OutOfMemoryException _es)
                 {
-                    //pOutputMessage += String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: [{2}]", pFileName, formatType.Name, _es.Message) + Environment.NewLine;
-                    MessageBox.Show(String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: [{2}]", pFileName, formatType.Name, _es.Message) + Environment.NewLine);
+                    AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                    vProgressStruct.filename = pFileName;
+                    vProgressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFileName, formatType.Name, _es.Message) + Environment.NewLine;
+                    ReportProgress(AuditingUtil.IGNORE_PROGRESS, vProgressStruct);
+                    
+                    
                     // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
                     //    ref md5CryptoStream, ref sha1CryptoStream);
                     ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
                 }
                 catch (IOException _es)
                 {
-                    //pOutputMessage += String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: [{2}]", pFileName, formatType.Name, _es.Message) + Environment.NewLine;
-                    MessageBox.Show(String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: [{2}]", pFileName, formatType.Name, _es.Message) + Environment.NewLine);
+                    AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                    vProgressStruct.filename = pFileName;
+                    vProgressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFileName, formatType.Name, _es.Message) + Environment.NewLine;
+                    ReportProgress(AuditingUtil.IGNORE_PROGRESS, vProgressStruct);
+                                        
                     // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
                     //    ref md5CryptoStream, ref sha1CryptoStream);
                     ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
@@ -217,7 +228,9 @@ namespace VGMToolbox.auditing
                             if (!CancellationPending)
                             {
                                 int progress = (++fileCount * 100) / pGetGameParamsStruct.totalFiles;
-                                ReportProgress(progress);
+                                AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                                vProgressStruct.filename = f;
+                                ReportProgress(progress, vProgressStruct);
 
                                 try
                                 {
@@ -230,8 +243,10 @@ namespace VGMToolbox.auditing
                                 }
                                 catch (Exception _ex)
                                 {
-                                    MessageBox.Show(_ex.Message);
-                                    //pOutputMessage += "Error processing <" + f + "> (" + _ex.Message + ")" + "...Skipped" + Environment.NewLine;
+                                    AuditingUtil.ProgressStruct exProgressStruct = new AuditingUtil.ProgressStruct();
+                                    exProgressStruct.filename = f;
+                                    exProgressStruct.errorMessage = "Error processing <" + f + "> (" + _ex.Message + ")" + "...Skipped" + Environment.NewLine;
+                                    ReportProgress(AuditingUtil.IGNORE_PROGRESS, exProgressStruct);
                                 }
                             }
                             else
@@ -274,7 +289,10 @@ namespace VGMToolbox.auditing
             }
             catch (Exception e1)
             {
-                MessageBox.Show(e1.Message);
+                AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                vProgressStruct.filename = null;
+                vProgressStruct.errorMessage = e1.Message;
+                ReportProgress(AuditingUtil.IGNORE_PROGRESS, vProgressStruct);
             }
             return gameArray;            
         }

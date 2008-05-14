@@ -36,6 +36,7 @@ namespace VGMToolbox.auditing
 
         public RebuilderWorker()
         {
+            fileCount = 0;
             WorkerReportsProgress = true;
             WorkerSupportsCancellation = true;
         }
@@ -122,7 +123,11 @@ namespace VGMToolbox.auditing
             }
             catch (Exception exception)
             {
-                MessageBox.Show("Error processing <" + pSourceName + "> \n" + exception.Message);
+                AuditingUtil.ProgressStruct exProgressStruct = new AuditingUtil.ProgressStruct();
+                exProgressStruct.filename = pSourceName;
+                exProgressStruct.errorMessage = "Error processing <" + pSourceName + "> " + exception.Message;
+                ReportProgress(AuditingUtil.IGNORE_PROGRESS, exProgressStruct);
+
             }
         }
 
@@ -192,24 +197,33 @@ namespace VGMToolbox.auditing
                 }
                 catch (EndOfStreamException e)
                 {
-                    // pOutputMessage += String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: [{2}]", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
-                    MessageBox.Show(String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: [{2}]", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine);
+                    AuditingUtil.ProgressStruct exProgressStruct = new AuditingUtil.ProgressStruct();
+                    exProgressStruct.filename = pFilePath;
+                    exProgressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
+                    ReportProgress(AuditingUtil.IGNORE_PROGRESS, exProgressStruct);
+                    
                     // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
                     //    ref md5CryptoStream, ref sha1CryptoStream);
                     ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
                 }
                 catch (System.OutOfMemoryException e)
                 {
-                    // pOutputMessage += String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: [{2}]", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
-                    MessageBox.Show(String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: [{2}]", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine);
+                    AuditingUtil.ProgressStruct exProgressStruct = new AuditingUtil.ProgressStruct();
+                    exProgressStruct.filename = pFilePath;
+                    exProgressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
+                    ReportProgress(AuditingUtil.IGNORE_PROGRESS, exProgressStruct);
+                                        
                     // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
                     //    ref md5CryptoStream, ref sha1CryptoStream);
                     ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
                 }
                 catch (IOException e)
                 {
-                    // pOutputMessage += String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: [{2}]", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
-                    MessageBox.Show(String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: [{2}]", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine);
+                    AuditingUtil.ProgressStruct exProgressStruct = new AuditingUtil.ProgressStruct();
+                    exProgressStruct.filename = pFilePath;
+                    exProgressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
+                    ReportProgress(AuditingUtil.IGNORE_PROGRESS, exProgressStruct);
+                    
                     // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
                     //    ref md5CryptoStream, ref sha1CryptoStream);
                     ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
@@ -279,7 +293,9 @@ namespace VGMToolbox.auditing
                         if (!CancellationPending)
                         {
                             int progress = (++fileCount * 100) / pRebuildSetsStruct.totalFiles;
-                            ReportProgress(progress);
+                            AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                            vProgressStruct.filename = f;
+                            ReportProgress(progress, vProgressStruct);
 
                             this.rebuildFile(f, pRebuildSetsStruct.pDestinationDir, pRebuildSetsStruct.pRemoveSource,
                                 pRebuildSetsStruct.pOverwriteExisting, pAuditingUtil, pRebuildSetsStruct.pStreamInput,
@@ -308,7 +324,9 @@ namespace VGMToolbox.auditing
                                 try
                                 {
                                     int progress = (++fileCount * 100) / pRebuildSetsStruct.totalFiles;
-                                    ReportProgress(progress);
+                                    AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                                    vProgressStruct.filename = f;
+                                    ReportProgress(progress, vProgressStruct);
 
                                     this.rebuildFile(f, pRebuildSetsStruct.pDestinationDir, pRebuildSetsStruct.pRemoveSource,
                                         pRebuildSetsStruct.pOverwriteExisting, pAuditingUtil, pRebuildSetsStruct.pStreamInput,
@@ -316,7 +334,10 @@ namespace VGMToolbox.auditing
                                 }
                                 catch (Exception ex)
                                 {
-                                    MessageBox.Show("[" + f + "] " + ex.Message);
+                                    AuditingUtil.ProgressStruct exProgressStruct = new AuditingUtil.ProgressStruct();
+                                    exProgressStruct.filename = f;
+                                    exProgressStruct.errorMessage = "[" + f + "] " + ex.Message;
+                                    ReportProgress(AuditingUtil.IGNORE_PROGRESS, exProgressStruct);
                                 }
                             }
                             else
@@ -348,7 +369,10 @@ namespace VGMToolbox.auditing
             }
             catch (Exception exception2)
             {
-                MessageBox.Show(exception2.Message);
+                AuditingUtil.ProgressStruct exProgressStruct = new AuditingUtil.ProgressStruct();
+                exProgressStruct.filename = null;
+                exProgressStruct.errorMessage = exception2.Message;
+                ReportProgress(AuditingUtil.IGNORE_PROGRESS, exProgressStruct);
             }
         }
 
