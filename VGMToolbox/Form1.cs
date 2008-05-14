@@ -20,8 +20,8 @@ namespace VGMToolbox
 {
     public partial class Form1 : Form
     {
-        DatafileCreatorWorker datCreator = new DatafileCreatorWorker();
-        RebuilderWorker rebuilder = new RebuilderWorker();
+        DatafileCreatorWorker datCreator;
+        RebuilderWorker rebuilder;
         
         public Form1()
         {
@@ -35,12 +35,6 @@ namespace VGMToolbox
             //Thread.Sleep(1000);
             //th.Abort();
             //Thread.Sleep(1000);            
-
-            datCreator.ProgressChanged += backgroundWorker_ReportProgress;
-            datCreator.RunWorkerCompleted += datafileCreatorWorker_WorkComplete;
-
-            rebuilder.ProgressChanged += backgroundWorker_ReportProgress;
-            rebuilder.RunWorkerCompleted += rebuilderWorker_WorkComplete;
 
             this.loadLanguages();
         }
@@ -171,20 +165,17 @@ namespace VGMToolbox
             if (checkDatafileCreatorInputs())
             {
                 toolStripStatusLabel1.Text = "Building Datafile...";
-
-                string outputMessage = "";
                 
-                //DatafileCreatorWorker datCreator = new DatafileCreatorWorker();
-                //datCreator.ProgressChanged += backgroundWorker_ReportProgress;
-                //datCreator.RunWorkerCompleted += datafileCreatorWorker_WorkComplete;
-
                 DatafileCreatorWorker.GetGameParamsStruct vGetGameParamsStruct = new DatafileCreatorWorker.GetGameParamsStruct();
                 vGetGameParamsStruct.pDir = tbDatCreator_SourceFolder.Text;
                 vGetGameParamsStruct.pOutputMessage = "";
                 vGetGameParamsStruct.pStreamInput = cbDatCreator_UseLessRam.Checked;
                 vGetGameParamsStruct.pUseLibHash = false;
                 vGetGameParamsStruct.totalFiles = Directory.GetFiles(tbDatCreator_SourceFolder.Text, "*.*", SearchOption.AllDirectories).Length;
-                
+
+                datCreator = new DatafileCreatorWorker();
+                datCreator.ProgressChanged += backgroundWorker_ReportProgress;
+                datCreator.RunWorkerCompleted += datafileCreatorWorker_WorkComplete;
                 datCreator.RunWorkerAsync(vGetGameParamsStruct);               
             }
         }
@@ -213,7 +204,11 @@ namespace VGMToolbox
 
         private void btnDatCreator_Cancel_Click(object sender, EventArgs e)
         {
-            datCreator.CancelAsync();
+            if (datCreator!= null && datCreator.IsBusy)
+            {
+                tbOutput.Text += "CANCEL PENDING...";
+                datCreator.CancelAsync();
+            }
         }
 
         private bool checkDatafileCreatorInputs()
@@ -312,6 +307,9 @@ namespace VGMToolbox
                 vRebuildSetsStruct.pCompressOutput = cbRebuilder_CompressOutput.Checked;
                 vRebuildSetsStruct.totalFiles = Directory.GetFiles(tbRebuilder_SourceDir.Text, "*.*", SearchOption.AllDirectories).Length;
 
+                rebuilder = new RebuilderWorker();
+                rebuilder.ProgressChanged += backgroundWorker_ReportProgress;
+                rebuilder.RunWorkerCompleted += rebuilderWorker_WorkComplete;
                 rebuilder.RunWorkerAsync(vRebuildSetsStruct);
             }
         }
@@ -360,7 +358,11 @@ namespace VGMToolbox
 
         private void btnRebuilder_Cancel_Click(object sender, EventArgs e)
         {
-            rebuilder.CancelAsync();
+            if (rebuilder != null && rebuilder.IsBusy)
+            {
+                tbOutput.Text += "CANCEL PENDING...";
+                rebuilder.CancelAsync();
+            }
         }
 
         # endregion
@@ -417,8 +419,14 @@ namespace VGMToolbox
         {
             tbOutput.Clear();
             treeViewTools.Nodes.Clear();
-            toolStripProgressBar.Step = 1;
+            doCancelCleanup();
+        }
+
+        private void doCancelCleanup()
+        {
+            treeViewTools.Nodes.Clear();
             toolStripProgressBar.Value = 0;
+            lblProgressLabel.Text = String.Empty;
         }
 
         private bool checkTextBox(string pText, string pFieldName)
@@ -541,7 +549,17 @@ namespace VGMToolbox
         #region BACKGROUND WORKER
         private void backgroundWorker_ReportProgress(object sender, ProgressChangedEventArgs e)
         {
-            toolStripProgressBar.Value = e.ProgressPercentage;
+            if (e.ProgressPercentage != AuditingUtil.IGNORE_PROGRESS)
+            {
+                toolStripProgressBar.Value = e.ProgressPercentage;
+            }
+
+            if (e.UserState != null)
+            {
+                AuditingUtil.ProgressStruct vProgressStruct = (AuditingUtil.ProgressStruct)e.UserState;
+                lblProgressLabel.Text = vProgressStruct.filename == null ? String.Empty : vProgressStruct.filename;
+                tbOutput.Text += vProgressStruct.errorMessage == null ? String.Empty : vProgressStruct.errorMessage;
+            }
         }
 
         private void rebuilderWorker_WorkComplete(object sender,
@@ -549,12 +567,13 @@ namespace VGMToolbox
         {
             if (e.Cancelled)
             {
-                doCleanup();
+                doCancelCleanup();
                 toolStripStatusLabel1.Text = "Rebuilding...Cancelled";
                 tbOutput.Text += "Operation cancelled.";
             }
             else
             {
+                lblProgressLabel.Text = String.Empty;
                 toolStripStatusLabel1.Text = "Rebuilding...Complete";
             }
         }
@@ -564,12 +583,14 @@ namespace VGMToolbox
         {
             if (e.Cancelled)
             {
-                doCleanup();
+                doCancelCleanup();
                 toolStripStatusLabel1.Text = "Building Datafile...Canceled";
-                tbOutput.Text += "Operation canceled.";
+                tbOutput.Text += "Operation canceled.";                
             }
             else
             {
+                lblProgressLabel.Text = String.Empty;
+                
                 Datafile datafile = new Datafile();
                 datafile.header = DatafileCreatorWorker.buildHeader(tbDatCreator_Author.Text, tbDatCreator_Category.Text,
                     tbDatCreator_Comment.Text, tbDatCreator_Date.Text, tbDatCreator_Description.Text,

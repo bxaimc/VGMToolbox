@@ -113,6 +113,7 @@
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.lblProgressLabel = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -865,7 +866,7 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1,
             this.toolStripProgressBar});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 341);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 357);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(686, 22);
             this.statusStrip1.TabIndex = 1;
@@ -910,10 +911,23 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
+            // lblProgressLabel
+            // 
+            this.lblProgressLabel.AutoEllipsis = true;
+            this.lblProgressLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.lblProgressLabel.Location = new System.Drawing.Point(4, 340);
+            this.lblProgressLabel.MinimumSize = new System.Drawing.Size(681, 15);
+            this.lblProgressLabel.Name = "lblProgressLabel";
+            this.lblProgressLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.lblProgressLabel.Size = new System.Drawing.Size(681, 15);
+            this.lblProgressLabel.TabIndex = 3;
+            this.lblProgressLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(686, 363);
+            this.ClientSize = new System.Drawing.Size(686, 379);
+            this.Controls.Add(this.lblProgressLabel);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.tbOutput);
@@ -1042,6 +1056,7 @@
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.Button btnDatCreator_Cancel;
         private System.Windows.Forms.Button btnRebuilder_Cancel;
+        private System.Windows.Forms.Label lblProgressLabel;
     }
 }
 
