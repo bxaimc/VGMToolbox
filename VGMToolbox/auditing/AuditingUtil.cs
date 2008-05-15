@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Text;
@@ -124,36 +122,6 @@ namespace VGMToolbox.auditing
         #region HAVE/MISS LIST METHODS
 
         /// <summary>
-        /// Adds the incoming rom and game (if needed) to the Have list.
-        /// </summary>
-        /// <param name="pChecksumStruct">Struct containing the game and rom to add to the Have list.</param>        
-        /*
-        public void AddToHaveList(ChecksumStruct pChecksumItem)
-        {
-            HaveMissStruct hms;
-
-            if (!this.haveList.Contains(pChecksumItem.game))
-            {
-                hms.name = pChecksumItem.game;
-                hms.roms = new ArrayList();
-            }
-            else
-            {
-                hms = (HaveMissStruct)this.haveList[pChecksumItem.game];
-                this.haveList.Remove(pChecksumItem.game);
-            }
-
-
-            if (!hms.roms.Contains(pChecksumItem.rom))
-            {
-                hms.roms.Add(pChecksumItem.rom);
-            }
-
-            this.haveList.Add(pChecksumItem.game, hms);
-        }
-        */
-
-        /// <summary>
         /// Function to parse the datafile object and create a hashtable using the
         /// checksums as a key and the game/rom paths as the item.
         /// </summary>
@@ -202,146 +170,9 @@ namespace VGMToolbox.auditing
         }
         
         /// <summary>
-        /// Builds the Miss list for the datafile.
-        /// </summary>
-        /*
-        public void BuildMissList()
-        {
-            foreach (game g in datafile.game)
-            {
-                HaveMissStruct hms;
-                hms.name = g.name;
-                hms.roms = new ArrayList();
-
-                if (g.rom != null && g.rom.Length > 0)
-                {
-                    foreach (rom r in g.rom)
-                    {
-                        hms.roms.Add(r.name);
-                    }
-
-                    missList.Add(hms.name, hms);
-                }
-            }
-        }
-        */
-
-        /// <summary>
-        /// Converts the Have and Miss lists to string output.
-        /// </summary>
-        /// <param name="pHaveList">String for outputting the Have list to.</param>
-        /// <param name="pMissList">String for outputting the Miss list to.</param>
-        /*
-        public void GetHaveMissLists(ref string pHaveList, ref string pMissList)
-        {
-            HaveMissStruct hms;
-            string[] keys;
-
-            // Have list
-            pHaveList = String.Format("You have {0} of {1} {2} sets", haveList.Count, datafile.game.Length, datafile.header.description);
-            pHaveList += Environment.NewLine + Environment.NewLine;
-
-            keys = new string[haveList.Keys.Count];
-            haveList.Keys.CopyTo(keys, 0);
-            Array.Sort(keys);
-
-            foreach (string k in keys)
-            {
-                hms = (HaveMissStruct)haveList[k];
-
-                pHaveList += hms.name + Environment.NewLine;
-
-                foreach (string r in hms.roms)
-                {
-                    pHaveList += ROM_SPACER + r + Environment.NewLine;
-                }
-                pHaveList += Environment.NewLine;
-            }
-
-            // Miss list
-            pMissList = String.Format("You are missing {0} of {1} {2} sets", missList.Count, datafile.game.Length, datafile.header.description);
-            pMissList += Environment.NewLine + Environment.NewLine;
-
-            keys = new string[missList.Keys.Count];
-            missList.Keys.CopyTo(keys, 0);
-            Array.Sort(keys);
-
-            foreach (string k in keys)
-            {
-                hms = (HaveMissStruct)missList[k];
-
-                pMissList += hms.name + Environment.NewLine;
-
-                foreach (string r in hms.roms)
-                {
-                    pMissList += ROM_SPACER + r + Environment.NewLine;
-                }
-                pMissList += Environment.NewLine;
-            }
-        }
-        */
-
-        /// <summary>
-        /// Removes and item from the Miss list.
-        /// </summary>
-        /// <param name="pChecksumStruct">Struct containing the game and rom to remove from the Miss list.</param>
-        /*
-        public void RemoveFromMissList(ChecksumStruct pChecksumItem)
-        {
-            HaveMissStruct hms;
-
-            if (missList.Contains(pChecksumItem.game))
-            {
-                hms = (HaveMissStruct)missList[pChecksumItem.game];
-                hms.roms.Remove(pChecksumItem.rom);
-                missList.Remove(pChecksumItem.game);
-
-                if (hms.roms.Count > 0)
-                {
-                    missList.Add(pChecksumItem.game, hms);
-                }
-            }
-        }
-        */
-        /// <summary>
         /// Function to write out the have and miss lists to a file.
         /// </summary>
         /// <param name="pPath">Directory to write the Have and Miss lists to.</param>
-        /*
-        public void WriteHaveMissLists(string pPath)
-        {
-            StreamWriter sw;
-            
-            string strHaveList = "";
-            string strMissList = "";
-            
-            string havePath = pPath + "_HAVE.TXT";
-            string missPath = pPath + "_MISS.TXT";
-
-            GetHaveMissLists(ref strHaveList, ref strMissList);
-
-            if (File.Exists(havePath))
-            {
-                File.Delete(havePath);
-            }
-
-            sw = File.CreateText(havePath);
-            sw.Write(strHaveList);
-            sw.Close();
-
-            if (File.Exists(missPath))
-            {
-                File.Delete(missPath);
-            }
-
-            sw = File.CreateText(missPath);
-            sw.Write(strMissList);
-            
-            sw.Close();
-            sw.Dispose();
-        }
-        */
-
         public void WriteHaveMissLists(string pPath)
         {
             StreamWriter sw;

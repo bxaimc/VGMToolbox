@@ -258,32 +258,6 @@ namespace VGMToolbox
             }
         }
 
-        /*
-        private void btnRebuilder_Rebuild_Click(object sender, EventArgs e)
-        {
-            doCleanup();
-            if (checkRebuilderInputs())
-            {
-                toolStripStatusLabel1.Text = "Rebuilding...";
-                toolStripProgressBar.Maximum = Directory.GetFiles(tbRebuilder_SourceDir.Text, "*.*", SearchOption.AllDirectories).Length;
-
-                Datafile datafile = new Datafile();
-                XmlSerializer serializer = new XmlSerializer(typeof(Datafile));
-                TextReader textReader = new StreamReader(tbRebuilder_Datafile.Text);
-                datafile = (Datafile)serializer.Deserialize(textReader);
-                textReader.Close();
-
-                string outputMessage = String.Empty;
-                new Rebuilder().rebuildSets(tbRebuilder_SourceDir.Text, tbRebuilder_DestinationDir.Text, datafile, 
-                    cbRebuilder_RemoveSource.Checked, cbRebuilder_Overwrite.Checked, toolStripProgressBar,
-                    cbRebuilder_UseLessRam.Checked, cbRebuilder_CompressOutput.Checked, ref outputMessage);
-
-                tbOutput.Text += outputMessage;
-                toolStripStatusLabel1.Text = "Rebuilding...Done";
-            }
-        }
-        */
-
         private void btnRebuilder_Rebuild_Click(object sender, EventArgs e)
         {
             doCleanup();
