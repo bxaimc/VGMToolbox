@@ -74,9 +74,7 @@
     <Compile Include="auditing\DatafileCreatorWorker.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="auditing\DatCreator.cs" />
     <Compile Include="auditing\FileDataSource.cs" />
-    <Compile Include="auditing\Rebuilder.cs" />
     <Compile Include="auditing\RebuilderWorker.cs">
       <SubType>Component</SubType>
     </Compile>
