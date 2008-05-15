@@ -53,16 +53,16 @@ namespace VGMToolbox.auditing
 
         private void deleteQueuedLibFiles()
         {
-            foreach (string f in libFilesForDeletion)
+            foreach (string f in libFilesForDeletion.ToArray(typeof(string)))
             {
                 File.Delete(f);
+                libFilesForDeletion.Remove(f);
             }
-            libFilesForDeletion.Clear();
         }
 
         private void deleteQueuedTempDirs()
         {
-            foreach (string d in tempDirsForDeletion)
+            foreach (string d in tempDirsForDeletion.ToArray(typeof(string)))
             {
                 Directory.Delete(d, true);
                 tempDirsForDeletion.Remove(d);
@@ -145,9 +145,6 @@ namespace VGMToolbox.auditing
             }
         }
 
-        //private void rebuildFile(string pFilePath, string pDestination, bool pRemoveSource,
-        //    bool pOverwriteExisting, AuditingUtil pAuditingUtil, bool pStreamInput, 
-        //    bool pCompressOutput)
         private void rebuildFile(string pFilePath, RebuildSetsStruct pRebuildSetsStruct, AuditingUtil pAuditingUtil, 
             DoWorkEventArgs ea)
         {
@@ -166,10 +163,13 @@ namespace VGMToolbox.auditing
                 RebuildSetsStruct zipRebuildSetsStruct = pRebuildSetsStruct;
                 zipRebuildSetsStruct.pSourceDir = tempDir;
                 zipRebuildSetsStruct.totalFiles = Directory.GetFiles(tempDir, "*.*", SearchOption.AllDirectories).Length;
-                this.rebuildSets(zipRebuildSetsStruct, ea);
-                
-                Directory.Delete(tempDir, true);
-                tempDirsForDeletion.Remove(tempDir);
+                this.rebuildSets(zipRebuildSetsStruct, pAuditingUtil, 0, ea);
+
+                if (!CancellationPending)
+                {
+                    Directory.Delete(tempDir, true);
+                    tempDirsForDeletion.Remove(tempDir);
+                }
             }
             else
             {
@@ -312,7 +312,7 @@ namespace VGMToolbox.auditing
                         libFilesForDeletion.Add(pFilePath);
                     }
                 }
-            }
+            } // (FormatUtil.IsZipFile(pFilePath))
         }
 
         private void rebuildSets(RebuildSetsStruct pRebuildSetsStruct, AuditingUtil pAuditingUtil,
@@ -339,12 +339,14 @@ namespace VGMToolbox.auditing
                         else
                         {
                             e.Cancel = true;
-                            this.deleteQueuedTempDirs();
-                            this.deleteQueuedLibFiles();
-                            break;
+                            doCancelCleanup(pAuditingUtil, pRebuildSetsStruct.pDestinationDir);
+                            return;
                         }
                     }
-                    this.deleteQueuedLibFiles();
+                    if (!CancellationPending)
+                    {
+                        this.deleteQueuedLibFiles();
+                    }
                 }
 
                 // process subdirs                                
@@ -378,9 +380,8 @@ namespace VGMToolbox.auditing
                             else
                             {
                                 e.Cancel = true;
-                                this.deleteQueuedTempDirs();
-                                this.deleteQueuedLibFiles();
-                                break;
+                                doCancelCleanup(pAuditingUtil, pRebuildSetsStruct.pDestinationDir);
+                                return;
                             }
                         }
 
@@ -389,20 +390,31 @@ namespace VGMToolbox.auditing
                             RebuildSetsStruct subdirRebuildSetsStruct = pRebuildSetsStruct;
                             subdirRebuildSetsStruct.pSourceDir = d;
                             this.rebuildSets(subdirRebuildSetsStruct, pAuditingUtil, pDepth, e);
+
+                            // Remove Queued Lib Files
+                            this.deleteQueuedLibFiles();
+
+                            // remove empty directory
+                            if (pRebuildSetsStruct.pRemoveSource &&
+                                Directory.GetFiles(d, "*.*", SearchOption.AllDirectories).Length == 0)
+                            {
+                                Directory.Delete(d);
+                            }                                                
                         }
-
-                        // Remove Queued Lib Files
-                        this.deleteQueuedLibFiles();
-
-                        // remove empty directory
-                        if (pRebuildSetsStruct.pRemoveSource &&
-                            Directory.GetFiles(d, "*.*", SearchOption.AllDirectories).Length == 0)
+                        else 
                         {
-                            Directory.Delete(d);
-                        }
-
+                            e.Cancel = true;
+                            doCancelCleanup(pAuditingUtil, pRebuildSetsStruct.pDestinationDir);
+                            return;
+                        }                        
                     } // (string d in Directory.GetDirectories(pRebuildSetsStruct.pSourceDir))
                 } //if (!CancellationPending)
+                else
+                {
+                    e.Cancel = true;
+                    doCancelCleanup(pAuditingUtil, pRebuildSetsStruct.pDestinationDir);
+                    return;
+                }
             }
             catch (Exception exception2)
             {
@@ -447,6 +459,11 @@ namespace VGMToolbox.auditing
         {
             RebuildSetsStruct vRebuildSetsStruct = (RebuildSetsStruct)e.Argument;
             this.rebuildSets(vRebuildSetsStruct, e);
+        }
+
+        private void doCancelCleanup(AuditingUtil pAuditingUtil, string pDestinationDir)
+        {
+            this.deleteQueuedTempDirs();            
         }
     }
 }

@@ -356,7 +356,8 @@ namespace VGMToolbox.auditing
             Datafile haveList = new Datafile();
             Datafile missList = new Datafile();
 
-            game newGame = new game();
+            game newHaveGame = new game();
+            game newMissGame = new game();
 
             ArrayList haveGameList = new ArrayList();
             ArrayList missGameList = new ArrayList();
@@ -380,16 +381,16 @@ namespace VGMToolbox.auditing
 
                 if (haveRomList.Count > 0)
                 {
-                    newGame = g;
-                    newGame.rom = (rom[]) haveRomList.ToArray(typeof(rom));
-                    haveGameList.Add(newGame);
+                    newHaveGame = g;
+                    newHaveGame.rom = (rom[]) haveRomList.ToArray(typeof(rom));
+                    haveGameList.Add(newHaveGame);
                 }
 
                 if (missRomList.Count > 0)
                 {
-                    newGame = g;
-                    newGame.rom = (rom[])missRomList.ToArray(typeof(rom));
-                    missGameList.Add(newGame);
+                    newMissGame = g;
+                    newMissGame.rom = (rom[])missRomList.ToArray(typeof(rom));
+                    missGameList.Add(newMissGame);
                 }
             }
 
