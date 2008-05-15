@@ -133,6 +133,7 @@
     </Compile>
     <Compile Include="tools\MdxUtil.cs" />
     <Compile Include="tools\XsfUtil.cs" />
+    <Compile Include="util\IDeepCopy.cs" />
     <Compile Include="util\IniFile.cs" />
     <Compile Include="util\ObjectPooling\ByteArray.cs" />
     <Compile Include="util\Encoding.cs" />

@@ -381,14 +381,14 @@ namespace VGMToolbox.auditing
 
                 if (haveRomList.Count > 0)
                 {
-                    newHaveGame = g;
+                    newHaveGame = g.DeepCopy();
                     newHaveGame.rom = (rom[]) haveRomList.ToArray(typeof(rom));
                     haveGameList.Add(newHaveGame);
                 }
 
                 if (missRomList.Count > 0)
                 {
-                    newMissGame = g;
+                    newMissGame = g.DeepCopy();
                     newMissGame.rom = (rom[])missRomList.ToArray(typeof(rom));
                     missGameList.Add(newMissGame);
                 }
