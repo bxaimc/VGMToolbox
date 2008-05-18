@@ -70,7 +70,7 @@
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
     <Compile Include="auditing\AuditingUtil.cs" />
-    <Compile Include="auditing\Datafile.cs" />
+    <Compile Include="auditing\datafile.cs" />
     <Compile Include="auditing\DatafileCreatorWorker.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -171,6 +171,8 @@
     <None Include="Resources\toolbox.bmp" />
     <None Include="Resources\ToolBox-2.ico" />
     <None Include="Resources\fs.jpg" />
+    <None Include="xsd\datafile.dtd" />
+    <None Include="xsd\datafile.xsd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

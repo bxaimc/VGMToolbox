@@ -10,7 +10,7 @@ namespace VGMToolbox.auditing
 {
     class Scanner
     {
-        Datafile datafile;
+        datafile dataFile;
         ArrayList datafileSetList = new ArrayList();
         string[] datafileSets;
         ArrayList unknownFolderList = new ArrayList();
@@ -18,7 +18,7 @@ namespace VGMToolbox.auditing
 
         private void buildDatafileSetList()
         {
-            foreach (game g in datafile.game)
+            foreach (game g in dataFile.game)
             {
                 datafileSetList.Add(g.name);
             }
@@ -45,9 +45,9 @@ namespace VGMToolbox.auditing
 
         private void loadDatafile(string pDatafilePath)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(Datafile));
+            XmlSerializer serializer = new XmlSerializer(typeof(datafile));
             TextReader textReader = new StreamReader(pDatafilePath);
-            datafile = (Datafile) serializer.Deserialize(textReader);
+            dataFile = (datafile)serializer.Deserialize(textReader);
         }
 
         private void initialize(string pPath)
@@ -65,7 +65,7 @@ namespace VGMToolbox.auditing
 
         public void ScanAllDirs(string pPath, int pDepth, TreeView pTreeView, ToolStripProgressBar pToolStripProgressBar)
         {
-            foreach (game g in datafile.game)
+            foreach (game g in dataFile.game)
             {
             
             

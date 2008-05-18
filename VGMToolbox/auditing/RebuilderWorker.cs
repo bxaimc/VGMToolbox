@@ -28,7 +28,7 @@ namespace VGMToolbox.auditing
         { 
             public string pSourceDir; 
             public string pDestinationDir; 
-            public Datafile pDatFile;
+            public datafile pDatFile;
             public bool pRemoveSource; 
             public bool pOverwriteExisting;
             public bool pStreamInput; 

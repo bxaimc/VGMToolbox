@@ -19,7 +19,7 @@ namespace VGMToolbox.auditing
      
         private Hashtable haveList = new Hashtable();   // Stores list of present files
         private Hashtable missList = new Hashtable();   // Stores list of missing files
-        private Datafile datafile;                      // Datafile used for building lists
+        private datafile datafile;                      // Datafile used for building lists
         private ArrayList checksumCache = new ArrayList();
         private Hashtable checksumHash = new Hashtable();
 
@@ -31,7 +31,7 @@ namespace VGMToolbox.auditing
         /// Simple constructor taking input pDatafile
         /// </summary>
         /// <param name="pDatafile">Datafile to use for building lists.</param>
-        public AuditingUtil(Datafile pDatafile)
+        public AuditingUtil(datafile pDatafile)
         {
             datafile = pDatafile;
             checksumHash = this.BuildChecksumHash();
@@ -78,7 +78,7 @@ namespace VGMToolbox.auditing
             return ret;
         }
 
-        private string BuildDatafileList(Datafile pDatafile)
+        private string BuildDatafileList(datafile pDatafile)
         {
             string ret = String.Empty;
 
@@ -184,8 +184,8 @@ namespace VGMToolbox.auditing
             string haveListText = String.Empty;
             string missListText = String.Empty;
 
-            Datafile haveList = new Datafile();
-            Datafile missList = new Datafile();
+            datafile haveList = new datafile();
+            datafile missList = new datafile();
 
             game newHaveGame = new game();
             game newMissGame = new game();
@@ -266,7 +266,7 @@ namespace VGMToolbox.auditing
 
             if (missList.game.Length > 0)
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(Datafile));
+                XmlSerializer serializer = new XmlSerializer(typeof(datafile));
                 TextWriter textWriter = new StreamWriter(fixDatPath);
                 serializer.Serialize(textWriter, missList);
                 textWriter.Close();

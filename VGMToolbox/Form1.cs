@@ -265,16 +265,16 @@ namespace VGMToolbox
             {
                 toolStripStatusLabel1.Text = "Rebuilding...";
 
-                Datafile datafile = new Datafile();
-                XmlSerializer serializer = new XmlSerializer(typeof(Datafile));
+                datafile dataFile = new datafile();
+                XmlSerializer serializer = new XmlSerializer(typeof(datafile));
                 TextReader textReader = new StreamReader(tbRebuilder_Datafile.Text);
-                datafile = (Datafile)serializer.Deserialize(textReader);
+                dataFile = (datafile)serializer.Deserialize(textReader);
                 textReader.Close();
 
                 RebuilderWorker.RebuildSetsStruct vRebuildSetsStruct = new RebuilderWorker.RebuildSetsStruct();
                 vRebuildSetsStruct.pSourceDir = tbRebuilder_SourceDir.Text;
                 vRebuildSetsStruct.pDestinationDir = tbRebuilder_DestinationDir.Text;
-                vRebuildSetsStruct.pDatFile = datafile;
+                vRebuildSetsStruct.pDatFile = dataFile;
                 vRebuildSetsStruct.pRemoveSource = cbRebuilder_RemoveSource.Checked;
                 vRebuildSetsStruct.pOverwriteExisting = cbRebuilder_Overwrite.Checked;
                 vRebuildSetsStruct.pStreamInput = cbRebuilder_UseLessRam.Checked;
@@ -565,17 +565,17 @@ namespace VGMToolbox
             {
                 lblProgressLabel.Text = String.Empty;
                 
-                Datafile datafile = new Datafile();
-                datafile.header = DatafileCreatorWorker.buildHeader(tbDatCreator_Author.Text, tbDatCreator_Category.Text,
+                datafile dataFile = new datafile();
+                dataFile.header = DatafileCreatorWorker.buildHeader(tbDatCreator_Author.Text, tbDatCreator_Category.Text,
                     tbDatCreator_Comment.Text, tbDatCreator_Date.Text, tbDatCreator_Description.Text,
                     tbDatCreator_Email.Text, tbDatCreator_Homepage.Text, tbDatCreator_Name.Text,
                     tbDatCreator_Url.Text, tbDatCreator_Version.Text);
 
-                datafile.game = (game[])e.Result;
+                dataFile.game = (game[])e.Result;
 
-                XmlSerializer serializer = new XmlSerializer(typeof(Datafile));
+                XmlSerializer serializer = new XmlSerializer(typeof(datafile));
                 TextWriter textWriter = new StreamWriter(tbDatCreator_OutputDat.Text);
-                serializer.Serialize(textWriter, datafile);
+                serializer.Serialize(textWriter, dataFile);
                 textWriter.Close();
                 textWriter.Dispose();
 
