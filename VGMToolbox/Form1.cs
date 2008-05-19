@@ -573,7 +573,7 @@ namespace VGMToolbox
 
                 dataFile.game = (game[])e.Result;
 
-                XmlSerializer serializer = new XmlSerializer(typeof(datafile));
+                XmlSerializer serializer = new XmlSerializer(dataFile.GetType());
                 TextWriter textWriter = new StreamWriter(tbDatCreator_OutputDat.Text);
                 serializer.Serialize(textWriter, dataFile);
                 textWriter.Close();

@@ -251,21 +251,21 @@
             // 
             this.label23.AutoSize = true;
             this.label23.ForeColor = System.Drawing.Color.Red;
-            this.label23.Location = new System.Drawing.Point(9, 120);
+            this.label23.Location = new System.Drawing.Point(-3, 112);
             this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(129, 13);
+            this.label23.Size = new System.Drawing.Size(203, 13);
             this.label23.TabIndex = 1;
-            this.label23.Text = ".zip files not yet supported";
+            this.label23.Text = "decompressing .zip files not yet supported";
             // 
             // label22
             // 
             this.label22.AutoSize = true;
             this.label22.ForeColor = System.Drawing.Color.Red;
-            this.label22.Location = new System.Drawing.Point(6, 107);
+            this.label22.Location = new System.Drawing.Point(1, 88);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(183, 13);
             this.label22.TabIndex = 0;
-            this.label22.Text = "Currently using v1.2 of Logiqx datafile";
+            this.label22.Text = "Currently using v1.4 of Logiqx datafile";
             // 
             // grpDatCreator_Header
             // 
@@ -495,7 +495,7 @@
             // 
             this.label24.AutoSize = true;
             this.label24.ForeColor = System.Drawing.Color.Red;
-            this.label24.Location = new System.Drawing.Point(3, 182);
+            this.label24.Location = new System.Drawing.Point(6, 182);
             this.label24.Name = "label24";
             this.label24.Size = new System.Drawing.Size(256, 13);
             this.label24.TabIndex = 6;
