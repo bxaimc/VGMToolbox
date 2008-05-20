@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Windows.Forms;
 
 using VGMToolbox.util;
 using VGMToolbox.format;
@@ -69,6 +70,28 @@ namespace VGMToolbox.format
             if (ParseFile.compareSegment(signatureBytes, HEADER_OFFSET, ZIP_SIGNATURE))
             {
                 ret = true;
+            }
+
+            return ret;
+        }
+
+        public static TreeNode GetFileNode(string pFileName)
+        {
+            TreeNode ret = new TreeNode(Path.GetFileName(pFileName));
+            FileStream fs = File.OpenRead(pFileName);
+            Type dataType = getObjectType(fs);
+            
+            if (dataType != null)
+            {
+                IFormat vgmData = (IFormat)Activator.CreateInstance(dataType);
+                vgmData.initialize(fs);
+                Dictionary<string, string> tagHash = vgmData.GetTagHash();
+
+                foreach (string s in tagHash.Keys)
+                {
+                    TreeNode tagNode = new TreeNode(s + ": " + tagHash[s]);
+                    ret.Nodes.Add(tagNode);                 
+                }
             }
 
             return ret;

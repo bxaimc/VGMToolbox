@@ -82,8 +82,9 @@ namespace VGMToolbox.format
         private byte[] extraChipsBits;
         private byte[] futureExpansion;
         private byte[] data;
-        
-        
+
+        Dictionary<string, string> tagHash;
+
         public byte[] AsciiSignature { get { return this.asciiSignature; } }
         public byte[] VersionNumber { get { return this.versionNumber; } }
         public byte[] TotalSongs { get { return this.totalSongs; } }
@@ -208,6 +209,8 @@ namespace VGMToolbox.format
             this.extraChipsBits = this.getExtraChipsBits(pStream);
             this.futureExpansion = this.getFutureExpansion(pStream);
             this.data = this.getData(pStream);
+
+            this.initializeTagHash();
         }
         #endregion
 
@@ -316,9 +319,20 @@ namespace VGMToolbox.format
             this.extraChipsBits = this.getExtraChipsBits(pBytes);
             this.futureExpansion = this.getFutureExpansion(pBytes);
             this.data = this.getData(pBytes);
+
+            this.initializeTagHash();
         }                
         #endregion
 
+        private void initializeTagHash()
+        {
+            System.Text.Encoding enc = System.Text.Encoding.ASCII;
+            
+            tagHash.Add("Name", enc.GetString(songName));
+            tagHash.Add("Artist", enc.GetString(songArtist));
+            tagHash.Add("Copyright", enc.GetString(songCopyright));
+        }
+        
         public void getDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
             ref Crc32 pChecksum, bool pUseLibHash)
         {
@@ -351,6 +365,11 @@ namespace VGMToolbox.format
         public bool IsFileLibrary(string pPath)
         {
             return false;
+        }
+
+        public Dictionary<string, string> GetTagHash()
+        {
+            return this.tagHash;
         }
     }
 }

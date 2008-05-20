@@ -580,5 +580,11 @@ namespace VGMToolbox.format
 
             return ret;
         }
+
+        public Dictionary<string, string> GetTagHash()
+        {
+            return this.tagHash;
+        }
+
     }
 }

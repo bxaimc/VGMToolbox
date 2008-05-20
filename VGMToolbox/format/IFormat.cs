@@ -22,5 +22,7 @@ namespace VGMToolbox.format
         void initialize(byte[] pBytes);
         void initialize(Stream pStream);
         bool IsFileLibrary(string pPath);
+
+        Dictionary<string, string> GetTagHash();
     }
 }

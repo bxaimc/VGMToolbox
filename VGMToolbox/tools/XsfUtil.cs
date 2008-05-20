@@ -27,9 +27,6 @@ namespace VGMToolbox.tools
             if (formatType != null && formatType.ToString() == "VGMToolbox.format.Xsf")
             {
                 fs.Seek(0, SeekOrigin.Begin);
-                // byte[] data = new byte[fs.Length];
-                // ParseFile.ReadWholeArray(fs, data);
-                // Xsf vgmData = new Xsf(data);
                 Xsf vgmData = new Xsf();
                 vgmData.initialize(fs);
 
