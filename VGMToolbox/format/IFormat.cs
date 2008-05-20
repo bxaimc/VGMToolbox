@@ -14,13 +14,12 @@ namespace VGMToolbox.format
     {
         byte[] getAsciiSignature();
         void getDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
-            ref Crc32 pChecksum, bool pUseLibHash, bool pStreamInput);        
-        void getDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash, 
-            ref Crc32 pChecksum, ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream, 
-            bool pUseLibHash, bool pStreamInput);
+            ref Crc32 pChecksum, bool pUseLibHash);        
+        //void getDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash, 
+        //    ref Crc32 pChecksum, ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream, 
+        //    bool pUseLibHash);
         string getFormatAbbreviation();
         void initialize(byte[] pBytes);
-        void initialize(ByteArray pBytes);
         void initialize(Stream pStream);
         bool IsFileLibrary(string pPath);
     }

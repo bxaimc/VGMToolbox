@@ -24,7 +24,6 @@ namespace VGMToolbox.auditing
             public string pDir; 
             public string pOutputMessage; 
             public bool pUseLibHash;
-            public bool pStreamInput;
             public int totalFiles;
         }
         
@@ -54,7 +53,7 @@ namespace VGMToolbox.auditing
             return datHeader;
         }
 
-        public rom buildRom(string pDirectory, string pFileName, bool pUseLibHash, bool pStreamInput)
+        public rom buildRom(string pDirectory, string pFileName, bool pUseLibHash)
         {
             string path = pFileName.Substring((pDirectory.LastIndexOf(this.dir) + this.dir.Length));
             FileStream fs = File.OpenRead(pFileName);
@@ -83,28 +82,12 @@ namespace VGMToolbox.auditing
                 try
                 {
                     IFormat vgmData = (IFormat)Activator.CreateInstance(formatType);
-
-                    if (!pStreamInput)
-                    {
-                        int dataArrayindex = -1;
-                        ByteArray dataArray = ObjectPooler.Instance.GetFreeByteArray(ref dataArrayindex);
-
-                        ParseFile.ReadWholeArray(fs, dataArray.ByArray, (int)fs.Length);
-                        dataArray.ArrayLength = (int)fs.Length;
-
-                        vgmData.initialize(dataArray);
-
-                        ObjectPooler.Instance.DoneWithByteArray(dataArrayindex);
-                    }
-                    else
-                    {
-                        vgmData.initialize(fs);
-                    }
+                    vgmData.initialize(fs);
 
                     // vgmData.getDatFileCrc32(pFileName, ref libHash, ref crc32Generator,
                     //    ref md5CryptoStream, ref sha1CryptoStream, pUseLibHash, pStreamInput);
                     vgmData.getDatFileCrc32(pFileName, ref libHash, ref crc32Generator,
-                        pUseLibHash, pStreamInput);
+                        pUseLibHash);
                     vgmData = null;
                 }
                 catch (EndOfStreamException _es)
@@ -148,19 +131,6 @@ namespace VGMToolbox.auditing
                 // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
                 //    ref md5CryptoStream, ref sha1CryptoStream);
                 ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
-
-                /*
-                byte[] data = new byte [4096];
-                int read = 0;
-                
-                fs.Seek(0, SeekOrigin.Begin); 
-                 
-                while ((read = fs.Read(data, 0, 4096)) > 0)
-                {
-                    md5CryptoStream.Write(data, 0, read);
-                }                                
-                md5CryptoStream.FlushFinalBlock();
-                */
             }
 
             /*
@@ -233,7 +203,7 @@ namespace VGMToolbox.auditing
 
                                 try
                                 {
-                                    rom romfile = buildRom(d, f, pGetGameParamsStruct.pUseLibHash, pGetGameParamsStruct.pStreamInput);
+                                    rom romfile = buildRom(d, f, pGetGameParamsStruct.pUseLibHash);
                                     if (romfile.name != null)
                                     {
                                         // Convert to use Array of rom?

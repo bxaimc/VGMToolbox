@@ -31,7 +31,6 @@ namespace VGMToolbox.auditing
             public datafile pDatFile;
             public bool pRemoveSource; 
             public bool pOverwriteExisting;
-            public bool pStreamInput; 
             public bool pCompressOutput;
             public int totalFiles;
 
@@ -205,29 +204,13 @@ namespace VGMToolbox.auditing
                     try
                     {
                         IFormat vgmData = (IFormat)Activator.CreateInstance(formatType);
-
-                        if (!pRebuildSetsStruct.pStreamInput)
-                        {
-                            int dataArrayindex = -1;
-                            ByteArray dataArray = ObjectPooler.Instance.GetFreeByteArray(ref dataArrayindex);
-
-                            ParseFile.ReadWholeArray(fs, dataArray.ByArray, (int)fs.Length);
-                            dataArray.ArrayLength = (int)fs.Length;
-
-                            vgmData.initialize(dataArray);
-
-                            ObjectPooler.Instance.DoneWithByteArray(dataArrayindex);
-                        }
-                        else
-                        {
-                            vgmData.initialize(fs);
-                        }
+                        vgmData.initialize(fs);
 
                         isFileLibrary = vgmData.IsFileLibrary(pFilePath);
                         // vgmData.getDatFileCrc32(pFilePath, ref libHash, ref crc32Generator,
                         //    ref md5CryptoStream, ref sha1CryptoStream, false, pStreamInput);                    
                         vgmData.getDatFileCrc32(pFilePath, ref libHash, ref crc32Generator,
-                            false, pRebuildSetsStruct.pStreamInput);
+                            false);
                         vgmData = null;
                     }
                     catch (EndOfStreamException e)

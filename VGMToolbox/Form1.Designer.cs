@@ -40,7 +40,6 @@
             this.lblDatCreator_SourceFolder = new System.Windows.Forms.Label();
             this.tbDatCreator_SourceFolder = new System.Windows.Forms.TextBox();
             this.grpDatCreator_Options = new System.Windows.Forms.GroupBox();
-            this.cbDatCreator_UseLessRam = new System.Windows.Forms.CheckBox();
             this.label23 = new System.Windows.Forms.Label();
             this.label22 = new System.Windows.Forms.Label();
             this.grpDatCreator_Header = new System.Windows.Forms.GroupBox();
@@ -70,7 +69,6 @@
             this.label24 = new System.Windows.Forms.Label();
             this.grpRebuilder_Options = new System.Windows.Forms.GroupBox();
             this.cbRebuilder_CompressOutput = new System.Windows.Forms.CheckBox();
-            this.cbRebuilder_UseLessRam = new System.Windows.Forms.CheckBox();
             this.cbRebuilder_Overwrite = new System.Windows.Forms.CheckBox();
             this.cbRebuilder_RemoveSource = new System.Windows.Forms.CheckBox();
             this.btnRebuilder_Rebuild = new System.Windows.Forms.Button();
@@ -114,6 +112,7 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.lblProgressLabel = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -227,7 +226,7 @@
             // 
             // grpDatCreator_Options
             // 
-            this.grpDatCreator_Options.Controls.Add(this.cbDatCreator_UseLessRam);
+            this.grpDatCreator_Options.Controls.Add(this.label2);
             this.grpDatCreator_Options.Controls.Add(this.label23);
             this.grpDatCreator_Options.Controls.Add(this.label22);
             this.grpDatCreator_Options.Location = new System.Drawing.Point(480, 11);
@@ -237,21 +236,11 @@
             this.grpDatCreator_Options.TabStop = false;
             this.grpDatCreator_Options.Text = "Options";
             // 
-            // cbDatCreator_UseLessRam
-            // 
-            this.cbDatCreator_UseLessRam.AutoSize = true;
-            this.cbDatCreator_UseLessRam.Location = new System.Drawing.Point(6, 17);
-            this.cbDatCreator_UseLessRam.Name = "cbDatCreator_UseLessRam";
-            this.cbDatCreator_UseLessRam.Size = new System.Drawing.Size(159, 17);
-            this.cbDatCreator_UseLessRam.TabIndex = 2;
-            this.cbDatCreator_UseLessRam.Text = "Use less RAM (stream input)";
-            this.cbDatCreator_UseLessRam.UseVisualStyleBackColor = true;
-            // 
             // label23
             // 
             this.label23.AutoSize = true;
             this.label23.ForeColor = System.Drawing.Color.Red;
-            this.label23.Location = new System.Drawing.Point(-3, 112);
+            this.label23.Location = new System.Drawing.Point(-3, 119);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(203, 13);
             this.label23.TabIndex = 1;
@@ -260,8 +249,8 @@
             // label22
             // 
             this.label22.AutoSize = true;
-            this.label22.ForeColor = System.Drawing.Color.Red;
-            this.label22.Location = new System.Drawing.Point(1, 88);
+            this.label22.ForeColor = System.Drawing.Color.Black;
+            this.label22.Location = new System.Drawing.Point(11, 40);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(183, 13);
             this.label22.TabIndex = 0;
@@ -504,7 +493,6 @@
             // grpRebuilder_Options
             // 
             this.grpRebuilder_Options.Controls.Add(this.cbRebuilder_CompressOutput);
-            this.grpRebuilder_Options.Controls.Add(this.cbRebuilder_UseLessRam);
             this.grpRebuilder_Options.Controls.Add(this.cbRebuilder_Overwrite);
             this.grpRebuilder_Options.Controls.Add(this.cbRebuilder_RemoveSource);
             this.grpRebuilder_Options.Location = new System.Drawing.Point(318, 69);
@@ -524,16 +512,6 @@
             this.cbRebuilder_CompressOutput.Text = "Compress Output";
             this.cbRebuilder_CompressOutput.UseVisualStyleBackColor = true;
             this.cbRebuilder_CompressOutput.CheckedChanged += new System.EventHandler(this.cbRebuilder_CompressOutput_CheckedChanged);
-            // 
-            // cbRebuilder_UseLessRam
-            // 
-            this.cbRebuilder_UseLessRam.AutoSize = true;
-            this.cbRebuilder_UseLessRam.Location = new System.Drawing.Point(6, 57);
-            this.cbRebuilder_UseLessRam.Name = "cbRebuilder_UseLessRam";
-            this.cbRebuilder_UseLessRam.Size = new System.Drawing.Size(159, 17);
-            this.cbRebuilder_UseLessRam.TabIndex = 2;
-            this.cbRebuilder_UseLessRam.Text = "Use less RAM (stream input)";
-            this.cbRebuilder_UseLessRam.UseVisualStyleBackColor = true;
             // 
             // cbRebuilder_Overwrite
             // 
@@ -923,6 +901,15 @@
             this.lblProgressLabel.TabIndex = 3;
             this.lblProgressLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(6, 17);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(147, 13);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "Supported Formats: xSF, NSF";
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -935,6 +922,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
+            this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "VGMToolbox";
             this.tabControl1.ResumeLayout(false);
@@ -1049,14 +1037,13 @@
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Label label24;
-        private System.Windows.Forms.CheckBox cbDatCreator_UseLessRam;
-        private System.Windows.Forms.CheckBox cbRebuilder_UseLessRam;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.CheckBox cbRebuilder_CompressOutput;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.Button btnDatCreator_Cancel;
         private System.Windows.Forms.Button btnRebuilder_Cancel;
         private System.Windows.Forms.Label lblProgressLabel;
+        private System.Windows.Forms.Label label2;
     }
 }
 

@@ -89,28 +89,28 @@ namespace VGMToolbox.format
             return ParseFile.parseSimpleOffset(pBytes, (int) (RESERVED_SECTION_OFFSET + this.getReservedSectionLength(pBytes)), (int) this.getCompressedProgramLength(pBytes));
         }
 
-        protected byte[] getCompressedProgramCrc32(byte[] pBytes)
+        private byte[] getCompressedProgramCrc32(byte[] pBytes)
         {
             return ParseFile.parseSimpleOffset(pBytes, CRC32_OFFSET, CRC32_LENGTH);
         }
 
-        protected byte[] getCompressedProgramCrc32(Stream pStream)
+        private byte[] getCompressedProgramCrc32(Stream pStream)
         {
             return ParseFile.parseSimpleOffset(pStream, CRC32_OFFSET, CRC32_LENGTH);
         }
 
-        protected uint getCompressedProgramLength(byte[] pBytes)
+        private uint getCompressedProgramLength(byte[] pBytes)
         {
             return BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pBytes, COMPRESSED_SIZE_OFFSET, COMPRESSED_SIZE_LENGTH), 0);
         }
 
-        protected uint getCompressedProgramLength(Stream pStream)
+        private uint getCompressedProgramLength(Stream pStream)
         {
             return BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, COMPRESSED_SIZE_OFFSET, COMPRESSED_SIZE_LENGTH), 0);
         }
 
         public void getDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
-            ref Crc32 pChecksum, bool pUseLibHash, bool pStreamInput)
+            ref Crc32 pChecksum, bool pUseLibHash)
         {
             FileStream fs = File.OpenRead(pPath);
 
@@ -121,7 +121,6 @@ namespace VGMToolbox.format
             // Compressed Program
             addDecompressedProgramChecksum(fs, ref pChecksum);
 
-            //ObjectPooler.Instance.DoneWithByteArray(decompressedProgramIndex);
             fs.Close();
             fs.Dispose();
 
@@ -135,24 +134,12 @@ namespace VGMToolbox.format
                     using (FileStream lfs = File.OpenRead(f))
                     {
                         Xsf libXsf = new Xsf();
-                        if (!pStreamInput)
-                        {
-                            int xsfIndex = -1;
-                            ByteArray xsfByteArray = ObjectPooler.Instance.GetFreeByteArray(ref xsfIndex);
-                            ParseFile.ReadWholeArray(lfs, xsfByteArray.ByArray, (int)lfs.Length);
-                            xsfByteArray.ArrayLength = (int)lfs.Length;
-                            libXsf.initialize(xsfByteArray);
-                            ObjectPooler.Instance.DoneWithByteArray(xsfIndex);
-                        }
-                        else
-                        {
-                            libXsf.initialize(lfs);
-                        }
+                        libXsf.initialize(lfs);
 
 
                         if (!pUseLibHash)
                         {
-                            libXsf.getDatFileCrc32(f, ref pLibHash, ref pChecksum, pUseLibHash, pStreamInput);
+                            libXsf.getDatFileCrc32(f, ref pLibHash, ref pChecksum, pUseLibHash);
                         }
                         else
                         {
@@ -183,6 +170,7 @@ namespace VGMToolbox.format
             }
         }
 
+        /*
         public void getDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
             ref Crc32 pChecksum, ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream, bool pUseLibHash, bool pStreamInput)
         {            
@@ -260,6 +248,7 @@ namespace VGMToolbox.format
                 }
             }
         }
+        */
 
         protected void addDecompressedProgramChecksum(FileStream pFileStream, ref Crc32 pChecksum)
         {
@@ -512,16 +501,6 @@ namespace VGMToolbox.format
             this.compressedProgramLength = this.getCompressedProgramLength(pBytes);
             this.compressedProgramCrc32 = this.getCompressedProgramCrc32(pBytes);
             this.tagHash = this.getTags(pBytes);         
-        }
-
-        public void initialize(ByteArray pBytes)
-        {
-            this.asciiSignature = this.getSignatureTag(pBytes.ByArray);
-            this.versionByte = this.getVersionTag(pBytes.ByArray);
-            this.reservedSectionLength = this.getReservedSectionLength(pBytes.ByArray);
-            this.compressedProgramLength = this.getCompressedProgramLength(pBytes.ByArray);
-            this.compressedProgramCrc32 = this.getCompressedProgramCrc32(pBytes.ByArray);
-            this.tagHash = this.getTags(pBytes);
         }
 
         public void initialize(Stream pStream)

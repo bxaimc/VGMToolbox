@@ -169,7 +169,6 @@ namespace VGMToolbox
                 DatafileCreatorWorker.GetGameParamsStruct vGetGameParamsStruct = new DatafileCreatorWorker.GetGameParamsStruct();
                 vGetGameParamsStruct.pDir = tbDatCreator_SourceFolder.Text;
                 vGetGameParamsStruct.pOutputMessage = "";
-                vGetGameParamsStruct.pStreamInput = cbDatCreator_UseLessRam.Checked;
                 vGetGameParamsStruct.pUseLibHash = false;
                 vGetGameParamsStruct.totalFiles = Directory.GetFiles(tbDatCreator_SourceFolder.Text, "*.*", SearchOption.AllDirectories).Length;
 
@@ -277,7 +276,6 @@ namespace VGMToolbox
                 vRebuildSetsStruct.pDatFile = dataFile;
                 vRebuildSetsStruct.pRemoveSource = cbRebuilder_RemoveSource.Checked;
                 vRebuildSetsStruct.pOverwriteExisting = cbRebuilder_Overwrite.Checked;
-                vRebuildSetsStruct.pStreamInput = cbRebuilder_UseLessRam.Checked;
                 vRebuildSetsStruct.pCompressOutput = cbRebuilder_CompressOutput.Checked;
                 vRebuildSetsStruct.totalFiles = Directory.GetFiles(tbRebuilder_SourceDir.Text, "*.*", SearchOption.AllDirectories).Length;
 
@@ -480,7 +478,6 @@ namespace VGMToolbox
                 lblDatCreator_HeaderHomepage.Text = getGuiIniLabel(iniFile, lblDatCreator_HeaderHomepage.Text, "DATAFILE_BUILDER", "HEADER_HOMEPAGE_TAG");
                 lblDatCreator_HeaderUrl.Text = getGuiIniLabel(iniFile, lblDatCreator_HeaderUrl.Text, "DATAFILE_BUILDER", "HEADER_URL_TAG");
                 grpDatCreator_Options.Text = getGuiIniLabel(iniFile, grpDatCreator_Options.Text, "DATAFILE_BUILDER", "OPTIONS_GROUP_TAG");
-                cbDatCreator_UseLessRam.Text = getGuiIniLabel(iniFile, cbDatCreator_UseLessRam.Text, "DATAFILE_BUILDER", "CHECKBOX_USE_LESS_RAM");
                 lblDatCreator_SourceFolder.Text = getGuiIniLabel(iniFile, lblDatCreator_SourceFolder.Text, "DATAFILE_BUILDER", "SOURCE_FOLDER_LABEL");
                 lblDatCreator_DestinationFolder.Text = getGuiIniLabel(iniFile, lblDatCreator_DestinationFolder.Text, "DATAFILE_BUILDER", "DESTINATION_FOLDER_LABEL");
                 btnDatCreator_BuildDat.Text = getGuiIniLabel(iniFile, btnDatCreator_BuildDat.Text, "DATAFILE_BUILDER", "BUILD_BUTTON");
@@ -494,7 +491,6 @@ namespace VGMToolbox
                 grpRebuilder_Options.Text = getGuiIniLabel(iniFile, grpRebuilder_Options.Text, "REBUILDER", "OPTIONS_GROUP_TAG");
                 cbRebuilder_RemoveSource.Text = getGuiIniLabel(iniFile, cbRebuilder_RemoveSource.Text, "REBUILDER", "CHECKBOX_REMOVE_REBUILT");
                 cbRebuilder_Overwrite.Text = getGuiIniLabel(iniFile, cbRebuilder_Overwrite.Text, "REBUILDER", "CHECKBOX_OVERWRITE");
-                cbRebuilder_UseLessRam.Text = getGuiIniLabel(iniFile, cbRebuilder_UseLessRam.Text, "REBUILDER", "CHECKBOX_USE_LESS_RAM");
                 cbRebuilder_CompressOutput.Text = getGuiIniLabel(iniFile, cbRebuilder_CompressOutput.Text, "REBUILDER", "CHECKBOX_COMPRESS_OUTPUT");
                 btnRebuilder_Rebuild.Text = getGuiIniLabel(iniFile, btnRebuilder_Rebuild.Text, "REBUILDER", "REBUILD_BUTTON");
                 btnRebuilder_Cancel.Text = getGuiIniLabel(iniFile, btnRebuilder_Cancel.Text, "REBUILDER", "CANCEL_BUTTON");

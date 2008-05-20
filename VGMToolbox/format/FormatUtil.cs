@@ -11,7 +11,7 @@ namespace VGMToolbox.format
 {
     static class FormatUtil
     {
-        private const int MAX_SIGNATURE_LENGTH = 3;
+        private const int MAX_SIGNATURE_LENGTH = 5;
         private const int HEADER_OFFSET = 0;
 
         private static readonly byte[] ZIP_SIGNATURE = new byte[] { 0x50, 0x4B, 0x03, 0x04 }; // PK..
