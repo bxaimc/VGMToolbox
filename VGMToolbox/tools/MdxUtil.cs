@@ -19,8 +19,6 @@ namespace VGMToolbox.tools
         
         #endregion
 
-        public event EventHandler SendMessage;
-
         #region methods
 
         public string getPdxForFile(string pFileName, TreeNode pParentNode)

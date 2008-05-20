@@ -89,6 +89,7 @@
     <Compile Include="format\FormatUtil.cs" />
     <Compile Include="format\IFormat.cs" />
     <Compile Include="format\Mdx.cs" />
+    <Compile Include="format\Nsf.cs" />
     <Compile Include="format\Xsf.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -138,9 +139,6 @@
     <Compile Include="util\FileUtil.cs" />
     <Compile Include="util\ObjectPooling\ObjectPooler.cs" />
     <Compile Include="util\ParseFile.cs" />
-    <Compile Include="util\SubscribingTextBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
