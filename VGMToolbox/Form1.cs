@@ -22,6 +22,7 @@ namespace VGMToolbox
     {
         DatafileCreatorWorker datCreator;
         RebuilderWorker rebuilder;
+        TreeBuilderWorker treeBuilder;
         
         public Form1()
         {
@@ -339,26 +340,54 @@ namespace VGMToolbox
 
         # endregion
 
-        # region EXAMINE - XSF
+        # region EXAMINE - XSF/NSF
 
         private void tbXsfSource_DragDrop(object sender, DragEventArgs e)
         {
             doCleanup();
 
+            toolStripStatusLabel1.Text = "Examination...Begin";
+
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-            toolStripProgressBar.Maximum = s.Length;
+            int totalFileCount = 0;
             
-            XsfUtil xsfUtils = new XsfUtil();
-            TreeNode[] parentNodes = new TreeNode[0];
-            string outputMessage = "";
-
-            xsfUtils.buildTreeNode(s, ref parentNodes, ref outputMessage, toolStripProgressBar);
-            foreach (TreeNode t in parentNodes)
+            foreach (string path in s)
             {
-                treeViewTools.Nodes.Add(t);
+                if (File.Exists(path))
+                {
+                    totalFileCount++;
+                }
+                else if (Directory.Exists(path))
+                {
+                    totalFileCount += Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
+                }
             }
-            tbOutput.Text = outputMessage;
+
+            TreeBuilderWorker.TreeBuilderStruct tbStruct = new TreeBuilderWorker.TreeBuilderStruct();
+            tbStruct.pPaths = s;
+            tbStruct.totalFiles = totalFileCount;
+            
+            treeBuilder = new TreeBuilderWorker();
+            treeBuilder.ProgressChanged += backgroundWorker_ReportProgress;
+            treeBuilder.RunWorkerCompleted += TreeBuilderWorker_WorkComplete;
+            treeBuilder.RunWorkerAsync(tbStruct);
+        }
+
+        private void TreeBuilderWorker_WorkComplete(object sender,
+                             RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled)
+            {
+                doCancelCleanup(false);
+                toolStripStatusLabel1.Text = "Examination...Cancelled";
+                tbOutput.Text += "Operation cancelled.";
+            }
+            else
+            {
+                lblProgressLabel.Text = String.Empty;
+                toolStripStatusLabel1.Text = "Examination...Complete";
+            }
         }
 
         private void tbXsfSource_DragEnter(object sender, DragEventArgs e)
@@ -371,7 +400,35 @@ namespace VGMToolbox
 
         private void btnXsfGetInfo_Click(object sender, EventArgs e)
         {
-            tbOutput.Text = XsfUtil.getType(tbXsfSource.Text);
+            doCleanup();
+
+            toolStripStatusLabel1.Text = "Examination...Begin";
+
+            string[] s = new string[1];
+            s[0] = tbXsfSource.Text;
+
+            int totalFileCount = 0;
+
+            foreach (string path in s)
+            {
+                if (File.Exists(path))
+                {
+                    totalFileCount++;
+                }
+                else if (Directory.Exists(path))
+                {
+                    totalFileCount += Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
+                }
+            }
+
+            TreeBuilderWorker.TreeBuilderStruct tbStruct = new TreeBuilderWorker.TreeBuilderStruct();
+            tbStruct.pPaths = s;
+            tbStruct.totalFiles = totalFileCount;
+
+            treeBuilder = new TreeBuilderWorker();
+            treeBuilder.ProgressChanged += backgroundWorker_ReportProgress;
+            treeBuilder.RunWorkerCompleted += TreeBuilderWorker_WorkComplete;
+            treeBuilder.RunWorkerAsync(tbStruct);
         }
 
         private void btnPsfBrowse_Click(object sender, EventArgs e)
@@ -396,7 +453,15 @@ namespace VGMToolbox
 
         private void doCancelCleanup()
         {
-            treeViewTools.Nodes.Clear();
+            doCancelCleanup(true);
+        }
+
+        private void doCancelCleanup(bool pClearNodes)
+        {
+            if (pClearNodes)
+            {
+                treeViewTools.Nodes.Clear();
+            }
             toolStripProgressBar.Value = 0;
             lblProgressLabel.Text = String.Empty;
         }
@@ -523,10 +588,17 @@ namespace VGMToolbox
             {
                 toolStripProgressBar.Value = e.ProgressPercentage;
             }
-
+            
             if (e.UserState != null)
             {
                 AuditingUtil.ProgressStruct vProgressStruct = (AuditingUtil.ProgressStruct)e.UserState;
+
+                if (vProgressStruct.newNode != null)
+                {
+                    treeViewTools.Nodes.Add(vProgressStruct.newNode);
+                }
+                
+                
                 lblProgressLabel.Text = vProgressStruct.filename == null ? String.Empty : vProgressStruct.filename;
                 tbOutput.Text += vProgressStruct.errorMessage == null ? String.Empty : vProgressStruct.errorMessage;
             }
@@ -579,5 +651,14 @@ namespace VGMToolbox
             }
         }
         #endregion        
+
+        private void btnXsf_Cancel_Click(object sender, EventArgs e)
+        {
+            if (treeBuilder != null && treeBuilder.IsBusy)
+            {
+                tbOutput.Text += "CANCEL PENDING...";
+                treeBuilder.CancelAsync();
+            }
+        }
     }
 }

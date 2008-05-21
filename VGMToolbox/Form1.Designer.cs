@@ -93,7 +93,6 @@
             this.btnMdxBrowse = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.label20 = new System.Windows.Forms.Label();
             this.grpExamineMdx_XsfExplorer = new System.Windows.Forms.GroupBox();
             this.lblExamineXsf_SourceDirectory = new System.Windows.Forms.Label();
             this.btnPsfBrowse = new System.Windows.Forms.Button();
@@ -113,6 +112,7 @@
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.lblProgressLabel = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.btnXsf_Cancel = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -751,28 +751,18 @@
             // 
             // tabPage4
             // 
-            this.tabPage4.Controls.Add(this.label20);
             this.tabPage4.Controls.Add(this.grpExamineMdx_XsfExplorer);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage4.Size = new System.Drawing.Size(408, 160);
             this.tabPage4.TabIndex = 1;
-            this.tabPage4.Text = "xSF";
+            this.tabPage4.Text = "xSF/NSF";
             this.tabPage4.UseVisualStyleBackColor = true;
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.ForeColor = System.Drawing.Color.Red;
-            this.label20.Location = new System.Drawing.Point(47, 97);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(148, 13);
-            this.label20.TabIndex = 5;
-            this.label20.Text = " (Drag and Drop Only for now)";
             // 
             // grpExamineMdx_XsfExplorer
             // 
+            this.grpExamineMdx_XsfExplorer.Controls.Add(this.btnXsf_Cancel);
             this.grpExamineMdx_XsfExplorer.Controls.Add(this.lblExamineXsf_SourceDirectory);
             this.grpExamineMdx_XsfExplorer.Controls.Add(this.btnPsfBrowse);
             this.grpExamineMdx_XsfExplorer.Controls.Add(this.tbXsfSource);
@@ -782,6 +772,7 @@
             this.grpExamineMdx_XsfExplorer.Size = new System.Drawing.Size(399, 63);
             this.grpExamineMdx_XsfExplorer.TabIndex = 4;
             this.grpExamineMdx_XsfExplorer.TabStop = false;
+            this.grpExamineMdx_XsfExplorer.Text = "xSF/NSF Explorer";
             // 
             // lblExamineXsf_SourceDirectory
             // 
@@ -814,9 +805,9 @@
             // 
             // btnXsfGetInfo
             // 
-            this.btnXsfGetInfo.Location = new System.Drawing.Point(268, 33);
+            this.btnXsfGetInfo.Location = new System.Drawing.Point(265, 33);
             this.btnXsfGetInfo.Name = "btnXsfGetInfo";
-            this.btnXsfGetInfo.Size = new System.Drawing.Size(86, 20);
+            this.btnXsfGetInfo.Size = new System.Drawing.Size(64, 20);
             this.btnXsfGetInfo.TabIndex = 3;
             this.btnXsfGetInfo.Text = "Go";
             this.btnXsfGetInfo.UseVisualStyleBackColor = true;
@@ -910,6 +901,16 @@
             this.label2.TabIndex = 2;
             this.label2.Text = "Supported Formats: xSF, NSF";
             // 
+            // btnXsf_Cancel
+            // 
+            this.btnXsf_Cancel.Location = new System.Drawing.Point(329, 33);
+            this.btnXsf_Cancel.Name = "btnXsf_Cancel";
+            this.btnXsf_Cancel.Size = new System.Drawing.Size(64, 20);
+            this.btnXsf_Cancel.TabIndex = 6;
+            this.btnXsf_Cancel.Text = "Cancel";
+            this.btnXsf_Cancel.UseVisualStyleBackColor = true;
+            this.btnXsf_Cancel.Click += new System.EventHandler(this.btnXsf_Cancel_Click);
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -947,7 +948,6 @@
             this.grpExamineMdx_PdxDiscovery.ResumeLayout(false);
             this.grpExamineMdx_PdxDiscovery.PerformLayout();
             this.tabPage4.ResumeLayout(false);
-            this.tabPage4.PerformLayout();
             this.grpExamineMdx_XsfExplorer.ResumeLayout(false);
             this.grpExamineMdx_XsfExplorer.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
@@ -1033,7 +1033,6 @@
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar;
         private System.Windows.Forms.CheckBox cbRebuilder_Overwrite;
         private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Label label24;
@@ -1044,6 +1043,7 @@
         private System.Windows.Forms.Button btnRebuilder_Cancel;
         private System.Windows.Forms.Label lblProgressLabel;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button btnXsf_Cancel;
     }
 }
 

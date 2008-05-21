@@ -5,6 +5,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Serialization;
+using System.Windows.Forms;
 
 using ICSharpCode.SharpZipLib.Zip.Compression;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
@@ -56,6 +57,7 @@ namespace VGMToolbox.auditing
         {
             public string filename;
             public string errorMessage;
+            public TreeNode newNode;
         }
          
         #endregion

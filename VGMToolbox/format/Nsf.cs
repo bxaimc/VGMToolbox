@@ -42,8 +42,8 @@ namespace VGMToolbox.format
         private const int ARTIST_OFFSET = 0x2E;
         private const int ARTIST_LENGTH = 0x20;
 
-        private const int COPYRIGHT_OFFSET = 0x6E;
-        private const int COPYRIGHT_LENGTH = 0x02;
+        private const int COPYRIGHT_OFFSET = 0x4E;
+        private const int COPYRIGHT_LENGTH = 0x20;
 
         private const int SPEED_NTSC_OFFSET = 0x6E;
         private const int SPEED_NTSC_LENGTH = 0x02;
@@ -83,7 +83,7 @@ namespace VGMToolbox.format
         private byte[] futureExpansion;
         private byte[] data;
 
-        Dictionary<string, string> tagHash;
+        Dictionary<string, string> tagHash = new Dictionary<string, string>();
 
         public byte[] AsciiSignature { get { return this.asciiSignature; } }
         public byte[] VersionNumber { get { return this.versionNumber; } }
@@ -328,9 +328,11 @@ namespace VGMToolbox.format
         {
             System.Text.Encoding enc = System.Text.Encoding.ASCII;
             
-            tagHash.Add("Name", enc.GetString(songName));
-            tagHash.Add("Artist", enc.GetString(songArtist));
-            tagHash.Add("Copyright", enc.GetString(songCopyright));
+            tagHash.Add("Name", enc.GetString(this.songName));
+            tagHash.Add("Artist", enc.GetString(this.songArtist));
+            tagHash.Add("Copyright", enc.GetString(this.songCopyright));
+            tagHash.Add("Total Songs", this.totalSongs[0].ToString());
+            tagHash.Add("Starting Song", this.startingSong[0].ToString());
         }
         
         public void getDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,

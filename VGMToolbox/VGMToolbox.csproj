@@ -139,6 +139,9 @@
     <Compile Include="util\FileUtil.cs" />
     <Compile Include="util\ObjectPooling\ObjectPooler.cs" />
     <Compile Include="util\ParseFile.cs" />
+    <Compile Include="util\TreeBuilderWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
