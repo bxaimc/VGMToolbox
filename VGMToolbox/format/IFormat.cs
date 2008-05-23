@@ -19,7 +19,7 @@ namespace VGMToolbox.format
         //    ref Crc32 pChecksum, ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream, 
         //    bool pUseLibHash);
         string getFormatAbbreviation();
-        void initialize(byte[] pBytes);
+        //void initialize(byte[] pBytes);
         void initialize(Stream pStream);
         bool IsFileLibrary(string pPath);
 

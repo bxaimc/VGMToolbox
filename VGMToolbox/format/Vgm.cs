@@ -4,11 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using ICSharpCode.SharpZipLib.Checksums;
+
 using VGMToolbox.util;
+using VGMToolbox.util.ObjectPooling;
 
 namespace VGMToolbox.format
 {
-    class Vgm
+    class Vgm : IFormat
     {
         public Vgm() { }
         
@@ -23,6 +26,12 @@ namespace VGMToolbox.format
         private static readonly byte[] VERSION_0101 = new byte[] { 0x01, 0x01, 0x00, 0x00 };
         private static readonly byte[] VERSION_0110 = new byte[] { 0x10, 0x01, 0x00, 0x00 };
         private static readonly byte[] VERSION_0150 = new byte[] { 0x50, 0x01, 0x00, 0x00 };
+
+        private static readonly int INT_VERSION_UNKNOWN = -1;
+        private static readonly int INT_VERSION_0100 = 100;
+        private static readonly int INT_VERSION_0101 = 101;
+        private static readonly int INT_VERSION_0110 = 110;
+        private static readonly int INT_VERSION_0150 = 150;
 
         // Version 1.0 or greater
         private const int SIG_OFFSET = 0x00;
@@ -122,15 +131,11 @@ namespace VGMToolbox.format
 
         public byte[] VgmDataOffset { get { return this.vgmDataOffset; } }
 
+        Dictionary<string, string> tagHash = new Dictionary<string, string>();
 
-        private string fileType;
+        // Methods        
 
-        // Methods
-        public static string getFormatAbbreviation()
-        {
-            return "VGM";
-        }
-        
+        #region BYTE FUNCTIONS
         protected byte[] getEofOffset(byte[] pBytes)
         {
             return ParseFile.parseSimpleOffset(pBytes, EOF_OFFSET_OFFSET, EOF_OFFSET_LENGTH);
@@ -263,6 +268,185 @@ namespace VGMToolbox.format
             }
             return (str != null);
         }
-        */ 
+        */
+#endregion
+
+        #region STREAM FUNCTIONS
+        protected byte[] getEofOffset(Stream pStream)
+        {
+            return ParseFile.parseSimpleOffset(pStream, EOF_OFFSET_OFFSET, EOF_OFFSET_LENGTH);
+        }
+
+        protected byte[] getGd3Offset(Stream pStream)
+        {
+            return ParseFile.parseSimpleOffset(pStream, GD3_OFFSET_OFFSET, GD3_OFFSET_LENGTH);
+        }
+
+        protected byte[] getLoopNumOfSamples(Stream pStream)
+        {
+            return ParseFile.parseSimpleOffset(pStream, LOOP_NUM_SAMPLES_OFFSET, LOOP_NUM_SAMPLES_LENGTH);
+        }
+
+        protected byte[] getLoopOffset(Stream pStream)
+        {
+            return ParseFile.parseSimpleOffset(pStream, LOOP_OFFSET_OFFSET, LOOP_OFFSET_LENGTH);
+        }
+
+        protected byte[] getRate(Stream pStream)
+        {
+            return ParseFile.parseSimpleOffset(pStream, RATE_OFFSET, RATE_LENGTH);
+        }
+
+        protected byte[] getSignatureTag(Stream pStream)
+        {
+            return ParseFile.parseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
+        }
+
+        protected byte[] getSn76489Clock(Stream pStream)
+        {
+            return ParseFile.parseSimpleOffset(pStream, SN76489_CLOCK_OFFSET, SN76489_CLOCK_LENGTH);
+        }
+
+        protected byte[] getSn76489Feedback(Stream pStream)
+        {
+            return ParseFile.parseSimpleOffset(pStream, SN76489_FEEDBACK_OFFSET, SN76489_FEEDBACK_LENGTH);
+        }
+
+        protected byte[] getSn76489Srw(Stream pStream)
+        {
+            return ParseFile.parseSimpleOffset(pStream, SN76489_SRW_OFFSET, SN76489_SRW_LENGTH);
+        }
+
+        protected byte[] getTotalNumOfSamples(Stream pStream)
+        {
+            return ParseFile.parseSimpleOffset(pStream, TOTAL_NUM_SAMPLES_OFFSET, TOTAL_NUM_SAMPLES_LENGTH);
+        }
+
+        protected byte[] getVersion(Stream pStream)
+        {
+            return ParseFile.parseSimpleOffset(pStream, VERSION_OFFSET, VERSION_LENGTH);
+        }
+
+        protected byte[] getVgmData(Stream pStream)
+        {
+            // NEED TO FIX
+            return new byte[1];
+        }
+
+        protected byte[] getVgmDataOffset(Stream pStream)
+        {
+            return ParseFile.parseSimpleOffset(pStream, VGM_DATA_OFFSET_OFFSET, VGM_DATA_OFFSET_LENGTH);
+        }
+
+        protected byte[] getYm2151Clock(Stream pStream)
+        {
+            return ParseFile.parseSimpleOffset(pStream, YM2151_CLOCK_OFFSET, YM2151_CLOCK_LENGTH);
+        }
+
+        protected byte[] getYm2413Clock(Stream pStream)
+        {
+            return ParseFile.parseSimpleOffset(pStream, YM2413_CLOCK_OFFSET, YM2413_CLOCK_LENGTH);
+        }
+
+        protected byte[] getYm2612Clock(Stream pStream)
+        {
+            return ParseFile.parseSimpleOffset(pStream, YM2612_CLOCK_OFFSET, YM2612_CLOCK_LENGTH);
+        }
+
+        private int getIntVersion()
+        {
+            int ret = INT_VERSION_UNKNOWN;
+
+            if (ParseFile.compareSegment(this.version, 0, VERSION_0100))
+            {
+                ret = INT_VERSION_0100;
+            }
+            else if (ParseFile.compareSegment(this.version, 0, VERSION_0101))
+            {
+                ret = INT_VERSION_0101;
+            }
+            else if (ParseFile.compareSegment(this.version, 0, VERSION_0110))
+            {
+                ret = INT_VERSION_0110;
+            }
+            else if (ParseFile.compareSegment(this.version, 0, VERSION_0150))
+            {
+                ret = INT_VERSION_0150;
+            }
+
+            return ret;
+        }
+
+        #endregion
+
+        public byte[] getAsciiSignature()
+        {
+            return ASCII_SIGNATURE;
+        }
+
+        public string getFormatAbbreviation()
+        {
+            return "VGM";
+        }
+
+        public bool IsFileLibrary(string pPath)
+        {
+            return false;
+        }
+
+        public Dictionary<string, string> GetTagHash()
+        {
+            return this.tagHash;
+        }
+    
+        public void initialize(Stream pStream)
+        {
+            int intVersion = INT_VERSION_UNKNOWN;
+            
+            // Version 1.0 or greater (all versions)
+            signatureTag = this.getSignatureTag(pStream);
+            eofOffset = this.getEofOffset(pStream);
+            version = this.getVersion(pStream);
+            sn76489Clock = this.getSn76489Clock(pStream);
+            ym2413Clock = this.getYm2413Clock(pStream);
+            gd3Offset = this.getGd3Offset(pStream);
+            totalNumOfSamples = this.getTotalNumOfSamples(pStream);
+            loopOffset = this.getLoopOffset(pStream);
+            loopNumOfSamples = this.getLoopNumOfSamples(pStream);
+            // vgmData; get only during checksum to save memory
+
+            // Get version to determine if other tags are present
+            intVersion = this.getIntVersion();
+
+            
+            if (intVersion >= INT_VERSION_0101)
+            {
+                // Version 1.01 or greater
+                rate = this.getRate(pStream);
+
+                if (intVersion >= INT_VERSION_0110)
+                {
+                    // Version 1.10 or greater
+                    sn76489Feedback = this.getSn76489Feedback(pStream);
+                    sn76489Srw = this.getSn76489Srw(pStream);
+                    ym2612Clock = this.getYm2612Clock(pStream);
+                    ym2151Clock = this.getYm2151Clock(pStream);
+
+                    if (intVersion >= INT_VERSION_0150)
+                    {
+                        // Version 1.50 or greater
+                        vgmDataOffset = this.getVgmDataOffset(pStream);
+                    }
+                }
+            }
+        }
+
+        public void getDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
+            ref Crc32 pChecksum, bool pUseLibHash)
+        { 
+        
+        
+        
+        }
     }
 }
