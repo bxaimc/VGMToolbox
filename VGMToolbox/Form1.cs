@@ -23,6 +23,7 @@ namespace VGMToolbox
         DatafileCreatorWorker datCreator;
         RebuilderWorker rebuilder;
         TreeBuilderWorker treeBuilder;
+        DatafileCheckerWorker datafileCheckerWorker;
         
         public Form1()
         {
@@ -652,6 +653,22 @@ namespace VGMToolbox
         }
         #endregion        
 
+        private void datafileCheckerWorker_WorkComplete(object sender,
+                             RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled)
+            {
+                doCancelCleanup();
+                toolStripStatusLabel1.Text = "Checking Datafile...Cancelled";
+                tbOutput.Text += "Operation cancelled.";
+            }
+            else
+            {
+                lblProgressLabel.Text = String.Empty;
+                toolStripStatusLabel1.Text = "Checking Datafile...Complete";
+            }
+        }
+
         private void btnXsf_Cancel_Click(object sender, EventArgs e)
         {
             if (treeBuilder != null && treeBuilder.IsBusy)
@@ -660,5 +677,42 @@ namespace VGMToolbox
                 treeBuilder.CancelAsync();
             }
         }
+
+        #region DATAFILE CHECKER
+        private void btnDatafileChecker_Check_Click(object sender, EventArgs e)
+        {
+            doCleanup();
+
+            toolStripStatusLabel1.Text = "Checking Datafile...Complete";
+
+            DatafileCheckerWorker.DatafileCheckerStruct datafileCheckerStruct = new DatafileCheckerWorker.DatafileCheckerStruct();
+            datafileCheckerStruct.datafilePath = tbDatafileChecker_SourceFile.Text;
+            datafileCheckerStruct.outputPath = tbDatafileChecker_OutputPath.Text;
+
+            datafileCheckerWorker = new DatafileCheckerWorker();
+            datafileCheckerWorker.ProgressChanged += backgroundWorker_ReportProgress;
+            datafileCheckerWorker.RunWorkerCompleted += datafileCheckerWorker_WorkComplete;
+            datafileCheckerWorker.RunWorkerAsync(datafileCheckerStruct);
+        }
+
+        private void tbDatafileChecker_BrowseSource_Click(object sender, EventArgs e)
+        {
+            openFileDialog1 = new OpenFileDialog();
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                tbDatafileChecker_SourceFile.Text = openFileDialog1.FileName;
+            }
+        }
+
+        private void tbDatafileChecker_BrowseDestination_Click(object sender, EventArgs e)
+        {
+            folderBrowserDialog = new FolderBrowserDialog();
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {
+                tbDatafileChecker_OutputPath.Text = folderBrowserDialog.SelectedPath;
+            }
+        }
+
+        #endregion
     }
 }

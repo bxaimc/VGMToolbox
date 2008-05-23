@@ -14,7 +14,7 @@ namespace VGMToolbox.auditing
 {
     class AuditingUtil
     {
-        private const string ROM_SPACER = "  ";         // Simple spacer for formatting output lists
+        public const string ROM_SPACER = "  ";         // Simple spacer for formatting output lists
 
         public static readonly int IGNORE_PROGRESS = -1;
      

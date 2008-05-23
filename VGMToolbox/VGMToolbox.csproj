@@ -71,6 +71,9 @@
     </Compile>
     <Compile Include="auditing\AuditingUtil.cs" />
     <Compile Include="auditing\datafile.cs" />
+    <Compile Include="auditing\DatafileCheckerWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="auditing\DatafileCreatorWorker.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -90,6 +93,7 @@
     <Compile Include="format\IFormat.cs" />
     <Compile Include="format\Mdx.cs" />
     <Compile Include="format\Nsf.cs" />
+    <Compile Include="format\Vgm.cs" />
     <Compile Include="format\Xsf.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
