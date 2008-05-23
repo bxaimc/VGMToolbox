@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Speech.Synthesis;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Serialization;
@@ -441,6 +435,15 @@ namespace VGMToolbox
             }
         }
 
+        private void btnXsf_Cancel_Click(object sender, EventArgs e)
+        {
+            if (treeBuilder != null && treeBuilder.IsBusy)
+            {
+                tbOutput.Text += "CANCEL PENDING...";
+                treeBuilder.CancelAsync();
+            }
+        }
+
         # endregion
 
         #region MISC
@@ -651,10 +654,9 @@ namespace VGMToolbox
                 toolStripStatusLabel1.Text = "Building Datafile...Complete";
             }
         }
-        #endregion        
-
+        
         private void datafileCheckerWorker_WorkComplete(object sender,
-                             RunWorkerCompletedEventArgs e)
+                     RunWorkerCompletedEventArgs e)
         {
             if (e.Cancelled)
             {
@@ -668,15 +670,8 @@ namespace VGMToolbox
                 toolStripStatusLabel1.Text = "Checking Datafile...Complete";
             }
         }
-
-        private void btnXsf_Cancel_Click(object sender, EventArgs e)
-        {
-            if (treeBuilder != null && treeBuilder.IsBusy)
-            {
-                tbOutput.Text += "CANCEL PENDING...";
-                treeBuilder.CancelAsync();
-            }
-        }
+        
+        #endregion                
 
         #region DATAFILE CHECKER
         private void btnDatafileChecker_Check_Click(object sender, EventArgs e)

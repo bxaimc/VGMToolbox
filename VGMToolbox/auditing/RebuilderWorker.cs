@@ -18,7 +18,7 @@ namespace VGMToolbox.auditing
     class RebuilderWorker : BackgroundWorker
     {
         private Dictionary<string, ByteArray> libHash;
-        private const string CACHE_DB_FILENAME = "cache.db";
+        private const string CACHE_DB_FILENAME = "_cache.db";
         private ArrayList libFilesForDeletion = new ArrayList();
         private ArrayList tempDirsForDeletion = new ArrayList();
         private int fileCount = 0;
