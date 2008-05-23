@@ -131,7 +131,11 @@ namespace VGMToolbox.format
 
         public byte[] VgmDataOffset { get { return this.vgmDataOffset; } }
 
+        // Others
         Dictionary<string, string> tagHash = new Dictionary<string, string>();
+        private int vgmDataAbsoluteOffset;
+        private int gd3AbsoluteOffset;
+        private int eofAbsoluteOffset;
 
         // Methods        
 
@@ -404,15 +408,15 @@ namespace VGMToolbox.format
             int intVersion = INT_VERSION_UNKNOWN;
             
             // Version 1.0 or greater (all versions)
-            signatureTag = this.getSignatureTag(pStream);
-            eofOffset = this.getEofOffset(pStream);
-            version = this.getVersion(pStream);
-            sn76489Clock = this.getSn76489Clock(pStream);
-            ym2413Clock = this.getYm2413Clock(pStream);
-            gd3Offset = this.getGd3Offset(pStream);
-            totalNumOfSamples = this.getTotalNumOfSamples(pStream);
-            loopOffset = this.getLoopOffset(pStream);
-            loopNumOfSamples = this.getLoopNumOfSamples(pStream);
+            this.signatureTag = this.getSignatureTag(pStream);
+            this.eofOffset = this.getEofOffset(pStream);
+            this.version = this.getVersion(pStream);
+            this.sn76489Clock = this.getSn76489Clock(pStream);
+            this.ym2413Clock = this.getYm2413Clock(pStream);
+            this.gd3Offset = this.getGd3Offset(pStream);
+            this.totalNumOfSamples = this.getTotalNumOfSamples(pStream);
+            this.loopOffset = this.getLoopOffset(pStream);
+            this.loopNumOfSamples = this.getLoopNumOfSamples(pStream);
             // vgmData; get only during checksum to save memory
 
             // Get version to determine if other tags are present
@@ -422,25 +426,47 @@ namespace VGMToolbox.format
             if (intVersion >= INT_VERSION_0101)
             {
                 // Version 1.01 or greater
-                rate = this.getRate(pStream);
+                this.rate = this.getRate(pStream);
 
                 if (intVersion >= INT_VERSION_0110)
                 {
                     // Version 1.10 or greater
-                    sn76489Feedback = this.getSn76489Feedback(pStream);
-                    sn76489Srw = this.getSn76489Srw(pStream);
-                    ym2612Clock = this.getYm2612Clock(pStream);
-                    ym2151Clock = this.getYm2151Clock(pStream);
+                    this.sn76489Feedback = this.getSn76489Feedback(pStream);
+                    this.sn76489Srw = this.getSn76489Srw(pStream);
+                    this.ym2612Clock = this.getYm2612Clock(pStream);
+                    this.ym2151Clock = this.getYm2151Clock(pStream);
 
                     if (intVersion >= INT_VERSION_0150)
                     {
                         // Version 1.50 or greater
-                        vgmDataOffset = this.getVgmDataOffset(pStream);
+                        this.vgmDataOffset = this.getVgmDataOffset(pStream);
                     }
                 }
             }
+
+            if (intVersion < INT_VERSION_0150)
+            {
+                this.vgmDataOffset = BitConverter.GetBytes(VGM_DATA_OFFSET_PRE150);
+            }
+
+            this.getAbsoluteOffsets(intVersion);
         }
 
+        private void getAbsoluteOffsets(int pIntVersion)
+        {
+            if (pIntVersion >= INT_VERSION_0150)
+            {
+                this.vgmDataAbsoluteOffset = BitConverter.ToInt32(this.vgmDataOffset, 0) + VGM_DATA_OFFSET_OFFSET;
+            }
+            else 
+            {
+                this.vgmDataAbsoluteOffset = VGM_DATA_OFFSET_PRE150;
+            }
+
+            this.gd3AbsoluteOffset = BitConverter.ToInt32(this.gd3Offset, 0) + GD3_OFFSET_OFFSET;
+            this.eofAbsoluteOffset = BitConverter.ToInt32(this.eofOffset, 0) + EOF_OFFSET_OFFSET;
+        }
+        
         public void getDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
             ref Crc32 pChecksum, bool pUseLibHash)
         { 
