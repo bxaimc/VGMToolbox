@@ -132,6 +132,32 @@ namespace VGMToolbox.format
 
         public byte[] VgmDataOffset { get { return this.vgmDataOffset; } }
 
+        // GD3 TAG
+        private const int GD3_SIGNATURE_OFFSET = 0x00;
+        private const int GD3_SIGNATURE_LENGTH = 0x04;
+        
+        private const int GD3_VERSION_OFFSET = 0x04;
+        private const int GD3_VERSION_LENGTH = 0x04;
+        
+        private const int GD3_DATA_LENGTH_OFFSET = 0x08;
+        private const int GD3_DATA_LENGTH_LENGTH = 0x04;
+
+        private byte[] gd3Signature;
+        private byte[] gd3Version;
+        private byte[] gd3DataLength;
+
+        private const int GD3_TRACK_NAME_E_IDX = 0;
+        private const int GD3_TRACK_NAME_J_IDX = 1;
+        private const int GD3_GAME_NAME_E_IDX = 2;
+        private const int GD3_GAME_NAME_J_IDX = 3;
+        private const int GD3_SYSTEM_NAME_E_IDX = 4;
+        private const int GD3_SYSTEM_NAME_J_IDX = 5;
+        private const int GD3_AUTHOR_NAME_E_IDX = 6;
+        private const int GD3_AUTHOR_NAME_J_IDX = 7;
+        private const int GD3_GAME_DATE_IDX = 8;
+        private const int GD3_RIPPER_IDX = 9;
+        private const int GD3_NOTES = 10;
+
         // Others
         Dictionary<string, string> tagHash = new Dictionary<string, string>();
         private int vgmDataAbsoluteOffset;
@@ -481,7 +507,8 @@ namespace VGMToolbox.format
                 }
 
                 this.getAbsoluteOffsets(intVersion);
-            
+                this.initializeTagHash(pStream);
+
             } // if (FormatUtil.IsGzipFile(pFileStream))
         }
 
@@ -496,7 +523,15 @@ namespace VGMToolbox.format
                 this.vgmDataAbsoluteOffset = VGM_DATA_OFFSET_PRE150;
             }
 
-            this.gd3AbsoluteOffset = BitConverter.ToInt32(this.gd3Offset, 0) + GD3_OFFSET_OFFSET;
+            if (BitConverter.ToInt32(this.gd3Offset, 0) != 0)
+            {
+                this.gd3AbsoluteOffset = BitConverter.ToInt32(this.gd3Offset, 0) + GD3_OFFSET_OFFSET;
+            }
+            else
+            {
+                this.gd3AbsoluteOffset = 0;
+            }
+            
             this.eofAbsoluteOffset = BitConverter.ToInt32(this.eofOffset, 0) + EOF_OFFSET_OFFSET;
         }
         
@@ -590,6 +625,48 @@ namespace VGMToolbox.format
             }
 
             pFileStream.Position = currentPosition;
+        }
+
+        private void initializeTagHash(Stream pStream)
+        {
+            if (this.gd3AbsoluteOffset != 0)
+            {
+                this.gd3Signature = ParseFile.parseSimpleOffset(pStream,
+                    this.gd3AbsoluteOffset + GD3_SIGNATURE_OFFSET, GD3_SIGNATURE_LENGTH);
+                this.gd3Version = ParseFile.parseSimpleOffset(pStream,
+                    this.gd3AbsoluteOffset + GD3_VERSION_OFFSET, GD3_VERSION_LENGTH);
+                this.gd3DataLength = ParseFile.parseSimpleOffset(pStream,
+                    this.gd3AbsoluteOffset + GD3_DATA_LENGTH_OFFSET, GD3_DATA_LENGTH_LENGTH);
+
+                byte[] tagBytes = ParseFile.parseSimpleOffset(pStream,
+                    this.gd3AbsoluteOffset + GD3_SIGNATURE_LENGTH + GD3_VERSION_LENGTH + GD3_DATA_LENGTH_LENGTH,
+                    BitConverter.ToInt32(this.gd3DataLength, 0));
+
+                System.Text.Encoding enc = System.Text.Encoding.Unicode;
+                string tagsString = enc.GetString(tagBytes);
+
+                char[] tagSeparator = new char[] { (char)(0x00), (char)(0x00) };
+                string[] splitTags = tagsString.Trim().Split(tagSeparator);
+
+                //try
+                //{
+                string versionTag = getIntVersion().ToString();
+                this.tagHash.Add("VGM Format Version", versionTag);                
+                
+                this.tagHash.Add("Track Name (E)", splitTags[GD3_TRACK_NAME_E_IDX]);
+                this.tagHash.Add("Track Name (J)", splitTags[GD3_TRACK_NAME_J_IDX]);
+                this.tagHash.Add("Game Name (E)", splitTags[GD3_GAME_NAME_E_IDX]);
+                this.tagHash.Add("Game Name (J)", splitTags[GD3_GAME_NAME_J_IDX]);
+                this.tagHash.Add("System Name (E)", splitTags[GD3_SYSTEM_NAME_E_IDX]);
+                this.tagHash.Add("System Name (J)", splitTags[GD3_SYSTEM_NAME_J_IDX]);
+                this.tagHash.Add("Author Name (E)", splitTags[GD3_AUTHOR_NAME_E_IDX]);
+                this.tagHash.Add("Author Name (J)", splitTags[GD3_AUTHOR_NAME_J_IDX]);
+                this.tagHash.Add("Game Date", splitTags[GD3_GAME_DATE_IDX]);
+                this.tagHash.Add("Set Ripper", splitTags[GD3_RIPPER_IDX]);
+                this.tagHash.Add("Notes", splitTags[GD3_NOTES]);
+                //}
+                //catch (Exception) { }
+            }
         }
     }
 }

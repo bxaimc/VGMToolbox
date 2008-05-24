@@ -105,6 +105,7 @@
             this.btnMdxBrowse = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.label7 = new System.Windows.Forms.Label();
             this.grpExamineMdx_XsfExplorer = new System.Windows.Forms.GroupBox();
             this.btnXsf_Cancel = new System.Windows.Forms.Button();
             this.lblExamineXsf_SourceDirectory = new System.Windows.Forms.Label();
@@ -124,7 +125,6 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.lblProgressLabel = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -786,8 +786,8 @@
             // 
             // tabControl2
             // 
-            this.tabControl2.Controls.Add(this.tabPage3);
             this.tabControl2.Controls.Add(this.tabPage4);
+            this.tabControl2.Controls.Add(this.tabPage3);
             this.tabControl2.Location = new System.Drawing.Point(260, 6);
             this.tabControl2.Name = "tabControl2";
             this.tabControl2.SelectedIndex = 0;
@@ -894,6 +894,15 @@
             this.tabPage4.Text = "Tag Viewer";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(3, 144);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(177, 13);
+            this.label7.TabIndex = 5;
+            this.label7.Text = "Supported Formats: xSF, NSF, VGM";
+            // 
             // grpExamineMdx_XsfExplorer
             // 
             this.grpExamineMdx_XsfExplorer.Controls.Add(this.btnXsf_Cancel);
@@ -906,7 +915,6 @@
             this.grpExamineMdx_XsfExplorer.Size = new System.Drawing.Size(399, 63);
             this.grpExamineMdx_XsfExplorer.TabIndex = 4;
             this.grpExamineMdx_XsfExplorer.TabStop = false;
-            this.grpExamineMdx_XsfExplorer.Text = "xSF/NSF Explorer";
             // 
             // btnXsf_Cancel
             // 
@@ -1035,15 +1043,6 @@
             this.lblProgressLabel.Size = new System.Drawing.Size(681, 15);
             this.lblProgressLabel.TabIndex = 3;
             this.lblProgressLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(3, 144);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(147, 13);
-            this.label7.TabIndex = 5;
-            this.label7.Text = "Supported Formats: xSF, NSF";
             // 
             // Form1
             // 
