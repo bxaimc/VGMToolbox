@@ -83,6 +83,17 @@
             this.tbRebuilder_DestinationDir = new System.Windows.Forms.TextBox();
             this.lblRebuilder_SourceDir = new System.Windows.Forms.Label();
             this.tbRebuilder_SourceDir = new System.Windows.Forms.TextBox();
+            this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.tbDatafileChecker_BrowseDestination = new System.Windows.Forms.Button();
+            this.tbDatafileChecker_BrowseSource = new System.Windows.Forms.Button();
+            this.tbDatafileChecker_OutputPath = new System.Windows.Forms.TextBox();
+            this.tbDatafileChecker_SourceFile = new System.Windows.Forms.TextBox();
+            this.btnDatafileChecker_Check = new System.Windows.Forms.Button();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
@@ -113,17 +124,7 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.lblProgressLabel = new System.Windows.Forms.Label();
-            this.tabPage6 = new System.Windows.Forms.TabPage();
-            this.tbDatafileChecker_SourceFile = new System.Windows.Forms.TextBox();
-            this.btnDatafileChecker_Check = new System.Windows.Forms.Button();
-            this.tbDatafileChecker_OutputPath = new System.Windows.Forms.TextBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.tbDatafileChecker_BrowseSource = new System.Windows.Forms.Button();
-            this.tbDatafileChecker_BrowseDestination = new System.Windows.Forms.Button();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -132,6 +133,8 @@
             this.grpRebuilder_Options.SuspendLayout();
             this.grpRebuilder_Datafile.SuspendLayout();
             this.grpRebuilder_Directories.SuspendLayout();
+            this.tabPage6.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabControl2.SuspendLayout();
             this.tabPage3.SuspendLayout();
@@ -140,8 +143,6 @@
             this.grpExamineMdx_XsfExplorer.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
-            this.tabPage6.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -255,9 +256,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(6, 17);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(147, 13);
+            this.label2.Size = new System.Drawing.Size(177, 13);
             this.label2.TabIndex = 2;
-            this.label2.Text = "Supported Formats: xSF, NSF";
+            this.label2.Text = "Supported Formats: xSF, NSF, VGM";
             // 
             // label23
             // 
@@ -662,6 +663,115 @@
             this.tbRebuilder_SourceDir.Size = new System.Drawing.Size(259, 20);
             this.tbRebuilder_SourceDir.TabIndex = 0;
             // 
+            // tabPage6
+            // 
+            this.tabPage6.Controls.Add(this.label6);
+            this.tabPage6.Controls.Add(this.label3);
+            this.tabPage6.Controls.Add(this.groupBox1);
+            this.tabPage6.Controls.Add(this.btnDatafileChecker_Check);
+            this.tabPage6.Location = new System.Drawing.Point(4, 22);
+            this.tabPage6.Name = "tabPage6";
+            this.tabPage6.Size = new System.Drawing.Size(682, 198);
+            this.tabPage6.TabIndex = 3;
+            this.tabPage6.Text = "Datafile Checker";
+            this.tabPage6.UseVisualStyleBackColor = true;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(3, 66);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(113, 13);
+            this.label6.TabIndex = 5;
+            this.label6.Text = "Check for duplicates...";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.ForeColor = System.Drawing.Color.Red;
+            this.label3.Location = new System.Drawing.Point(9, 175);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(159, 13);
+            this.label3.TabIndex = 4;
+            this.label3.Text = "Add these fields to languages.ini";
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.label5);
+            this.groupBox1.Controls.Add(this.label4);
+            this.groupBox1.Controls.Add(this.tbDatafileChecker_BrowseDestination);
+            this.groupBox1.Controls.Add(this.tbDatafileChecker_BrowseSource);
+            this.groupBox1.Controls.Add(this.tbDatafileChecker_OutputPath);
+            this.groupBox1.Controls.Add(this.tbDatafileChecker_SourceFile);
+            this.groupBox1.Location = new System.Drawing.Point(3, 3);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(676, 60);
+            this.groupBox1.TabIndex = 3;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Source and Destination";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(312, 16);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(138, 13);
+            this.label5.TabIndex = 5;
+            this.label5.Text = "Report(s) Destination Folder";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(3, 18);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(80, 13);
+            this.label4.TabIndex = 4;
+            this.label4.Text = "Source Datafile";
+            // 
+            // tbDatafileChecker_BrowseDestination
+            // 
+            this.tbDatafileChecker_BrowseDestination.Location = new System.Drawing.Point(580, 32);
+            this.tbDatafileChecker_BrowseDestination.Name = "tbDatafileChecker_BrowseDestination";
+            this.tbDatafileChecker_BrowseDestination.Size = new System.Drawing.Size(28, 20);
+            this.tbDatafileChecker_BrowseDestination.TabIndex = 3;
+            this.tbDatafileChecker_BrowseDestination.Text = "...";
+            this.tbDatafileChecker_BrowseDestination.UseVisualStyleBackColor = true;
+            this.tbDatafileChecker_BrowseDestination.Click += new System.EventHandler(this.tbDatafileChecker_BrowseDestination_Click);
+            // 
+            // tbDatafileChecker_BrowseSource
+            // 
+            this.tbDatafileChecker_BrowseSource.Location = new System.Drawing.Point(270, 32);
+            this.tbDatafileChecker_BrowseSource.Name = "tbDatafileChecker_BrowseSource";
+            this.tbDatafileChecker_BrowseSource.Size = new System.Drawing.Size(28, 20);
+            this.tbDatafileChecker_BrowseSource.TabIndex = 1;
+            this.tbDatafileChecker_BrowseSource.Text = "...";
+            this.tbDatafileChecker_BrowseSource.UseVisualStyleBackColor = true;
+            this.tbDatafileChecker_BrowseSource.Click += new System.EventHandler(this.tbDatafileChecker_BrowseSource_Click);
+            // 
+            // tbDatafileChecker_OutputPath
+            // 
+            this.tbDatafileChecker_OutputPath.Location = new System.Drawing.Point(315, 32);
+            this.tbDatafileChecker_OutputPath.Name = "tbDatafileChecker_OutputPath";
+            this.tbDatafileChecker_OutputPath.Size = new System.Drawing.Size(259, 20);
+            this.tbDatafileChecker_OutputPath.TabIndex = 2;
+            // 
+            // tbDatafileChecker_SourceFile
+            // 
+            this.tbDatafileChecker_SourceFile.Location = new System.Drawing.Point(6, 32);
+            this.tbDatafileChecker_SourceFile.Name = "tbDatafileChecker_SourceFile";
+            this.tbDatafileChecker_SourceFile.Size = new System.Drawing.Size(259, 20);
+            this.tbDatafileChecker_SourceFile.TabIndex = 0;
+            // 
+            // btnDatafileChecker_Check
+            // 
+            this.btnDatafileChecker_Check.Location = new System.Drawing.Point(611, 154);
+            this.btnDatafileChecker_Check.Name = "btnDatafileChecker_Check";
+            this.btnDatafileChecker_Check.Size = new System.Drawing.Size(65, 20);
+            this.btnDatafileChecker_Check.TabIndex = 1;
+            this.btnDatafileChecker_Check.Text = "Go";
+            this.btnDatafileChecker_Check.UseVisualStyleBackColor = true;
+            this.btnDatafileChecker_Check.Click += new System.EventHandler(this.btnDatafileChecker_Check_Click);
+            // 
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.tabControl2);
@@ -774,13 +884,14 @@
             // 
             // tabPage4
             // 
+            this.tabPage4.Controls.Add(this.label7);
             this.tabPage4.Controls.Add(this.grpExamineMdx_XsfExplorer);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage4.Size = new System.Drawing.Size(408, 160);
             this.tabPage4.TabIndex = 1;
-            this.tabPage4.Text = "xSF/NSF";
+            this.tabPage4.Text = "Tag Viewer";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
             // grpExamineMdx_XsfExplorer
@@ -925,114 +1036,14 @@
             this.lblProgressLabel.TabIndex = 3;
             this.lblProgressLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // tabPage6
+            // label7
             // 
-            this.tabPage6.Controls.Add(this.label6);
-            this.tabPage6.Controls.Add(this.label3);
-            this.tabPage6.Controls.Add(this.groupBox1);
-            this.tabPage6.Controls.Add(this.btnDatafileChecker_Check);
-            this.tabPage6.Location = new System.Drawing.Point(4, 22);
-            this.tabPage6.Name = "tabPage6";
-            this.tabPage6.Size = new System.Drawing.Size(682, 198);
-            this.tabPage6.TabIndex = 3;
-            this.tabPage6.Text = "Datafile Checker";
-            this.tabPage6.UseVisualStyleBackColor = true;
-            // 
-            // tbDatafileChecker_SourceFile
-            // 
-            this.tbDatafileChecker_SourceFile.Location = new System.Drawing.Point(6, 32);
-            this.tbDatafileChecker_SourceFile.Name = "tbDatafileChecker_SourceFile";
-            this.tbDatafileChecker_SourceFile.Size = new System.Drawing.Size(259, 20);
-            this.tbDatafileChecker_SourceFile.TabIndex = 0;
-            // 
-            // btnDatafileChecker_Check
-            // 
-            this.btnDatafileChecker_Check.Location = new System.Drawing.Point(611, 154);
-            this.btnDatafileChecker_Check.Name = "btnDatafileChecker_Check";
-            this.btnDatafileChecker_Check.Size = new System.Drawing.Size(65, 20);
-            this.btnDatafileChecker_Check.TabIndex = 1;
-            this.btnDatafileChecker_Check.Text = "Go";
-            this.btnDatafileChecker_Check.UseVisualStyleBackColor = true;
-            this.btnDatafileChecker_Check.Click += new System.EventHandler(this.btnDatafileChecker_Check_Click);
-            // 
-            // tbDatafileChecker_OutputPath
-            // 
-            this.tbDatafileChecker_OutputPath.Location = new System.Drawing.Point(315, 32);
-            this.tbDatafileChecker_OutputPath.Name = "tbDatafileChecker_OutputPath";
-            this.tbDatafileChecker_OutputPath.Size = new System.Drawing.Size(259, 20);
-            this.tbDatafileChecker_OutputPath.TabIndex = 2;
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Controls.Add(this.tbDatafileChecker_BrowseDestination);
-            this.groupBox1.Controls.Add(this.tbDatafileChecker_BrowseSource);
-            this.groupBox1.Controls.Add(this.tbDatafileChecker_OutputPath);
-            this.groupBox1.Controls.Add(this.tbDatafileChecker_SourceFile);
-            this.groupBox1.Location = new System.Drawing.Point(3, 3);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(676, 60);
-            this.groupBox1.TabIndex = 3;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Source and Destination";
-            // 
-            // tbDatafileChecker_BrowseSource
-            // 
-            this.tbDatafileChecker_BrowseSource.Location = new System.Drawing.Point(270, 32);
-            this.tbDatafileChecker_BrowseSource.Name = "tbDatafileChecker_BrowseSource";
-            this.tbDatafileChecker_BrowseSource.Size = new System.Drawing.Size(28, 20);
-            this.tbDatafileChecker_BrowseSource.TabIndex = 1;
-            this.tbDatafileChecker_BrowseSource.Text = "...";
-            this.tbDatafileChecker_BrowseSource.UseVisualStyleBackColor = true;
-            this.tbDatafileChecker_BrowseSource.Click += new System.EventHandler(this.tbDatafileChecker_BrowseSource_Click);
-            // 
-            // tbDatafileChecker_BrowseDestination
-            // 
-            this.tbDatafileChecker_BrowseDestination.Location = new System.Drawing.Point(580, 32);
-            this.tbDatafileChecker_BrowseDestination.Name = "tbDatafileChecker_BrowseDestination";
-            this.tbDatafileChecker_BrowseDestination.Size = new System.Drawing.Size(28, 20);
-            this.tbDatafileChecker_BrowseDestination.TabIndex = 3;
-            this.tbDatafileChecker_BrowseDestination.Text = "...";
-            this.tbDatafileChecker_BrowseDestination.UseVisualStyleBackColor = true;
-            this.tbDatafileChecker_BrowseDestination.Click += new System.EventHandler(this.tbDatafileChecker_BrowseDestination_Click);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.ForeColor = System.Drawing.Color.Red;
-            this.label3.Location = new System.Drawing.Point(9, 175);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(159, 13);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "Add these fields to languages.ini";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 18);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(80, 13);
-            this.label4.TabIndex = 4;
-            this.label4.Text = "Source Datafile";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(312, 16);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(138, 13);
-            this.label5.TabIndex = 5;
-            this.label5.Text = "Report(s) Destination Folder";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(3, 66);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(113, 13);
-            this.label6.TabIndex = 5;
-            this.label6.Text = "Check for duplicates...";
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(3, 144);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(147, 13);
+            this.label7.TabIndex = 5;
+            this.label7.Text = "Supported Formats: xSF, NSF";
             // 
             // Form1
             // 
@@ -1064,6 +1075,10 @@
             this.grpRebuilder_Datafile.PerformLayout();
             this.grpRebuilder_Directories.ResumeLayout(false);
             this.grpRebuilder_Directories.PerformLayout();
+            this.tabPage6.ResumeLayout(false);
+            this.tabPage6.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.tabPage1.ResumeLayout(false);
             this.tabControl2.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
@@ -1071,16 +1086,13 @@
             this.grpExamineMdx_PdxDiscovery.ResumeLayout(false);
             this.grpExamineMdx_PdxDiscovery.PerformLayout();
             this.tabPage4.ResumeLayout(false);
+            this.tabPage4.PerformLayout();
             this.grpExamineMdx_XsfExplorer.ResumeLayout(false);
             this.grpExamineMdx_XsfExplorer.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            this.tabPage6.ResumeLayout(false);
-            this.tabPage6.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1182,6 +1194,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
     }
 }
 

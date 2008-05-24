@@ -122,6 +122,7 @@ namespace VGMToolbox.util
                 offset += read;
             }
         }
+        
         public static void AddChunkToChecksum(Stream pStream, int pOffset, int pLength,
             ref Crc32 pCrc32)
         {

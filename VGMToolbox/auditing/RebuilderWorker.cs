@@ -80,7 +80,7 @@ namespace VGMToolbox.auditing
                 foreach (AuditingUtil.ChecksumStruct cs in pDestinationFiles)
                 {
                     Application.DoEvents();
-                    string filePath = buildFilePath(cs.game, cs.rom);
+                    string filePath = buildFilePath(cs.game, Path.ChangeExtension(cs.rom, Path.GetExtension(pSourceFile.Name)));
                     string path = pDestination + filePath.Substring(0, filePath.LastIndexOf(Path.DirectorySeparatorChar));
 
                     if (pCompressOutput)
@@ -99,7 +99,7 @@ namespace VGMToolbox.auditing
                         }
 
                         zf.BeginUpdate();
-                        zf.Add(new FileDataSource(pSourceName), cs.rom);
+                        zf.Add(new FileDataSource(pSourceName), Path.ChangeExtension(cs.rom, Path.GetExtension(pSourceFile.Name)));
                         zf.CommitUpdate();
                         zf.Close();
                     }

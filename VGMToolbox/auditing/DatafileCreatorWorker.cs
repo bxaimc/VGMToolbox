@@ -141,6 +141,7 @@ namespace VGMToolbox.auditing
             romfile.crc = crc32Generator.Value.ToString("X2");
             // romfile.md5 = AuditingUtil.ByteArrayToString(md5Hash.Hash);
             // romfile.sha1 = AuditingUtil.ByteArrayToString(sha1Hash.Hash);
+            
             romfile.name = pFileName.Substring((pDirectory.LastIndexOf(this.dir) + this.dir.Length + 1));
 
             // Cleanup

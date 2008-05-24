@@ -106,7 +106,7 @@ namespace VGMToolbox.format
             return ret;
         }
 
-        public static bool IsGzipFile(FileStream pFileStream)
+        public static bool IsGzipFile(Stream pFileStream)
         {
             bool ret = false;
             long currentOffset = pFileStream.Position;
@@ -124,7 +124,7 @@ namespace VGMToolbox.format
             return ret;
         }
 
-        private static byte[] getGzippedSignatureBytes(FileStream pFileStream)
+        private static byte[] getGzippedSignatureBytes(Stream pFileStream)
         {
             byte[] ret = null;
 

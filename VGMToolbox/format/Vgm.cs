@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 
 using ICSharpCode.SharpZipLib.Checksums;
+using ICSharpCode.SharpZipLib.GZip;
 
 using VGMToolbox.util;
 using VGMToolbox.util.ObjectPooling;
@@ -405,51 +406,83 @@ namespace VGMToolbox.format
     
         public void initialize(Stream pStream)
         {
-            int intVersion = INT_VERSION_UNKNOWN;
-            
-            // Version 1.0 or greater (all versions)
-            this.signatureTag = this.getSignatureTag(pStream);
-            this.eofOffset = this.getEofOffset(pStream);
-            this.version = this.getVersion(pStream);
-            this.sn76489Clock = this.getSn76489Clock(pStream);
-            this.ym2413Clock = this.getYm2413Clock(pStream);
-            this.gd3Offset = this.getGd3Offset(pStream);
-            this.totalNumOfSamples = this.getTotalNumOfSamples(pStream);
-            this.loopOffset = this.getLoopOffset(pStream);
-            this.loopNumOfSamples = this.getLoopNumOfSamples(pStream);
-            // vgmData; get only during checksum to save memory
-
-            // Get version to determine if other tags are present
-            intVersion = this.getIntVersion();
-
-            
-            if (intVersion >= INT_VERSION_0101)
+            if (FormatUtil.IsGzipFile(pStream))
             {
-                // Version 1.01 or greater
-                this.rate = this.getRate(pStream);
+                GZipInputStream gZipInputStream = new GZipInputStream(pStream);
+                string tempGzipFile = Path.GetTempFileName();
+                FileStream gZipFileStream = new FileStream(tempGzipFile, FileMode.Open, FileAccess.ReadWrite);
 
-                if (intVersion >= INT_VERSION_0110)
+                int size = 4096;
+                byte[] writeData = new byte[size];
+                while (true)
                 {
-                    // Version 1.10 or greater
-                    this.sn76489Feedback = this.getSn76489Feedback(pStream);
-                    this.sn76489Srw = this.getSn76489Srw(pStream);
-                    this.ym2612Clock = this.getYm2612Clock(pStream);
-                    this.ym2151Clock = this.getYm2151Clock(pStream);
-
-                    if (intVersion >= INT_VERSION_0150)
+                    size = gZipInputStream.Read(writeData, 0, size);
+                    if (size > 0)
                     {
-                        // Version 1.50 or greater
-                        this.vgmDataOffset = this.getVgmDataOffset(pStream);
+                        gZipFileStream.Write(writeData, 0, size);
+                    }
+                    else
+                    {
+                        break;
                     }
                 }
-            }
 
-            if (intVersion < INT_VERSION_0150)
+                gZipFileStream.Seek(0, SeekOrigin.Begin);
+                this.initialize(gZipFileStream);
+
+                gZipFileStream.Close();
+                gZipFileStream.Dispose();
+                File.Delete(tempGzipFile);
+            }
+            else
             {
-                this.vgmDataOffset = BitConverter.GetBytes(VGM_DATA_OFFSET_PRE150);
-            }
+                int intVersion = INT_VERSION_UNKNOWN;
 
-            this.getAbsoluteOffsets(intVersion);
+                // Version 1.0 or greater (all versions)
+                this.signatureTag = this.getSignatureTag(pStream);
+                this.eofOffset = this.getEofOffset(pStream);
+                this.version = this.getVersion(pStream);
+                this.sn76489Clock = this.getSn76489Clock(pStream);
+                this.ym2413Clock = this.getYm2413Clock(pStream);
+                this.gd3Offset = this.getGd3Offset(pStream);
+                this.totalNumOfSamples = this.getTotalNumOfSamples(pStream);
+                this.loopOffset = this.getLoopOffset(pStream);
+                this.loopNumOfSamples = this.getLoopNumOfSamples(pStream);
+                // vgmData; get only during checksum to save memory
+
+                // Get version to determine if other tags are present
+                intVersion = this.getIntVersion();
+
+
+                if (intVersion >= INT_VERSION_0101)
+                {
+                    // Version 1.01 or greater
+                    this.rate = this.getRate(pStream);
+
+                    if (intVersion >= INT_VERSION_0110)
+                    {
+                        // Version 1.10 or greater
+                        this.sn76489Feedback = this.getSn76489Feedback(pStream);
+                        this.sn76489Srw = this.getSn76489Srw(pStream);
+                        this.ym2612Clock = this.getYm2612Clock(pStream);
+                        this.ym2151Clock = this.getYm2151Clock(pStream);
+
+                        if (intVersion >= INT_VERSION_0150)
+                        {
+                            // Version 1.50 or greater
+                            this.vgmDataOffset = this.getVgmDataOffset(pStream);
+                        }
+                    }
+                }
+
+                if (intVersion < INT_VERSION_0150)
+                {
+                    this.vgmDataOffset = BitConverter.GetBytes(VGM_DATA_OFFSET_PRE150);
+                }
+
+                this.getAbsoluteOffsets(intVersion);
+            
+            } // if (FormatUtil.IsGzipFile(pFileStream))
         }
 
         private void getAbsoluteOffsets(int pIntVersion)
@@ -469,10 +502,94 @@ namespace VGMToolbox.format
         
         public void getDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
             ref Crc32 pChecksum, bool pUseLibHash)
-        { 
-        
-        
-        
+        {
+            int intVersion = INT_VERSION_UNKNOWN;
+            
+            pChecksum.Reset();            
+
+            // Version 1.0 or greater (all versions)
+            pChecksum.Update(this.version);
+            pChecksum.Update(this.sn76489Clock);
+            pChecksum.Update(this.ym2413Clock);
+            pChecksum.Update(this.totalNumOfSamples);
+            pChecksum.Update(this.loopOffset);
+            pChecksum.Update(this.loopNumOfSamples);            
+
+            // Get version to determine if other tags are present
+            intVersion = this.getIntVersion();
+
+            if (intVersion >= INT_VERSION_0101)
+            {
+                // Version 1.01 or greater
+                pChecksum.Update(this.rate);
+
+                if (intVersion >= INT_VERSION_0110)
+                {
+                    // Version 1.10 or greater
+                    pChecksum.Update(this.sn76489Feedback);
+                    pChecksum.Update(this.sn76489Srw);
+                    pChecksum.Update(this.ym2612Clock);
+                    pChecksum.Update(this.ym2151Clock);
+                }
+            }
+
+            // Add data
+            FileStream fs = new FileStream(pPath, FileMode.Open, FileAccess.Read);
+            this.addDataSection(fs, ref pChecksum);
+            fs.Close();
+            fs.Dispose();
+        }
+
+        private void addDataSection(Stream pFileStream, ref Crc32 pChecksum)
+        {
+            long currentPosition = pFileStream.Position;
+            int bytesToRead = 0;
+
+            // Determine count of bytes to read for data section
+            if (this.gd3AbsoluteOffset > this.vgmDataAbsoluteOffset)
+            {
+                bytesToRead = this.gd3AbsoluteOffset - this.vgmDataAbsoluteOffset;
+            }
+            else
+            {
+                bytesToRead = this.eofAbsoluteOffset - this.vgmDataAbsoluteOffset;
+            }
+
+            if (FormatUtil.IsGzipFile(pFileStream))
+            {
+                GZipInputStream gZipInputStream = new GZipInputStream(pFileStream);
+                string tempGzipFile = Path.GetTempFileName();
+                FileStream gZipFileStream = new FileStream(tempGzipFile, FileMode.Open, FileAccess.ReadWrite);
+
+                int size = 4096;
+                byte[] writeData = new byte[size];
+                while (true)
+                {
+                    size = gZipInputStream.Read(writeData, 0, size);
+                    if (size > 0)
+                    {
+                        gZipFileStream.Write(writeData, 0, size);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                ParseFile.AddChunkToChecksum(gZipFileStream, this.vgmDataAbsoluteOffset, bytesToRead,
+                    ref pChecksum);
+
+                gZipFileStream.Close();
+                gZipFileStream.Dispose();
+                File.Delete(tempGzipFile);
+            }
+            else
+            {
+                ParseFile.AddChunkToChecksum(pFileStream, this.vgmDataAbsoluteOffset, bytesToRead,
+                    ref pChecksum);
+            }
+
+            pFileStream.Position = currentPosition;
         }
     }
 }
