@@ -23,8 +23,10 @@ namespace VGMToolbox.auditing
         private datafile datafile;                      // Datafile used for building lists
         private ArrayList checksumCache = new ArrayList();
         private Hashtable checksumHash = new Hashtable();
+        private ArrayList unknownFiles = new ArrayList();
 
         public Hashtable ChecksumHash { get { return checksumHash; } }
+
 
         #region CONSTRUCTORS
         
@@ -181,6 +183,7 @@ namespace VGMToolbox.auditing
             
             string havePath = pPath + "_HAVE.TXT";
             string missPath = pPath + "_MISS.TXT";
+            string unknownPath = pPath + "_UNKNOWNS.TXT";
             string fixDatPath = pPath + "Fix_Datafile.xml";
 
             string haveListText = String.Empty;
@@ -240,6 +243,8 @@ namespace VGMToolbox.auditing
                 datafile.game.Length, datafile.header.description) + Environment.NewLine +
                 Environment.NewLine + missListText;
             
+            
+            // Have List
             if (File.Exists(havePath))
             {
                 File.Delete(havePath);
@@ -249,6 +254,7 @@ namespace VGMToolbox.auditing
             sw.Write(haveListText);
             sw.Close();
 
+            // Miss List
             if (File.Exists(missPath))
             {
                 File.Delete(missPath);
@@ -258,7 +264,6 @@ namespace VGMToolbox.auditing
             sw.Write(missListText);
 
             sw.Close();
-            sw.Dispose();
 
             // Fix Datafile
             if (File.Exists(fixDatPath))
@@ -274,6 +279,32 @@ namespace VGMToolbox.auditing
                 textWriter.Close();
                 textWriter.Dispose();
             }
+
+            // Unknown Files
+            if (File.Exists(unknownPath))
+            {
+                File.Delete(unknownPath);
+            }
+
+            if (this.unknownFiles.Count > 0)
+            {
+                sw = File.CreateText(unknownPath);
+                sw.Write(String.Format("The following files were not found in the existing datafile for {0}", datafile.header.description)
+                    + Environment.NewLine + Environment.NewLine);
+
+                foreach (string p in this.unknownFiles)
+                {
+                    sw.Write(ROM_SPACER + p + Environment.NewLine);
+                }
+                sw.Close();
+            }
+
+            sw.Dispose();
+        }
+
+        public void AddUnknownFile(string pPath)
+        {
+            unknownFiles.Add(pPath);
         }
 
         # endregion

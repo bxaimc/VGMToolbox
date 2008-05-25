@@ -269,6 +269,10 @@ namespace VGMToolbox.auditing
                     }
                     pAuditingUtil.AddChecksumToCache(crc32Value);
                 }
+                else
+                {
+                    pAuditingUtil.AddUnknownFile(pFilePath);
+                }
 
                 fs.Close();
                 fs.Dispose();
