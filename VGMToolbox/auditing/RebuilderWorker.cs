@@ -31,9 +31,9 @@ namespace VGMToolbox.auditing
             public datafile pDatFile;
             public bool pRemoveSource; 
             public bool pOverwriteExisting;
+            public bool ScanOnly;
             public bool pCompressOutput;
             public int totalFiles;
-
         }
 
         public RebuilderWorker()
@@ -79,7 +79,6 @@ namespace VGMToolbox.auditing
             {
                 foreach (AuditingUtil.ChecksumStruct cs in pDestinationFiles)
                 {
-                    Application.DoEvents();
                     string filePath = buildFilePath(cs.game, Path.ChangeExtension(cs.rom, Path.GetExtension(pSourceFile.Name)));
                     string path = pDestination + filePath.Substring(0, filePath.LastIndexOf(Path.DirectorySeparatorChar));
 
@@ -263,8 +262,11 @@ namespace VGMToolbox.auditing
                 pDestinationFiles = (ArrayList)pAuditingUtil.ChecksumHash[crc32Value];
                 if (pDestinationFiles != null)
                 {
-                    this.moveFile(pRebuildSetsStruct.pDestinationDir, pDestinationFiles, fs, pFilePath, pRebuildSetsStruct.pOverwriteExisting,
-                        pAuditingUtil, pRebuildSetsStruct.pCompressOutput);
+                    if (!pRebuildSetsStruct.ScanOnly)
+                    {
+                        this.moveFile(pRebuildSetsStruct.pDestinationDir, pDestinationFiles, fs, pFilePath, pRebuildSetsStruct.pOverwriteExisting,
+                            pAuditingUtil, pRebuildSetsStruct.pCompressOutput);
+                    }
                     pAuditingUtil.AddChecksumToCache(crc32Value);
                 }
 

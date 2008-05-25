@@ -125,6 +125,7 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.lblProgressLabel = new System.Windows.Forms.Label();
+            this.cbRebuilder_ScanOnly = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -517,6 +518,7 @@
             // 
             // grpRebuilder_Options
             // 
+            this.grpRebuilder_Options.Controls.Add(this.cbRebuilder_ScanOnly);
             this.grpRebuilder_Options.Controls.Add(this.cbRebuilder_CompressOutput);
             this.grpRebuilder_Options.Controls.Add(this.cbRebuilder_Overwrite);
             this.grpRebuilder_Options.Controls.Add(this.cbRebuilder_RemoveSource);
@@ -558,6 +560,7 @@
             this.cbRebuilder_RemoveSource.TabIndex = 0;
             this.cbRebuilder_RemoveSource.Text = "Remove Rebuilt Source";
             this.cbRebuilder_RemoveSource.UseVisualStyleBackColor = true;
+            this.cbRebuilder_RemoveSource.CheckedChanged += new System.EventHandler(this.cbRebuilder_RemoveSource_CheckedChanged);
             // 
             // btnRebuilder_Rebuild
             // 
@@ -1045,6 +1048,17 @@
             this.lblProgressLabel.TabIndex = 3;
             this.lblProgressLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // cbRebuilder_ScanOnly
+            // 
+            this.cbRebuilder_ScanOnly.AutoSize = true;
+            this.cbRebuilder_ScanOnly.Location = new System.Drawing.Point(6, 56);
+            this.cbRebuilder_ScanOnly.Name = "cbRebuilder_ScanOnly";
+            this.cbRebuilder_ScanOnly.Size = new System.Drawing.Size(210, 17);
+            this.cbRebuilder_ScanOnly.TabIndex = 4;
+            this.cbRebuilder_ScanOnly.Text = "Scan Only (Do not move or delete files)";
+            this.cbRebuilder_ScanOnly.UseVisualStyleBackColor = true;
+            this.cbRebuilder_ScanOnly.CheckedChanged += new System.EventHandler(this.cbRebuilder_ScanOnly_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1195,6 +1209,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.CheckBox cbRebuilder_ScanOnly;
     }
 }
 

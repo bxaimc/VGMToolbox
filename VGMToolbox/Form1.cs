@@ -273,6 +273,7 @@ namespace VGMToolbox
                 vRebuildSetsStruct.pDatFile = dataFile;
                 vRebuildSetsStruct.pRemoveSource = cbRebuilder_RemoveSource.Checked;
                 vRebuildSetsStruct.pOverwriteExisting = cbRebuilder_Overwrite.Checked;
+                vRebuildSetsStruct.ScanOnly = cbRebuilder_ScanOnly.Checked;
                 vRebuildSetsStruct.pCompressOutput = cbRebuilder_CompressOutput.Checked;
                 vRebuildSetsStruct.totalFiles = Directory.GetFiles(tbRebuilder_SourceDir.Text, "*.*", SearchOption.AllDirectories).Length;
 
@@ -314,6 +315,7 @@ namespace VGMToolbox
             if (cbRebuilder_CompressOutput.Checked)
             {
                 cbRebuilder_Overwrite.Checked = false;
+                cbRebuilder_ScanOnly.Checked = false;
             }
         }
 
@@ -321,6 +323,25 @@ namespace VGMToolbox
         {
             if (cbRebuilder_Overwrite.Checked)
             {
+                cbRebuilder_CompressOutput.Checked = false;
+                cbRebuilder_ScanOnly.Checked = false;
+            }
+        }
+
+        private void cbRebuilder_RemoveSource_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbRebuilder_RemoveSource.Checked)
+            {
+                cbRebuilder_ScanOnly.Checked = false;
+            }
+        }
+
+        private void cbRebuilder_ScanOnly_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbRebuilder_ScanOnly.Checked)
+            {
+                cbRebuilder_RemoveSource.Checked = false;
+                cbRebuilder_Overwrite.Checked = false;
                 cbRebuilder_CompressOutput.Checked = false;
             }
         }
