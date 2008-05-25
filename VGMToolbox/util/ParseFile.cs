@@ -77,6 +77,46 @@ namespace VGMToolbox.util
             return ret;
         }
 
+        public static int getSegmentLength(Stream pStream, int pOffset, byte[] pTerminator)
+        {
+            int ret;
+            Boolean terminatorFound = false;
+            int i = pOffset;
+            byte[] checkBytes = new byte[pTerminator.Length];
+
+            while (i < pStream.Length)
+            {
+                pStream.Seek(i, SeekOrigin.Begin);
+                pStream.Read(checkBytes, 0, 1);
+
+                if (checkBytes[0] == pTerminator[0])    // first char match
+                {
+
+                    pStream.Seek(i, SeekOrigin.Begin);
+                    pStream.Read(checkBytes, 0, pTerminator.Length);
+                    
+                    if (compareSegment(checkBytes, 0, pTerminator))
+                    {
+                        terminatorFound = true;
+                        break;
+                    }
+                }
+                i++;
+            } // while (!terminatorFound)
+
+            if (terminatorFound)
+            {
+                ret = i - pOffset;
+            }
+            else
+            {
+                //ret = pOffset;
+                ret = 0;
+            }
+
+            return ret;
+        }
+
         public static bool compareSegment(byte[] pBytes, int pOffset, byte[] pTarget)
         {
             Boolean ret = true;

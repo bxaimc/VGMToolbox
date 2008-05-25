@@ -59,13 +59,30 @@ namespace VGMToolbox.format
                     Object o = asm.CreateInstance(t.FullName);
                     
                     // Set it to the Interface
-                    IFormat format = o as IFormat;                    
+                    IFormat format = o as IFormat;
 
-                    // Check the header bytes
-                    if (ParseFile.compareSegment(signatureBytes, HEADER_OFFSET, format.getAsciiSignature()))
+
+                    if (format.GetAsciiSignature() != null)
                     {
-                        ret = Type.GetType(t.FullName);
-                        break;
+                        // Check the header bytes
+                        if (ParseFile.compareSegment(signatureBytes, HEADER_OFFSET, format.GetAsciiSignature()))
+                        {
+                            ret = Type.GetType(t.FullName);
+                            break;
+                        }
+                    }
+                    else // fall back to extension
+                    {
+                        if (format.GetFileExtensions() != null)
+                        {
+                            string fileExtension = Path.GetExtension(pFileStream.Name).ToUpper();
+                            if (format.GetFileExtensions().Contains(fileExtension))
+                            {
+                                ret = Type.GetType(t.FullName);
+                                break;                            
+                            }
+                        }
+                        
                     }
                 }
             }            

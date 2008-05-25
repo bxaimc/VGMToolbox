@@ -12,15 +12,17 @@ namespace VGMToolbox.format
 {
     interface IFormat
     {
-        byte[] getAsciiSignature();
-        void getDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
+        byte[] GetAsciiSignature();
+        string GetFileExtensions();  // Should return values only if getAsciiSignature returns NULL
+        
+        void GetDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
             ref Crc32 pChecksum, bool pUseLibHash);        
         //void getDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash, 
         //    ref Crc32 pChecksum, ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream, 
         //    bool pUseLibHash);
-        string getFormatAbbreviation();
+        string GetFormatAbbreviation();
         //void initialize(byte[] pBytes);
-        void initialize(Stream pStream);
+        void Initialize(Stream pStream);
         bool IsFileLibrary(string pPath);
 
         Dictionary<string, string> GetTagHash();

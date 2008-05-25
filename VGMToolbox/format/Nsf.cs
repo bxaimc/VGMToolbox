@@ -12,7 +12,7 @@ namespace VGMToolbox.format
 {
     class Nsf : IFormat
     {
-        private static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x4E, 0x45, 0x53, 0x4D, 0x1A }; // PSF
+        private static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x4E, 0x45, 0x53, 0x4D, 0x1A };
         private const string FORMAT_ABBREVIATION = "NSF";
 
         private const int SIG_OFFSET = 0x00;
@@ -190,7 +190,7 @@ namespace VGMToolbox.format
             return ParseFile.parseSimpleOffset(pStream, DATA_OFFSET, (int) (pStream.Length - DATA_OFFSET));
         }
 
-        public void initialize(Stream pStream)
+        public void Initialize(Stream pStream)
         {
             this.asciiSignature = this.getAsciiSignature(pStream);
             this.versionNumber = this.getVersionNumber(pStream);
@@ -335,7 +335,7 @@ namespace VGMToolbox.format
             tagHash.Add("Starting Song", this.startingSong[0].ToString());
         }
         
-        public void getDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
+        public void GetDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
             ref Crc32 pChecksum, bool pUseLibHash)
         {
             pChecksum.Reset();    
@@ -354,12 +354,17 @@ namespace VGMToolbox.format
             pChecksum.Update(data);
         }
 
-        public byte[] getAsciiSignature()
+        public byte[] GetAsciiSignature()
         {
             return ASCII_SIGNATURE;
         }
         
-        public string getFormatAbbreviation()
+        public string GetFileExtensions()
+        {
+            return null;
+        }
+
+        public string GetFormatAbbreviation()
         {
             return FORMAT_ABBREVIATION;
         }

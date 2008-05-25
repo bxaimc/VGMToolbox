@@ -28,7 +28,7 @@ namespace VGMToolbox.tools
             {
                 fs.Seek(0, SeekOrigin.Begin);
                 Xsf vgmData = new Xsf();
-                vgmData.initialize(fs);
+                vgmData.Initialize(fs);
 
                 // Populate Tree View
                 if (pParentNode != null)

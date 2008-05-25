@@ -119,7 +119,7 @@ namespace VGMToolbox.util
                 if (dataType != null)
                 {
                     IFormat vgmData = (IFormat)Activator.CreateInstance(dataType);
-                    vgmData.initialize(fs);
+                    vgmData.Initialize(fs);
                     Dictionary<string, string> tagHash = vgmData.GetTagHash();
 
                     foreach (string s in tagHash.Keys)

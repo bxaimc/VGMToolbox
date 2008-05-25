@@ -204,12 +204,12 @@ namespace VGMToolbox.auditing
                     try
                     {
                         IFormat vgmData = (IFormat)Activator.CreateInstance(formatType);
-                        vgmData.initialize(fs);
+                        vgmData.Initialize(fs);
 
                         isFileLibrary = vgmData.IsFileLibrary(pFilePath);
                         // vgmData.getDatFileCrc32(pFilePath, ref libHash, ref crc32Generator,
                         //    ref md5CryptoStream, ref sha1CryptoStream, false, pStreamInput);                    
-                        vgmData.getDatFileCrc32(pFilePath, ref libHash, ref crc32Generator,
+                        vgmData.GetDatFileCrc32(pFilePath, ref libHash, ref crc32Generator,
                             false);
                         vgmData = null;
                     }
@@ -220,6 +220,7 @@ namespace VGMToolbox.auditing
                         exProgressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
                         ReportProgress(AuditingUtil.IGNORE_PROGRESS, exProgressStruct);
 
+                        crc32Generator.Reset();
                         // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
                         //    ref md5CryptoStream, ref sha1CryptoStream);
                         ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
@@ -231,6 +232,7 @@ namespace VGMToolbox.auditing
                         exProgressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
                         ReportProgress(AuditingUtil.IGNORE_PROGRESS, exProgressStruct);
 
+                        crc32Generator.Reset();
                         // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
                         //    ref md5CryptoStream, ref sha1CryptoStream);
                         ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
@@ -242,6 +244,7 @@ namespace VGMToolbox.auditing
                         exProgressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
                         ReportProgress(AuditingUtil.IGNORE_PROGRESS, exProgressStruct);
 
+                        crc32Generator.Reset();
                         // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
                         //    ref md5CryptoStream, ref sha1CryptoStream);
                         ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);

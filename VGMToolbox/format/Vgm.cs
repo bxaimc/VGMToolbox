@@ -410,12 +410,17 @@ namespace VGMToolbox.format
 
         #endregion
 
-        public byte[] getAsciiSignature()
+        public byte[] GetAsciiSignature()
         {
             return ASCII_SIGNATURE;
         }
 
-        public string getFormatAbbreviation()
+        public string GetFileExtensions()
+        {
+            return null;
+        }
+
+        public string GetFormatAbbreviation()
         {
             return "VGM";
         }
@@ -430,7 +435,7 @@ namespace VGMToolbox.format
             return this.tagHash;
         }
     
-        public void initialize(Stream pStream)
+        public void Initialize(Stream pStream)
         {
             if (FormatUtil.IsGzipFile(pStream))
             {
@@ -454,7 +459,7 @@ namespace VGMToolbox.format
                 }
 
                 gZipFileStream.Seek(0, SeekOrigin.Begin);
-                this.initialize(gZipFileStream);
+                this.Initialize(gZipFileStream);
 
                 gZipFileStream.Close();
                 gZipFileStream.Dispose();
@@ -535,7 +540,7 @@ namespace VGMToolbox.format
             this.eofAbsoluteOffset = BitConverter.ToInt32(this.eofOffset, 0) + EOF_OFFSET_OFFSET;
         }
         
-        public void getDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
+        public void GetDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
             ref Crc32 pChecksum, bool pUseLibHash)
         {
             int intVersion = INT_VERSION_UNKNOWN;

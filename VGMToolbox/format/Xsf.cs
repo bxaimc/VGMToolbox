@@ -79,9 +79,14 @@ namespace VGMToolbox.format
             this.initialize(pBytes);
         }
 
-        public byte[] getAsciiSignature()
+        public byte[] GetAsciiSignature()
         {
             return ASCII_SIGNATURE;
+        }
+
+        public string GetFileExtensions()
+        {
+            return null;
         }
 
         protected byte[] getCompressedProgram(byte[] pBytes)
@@ -109,7 +114,7 @@ namespace VGMToolbox.format
             return BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, COMPRESSED_SIZE_OFFSET, COMPRESSED_SIZE_LENGTH), 0);
         }
 
-        public void getDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
+        public void GetDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
             ref Crc32 pChecksum, bool pUseLibHash)
         {
             FileStream fs = File.OpenRead(pPath);
@@ -134,12 +139,12 @@ namespace VGMToolbox.format
                     using (FileStream lfs = File.OpenRead(f))
                     {
                         Xsf libXsf = new Xsf();
-                        libXsf.initialize(lfs);
+                        libXsf.Initialize(lfs);
 
 
                         if (!pUseLibHash)
                         {
-                            libXsf.getDatFileCrc32(f, ref pLibHash, ref pChecksum, pUseLibHash);
+                            libXsf.GetDatFileCrc32(f, ref pLibHash, ref pChecksum, pUseLibHash);
                         }
                         else
                         {
@@ -331,7 +336,7 @@ namespace VGMToolbox.format
             return this.formatHash[(ushort)this.versionByte[0]].ToString();
         }
 
-        public string getFormatAbbreviation()
+        public string GetFormatAbbreviation()
         {
             return FORMAT_ABBREVIATION;
         }
@@ -503,7 +508,7 @@ namespace VGMToolbox.format
             this.tagHash = this.getTags(pBytes);         
         }
 
-        public void initialize(Stream pStream)
+        public void Initialize(Stream pStream)
         {
             this.asciiSignature = this.getSignatureTag(pStream);
             this.versionByte = this.getVersionTag(pStream);
@@ -557,7 +562,7 @@ namespace VGMToolbox.format
                     {
                         fs.Seek(0, SeekOrigin.Begin);
                         Xsf checkFile = new Xsf();
-                        checkFile.initialize(fs);
+                        checkFile.Initialize(fs);
                         ArrayList libPathArray = new ArrayList(checkFile.GetLibPathArray(libDirectory));
 
                         if (libPathArray.Contains(pFilePath))
