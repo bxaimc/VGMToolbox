@@ -4,6 +4,7 @@ using System.IO;
 using System.Speech.Synthesis;
 using System.Threading;
 using System.Windows.Forms;
+using System.Xml;
 using System.Xml.Serialization;
 
 using VGMToolbox.auditing;
@@ -646,6 +647,16 @@ namespace VGMToolbox
                 dataFile.game = (game[])e.Result;
 
                 XmlSerializer serializer = new XmlSerializer(dataFile.GetType());
+                
+                //StreamWriter sw = new StreamWriter(tbDatCreator_OutputDat.Text);
+                //XmlWriter xw = new XmlTextWriter(sw);
+                //xw.WriteDocType("datafile", @"-//Logiqx//DTD ROM Management Datafile//EN", null, 
+                //@"http://www.logiqx.com/Dats/datafile.dtd");
+                //serializer.Serialize(xw, dataFile);
+                //xw.Close();
+                //sw.Close();
+                //sw.Dispose();
+
                 TextWriter textWriter = new StreamWriter(tbDatCreator_OutputDat.Text);
                 serializer.Serialize(textWriter, dataFile);
                 textWriter.Close();
