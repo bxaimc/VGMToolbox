@@ -255,10 +255,11 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(6, 17);
+            this.label2.MaximumSize = new System.Drawing.Size(190, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(177, 13);
+            this.label2.Size = new System.Drawing.Size(183, 26);
             this.label2.TabIndex = 2;
-            this.label2.Text = "Supported Formats: xSF, NSF, VGM";
+            this.label2.Text = "Supported Formats: xSF, NSF, VGM, MDX";
             // 
             // label23
             // 
@@ -274,7 +275,7 @@
             // 
             this.label22.AutoSize = true;
             this.label22.ForeColor = System.Drawing.Color.Black;
-            this.label22.Location = new System.Drawing.Point(11, 40);
+            this.label22.Location = new System.Drawing.Point(5, 102);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(183, 13);
             this.label22.TabIndex = 0;
@@ -899,9 +900,9 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(3, 144);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(177, 13);
+            this.label7.Size = new System.Drawing.Size(207, 13);
             this.label7.TabIndex = 5;
-            this.label7.Text = "Supported Formats: xSF, NSF, VGM";
+            this.label7.Text = "Supported Formats: xSF, NSF, VGM, MDX";
             // 
             // grpExamineMdx_XsfExplorer
             // 
