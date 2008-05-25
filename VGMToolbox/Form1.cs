@@ -583,6 +583,7 @@ namespace VGMToolbox
                 cbRebuilder_RemoveSource.Text = getGuiIniLabel(iniFile, cbRebuilder_RemoveSource.Text, "REBUILDER", "CHECKBOX_REMOVE_REBUILT");
                 cbRebuilder_Overwrite.Text = getGuiIniLabel(iniFile, cbRebuilder_Overwrite.Text, "REBUILDER", "CHECKBOX_OVERWRITE");
                 cbRebuilder_CompressOutput.Text = getGuiIniLabel(iniFile, cbRebuilder_CompressOutput.Text, "REBUILDER", "CHECKBOX_COMPRESS_OUTPUT");
+                cbRebuilder_ScanOnly.Text = getGuiIniLabel(iniFile, cbRebuilder_ScanOnly.Text, "REBUILDER", "CHECKBOX_SCAN_ONLY");
                 btnRebuilder_Rebuild.Text = getGuiIniLabel(iniFile, btnRebuilder_Rebuild.Text, "REBUILDER", "REBUILD_BUTTON");
                 btnRebuilder_Cancel.Text = getGuiIniLabel(iniFile, btnRebuilder_Cancel.Text, "REBUILDER", "CANCEL_BUTTON");
 
