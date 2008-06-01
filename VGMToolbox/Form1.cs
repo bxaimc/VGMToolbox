@@ -546,22 +546,6 @@ namespace VGMToolbox
 
         # endregion
 
-        # region ABOUT BOX
-
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Thread th = new Thread(new ThreadStart(DoAboutBox));
-            th.Start();
-        }
-
-        private void DoAboutBox()
-        {
-            AboutBox ab = new AboutBox();
-            ab.ShowDialog();
-        }
-
-        # endregion
-
         #region INI File
 
         private void loadLanguages()
