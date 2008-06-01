@@ -19,7 +19,11 @@ namespace VGMToolbox
         RebuilderWorker rebuilder;
         TreeBuilderWorker treeBuilder;
         DatafileCheckerWorker datafileCheckerWorker;
-        
+
+        DateTime elapsedTimeStart;
+        DateTime elapsedTimeEnd;
+        TimeSpan elapsedTime;
+
         public Form1()
         {
             InitializeComponent();
@@ -257,8 +261,9 @@ namespace VGMToolbox
         private void btnRebuilder_Rebuild_Click(object sender, EventArgs e)
         {
             doCleanup();
+            
             if (checkRebuilderInputs())
-            {
+            {                                
                 toolStripStatusLabel1.Text = "Rebuilding...";
 
                 datafile dataFile = new datafile();
@@ -475,6 +480,9 @@ namespace VGMToolbox
             tbOutput.Clear();
             treeViewTools.Nodes.Clear();
             doCancelCleanup();
+            
+            this.elapsedTimeStart = DateTime.Now;
+            this.showElapsedTime();
         }
 
         private void doCancelCleanup()
@@ -490,6 +498,14 @@ namespace VGMToolbox
             }
             toolStripProgressBar.Value = 0;
             lblProgressLabel.Text = String.Empty;
+        }
+
+        private void showElapsedTime()
+        {
+            this.elapsedTimeEnd = DateTime.Now;
+            this.elapsedTime = new TimeSpan();
+            this.elapsedTime = elapsedTimeEnd - elapsedTimeStart;
+            lblTimeElapsed.Text = String.Format("{0:D2}:{1:D2}:{2:D2}", elapsedTime.Hours, elapsedTime.Minutes, elapsedTime.Seconds);
         }
 
         private bool checkTextBox(string pText, string pFieldName)
@@ -629,6 +645,8 @@ namespace VGMToolbox
                 lblProgressLabel.Text = vProgressStruct.filename == null ? String.Empty : vProgressStruct.filename;
                 tbOutput.Text += vProgressStruct.errorMessage == null ? String.Empty : vProgressStruct.errorMessage;
             }
+
+            this.showElapsedTime();
         }
 
         private void rebuilderWorker_WorkComplete(object sender,
@@ -637,14 +655,14 @@ namespace VGMToolbox
             if (e.Cancelled)
             {
                 doCancelCleanup();
-                toolStripStatusLabel1.Text = "Rebuilding...Cancelled";
+                toolStripStatusLabel1.Text = "Rebuilding...Cancelled";                
                 tbOutput.Text += "Operation cancelled.";
             }
             else
             {
                 lblProgressLabel.Text = String.Empty;
                 toolStripStatusLabel1.Text = "Rebuilding...Complete";
-            }
+            }            
         }
 
         private void datafileCreatorWorker_WorkComplete(object sender,

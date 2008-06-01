@@ -42,7 +42,6 @@
             this.grpDatCreator_Options = new System.Windows.Forms.GroupBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
-            this.label22 = new System.Windows.Forms.Label();
             this.grpDatCreator_Header = new System.Windows.Forms.GroupBox();
             this.lblDatCreator_HeaderUrl = new System.Windows.Forms.Label();
             this.tbDatCreator_Url = new System.Windows.Forms.TextBox();
@@ -69,6 +68,7 @@
             this.btnRebuilder_Cancel = new System.Windows.Forms.Button();
             this.label24 = new System.Windows.Forms.Label();
             this.grpRebuilder_Options = new System.Windows.Forms.GroupBox();
+            this.cbRebuilder_ScanOnly = new System.Windows.Forms.CheckBox();
             this.cbRebuilder_CompressOutput = new System.Windows.Forms.CheckBox();
             this.cbRebuilder_Overwrite = new System.Windows.Forms.CheckBox();
             this.cbRebuilder_RemoveSource = new System.Windows.Forms.CheckBox();
@@ -96,14 +96,6 @@
             this.btnDatafileChecker_Check = new System.Windows.Forms.Button();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabControl2 = new System.Windows.Forms.TabControl();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.label19 = new System.Windows.Forms.Label();
-            this.grpExamineMdx_PdxDiscovery = new System.Windows.Forms.GroupBox();
-            this.cbMdxCheckPdxExist = new System.Windows.Forms.CheckBox();
-            this.tbMdxSourceFolder = new System.Windows.Forms.TextBox();
-            this.btnMdxFindPdx = new System.Windows.Forms.Button();
-            this.btnMdxBrowse = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.label7 = new System.Windows.Forms.Label();
             this.grpExamineMdx_XsfExplorer = new System.Windows.Forms.GroupBox();
@@ -112,6 +104,14 @@
             this.btnPsfBrowse = new System.Windows.Forms.Button();
             this.tbXsfSource = new System.Windows.Forms.TextBox();
             this.btnXsfGetInfo = new System.Windows.Forms.Button();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.label19 = new System.Windows.Forms.Label();
+            this.grpExamineMdx_PdxDiscovery = new System.Windows.Forms.GroupBox();
+            this.cbMdxCheckPdxExist = new System.Windows.Forms.CheckBox();
+            this.tbMdxSourceFolder = new System.Windows.Forms.TextBox();
+            this.btnMdxFindPdx = new System.Windows.Forms.Button();
+            this.btnMdxBrowse = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.treeViewTools = new System.Windows.Forms.TreeView();
             this.tbOutput = new System.Windows.Forms.TextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -125,7 +125,7 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.lblProgressLabel = new System.Windows.Forms.Label();
-            this.cbRebuilder_ScanOnly = new System.Windows.Forms.CheckBox();
+            this.lblTimeElapsed = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -138,10 +138,10 @@
             this.groupBox1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabControl2.SuspendLayout();
-            this.tabPage3.SuspendLayout();
-            this.grpExamineMdx_PdxDiscovery.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.grpExamineMdx_XsfExplorer.SuspendLayout();
+            this.tabPage3.SuspendLayout();
+            this.grpExamineMdx_PdxDiscovery.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -244,7 +244,6 @@
             // 
             this.grpDatCreator_Options.Controls.Add(this.label2);
             this.grpDatCreator_Options.Controls.Add(this.label23);
-            this.grpDatCreator_Options.Controls.Add(this.label22);
             this.grpDatCreator_Options.Location = new System.Drawing.Point(480, 11);
             this.grpDatCreator_Options.Name = "grpDatCreator_Options";
             this.grpDatCreator_Options.Size = new System.Drawing.Size(200, 139);
@@ -271,16 +270,6 @@
             this.label23.Size = new System.Drawing.Size(203, 13);
             this.label23.TabIndex = 1;
             this.label23.Text = "decompressing .zip files not yet supported";
-            // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.ForeColor = System.Drawing.Color.Black;
-            this.label22.Location = new System.Drawing.Point(5, 102);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(183, 13);
-            this.label22.TabIndex = 0;
-            this.label22.Text = "Currently using v1.4 of Logiqx datafile";
             // 
             // grpDatCreator_Header
             // 
@@ -528,6 +517,17 @@
             this.grpRebuilder_Options.TabIndex = 4;
             this.grpRebuilder_Options.TabStop = false;
             this.grpRebuilder_Options.Text = "Options";
+            // 
+            // cbRebuilder_ScanOnly
+            // 
+            this.cbRebuilder_ScanOnly.AutoSize = true;
+            this.cbRebuilder_ScanOnly.Location = new System.Drawing.Point(6, 56);
+            this.cbRebuilder_ScanOnly.Name = "cbRebuilder_ScanOnly";
+            this.cbRebuilder_ScanOnly.Size = new System.Drawing.Size(210, 17);
+            this.cbRebuilder_ScanOnly.TabIndex = 4;
+            this.cbRebuilder_ScanOnly.Text = "Scan Only (Do not move or delete files)";
+            this.cbRebuilder_ScanOnly.UseVisualStyleBackColor = true;
+            this.cbRebuilder_ScanOnly.CheckedChanged += new System.EventHandler(this.cbRebuilder_ScanOnly_CheckedChanged);
             // 
             // cbRebuilder_CompressOutput
             // 
@@ -798,6 +798,89 @@
             this.tabControl2.Size = new System.Drawing.Size(416, 186);
             this.tabControl2.TabIndex = 8;
             // 
+            // tabPage4
+            // 
+            this.tabPage4.Controls.Add(this.label7);
+            this.tabPage4.Controls.Add(this.grpExamineMdx_XsfExplorer);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Size = new System.Drawing.Size(408, 160);
+            this.tabPage4.TabIndex = 1;
+            this.tabPage4.Text = "Tag Viewer";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(3, 144);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(207, 13);
+            this.label7.TabIndex = 5;
+            this.label7.Text = "Supported Formats: xSF, NSF, VGM, MDX";
+            // 
+            // grpExamineMdx_XsfExplorer
+            // 
+            this.grpExamineMdx_XsfExplorer.Controls.Add(this.btnXsf_Cancel);
+            this.grpExamineMdx_XsfExplorer.Controls.Add(this.lblExamineXsf_SourceDirectory);
+            this.grpExamineMdx_XsfExplorer.Controls.Add(this.btnPsfBrowse);
+            this.grpExamineMdx_XsfExplorer.Controls.Add(this.tbXsfSource);
+            this.grpExamineMdx_XsfExplorer.Controls.Add(this.btnXsfGetInfo);
+            this.grpExamineMdx_XsfExplorer.Location = new System.Drawing.Point(3, 6);
+            this.grpExamineMdx_XsfExplorer.Name = "grpExamineMdx_XsfExplorer";
+            this.grpExamineMdx_XsfExplorer.Size = new System.Drawing.Size(399, 63);
+            this.grpExamineMdx_XsfExplorer.TabIndex = 4;
+            this.grpExamineMdx_XsfExplorer.TabStop = false;
+            // 
+            // btnXsf_Cancel
+            // 
+            this.btnXsf_Cancel.Location = new System.Drawing.Point(329, 33);
+            this.btnXsf_Cancel.Name = "btnXsf_Cancel";
+            this.btnXsf_Cancel.Size = new System.Drawing.Size(64, 20);
+            this.btnXsf_Cancel.TabIndex = 6;
+            this.btnXsf_Cancel.Text = "Cancel";
+            this.btnXsf_Cancel.UseVisualStyleBackColor = true;
+            this.btnXsf_Cancel.Click += new System.EventHandler(this.btnXsf_Cancel_Click);
+            // 
+            // lblExamineXsf_SourceDirectory
+            // 
+            this.lblExamineXsf_SourceDirectory.AutoSize = true;
+            this.lblExamineXsf_SourceDirectory.Location = new System.Drawing.Point(6, 17);
+            this.lblExamineXsf_SourceDirectory.Name = "lblExamineXsf_SourceDirectory";
+            this.lblExamineXsf_SourceDirectory.Size = new System.Drawing.Size(73, 13);
+            this.lblExamineXsf_SourceDirectory.TabIndex = 5;
+            this.lblExamineXsf_SourceDirectory.Text = "Source Folder";
+            // 
+            // btnPsfBrowse
+            // 
+            this.btnPsfBrowse.Location = new System.Drawing.Point(224, 33);
+            this.btnPsfBrowse.Name = "btnPsfBrowse";
+            this.btnPsfBrowse.Size = new System.Drawing.Size(38, 20);
+            this.btnPsfBrowse.TabIndex = 4;
+            this.btnPsfBrowse.Text = "...";
+            this.btnPsfBrowse.UseVisualStyleBackColor = true;
+            this.btnPsfBrowse.Click += new System.EventHandler(this.btnPsfBrowse_Click);
+            // 
+            // tbXsfSource
+            // 
+            this.tbXsfSource.AllowDrop = true;
+            this.tbXsfSource.Location = new System.Drawing.Point(9, 33);
+            this.tbXsfSource.Name = "tbXsfSource";
+            this.tbXsfSource.Size = new System.Drawing.Size(209, 20);
+            this.tbXsfSource.TabIndex = 2;
+            this.tbXsfSource.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbXsfSource_DragDrop);
+            this.tbXsfSource.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbXsfSource_DragEnter);
+            // 
+            // btnXsfGetInfo
+            // 
+            this.btnXsfGetInfo.Location = new System.Drawing.Point(265, 33);
+            this.btnXsfGetInfo.Name = "btnXsfGetInfo";
+            this.btnXsfGetInfo.Size = new System.Drawing.Size(64, 20);
+            this.btnXsfGetInfo.TabIndex = 3;
+            this.btnXsfGetInfo.Text = "Go";
+            this.btnXsfGetInfo.UseVisualStyleBackColor = true;
+            this.btnXsfGetInfo.Click += new System.EventHandler(this.btnXsfGetInfo_Click);
+            // 
             // tabPage3
             // 
             this.tabPage3.Controls.Add(this.label19);
@@ -886,89 +969,6 @@
             this.label1.TabIndex = 3;
             this.label1.Text = "Source Folder";
             // 
-            // tabPage4
-            // 
-            this.tabPage4.Controls.Add(this.label7);
-            this.tabPage4.Controls.Add(this.grpExamineMdx_XsfExplorer);
-            this.tabPage4.Location = new System.Drawing.Point(4, 22);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(408, 160);
-            this.tabPage4.TabIndex = 1;
-            this.tabPage4.Text = "Tag Viewer";
-            this.tabPage4.UseVisualStyleBackColor = true;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(3, 144);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(207, 13);
-            this.label7.TabIndex = 5;
-            this.label7.Text = "Supported Formats: xSF, NSF, VGM, MDX";
-            // 
-            // grpExamineMdx_XsfExplorer
-            // 
-            this.grpExamineMdx_XsfExplorer.Controls.Add(this.btnXsf_Cancel);
-            this.grpExamineMdx_XsfExplorer.Controls.Add(this.lblExamineXsf_SourceDirectory);
-            this.grpExamineMdx_XsfExplorer.Controls.Add(this.btnPsfBrowse);
-            this.grpExamineMdx_XsfExplorer.Controls.Add(this.tbXsfSource);
-            this.grpExamineMdx_XsfExplorer.Controls.Add(this.btnXsfGetInfo);
-            this.grpExamineMdx_XsfExplorer.Location = new System.Drawing.Point(3, 6);
-            this.grpExamineMdx_XsfExplorer.Name = "grpExamineMdx_XsfExplorer";
-            this.grpExamineMdx_XsfExplorer.Size = new System.Drawing.Size(399, 63);
-            this.grpExamineMdx_XsfExplorer.TabIndex = 4;
-            this.grpExamineMdx_XsfExplorer.TabStop = false;
-            // 
-            // btnXsf_Cancel
-            // 
-            this.btnXsf_Cancel.Location = new System.Drawing.Point(329, 33);
-            this.btnXsf_Cancel.Name = "btnXsf_Cancel";
-            this.btnXsf_Cancel.Size = new System.Drawing.Size(64, 20);
-            this.btnXsf_Cancel.TabIndex = 6;
-            this.btnXsf_Cancel.Text = "Cancel";
-            this.btnXsf_Cancel.UseVisualStyleBackColor = true;
-            this.btnXsf_Cancel.Click += new System.EventHandler(this.btnXsf_Cancel_Click);
-            // 
-            // lblExamineXsf_SourceDirectory
-            // 
-            this.lblExamineXsf_SourceDirectory.AutoSize = true;
-            this.lblExamineXsf_SourceDirectory.Location = new System.Drawing.Point(6, 17);
-            this.lblExamineXsf_SourceDirectory.Name = "lblExamineXsf_SourceDirectory";
-            this.lblExamineXsf_SourceDirectory.Size = new System.Drawing.Size(73, 13);
-            this.lblExamineXsf_SourceDirectory.TabIndex = 5;
-            this.lblExamineXsf_SourceDirectory.Text = "Source Folder";
-            // 
-            // btnPsfBrowse
-            // 
-            this.btnPsfBrowse.Location = new System.Drawing.Point(224, 33);
-            this.btnPsfBrowse.Name = "btnPsfBrowse";
-            this.btnPsfBrowse.Size = new System.Drawing.Size(38, 20);
-            this.btnPsfBrowse.TabIndex = 4;
-            this.btnPsfBrowse.Text = "...";
-            this.btnPsfBrowse.UseVisualStyleBackColor = true;
-            this.btnPsfBrowse.Click += new System.EventHandler(this.btnPsfBrowse_Click);
-            // 
-            // tbXsfSource
-            // 
-            this.tbXsfSource.AllowDrop = true;
-            this.tbXsfSource.Location = new System.Drawing.Point(9, 33);
-            this.tbXsfSource.Name = "tbXsfSource";
-            this.tbXsfSource.Size = new System.Drawing.Size(209, 20);
-            this.tbXsfSource.TabIndex = 2;
-            this.tbXsfSource.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbXsfSource_DragDrop);
-            this.tbXsfSource.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbXsfSource_DragEnter);
-            // 
-            // btnXsfGetInfo
-            // 
-            this.btnXsfGetInfo.Location = new System.Drawing.Point(265, 33);
-            this.btnXsfGetInfo.Name = "btnXsfGetInfo";
-            this.btnXsfGetInfo.Size = new System.Drawing.Size(64, 20);
-            this.btnXsfGetInfo.TabIndex = 3;
-            this.btnXsfGetInfo.Text = "Go";
-            this.btnXsfGetInfo.UseVisualStyleBackColor = true;
-            this.btnXsfGetInfo.Click += new System.EventHandler(this.btnXsfGetInfo_Click);
-            // 
             // treeViewTools
             // 
             this.treeViewTools.Location = new System.Drawing.Point(6, 6);
@@ -1040,29 +1040,29 @@
             // 
             this.lblProgressLabel.AutoEllipsis = true;
             this.lblProgressLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.lblProgressLabel.Location = new System.Drawing.Point(4, 340);
-            this.lblProgressLabel.MinimumSize = new System.Drawing.Size(681, 15);
+            this.lblProgressLabel.Location = new System.Drawing.Point(63, 340);
+            this.lblProgressLabel.MinimumSize = new System.Drawing.Size(619, 15);
             this.lblProgressLabel.Name = "lblProgressLabel";
             this.lblProgressLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.lblProgressLabel.Size = new System.Drawing.Size(681, 15);
+            this.lblProgressLabel.Size = new System.Drawing.Size(619, 15);
             this.lblProgressLabel.TabIndex = 3;
             this.lblProgressLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // cbRebuilder_ScanOnly
+            // lblTimeElapsed
             // 
-            this.cbRebuilder_ScanOnly.AutoSize = true;
-            this.cbRebuilder_ScanOnly.Location = new System.Drawing.Point(6, 56);
-            this.cbRebuilder_ScanOnly.Name = "cbRebuilder_ScanOnly";
-            this.cbRebuilder_ScanOnly.Size = new System.Drawing.Size(210, 17);
-            this.cbRebuilder_ScanOnly.TabIndex = 4;
-            this.cbRebuilder_ScanOnly.Text = "Scan Only (Do not move or delete files)";
-            this.cbRebuilder_ScanOnly.UseVisualStyleBackColor = true;
-            this.cbRebuilder_ScanOnly.CheckedChanged += new System.EventHandler(this.cbRebuilder_ScanOnly_CheckedChanged);
+            this.lblTimeElapsed.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.lblTimeElapsed.Location = new System.Drawing.Point(4, 340);
+            this.lblTimeElapsed.MinimumSize = new System.Drawing.Size(55, 15);
+            this.lblTimeElapsed.Name = "lblTimeElapsed";
+            this.lblTimeElapsed.Size = new System.Drawing.Size(55, 15);
+            this.lblTimeElapsed.TabIndex = 4;
+            this.lblTimeElapsed.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(686, 379);
+            this.Controls.Add(this.lblTimeElapsed);
             this.Controls.Add(this.lblProgressLabel);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
@@ -1095,14 +1095,14 @@
             this.groupBox1.PerformLayout();
             this.tabPage1.ResumeLayout(false);
             this.tabControl2.ResumeLayout(false);
-            this.tabPage3.ResumeLayout(false);
-            this.tabPage3.PerformLayout();
-            this.grpExamineMdx_PdxDiscovery.ResumeLayout(false);
-            this.grpExamineMdx_PdxDiscovery.PerformLayout();
             this.tabPage4.ResumeLayout(false);
             this.tabPage4.PerformLayout();
             this.grpExamineMdx_XsfExplorer.ResumeLayout(false);
             this.grpExamineMdx_XsfExplorer.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
+            this.grpExamineMdx_PdxDiscovery.ResumeLayout(false);
+            this.grpExamineMdx_PdxDiscovery.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
@@ -1186,7 +1186,6 @@
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar;
         private System.Windows.Forms.CheckBox cbRebuilder_Overwrite;
         private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.Label label22;
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
@@ -1210,6 +1209,7 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.CheckBox cbRebuilder_ScanOnly;
+        private System.Windows.Forms.Label lblTimeElapsed;
     }
 }
 

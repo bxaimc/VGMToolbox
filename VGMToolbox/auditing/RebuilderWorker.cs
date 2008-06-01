@@ -81,6 +81,8 @@ namespace VGMToolbox.auditing
                 {
                     string filePath = buildFilePath(cs.game, Path.ChangeExtension(cs.rom, Path.GetExtension(pSourceFile.Name)));
                     string path = pDestination + filePath.Substring(0, filePath.LastIndexOf(Path.DirectorySeparatorChar));
+                    string destinationPath = String.Empty;
+                    ZipEntry tempZipEntry = null;
 
                     if (pCompressOutput)
                     {
@@ -97,9 +99,15 @@ namespace VGMToolbox.auditing
                             zf = ZipFile.Create(pZipFilePath);
                         }
 
-                        zf.BeginUpdate();
-                        zf.Add(new FileDataSource(pSourceName), Path.ChangeExtension(cs.rom, Path.GetExtension(pSourceFile.Name)));
-                        zf.CommitUpdate();
+                        destinationPath = Path.ChangeExtension(cs.rom, Path.GetExtension(pSourceFile.Name));
+
+                        //tempZipEntry = zf.GetEntry(destinationPath);
+                        //if (pOverwriteExisting || tempZipEntry == null)
+                        //{
+                            zf.BeginUpdate();
+                            zf.Add(new FileDataSource(pSourceName), destinationPath);
+                            zf.CommitUpdate();
+                        //}                      
                         zf.Close();
                     }
                     else

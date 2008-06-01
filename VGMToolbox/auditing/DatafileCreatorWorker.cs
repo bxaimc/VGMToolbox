@@ -146,7 +146,6 @@ namespace VGMToolbox.auditing
             // romfile.sha1 = AuditingUtil.ByteArrayToString(sha1Hash.Hash);
             
             romfile.name = pFileName.Substring((pDirectory.LastIndexOf(this.dir) + this.dir.Length + 1));
-
             // Cleanup
             crc32Generator.Reset();
 
@@ -239,6 +238,7 @@ namespace VGMToolbox.auditing
                             {
                                 set.rom = (rom[])this.romList.ToArray(typeof(rom));
                                 set.name = d.Substring(d.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+                                set.description = set.name;
                                 gameList.Add(set);
 
                                 if (pGetGameParamsStruct.pUseLibHash)

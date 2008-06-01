@@ -1197,6 +1197,7 @@ namespace VGMToolbox.auditing
         public rom()
         {
             this.statusField = romStatus.good;
+            this.sizeField = "-1";
         }
 
         /// <remarks/>
