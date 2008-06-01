@@ -119,8 +119,6 @@
             this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.toolTip_tbMdxSourceFolder = new System.Windows.Forms.ToolTip(this.components);
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
@@ -143,7 +141,6 @@
             this.tabPage3.SuspendLayout();
             this.grpExamineMdx_PdxDiscovery.SuspendLayout();
             this.statusStrip1.SuspendLayout();
-            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -1014,24 +1011,6 @@
             this.toolTip_tbMdxSourceFolder.InitialDelay = 500;
             this.toolTip_tbMdxSourceFolder.ReshowDelay = 100;
             // 
-            // menuStrip1
-            // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.aboutToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.menuStrip1.Size = new System.Drawing.Size(686, 24);
-            this.menuStrip1.TabIndex = 2;
-            this.menuStrip1.Text = "menuStrip1";
-            // 
-            // aboutToolStripMenuItem
-            // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
-            this.aboutToolStripMenuItem.Text = "About";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
-            // 
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
@@ -1065,12 +1044,10 @@
             this.Controls.Add(this.lblTimeElapsed);
             this.Controls.Add(this.lblProgressLabel);
             this.Controls.Add(this.statusStrip1);
-            this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.tbOutput);
             this.Controls.Add(this.tabControl1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "VGMToolbox";
@@ -1105,8 +1082,6 @@
             this.grpExamineMdx_PdxDiscovery.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1126,7 +1101,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox grpExamineMdx_PdxDiscovery;
         private System.Windows.Forms.ToolTip toolTip_tbMdxSourceFolder;
-        private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.CheckBox cbMdxCheckPdxExist;
         private System.Windows.Forms.TreeView treeViewTools;
         private System.Windows.Forms.TabControl tabControl2;
@@ -1188,7 +1162,6 @@
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Label label24;
-        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.CheckBox cbRebuilder_CompressOutput;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.Button btnDatCreator_Cancel;
