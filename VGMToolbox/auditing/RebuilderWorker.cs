@@ -82,6 +82,7 @@ namespace VGMToolbox.auditing
                     string filePath = buildFilePath(cs.game, Path.ChangeExtension(cs.rom, Path.GetExtension(pSourceFile.Name)));
                     string path = pDestination + filePath.Substring(0, filePath.LastIndexOf(Path.DirectorySeparatorChar));
                     string destinationPath = String.Empty;
+                    string searchPattern = Path.GetFileNameWithoutExtension(cs.rom) + ".*";
                     ZipEntry tempZipEntry = null;
 
                     if (pCompressOutput)
@@ -117,7 +118,8 @@ namespace VGMToolbox.auditing
                             Directory.CreateDirectory(path);
                         }
 
-                        if (pOverwriteExisting || !File.Exists(pDestination + filePath))
+                        // if (pOverwriteExisting || !File.Exists(pDestination + filePath))                        
+                        if (pOverwriteExisting || Directory.GetFiles(path, searchPattern, SearchOption.AllDirectories).Length == 0)
                         {
                             File.Delete(pDestination + filePath);
                             FileStream streamWriter = File.Create(pDestination + filePath);
@@ -169,6 +171,8 @@ namespace VGMToolbox.auditing
                 RebuildSetsStruct zipRebuildSetsStruct = pRebuildSetsStruct;
                 zipRebuildSetsStruct.pSourceDir = tempDir;
                 zipRebuildSetsStruct.totalFiles = Directory.GetFiles(tempDir, "*.*", SearchOption.AllDirectories).Length;
+
+                maxFiles -= 1;                              // Remove this file from the count
                 this.rebuildSets(zipRebuildSetsStruct, pAuditingUtil, 0, ea);
 
                 if (!CancellationPending)
@@ -322,19 +326,21 @@ namespace VGMToolbox.auditing
             {
                 if (pDepth++ == 0)
                 {
-                    
+                    // Set Max sets
+                    maxFiles += pRebuildSetsStruct.totalFiles;
+
                     // process top level files
                     libFilesForDeletion.Clear();
                     foreach (string f in Directory.GetFiles(pRebuildSetsStruct.pSourceDir))
                     {
                         if (!CancellationPending)
                         {
+                            this.rebuildFile(f, pRebuildSetsStruct, pAuditingUtil, e);
+                            
                             int progress = (++fileCount * 100) / maxFiles;
                             AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
                             vProgressStruct.filename = f;
                             ReportProgress(progress, vProgressStruct);
-
-                            this.rebuildFile(f, pRebuildSetsStruct, pAuditingUtil, e);
                         }
                         else
                         {
@@ -362,12 +368,12 @@ namespace VGMToolbox.auditing
                             {
                                 try
                                 {
+                                    this.rebuildFile(f, pRebuildSetsStruct, pAuditingUtil, e);                                    
+                                    
                                     int progress = (++fileCount * 100) / maxFiles;
                                     AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
                                     vProgressStruct.filename = f;
                                     ReportProgress(progress, vProgressStruct);
-
-                                    this.rebuildFile(f, pRebuildSetsStruct, pAuditingUtil, e);
                                 }
                                 catch (Exception ex)
                                 {
