@@ -172,7 +172,7 @@ namespace VGMToolbox.auditing
                 zipRebuildSetsStruct.pSourceDir = tempDir;
                 zipRebuildSetsStruct.totalFiles = Directory.GetFiles(tempDir, "*.*", SearchOption.AllDirectories).Length;
 
-                maxFiles -= 1;                              // Remove this file from the count
+                maxFiles += zipRebuildSetsStruct.totalFiles;
                 this.rebuildSets(zipRebuildSetsStruct, pAuditingUtil, 0, ea);
 
                 if (!CancellationPending)
@@ -327,7 +327,7 @@ namespace VGMToolbox.auditing
                 if (pDepth++ == 0)
                 {
                     // Set Max sets
-                    maxFiles += pRebuildSetsStruct.totalFiles;
+                    //maxFiles += pRebuildSetsStruct.totalFiles;
 
                     // process top level files
                     libFilesForDeletion.Clear();
