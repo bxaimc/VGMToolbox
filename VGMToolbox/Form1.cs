@@ -280,12 +280,20 @@ namespace VGMToolbox
                 vRebuildSetsStruct.pOverwriteExisting = cbRebuilder_Overwrite.Checked;
                 vRebuildSetsStruct.ScanOnly = cbRebuilder_ScanOnly.Checked;
                 vRebuildSetsStruct.pCompressOutput = cbRebuilder_CompressOutput.Checked;
-                vRebuildSetsStruct.totalFiles = Directory.GetFiles(tbRebuilder_SourceDir.Text, "*.*", SearchOption.AllDirectories).Length;
 
-                rebuilder = new RebuilderWorker();
-                rebuilder.ProgressChanged += backgroundWorker_ReportProgress;
-                rebuilder.RunWorkerCompleted += rebuilderWorker_WorkComplete;
-                rebuilder.RunWorkerAsync(vRebuildSetsStruct);
+                try
+                {
+                    vRebuildSetsStruct.totalFiles = Directory.GetFiles(tbRebuilder_SourceDir.Text, "*.*", SearchOption.AllDirectories).Length;
+
+                    rebuilder = new RebuilderWorker();
+                    rebuilder.ProgressChanged += backgroundWorker_ReportProgress;
+                    rebuilder.RunWorkerCompleted += rebuilderWorker_WorkComplete;
+                    rebuilder.RunWorkerAsync(vRebuildSetsStruct);
+                }
+                catch (Exception exception2)
+                {
+                    tbOutput.Text += exception2.Message;
+                }
             }
         }
 
