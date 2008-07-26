@@ -353,7 +353,7 @@ namespace VGMToolbox.format
             if (tagHash.ContainsKey("_lib"))
             {
                 libPath = pPath + Path.DirectorySeparatorChar + tagHash["_lib"];
-                libPaths.Add(libPath.Trim());
+                libPaths.Add(libPath.Trim().ToUpper());
 
                 while (libsFound)
                 {
@@ -565,7 +565,7 @@ namespace VGMToolbox.format
                         checkFile.Initialize(fs);
                         ArrayList libPathArray = new ArrayList(checkFile.GetLibPathArray(libDirectory));
 
-                        if (libPathArray.Contains(pFilePath))
+                        if (libPathArray.Contains(pFilePath.ToUpper()))
                         {
                             ret = true;
                             fs.Close();

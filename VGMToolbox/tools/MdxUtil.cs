@@ -67,7 +67,7 @@ namespace VGMToolbox.tools
             Mdx mdx = getMdxForFile(pFileName);
             string pdxFileName = mdx.PdxFileName;
 
-            if (pdxFileName != null)
+            if (pdxFileName != null && pdxFileName != String.Empty)
             {
                 // add file extension if needed
                 if (!pdxFileName.EndsWith(Mdx.PDX_FILE_EXTENSION, StringComparison.OrdinalIgnoreCase))
