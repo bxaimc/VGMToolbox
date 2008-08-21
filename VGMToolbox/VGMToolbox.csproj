@@ -87,6 +87,8 @@
     <Compile Include="format\Gbr.cs" />
     <Compile Include="format\Gbs.cs" />
     <Compile Include="format\IFormat.cs" />
+    <Compile Include="format\Kss.cs" />
+    <Compile Include="format\Kssx.cs" />
     <Compile Include="format\Mdx.cs" />
     <Compile Include="format\Nsf.cs" />
     <Compile Include="format\Vgm.cs" />
