@@ -12,7 +12,7 @@ namespace VGMToolbox.format
 {
     class Gbs : IFormat
     {
-        private static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x47, 0x42, 0x53 };
+        private static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x47, 0x42, 0x53 }; // GBS
         private const string FORMAT_ABBREVIATION = "GBS";
 
         private const int SIG_OFFSET = 0x00;

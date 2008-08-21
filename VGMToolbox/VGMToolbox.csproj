@@ -84,6 +84,7 @@
     </Compile>
     <Compile Include="format\FormatEventArgs.cs" />
     <Compile Include="format\FormatUtil.cs" />
+    <Compile Include="format\Gbr.cs" />
     <Compile Include="format\Gbs.cs" />
     <Compile Include="format\IFormat.cs" />
     <Compile Include="format\Mdx.cs" />
