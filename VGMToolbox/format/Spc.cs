@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 using ICSharpCode.SharpZipLib.Checksums;
@@ -17,8 +18,15 @@ namespace VGMToolbox.format
                          0x20, 0x76, 0x30, 0x2E, 0x33, 0x30 }; // SNES-SPC700 Sound File Data v0.30
         private const string FORMAT_ABBREVIATION = "SPC";
 
+        private static readonly byte[] EXTENDED_ID666_SIGNATURE =
+            new byte[] { 0x78, 0x69, 0x64, 0x36 }; // xid6
         private static readonly byte[] ID666_IN_HEADER_VAL = new byte[] { 0x1A };
         private static readonly byte[] ID666_NOT_IN_HEADER_VAL = new byte[] { 0x1B };
+
+        private static readonly byte[] EXID666_SUBCHUNK_TYPE_LENGTH = new byte[] { 0x00 };
+        private static readonly byte[] EXID666_SUBCHUNK_TYPE_STRING = new byte[] { 0x01 };
+        private static readonly byte[] EXID666_SUBCHUNK_TYPE_INTEGER = new byte[] { 0x04 };
+
 
         private const int SIG_OFFSET = 0x00;
         private const int SIG_LENGTH = 0x21;
@@ -89,6 +97,7 @@ namespace VGMToolbox.format
         private byte[] extendedInfo;
 
         Dictionary<string, string> tagHash = new Dictionary<string, string>();
+        Dictionary<byte[], string> exId666Hash = new Dictionary<byte[], string>();
 
         public byte[] AsciiSignature { get { return this.asciiSignature; } }
         public byte[] Dummy26 { get { return this.dummy26; } }
@@ -141,8 +150,7 @@ namespace VGMToolbox.format
 
         private const int ID_RESERVED_OFFSET = 0xA5;
         private const int ID_RESERVED_LENGTH = 0x2D;                
-
-        
+       
         private byte[] id_songTitle;
         private byte[] id_gameTitle;
         private byte[] id_nameOfDumper;
@@ -166,6 +174,31 @@ namespace VGMToolbox.format
         public byte[] IdDefaultChanDisab { get { return this.id_songTitle; } }
         public byte[] IdEmulatorUsed { get { return this.id_songTitle; } }
         public byte[] IdReserved { get { return this.id_songTitle; } }
+
+        // EXID666 - CHUNK HEADER
+        private const int EX_ID666_HEADER_CHUNK_SIZE_OFFSET = 0x04;
+        private const int EX_ID666_HEADER_CHUNK_SIZE_LENGTH = 0x04;
+
+        private const int EX_ID666_CHUNK_DATA_OFFSET = 0x08;
+
+        private byte[] exidHeaderChunkSize;
+        private byte[] exidFullChunk;
+
+        public byte[] ExidHeaderChunkSize { get { return this.exidHeaderChunkSize; } }
+        
+        // EXID666 - SUBCHUNK
+        private const int EX_ID666_SUBCHUNK_ID_OFFSET = 0x00;
+        private const int EX_ID666_SUBCHUNK_ID_LENGTH = 0x01;
+
+        private const int EX_ID666_SUBCHUNK_TYPE_OFFSET = 0x01;
+        private const int EX_ID666_SUBCHUNK_TYPE_LENGTH = 0x01;
+
+        private const int EX_ID666_SUBCHUNK_LENGTH_OFFSET = 0x02;
+        private const int EX_ID666_SUBCHUNK_LENGTH_LENGTH = 0x02;
+
+        // private byte[] exidSubChunkId;
+        // private byte[] exidSubChunkType;
+        // private byte[] exidSubChunkLength;
 
         #region METHODS
 
@@ -285,7 +318,12 @@ namespace VGMToolbox.format
             return ParseFile.parseSimpleOffset(pBytes, ID_RESERVED_OFFSET, ID_RESERVED_LENGTH);
         }
         
-                                
+        /* EXID666 CHUNK */
+        public byte[] getExidHeaderChunkSize(byte[] pBytes)
+        {
+            return ParseFile.parseSimpleOffset(pBytes, EX_ID666_HEADER_CHUNK_SIZE_OFFSET, EX_ID666_HEADER_CHUNK_SIZE_LENGTH);
+        }
+                        
         public void Initialize(Stream pStream)
         {
             this.asciiSignature = this.getAsciiSignature(pStream);
@@ -299,7 +337,8 @@ namespace VGMToolbox.format
             this.registerPSW = this.getRegisterPSW(pStream);
             this.registerSP = this.getRegisterSP(pStream);
             this.reserved = this.getReserved(pStream);
-            
+
+            // ID666
             if (ParseFile.compareSegment(this.headerHasId666, 0, ID666_IN_HEADER_VAL))
             {
                 this.id666 = this.getId666(pStream);
@@ -324,17 +363,45 @@ namespace VGMToolbox.format
             this.extendedInfo = this.getExtendedInfo(pStream);
 
             this.initializeTagHash();
+            this.initializeExId666Hash();
+
+            // Extended ID666
+            if (this.extendedInfo.Length > 0 &&
+                ParseFile.compareSegment(this.extendedInfo, 0, EXTENDED_ID666_SIGNATURE))
+            {
+                exidHeaderChunkSize = this.getExidHeaderChunkSize(this.extendedInfo);
+                if (BitConverter.ToInt32(exidHeaderChunkSize, 0) > 0)
+                {
+                    exidFullChunk = ParseFile.parseSimpleOffset(this.extendedInfo, EX_ID666_CHUNK_DATA_OFFSET, BitConverter.ToInt32(exidHeaderChunkSize, 0));
+                }
+                this.parseExtendedChunk(exidFullChunk);
+            }
         }
 
         private void initializeTagHash()
         {
             System.Text.Encoding enc = System.Text.Encoding.ASCII;
             
-            tagHash.Add("Game", enc.GetString(this.id_gameTitle));
-            tagHash.Add("Song", enc.GetString(this.id_songTitle));
+            tagHash.Add("Game Name", enc.GetString(this.id_gameTitle));
+            tagHash.Add("Song Name", enc.GetString(this.id_songTitle));
             tagHash.Add("Artist", enc.GetString(this.id_songArtist));
             tagHash.Add("Dumper", enc.GetString(this.id_nameOfDumper));
             tagHash.Add("Comments", enc.GetString(this.id_comments));
+        }
+
+        private void initializeExId666Hash()
+        {
+            exId666Hash.Add(new byte[] { 0x01 }, "Song Name");
+            exId666Hash.Add(new byte[] { 0x02 }, "Game Name");
+            exId666Hash.Add(new byte[] { 0x03 }, "Artist");
+            exId666Hash.Add(new byte[] { 0x04 }, "Dumper");
+            exId666Hash.Add(new byte[] { 0x05 }, "Dump Date");
+            exId666Hash.Add(new byte[] { 0x06 }, "Emulator Used");
+            exId666Hash.Add(new byte[] { 0x07 }, "Comments");
+            exId666Hash.Add(new byte[] { 0x11 }, "OST Disc");
+            exId666Hash.Add(new byte[] { 0x12 }, "OST Track"); // Need to Parse
+            exId666Hash.Add(new byte[] { 0x13 }, "Publisher");
+            exId666Hash.Add(new byte[] { 0x14 }, "Copyright Year");
         }
 
         public void GetDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
@@ -379,8 +446,70 @@ namespace VGMToolbox.format
         public Dictionary<string, string> GetTagHash()
         {
             return this.tagHash;
-        }        
+        }
 
+        private void parseExtendedChunk(byte[] pBytes)
+        {
+            System.Text.Encoding enc = System.Text.Encoding.ASCII;
+            // EXID666 - SUBCHUNK
+            /*
+            private static readonly byte[] EXID666_SUBCHUNK_TYPE_LENGTH = new byte[] { 0x00 };
+            private static readonly byte[] EXID666_SUBCHUNK_TYPE_STRING = new byte[] { 0x01 };
+            private static readonly byte[] EXID666_SUBCHUNK_TYPE_INTEGER = new byte[] { 0x04 };              
+             */
+
+            byte[] exidSubChunkId;
+            byte[] exidSubChunkType;
+            byte[] exidSubChunkLength;
+        
+            int offset = 0;
+            while (offset < pBytes.Length)
+            {
+                exidSubChunkId = ParseFile.parseSimpleOffset(pBytes, offset + EX_ID666_SUBCHUNK_ID_OFFSET, EX_ID666_SUBCHUNK_ID_LENGTH);
+                exidSubChunkType = ParseFile.parseSimpleOffset(pBytes, offset + EX_ID666_SUBCHUNK_TYPE_OFFSET, EX_ID666_SUBCHUNK_TYPE_LENGTH);
+                exidSubChunkLength = ParseFile.parseSimpleOffset(pBytes, offset + EX_ID666_SUBCHUNK_LENGTH_OFFSET, EX_ID666_SUBCHUNK_LENGTH_LENGTH);
+
+                // LENGTH
+                if (ParseFile.compareSegment(exidSubChunkType, 0, EXID666_SUBCHUNK_TYPE_LENGTH))
+                {
+                    if (tagHash.ContainsKey(exId666Hash[exidSubChunkId]))
+                    {
+                        tagHash.Remove(exId666Hash[exidSubChunkId]);
+                    }
+                    tagHash.Add(exId666Hash[exidSubChunkId], System.BitConverter.ToInt16(exidSubChunkLength, 0).ToString());
+
+                    offset += EX_ID666_SUBCHUNK_ID_LENGTH + EX_ID666_SUBCHUNK_TYPE_LENGTH +
+                        EX_ID666_SUBCHUNK_LENGTH_LENGTH;                
+                }
+                
+                // STRING
+                else if (ParseFile.compareSegment(exidSubChunkType, 0, EXID666_SUBCHUNK_TYPE_STRING))
+                {
+                    int stringStartOffset = offset + EX_ID666_SUBCHUNK_LENGTH_OFFSET + EX_ID666_SUBCHUNK_LENGTH_LENGTH;
+                    int nullLength = ParseFile.getSegmentLength(pBytes, stringStartOffset, new byte[] { 0x00 });
+                    byte[] subChunkData = ParseFile.parseSimpleOffset(pBytes, stringStartOffset, nullLength);
+
+                    if (tagHash.ContainsKey(exId666Hash[exidSubChunkId]))
+                    {
+                        tagHash.Remove(exId666Hash[exidSubChunkId]);
+                    }
+                    tagHash.Add(exId666Hash[exidSubChunkId], enc.GetString(subChunkData));
+
+                    offset += EX_ID666_SUBCHUNK_ID_LENGTH + EX_ID666_SUBCHUNK_TYPE_LENGTH +
+                        EX_ID666_SUBCHUNK_LENGTH_LENGTH + nullLength;                
+                }
+
+                // INTEGER
+                else if (ParseFile.compareSegment(exidSubChunkType, 0, EXID666_SUBCHUNK_TYPE_INTEGER))
+                {
+                    offset += EX_ID666_SUBCHUNK_ID_LENGTH + EX_ID666_SUBCHUNK_TYPE_LENGTH +
+                        EX_ID666_SUBCHUNK_LENGTH_LENGTH + 4;
+                }
+
+
+            } // while (offset < pBytes.GetLength())
+
+        }
 
         #endregion
     }
