@@ -75,9 +75,7 @@ namespace VGMToolbox.format
         public byte[] Ff07Write { get { return this.ff07Write; } }
         public byte[] Unused { get { return this.unused; } }
         public byte[] Data { get { return this.data; } }
-
-        
-        
+                
         #region METHODS
 
         public byte[] getAsciiSignature(Stream pStream)
