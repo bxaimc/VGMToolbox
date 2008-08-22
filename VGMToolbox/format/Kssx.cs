@@ -111,6 +111,11 @@ namespace VGMToolbox.format
             return ParseFile.parseSimpleOffset(pStream, DEVICE_FLAG_OFFSET, DEVICE_FLAG_LENGTH);
         }
 
+
+
+
+
+
         #endregion
     }
 }

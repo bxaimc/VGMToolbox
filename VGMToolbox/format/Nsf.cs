@@ -15,6 +15,20 @@ namespace VGMToolbox.format
         private static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x4E, 0x45, 0x53, 0x4D, 0x1A };
         private const string FORMAT_ABBREVIATION = "NSF";
 
+        private static readonly byte MASK_VRC6  = 1;
+        private static readonly byte MASK_VRC7  = 2;
+        private static readonly byte MASK_FDS   = 4;
+        private static readonly byte MASK_MMC5  = 8;
+        private static readonly byte MASK_N106  = 16;
+        private static readonly byte MASK_FME07 = 32;
+
+        private const string CHIP_VRC6  = "[VRC6]";
+        private const string CHIP_VRC7  = "[VRC7]";
+        private const string CHIP_FDS   = "[FDS Sound]";
+        private const string CHIP_MMC5  = "[MMC5]";
+        private const string CHIP_N106  = "[NAMCO106]";
+        private const string CHIP_FME07 = "[Sunsoft FME-07]";
+
         private const int SIG_OFFSET = 0x00;
         private const int SIG_LENGTH = 0x05;
 
@@ -333,6 +347,7 @@ namespace VGMToolbox.format
             tagHash.Add("Copyright", enc.GetString(this.songCopyright));
             tagHash.Add("Total Songs", this.totalSongs[0].ToString());
             tagHash.Add("Starting Song", this.startingSong[0].ToString());
+            tagHash.Add("Extra Chips", getExtraChipsTag());            
         }
         
         public void GetDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
@@ -377,6 +392,38 @@ namespace VGMToolbox.format
         public Dictionary<string, string> GetTagHash()
         {
             return this.tagHash;
+        }
+
+        private string getExtraChipsTag()
+        { 
+            string _ret = String.Empty;
+            
+            if ((this.extraChipsBits[0] & MASK_VRC6) == MASK_VRC6) 
+            {
+                _ret += CHIP_VRC6;
+            }
+            if ((this.extraChipsBits[0] & MASK_VRC7) == MASK_VRC7)
+            {
+                _ret += CHIP_VRC7;
+            }
+            if ((this.extraChipsBits[0] & MASK_FDS) == MASK_FDS)
+            {
+                _ret += CHIP_FDS;
+            }
+            if ((this.extraChipsBits[0] & MASK_MMC5) == MASK_MMC5)
+            {
+                _ret += CHIP_MMC5;
+            }
+            if ((this.extraChipsBits[0] & MASK_N106) == MASK_N106)
+            {
+                _ret += CHIP_N106;
+            }
+            if ((this.extraChipsBits[0] & MASK_FME07) == MASK_FME07)
+            {
+                _ret += CHIP_FME07;
+            }
+            
+            return _ret;
         }
     }
 }
