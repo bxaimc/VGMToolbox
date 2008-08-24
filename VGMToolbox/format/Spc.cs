@@ -97,7 +97,7 @@ namespace VGMToolbox.format
         private byte[] extendedInfo;
 
         Dictionary<string, string> tagHash = new Dictionary<string, string>();
-        Dictionary<byte[], string> exId666Hash = new Dictionary<byte[], string>();
+        Dictionary<string, string> exId666Hash = new Dictionary<string, string>();
 
         public byte[] AsciiSignature { get { return this.asciiSignature; } }
         public byte[] Dummy26 { get { return this.dummy26; } }
@@ -391,17 +391,18 @@ namespace VGMToolbox.format
 
         private void initializeExId666Hash()
         {
-            exId666Hash.Add(new byte[] { 0x01 }, "Song Name");
-            exId666Hash.Add(new byte[] { 0x02 }, "Game Name");
-            exId666Hash.Add(new byte[] { 0x03 }, "Artist");
-            exId666Hash.Add(new byte[] { 0x04 }, "Dumper");
-            exId666Hash.Add(new byte[] { 0x05 }, "Dump Date");
-            exId666Hash.Add(new byte[] { 0x06 }, "Emulator Used");
-            exId666Hash.Add(new byte[] { 0x07 }, "Comments");
-            exId666Hash.Add(new byte[] { 0x11 }, "OST Disc");
-            exId666Hash.Add(new byte[] { 0x12 }, "OST Track"); // Need to Parse
-            exId666Hash.Add(new byte[] { 0x13 }, "Publisher");
-            exId666Hash.Add(new byte[] { 0x14 }, "Copyright Year");
+            exId666Hash.Add("01", "Song Name");
+            exId666Hash.Add("02", "Game Name");
+            exId666Hash.Add("03", "Artist");
+            exId666Hash.Add("04", "Dumper");
+            exId666Hash.Add("05", "Dump Date");
+            exId666Hash.Add("06", "Emulator Used");
+            exId666Hash.Add("07", "Comments");
+            exId666Hash.Add("10", "Official Soundtrack Title");
+            exId666Hash.Add("11", "OST Disc");
+            exId666Hash.Add("12", "OST Track"); // Need to Parse
+            exId666Hash.Add("13", "Publisher");
+            exId666Hash.Add("14", "Copyright Year");           
         }
 
         public void GetDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
@@ -461,7 +462,11 @@ namespace VGMToolbox.format
             byte[] exidSubChunkId;
             byte[] exidSubChunkType;
             byte[] exidSubChunkLength;
-        
+
+            string exidSubChunkIntId;
+            int exidSubChunkIntLength;
+
+
             int offset = 0;
             while (offset < pBytes.Length)
             {
@@ -469,14 +474,23 @@ namespace VGMToolbox.format
                 exidSubChunkType = ParseFile.parseSimpleOffset(pBytes, offset + EX_ID666_SUBCHUNK_TYPE_OFFSET, EX_ID666_SUBCHUNK_TYPE_LENGTH);
                 exidSubChunkLength = ParseFile.parseSimpleOffset(pBytes, offset + EX_ID666_SUBCHUNK_LENGTH_OFFSET, EX_ID666_SUBCHUNK_LENGTH_LENGTH);
 
+                exidSubChunkIntId  = BitConverter.ToString(exidSubChunkId, 0);
+                exidSubChunkIntLength = BitConverter.ToInt16(exidSubChunkLength, 0);
+
+
                 // LENGTH
-                if (ParseFile.compareSegment(exidSubChunkType, 0, EXID666_SUBCHUNK_TYPE_LENGTH))
+                if (!exId666Hash.ContainsKey(exidSubChunkIntId))
                 {
-                    if (tagHash.ContainsKey(exId666Hash[exidSubChunkId]))
+                    offset += EX_ID666_SUBCHUNK_ID_LENGTH + EX_ID666_SUBCHUNK_TYPE_LENGTH +
+                        EX_ID666_SUBCHUNK_LENGTH_LENGTH + (int)exidSubChunkIntLength;                
+                }
+                else if (ParseFile.compareSegment(exidSubChunkType, 0, EXID666_SUBCHUNK_TYPE_LENGTH))
+                {
+                    if (tagHash.ContainsKey(exId666Hash[exidSubChunkIntId]))
                     {
-                        tagHash.Remove(exId666Hash[exidSubChunkId]);
+                        tagHash.Remove(exId666Hash[exidSubChunkIntId]);
                     }
-                    tagHash.Add(exId666Hash[exidSubChunkId], System.BitConverter.ToInt16(exidSubChunkLength, 0).ToString());
+                    tagHash.Add(exId666Hash[exidSubChunkIntId], System.BitConverter.ToInt16(exidSubChunkLength, 0).ToString());
 
                     offset += EX_ID666_SUBCHUNK_ID_LENGTH + EX_ID666_SUBCHUNK_TYPE_LENGTH +
                         EX_ID666_SUBCHUNK_LENGTH_LENGTH;                
@@ -486,26 +500,28 @@ namespace VGMToolbox.format
                 else if (ParseFile.compareSegment(exidSubChunkType, 0, EXID666_SUBCHUNK_TYPE_STRING))
                 {
                     int stringStartOffset = offset + EX_ID666_SUBCHUNK_LENGTH_OFFSET + EX_ID666_SUBCHUNK_LENGTH_LENGTH;
-                    int nullLength = ParseFile.getSegmentLength(pBytes, stringStartOffset, new byte[] { 0x00 });
-                    byte[] subChunkData = ParseFile.parseSimpleOffset(pBytes, stringStartOffset, nullLength);
+                    byte[] subChunkData = ParseFile.parseSimpleOffset(pBytes, stringStartOffset, (int) exidSubChunkIntLength);
 
-                    if (tagHash.ContainsKey(exId666Hash[exidSubChunkId]))
+                    if (tagHash.ContainsKey(exId666Hash[exidSubChunkIntId]))
                     {
-                        tagHash.Remove(exId666Hash[exidSubChunkId]);
+                        tagHash.Remove(exId666Hash[exidSubChunkIntId]);
                     }
-                    tagHash.Add(exId666Hash[exidSubChunkId], enc.GetString(subChunkData));
+                    tagHash.Add(exId666Hash[exidSubChunkIntId], enc.GetString(subChunkData));
 
                     offset += EX_ID666_SUBCHUNK_ID_LENGTH + EX_ID666_SUBCHUNK_TYPE_LENGTH +
-                        EX_ID666_SUBCHUNK_LENGTH_LENGTH + nullLength;                
+                        EX_ID666_SUBCHUNK_LENGTH_LENGTH + (int) exidSubChunkIntLength;                
                 }
 
                 // INTEGER
                 else if (ParseFile.compareSegment(exidSubChunkType, 0, EXID666_SUBCHUNK_TYPE_INTEGER))
                 {
                     offset += EX_ID666_SUBCHUNK_ID_LENGTH + EX_ID666_SUBCHUNK_TYPE_LENGTH +
-                        EX_ID666_SUBCHUNK_LENGTH_LENGTH + 4;
+                        EX_ID666_SUBCHUNK_LENGTH_LENGTH + (int)exidSubChunkIntLength;
                 }
-
+                else
+                {
+                    break;  // bad format (see rs2-01a.spc, 0x10257 == 0x00 invalid ID)
+                }
 
             } // while (offset < pBytes.GetLength())
 
