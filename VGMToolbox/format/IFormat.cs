@@ -24,6 +24,7 @@ namespace VGMToolbox.format
         //void initialize(byte[] pBytes);
         void Initialize(Stream pStream);
         bool IsFileLibrary(string pPath);
+        bool HasMultipleFileExtensions();
 
         Dictionary<string, string> GetTagHash();
     }

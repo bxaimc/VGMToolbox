@@ -430,6 +430,11 @@ namespace VGMToolbox.format
             return false;
         }
 
+        public bool HasMultipleFileExtensions()
+        {
+            return true;
+        }
+
         public Dictionary<string, string> GetTagHash()
         {
             return this.tagHash;

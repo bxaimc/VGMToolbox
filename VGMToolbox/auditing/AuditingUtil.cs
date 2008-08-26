@@ -53,6 +53,7 @@ namespace VGMToolbox.auditing
             public string game;
             public string rom;
             public bool isFilePresent;
+            public bool hasMultipleExtensions;
         }
 
         public struct ProgressStruct
@@ -153,6 +154,7 @@ namespace VGMToolbox.auditing
                             checksumItem.game = set.name;
                             checksumItem.rom = file.name;
                             checksumItem.isFilePresent = false;
+                            checksumItem.hasMultipleExtensions = false;
                             list.Add(checksumItem);
                         }
                         else
@@ -162,6 +164,8 @@ namespace VGMToolbox.auditing
                             checksumItem.game = set.name;
                             checksumItem.rom = file.name;
                             checksumItem.isFilePresent = false;
+                            checksumItem.hasMultipleExtensions = false;
+                            
                             list.Add(checksumItem);
                             checksumHash.Remove(checksumKey);
                         }

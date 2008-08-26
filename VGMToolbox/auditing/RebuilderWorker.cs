@@ -69,7 +69,8 @@ namespace VGMToolbox.auditing
         }
 
         private void moveFile(string pDestination, ArrayList pDestinationFiles, FileStream pSourceFile,
-            string pSourceName, bool pOverwriteExisting, AuditingUtil pAuditingUtil, bool pCompressOutput)
+            string pSourceName, bool pOverwriteExisting, AuditingUtil pAuditingUtil, bool pCompressOutput,
+            bool hasMultipleExtensions)
         {
             int readSize = 0;
             byte[] data = new byte[4096];
@@ -82,7 +83,17 @@ namespace VGMToolbox.auditing
                     string filePath = buildFilePath(cs.game, Path.ChangeExtension(cs.rom, Path.GetExtension(pSourceFile.Name)));
                     string path = pDestination + filePath.Substring(0, filePath.LastIndexOf(Path.DirectorySeparatorChar));
                     string destinationPath = String.Empty;
-                    string searchPattern = Path.GetFileNameWithoutExtension(cs.rom) + ".*";
+                    string searchPattern;
+
+                    if (hasMultipleExtensions)
+                    {
+                        searchPattern = Path.GetFileNameWithoutExtension(cs.rom) + ".*";
+                    }
+                    else
+                    {
+                        searchPattern = Path.GetFileName(cs.rom);
+                    }
+                    
                     ZipEntry tempZipEntry = null;
 
                     if (pCompressOutput)
@@ -158,6 +169,7 @@ namespace VGMToolbox.auditing
         {
             ArrayList pDestinationFiles = new ArrayList();
             bool isFileLibrary = false;
+            bool hasMultipleExtensions = false;
             Type formatType = null;
 
             if (FormatUtil.IsZipFile(pFilePath))
@@ -218,6 +230,7 @@ namespace VGMToolbox.auditing
                         vgmData.Initialize(fs);
 
                         isFileLibrary = vgmData.IsFileLibrary(pFilePath);
+                        hasMultipleExtensions = vgmData.HasMultipleFileExtensions();
                         // vgmData.getDatFileCrc32(pFilePath, ref libHash, ref crc32Generator,
                         //    ref md5CryptoStream, ref sha1CryptoStream, false, pStreamInput);                    
                         vgmData.GetDatFileCrc32(pFilePath, ref libHash, ref crc32Generator,
@@ -273,11 +286,11 @@ namespace VGMToolbox.auditing
 
                 pDestinationFiles = (ArrayList)pAuditingUtil.ChecksumHash[crc32Value];
                 if (pDestinationFiles != null)
-                {
+                {                    
                     if (!pRebuildSetsStruct.ScanOnly)
                     {
                         this.moveFile(pRebuildSetsStruct.pDestinationDir, pDestinationFiles, fs, pFilePath, pRebuildSetsStruct.pOverwriteExisting,
-                            pAuditingUtil, pRebuildSetsStruct.pCompressOutput);
+                            pAuditingUtil, pRebuildSetsStruct.pCompressOutput, hasMultipleExtensions);
                     }
                     pAuditingUtil.AddChecksumToCache(crc32Value);
                 }
