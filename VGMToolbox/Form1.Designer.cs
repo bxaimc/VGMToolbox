@@ -40,7 +40,6 @@
             this.lblDatCreator_SourceFolder = new System.Windows.Forms.Label();
             this.tbDatCreator_SourceFolder = new System.Windows.Forms.TextBox();
             this.grpDatCreator_Options = new System.Windows.Forms.GroupBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
             this.grpDatCreator_Header = new System.Windows.Forms.GroupBox();
             this.lblDatCreator_HeaderUrl = new System.Windows.Forms.Label();
@@ -97,7 +96,6 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.label7 = new System.Windows.Forms.Label();
             this.grpExamineMdx_XsfExplorer = new System.Windows.Forms.GroupBox();
             this.btnXsf_Cancel = new System.Windows.Forms.Button();
             this.lblExamineXsf_SourceDirectory = new System.Windows.Forms.Label();
@@ -124,6 +122,16 @@
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.lblProgressLabel = new System.Windows.Forms.Label();
             this.lblTimeElapsed = new System.Windows.Forms.Label();
+            this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.tabControl3 = new System.Windows.Forms.TabControl();
+            this.tabPage8 = new System.Windows.Forms.TabPage();
+            this.tabPage9 = new System.Windows.Forms.TabPage();
+            this.tbHexFinder_SourceDir = new System.Windows.Forms.TextBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.btnHexFinder_BrowseSourceDir = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.tbHexFinder_HexString = new System.Windows.Forms.TextBox();
+            this.btnHexFinder_Go = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -141,6 +149,10 @@
             this.tabPage3.SuspendLayout();
             this.grpExamineMdx_PdxDiscovery.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.tabPage7.SuspendLayout();
+            this.tabControl3.SuspendLayout();
+            this.tabPage8.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -149,6 +161,7 @@
             this.tabControl1.Controls.Add(this.tabPage5);
             this.tabControl1.Controls.Add(this.tabPage6);
             this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage7);
             this.tabControl1.Location = new System.Drawing.Point(-1, 24);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -239,7 +252,6 @@
             // 
             // grpDatCreator_Options
             // 
-            this.grpDatCreator_Options.Controls.Add(this.label2);
             this.grpDatCreator_Options.Controls.Add(this.label23);
             this.grpDatCreator_Options.Location = new System.Drawing.Point(480, 11);
             this.grpDatCreator_Options.Name = "grpDatCreator_Options";
@@ -247,16 +259,6 @@
             this.grpDatCreator_Options.TabIndex = 2;
             this.grpDatCreator_Options.TabStop = false;
             this.grpDatCreator_Options.Text = "Options";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 17);
-            this.label2.MaximumSize = new System.Drawing.Size(190, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(183, 39);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Supported Formats: GBR, GBS, KSS (KSCC), MDX, NSF, SPC (v0.30), VGM, xSF";
             // 
             // label23
             // 
@@ -797,7 +799,6 @@
             // 
             // tabPage4
             // 
-            this.tabPage4.Controls.Add(this.label7);
             this.tabPage4.Controls.Add(this.grpExamineMdx_XsfExplorer);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
@@ -806,15 +807,6 @@
             this.tabPage4.TabIndex = 1;
             this.tabPage4.Text = "Tag Viewer";
             this.tabPage4.UseVisualStyleBackColor = true;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(3, 144);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(391, 13);
-            this.label7.TabIndex = 5;
-            this.label7.Text = "Supported Formats: GBR, GBS, KSS (KSCC), MDX, NSF, SPC (v0.30), VGM, xSF";
             // 
             // grpExamineMdx_XsfExplorer
             // 
@@ -982,6 +974,7 @@
             this.tbOutput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.tbOutput.Size = new System.Drawing.Size(682, 84);
             this.tbOutput.TabIndex = 0;
+            this.tbOutput.Text = "Supported Formats: GBR, GBS, KSS (KSCC), MDX, NSF, SPC (v0.30), VGM, xSF";
             // 
             // statusStrip1
             // 
@@ -1037,6 +1030,104 @@
             this.lblTimeElapsed.TabIndex = 4;
             this.lblTimeElapsed.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // tabPage7
+            // 
+            this.tabPage7.Controls.Add(this.tabControl3);
+            this.tabPage7.Location = new System.Drawing.Point(4, 22);
+            this.tabPage7.Name = "tabPage7";
+            this.tabPage7.Size = new System.Drawing.Size(682, 198);
+            this.tabPage7.TabIndex = 4;
+            this.tabPage7.Text = "Misc.";
+            this.tabPage7.UseVisualStyleBackColor = true;
+            // 
+            // tabControl3
+            // 
+            this.tabControl3.Controls.Add(this.tabPage8);
+            this.tabControl3.Controls.Add(this.tabPage9);
+            this.tabControl3.Location = new System.Drawing.Point(2, 6);
+            this.tabControl3.Name = "tabControl3";
+            this.tabControl3.SelectedIndex = 0;
+            this.tabControl3.Size = new System.Drawing.Size(679, 193);
+            this.tabControl3.TabIndex = 0;
+            // 
+            // tabPage8
+            // 
+            this.tabPage8.Controls.Add(this.btnHexFinder_Go);
+            this.tabPage8.Controls.Add(this.tbHexFinder_HexString);
+            this.tabPage8.Controls.Add(this.groupBox2);
+            this.tabPage8.Location = new System.Drawing.Point(4, 22);
+            this.tabPage8.Name = "tabPage8";
+            this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage8.Size = new System.Drawing.Size(671, 167);
+            this.tabPage8.TabIndex = 0;
+            this.tabPage8.Text = "HexFinder";
+            this.tabPage8.UseVisualStyleBackColor = true;
+            // 
+            // tabPage9
+            // 
+            this.tabPage9.Location = new System.Drawing.Point(4, 22);
+            this.tabPage9.Name = "tabPage9";
+            this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage9.Size = new System.Drawing.Size(671, 167);
+            this.tabPage9.TabIndex = 1;
+            this.tabPage9.Text = "tabPage9";
+            this.tabPage9.UseVisualStyleBackColor = true;
+            // 
+            // tbHexFinder_SourceDir
+            // 
+            this.tbHexFinder_SourceDir.Location = new System.Drawing.Point(6, 33);
+            this.tbHexFinder_SourceDir.Name = "tbHexFinder_SourceDir";
+            this.tbHexFinder_SourceDir.Size = new System.Drawing.Size(259, 20);
+            this.tbHexFinder_SourceDir.TabIndex = 0;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.label2);
+            this.groupBox2.Controls.Add(this.btnHexFinder_BrowseSourceDir);
+            this.groupBox2.Controls.Add(this.tbHexFinder_SourceDir);
+            this.groupBox2.Location = new System.Drawing.Point(3, 3);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(663, 60);
+            this.groupBox2.TabIndex = 1;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Source and Destination";
+            // 
+            // btnHexFinder_BrowseSourceDir
+            // 
+            this.btnHexFinder_BrowseSourceDir.Location = new System.Drawing.Point(270, 33);
+            this.btnHexFinder_BrowseSourceDir.Name = "btnHexFinder_BrowseSourceDir";
+            this.btnHexFinder_BrowseSourceDir.Size = new System.Drawing.Size(28, 20);
+            this.btnHexFinder_BrowseSourceDir.TabIndex = 1;
+            this.btnHexFinder_BrowseSourceDir.Text = "...";
+            this.btnHexFinder_BrowseSourceDir.UseVisualStyleBackColor = true;
+            this.btnHexFinder_BrowseSourceDir.Click += new System.EventHandler(this.btnHexFinder_BrowseSourceDir_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(3, 17);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(76, 13);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "Folder to Scan";
+            // 
+            // tbHexFinder_HexString
+            // 
+            this.tbHexFinder_HexString.Location = new System.Drawing.Point(9, 86);
+            this.tbHexFinder_HexString.Name = "tbHexFinder_HexString";
+            this.tbHexFinder_HexString.Size = new System.Drawing.Size(257, 20);
+            this.tbHexFinder_HexString.TabIndex = 2;
+            // 
+            // btnHexFinder_Go
+            // 
+            this.btnHexFinder_Go.Location = new System.Drawing.Point(273, 86);
+            this.btnHexFinder_Go.Name = "btnHexFinder_Go";
+            this.btnHexFinder_Go.Size = new System.Drawing.Size(75, 20);
+            this.btnHexFinder_Go.TabIndex = 3;
+            this.btnHexFinder_Go.Text = "button1";
+            this.btnHexFinder_Go.UseVisualStyleBackColor = true;
+            this.btnHexFinder_Go.Click += new System.EventHandler(this.btnHexFinder_Go_Click);
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1073,7 +1164,6 @@
             this.tabPage1.ResumeLayout(false);
             this.tabControl2.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);
-            this.tabPage4.PerformLayout();
             this.grpExamineMdx_XsfExplorer.ResumeLayout(false);
             this.grpExamineMdx_XsfExplorer.PerformLayout();
             this.tabPage3.ResumeLayout(false);
@@ -1082,6 +1172,12 @@
             this.grpExamineMdx_PdxDiscovery.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.tabPage7.ResumeLayout(false);
+            this.tabControl3.ResumeLayout(false);
+            this.tabPage8.ResumeLayout(false);
+            this.tabPage8.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1167,7 +1263,6 @@
         private System.Windows.Forms.Button btnDatCreator_Cancel;
         private System.Windows.Forms.Button btnRebuilder_Cancel;
         private System.Windows.Forms.Label lblProgressLabel;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnXsf_Cancel;
         private System.Windows.Forms.TabPage tabPage6;
         private System.Windows.Forms.TextBox tbDatafileChecker_SourceFile;
@@ -1180,9 +1275,18 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.CheckBox cbRebuilder_ScanOnly;
         private System.Windows.Forms.Label lblTimeElapsed;
+        private System.Windows.Forms.TabPage tabPage7;
+        private System.Windows.Forms.TabControl tabControl3;
+        private System.Windows.Forms.TabPage tabPage8;
+        private System.Windows.Forms.TabPage tabPage9;
+        private System.Windows.Forms.TextBox tbHexFinder_SourceDir;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Button btnHexFinder_BrowseSourceDir;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox tbHexFinder_HexString;
+        private System.Windows.Forms.Button btnHexFinder_Go;
     }
 }
 

@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Text;
 
 using ICSharpCode.SharpZipLib.GZip;
 
 using VGMToolbox.util;
-using VGMToolbox.format;
 
 namespace VGMToolbox.format
 {

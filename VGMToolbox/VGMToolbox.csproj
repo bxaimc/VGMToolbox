@@ -82,7 +82,6 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="format\FormatEventArgs.cs" />
     <Compile Include="format\FormatUtil.cs" />
     <Compile Include="format\Gbr.cs" />
     <Compile Include="format\Gbs.cs" />
@@ -94,6 +93,9 @@
     <Compile Include="format\Spc.cs" />
     <Compile Include="format\Vgm.cs" />
     <Compile Include="format\Xsf.cs" />
+    <Compile Include="misc\HexFinderWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">

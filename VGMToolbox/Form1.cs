@@ -622,6 +622,7 @@ namespace VGMToolbox
             if (e.ProgressPercentage != AuditingUtil.IGNORE_PROGRESS)
             {
                 toolStripProgressBar.Value = e.ProgressPercentage;
+                this.Text = "VGMToolbox [" + e.ProgressPercentage + "%]";
             }
             
             if (e.UserState != null)
@@ -654,7 +655,8 @@ namespace VGMToolbox
             {
                 lblProgressLabel.Text = String.Empty;
                 toolStripStatusLabel1.Text = "Rebuilding...Complete";
-            }            
+            }
+            this.Text = "VGMToolbox";
         }
 
         private void datafileCreatorWorker_WorkComplete(object sender,
@@ -696,6 +698,7 @@ namespace VGMToolbox
 
                 toolStripStatusLabel1.Text = "Building Datafile...Complete";
             }
+            this.Text = "VGMToolbox";
         }
         
         private void datafileCheckerWorker_WorkComplete(object sender,
@@ -712,6 +715,7 @@ namespace VGMToolbox
                 lblProgressLabel.Text = String.Empty;
                 toolStripStatusLabel1.Text = "Checking Datafile...Complete";
             }
+            this.Text = "VGMToolbox";
         }
         
         #endregion                
@@ -749,6 +753,24 @@ namespace VGMToolbox
             {
                 tbDatafileChecker_OutputPath.Text = folderBrowserDialog.SelectedPath;
             }
+        }
+
+        #endregion
+
+
+        #region MISC - HEXFINDER
+        private void btnHexFinder_BrowseSourceDir_Click(object sender, EventArgs e)
+        {
+            folderBrowserDialog = new FolderBrowserDialog();
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {
+                tbHexFinder_SourceDir.Text = folderBrowserDialog.SelectedPath;
+            }
+        }
+
+        private void btnHexFinder_Go_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Not implemented.");
         }
 
         #endregion
