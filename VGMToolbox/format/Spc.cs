@@ -339,7 +339,7 @@ namespace VGMToolbox.format
             this.reserved = this.getReserved(pStream);
 
             // ID666
-            if (ParseFile.compareSegment(this.headerHasId666, 0, ID666_IN_HEADER_VAL))
+            if (ParseFile.CompareSegment(this.headerHasId666, 0, ID666_IN_HEADER_VAL))
             {
                 this.id666 = this.getId666(pStream);
                 
@@ -367,7 +367,7 @@ namespace VGMToolbox.format
 
             // Extended ID666
             if (this.extendedInfo.Length > 0 &&
-                ParseFile.compareSegment(this.extendedInfo, 0, EXTENDED_ID666_SIGNATURE))
+                ParseFile.CompareSegment(this.extendedInfo, 0, EXTENDED_ID666_SIGNATURE))
             {
                 exidHeaderChunkSize = this.getExidHeaderChunkSize(this.extendedInfo);
                 if (BitConverter.ToInt32(exidHeaderChunkSize, 0) > 0)
@@ -489,7 +489,7 @@ namespace VGMToolbox.format
                     offset += EX_ID666_SUBCHUNK_ID_LENGTH + EX_ID666_SUBCHUNK_TYPE_LENGTH +
                         EX_ID666_SUBCHUNK_LENGTH_LENGTH + (int)exidSubChunkIntLength;                
                 }
-                else if (ParseFile.compareSegment(exidSubChunkType, 0, EXID666_SUBCHUNK_TYPE_LENGTH))
+                else if (ParseFile.CompareSegment(exidSubChunkType, 0, EXID666_SUBCHUNK_TYPE_LENGTH))
                 {
                     if (tagHash.ContainsKey(exId666Hash[exidSubChunkIntId]))
                     {
@@ -502,7 +502,7 @@ namespace VGMToolbox.format
                 }
                 
                 // STRING
-                else if (ParseFile.compareSegment(exidSubChunkType, 0, EXID666_SUBCHUNK_TYPE_STRING))
+                else if (ParseFile.CompareSegment(exidSubChunkType, 0, EXID666_SUBCHUNK_TYPE_STRING))
                 {
                     int stringStartOffset = offset + EX_ID666_SUBCHUNK_LENGTH_OFFSET + EX_ID666_SUBCHUNK_LENGTH_LENGTH;
                     byte[] subChunkData = ParseFile.parseSimpleOffset(pBytes, stringStartOffset, (int) exidSubChunkIntLength);
@@ -518,7 +518,7 @@ namespace VGMToolbox.format
                 }
 
                 // INTEGER
-                else if (ParseFile.compareSegment(exidSubChunkType, 0, EXID666_SUBCHUNK_TYPE_INTEGER))
+                else if (ParseFile.CompareSegment(exidSubChunkType, 0, EXID666_SUBCHUNK_TYPE_INTEGER))
                 {
                     offset += EX_ID666_SUBCHUNK_ID_LENGTH + EX_ID666_SUBCHUNK_TYPE_LENGTH +
                         EX_ID666_SUBCHUNK_LENGTH_LENGTH + (int)exidSubChunkIntLength;

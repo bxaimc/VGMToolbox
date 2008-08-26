@@ -55,7 +55,7 @@ namespace VGMToolbox.util
             {
                 if (pBytes[i] == pTerminator[0])    // first char match
                 {
-                    if (compareSegment(pBytes, i, pTerminator))
+                    if (CompareSegment(pBytes, i, pTerminator))
                     {
                         terminatorFound = true;
                         break;
@@ -95,7 +95,7 @@ namespace VGMToolbox.util
                     pStream.Seek(i, SeekOrigin.Begin);
                     pStream.Read(checkBytes, 0, pTerminator.Length);
                     
-                    if (compareSegment(checkBytes, 0, pTerminator))
+                    if (CompareSegment(checkBytes, 0, pTerminator))
                     {
                         terminatorFound = true;
                         break;
@@ -117,7 +117,7 @@ namespace VGMToolbox.util
             return ret;
         }
 
-        public static bool compareSegment(byte[] pBytes, int pOffset, byte[] pTarget)
+        public static bool CompareSegment(byte[] pBytes, int pOffset, byte[] pTarget)
         {
             Boolean ret = true;
             uint j = 0;

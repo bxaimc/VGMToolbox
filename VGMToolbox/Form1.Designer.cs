@@ -132,6 +132,13 @@
             this.label2 = new System.Windows.Forms.Label();
             this.tbHexFinder_HexString = new System.Windows.Forms.TextBox();
             this.btnHexFinder_Go = new System.Windows.Forms.Button();
+            this.tabPage10 = new System.Windows.Forms.TabPage();
+            this.tabControl4 = new System.Windows.Forms.TabControl();
+            this.tabPage11 = new System.Windows.Forms.TabPage();
+            this.tabPage12 = new System.Windows.Forms.TabPage();
+            this.tbExtractorsFLX_SourceFile = new System.Windows.Forms.TextBox();
+            this.tbExtractorsFLX_DestinationDir = new System.Windows.Forms.TextBox();
+            this.btnExtractorsFLX_Extract = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -153,6 +160,9 @@
             this.tabControl3.SuspendLayout();
             this.tabPage8.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.tabPage10.SuspendLayout();
+            this.tabControl4.SuspendLayout();
+            this.tabPage11.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -161,6 +171,7 @@
             this.tabControl1.Controls.Add(this.tabPage5);
             this.tabControl1.Controls.Add(this.tabPage6);
             this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage10);
             this.tabControl1.Controls.Add(this.tabPage7);
             this.tabControl1.Location = new System.Drawing.Point(-1, 24);
             this.tabControl1.Name = "tabControl1";
@@ -1128,6 +1139,73 @@
             this.btnHexFinder_Go.UseVisualStyleBackColor = true;
             this.btnHexFinder_Go.Click += new System.EventHandler(this.btnHexFinder_Go_Click);
             // 
+            // tabPage10
+            // 
+            this.tabPage10.Controls.Add(this.tabControl4);
+            this.tabPage10.Location = new System.Drawing.Point(4, 22);
+            this.tabPage10.Name = "tabPage10";
+            this.tabPage10.Size = new System.Drawing.Size(682, 198);
+            this.tabPage10.TabIndex = 5;
+            this.tabPage10.Text = "Extractors";
+            this.tabPage10.UseVisualStyleBackColor = true;
+            // 
+            // tabControl4
+            // 
+            this.tabControl4.Controls.Add(this.tabPage11);
+            this.tabControl4.Controls.Add(this.tabPage12);
+            this.tabControl4.Location = new System.Drawing.Point(9, 19);
+            this.tabControl4.Name = "tabControl4";
+            this.tabControl4.SelectedIndex = 0;
+            this.tabControl4.Size = new System.Drawing.Size(568, 165);
+            this.tabControl4.TabIndex = 0;
+            // 
+            // tabPage11
+            // 
+            this.tabPage11.Controls.Add(this.btnExtractorsFLX_Extract);
+            this.tabPage11.Controls.Add(this.tbExtractorsFLX_DestinationDir);
+            this.tabPage11.Controls.Add(this.tbExtractorsFLX_SourceFile);
+            this.tabPage11.Location = new System.Drawing.Point(4, 22);
+            this.tabPage11.Name = "tabPage11";
+            this.tabPage11.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage11.Size = new System.Drawing.Size(560, 139);
+            this.tabPage11.TabIndex = 0;
+            this.tabPage11.Text = "FLX (Ultima IX)";
+            this.tabPage11.UseVisualStyleBackColor = true;
+            // 
+            // tabPage12
+            // 
+            this.tabPage12.Location = new System.Drawing.Point(4, 22);
+            this.tabPage12.Name = "tabPage12";
+            this.tabPage12.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage12.Size = new System.Drawing.Size(560, 139);
+            this.tabPage12.TabIndex = 1;
+            this.tabPage12.Text = "tabPage12";
+            this.tabPage12.UseVisualStyleBackColor = true;
+            // 
+            // tbExtractorsFLX_SourceFile
+            // 
+            this.tbExtractorsFLX_SourceFile.Location = new System.Drawing.Point(6, 20);
+            this.tbExtractorsFLX_SourceFile.Name = "tbExtractorsFLX_SourceFile";
+            this.tbExtractorsFLX_SourceFile.Size = new System.Drawing.Size(280, 20);
+            this.tbExtractorsFLX_SourceFile.TabIndex = 0;
+            // 
+            // tbExtractorsFLX_DestinationDir
+            // 
+            this.tbExtractorsFLX_DestinationDir.Location = new System.Drawing.Point(6, 79);
+            this.tbExtractorsFLX_DestinationDir.Name = "tbExtractorsFLX_DestinationDir";
+            this.tbExtractorsFLX_DestinationDir.Size = new System.Drawing.Size(280, 20);
+            this.tbExtractorsFLX_DestinationDir.TabIndex = 1;
+            // 
+            // btnExtractorsFLX_Extract
+            // 
+            this.btnExtractorsFLX_Extract.Location = new System.Drawing.Point(305, 76);
+            this.btnExtractorsFLX_Extract.Name = "btnExtractorsFLX_Extract";
+            this.btnExtractorsFLX_Extract.Size = new System.Drawing.Size(75, 23);
+            this.btnExtractorsFLX_Extract.TabIndex = 2;
+            this.btnExtractorsFLX_Extract.Text = "button1";
+            this.btnExtractorsFLX_Extract.UseVisualStyleBackColor = true;
+            this.btnExtractorsFLX_Extract.Click += new System.EventHandler(this.btnExtractorsFLX_Extract_Click);
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1178,6 +1256,10 @@
             this.tabPage8.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.tabPage10.ResumeLayout(false);
+            this.tabControl4.ResumeLayout(false);
+            this.tabPage11.ResumeLayout(false);
+            this.tabPage11.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1287,6 +1369,13 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox tbHexFinder_HexString;
         private System.Windows.Forms.Button btnHexFinder_Go;
+        private System.Windows.Forms.TabPage tabPage10;
+        private System.Windows.Forms.TabControl tabControl4;
+        private System.Windows.Forms.TabPage tabPage11;
+        private System.Windows.Forms.TabPage tabPage12;
+        private System.Windows.Forms.TextBox tbExtractorsFLX_DestinationDir;
+        private System.Windows.Forms.TextBox tbExtractorsFLX_SourceFile;
+        private System.Windows.Forms.Button btnExtractorsFLX_Extract;
     }
 }
 

@@ -62,7 +62,7 @@ namespace VGMToolbox.format
                     if (format.GetAsciiSignature() != null)
                     {
                         // Check the header bytes
-                        if (ParseFile.compareSegment(signatureBytes, HEADER_OFFSET, format.GetAsciiSignature()))
+                        if (ParseFile.CompareSegment(signatureBytes, HEADER_OFFSET, format.GetAsciiSignature()))
                         {
                             ret = Type.GetType(t.FullName);
                             break;
@@ -95,7 +95,7 @@ namespace VGMToolbox.format
             fs.Close();
             fs.Dispose();
 
-            if (ParseFile.compareSegment(signatureBytes, HEADER_OFFSET, ZIP_SIGNATURE))
+            if (ParseFile.CompareSegment(signatureBytes, HEADER_OFFSET, ZIP_SIGNATURE))
             {
                 ret = true;
             }
@@ -112,7 +112,7 @@ namespace VGMToolbox.format
             fs.Close();
             fs.Dispose();
 
-            if (ParseFile.compareSegment(signatureBytes, HEADER_OFFSET, GZIP_SIGNATURE))
+            if (ParseFile.CompareSegment(signatureBytes, HEADER_OFFSET, GZIP_SIGNATURE))
             {
                 ret = true;
             }
@@ -128,7 +128,7 @@ namespace VGMToolbox.format
             byte[] signatureBytes = ParseFile.parseSimpleOffset(pFileStream, HEADER_OFFSET, 
                 GZIP_SIGNATURE.Length);
 
-            if (ParseFile.compareSegment(signatureBytes, HEADER_OFFSET, GZIP_SIGNATURE))
+            if (ParseFile.CompareSegment(signatureBytes, HEADER_OFFSET, GZIP_SIGNATURE))
             {
                 ret = true;
             }

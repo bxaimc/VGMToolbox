@@ -388,19 +388,19 @@ namespace VGMToolbox.format
         {
             int ret = INT_VERSION_UNKNOWN;
 
-            if (ParseFile.compareSegment(this.version, 0, VERSION_0100))
+            if (ParseFile.CompareSegment(this.version, 0, VERSION_0100))
             {
                 ret = INT_VERSION_0100;
             }
-            else if (ParseFile.compareSegment(this.version, 0, VERSION_0101))
+            else if (ParseFile.CompareSegment(this.version, 0, VERSION_0101))
             {
                 ret = INT_VERSION_0101;
             }
-            else if (ParseFile.compareSegment(this.version, 0, VERSION_0110))
+            else if (ParseFile.CompareSegment(this.version, 0, VERSION_0110))
             {
                 ret = INT_VERSION_0110;
             }
-            else if (ParseFile.compareSegment(this.version, 0, VERSION_0150))
+            else if (ParseFile.CompareSegment(this.version, 0, VERSION_0150))
             {
                 ret = INT_VERSION_0150;
             }

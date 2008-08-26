@@ -60,6 +60,7 @@ namespace VGMToolbox.auditing
         {
             public string filename;
             public string errorMessage;
+            public string genericMessage;
             public TreeNode newNode;
         }
          

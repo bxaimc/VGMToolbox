@@ -8,6 +8,7 @@ using System.Xml;
 using System.Xml.Serialization;
 
 using VGMToolbox.auditing;
+using VGMToolbox.extractors;
 using VGMToolbox.tools;
 using VGMToolbox.util;
 
@@ -774,5 +775,25 @@ namespace VGMToolbox
         }
 
         #endregion
+
+        #region EXTRACTORS - FLX (U9)
+
+        private void btnExtractorsFLX_Extract_Click(object sender, EventArgs e)
+        {
+            doCleanup();
+            try
+            {
+                Flx flx = new Flx(tbExtractorsFLX_SourceFile.Text);
+                tbOutput.Text = flx.GetInfo();
+                flx.ExtractFiles(tbExtractorsFLX_SourceFile.Text, tbExtractorsFLX_DestinationDir.Text);
+            }
+            catch (Exception fe)
+            {
+                tbOutput.Text += fe.Message;
+            }
+        }
+
+        #endregion
+
     }
 }
