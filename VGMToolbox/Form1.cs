@@ -8,7 +8,6 @@ using System.Xml;
 using System.Xml.Serialization;
 
 using VGMToolbox.auditing;
-using VGMToolbox.extractors;
 using VGMToolbox.tools;
 using VGMToolbox.util;
 
@@ -757,43 +756,5 @@ namespace VGMToolbox
         }
 
         #endregion
-
-
-        #region MISC - HEXFINDER
-        private void btnHexFinder_BrowseSourceDir_Click(object sender, EventArgs e)
-        {
-            folderBrowserDialog = new FolderBrowserDialog();
-            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
-            {
-                tbHexFinder_SourceDir.Text = folderBrowserDialog.SelectedPath;
-            }
-        }
-
-        private void btnHexFinder_Go_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("Not implemented.");
-        }
-
-        #endregion
-
-        #region EXTRACTORS - FLX (U9)
-
-        private void btnExtractorsFLX_Extract_Click(object sender, EventArgs e)
-        {
-            doCleanup();
-            try
-            {
-                Flx flx = new Flx(tbExtractorsFLX_SourceFile.Text);
-                tbOutput.Text = flx.GetInfo();
-                flx.ExtractFiles(tbExtractorsFLX_SourceFile.Text, tbExtractorsFLX_DestinationDir.Text);
-            }
-            catch (Exception fe)
-            {
-                tbOutput.Text += fe.Message;
-            }
-        }
-
-        #endregion
-
     }
 }
