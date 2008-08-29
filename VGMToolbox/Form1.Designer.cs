@@ -959,7 +959,8 @@
             this.tbOutput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.tbOutput.Size = new System.Drawing.Size(682, 84);
             this.tbOutput.TabIndex = 0;
-            this.tbOutput.Text = "Supported Formats: GBR, GBS, KSS (KSCC), MDX, NSF, SPC (v0.30), VGM, xSF";
+            this.tbOutput.Text = "Supported Formats: GBR, GBS, KSS (KSCC), MDX, NSF, S98 (v1, v3), SPC (v0.30), VGM" +
+                ", xSF";
             // 
             // statusStrip1
             // 

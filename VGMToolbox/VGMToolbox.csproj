@@ -90,6 +90,7 @@
     <Compile Include="format\Kssx.cs" />
     <Compile Include="format\Mdx.cs" />
     <Compile Include="format\Nsf.cs" />
+    <Compile Include="format\S98.cs" />
     <Compile Include="format\Spc.cs" />
     <Compile Include="format\Vgm.cs" />
     <Compile Include="format\Xsf.cs" />
