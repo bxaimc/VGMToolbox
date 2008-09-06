@@ -93,6 +93,7 @@
     <Compile Include="format\S98.cs" />
     <Compile Include="format\Spc.cs" />
     <Compile Include="format\Vgm.cs" />
+    <Compile Include="format\Wsr.cs" />
     <Compile Include="format\Xsf.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -129,6 +130,7 @@
     <Compile Include="Splash.Designer.cs">
       <DependentUpon>Splash.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\HootCsv.cs" />
     <Compile Include="tools\MdxUtil.cs" />
     <Compile Include="tools\XsfUtil.cs" />
     <Compile Include="util\IDeepCopy.cs" />

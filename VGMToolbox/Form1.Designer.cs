@@ -111,6 +111,19 @@
             this.btnMdxBrowse = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.treeViewTools = new System.Windows.Forms.TreeView();
+            this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.label2 = new System.Windows.Forms.Label();
+            this.btnHoot_AddInfo = new System.Windows.Forms.Button();
+            this.gbHoot = new System.Windows.Forms.GroupBox();
+            this.lblHoot_InputDatFile = new System.Windows.Forms.Label();
+            this.btnHoot_BrowseDatFile = new System.Windows.Forms.Button();
+            this.btnHoot_BrowseCsvFile = new System.Windows.Forms.Button();
+            this.tbHoot_DatSourceFile = new System.Windows.Forms.TextBox();
+            this.lblHoot_CsvFile = new System.Windows.Forms.Label();
+            this.tbHoot_CsvSourceFile = new System.Windows.Forms.TextBox();
+            this.gbHoot_Destination = new System.Windows.Forms.GroupBox();
+            this.btnHoot_DestinationFileBrowse = new System.Windows.Forms.Button();
+            this.tbHoot_DatDestinationFile = new System.Windows.Forms.TextBox();
             this.tbOutput = new System.Windows.Forms.TextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -122,6 +135,7 @@
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.lblProgressLabel = new System.Windows.Forms.Label();
             this.lblTimeElapsed = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -138,6 +152,9 @@
             this.grpExamineMdx_XsfExplorer.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.grpExamineMdx_PdxDiscovery.SuspendLayout();
+            this.tabPage7.SuspendLayout();
+            this.gbHoot.SuspendLayout();
+            this.gbHoot_Destination.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -147,6 +164,7 @@
             this.tabControl1.Controls.Add(this.tabPage5);
             this.tabControl1.Controls.Add(this.tabPage6);
             this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage7);
             this.tabControl1.Location = new System.Drawing.Point(-1, 24);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -950,6 +968,135 @@
             this.treeViewTools.Size = new System.Drawing.Size(248, 186);
             this.treeViewTools.TabIndex = 6;
             // 
+            // tabPage7
+            // 
+            this.tabPage7.Controls.Add(this.label7);
+            this.tabPage7.Controls.Add(this.label2);
+            this.tabPage7.Controls.Add(this.btnHoot_AddInfo);
+            this.tabPage7.Controls.Add(this.gbHoot);
+            this.tabPage7.Controls.Add(this.gbHoot_Destination);
+            this.tabPage7.Location = new System.Drawing.Point(4, 22);
+            this.tabPage7.Name = "tabPage7";
+            this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage7.Size = new System.Drawing.Size(682, 198);
+            this.tabPage7.TabIndex = 4;
+            this.tabPage7.Text = "Hoot";
+            this.tabPage7.UseVisualStyleBackColor = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(0, 182);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(213, 13);
+            this.label2.TabIndex = 6;
+            this.label2.Text = "http://snesmusic.org/hoot/v2/hoot_list.php";
+            // 
+            // btnHoot_AddInfo
+            // 
+            this.btnHoot_AddInfo.Location = new System.Drawing.Point(611, 154);
+            this.btnHoot_AddInfo.Name = "btnHoot_AddInfo";
+            this.btnHoot_AddInfo.Size = new System.Drawing.Size(65, 20);
+            this.btnHoot_AddInfo.TabIndex = 5;
+            this.btnHoot_AddInfo.Text = "Add Info";
+            this.btnHoot_AddInfo.UseVisualStyleBackColor = true;
+            this.btnHoot_AddInfo.Click += new System.EventHandler(this.btnHoot_AddInfo_Click);
+            // 
+            // gbHoot
+            // 
+            this.gbHoot.Controls.Add(this.lblHoot_InputDatFile);
+            this.gbHoot.Controls.Add(this.btnHoot_BrowseDatFile);
+            this.gbHoot.Controls.Add(this.btnHoot_BrowseCsvFile);
+            this.gbHoot.Controls.Add(this.tbHoot_DatSourceFile);
+            this.gbHoot.Controls.Add(this.lblHoot_CsvFile);
+            this.gbHoot.Controls.Add(this.tbHoot_CsvSourceFile);
+            this.gbHoot.Location = new System.Drawing.Point(3, 3);
+            this.gbHoot.Name = "gbHoot";
+            this.gbHoot.Size = new System.Drawing.Size(676, 60);
+            this.gbHoot.TabIndex = 3;
+            this.gbHoot.TabStop = false;
+            this.gbHoot.Text = "Files";
+            // 
+            // lblHoot_InputDatFile
+            // 
+            this.lblHoot_InputDatFile.AutoSize = true;
+            this.lblHoot_InputDatFile.Location = new System.Drawing.Point(312, 16);
+            this.lblHoot_InputDatFile.Name = "lblHoot_InputDatFile";
+            this.lblHoot_InputDatFile.Size = new System.Drawing.Size(74, 13);
+            this.lblHoot_InputDatFile.TabIndex = 5;
+            this.lblHoot_InputDatFile.Text = "Hoot DAT File";
+            // 
+            // btnHoot_BrowseDatFile
+            // 
+            this.btnHoot_BrowseDatFile.Location = new System.Drawing.Point(580, 32);
+            this.btnHoot_BrowseDatFile.Name = "btnHoot_BrowseDatFile";
+            this.btnHoot_BrowseDatFile.Size = new System.Drawing.Size(28, 20);
+            this.btnHoot_BrowseDatFile.TabIndex = 4;
+            this.btnHoot_BrowseDatFile.Text = "...";
+            this.btnHoot_BrowseDatFile.UseVisualStyleBackColor = true;
+            this.btnHoot_BrowseDatFile.Click += new System.EventHandler(this.btnHoot_BrowseDatFile_Click);
+            // 
+            // btnHoot_BrowseCsvFile
+            // 
+            this.btnHoot_BrowseCsvFile.Location = new System.Drawing.Point(270, 32);
+            this.btnHoot_BrowseCsvFile.Name = "btnHoot_BrowseCsvFile";
+            this.btnHoot_BrowseCsvFile.Size = new System.Drawing.Size(28, 20);
+            this.btnHoot_BrowseCsvFile.TabIndex = 3;
+            this.btnHoot_BrowseCsvFile.Text = "...";
+            this.btnHoot_BrowseCsvFile.UseVisualStyleBackColor = true;
+            this.btnHoot_BrowseCsvFile.Click += new System.EventHandler(this.btnHoot_BrowseCsvFile_Click);
+            // 
+            // tbHoot_DatSourceFile
+            // 
+            this.tbHoot_DatSourceFile.Location = new System.Drawing.Point(315, 32);
+            this.tbHoot_DatSourceFile.Name = "tbHoot_DatSourceFile";
+            this.tbHoot_DatSourceFile.Size = new System.Drawing.Size(259, 20);
+            this.tbHoot_DatSourceFile.TabIndex = 2;
+            // 
+            // lblHoot_CsvFile
+            // 
+            this.lblHoot_CsvFile.AutoSize = true;
+            this.lblHoot_CsvFile.Location = new System.Drawing.Point(3, 18);
+            this.lblHoot_CsvFile.Name = "lblHoot_CsvFile";
+            this.lblHoot_CsvFile.Size = new System.Drawing.Size(28, 13);
+            this.lblHoot_CsvFile.TabIndex = 1;
+            this.lblHoot_CsvFile.Text = "CSV";
+            // 
+            // tbHoot_CsvSourceFile
+            // 
+            this.tbHoot_CsvSourceFile.Location = new System.Drawing.Point(6, 32);
+            this.tbHoot_CsvSourceFile.Name = "tbHoot_CsvSourceFile";
+            this.tbHoot_CsvSourceFile.Size = new System.Drawing.Size(259, 20);
+            this.tbHoot_CsvSourceFile.TabIndex = 0;
+            // 
+            // gbHoot_Destination
+            // 
+            this.gbHoot_Destination.Controls.Add(this.btnHoot_DestinationFileBrowse);
+            this.gbHoot_Destination.Controls.Add(this.tbHoot_DatDestinationFile);
+            this.gbHoot_Destination.Location = new System.Drawing.Point(3, 69);
+            this.gbHoot_Destination.Name = "gbHoot_Destination";
+            this.gbHoot_Destination.Size = new System.Drawing.Size(304, 45);
+            this.gbHoot_Destination.TabIndex = 4;
+            this.gbHoot_Destination.TabStop = false;
+            this.gbHoot_Destination.Text = "Output DAT File";
+            // 
+            // btnHoot_DestinationFileBrowse
+            // 
+            this.btnHoot_DestinationFileBrowse.Location = new System.Drawing.Point(270, 19);
+            this.btnHoot_DestinationFileBrowse.Name = "btnHoot_DestinationFileBrowse";
+            this.btnHoot_DestinationFileBrowse.Size = new System.Drawing.Size(28, 20);
+            this.btnHoot_DestinationFileBrowse.TabIndex = 1;
+            this.btnHoot_DestinationFileBrowse.Text = "...";
+            this.btnHoot_DestinationFileBrowse.UseVisualStyleBackColor = true;
+            this.btnHoot_DestinationFileBrowse.Click += new System.EventHandler(this.btnHoot_DestinationFileBrowse_Click);
+            // 
+            // tbHoot_DatDestinationFile
+            // 
+            this.tbHoot_DatDestinationFile.Location = new System.Drawing.Point(6, 19);
+            this.tbHoot_DatDestinationFile.Name = "tbHoot_DatDestinationFile";
+            this.tbHoot_DatDestinationFile.Size = new System.Drawing.Size(259, 20);
+            this.tbHoot_DatDestinationFile.TabIndex = 0;
+            // 
             // tbOutput
             // 
             this.tbOutput.AcceptsReturn = true;
@@ -1016,6 +1163,16 @@
             this.lblTimeElapsed.TabIndex = 4;
             this.lblTimeElapsed.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(0, 117);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(523, 13);
+            this.label7.TabIndex = 7;
+            this.label7.Text = "Fetch information from the Hoot Archive CSV and add it to the ROM Management Data" +
+                "file (XML) format DATs";
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1058,6 +1215,12 @@
             this.tabPage3.PerformLayout();
             this.grpExamineMdx_PdxDiscovery.ResumeLayout(false);
             this.grpExamineMdx_PdxDiscovery.PerformLayout();
+            this.tabPage7.ResumeLayout(false);
+            this.tabPage7.PerformLayout();
+            this.gbHoot.ResumeLayout(false);
+            this.gbHoot.PerformLayout();
+            this.gbHoot_Destination.ResumeLayout(false);
+            this.gbHoot_Destination.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -1159,6 +1322,20 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.CheckBox cbRebuilder_ScanOnly;
         private System.Windows.Forms.Label lblTimeElapsed;
+        private System.Windows.Forms.TabPage tabPage7;
+        private System.Windows.Forms.GroupBox gbHoot;
+        private System.Windows.Forms.Label lblHoot_InputDatFile;
+        private System.Windows.Forms.Button btnHoot_BrowseDatFile;
+        private System.Windows.Forms.Button btnHoot_BrowseCsvFile;
+        private System.Windows.Forms.TextBox tbHoot_DatSourceFile;
+        private System.Windows.Forms.Label lblHoot_CsvFile;
+        private System.Windows.Forms.TextBox tbHoot_CsvSourceFile;
+        private System.Windows.Forms.GroupBox gbHoot_Destination;
+        private System.Windows.Forms.Button btnHoot_DestinationFileBrowse;
+        private System.Windows.Forms.TextBox tbHoot_DatDestinationFile;
+        private System.Windows.Forms.Button btnHoot_AddInfo;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label7;
     }
 }
 

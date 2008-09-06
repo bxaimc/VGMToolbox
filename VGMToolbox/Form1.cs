@@ -756,5 +756,50 @@ namespace VGMToolbox
         }
 
         #endregion
+
+        #region HOOT
+        private void btnHoot_BrowseCsvFile_Click(object sender, EventArgs e)
+        {
+            openFileDialog1 = new OpenFileDialog();
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                tbHoot_CsvSourceFile.Text = openFileDialog1.FileName;
+            }
+        }
+        
+        private void btnHoot_BrowseDatFile_Click(object sender, EventArgs e)
+        {            
+            openFileDialog1 = new OpenFileDialog();
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                tbHoot_DatSourceFile.Text = openFileDialog1.FileName;
+            }
+            
+        }
+
+        private void btnHoot_DestinationFileBrowse_Click(object sender, EventArgs e)
+        {
+            saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.DefaultExt = "dat";
+            saveFileDialog1.AddExtension = true;
+            saveFileDialog1.Filter = "Datafile (*.dat)| *.dat";
+
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                tbHoot_DatDestinationFile.Text = saveFileDialog1.FileName;
+            }        
+        }        
+                        
+        #endregion
+
+        private void btnHoot_AddInfo_Click(object sender, EventArgs e)
+        {
+            doCleanup();
+
+            HootCsvTools.AddCsvInformationToDataFile(tbHoot_CsvSourceFile.Text,
+                tbHoot_DatSourceFile.Text, tbHoot_DatDestinationFile.Text);
+            
+            tbOutput.Text += "Hoot CSV information transfer to XML Datafile Complete.";
+        }
     }
 }
