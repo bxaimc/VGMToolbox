@@ -37,8 +37,6 @@ namespace VGMToolbox.tools
                 fs.Seek(0, SeekOrigin.Begin);
                 nsfeData.Initialize(fs);
 
-
-
                 string[] playlist = nsfeData.Playlist.Split(',');                
 
                 string outputFile = pPath.Substring(0, pPath.Length - Path.GetExtension(pPath).Length) + ".m3u";
@@ -53,6 +51,7 @@ namespace VGMToolbox.tools
                 sw.WriteLine("# Game: " + nsfeData.SongName);
                 sw.WriteLine("# Artist: " + nsfeData.SongArtist);
                 sw.WriteLine("# Copyright: " + nsfeData.SongCopyright);
+                sw.WriteLine("# Ripper: " + nsfeData.NsfRipper);
                 sw.WriteLine("#");
                 sw.WriteLine("#######################################################");
                 sw.WriteLine();
@@ -69,21 +68,37 @@ namespace VGMToolbox.tools
                     int fadeMinutes = tempFade / 60000;
                     int fadeSeconds = ((tempFade - (fadeMinutes * 60000)) % 60000) / 1000;                    
 
+                    //string entry = buildPlaylistEntry("NSF", Path.GetFileNameWithoutExtension(pPath) + ".nsf", 
+                    //    string pSongNumber,string pTitle, string pTime, string pLoop, string pFade, string pLoopCount)
+
                     sw.WriteLine(Path.GetFileNameWithoutExtension(pPath) + ".nsf" + "::NSF," +
                         (index + 1) + "," +
                         nsfeData.TrackLabels[index].Trim() + "," +
                         timeMinutes + ":" + timeSeconds.ToString("d2") + "," +
                         "," +
-                        fadeMinutes + ":" + fadeSeconds.ToString("d2") + ",");                
-
-                }
-
-
-
+                        fadeMinutes + ":" + fadeSeconds.ToString("d2") + ",");
+                } // for (int i = 0; i < playlist.Length; i++)
 
                 sw.Close();
                 sw.Dispose();
             }
+        }
+
+        private static string buildPlaylistEntry(string pFileType, string pFileName, string pSongNumber,
+            string pTitle, string pTime, string pLoop, string pFade, string pLoopCount)
+        {
+            string playlistEntry = String.Empty;
+
+            playlistEntry += pFileName + "::";
+            playlistEntry += pFileType + ",";
+            playlistEntry += pSongNumber + ",";
+            playlistEntry += pTitle + ",";
+            playlistEntry += pTime + ",";
+            playlistEntry += pLoop + ",";
+            playlistEntry += pFade + ",";
+            playlistEntry += pLoopCount;
+                        
+            return playlistEntry;
         }
     }
 }

@@ -139,6 +139,7 @@
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.lblProgressLabel = new System.Windows.Forms.Label();
             this.lblTimeElapsed = new System.Windows.Forms.Label();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -160,6 +161,7 @@
             this.gbHoot_Destination.SuspendLayout();
             this.tabPage8.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -1114,8 +1116,7 @@
             // 
             // tabPage8
             // 
-            this.tabPage8.Controls.Add(this.btnNSF_nsfe2m3uConvert);
-            this.tabPage8.Controls.Add(this.tbNSF_nsfe2m3uSource);
+            this.tabPage8.Controls.Add(this.groupBox2);
             this.tabPage8.Location = new System.Drawing.Point(4, 22);
             this.tabPage8.Name = "tabPage8";
             this.tabPage8.Size = new System.Drawing.Size(682, 198);
@@ -1125,17 +1126,17 @@
             // 
             // btnNSF_nsfe2m3uConvert
             // 
-            this.btnNSF_nsfe2m3uConvert.Location = new System.Drawing.Point(316, 17);
+            this.btnNSF_nsfe2m3uConvert.Location = new System.Drawing.Point(313, 19);
             this.btnNSF_nsfe2m3uConvert.Name = "btnNSF_nsfe2m3uConvert";
             this.btnNSF_nsfe2m3uConvert.Size = new System.Drawing.Size(75, 23);
             this.btnNSF_nsfe2m3uConvert.TabIndex = 1;
-            this.btnNSF_nsfe2m3uConvert.Text = "button1";
+            this.btnNSF_nsfe2m3uConvert.Text = "Convert";
             this.btnNSF_nsfe2m3uConvert.UseVisualStyleBackColor = true;
             // 
             // tbNSF_nsfe2m3uSource
             // 
             this.tbNSF_nsfe2m3uSource.AllowDrop = true;
-            this.tbNSF_nsfe2m3uSource.Location = new System.Drawing.Point(9, 19);
+            this.tbNSF_nsfe2m3uSource.Location = new System.Drawing.Point(6, 19);
             this.tbNSF_nsfe2m3uSource.Name = "tbNSF_nsfe2m3uSource";
             this.tbNSF_nsfe2m3uSource.Size = new System.Drawing.Size(301, 20);
             this.tbNSF_nsfe2m3uSource.TabIndex = 0;
@@ -1208,6 +1209,17 @@
             this.lblTimeElapsed.TabIndex = 4;
             this.lblTimeElapsed.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.tbNSF_nsfe2m3uSource);
+            this.groupBox2.Controls.Add(this.btnNSF_nsfe2m3uConvert);
+            this.groupBox2.Location = new System.Drawing.Point(3, 5);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(676, 62);
+            this.groupBox2.TabIndex = 2;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "NSFe to .m3u";
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1257,9 +1269,10 @@
             this.gbHoot_Destination.ResumeLayout(false);
             this.gbHoot_Destination.PerformLayout();
             this.tabPage8.ResumeLayout(false);
-            this.tabPage8.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1376,6 +1389,7 @@
         private System.Windows.Forms.TabPage tabPage8;
         private System.Windows.Forms.TextBox tbNSF_nsfe2m3uSource;
         private System.Windows.Forms.Button btnNSF_nsfe2m3uConvert;
+        private System.Windows.Forms.GroupBox groupBox2;
     }
 }
 
