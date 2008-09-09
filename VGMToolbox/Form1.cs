@@ -370,7 +370,7 @@ namespace VGMToolbox
 
         # endregion
 
-        # region EXAMINE - XSF/NSF
+        # region EXAMINE
 
         private void tbXsfSource_DragDrop(object sender, DragEventArgs e)
         {
@@ -788,9 +788,7 @@ namespace VGMToolbox
             {
                 tbHoot_DatDestinationFile.Text = saveFileDialog1.FileName;
             }        
-        }        
-                        
-        #endregion
+        }
 
         private void btnHoot_AddInfo_Click(object sender, EventArgs e)
         {
@@ -798,8 +796,34 @@ namespace VGMToolbox
 
             HootCsvTools.AddCsvInformationToDataFile(tbHoot_CsvSourceFile.Text,
                 tbHoot_DatSourceFile.Text, tbHoot_DatDestinationFile.Text);
-            
+
             tbOutput.Text += "Hoot CSV information transfer to XML Datafile Complete.";
+        }        
+                
+        #endregion
+
+
+
+        private void tbNSF_nsfe2m3uSource_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
+                e.Effect = DragDropEffects.All;
+            else
+                e.Effect = DragDropEffects.None;
         }
+
+        private void tbNSF_nsfe2m3uSource_DragDrop(object sender, DragEventArgs e)
+        {
+            doCleanup();
+
+            toolStripStatusLabel1.Text = "NSFe to M3U Conversion...Begin";
+
+            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            NsfeToM3u.BuildNezPlugM3uFiles(s);
+
+            toolStripStatusLabel1.Text = "NSFe to M3U Conversion...Complete";
+        }
+
     }
 }

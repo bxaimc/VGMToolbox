@@ -133,6 +133,7 @@
     </Compile>
     <Compile Include="tools\HootCsv.cs" />
     <Compile Include="tools\MdxUtil.cs" />
+    <Compile Include="tools\NsfeToM3u.cs" />
     <Compile Include="tools\XsfUtil.cs" />
     <Compile Include="util\IDeepCopy.cs" />
     <Compile Include="util\IniFile.cs" />

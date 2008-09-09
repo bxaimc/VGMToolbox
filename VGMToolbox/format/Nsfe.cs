@@ -85,24 +85,34 @@ namespace VGMToolbox.format
 
         // plst Chunk
         private string playlist = String.Empty;
+        public string Playlist { get { return playlist; } }
 
         // DATA Chunk
         private byte[] data;
 
         // time Chunk
         private Int32[] times;
+        public Int32[] Times { get { return times; } }
 
         // fade Chunk
         private Int32[] fades;
+        public Int32[] Fades { get { return fades; } }
 
         // tlbl Chunk
         private ArrayList trackLabels = new ArrayList();
-        
+        public string[] TrackLabels { get { return (string[])trackLabels.ToArray(typeof(string)); } }
+
+
         // auth Chunk
         private string songName;
         private string songArtist;
         private string songCopyright;
         private string nsfRipper;
+
+        public string SongName { get { return songName; } }
+        public string SongArtist { get { return songArtist; } }
+        public string SongCopyright { get { return songCopyright; } }
+        public string NsfRipper { get { return nsfRipper; } }
 
         // BANK Chunk
         private byte[] bankSwitchInit;
@@ -350,6 +360,16 @@ namespace VGMToolbox.format
             ref Crc32 pChecksum, bool pUseLibHash)
         {
             pChecksum.Reset();
+
+            pChecksum.Update(totalSongs);
+            pChecksum.Update(startingSong);
+            pChecksum.Update(loadAddress);
+            pChecksum.Update(initAddress);
+            pChecksum.Update(playAddress);
+            pChecksum.Update(bankSwitchInit);
+            pChecksum.Update(palNtscBits);
+            pChecksum.Update(extraChipsBits);
+            pChecksum.Update(data);
         }
 
         public byte[] GetAsciiSignature()

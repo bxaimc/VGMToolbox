@@ -112,6 +112,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.treeViewTools = new System.Windows.Forms.TreeView();
             this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.label7 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.btnHoot_AddInfo = new System.Windows.Forms.Button();
             this.gbHoot = new System.Windows.Forms.GroupBox();
@@ -124,6 +125,9 @@
             this.gbHoot_Destination = new System.Windows.Forms.GroupBox();
             this.btnHoot_DestinationFileBrowse = new System.Windows.Forms.Button();
             this.tbHoot_DatDestinationFile = new System.Windows.Forms.TextBox();
+            this.tabPage8 = new System.Windows.Forms.TabPage();
+            this.btnNSF_nsfe2m3uConvert = new System.Windows.Forms.Button();
+            this.tbNSF_nsfe2m3uSource = new System.Windows.Forms.TextBox();
             this.tbOutput = new System.Windows.Forms.TextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -135,7 +139,6 @@
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.lblProgressLabel = new System.Windows.Forms.Label();
             this.lblTimeElapsed = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -155,6 +158,7 @@
             this.tabPage7.SuspendLayout();
             this.gbHoot.SuspendLayout();
             this.gbHoot_Destination.SuspendLayout();
+            this.tabPage8.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -165,6 +169,7 @@
             this.tabControl1.Controls.Add(this.tabPage6);
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage7);
+            this.tabControl1.Controls.Add(this.tabPage8);
             this.tabControl1.Location = new System.Drawing.Point(-1, 24);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -983,6 +988,16 @@
             this.tabPage7.Text = "Hoot";
             this.tabPage7.UseVisualStyleBackColor = true;
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(0, 117);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(523, 13);
+            this.label7.TabIndex = 7;
+            this.label7.Text = "Fetch information from the Hoot Archive CSV and add it to the ROM Management Data" +
+                "file (XML) format DATs";
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -1097,6 +1112,36 @@
             this.tbHoot_DatDestinationFile.Size = new System.Drawing.Size(259, 20);
             this.tbHoot_DatDestinationFile.TabIndex = 0;
             // 
+            // tabPage8
+            // 
+            this.tabPage8.Controls.Add(this.btnNSF_nsfe2m3uConvert);
+            this.tabPage8.Controls.Add(this.tbNSF_nsfe2m3uSource);
+            this.tabPage8.Location = new System.Drawing.Point(4, 22);
+            this.tabPage8.Name = "tabPage8";
+            this.tabPage8.Size = new System.Drawing.Size(682, 198);
+            this.tabPage8.TabIndex = 5;
+            this.tabPage8.Text = "NSF(e)";
+            this.tabPage8.UseVisualStyleBackColor = true;
+            // 
+            // btnNSF_nsfe2m3uConvert
+            // 
+            this.btnNSF_nsfe2m3uConvert.Location = new System.Drawing.Point(316, 17);
+            this.btnNSF_nsfe2m3uConvert.Name = "btnNSF_nsfe2m3uConvert";
+            this.btnNSF_nsfe2m3uConvert.Size = new System.Drawing.Size(75, 23);
+            this.btnNSF_nsfe2m3uConvert.TabIndex = 1;
+            this.btnNSF_nsfe2m3uConvert.Text = "button1";
+            this.btnNSF_nsfe2m3uConvert.UseVisualStyleBackColor = true;
+            // 
+            // tbNSF_nsfe2m3uSource
+            // 
+            this.tbNSF_nsfe2m3uSource.AllowDrop = true;
+            this.tbNSF_nsfe2m3uSource.Location = new System.Drawing.Point(9, 19);
+            this.tbNSF_nsfe2m3uSource.Name = "tbNSF_nsfe2m3uSource";
+            this.tbNSF_nsfe2m3uSource.Size = new System.Drawing.Size(301, 20);
+            this.tbNSF_nsfe2m3uSource.TabIndex = 0;
+            this.tbNSF_nsfe2m3uSource.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbNSF_nsfe2m3uSource_DragDrop);
+            this.tbNSF_nsfe2m3uSource.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbNSF_nsfe2m3uSource_DragEnter);
+            // 
             // tbOutput
             // 
             this.tbOutput.AcceptsReturn = true;
@@ -1163,16 +1208,6 @@
             this.lblTimeElapsed.TabIndex = 4;
             this.lblTimeElapsed.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(0, 117);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(523, 13);
-            this.label7.TabIndex = 7;
-            this.label7.Text = "Fetch information from the Hoot Archive CSV and add it to the ROM Management Data" +
-                "file (XML) format DATs";
-            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1221,6 +1256,8 @@
             this.gbHoot.PerformLayout();
             this.gbHoot_Destination.ResumeLayout(false);
             this.gbHoot_Destination.PerformLayout();
+            this.tabPage8.ResumeLayout(false);
+            this.tabPage8.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -1336,6 +1373,9 @@
         private System.Windows.Forms.Button btnHoot_AddInfo;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TabPage tabPage8;
+        private System.Windows.Forms.TextBox tbNSF_nsfe2m3uSource;
+        private System.Windows.Forms.Button btnNSF_nsfe2m3uConvert;
     }
 }
 
