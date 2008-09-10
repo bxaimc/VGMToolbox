@@ -178,8 +178,8 @@ namespace VGMToolbox.format
 
         private void initializeTagHash()
         {
-            int i = 0;
             System.Text.Encoding enc = System.Text.Encoding.ASCII;
+            string[] trackLabelsArray = (string[])this.trackLabels.ToArray(typeof(string));
 
             tagHash.Add("Name", this.songName);
             tagHash.Add("Artist", this.songArtist);
@@ -190,15 +190,64 @@ namespace VGMToolbox.format
             tagHash.Add("Starting Song", this.startingSong[0].ToString());
             tagHash.Add("Playlist", this.playlist);
 
-            // Track Labels            
-            foreach (string s in this.trackLabels)
+            // Build by playlist if it exists            
+            if (!String.IsNullOrEmpty(this.playlist))
             {
-                int tempTime = this.times[i] + this.fades[i];
-                int minutes = tempTime / 60000;
-                int seconds = ((tempTime - (minutes * 60000)) % 60000) / 1000;
-                tagHash.Add("Track " + i++, (string)s + " [" + minutes + ":" + seconds.ToString("d2") + "]");
-
+                string hashKey;
+                foreach (string s in this.playlist.Split(','))
+                {
+                    int index = int.Parse(s.Trim());
+                    hashKey = "Track " + index;
+                    if (!tagHash.ContainsKey(hashKey))
+                    {
+                        tagHash.Add("Track " + index, this.buildTrackText(index, trackLabelsArray));
+                    }
+                }
             }
+            // Use default order if playlist does not exist
+            else 
+            {                
+                for (int i = 0; i < this.totalSongs[0]; i++)
+                {                    
+                    tagHash.Add("Track " + i, this.buildTrackText(i, trackLabelsArray));
+                }
+            }
+        }
+
+        private string buildTrackText(int pIndex, string[] pTrackLabelsArray)
+        {
+            int tempTime;
+            int minutes = 0;
+            int seconds = 0;
+            string title;
+            string trackText;
+
+            if ((pTrackLabelsArray.Length > pIndex) && (!String.IsNullOrEmpty(pTrackLabelsArray[pIndex])))
+            {
+                title = pTrackLabelsArray[pIndex];
+            }
+            else
+            {
+                title = "Track " + pIndex;
+            }
+
+            if (this.times != null)
+            {
+                tempTime = this.times[pIndex];
+
+                if (tempTime >= 0)
+                {
+                    if (this.fades != null)
+                    {
+                        tempTime += this.fades[pIndex];
+                    }
+
+                    minutes = tempTime / 60000;
+                    seconds = ((tempTime - (minutes * 60000)) % 60000) / 1000;
+                }
+            }
+            trackText = title + " [" + minutes + ":" + seconds.ToString("d2") + "]";
+            return trackText;        
         }
 
         private void parseInfoChunk()
