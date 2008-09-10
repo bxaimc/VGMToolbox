@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 using ICSharpCode.SharpZipLib.Checksums;
 
@@ -82,6 +81,8 @@ namespace VGMToolbox.format
         private byte[] extraChipsBits;
         private byte[] totalSongs;
         private byte[] startingSong;
+
+        public byte[] TotalSongs { get { return totalSongs; } }
 
         // plst Chunk
         private string playlist = String.Empty;

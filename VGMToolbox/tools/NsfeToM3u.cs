@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Windows.Forms;
 
 using VGMToolbox.format;
 
@@ -16,8 +17,20 @@ namespace VGMToolbox.tools
             foreach (string path in pPaths)
             {
                 if (File.Exists(path))
-                { 
-                    buildNezPlugM3u(path);
+                {
+                    try
+                    {
+                        buildNezPlugM3u(path);
+                    }
+                    catch (Exception _de)
+                    {
+                        MessageBox.Show(_de.Message);
+                    }
+                }
+                else if (Directory.Exists(path))
+                {
+                    BuildNezPlugM3uFiles(Directory.GetDirectories(path));
+                    BuildNezPlugM3uFiles(Directory.GetFiles(path));
                 }
             }
         
@@ -32,7 +45,8 @@ namespace VGMToolbox.tools
             {
                 StreamWriter sw;
                 string filename = Path.GetFileName(pPath);
-                                
+                string trackItem = String.Empty;
+                
                 Nsfe nsfeData = new Nsfe();
                 fs.Seek(0, SeekOrigin.Begin);
                 nsfeData.Initialize(fs);
@@ -55,50 +69,87 @@ namespace VGMToolbox.tools
                 sw.WriteLine("#");
                 sw.WriteLine("#######################################################");
                 sw.WriteLine();
-                
-                for (int i = 0; i < playlist.Length; i++)
+
+                // Build by playlist if it exists            
+                if (!String.IsNullOrEmpty(nsfeData.Playlist))
                 {
-                    int index = int.Parse(playlist[i].Trim());
-                    
-                    int tempTime = nsfeData.Times[index];
-                    int timeMinutes = tempTime / 60000;
-                    int timeSeconds = ((tempTime - (timeMinutes * 60000)) % 60000) / 1000;
-
-                    int tempFade = nsfeData.Fades[index];
-                    int fadeMinutes = tempFade / 60000;
-                    int fadeSeconds = ((tempFade - (fadeMinutes * 60000)) % 60000) / 1000;                    
-
-                    //string entry = buildPlaylistEntry("NSF", Path.GetFileNameWithoutExtension(pPath) + ".nsf", 
-                    //    string pSongNumber,string pTitle, string pTime, string pLoop, string pFade, string pLoopCount)
-
-                    sw.WriteLine(Path.GetFileNameWithoutExtension(pPath) + ".nsf" + "::NSF," +
-                        (index + 1) + "," +
-                        nsfeData.TrackLabels[index].Trim() + "," +
-                        timeMinutes + ":" + timeSeconds.ToString("d2") + "," +
-                        "," +
-                        fadeMinutes + ":" + fadeSeconds.ToString("d2") + ",");
-                } // for (int i = 0; i < playlist.Length; i++)
-
+                    foreach (string s in nsfeData.Playlist.Split(','))
+                    {
+                        int index = int.Parse(s.Trim());
+                        trackItem = buildTrackItem(index, nsfeData, pPath);
+                        sw.WriteLine(trackItem);
+                    }
+                }
+                // Use default order if playlist does not exist
+                else
+                {
+// !!! CHANGE TO START FROM nsfeData.StartingSong???????
+                    for (int i = 0; i < nsfeData.TotalSongs[0]; i++)
+                    {
+                        trackItem = buildTrackItem(i, nsfeData, pPath);
+                        sw.WriteLine(trackItem);
+                    }
+                }
+                
                 sw.Close();
                 sw.Dispose();
             }
         }
 
-        private static string buildPlaylistEntry(string pFileType, string pFileName, string pSongNumber,
-            string pTitle, string pTime, string pLoop, string pFade, string pLoopCount)
+        private static string buildTrackItem(int pIndex, Nsfe pNsfeData, string pPath)
         {
-            string playlistEntry = String.Empty;
+            int tempTime;
+            int timeMinutes = 0;
+            int timeSeconds = 0;
+            string timeTotal = String.Empty;            
+            int fadeMinutes = 0;
+            int fadeSeconds = 0;
+            string fadeTotal = String.Empty;
+            string title;
+            string entry;
 
-            playlistEntry += pFileName + "::";
-            playlistEntry += pFileType + ",";
-            playlistEntry += pSongNumber + ",";
-            playlistEntry += pTitle + ",";
-            playlistEntry += pTime + ",";
-            playlistEntry += pLoop + ",";
-            playlistEntry += pFade + ",";
-            playlistEntry += pLoopCount;
-                        
-            return playlistEntry;
+            if ((pNsfeData.TrackLabels.Length > pIndex) && (!String.IsNullOrEmpty(pNsfeData.TrackLabels[pIndex])))
+            {
+                title = pNsfeData.TrackLabels[pIndex];
+            }
+            else
+            {
+                title = "Track " + pIndex;
+            }
+
+            if (pNsfeData.Times != null)
+            {
+                tempTime = pNsfeData.Times[pIndex];
+
+                if (tempTime >= 0)
+                {
+                    timeMinutes = tempTime / 60000;
+                    timeSeconds = ((tempTime - (timeMinutes * 60000)) % 60000) / 1000;
+                    timeTotal = timeMinutes + ":" + timeSeconds.ToString("d2");
+                }
+            }
+
+            if (pNsfeData.Fades != null)
+            {
+                tempTime = pNsfeData.Fades[pIndex];
+
+                if (tempTime >= 0)
+                {
+                    fadeMinutes = tempTime / 60000;
+                    fadeSeconds = ((tempTime - (fadeMinutes * 60000)) % 60000) / 1000;
+                    fadeTotal = fadeMinutes + ":" + fadeSeconds.ToString("d2");
+                }
+            }
+
+            entry = NezPlug.BuildPlaylistEntry(NezPlug.FORMAT_NSF,
+                Path.GetFileNameWithoutExtension(pPath) + ".nsf",
+                (pIndex + 1).ToString(),
+                title.Trim(),
+                timeTotal,
+                String.Empty,
+                fadeTotal,
+                String.Empty);
+            return entry;
         }
     }
 }

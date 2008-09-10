@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
-using System.Speech.Synthesis;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
@@ -108,14 +107,6 @@ namespace VGMToolbox
         {
             Splash sp = new Splash();
             sp.ShowDialog();           
-        }
-
-        private void DoWelcomeMessage()
-        {
-            // Welcome Message
-            SpeechSynthesizer synth = new System.Speech.Synthesis.SpeechSynthesizer();         
-            synth.Speak("Welcome to V G M Toolbox!");
-
         }
 
         # region DATAFILE CREATOR
@@ -816,13 +807,34 @@ namespace VGMToolbox
         {
             doCleanup();
 
-            toolStripStatusLabel1.Text = "NSFe to M3U Conversion...Begin";
+            toolStripStatusLabel1.Text = "NSFE to .M3U Conversion...Begin";
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
             NsfeToM3u.BuildNezPlugM3uFiles(s);
 
-            toolStripStatusLabel1.Text = "NSFe to M3U Conversion...Complete";
+            toolStripStatusLabel1.Text = "NSFE to .M3U Conversion...Complete";
+        }
+
+        private void tbGBS_gbsm3uSource_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
+                e.Effect = DragDropEffects.All;
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        private void tbGBS_gbsm3uSource_DragDrop(object sender, DragEventArgs e)
+        {
+            doCleanup();
+
+            toolStripStatusLabel1.Text = "GBS .M3U Creation...Begin";
+
+            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            GbsTools.BuildNezPlugM3uFiles(s);
+
+            toolStripStatusLabel1.Text = "GBS M3U Creation...Complete";
         }
 
     }

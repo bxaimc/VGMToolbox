@@ -111,9 +111,11 @@
             this.btnMdxBrowse = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.treeViewTools = new System.Windows.Forms.TreeView();
-            this.tabPage7 = new System.Windows.Forms.TabPage();
-            this.label7 = new System.Windows.Forms.Label();
+            this.tabPage9 = new System.Windows.Forms.TabPage();
+            this.tabControl3 = new System.Windows.Forms.TabControl();
+            this.tabPage10 = new System.Windows.Forms.TabPage();
             this.label2 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
             this.btnHoot_AddInfo = new System.Windows.Forms.Button();
             this.gbHoot = new System.Windows.Forms.GroupBox();
             this.lblHoot_InputDatFile = new System.Windows.Forms.Label();
@@ -125,9 +127,10 @@
             this.gbHoot_Destination = new System.Windows.Forms.GroupBox();
             this.btnHoot_DestinationFileBrowse = new System.Windows.Forms.Button();
             this.tbHoot_DatDestinationFile = new System.Windows.Forms.TextBox();
-            this.tabPage8 = new System.Windows.Forms.TabPage();
-            this.btnNSF_nsfe2m3uConvert = new System.Windows.Forms.Button();
+            this.tabPage11 = new System.Windows.Forms.TabPage();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.tbNSF_nsfe2m3uSource = new System.Windows.Forms.TextBox();
+            this.btnNSF_nsfe2m3uConvert = new System.Windows.Forms.Button();
             this.tbOutput = new System.Windows.Forms.TextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -139,7 +142,12 @@
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.lblProgressLabel = new System.Windows.Forms.Label();
             this.lblTimeElapsed = new System.Windows.Forms.Label();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.tbGBS_gbsm3uSource = new System.Windows.Forms.TextBox();
+            this.btnGBS_gbsm3uConvert = new System.Windows.Forms.Button();
+            this.label9 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -156,12 +164,16 @@
             this.grpExamineMdx_XsfExplorer.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.grpExamineMdx_PdxDiscovery.SuspendLayout();
-            this.tabPage7.SuspendLayout();
+            this.tabPage9.SuspendLayout();
+            this.tabControl3.SuspendLayout();
+            this.tabPage10.SuspendLayout();
             this.gbHoot.SuspendLayout();
             this.gbHoot_Destination.SuspendLayout();
-            this.tabPage8.SuspendLayout();
-            this.statusStrip1.SuspendLayout();
+            this.tabPage11.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
+            this.tabPage7.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -170,8 +182,7 @@
             this.tabControl1.Controls.Add(this.tabPage5);
             this.tabControl1.Controls.Add(this.tabPage6);
             this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage7);
-            this.tabControl1.Controls.Add(this.tabPage8);
+            this.tabControl1.Controls.Add(this.tabPage9);
             this.tabControl1.Location = new System.Drawing.Point(-1, 24);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -975,49 +986,69 @@
             this.treeViewTools.Size = new System.Drawing.Size(248, 186);
             this.treeViewTools.TabIndex = 6;
             // 
-            // tabPage7
+            // tabPage9
             // 
-            this.tabPage7.Controls.Add(this.label7);
-            this.tabPage7.Controls.Add(this.label2);
-            this.tabPage7.Controls.Add(this.btnHoot_AddInfo);
-            this.tabPage7.Controls.Add(this.gbHoot);
-            this.tabPage7.Controls.Add(this.gbHoot_Destination);
-            this.tabPage7.Location = new System.Drawing.Point(4, 22);
-            this.tabPage7.Name = "tabPage7";
-            this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage7.Size = new System.Drawing.Size(682, 198);
-            this.tabPage7.TabIndex = 4;
-            this.tabPage7.Text = "Hoot";
-            this.tabPage7.UseVisualStyleBackColor = true;
+            this.tabPage9.Controls.Add(this.tabControl3);
+            this.tabPage9.Location = new System.Drawing.Point(4, 22);
+            this.tabPage9.Name = "tabPage9";
+            this.tabPage9.Size = new System.Drawing.Size(682, 198);
+            this.tabPage9.TabIndex = 6;
+            this.tabPage9.Text = "Misc.";
+            this.tabPage9.UseVisualStyleBackColor = true;
             // 
-            // label7
+            // tabControl3
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(0, 117);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(523, 13);
-            this.label7.TabIndex = 7;
-            this.label7.Text = "Fetch information from the Hoot Archive CSV and add it to the ROM Management Data" +
-                "file (XML) format DATs";
+            this.tabControl3.Controls.Add(this.tabPage10);
+            this.tabControl3.Controls.Add(this.tabPage11);
+            this.tabControl3.Controls.Add(this.tabPage7);
+            this.tabControl3.Location = new System.Drawing.Point(0, 3);
+            this.tabControl3.Name = "tabControl3";
+            this.tabControl3.SelectedIndex = 0;
+            this.tabControl3.Size = new System.Drawing.Size(682, 195);
+            this.tabControl3.TabIndex = 0;
+            // 
+            // tabPage10
+            // 
+            this.tabPage10.Controls.Add(this.label2);
+            this.tabPage10.Controls.Add(this.label7);
+            this.tabPage10.Controls.Add(this.btnHoot_AddInfo);
+            this.tabPage10.Controls.Add(this.gbHoot);
+            this.tabPage10.Controls.Add(this.gbHoot_Destination);
+            this.tabPage10.Location = new System.Drawing.Point(4, 22);
+            this.tabPage10.Name = "tabPage10";
+            this.tabPage10.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage10.Size = new System.Drawing.Size(674, 169);
+            this.tabPage10.TabIndex = 0;
+            this.tabPage10.Text = "Hoot";
+            this.tabPage10.UseVisualStyleBackColor = true;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(0, 182);
+            this.label2.Location = new System.Drawing.Point(-1, 153);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(213, 13);
-            this.label2.TabIndex = 6;
+            this.label2.TabIndex = 12;
             this.label2.Text = "http://snesmusic.org/hoot/v2/hoot_list.php";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(-1, 113);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(523, 13);
+            this.label7.TabIndex = 11;
+            this.label7.Text = "Fetch information from the Hoot Archive CSV and add it to the ROM Management Data" +
+                "file (XML) format DATs";
             // 
             // btnHoot_AddInfo
             // 
-            this.btnHoot_AddInfo.Location = new System.Drawing.Point(611, 154);
+            this.btnHoot_AddInfo.Location = new System.Drawing.Point(606, 144);
             this.btnHoot_AddInfo.Name = "btnHoot_AddInfo";
             this.btnHoot_AddInfo.Size = new System.Drawing.Size(65, 20);
-            this.btnHoot_AddInfo.TabIndex = 5;
+            this.btnHoot_AddInfo.TabIndex = 10;
             this.btnHoot_AddInfo.Text = "Add Info";
             this.btnHoot_AddInfo.UseVisualStyleBackColor = true;
-            this.btnHoot_AddInfo.Click += new System.EventHandler(this.btnHoot_AddInfo_Click);
             // 
             // gbHoot
             // 
@@ -1027,10 +1058,10 @@
             this.gbHoot.Controls.Add(this.tbHoot_DatSourceFile);
             this.gbHoot.Controls.Add(this.lblHoot_CsvFile);
             this.gbHoot.Controls.Add(this.tbHoot_CsvSourceFile);
-            this.gbHoot.Location = new System.Drawing.Point(3, 3);
+            this.gbHoot.Location = new System.Drawing.Point(1, -1);
             this.gbHoot.Name = "gbHoot";
             this.gbHoot.Size = new System.Drawing.Size(676, 60);
-            this.gbHoot.TabIndex = 3;
+            this.gbHoot.TabIndex = 8;
             this.gbHoot.TabStop = false;
             this.gbHoot.Text = "Files";
             // 
@@ -1051,7 +1082,6 @@
             this.btnHoot_BrowseDatFile.TabIndex = 4;
             this.btnHoot_BrowseDatFile.Text = "...";
             this.btnHoot_BrowseDatFile.UseVisualStyleBackColor = true;
-            this.btnHoot_BrowseDatFile.Click += new System.EventHandler(this.btnHoot_BrowseDatFile_Click);
             // 
             // btnHoot_BrowseCsvFile
             // 
@@ -1061,7 +1091,6 @@
             this.btnHoot_BrowseCsvFile.TabIndex = 3;
             this.btnHoot_BrowseCsvFile.Text = "...";
             this.btnHoot_BrowseCsvFile.UseVisualStyleBackColor = true;
-            this.btnHoot_BrowseCsvFile.Click += new System.EventHandler(this.btnHoot_BrowseCsvFile_Click);
             // 
             // tbHoot_DatSourceFile
             // 
@@ -1090,10 +1119,10 @@
             // 
             this.gbHoot_Destination.Controls.Add(this.btnHoot_DestinationFileBrowse);
             this.gbHoot_Destination.Controls.Add(this.tbHoot_DatDestinationFile);
-            this.gbHoot_Destination.Location = new System.Drawing.Point(3, 69);
+            this.gbHoot_Destination.Location = new System.Drawing.Point(1, 65);
             this.gbHoot_Destination.Name = "gbHoot_Destination";
             this.gbHoot_Destination.Size = new System.Drawing.Size(304, 45);
-            this.gbHoot_Destination.TabIndex = 4;
+            this.gbHoot_Destination.TabIndex = 9;
             this.gbHoot_Destination.TabStop = false;
             this.gbHoot_Destination.Text = "Output DAT File";
             // 
@@ -1105,7 +1134,6 @@
             this.btnHoot_DestinationFileBrowse.TabIndex = 1;
             this.btnHoot_DestinationFileBrowse.Text = "...";
             this.btnHoot_DestinationFileBrowse.UseVisualStyleBackColor = true;
-            this.btnHoot_DestinationFileBrowse.Click += new System.EventHandler(this.btnHoot_DestinationFileBrowse_Click);
             // 
             // tbHoot_DatDestinationFile
             // 
@@ -1114,24 +1142,28 @@
             this.tbHoot_DatDestinationFile.Size = new System.Drawing.Size(259, 20);
             this.tbHoot_DatDestinationFile.TabIndex = 0;
             // 
-            // tabPage8
+            // tabPage11
             // 
-            this.tabPage8.Controls.Add(this.groupBox2);
-            this.tabPage8.Location = new System.Drawing.Point(4, 22);
-            this.tabPage8.Name = "tabPage8";
-            this.tabPage8.Size = new System.Drawing.Size(682, 198);
-            this.tabPage8.TabIndex = 5;
-            this.tabPage8.Text = "NSF(e)";
-            this.tabPage8.UseVisualStyleBackColor = true;
+            this.tabPage11.Controls.Add(this.label8);
+            this.tabPage11.Controls.Add(this.groupBox2);
+            this.tabPage11.Location = new System.Drawing.Point(4, 22);
+            this.tabPage11.Name = "tabPage11";
+            this.tabPage11.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage11.Size = new System.Drawing.Size(674, 169);
+            this.tabPage11.TabIndex = 1;
+            this.tabPage11.Text = "NSFE";
+            this.tabPage11.UseVisualStyleBackColor = true;
             // 
-            // btnNSF_nsfe2m3uConvert
+            // groupBox2
             // 
-            this.btnNSF_nsfe2m3uConvert.Location = new System.Drawing.Point(313, 19);
-            this.btnNSF_nsfe2m3uConvert.Name = "btnNSF_nsfe2m3uConvert";
-            this.btnNSF_nsfe2m3uConvert.Size = new System.Drawing.Size(75, 23);
-            this.btnNSF_nsfe2m3uConvert.TabIndex = 1;
-            this.btnNSF_nsfe2m3uConvert.Text = "Convert";
-            this.btnNSF_nsfe2m3uConvert.UseVisualStyleBackColor = true;
+            this.groupBox2.Controls.Add(this.tbNSF_nsfe2m3uSource);
+            this.groupBox2.Controls.Add(this.btnNSF_nsfe2m3uConvert);
+            this.groupBox2.Location = new System.Drawing.Point(4, 3);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(667, 62);
+            this.groupBox2.TabIndex = 3;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "NSFe to .m3u";
             // 
             // tbNSF_nsfe2m3uSource
             // 
@@ -1143,6 +1175,15 @@
             this.tbNSF_nsfe2m3uSource.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbNSF_nsfe2m3uSource_DragDrop);
             this.tbNSF_nsfe2m3uSource.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbNSF_nsfe2m3uSource_DragEnter);
             // 
+            // btnNSF_nsfe2m3uConvert
+            // 
+            this.btnNSF_nsfe2m3uConvert.Location = new System.Drawing.Point(313, 19);
+            this.btnNSF_nsfe2m3uConvert.Name = "btnNSF_nsfe2m3uConvert";
+            this.btnNSF_nsfe2m3uConvert.Size = new System.Drawing.Size(75, 23);
+            this.btnNSF_nsfe2m3uConvert.TabIndex = 1;
+            this.btnNSF_nsfe2m3uConvert.Text = "Convert";
+            this.btnNSF_nsfe2m3uConvert.UseVisualStyleBackColor = true;
+            // 
             // tbOutput
             // 
             this.tbOutput.AcceptsReturn = true;
@@ -1152,8 +1193,8 @@
             this.tbOutput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.tbOutput.Size = new System.Drawing.Size(682, 84);
             this.tbOutput.TabIndex = 0;
-            this.tbOutput.Text = "Supported Formats: GBR, GBS, KSS (KSCC), MDX, NSF, S98 (v1, v3), SPC (v0.30), VGM" +
-                ", xSF";
+            this.tbOutput.Text = "Supported Formats: GBR, GBS, KSS (KSCC), MDX, NSF, NSFE, S98 (v1, v3), SPC (v0.30" +
+                "), VGM, xSF";
             // 
             // statusStrip1
             // 
@@ -1209,16 +1250,66 @@
             this.lblTimeElapsed.TabIndex = 4;
             this.lblTimeElapsed.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // groupBox2
+            // label8
             // 
-            this.groupBox2.Controls.Add(this.tbNSF_nsfe2m3uSource);
-            this.groupBox2.Controls.Add(this.btnNSF_nsfe2m3uConvert);
-            this.groupBox2.Location = new System.Drawing.Point(3, 5);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(676, 62);
-            this.groupBox2.TabIndex = 2;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "NSFe to .m3u";
+            this.label8.AutoSize = true;
+            this.label8.ForeColor = System.Drawing.Color.Red;
+            this.label8.Location = new System.Drawing.Point(58, 117);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(288, 13);
+            this.label8.TabIndex = 4;
+            this.label8.Text = "DRAG and DROP ONLY - Incomplete - Not Fully Functional";
+            // 
+            // tabPage7
+            // 
+            this.tabPage7.Controls.Add(this.label9);
+            this.tabPage7.Controls.Add(this.groupBox3);
+            this.tabPage7.Location = new System.Drawing.Point(4, 22);
+            this.tabPage7.Name = "tabPage7";
+            this.tabPage7.Size = new System.Drawing.Size(674, 169);
+            this.tabPage7.TabIndex = 2;
+            this.tabPage7.Text = "GBS";
+            this.tabPage7.UseVisualStyleBackColor = true;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.tbGBS_gbsm3uSource);
+            this.groupBox3.Controls.Add(this.btnGBS_gbsm3uConvert);
+            this.groupBox3.Location = new System.Drawing.Point(4, 3);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(667, 62);
+            this.groupBox3.TabIndex = 4;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "GBS  .m3u Builder";
+            // 
+            // tbGBS_gbsm3uSource
+            // 
+            this.tbGBS_gbsm3uSource.AllowDrop = true;
+            this.tbGBS_gbsm3uSource.Location = new System.Drawing.Point(6, 19);
+            this.tbGBS_gbsm3uSource.Name = "tbGBS_gbsm3uSource";
+            this.tbGBS_gbsm3uSource.Size = new System.Drawing.Size(301, 20);
+            this.tbGBS_gbsm3uSource.TabIndex = 0;
+            this.tbGBS_gbsm3uSource.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbGBS_gbsm3uSource_DragDrop);
+            this.tbGBS_gbsm3uSource.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbGBS_gbsm3uSource_DragEnter);
+            // 
+            // btnGBS_gbsm3uConvert
+            // 
+            this.btnGBS_gbsm3uConvert.Location = new System.Drawing.Point(313, 19);
+            this.btnGBS_gbsm3uConvert.Name = "btnGBS_gbsm3uConvert";
+            this.btnGBS_gbsm3uConvert.Size = new System.Drawing.Size(75, 23);
+            this.btnGBS_gbsm3uConvert.TabIndex = 1;
+            this.btnGBS_gbsm3uConvert.Text = "Convert";
+            this.btnGBS_gbsm3uConvert.UseVisualStyleBackColor = true;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.ForeColor = System.Drawing.Color.Red;
+            this.label9.Location = new System.Drawing.Point(138, 120);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(256, 13);
+            this.label9.TabIndex = 5;
+            this.label9.Text = "DRAG and DROP ONLY - Still Needs Proper Testing";
             // 
             // Form1
             // 
@@ -1262,17 +1353,24 @@
             this.tabPage3.PerformLayout();
             this.grpExamineMdx_PdxDiscovery.ResumeLayout(false);
             this.grpExamineMdx_PdxDiscovery.PerformLayout();
-            this.tabPage7.ResumeLayout(false);
-            this.tabPage7.PerformLayout();
+            this.tabPage9.ResumeLayout(false);
+            this.tabControl3.ResumeLayout(false);
+            this.tabPage10.ResumeLayout(false);
+            this.tabPage10.PerformLayout();
             this.gbHoot.ResumeLayout(false);
             this.gbHoot.PerformLayout();
             this.gbHoot_Destination.ResumeLayout(false);
             this.gbHoot_Destination.PerformLayout();
-            this.tabPage8.ResumeLayout(false);
-            this.statusStrip1.ResumeLayout(false);
-            this.statusStrip1.PerformLayout();
+            this.tabPage11.ResumeLayout(false);
+            this.tabPage11.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
+            this.tabPage7.ResumeLayout(false);
+            this.tabPage7.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1372,7 +1470,12 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.CheckBox cbRebuilder_ScanOnly;
         private System.Windows.Forms.Label lblTimeElapsed;
-        private System.Windows.Forms.TabPage tabPage7;
+        private System.Windows.Forms.TabPage tabPage9;
+        private System.Windows.Forms.TabControl tabControl3;
+        private System.Windows.Forms.TabPage tabPage10;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button btnHoot_AddInfo;
         private System.Windows.Forms.GroupBox gbHoot;
         private System.Windows.Forms.Label lblHoot_InputDatFile;
         private System.Windows.Forms.Button btnHoot_BrowseDatFile;
@@ -1383,13 +1486,16 @@
         private System.Windows.Forms.GroupBox gbHoot_Destination;
         private System.Windows.Forms.Button btnHoot_DestinationFileBrowse;
         private System.Windows.Forms.TextBox tbHoot_DatDestinationFile;
-        private System.Windows.Forms.Button btnHoot_AddInfo;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TabPage tabPage8;
+        private System.Windows.Forms.TabPage tabPage11;
+        private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TextBox tbNSF_nsfe2m3uSource;
         private System.Windows.Forms.Button btnNSF_nsfe2m3uConvert;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TabPage tabPage7;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.TextBox tbGBS_gbsm3uSource;
+        private System.Windows.Forms.Button btnGBS_gbsm3uConvert;
+        private System.Windows.Forms.Label label9;
     }
 }
 
