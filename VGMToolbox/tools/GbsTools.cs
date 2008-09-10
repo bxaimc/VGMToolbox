@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using VGMToolbox.format;
+using VGMToolbox.util;
 
 namespace VGMToolbox.tools
 {
@@ -59,9 +60,9 @@ namespace VGMToolbox.tools
 
                 sw.WriteLine("#######################################################");
                 sw.WriteLine("#");
-                sw.WriteLine("# Game: " + enc.GetString(gbsData.SongName));
-                sw.WriteLine("# Artist: " + enc.GetString(gbsData.SongArtist));
-                sw.WriteLine("# Copyright: " + enc.GetString(gbsData.SongCopyright));
+                sw.WriteLine("# Game: " + enc.GetString(FileUtil.ReplaceNullByteWithSpace(gbsData.SongName)).Trim());
+                sw.WriteLine("# Artist: " + enc.GetString(FileUtil.ReplaceNullByteWithSpace(gbsData.SongArtist)).Trim());
+                sw.WriteLine("# Copyright: " + enc.GetString(FileUtil.ReplaceNullByteWithSpace(gbsData.SongCopyright)).Trim());
                 sw.WriteLine("#");
                 sw.WriteLine("#######################################################");
                 sw.WriteLine();
