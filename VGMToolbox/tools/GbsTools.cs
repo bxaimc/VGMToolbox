@@ -81,10 +81,15 @@ namespace VGMToolbox.tools
 
         private static string buildTrackItem(int pIndex, Gbs pGbsData, string pPath)
         {
+            System.Text.Encoding enc = System.Text.Encoding.ASCII;
+            string title = enc.GetString(FileUtil.ReplaceNullByteWithSpace(pGbsData.SongArtist)).Trim() + " - " +
+                    enc.GetString(FileUtil.ReplaceNullByteWithSpace(pGbsData.SongName)).Trim() + " - " +  
+                    "Track " + pIndex;
+            
             string entry = NezPlug.BuildPlaylistEntry(NezPlug.FORMAT_GBS,
                 Path.GetFileName(pPath),
                 (pIndex).ToString(),
-                "Track " + pIndex,
+                title,
                 String.Empty,
                 String.Empty,
                 String.Empty,
