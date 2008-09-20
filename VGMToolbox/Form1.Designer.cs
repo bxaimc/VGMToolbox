@@ -114,7 +114,6 @@
             this.tabPage9 = new System.Windows.Forms.TabPage();
             this.tabControl3 = new System.Windows.Forms.TabControl();
             this.tabPage10 = new System.Windows.Forms.TabPage();
-            this.label2 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.btnHoot_AddInfo = new System.Windows.Forms.Button();
             this.gbHoot = new System.Windows.Forms.GroupBox();
@@ -128,9 +127,15 @@
             this.btnHoot_DestinationFileBrowse = new System.Windows.Forms.Button();
             this.tbHoot_DatDestinationFile = new System.Windows.Forms.TextBox();
             this.tabPage11 = new System.Windows.Forms.TabPage();
+            this.label8 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.tbNSF_nsfe2m3uSource = new System.Windows.Forms.TextBox();
             this.btnNSF_nsfe2m3uConvert = new System.Windows.Forms.Button();
+            this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.label9 = new System.Windows.Forms.Label();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.tbGBS_gbsm3uSource = new System.Windows.Forms.TextBox();
+            this.btnGBS_gbsm3uConvert = new System.Windows.Forms.Button();
             this.tbOutput = new System.Windows.Forms.TextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -142,12 +147,6 @@
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.lblProgressLabel = new System.Windows.Forms.Label();
             this.lblTimeElapsed = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.tabPage7 = new System.Windows.Forms.TabPage();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.tbGBS_gbsm3uSource = new System.Windows.Forms.TextBox();
-            this.btnGBS_gbsm3uConvert = new System.Windows.Forms.Button();
-            this.label9 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -171,9 +170,9 @@
             this.gbHoot_Destination.SuspendLayout();
             this.tabPage11.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            this.statusStrip1.SuspendLayout();
             this.tabPage7.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -1009,7 +1008,6 @@
             // 
             // tabPage10
             // 
-            this.tabPage10.Controls.Add(this.label2);
             this.tabPage10.Controls.Add(this.label7);
             this.tabPage10.Controls.Add(this.btnHoot_AddInfo);
             this.tabPage10.Controls.Add(this.gbHoot);
@@ -1021,15 +1019,6 @@
             this.tabPage10.TabIndex = 0;
             this.tabPage10.Text = "Hoot";
             this.tabPage10.UseVisualStyleBackColor = true;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(-1, 153);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(213, 13);
-            this.label2.TabIndex = 12;
-            this.label2.Text = "http://snesmusic.org/hoot/v2/hoot_list.php";
             // 
             // label7
             // 
@@ -1154,6 +1143,16 @@
             this.tabPage11.Text = "NSFE";
             this.tabPage11.UseVisualStyleBackColor = true;
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.ForeColor = System.Drawing.Color.Red;
+            this.label8.Location = new System.Drawing.Point(58, 117);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(288, 13);
+            this.label8.TabIndex = 4;
+            this.label8.Text = "DRAG and DROP ONLY - Incomplete - Not Fully Functional";
+            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.tbNSF_nsfe2m3uSource);
@@ -1183,6 +1182,57 @@
             this.btnNSF_nsfe2m3uConvert.TabIndex = 1;
             this.btnNSF_nsfe2m3uConvert.Text = "Convert";
             this.btnNSF_nsfe2m3uConvert.UseVisualStyleBackColor = true;
+            // 
+            // tabPage7
+            // 
+            this.tabPage7.Controls.Add(this.label9);
+            this.tabPage7.Controls.Add(this.groupBox3);
+            this.tabPage7.Location = new System.Drawing.Point(4, 22);
+            this.tabPage7.Name = "tabPage7";
+            this.tabPage7.Size = new System.Drawing.Size(674, 169);
+            this.tabPage7.TabIndex = 2;
+            this.tabPage7.Text = "GBS";
+            this.tabPage7.UseVisualStyleBackColor = true;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.ForeColor = System.Drawing.Color.Red;
+            this.label9.Location = new System.Drawing.Point(138, 120);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(256, 13);
+            this.label9.TabIndex = 5;
+            this.label9.Text = "DRAG and DROP ONLY - Still Needs Proper Testing";
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.tbGBS_gbsm3uSource);
+            this.groupBox3.Controls.Add(this.btnGBS_gbsm3uConvert);
+            this.groupBox3.Location = new System.Drawing.Point(4, 3);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(667, 62);
+            this.groupBox3.TabIndex = 4;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "GBS  .m3u Builder";
+            // 
+            // tbGBS_gbsm3uSource
+            // 
+            this.tbGBS_gbsm3uSource.AllowDrop = true;
+            this.tbGBS_gbsm3uSource.Location = new System.Drawing.Point(6, 19);
+            this.tbGBS_gbsm3uSource.Name = "tbGBS_gbsm3uSource";
+            this.tbGBS_gbsm3uSource.Size = new System.Drawing.Size(301, 20);
+            this.tbGBS_gbsm3uSource.TabIndex = 0;
+            this.tbGBS_gbsm3uSource.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbGBS_gbsm3uSource_DragDrop);
+            this.tbGBS_gbsm3uSource.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbGBS_gbsm3uSource_DragEnter);
+            // 
+            // btnGBS_gbsm3uConvert
+            // 
+            this.btnGBS_gbsm3uConvert.Location = new System.Drawing.Point(313, 19);
+            this.btnGBS_gbsm3uConvert.Name = "btnGBS_gbsm3uConvert";
+            this.btnGBS_gbsm3uConvert.Size = new System.Drawing.Size(75, 23);
+            this.btnGBS_gbsm3uConvert.TabIndex = 1;
+            this.btnGBS_gbsm3uConvert.Text = "Convert";
+            this.btnGBS_gbsm3uConvert.UseVisualStyleBackColor = true;
             // 
             // tbOutput
             // 
@@ -1250,67 +1300,6 @@
             this.lblTimeElapsed.TabIndex = 4;
             this.lblTimeElapsed.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.ForeColor = System.Drawing.Color.Red;
-            this.label8.Location = new System.Drawing.Point(58, 117);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(288, 13);
-            this.label8.TabIndex = 4;
-            this.label8.Text = "DRAG and DROP ONLY - Incomplete - Not Fully Functional";
-            // 
-            // tabPage7
-            // 
-            this.tabPage7.Controls.Add(this.label9);
-            this.tabPage7.Controls.Add(this.groupBox3);
-            this.tabPage7.Location = new System.Drawing.Point(4, 22);
-            this.tabPage7.Name = "tabPage7";
-            this.tabPage7.Size = new System.Drawing.Size(674, 169);
-            this.tabPage7.TabIndex = 2;
-            this.tabPage7.Text = "GBS";
-            this.tabPage7.UseVisualStyleBackColor = true;
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.tbGBS_gbsm3uSource);
-            this.groupBox3.Controls.Add(this.btnGBS_gbsm3uConvert);
-            this.groupBox3.Location = new System.Drawing.Point(4, 3);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(667, 62);
-            this.groupBox3.TabIndex = 4;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "GBS  .m3u Builder";
-            // 
-            // tbGBS_gbsm3uSource
-            // 
-            this.tbGBS_gbsm3uSource.AllowDrop = true;
-            this.tbGBS_gbsm3uSource.Location = new System.Drawing.Point(6, 19);
-            this.tbGBS_gbsm3uSource.Name = "tbGBS_gbsm3uSource";
-            this.tbGBS_gbsm3uSource.Size = new System.Drawing.Size(301, 20);
-            this.tbGBS_gbsm3uSource.TabIndex = 0;
-            this.tbGBS_gbsm3uSource.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbGBS_gbsm3uSource_DragDrop);
-            this.tbGBS_gbsm3uSource.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbGBS_gbsm3uSource_DragEnter);
-            // 
-            // btnGBS_gbsm3uConvert
-            // 
-            this.btnGBS_gbsm3uConvert.Location = new System.Drawing.Point(313, 19);
-            this.btnGBS_gbsm3uConvert.Name = "btnGBS_gbsm3uConvert";
-            this.btnGBS_gbsm3uConvert.Size = new System.Drawing.Size(75, 23);
-            this.btnGBS_gbsm3uConvert.TabIndex = 1;
-            this.btnGBS_gbsm3uConvert.Text = "Convert";
-            this.btnGBS_gbsm3uConvert.UseVisualStyleBackColor = true;
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.ForeColor = System.Drawing.Color.Red;
-            this.label9.Location = new System.Drawing.Point(138, 120);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(256, 13);
-            this.label9.TabIndex = 5;
-            this.label9.Text = "DRAG and DROP ONLY - Still Needs Proper Testing";
-            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1365,12 +1354,12 @@
             this.tabPage11.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.statusStrip1.ResumeLayout(false);
-            this.statusStrip1.PerformLayout();
             this.tabPage7.ResumeLayout(false);
             this.tabPage7.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1473,7 +1462,6 @@
         private System.Windows.Forms.TabPage tabPage9;
         private System.Windows.Forms.TabControl tabControl3;
         private System.Windows.Forms.TabPage tabPage10;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button btnHoot_AddInfo;
         private System.Windows.Forms.GroupBox gbHoot;
