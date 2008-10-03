@@ -29,6 +29,10 @@ namespace VGMToolbox.format
         private const string CHIP_N106  = "[NAMCO106]";
         private const string CHIP_FME07 = "[Sunsoft FME-07]";
 
+        private const string HOOT_DRIVER_ALIAS = "NES";
+        private const string HOOT_DRIVER_TYPE = "nsf";
+        private const string HOOT_DRIVER = "nes";
+
         private const int SIG_OFFSET = 0x00;
         private const int SIG_LENGTH = 0x05;
 
@@ -338,6 +342,8 @@ namespace VGMToolbox.format
         }                
         #endregion
 
+        #region METHODS
+
         private void initializeTagHash()
         {
             System.Text.Encoding enc = System.Text.Encoding.ASCII;
@@ -430,5 +436,24 @@ namespace VGMToolbox.format
             
             return _ret;
         }
+
+        public int GetStartingSong() { return Convert.ToInt16(this.startingSong[0]); }
+        public int GetTotalSongs() { return Convert.ToInt16(this.totalSongs[0]); }
+        public string GetSongName()
+        {
+            System.Text.Encoding enc = System.Text.Encoding.ASCII;
+            return enc.GetString(FileUtil.ReplaceNullByteWithSpace(this.songName)).Trim();
+        }
+
+
+        #endregion
+
+        #region HOOT
+
+        public string GetHootDriverAlias() { return HOOT_DRIVER_ALIAS; }
+        public string GetHootDriverType() { return HOOT_DRIVER_TYPE; }
+        public string GetHootDriver() { return HOOT_DRIVER; }
+
+        #endregion
     }
 }

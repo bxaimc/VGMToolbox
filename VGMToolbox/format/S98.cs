@@ -22,6 +22,10 @@ namespace VGMToolbox.format
         private const string TAG_UTF8_INDICATOR = "utf8=";
         private const int TAG_IDENTIFIER_LENGTH = 5;
 
+        private const string HOOT_DRIVER_ALIAS = null;
+        private const string HOOT_DRIVER_TYPE = null;
+        private const string HOOT_DRIVER = null;
+
         struct S98Device
         { 
             public byte[] DeviceType;
@@ -377,7 +381,18 @@ namespace VGMToolbox.format
             return this.tagHash;
         }
 
+        public int GetStartingSong() { return 0; }
+        public int GetTotalSongs() { return 0; }
+        public string GetSongName() { return null; }
+
         #endregion
 
+        #region HOOT
+
+        public string GetHootDriverAlias() { return HOOT_DRIVER_ALIAS; }
+        public string GetHootDriverType() { return HOOT_DRIVER_TYPE; }
+        public string GetHootDriver() { return HOOT_DRIVER; }
+
+        #endregion
     }
 }

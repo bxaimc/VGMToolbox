@@ -18,6 +18,10 @@ namespace VGMToolbox.format
                          0x20, 0x76, 0x30, 0x2E, 0x33, 0x30 }; // SNES-SPC700 Sound File Data v0.30
         private const string FORMAT_ABBREVIATION = "SPC";
 
+        private const string HOOT_DRIVER_ALIAS = null;
+        private const string HOOT_DRIVER_TYPE = null;
+        private const string HOOT_DRIVER = null;
+
         private static readonly byte[] EXTENDED_ID666_SIGNATURE =
             new byte[] { 0x78, 0x69, 0x64, 0x36 }; // xid6
         private static readonly byte[] ID666_IN_HEADER_VAL = new byte[] { 0x1A };
@@ -531,6 +535,18 @@ namespace VGMToolbox.format
             } // while (offset < pBytes.GetLength())
 
         }
+
+        public int GetStartingSong() { return 0; }
+        public int GetTotalSongs() { return 0; }
+        public string GetSongName() { return null; }
+
+        #endregion
+
+        #region HOOT
+
+        public string GetHootDriverAlias() { return HOOT_DRIVER_ALIAS; }
+        public string GetHootDriverType() { return HOOT_DRIVER_TYPE; }
+        public string GetHootDriver() { return HOOT_DRIVER; }
 
         #endregion
     }

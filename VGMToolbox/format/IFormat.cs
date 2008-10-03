@@ -26,6 +26,14 @@ namespace VGMToolbox.format
         bool IsFileLibrary(string pPath);
         bool HasMultipleFileExtensions();
 
+        int GetStartingSong();
+        int GetTotalSongs();
+        string GetSongName();
+
+        string GetHootDriverAlias();
+        string GetHootDriverType();
+        string GetHootDriver();
+
         Dictionary<string, string> GetTagHash();
     }
 }

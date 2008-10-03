@@ -8,6 +8,7 @@ using System.Xml.Serialization;
 
 using VGMToolbox.auditing;
 using VGMToolbox.tools;
+using VGMToolbox.tools.hoot;
 using VGMToolbox.util;
 
 namespace VGMToolbox
@@ -669,7 +670,7 @@ namespace VGMToolbox
                     tbDatCreator_Email.Text, tbDatCreator_Homepage.Text, tbDatCreator_Name.Text,
                     tbDatCreator_Url.Text, tbDatCreator_Version.Text);
 
-                dataFile.game = (game[])e.Result;
+                dataFile.game = (VGMToolbox.auditing.game[])e.Result;
 
                 XmlSerializer serializer = new XmlSerializer(dataFile.GetType());
                 
@@ -837,5 +838,20 @@ namespace VGMToolbox
             toolStripStatusLabel1.Text = "GBS M3U Creation...Complete";
         }
 
+        private void btnHootXML_Go_Click(object sender, EventArgs e)
+        {
+            HootXmlGenerator hxg = new HootXmlGenerator();
+            VGMToolbox.tools.hoot.game[] hootGame = hxg.GetHootGames(tbHootXML_Path.Text);
+
+            // Use to suppress namespace attributes
+            XmlSerializerNamespaces namespaceSerializer = new XmlSerializerNamespaces();
+            namespaceSerializer.Add("", "");
+            
+            XmlSerializer serializer = new XmlSerializer(hootGame.GetType());            
+            TextWriter textWriter = new StreamWriter("hootgame.txt");
+            serializer.Serialize(textWriter, hootGame, namespaceSerializer);
+            textWriter.Close();
+            textWriter.Dispose();
+        }
     }
 }

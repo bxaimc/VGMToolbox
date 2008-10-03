@@ -35,6 +35,10 @@ namespace VGMToolbox.format
 
         private static readonly byte[] NULL_TERMINATOR = new byte[] { 0x00 };
 
+        private const string HOOT_DRIVER_ALIAS = null;
+        private const string HOOT_DRIVER_TYPE = null;
+        private const string HOOT_DRIVER = null;
+
         private const int SIG_OFFSET = 0x00;
         private const int SIG_LENGTH = 0x04;
 
@@ -452,6 +456,18 @@ namespace VGMToolbox.format
             return this.tagHash;
         }
 
+        public int GetStartingSong() { return BitConverter.ToInt16(this.startingSong, 0); }
+        public int GetTotalSongs() { return BitConverter.ToInt16(this.totalSongs, 0); }
+        public string GetSongName() { return this.songName.Trim();}
+
         #endregion
+
+        #region HOOT
+
+        public string GetHootDriverAlias() { return HOOT_DRIVER_ALIAS; }
+        public string GetHootDriverType() { return HOOT_DRIVER_TYPE; }
+        public string GetHootDriver() { return HOOT_DRIVER; }
+
+        #endregion    
     }
 }
