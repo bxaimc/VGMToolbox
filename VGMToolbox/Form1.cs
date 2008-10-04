@@ -19,6 +19,8 @@ namespace VGMToolbox
         RebuilderWorker rebuilder;
         TreeBuilderWorker treeBuilder;
         DatafileCheckerWorker datafileCheckerWorker;
+        HootXmlBuilderWorker hootXmlBuilder;
+
 
         DateTime elapsedTimeStart;
         DateTime elapsedTimeEnd;
@@ -749,7 +751,7 @@ namespace VGMToolbox
 
         #endregion
 
-        #region HOOT
+        #region HOOT - CSV
         private void btnHoot_BrowseCsvFile_Click(object sender, EventArgs e)
         {
             openFileDialog1 = new OpenFileDialog();
@@ -838,20 +840,67 @@ namespace VGMToolbox
             toolStripStatusLabel1.Text = "GBS M3U Creation...Complete";
         }
 
-        private void btnHootXML_Go_Click(object sender, EventArgs e)
-        {
-            HootXmlGenerator hxg = new HootXmlGenerator();
-            VGMToolbox.tools.hoot.game[] hootGame = hxg.GetHootGames(tbHootXML_Path.Text);
+        
+        #region HOOT - XML
 
-            // Use to suppress namespace attributes
-            XmlSerializerNamespaces namespaceSerializer = new XmlSerializerNamespaces();
-            namespaceSerializer.Add("", "");
-            
-            XmlSerializer serializer = new XmlSerializer(hootGame.GetType());            
-            TextWriter textWriter = new StreamWriter("hootgame.txt");
-            serializer.Serialize(textWriter, hootGame, namespaceSerializer);
-            textWriter.Close();
-            textWriter.Dispose();
+        private void HootXmlBuilderWorker_WorkComplete(object sender,
+                             RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled)
+            {
+                doCancelCleanup(false);
+                toolStripStatusLabel1.Text = "Hoot XML Generation...Cancelled";
+                tbOutput.Text += "Operation cancelled.";
+            }
+            else
+            {
+                lblProgressLabel.Text = String.Empty;
+                toolStripStatusLabel1.Text = "Hoot XML Generation...Complete";
+            }
         }
+
+        private void tbHootXML_Path_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
+                e.Effect = DragDropEffects.All;
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        private void tbHootXML_Path_DragDrop(object sender, DragEventArgs e)
+        {
+            doCleanup();
+
+            toolStripStatusLabel1.Text = "Hoot XML Generation...Begin";
+
+            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            int totalFileCount = 0;
+
+            foreach (string path in s)
+            {
+                if (File.Exists(path))
+                {
+                    totalFileCount++;
+                }
+                else if (Directory.Exists(path))
+                {
+                    totalFileCount += Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
+                }
+            }
+
+            HootXmlBuilderWorker.HootXmlBuilderStruct xbStruct = new HootXmlBuilderWorker.HootXmlBuilderStruct();
+            xbStruct.pPaths = s;
+            xbStruct.totalFiles = totalFileCount;
+            xbStruct.combineOutput = cbHootXML_CombineOutput.Checked;
+            xbStruct.splitOutput = cbHootXML_SplitOutput.Checked;
+
+            hootXmlBuilder = new HootXmlBuilderWorker();
+            hootXmlBuilder.ProgressChanged += backgroundWorker_ReportProgress;
+            hootXmlBuilder.RunWorkerCompleted += HootXmlBuilderWorker_WorkComplete;
+            hootXmlBuilder.RunWorkerAsync(xbStruct);
+        }
+
+        #endregion
     }
 }

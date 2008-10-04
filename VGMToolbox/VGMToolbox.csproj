@@ -126,7 +126,9 @@
       <DependentUpon>Splash.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\hoot\HootGameList.cs" />
-    <Compile Include="tools\hoot\HootXmlGenerator.cs" />
+    <Compile Include="tools\hoot\HootXmlBuilderWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\Nds2sfTools.cs" />
     <Compile Include="tools\GbsTools.cs" />
     <Compile Include="tools\hoot\HootCsv.cs" />
@@ -178,6 +180,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="external\2sf\sdattool.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="hoot\!hootxml.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="languages.ini">

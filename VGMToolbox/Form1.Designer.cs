@@ -130,7 +130,6 @@
             this.tbHoot_DatDestinationFile = new System.Windows.Forms.TextBox();
             this.tabPage13 = new System.Windows.Forms.TabPage();
             this.tbHootXML_Path = new System.Windows.Forms.TextBox();
-            this.btnHootXML_Go = new System.Windows.Forms.Button();
             this.tabPage11 = new System.Windows.Forms.TabPage();
             this.label8 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -153,6 +152,12 @@
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.lblProgressLabel = new System.Windows.Forms.Label();
             this.lblTimeElapsed = new System.Windows.Forms.Label();
+            this.gbHootXML_Source = new System.Windows.Forms.GroupBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.gbHootXML_Options = new System.Windows.Forms.GroupBox();
+            this.cbHootXML_CombineOutput = new System.Windows.Forms.CheckBox();
+            this.cbHootXML_SplitOutput = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -182,6 +187,8 @@
             this.tabPage7.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.gbHootXML_Source.SuspendLayout();
+            this.gbHootXML_Options.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -1001,7 +1008,7 @@
             this.tabPage9.Name = "tabPage9";
             this.tabPage9.Size = new System.Drawing.Size(682, 198);
             this.tabPage9.TabIndex = 6;
-            this.tabPage9.Text = "Misc.";
+            this.tabPage9.Text = "Tools";
             this.tabPage9.UseVisualStyleBackColor = true;
             // 
             // tabControl3
@@ -1034,7 +1041,7 @@
             this.tabControl4.Location = new System.Drawing.Point(0, 0);
             this.tabControl4.Name = "tabControl4";
             this.tabControl4.SelectedIndex = 0;
-            this.tabControl4.Size = new System.Drawing.Size(678, 170);
+            this.tabControl4.Size = new System.Drawing.Size(671, 170);
             this.tabControl4.TabIndex = 0;
             // 
             // tabPage12
@@ -1046,7 +1053,7 @@
             this.tabPage12.Location = new System.Drawing.Point(4, 22);
             this.tabPage12.Name = "tabPage12";
             this.tabPage12.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage12.Size = new System.Drawing.Size(670, 144);
+            this.tabPage12.Size = new System.Drawing.Size(663, 144);
             this.tabPage12.TabIndex = 0;
             this.tabPage12.Text = "CSV Datafile";
             this.tabPage12.UseVisualStyleBackColor = true;
@@ -1063,7 +1070,7 @@
             // 
             // btnHoot_AddInfo
             // 
-            this.btnHoot_AddInfo.Location = new System.Drawing.Point(600, 119);
+            this.btnHoot_AddInfo.Location = new System.Drawing.Point(594, 119);
             this.btnHoot_AddInfo.Name = "btnHoot_AddInfo";
             this.btnHoot_AddInfo.Size = new System.Drawing.Size(65, 20);
             this.btnHoot_AddInfo.TabIndex = 14;
@@ -1080,7 +1087,7 @@
             this.gbHoot.Controls.Add(this.tbHoot_CsvSourceFile);
             this.gbHoot.Location = new System.Drawing.Point(3, 0);
             this.gbHoot.Name = "gbHoot";
-            this.gbHoot.Size = new System.Drawing.Size(665, 60);
+            this.gbHoot.Size = new System.Drawing.Size(657, 60);
             this.gbHoot.TabIndex = 12;
             this.gbHoot.TabStop = false;
             this.gbHoot.Text = "Files";
@@ -1164,32 +1171,26 @@
             // 
             // tabPage13
             // 
-            this.tabPage13.Controls.Add(this.tbHootXML_Path);
-            this.tabPage13.Controls.Add(this.btnHootXML_Go);
+            this.tabPage13.Controls.Add(this.gbHootXML_Options);
+            this.tabPage13.Controls.Add(this.label2);
+            this.tabPage13.Controls.Add(this.gbHootXML_Source);
             this.tabPage13.Location = new System.Drawing.Point(4, 22);
             this.tabPage13.Name = "tabPage13";
             this.tabPage13.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage13.Size = new System.Drawing.Size(670, 144);
+            this.tabPage13.Size = new System.Drawing.Size(663, 144);
             this.tabPage13.TabIndex = 1;
             this.tabPage13.Text = "XML Builder";
             this.tabPage13.UseVisualStyleBackColor = true;
             // 
             // tbHootXML_Path
             // 
-            this.tbHootXML_Path.Location = new System.Drawing.Point(6, 6);
+            this.tbHootXML_Path.AllowDrop = true;
+            this.tbHootXML_Path.Location = new System.Drawing.Point(6, 19);
             this.tbHootXML_Path.Name = "tbHootXML_Path";
-            this.tbHootXML_Path.Size = new System.Drawing.Size(413, 20);
+            this.tbHootXML_Path.Size = new System.Drawing.Size(259, 20);
             this.tbHootXML_Path.TabIndex = 1;
-            // 
-            // btnHootXML_Go
-            // 
-            this.btnHootXML_Go.Location = new System.Drawing.Point(588, 115);
-            this.btnHootXML_Go.Name = "btnHootXML_Go";
-            this.btnHootXML_Go.Size = new System.Drawing.Size(75, 23);
-            this.btnHootXML_Go.TabIndex = 0;
-            this.btnHootXML_Go.Text = "btnHootXML_Go";
-            this.btnHootXML_Go.UseVisualStyleBackColor = true;
-            this.btnHootXML_Go.Click += new System.EventHandler(this.btnHootXML_Go_Click);
+            this.tbHootXML_Path.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbHootXML_Path_DragDrop);
+            this.tbHootXML_Path.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbHootXML_Path_DragEnter);
             // 
             // tabPage11
             // 
@@ -1369,6 +1370,66 @@
             this.lblTimeElapsed.TabIndex = 4;
             this.lblTimeElapsed.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // gbHootXML_Source
+            // 
+            this.gbHootXML_Source.Controls.Add(this.label10);
+            this.gbHootXML_Source.Controls.Add(this.tbHootXML_Path);
+            this.gbHootXML_Source.Location = new System.Drawing.Point(3, 1);
+            this.gbHootXML_Source.Name = "gbHootXML_Source";
+            this.gbHootXML_Source.Size = new System.Drawing.Size(272, 61);
+            this.gbHootXML_Source.TabIndex = 2;
+            this.gbHootXML_Source.TabStop = false;
+            this.gbHootXML_Source.Text = "Source";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(6, 125);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(226, 13);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "Build Skeleton Hoot XML entries for NSF/GBS";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(6, 42);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(171, 13);
+            this.label10.TabIndex = 2;
+            this.label10.Text = "Drag and Drop folders or files here.";
+            // 
+            // gbHootXML_Options
+            // 
+            this.gbHootXML_Options.Controls.Add(this.cbHootXML_SplitOutput);
+            this.gbHootXML_Options.Controls.Add(this.cbHootXML_CombineOutput);
+            this.gbHootXML_Options.Location = new System.Drawing.Point(281, 1);
+            this.gbHootXML_Options.Name = "gbHootXML_Options";
+            this.gbHootXML_Options.Size = new System.Drawing.Size(376, 61);
+            this.gbHootXML_Options.TabIndex = 4;
+            this.gbHootXML_Options.TabStop = false;
+            this.gbHootXML_Options.Text = "Options";
+            // 
+            // cbHootXML_CombineOutput
+            // 
+            this.cbHootXML_CombineOutput.AutoSize = true;
+            this.cbHootXML_CombineOutput.Location = new System.Drawing.Point(6, 19);
+            this.cbHootXML_CombineOutput.Name = "cbHootXML_CombineOutput";
+            this.cbHootXML_CombineOutput.Size = new System.Drawing.Size(183, 17);
+            this.cbHootXML_CombineOutput.TabIndex = 0;
+            this.cbHootXML_CombineOutput.Text = "Combine output to single XML file";
+            this.cbHootXML_CombineOutput.UseVisualStyleBackColor = true;
+            // 
+            // cbHootXML_SplitOutput
+            // 
+            this.cbHootXML_SplitOutput.AutoSize = true;
+            this.cbHootXML_SplitOutput.Location = new System.Drawing.Point(6, 38);
+            this.cbHootXML_SplitOutput.Name = "cbHootXML_SplitOutput";
+            this.cbHootXML_SplitOutput.Size = new System.Drawing.Size(142, 17);
+            this.cbHootXML_SplitOutput.TabIndex = 1;
+            this.cbHootXML_SplitOutput.Text = "Output one file per game";
+            this.cbHootXML_SplitOutput.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1433,6 +1494,10 @@
             this.groupBox3.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.gbHootXML_Source.ResumeLayout(false);
+            this.gbHootXML_Source.PerformLayout();
+            this.gbHootXML_Options.ResumeLayout(false);
+            this.gbHootXML_Options.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1561,8 +1626,13 @@
         private System.Windows.Forms.Button btnHoot_DestinationFileBrowse;
         private System.Windows.Forms.TextBox tbHoot_DatDestinationFile;
         private System.Windows.Forms.TabPage tabPage13;
-        private System.Windows.Forms.Button btnHootXML_Go;
         private System.Windows.Forms.TextBox tbHootXML_Path;
+        private System.Windows.Forms.GroupBox gbHootXML_Source;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.GroupBox gbHootXML_Options;
+        private System.Windows.Forms.CheckBox cbHootXML_SplitOutput;
+        private System.Windows.Forms.CheckBox cbHootXML_CombineOutput;
     }
 }
 
