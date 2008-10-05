@@ -167,6 +167,8 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.cbXsfPsf2Exe_IncludeOrigExt = new System.Windows.Forms.CheckBox();
+            this.btnXsfPsf2Exe_Cancel = new System.Windows.Forms.Button();
+            this.btnHootXML_Cancel = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -1185,6 +1187,7 @@
             // 
             // tabPage13
             // 
+            this.tabPage13.Controls.Add(this.btnHootXML_Cancel);
             this.tabPage13.Controls.Add(this.gbHootXML_Options);
             this.tabPage13.Controls.Add(this.label2);
             this.tabPage13.Controls.Add(this.gbHootXML_Source);
@@ -1390,6 +1393,7 @@
             // 
             // tabPage14
             // 
+            this.tabPage14.Controls.Add(this.btnXsfPsf2Exe_Cancel);
             this.tabPage14.Controls.Add(this.groupBox4);
             this.tabPage14.Controls.Add(this.grpXsfPsf2Exe_Source);
             this.tabPage14.Location = new System.Drawing.Point(4, 22);
@@ -1397,7 +1401,7 @@
             this.tabPage14.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage14.Size = new System.Drawing.Size(663, 144);
             this.tabPage14.TabIndex = 0;
-            this.tabPage14.Text = "PSF2EXE";
+            this.tabPage14.Text = "xSF2EXE";
             this.tabPage14.UseVisualStyleBackColor = true;
             // 
             // grpXsfPsf2Exe_Source
@@ -1532,6 +1536,26 @@
             this.cbXsfPsf2Exe_IncludeOrigExt.TabIndex = 0;
             this.cbXsfPsf2Exe_IncludeOrigExt.Text = "Include original file extension in output name";
             this.cbXsfPsf2Exe_IncludeOrigExt.UseVisualStyleBackColor = true;
+            // 
+            // btnXsfPsf2Exe_Cancel
+            // 
+            this.btnXsfPsf2Exe_Cancel.Location = new System.Drawing.Point(582, 115);
+            this.btnXsfPsf2Exe_Cancel.Name = "btnXsfPsf2Exe_Cancel";
+            this.btnXsfPsf2Exe_Cancel.Size = new System.Drawing.Size(75, 23);
+            this.btnXsfPsf2Exe_Cancel.TabIndex = 6;
+            this.btnXsfPsf2Exe_Cancel.Text = "Cancel";
+            this.btnXsfPsf2Exe_Cancel.UseVisualStyleBackColor = true;
+            this.btnXsfPsf2Exe_Cancel.Click += new System.EventHandler(this.btnXsfPsf2Exe_Cancel_Click);
+            // 
+            // btnHootXML_Cancel
+            // 
+            this.btnHootXML_Cancel.Location = new System.Drawing.Point(582, 115);
+            this.btnHootXML_Cancel.Name = "btnHootXML_Cancel";
+            this.btnHootXML_Cancel.Size = new System.Drawing.Size(75, 23);
+            this.btnHootXML_Cancel.TabIndex = 7;
+            this.btnHootXML_Cancel.Text = "Cancel";
+            this.btnHootXML_Cancel.UseVisualStyleBackColor = true;
+            this.btnHootXML_Cancel.Click += new System.EventHandler(this.btnHootXML_Cancel_Click);
             // 
             // Form1
             // 
@@ -1752,6 +1776,8 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.CheckBox cbXsfPsf2Exe_IncludeOrigExt;
+        private System.Windows.Forms.Button btnXsfPsf2Exe_Cancel;
+        private System.Windows.Forms.Button btnHootXML_Cancel;
     }
 }
 

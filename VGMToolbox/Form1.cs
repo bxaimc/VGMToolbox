@@ -903,6 +903,15 @@ namespace VGMToolbox
             hootXmlBuilder.RunWorkerAsync(xbStruct);
         }
 
+        private void btnHootXML_Cancel_Click(object sender, EventArgs e)
+        {
+            if (hootXmlBuilder != null && hootXmlBuilder.IsBusy)
+            {
+                tbOutput.Text += "CANCEL PENDING...";
+                hootXmlBuilder.CancelAsync();
+            }
+        }
+
         #endregion
 
         #region XSF - EXTRACT COMPRESSED SECTION
@@ -966,6 +975,16 @@ namespace VGMToolbox
             }
         }
 
+        private void btnXsfPsf2Exe_Cancel_Click(object sender, EventArgs e)
+        {
+            if (xsfCompressedProgramExtractor != null && xsfCompressedProgramExtractor.IsBusy)
+            {
+                tbOutput.Text += "CANCEL PENDING...";
+                xsfCompressedProgramExtractor.CancelAsync();
+            }
+        }
+
         #endregion
+
     }
 }
