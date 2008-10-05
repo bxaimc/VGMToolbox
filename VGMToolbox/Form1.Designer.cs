@@ -138,7 +138,6 @@
             this.label10 = new System.Windows.Forms.Label();
             this.tbHootXML_Path = new System.Windows.Forms.TextBox();
             this.tabPage11 = new System.Windows.Forms.TabPage();
-            this.label8 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.tbNSF_nsfe2m3uSource = new System.Windows.Forms.TextBox();
             this.btnNSF_nsfe2m3uConvert = new System.Windows.Forms.Button();
@@ -170,6 +169,8 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.btnGbsM3u_Cancel = new System.Windows.Forms.Button();
+            this.label9 = new System.Windows.Forms.Label();
+            this.btnNsfM3u_Cancel = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -1282,7 +1283,7 @@
             // 
             // tabPage11
             // 
-            this.tabPage11.Controls.Add(this.label8);
+            this.tabPage11.Controls.Add(this.btnNsfM3u_Cancel);
             this.tabPage11.Controls.Add(this.groupBox2);
             this.tabPage11.Location = new System.Drawing.Point(4, 22);
             this.tabPage11.Name = "tabPage11";
@@ -1292,23 +1293,14 @@
             this.tabPage11.Text = "NSFE";
             this.tabPage11.UseVisualStyleBackColor = true;
             // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.ForeColor = System.Drawing.Color.Red;
-            this.label8.Location = new System.Drawing.Point(58, 117);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(288, 13);
-            this.label8.TabIndex = 4;
-            this.label8.Text = "DRAG and DROP ONLY - Incomplete - Not Fully Functional";
-            // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label9);
             this.groupBox2.Controls.Add(this.tbNSF_nsfe2m3uSource);
             this.groupBox2.Controls.Add(this.btnNSF_nsfe2m3uConvert);
-            this.groupBox2.Location = new System.Drawing.Point(4, 3);
+            this.groupBox2.Location = new System.Drawing.Point(3, 1);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(667, 62);
+            this.groupBox2.Size = new System.Drawing.Size(272, 61);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "NSFe to .m3u";
@@ -1318,7 +1310,7 @@
             this.tbNSF_nsfe2m3uSource.AllowDrop = true;
             this.tbNSF_nsfe2m3uSource.Location = new System.Drawing.Point(6, 19);
             this.tbNSF_nsfe2m3uSource.Name = "tbNSF_nsfe2m3uSource";
-            this.tbNSF_nsfe2m3uSource.Size = new System.Drawing.Size(301, 20);
+            this.tbNSF_nsfe2m3uSource.Size = new System.Drawing.Size(259, 20);
             this.tbNSF_nsfe2m3uSource.TabIndex = 0;
             this.tbNSF_nsfe2m3uSource.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbNSF_nsfe2m3uSource_DragDrop);
             this.tbNSF_nsfe2m3uSource.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbNSF_nsfe2m3uSource_DragEnter);
@@ -1568,6 +1560,25 @@
             this.btnGbsM3u_Cancel.UseVisualStyleBackColor = true;
             this.btnGbsM3u_Cancel.Click += new System.EventHandler(this.btnGbsM3u_Cancel_Click);
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(6, 42);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(171, 13);
+            this.label9.TabIndex = 5;
+            this.label9.Text = "Drag and Drop folders or files here.";
+            // 
+            // btnNsfM3u_Cancel
+            // 
+            this.btnNsfM3u_Cancel.Location = new System.Drawing.Point(593, 140);
+            this.btnNsfM3u_Cancel.Name = "btnNsfM3u_Cancel";
+            this.btnNsfM3u_Cancel.Size = new System.Drawing.Size(75, 23);
+            this.btnNsfM3u_Cancel.TabIndex = 5;
+            this.btnNsfM3u_Cancel.Text = "Cancel";
+            this.btnNsfM3u_Cancel.UseVisualStyleBackColor = true;
+            this.btnNsfM3u_Cancel.Click += new System.EventHandler(this.btnNsfM3u_Cancel_Click);
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1627,7 +1638,6 @@
             this.gbHootXML_Source.ResumeLayout(false);
             this.gbHootXML_Source.PerformLayout();
             this.tabPage11.ResumeLayout(false);
-            this.tabPage11.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.tabPage7.ResumeLayout(false);
@@ -1748,7 +1758,6 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TextBox tbNSF_nsfe2m3uSource;
         private System.Windows.Forms.Button btnNSF_nsfe2m3uConvert;
-        private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TabPage tabPage7;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.TextBox tbGBS_gbsm3uSource;
@@ -1789,6 +1798,8 @@
         private System.Windows.Forms.Button btnHootXML_Cancel;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Button btnGbsM3u_Cancel;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Button btnNsfM3u_Cancel;
     }
 }
 

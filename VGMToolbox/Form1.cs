@@ -10,6 +10,7 @@ using VGMToolbox.auditing;
 using VGMToolbox.tools;
 using VGMToolbox.tools.gbs;
 using VGMToolbox.tools.hoot;
+using VGMToolbox.tools.nsf;
 using VGMToolbox.tools.xsf;
 using VGMToolbox.util;
 
@@ -24,6 +25,7 @@ namespace VGMToolbox
         HootXmlBuilderWorker hootXmlBuilder;
         XsfCompressedProgramExtractorWorker xsfCompressedProgramExtractor;
         GbsM3uBuilderWorker gbsM3uBuilder;
+        NsfeM3uBuilderWorker nsfeM3uBuilder;
 
         DateTime elapsedTimeStart;
         DateTime elapsedTimeEnd;
@@ -799,8 +801,8 @@ namespace VGMToolbox
                 
         #endregion
 
-
-
+        #region NSFE - M3U
+        //nsfeM3uBuilder
         private void tbNSF_nsfe2m3uSource_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
@@ -817,16 +819,60 @@ namespace VGMToolbox
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-            NsfeToM3u.BuildNezPlugM3uFiles(s);
+            int totalFileCount = 0;
 
-            toolStripStatusLabel1.Text = "NSFE to .M3U Conversion...Complete";
+            foreach (string path in s)
+            {
+                if (File.Exists(path))
+                {
+                    totalFileCount++;
+                }
+                else if (Directory.Exists(path))
+                {
+                    totalFileCount += Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
+                }
+            }
+
+            NsfeM3uBuilderWorker.NsfeM3uBuilderStruct nsfeStruct = new NsfeM3uBuilderWorker.NsfeM3uBuilderStruct();
+            nsfeStruct.pPaths = s;
+            nsfeStruct.totalFiles = totalFileCount;
+
+            nsfeM3uBuilder = new NsfeM3uBuilderWorker();
+            nsfeM3uBuilder.ProgressChanged += backgroundWorker_ReportProgress;
+            nsfeM3uBuilder.RunWorkerCompleted += NsfeM3uBuilderWorker_WorkComplete;
+            nsfeM3uBuilder.RunWorkerAsync(nsfeStruct);
         }
 
+        private void NsfeM3uBuilderWorker_WorkComplete(object sender,
+                             RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled)
+            {
+                doCancelCleanup(false);
+                toolStripStatusLabel1.Text = "NSFE to .M3U Conversion...Cancelled";
+                tbOutput.Text += "Operation cancelled.";
+            }
+            else
+            {
+                lblProgressLabel.Text = String.Empty;
+                toolStripStatusLabel1.Text = "NSFE to .M3U Conversion...Complete";
+            }
+        }
 
+        private void btnNsfM3u_Cancel_Click(object sender, EventArgs e)
+        {
+            if (nsfeM3uBuilder != null && nsfeM3uBuilder.IsBusy)
+            {
+                tbOutput.Text += "CANCEL PENDING...";
+                nsfeM3uBuilder.CancelAsync();
+            }
+        }
+
+        #endregion
         
         
         #region GBS - M3U
-        //gbsM3uBuilder
+
         private void tbGBS_gbsm3uSource_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop, false))

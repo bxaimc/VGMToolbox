@@ -12,9 +12,14 @@ namespace VGMToolbox.format
 {
     class Nsf : IFormat
     {
-        private static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x4E, 0x45, 0x53, 0x4D, 0x1A };
+        public static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x4E, 0x45, 0x53, 0x4D, 0x1A };
+        public static readonly byte[] CURRENT_VERSION_NUMBER = new byte[] { 0x01};
         private const string FORMAT_ABBREVIATION = "NSF";
 
+        public static readonly byte MASK_NTSC = 0;
+        public static readonly byte MASK_PAL = 1;        
+        public static readonly byte MASK_PAL_NTSC = 2;
+        
         private static readonly byte MASK_VRC6  = 1;
         private static readonly byte MASK_VRC7  = 2;
         private static readonly byte MASK_FDS   = 4;

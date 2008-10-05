@@ -86,7 +86,15 @@ namespace VGMToolbox.format
         private byte[] totalSongs;
         private byte[] startingSong;
 
+        public byte[] LoadAddress { get { return loadAddress; } }
+        public byte[] InitAddress { get { return initAddress; } }
+        public byte[] PlayAddress { get { return playAddress; } }
+
+        public byte[] PalNtscBits { get { return palNtscBits; } }
+        public byte[] ExtraChipsBits { get { return extraChipsBits; } }
+
         public byte[] TotalSongs { get { return totalSongs; } }
+        public byte[] StartingSong { get { return startingSong; } }
 
         // plst Chunk
         private string playlist = String.Empty;
@@ -94,6 +102,7 @@ namespace VGMToolbox.format
 
         // DATA Chunk
         private byte[] data;
+        public byte[] Data { get { return data; } }
 
         // time Chunk
         private Int32[] times;
@@ -113,14 +122,23 @@ namespace VGMToolbox.format
         private string songArtist;
         private string songCopyright;
         private string nsfRipper;
+        private byte[] songNameBytes;
+        private byte[] songArtistBytes;
+        private byte[] songCopyrightBytes;
+        private byte[] nsfRipperBytes;
 
         public string SongName { get { return songName; } }
         public string SongArtist { get { return songArtist; } }
         public string SongCopyright { get { return songCopyright; } }
         public string NsfRipper { get { return nsfRipper; } }
+        public byte[] SongNameBytes { get { return songNameBytes; } }
+        public byte[] SongArtistBytes { get { return songArtistBytes; } }
+        public byte[] SongCopyrightBytes { get { return songCopyrightBytes; } }
+        public byte[] NsfRipperBytes { get { return nsfRipperBytes; } }
 
         // BANK Chunk
         private byte[] bankSwitchInit;
+        public byte[] BankSwitchInit { get { return bankSwitchInit; } }
 
         private ArrayList chunks = new ArrayList();
         Dictionary<string, string> tagHash = new Dictionary<string, string>();        
@@ -370,6 +388,7 @@ namespace VGMToolbox.format
                         labelLength = ParseFile.getSegmentLength(c.chunkData, offset, NULL_TERMINATOR);
                         authBlock = ParseFile.parseSimpleOffset(c.chunkData, offset, labelLength);
                         songName = enc.GetString(authBlock);
+                        songNameBytes = authBlock;
                         offset += labelLength + 1;
                     }
 
@@ -378,6 +397,7 @@ namespace VGMToolbox.format
                         labelLength = ParseFile.getSegmentLength(c.chunkData, offset, NULL_TERMINATOR);
                         authBlock = ParseFile.parseSimpleOffset(c.chunkData, offset, labelLength);
                         songArtist = enc.GetString(authBlock);
+                        songArtistBytes = authBlock;
                         offset += labelLength + 1;
                     }                    
 
@@ -386,6 +406,7 @@ namespace VGMToolbox.format
                         labelLength = ParseFile.getSegmentLength(c.chunkData, offset, NULL_TERMINATOR);
                         authBlock = ParseFile.parseSimpleOffset(c.chunkData, offset, labelLength);
                         songCopyright = enc.GetString(authBlock);
+                        songCopyrightBytes = authBlock;
                         offset += labelLength + 1;
                     }                    
 
@@ -394,6 +415,7 @@ namespace VGMToolbox.format
                         labelLength = ParseFile.getSegmentLength(c.chunkData, offset, NULL_TERMINATOR);
                         authBlock = ParseFile.parseSimpleOffset(c.chunkData, offset, labelLength);
                         nsfRipper = enc.GetString(authBlock);
+                        nsfRipperBytes = authBlock;
                         offset += labelLength + 1;
                     }                    
                 }

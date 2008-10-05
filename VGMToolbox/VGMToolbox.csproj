@@ -136,7 +136,10 @@
     <Compile Include="tools\hoot\HootCsv.cs" />
     <Compile Include="tools\MdxUtil.cs" />
     <Compile Include="tools\NezPlug.cs" />
-    <Compile Include="tools\NsfeToM3u.cs" />
+    <Compile Include="tools\nsf\NsfeM3uBuilderWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tools\nsf\NsfTools.cs" />
     <Compile Include="tools\xsf\XsfCompressedProgramExtractorWorker.cs">
       <SubType>Component</SubType>
     </Compile>
