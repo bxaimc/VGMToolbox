@@ -8,6 +8,7 @@ using System.Xml.Serialization;
 
 using VGMToolbox.auditing;
 using VGMToolbox.tools;
+using VGMToolbox.tools.gbs;
 using VGMToolbox.tools.hoot;
 using VGMToolbox.tools.xsf;
 using VGMToolbox.util;
@@ -22,7 +23,7 @@ namespace VGMToolbox
         DatafileCheckerWorker datafileCheckerWorker;
         HootXmlBuilderWorker hootXmlBuilder;
         XsfCompressedProgramExtractorWorker xsfCompressedProgramExtractor;
-
+        GbsM3uBuilderWorker gbsM3uBuilder;
 
         DateTime elapsedTimeStart;
         DateTime elapsedTimeEnd;
@@ -821,6 +822,11 @@ namespace VGMToolbox
             toolStripStatusLabel1.Text = "NSFE to .M3U Conversion...Complete";
         }
 
+
+        
+        
+        #region GBS - M3U
+        //gbsM3uBuilder
         private void tbGBS_gbsm3uSource_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
@@ -837,12 +843,56 @@ namespace VGMToolbox
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-            GbsTools.BuildNezPlugM3uFiles(s);
+            int totalFileCount = 0;
 
-            toolStripStatusLabel1.Text = "GBS M3U Creation...Complete";
+            foreach (string path in s)
+            {
+                if (File.Exists(path))
+                {
+                    totalFileCount++;
+                }
+                else if (Directory.Exists(path))
+                {
+                    totalFileCount += Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
+                }
+            }
+
+            GbsM3uBuilderWorker.GbsM3uBuilderStruct gbStruct = new GbsM3uBuilderWorker.GbsM3uBuilderStruct();
+            gbStruct.pPaths = s;
+            gbStruct.totalFiles = totalFileCount;
+
+            gbsM3uBuilder = new GbsM3uBuilderWorker();
+            gbsM3uBuilder.ProgressChanged += backgroundWorker_ReportProgress;
+            gbsM3uBuilder.RunWorkerCompleted += GbsM3uBuilderWorker_WorkComplete;
+            gbsM3uBuilder.RunWorkerAsync(gbStruct);
         }
 
-        
+        private void GbsM3uBuilderWorker_WorkComplete(object sender,
+                             RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled)
+            {
+                doCancelCleanup(false);
+                toolStripStatusLabel1.Text = "GBS .M3U Creation...Cancelled";
+                tbOutput.Text += "Operation cancelled.";
+            }
+            else
+            {
+                lblProgressLabel.Text = String.Empty;
+                toolStripStatusLabel1.Text = "GBS .M3U Creation...Complete";
+            }
+        }
+
+        private void btnGbsM3u_Cancel_Click(object sender, EventArgs e)
+        {
+            if (gbsM3uBuilder != null && gbsM3uBuilder.IsBusy)
+            {
+                tbOutput.Text += "CANCEL PENDING...";
+                gbsM3uBuilder.CancelAsync();
+            }
+        }
+        #endregion
+
         #region HOOT - XML
 
         private void HootXmlBuilderWorker_WorkComplete(object sender,

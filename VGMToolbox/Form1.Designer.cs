@@ -129,6 +129,7 @@
             this.btnHoot_DestinationFileBrowse = new System.Windows.Forms.Button();
             this.tbHoot_DatDestinationFile = new System.Windows.Forms.TextBox();
             this.tabPage13 = new System.Windows.Forms.TabPage();
+            this.btnHootXML_Cancel = new System.Windows.Forms.Button();
             this.gbHootXML_Options = new System.Windows.Forms.GroupBox();
             this.cbHootXML_SplitOutput = new System.Windows.Forms.CheckBox();
             this.cbHootXML_CombineOutput = new System.Windows.Forms.CheckBox();
@@ -142,13 +143,15 @@
             this.tbNSF_nsfe2m3uSource = new System.Windows.Forms.TextBox();
             this.btnNSF_nsfe2m3uConvert = new System.Windows.Forms.Button();
             this.tabPage7 = new System.Windows.Forms.TabPage();
-            this.label9 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.tbGBS_gbsm3uSource = new System.Windows.Forms.TextBox();
             this.btnGBS_gbsm3uConvert = new System.Windows.Forms.Button();
             this.tabPage8 = new System.Windows.Forms.TabPage();
             this.tabControl5 = new System.Windows.Forms.TabControl();
             this.tabPage14 = new System.Windows.Forms.TabPage();
+            this.btnXsfPsf2Exe_Cancel = new System.Windows.Forms.Button();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.cbXsfPsf2Exe_IncludeOrigExt = new System.Windows.Forms.CheckBox();
             this.grpXsfPsf2Exe_Source = new System.Windows.Forms.GroupBox();
             this.label12 = new System.Windows.Forms.Label();
             this.tbXsfPsf2Exe_Source = new System.Windows.Forms.TextBox();
@@ -165,10 +168,8 @@
             this.lblTimeElapsed = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.cbXsfPsf2Exe_IncludeOrigExt = new System.Windows.Forms.CheckBox();
-            this.btnXsfPsf2Exe_Cancel = new System.Windows.Forms.Button();
-            this.btnHootXML_Cancel = new System.Windows.Forms.Button();
+            this.label13 = new System.Windows.Forms.Label();
+            this.btnGbsM3u_Cancel = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -202,9 +203,9 @@
             this.tabPage8.SuspendLayout();
             this.tabControl5.SuspendLayout();
             this.tabPage14.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.grpXsfPsf2Exe_Source.SuspendLayout();
             this.statusStrip1.SuspendLayout();
-            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -1199,6 +1200,16 @@
             this.tabPage13.Text = "XML Builder";
             this.tabPage13.UseVisualStyleBackColor = true;
             // 
+            // btnHootXML_Cancel
+            // 
+            this.btnHootXML_Cancel.Location = new System.Drawing.Point(582, 115);
+            this.btnHootXML_Cancel.Name = "btnHootXML_Cancel";
+            this.btnHootXML_Cancel.Size = new System.Drawing.Size(75, 23);
+            this.btnHootXML_Cancel.TabIndex = 7;
+            this.btnHootXML_Cancel.Text = "Cancel";
+            this.btnHootXML_Cancel.UseVisualStyleBackColor = true;
+            this.btnHootXML_Cancel.Click += new System.EventHandler(this.btnHootXML_Cancel_Click);
+            // 
             // gbHootXML_Options
             // 
             this.gbHootXML_Options.Controls.Add(this.cbHootXML_SplitOutput);
@@ -1323,7 +1334,7 @@
             // 
             // tabPage7
             // 
-            this.tabPage7.Controls.Add(this.label9);
+            this.tabPage7.Controls.Add(this.btnGbsM3u_Cancel);
             this.tabPage7.Controls.Add(this.groupBox3);
             this.tabPage7.Location = new System.Drawing.Point(4, 22);
             this.tabPage7.Name = "tabPage7";
@@ -1332,23 +1343,14 @@
             this.tabPage7.Text = "GBS";
             this.tabPage7.UseVisualStyleBackColor = true;
             // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.ForeColor = System.Drawing.Color.Red;
-            this.label9.Location = new System.Drawing.Point(138, 120);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(256, 13);
-            this.label9.TabIndex = 5;
-            this.label9.Text = "DRAG and DROP ONLY - Still Needs Proper Testing";
-            // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.label13);
             this.groupBox3.Controls.Add(this.tbGBS_gbsm3uSource);
             this.groupBox3.Controls.Add(this.btnGBS_gbsm3uConvert);
-            this.groupBox3.Location = new System.Drawing.Point(4, 3);
+            this.groupBox3.Location = new System.Drawing.Point(3, 1);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(667, 62);
+            this.groupBox3.Size = new System.Drawing.Size(272, 61);
             this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "GBS  .m3u Builder";
@@ -1358,7 +1360,7 @@
             this.tbGBS_gbsm3uSource.AllowDrop = true;
             this.tbGBS_gbsm3uSource.Location = new System.Drawing.Point(6, 19);
             this.tbGBS_gbsm3uSource.Name = "tbGBS_gbsm3uSource";
-            this.tbGBS_gbsm3uSource.Size = new System.Drawing.Size(301, 20);
+            this.tbGBS_gbsm3uSource.Size = new System.Drawing.Size(259, 20);
             this.tbGBS_gbsm3uSource.TabIndex = 0;
             this.tbGBS_gbsm3uSource.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbGBS_gbsm3uSource_DragDrop);
             this.tbGBS_gbsm3uSource.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbGBS_gbsm3uSource_DragEnter);
@@ -1403,6 +1405,36 @@
             this.tabPage14.TabIndex = 0;
             this.tabPage14.Text = "xSF2EXE";
             this.tabPage14.UseVisualStyleBackColor = true;
+            // 
+            // btnXsfPsf2Exe_Cancel
+            // 
+            this.btnXsfPsf2Exe_Cancel.Location = new System.Drawing.Point(582, 115);
+            this.btnXsfPsf2Exe_Cancel.Name = "btnXsfPsf2Exe_Cancel";
+            this.btnXsfPsf2Exe_Cancel.Size = new System.Drawing.Size(75, 23);
+            this.btnXsfPsf2Exe_Cancel.TabIndex = 6;
+            this.btnXsfPsf2Exe_Cancel.Text = "Cancel";
+            this.btnXsfPsf2Exe_Cancel.UseVisualStyleBackColor = true;
+            this.btnXsfPsf2Exe_Cancel.Click += new System.EventHandler(this.btnXsfPsf2Exe_Cancel_Click);
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.cbXsfPsf2Exe_IncludeOrigExt);
+            this.groupBox4.Location = new System.Drawing.Point(281, 1);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(376, 61);
+            this.groupBox4.TabIndex = 5;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Options";
+            // 
+            // cbXsfPsf2Exe_IncludeOrigExt
+            // 
+            this.cbXsfPsf2Exe_IncludeOrigExt.AutoSize = true;
+            this.cbXsfPsf2Exe_IncludeOrigExt.Location = new System.Drawing.Point(6, 19);
+            this.cbXsfPsf2Exe_IncludeOrigExt.Name = "cbXsfPsf2Exe_IncludeOrigExt";
+            this.cbXsfPsf2Exe_IncludeOrigExt.Size = new System.Drawing.Size(234, 17);
+            this.cbXsfPsf2Exe_IncludeOrigExt.TabIndex = 0;
+            this.cbXsfPsf2Exe_IncludeOrigExt.Text = "Include original file extension in output name";
+            this.cbXsfPsf2Exe_IncludeOrigExt.UseVisualStyleBackColor = true;
             // 
             // grpXsfPsf2Exe_Source
             // 
@@ -1517,45 +1549,24 @@
             this.textBox1.Size = new System.Drawing.Size(259, 20);
             this.textBox1.TabIndex = 1;
             // 
-            // groupBox4
+            // label13
             // 
-            this.groupBox4.Controls.Add(this.cbXsfPsf2Exe_IncludeOrigExt);
-            this.groupBox4.Location = new System.Drawing.Point(281, 1);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(376, 61);
-            this.groupBox4.TabIndex = 5;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Options";
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(6, 42);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(171, 13);
+            this.label13.TabIndex = 3;
+            this.label13.Text = "Drag and Drop folders or files here.";
             // 
-            // cbXsfPsf2Exe_IncludeOrigExt
+            // btnGbsM3u_Cancel
             // 
-            this.cbXsfPsf2Exe_IncludeOrigExt.AutoSize = true;
-            this.cbXsfPsf2Exe_IncludeOrigExt.Location = new System.Drawing.Point(6, 19);
-            this.cbXsfPsf2Exe_IncludeOrigExt.Name = "cbXsfPsf2Exe_IncludeOrigExt";
-            this.cbXsfPsf2Exe_IncludeOrigExt.Size = new System.Drawing.Size(234, 17);
-            this.cbXsfPsf2Exe_IncludeOrigExt.TabIndex = 0;
-            this.cbXsfPsf2Exe_IncludeOrigExt.Text = "Include original file extension in output name";
-            this.cbXsfPsf2Exe_IncludeOrigExt.UseVisualStyleBackColor = true;
-            // 
-            // btnXsfPsf2Exe_Cancel
-            // 
-            this.btnXsfPsf2Exe_Cancel.Location = new System.Drawing.Point(582, 115);
-            this.btnXsfPsf2Exe_Cancel.Name = "btnXsfPsf2Exe_Cancel";
-            this.btnXsfPsf2Exe_Cancel.Size = new System.Drawing.Size(75, 23);
-            this.btnXsfPsf2Exe_Cancel.TabIndex = 6;
-            this.btnXsfPsf2Exe_Cancel.Text = "Cancel";
-            this.btnXsfPsf2Exe_Cancel.UseVisualStyleBackColor = true;
-            this.btnXsfPsf2Exe_Cancel.Click += new System.EventHandler(this.btnXsfPsf2Exe_Cancel_Click);
-            // 
-            // btnHootXML_Cancel
-            // 
-            this.btnHootXML_Cancel.Location = new System.Drawing.Point(582, 115);
-            this.btnHootXML_Cancel.Name = "btnHootXML_Cancel";
-            this.btnHootXML_Cancel.Size = new System.Drawing.Size(75, 23);
-            this.btnHootXML_Cancel.TabIndex = 7;
-            this.btnHootXML_Cancel.Text = "Cancel";
-            this.btnHootXML_Cancel.UseVisualStyleBackColor = true;
-            this.btnHootXML_Cancel.Click += new System.EventHandler(this.btnHootXML_Cancel_Click);
+            this.btnGbsM3u_Cancel.Location = new System.Drawing.Point(596, 143);
+            this.btnGbsM3u_Cancel.Name = "btnGbsM3u_Cancel";
+            this.btnGbsM3u_Cancel.Size = new System.Drawing.Size(75, 23);
+            this.btnGbsM3u_Cancel.TabIndex = 6;
+            this.btnGbsM3u_Cancel.Text = "Cancel";
+            this.btnGbsM3u_Cancel.UseVisualStyleBackColor = true;
+            this.btnGbsM3u_Cancel.Click += new System.EventHandler(this.btnGbsM3u_Cancel_Click);
             // 
             // Form1
             // 
@@ -1620,18 +1631,17 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.tabPage7.ResumeLayout(false);
-            this.tabPage7.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.tabPage8.ResumeLayout(false);
             this.tabControl5.ResumeLayout(false);
             this.tabPage14.ResumeLayout(false);
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.grpXsfPsf2Exe_Source.ResumeLayout(false);
             this.grpXsfPsf2Exe_Source.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1743,7 +1753,6 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.TextBox tbGBS_gbsm3uSource;
         private System.Windows.Forms.Button btnGBS_gbsm3uConvert;
-        private System.Windows.Forms.Label label9;
         private System.Windows.Forms.TabPage tabPage8;
         private System.Windows.Forms.TabControl tabControl4;
         private System.Windows.Forms.TabPage tabPage12;
@@ -1778,6 +1787,8 @@
         private System.Windows.Forms.CheckBox cbXsfPsf2Exe_IncludeOrigExt;
         private System.Windows.Forms.Button btnXsfPsf2Exe_Cancel;
         private System.Windows.Forms.Button btnHootXML_Cancel;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Button btnGbsM3u_Cancel;
     }
 }
 

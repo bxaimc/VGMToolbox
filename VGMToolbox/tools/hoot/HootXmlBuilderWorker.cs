@@ -184,9 +184,6 @@ namespace VGMToolbox.tools.hoot
             this.buildXmlFiles(hootXmlBuilderStruct, e);
             VGMToolbox.tools.hoot.game[] hootGames = (VGMToolbox.tools.hoot.game[])hootGamesArrayList.ToArray(typeof(VGMToolbox.tools.hoot.game));
             
-            //public Boolean combineOutput;
-            //public Boolean splitOutput;
-
             if (hootGames.Length > 0)
             {
                 string outputPath;
