@@ -129,6 +129,12 @@
             this.btnHoot_DestinationFileBrowse = new System.Windows.Forms.Button();
             this.tbHoot_DatDestinationFile = new System.Windows.Forms.TextBox();
             this.tabPage13 = new System.Windows.Forms.TabPage();
+            this.gbHootXML_Options = new System.Windows.Forms.GroupBox();
+            this.cbHootXML_SplitOutput = new System.Windows.Forms.CheckBox();
+            this.cbHootXML_CombineOutput = new System.Windows.Forms.CheckBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.gbHootXML_Source = new System.Windows.Forms.GroupBox();
+            this.label10 = new System.Windows.Forms.Label();
             this.tbHootXML_Path = new System.Windows.Forms.TextBox();
             this.tabPage11 = new System.Windows.Forms.TabPage();
             this.label8 = new System.Windows.Forms.Label();
@@ -141,6 +147,11 @@
             this.tbGBS_gbsm3uSource = new System.Windows.Forms.TextBox();
             this.btnGBS_gbsm3uConvert = new System.Windows.Forms.Button();
             this.tabPage8 = new System.Windows.Forms.TabPage();
+            this.tabControl5 = new System.Windows.Forms.TabControl();
+            this.tabPage14 = new System.Windows.Forms.TabPage();
+            this.grpXsfPsf2Exe_Source = new System.Windows.Forms.GroupBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.tbXsfPsf2Exe_Source = new System.Windows.Forms.TextBox();
             this.tbOutput = new System.Windows.Forms.TextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -152,12 +163,10 @@
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.lblProgressLabel = new System.Windows.Forms.Label();
             this.lblTimeElapsed = new System.Windows.Forms.Label();
-            this.gbHootXML_Source = new System.Windows.Forms.GroupBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.gbHootXML_Options = new System.Windows.Forms.GroupBox();
-            this.cbHootXML_CombineOutput = new System.Windows.Forms.CheckBox();
-            this.cbHootXML_SplitOutput = new System.Windows.Forms.CheckBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.cbXsfPsf2Exe_IncludeOrigExt = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -182,13 +191,18 @@
             this.gbHoot.SuspendLayout();
             this.gbHoot_Destination.SuspendLayout();
             this.tabPage13.SuspendLayout();
+            this.gbHootXML_Options.SuspendLayout();
+            this.gbHootXML_Source.SuspendLayout();
             this.tabPage11.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabPage7.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.tabPage8.SuspendLayout();
+            this.tabControl5.SuspendLayout();
+            this.tabPage14.SuspendLayout();
+            this.grpXsfPsf2Exe_Source.SuspendLayout();
             this.statusStrip1.SuspendLayout();
-            this.gbHootXML_Source.SuspendLayout();
-            this.gbHootXML_Options.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -1182,6 +1196,66 @@
             this.tabPage13.Text = "XML Builder";
             this.tabPage13.UseVisualStyleBackColor = true;
             // 
+            // gbHootXML_Options
+            // 
+            this.gbHootXML_Options.Controls.Add(this.cbHootXML_SplitOutput);
+            this.gbHootXML_Options.Controls.Add(this.cbHootXML_CombineOutput);
+            this.gbHootXML_Options.Location = new System.Drawing.Point(281, 1);
+            this.gbHootXML_Options.Name = "gbHootXML_Options";
+            this.gbHootXML_Options.Size = new System.Drawing.Size(376, 61);
+            this.gbHootXML_Options.TabIndex = 4;
+            this.gbHootXML_Options.TabStop = false;
+            this.gbHootXML_Options.Text = "Options";
+            // 
+            // cbHootXML_SplitOutput
+            // 
+            this.cbHootXML_SplitOutput.AutoSize = true;
+            this.cbHootXML_SplitOutput.Location = new System.Drawing.Point(6, 38);
+            this.cbHootXML_SplitOutput.Name = "cbHootXML_SplitOutput";
+            this.cbHootXML_SplitOutput.Size = new System.Drawing.Size(142, 17);
+            this.cbHootXML_SplitOutput.TabIndex = 1;
+            this.cbHootXML_SplitOutput.Text = "Output one file per game";
+            this.cbHootXML_SplitOutput.UseVisualStyleBackColor = true;
+            // 
+            // cbHootXML_CombineOutput
+            // 
+            this.cbHootXML_CombineOutput.AutoSize = true;
+            this.cbHootXML_CombineOutput.Location = new System.Drawing.Point(6, 19);
+            this.cbHootXML_CombineOutput.Name = "cbHootXML_CombineOutput";
+            this.cbHootXML_CombineOutput.Size = new System.Drawing.Size(183, 17);
+            this.cbHootXML_CombineOutput.TabIndex = 0;
+            this.cbHootXML_CombineOutput.Text = "Combine output to single XML file";
+            this.cbHootXML_CombineOutput.UseVisualStyleBackColor = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(6, 125);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(226, 13);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "Build Skeleton Hoot XML entries for NSF/GBS";
+            // 
+            // gbHootXML_Source
+            // 
+            this.gbHootXML_Source.Controls.Add(this.label10);
+            this.gbHootXML_Source.Controls.Add(this.tbHootXML_Path);
+            this.gbHootXML_Source.Location = new System.Drawing.Point(3, 1);
+            this.gbHootXML_Source.Name = "gbHootXML_Source";
+            this.gbHootXML_Source.Size = new System.Drawing.Size(272, 61);
+            this.gbHootXML_Source.TabIndex = 2;
+            this.gbHootXML_Source.TabStop = false;
+            this.gbHootXML_Source.Text = "Source";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(6, 42);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(171, 13);
+            this.label10.TabIndex = 2;
+            this.label10.Text = "Drag and Drop folders or files here.";
+            // 
             // tbHootXML_Path
             // 
             this.tbHootXML_Path.AllowDrop = true;
@@ -1297,12 +1371,64 @@
             // 
             // tabPage8
             // 
+            this.tabPage8.Controls.Add(this.tabControl5);
             this.tabPage8.Location = new System.Drawing.Point(4, 22);
             this.tabPage8.Name = "tabPage8";
             this.tabPage8.Size = new System.Drawing.Size(674, 169);
             this.tabPage8.TabIndex = 3;
-            this.tabPage8.Text = "2sf";
+            this.tabPage8.Text = "xSF";
             this.tabPage8.UseVisualStyleBackColor = true;
+            // 
+            // tabControl5
+            // 
+            this.tabControl5.Controls.Add(this.tabPage14);
+            this.tabControl5.Location = new System.Drawing.Point(0, 0);
+            this.tabControl5.Name = "tabControl5";
+            this.tabControl5.SelectedIndex = 0;
+            this.tabControl5.Size = new System.Drawing.Size(671, 170);
+            this.tabControl5.TabIndex = 0;
+            // 
+            // tabPage14
+            // 
+            this.tabPage14.Controls.Add(this.groupBox4);
+            this.tabPage14.Controls.Add(this.grpXsfPsf2Exe_Source);
+            this.tabPage14.Location = new System.Drawing.Point(4, 22);
+            this.tabPage14.Name = "tabPage14";
+            this.tabPage14.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage14.Size = new System.Drawing.Size(663, 144);
+            this.tabPage14.TabIndex = 0;
+            this.tabPage14.Text = "PSF2EXE";
+            this.tabPage14.UseVisualStyleBackColor = true;
+            // 
+            // grpXsfPsf2Exe_Source
+            // 
+            this.grpXsfPsf2Exe_Source.Controls.Add(this.label12);
+            this.grpXsfPsf2Exe_Source.Controls.Add(this.tbXsfPsf2Exe_Source);
+            this.grpXsfPsf2Exe_Source.Location = new System.Drawing.Point(3, 1);
+            this.grpXsfPsf2Exe_Source.Name = "grpXsfPsf2Exe_Source";
+            this.grpXsfPsf2Exe_Source.Size = new System.Drawing.Size(272, 61);
+            this.grpXsfPsf2Exe_Source.TabIndex = 3;
+            this.grpXsfPsf2Exe_Source.TabStop = false;
+            this.grpXsfPsf2Exe_Source.Text = "Source";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(6, 42);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(171, 13);
+            this.label12.TabIndex = 2;
+            this.label12.Text = "Drag and Drop folders or files here.";
+            // 
+            // tbXsfPsf2Exe_Source
+            // 
+            this.tbXsfPsf2Exe_Source.AllowDrop = true;
+            this.tbXsfPsf2Exe_Source.Location = new System.Drawing.Point(6, 19);
+            this.tbXsfPsf2Exe_Source.Name = "tbXsfPsf2Exe_Source";
+            this.tbXsfPsf2Exe_Source.Size = new System.Drawing.Size(259, 20);
+            this.tbXsfPsf2Exe_Source.TabIndex = 1;
+            this.tbXsfPsf2Exe_Source.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbXsfPsf2Exe_Source_DragDrop);
+            this.tbXsfPsf2Exe_Source.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbXsfPsf2Exe_Source_DragEnter);
             // 
             // tbOutput
             // 
@@ -1370,65 +1496,42 @@
             this.lblTimeElapsed.TabIndex = 4;
             this.lblTimeElapsed.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // gbHootXML_Source
+            // label11
             // 
-            this.gbHootXML_Source.Controls.Add(this.label10);
-            this.gbHootXML_Source.Controls.Add(this.tbHootXML_Path);
-            this.gbHootXML_Source.Location = new System.Drawing.Point(3, 1);
-            this.gbHootXML_Source.Name = "gbHootXML_Source";
-            this.gbHootXML_Source.Size = new System.Drawing.Size(272, 61);
-            this.gbHootXML_Source.TabIndex = 2;
-            this.gbHootXML_Source.TabStop = false;
-            this.gbHootXML_Source.Text = "Source";
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(6, 42);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(171, 13);
+            this.label11.TabIndex = 2;
+            this.label11.Text = "Drag and Drop folders or files here.";
             // 
-            // label2
+            // textBox1
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 125);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(226, 13);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Build Skeleton Hoot XML entries for NSF/GBS";
+            this.textBox1.AllowDrop = true;
+            this.textBox1.Location = new System.Drawing.Point(6, 19);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(259, 20);
+            this.textBox1.TabIndex = 1;
             // 
-            // label10
+            // groupBox4
             // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(6, 42);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(171, 13);
-            this.label10.TabIndex = 2;
-            this.label10.Text = "Drag and Drop folders or files here.";
+            this.groupBox4.Controls.Add(this.cbXsfPsf2Exe_IncludeOrigExt);
+            this.groupBox4.Location = new System.Drawing.Point(281, 1);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(376, 61);
+            this.groupBox4.TabIndex = 5;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Options";
             // 
-            // gbHootXML_Options
+            // cbXsfPsf2Exe_IncludeOrigExt
             // 
-            this.gbHootXML_Options.Controls.Add(this.cbHootXML_SplitOutput);
-            this.gbHootXML_Options.Controls.Add(this.cbHootXML_CombineOutput);
-            this.gbHootXML_Options.Location = new System.Drawing.Point(281, 1);
-            this.gbHootXML_Options.Name = "gbHootXML_Options";
-            this.gbHootXML_Options.Size = new System.Drawing.Size(376, 61);
-            this.gbHootXML_Options.TabIndex = 4;
-            this.gbHootXML_Options.TabStop = false;
-            this.gbHootXML_Options.Text = "Options";
-            // 
-            // cbHootXML_CombineOutput
-            // 
-            this.cbHootXML_CombineOutput.AutoSize = true;
-            this.cbHootXML_CombineOutput.Location = new System.Drawing.Point(6, 19);
-            this.cbHootXML_CombineOutput.Name = "cbHootXML_CombineOutput";
-            this.cbHootXML_CombineOutput.Size = new System.Drawing.Size(183, 17);
-            this.cbHootXML_CombineOutput.TabIndex = 0;
-            this.cbHootXML_CombineOutput.Text = "Combine output to single XML file";
-            this.cbHootXML_CombineOutput.UseVisualStyleBackColor = true;
-            // 
-            // cbHootXML_SplitOutput
-            // 
-            this.cbHootXML_SplitOutput.AutoSize = true;
-            this.cbHootXML_SplitOutput.Location = new System.Drawing.Point(6, 38);
-            this.cbHootXML_SplitOutput.Name = "cbHootXML_SplitOutput";
-            this.cbHootXML_SplitOutput.Size = new System.Drawing.Size(142, 17);
-            this.cbHootXML_SplitOutput.TabIndex = 1;
-            this.cbHootXML_SplitOutput.Text = "Output one file per game";
-            this.cbHootXML_SplitOutput.UseVisualStyleBackColor = true;
+            this.cbXsfPsf2Exe_IncludeOrigExt.AutoSize = true;
+            this.cbXsfPsf2Exe_IncludeOrigExt.Location = new System.Drawing.Point(6, 19);
+            this.cbXsfPsf2Exe_IncludeOrigExt.Name = "cbXsfPsf2Exe_IncludeOrigExt";
+            this.cbXsfPsf2Exe_IncludeOrigExt.Size = new System.Drawing.Size(234, 17);
+            this.cbXsfPsf2Exe_IncludeOrigExt.TabIndex = 0;
+            this.cbXsfPsf2Exe_IncludeOrigExt.Text = "Include original file extension in output name";
+            this.cbXsfPsf2Exe_IncludeOrigExt.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -1484,6 +1587,10 @@
             this.gbHoot_Destination.PerformLayout();
             this.tabPage13.ResumeLayout(false);
             this.tabPage13.PerformLayout();
+            this.gbHootXML_Options.ResumeLayout(false);
+            this.gbHootXML_Options.PerformLayout();
+            this.gbHootXML_Source.ResumeLayout(false);
+            this.gbHootXML_Source.PerformLayout();
             this.tabPage11.ResumeLayout(false);
             this.tabPage11.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -1492,12 +1599,15 @@
             this.tabPage7.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.tabPage8.ResumeLayout(false);
+            this.tabControl5.ResumeLayout(false);
+            this.tabPage14.ResumeLayout(false);
+            this.grpXsfPsf2Exe_Source.ResumeLayout(false);
+            this.grpXsfPsf2Exe_Source.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            this.gbHootXML_Source.ResumeLayout(false);
-            this.gbHootXML_Source.PerformLayout();
-            this.gbHootXML_Options.ResumeLayout(false);
-            this.gbHootXML_Options.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1633,6 +1743,15 @@
         private System.Windows.Forms.GroupBox gbHootXML_Options;
         private System.Windows.Forms.CheckBox cbHootXML_SplitOutput;
         private System.Windows.Forms.CheckBox cbHootXML_CombineOutput;
+        private System.Windows.Forms.TabControl tabControl5;
+        private System.Windows.Forms.TabPage tabPage14;
+        private System.Windows.Forms.GroupBox grpXsfPsf2Exe_Source;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.TextBox tbXsfPsf2Exe_Source;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.CheckBox cbXsfPsf2Exe_IncludeOrigExt;
     }
 }
 

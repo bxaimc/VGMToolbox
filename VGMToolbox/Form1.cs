@@ -9,6 +9,7 @@ using System.Xml.Serialization;
 using VGMToolbox.auditing;
 using VGMToolbox.tools;
 using VGMToolbox.tools.hoot;
+using VGMToolbox.tools.xsf;
 using VGMToolbox.util;
 
 namespace VGMToolbox
@@ -20,6 +21,7 @@ namespace VGMToolbox
         TreeBuilderWorker treeBuilder;
         DatafileCheckerWorker datafileCheckerWorker;
         HootXmlBuilderWorker hootXmlBuilder;
+        XsfCompressedProgramExtractorWorker xsfCompressedProgramExtractor;
 
 
         DateTime elapsedTimeStart;
@@ -899,6 +901,69 @@ namespace VGMToolbox
             hootXmlBuilder.ProgressChanged += backgroundWorker_ReportProgress;
             hootXmlBuilder.RunWorkerCompleted += HootXmlBuilderWorker_WorkComplete;
             hootXmlBuilder.RunWorkerAsync(xbStruct);
+        }
+
+        #endregion
+
+        #region XSF - EXTRACT COMPRESSED SECTION
+
+        // xsfCompressedProgramExtractor
+        private void tbXsfPsf2Exe_Source_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
+                e.Effect = DragDropEffects.All;
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        private void tbXsfPsf2Exe_Source_DragDrop(object sender, DragEventArgs e)
+        {
+            doCleanup();
+
+            toolStripStatusLabel1.Text = "PSF2EXE...Begin";
+
+            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            int totalFileCount = 0;
+
+            foreach (string path in s)
+            {
+                if (File.Exists(path))
+                {
+                    totalFileCount++;
+                }
+                else if (Directory.Exists(path))
+                {
+                    totalFileCount += Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
+                }
+            }
+
+            XsfCompressedProgramExtractorWorker.XsfCompressedProgramExtractorStruct xcpeStruct = 
+                new XsfCompressedProgramExtractorWorker.XsfCompressedProgramExtractorStruct();
+            xcpeStruct.pPaths = s;
+            xcpeStruct.totalFiles = totalFileCount;
+            xcpeStruct.includeExtension = cbXsfPsf2Exe_IncludeOrigExt.Checked;
+
+            xsfCompressedProgramExtractor = new XsfCompressedProgramExtractorWorker();
+            xsfCompressedProgramExtractor.ProgressChanged += backgroundWorker_ReportProgress;
+            xsfCompressedProgramExtractor.RunWorkerCompleted += XsfCompressedProgramExtractorWorker_WorkComplete;
+            xsfCompressedProgramExtractor.RunWorkerAsync(xcpeStruct);
+        }
+
+        private void XsfCompressedProgramExtractorWorker_WorkComplete(object sender,
+                             RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled)
+            {
+                doCancelCleanup(false);
+                toolStripStatusLabel1.Text = "PSF2EXE...Cancelled";
+                tbOutput.Text += "Operation cancelled.";
+            }
+            else
+            {
+                lblProgressLabel.Text = String.Empty;
+                toolStripStatusLabel1.Text = "PSF2EXE...Complete";
+            }
         }
 
         #endregion

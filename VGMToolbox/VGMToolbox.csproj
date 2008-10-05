@@ -136,6 +136,9 @@
     <Compile Include="tools\NezPlug.cs" />
     <Compile Include="tools\NsfeToM3u.cs" />
     <Compile Include="tools\XsfUtil.cs" />
+    <Compile Include="tools\xsf\XsfCompressedProgramExtractorWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="util\IDeepCopy.cs" />
     <Compile Include="util\IniFile.cs" />
     <Compile Include="util\ObjectPooling\ByteArray.cs" />

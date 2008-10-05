@@ -49,7 +49,7 @@ namespace VGMToolbox.format
         private const int CRC32_OFFSET = 0x0C;
         private const int CRC32_LENGTH = 0x04;
 
-        private const int RESERVED_SECTION_OFFSET = 0x10;                
+        public const int RESERVED_SECTION_OFFSET = 0x10;                
         
         private const string ASCII_TAG = "[TAG]";
         private const string TAG_UTF8_INDICATOR = "utf8=";
