@@ -19,6 +19,7 @@ namespace VGMToolbox.tools.nsf
         {
             public string[] pPaths;
             public int totalFiles;
+            public bool onePlaylistPerFile;
         }
 
         public NsfeM3uBuilderWorker()
@@ -39,7 +40,7 @@ namespace VGMToolbox.tools.nsf
                 {
                     if (!CancellationPending)
                     {
-                        this.buildM3uForFile(path, e);
+                        this.buildM3uForFile(path, pNsfeM3uBuilderStruct.onePlaylistPerFile, e);
                     }
                     else 
                     {
@@ -49,7 +50,7 @@ namespace VGMToolbox.tools.nsf
                 }
                 else if (Directory.Exists(path))
                 {
-                    this.buildM3usForDirectory(path, e);
+                    this.buildM3usForDirectory(path, pNsfeM3uBuilderStruct.onePlaylistPerFile, e);
 
                     if (CancellationPending)
                     {
@@ -62,13 +63,13 @@ namespace VGMToolbox.tools.nsf
             return;
         }
 
-        private void buildM3usForDirectory(string pPath, DoWorkEventArgs e)
+        private void buildM3usForDirectory(string pPath, bool pOnePlaylistPerFile, DoWorkEventArgs e)
         {
             foreach (string d in Directory.GetDirectories(pPath))
             {
                 if (!CancellationPending)
                 {
-                    this.buildM3usForDirectory(d, e);
+                    this.buildM3usForDirectory(d, pOnePlaylistPerFile, e);
                 }
                 else
                 {
@@ -80,7 +81,7 @@ namespace VGMToolbox.tools.nsf
             {
                 if (!CancellationPending)
                 {
-                    this.buildM3uForFile(f, e);
+                    this.buildM3uForFile(f, pOnePlaylistPerFile, e);
                     // fileCount++;
                 }
                 else
@@ -91,7 +92,7 @@ namespace VGMToolbox.tools.nsf
             }                
         }
 
-        private void buildM3uForFile(string pPath, DoWorkEventArgs e)
+        private void buildM3uForFile(string pPath, bool pOnePlaylistPerFile, DoWorkEventArgs e)
         {
             // Report Progress
             int progress = (++fileCount * 100) / maxFiles;
