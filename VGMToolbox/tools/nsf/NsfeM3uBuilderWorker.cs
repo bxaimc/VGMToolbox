@@ -136,11 +136,15 @@ namespace VGMToolbox.tools.nsf
                     // Build by playlist if it exists            
                     if (!String.IsNullOrEmpty(nsfeData.Playlist))
                     {
+                        int j = 1;
                         foreach (string s in nsfeData.Playlist.Split(','))
                         {
                             int index = int.Parse(s.Trim());
                             trackItem = buildTrackItem(index, nsfeData, pPath);
                             sw.WriteLine(trackItem);
+
+                            buildSingleFileM3u(pPath, nsfeData, trackItem, j, index);
+                            j++;
                         }
                     }
                     // Use default order if playlist does not exist
@@ -151,6 +155,7 @@ namespace VGMToolbox.tools.nsf
                         {
                             trackItem = buildTrackItem(i, nsfeData, pPath);
                             sw.WriteLine(trackItem);
+                            buildSingleFileM3u(pPath, nsfeData, trackItem, i, i);
                         }
                     }
 
@@ -185,14 +190,7 @@ namespace VGMToolbox.tools.nsf
             string title;
             string entry;
 
-            if ((pNsfeData.TrackLabels.Length > pIndex) && (!String.IsNullOrEmpty(pNsfeData.TrackLabels[pIndex])))
-            {
-                title = pNsfeData.TrackLabels[pIndex];
-            }
-            else
-            {
-                title = "Track " + pIndex;
-            }
+            title = ParseTitle(pNsfeData, pIndex);
 
             if (pNsfeData.Times != null)
             {
@@ -227,6 +225,45 @@ namespace VGMToolbox.tools.nsf
                 fadeTotal,
                 String.Empty);
             return entry;
+        }
+
+        private string ParseTitle(Nsfe pNsfeData, int pIndex)
+        {
+            string title;
+
+            if ((pNsfeData.TrackLabels.Length > pIndex) && (!String.IsNullOrEmpty(pNsfeData.TrackLabels[pIndex])))
+            {
+                title = pNsfeData.TrackLabels[pIndex];
+            }
+            else
+            {
+                title = "Track " + pIndex;
+            }
+            return title;
+        }
+
+        private void buildSingleFileM3u(string pPath, Nsfe pNsfeData, string pTrackData, int pIndex, int pTrackIndex)
+        {
+            string outputSingleFile = Path.GetDirectoryName(pPath) + Path.DirectorySeparatorChar +
+                Path.GetFileNameWithoutExtension(pPath) + " - " + pIndex.ToString().PadLeft(2, '0') +
+                " - " + ParseTitle(pNsfeData, pTrackIndex) + ".m3u";
+            
+            StreamWriter singleSW = File.CreateText(outputSingleFile);
+            
+            singleSW.WriteLine("#######################################################");
+            singleSW.WriteLine("#");
+            singleSW.WriteLine("# Game: " + pNsfeData.SongName);
+            singleSW.WriteLine("# Artist: " + pNsfeData.SongArtist);
+            singleSW.WriteLine("# Copyright: " + pNsfeData.SongCopyright);
+            singleSW.WriteLine("# Ripper: " + pNsfeData.NsfRipper);
+            singleSW.WriteLine("# Song: " + ParseTitle(pNsfeData, pIndex));
+            singleSW.WriteLine("#");
+            singleSW.WriteLine("#######################################################");
+            singleSW.WriteLine();
+            singleSW.WriteLine(pTrackData);
+            
+            singleSW.Close();
+            singleSW.Dispose();
         }
 
         protected override void OnDoWork(DoWorkEventArgs e)
