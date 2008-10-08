@@ -177,6 +177,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="examine\dir.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="external\2sf\2sftool.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

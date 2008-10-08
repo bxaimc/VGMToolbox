@@ -146,6 +146,8 @@
             this.tbNSF_nsfe2m3uSource = new System.Windows.Forms.TextBox();
             this.btnNSF_nsfe2m3uConvert = new System.Windows.Forms.Button();
             this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.cbGBS_OneM3uPerTrack = new System.Windows.Forms.CheckBox();
             this.btnGbsM3u_Cancel = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.label13 = new System.Windows.Forms.Label();
@@ -173,8 +175,7 @@
             this.lblTimeElapsed = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.cbGBS_OneM3uPerTrack = new System.Windows.Forms.CheckBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -205,6 +206,7 @@
             this.groupBox5.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabPage7.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.tabPage8.SuspendLayout();
             this.tabControl5.SuspendLayout();
@@ -212,7 +214,6 @@
             this.groupBox4.SuspendLayout();
             this.grpXsfPsf2Exe_Source.SuspendLayout();
             this.statusStrip1.SuspendLayout();
-            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -859,6 +860,7 @@
             // 
             // tabPage4
             // 
+            this.tabPage4.Controls.Add(this.label8);
             this.tabPage4.Controls.Add(this.grpExamineMdx_XsfExplorer);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
@@ -1382,6 +1384,26 @@
             this.tabPage7.Text = "GBS";
             this.tabPage7.UseVisualStyleBackColor = true;
             // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.cbGBS_OneM3uPerTrack);
+            this.groupBox6.Location = new System.Drawing.Point(281, 1);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(376, 61);
+            this.groupBox6.TabIndex = 7;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Options";
+            // 
+            // cbGBS_OneM3uPerTrack
+            // 
+            this.cbGBS_OneM3uPerTrack.AutoSize = true;
+            this.cbGBS_OneM3uPerTrack.Location = new System.Drawing.Point(6, 19);
+            this.cbGBS_OneM3uPerTrack.Name = "cbGBS_OneM3uPerTrack";
+            this.cbGBS_OneM3uPerTrack.Size = new System.Drawing.Size(177, 17);
+            this.cbGBS_OneM3uPerTrack.TabIndex = 0;
+            this.cbGBS_OneM3uPerTrack.Text = "Output additional .m3u per track";
+            this.cbGBS_OneM3uPerTrack.UseVisualStyleBackColor = true;
+            // 
             // btnGbsM3u_Cancel
             // 
             this.btnGbsM3u_Cancel.Location = new System.Drawing.Point(596, 143);
@@ -1607,25 +1629,14 @@
             this.textBox1.Size = new System.Drawing.Size(259, 20);
             this.textBox1.TabIndex = 1;
             // 
-            // groupBox6
+            // label8
             // 
-            this.groupBox6.Controls.Add(this.cbGBS_OneM3uPerTrack);
-            this.groupBox6.Location = new System.Drawing.Point(281, 1);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(376, 61);
-            this.groupBox6.TabIndex = 7;
-            this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "Options";
-            // 
-            // cbGBS_OneM3uPerTrack
-            // 
-            this.cbGBS_OneM3uPerTrack.AutoSize = true;
-            this.cbGBS_OneM3uPerTrack.Location = new System.Drawing.Point(6, 19);
-            this.cbGBS_OneM3uPerTrack.Name = "cbGBS_OneM3uPerTrack";
-            this.cbGBS_OneM3uPerTrack.Size = new System.Drawing.Size(177, 17);
-            this.cbGBS_OneM3uPerTrack.TabIndex = 0;
-            this.cbGBS_OneM3uPerTrack.Text = "Output additional .m3u per track";
-            this.cbGBS_OneM3uPerTrack.UseVisualStyleBackColor = true;
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(9, 144);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(226, 13);
+            this.label8.TabIndex = 5;
+            this.label8.Text = "Also see \\examine\\examine.txt for your output.";
             // 
             // Form1
             // 
@@ -1663,6 +1674,7 @@
             this.tabPage1.ResumeLayout(false);
             this.tabControl2.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);
+            this.tabPage4.PerformLayout();
             this.grpExamineMdx_XsfExplorer.ResumeLayout(false);
             this.grpExamineMdx_XsfExplorer.PerformLayout();
             this.tabPage3.ResumeLayout(false);
@@ -1691,6 +1703,8 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.tabPage7.ResumeLayout(false);
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.tabPage8.ResumeLayout(false);
@@ -1702,8 +1716,6 @@
             this.grpXsfPsf2Exe_Source.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            this.groupBox6.ResumeLayout(false);
-            this.groupBox6.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1856,6 +1868,7 @@
         private System.Windows.Forms.CheckBox cbNSFE_OneM3uPerTrack;
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.CheckBox cbGBS_OneM3uPerTrack;
+        private System.Windows.Forms.Label label8;
     }
 }
 
