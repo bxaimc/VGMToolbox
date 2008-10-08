@@ -836,6 +836,7 @@ namespace VGMToolbox
             NsfeM3uBuilderWorker.NsfeM3uBuilderStruct nsfeStruct = new NsfeM3uBuilderWorker.NsfeM3uBuilderStruct();
             nsfeStruct.pPaths = s;
             nsfeStruct.totalFiles = totalFileCount;
+            nsfeStruct.onePlaylistPerFile = cbNSFE_OneM3uPerTrack.Checked;
 
             nsfeM3uBuilder = new NsfeM3uBuilderWorker();
             nsfeM3uBuilder.ProgressChanged += backgroundWorker_ReportProgress;
@@ -869,8 +870,7 @@ namespace VGMToolbox
         }
 
         #endregion
-        
-        
+                
         #region GBS - M3U
 
         private void tbGBS_gbsm3uSource_DragEnter(object sender, DragEventArgs e)
@@ -906,6 +906,7 @@ namespace VGMToolbox
             GbsM3uBuilderWorker.GbsM3uBuilderStruct gbStruct = new GbsM3uBuilderWorker.GbsM3uBuilderStruct();
             gbStruct.pPaths = s;
             gbStruct.totalFiles = totalFileCount;
+            gbStruct.onePlaylistPerFile = cbGBS_OneM3uPerTrack.Checked;
 
             gbsM3uBuilder = new GbsM3uBuilderWorker();
             gbsM3uBuilder.ProgressChanged += backgroundWorker_ReportProgress;

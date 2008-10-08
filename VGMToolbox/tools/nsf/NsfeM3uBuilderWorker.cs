@@ -136,15 +136,19 @@ namespace VGMToolbox.tools.nsf
                     // Build by playlist if it exists            
                     if (!String.IsNullOrEmpty(nsfeData.Playlist))
                     {
-                        int j = 1;
+                        int fileIndex = 1;
                         foreach (string s in nsfeData.Playlist.Split(','))
                         {
                             int index = int.Parse(s.Trim());
                             trackItem = buildTrackItem(index, nsfeData, pPath);
                             sw.WriteLine(trackItem);
 
-                            buildSingleFileM3u(pPath, nsfeData, trackItem, j, index);
-                            j++;
+                            if (pOnePlaylistPerFile)
+                            {
+                                buildSingleFileM3u(pPath, nsfeData, trackItem, fileIndex, index);
+                            }
+                            
+                            fileIndex++;
                         }
                     }
                     // Use default order if playlist does not exist
@@ -155,7 +159,11 @@ namespace VGMToolbox.tools.nsf
                         {
                             trackItem = buildTrackItem(i, nsfeData, pPath);
                             sw.WriteLine(trackItem);
-                            buildSingleFileM3u(pPath, nsfeData, trackItem, i, i);
+
+                            if (pOnePlaylistPerFile)
+                            {
+                                buildSingleFileM3u(pPath, nsfeData, trackItem, i, i);
+                            }
                         }
                     }
 
@@ -244,11 +252,17 @@ namespace VGMToolbox.tools.nsf
 
         private void buildSingleFileM3u(string pPath, Nsfe pNsfeData, string pTrackData, int pIndex, int pTrackIndex)
         {
-            string outputSingleFile = Path.GetDirectoryName(pPath) + Path.DirectorySeparatorChar +
-                Path.GetFileNameWithoutExtension(pPath) + " - " + pIndex.ToString().PadLeft(2, '0') +
+            string outputFileName = Path.GetFileNameWithoutExtension(pPath) + " - " + pIndex.ToString().PadLeft(2, '0') +
                 " - " + ParseTitle(pNsfeData, pTrackIndex) + ".m3u";
             
-            StreamWriter singleSW = File.CreateText(outputSingleFile);
+            foreach (char c in Path.GetInvalidFileNameChars())
+            {
+                outputFileName = outputFileName.Replace(c, '_');
+            }
+            
+            string outputPath = Path.GetDirectoryName(pPath);
+
+            StreamWriter singleSW = File.CreateText(outputPath + Path.DirectorySeparatorChar + outputFileName);
             
             singleSW.WriteLine("#######################################################");
             singleSW.WriteLine("#");

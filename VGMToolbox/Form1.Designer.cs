@@ -138,11 +138,17 @@
             this.label10 = new System.Windows.Forms.Label();
             this.tbHootXML_Path = new System.Windows.Forms.TextBox();
             this.tabPage11 = new System.Windows.Forms.TabPage();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.cbNSFE_OneM3uPerTrack = new System.Windows.Forms.CheckBox();
+            this.btnNsfM3u_Cancel = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label9 = new System.Windows.Forms.Label();
             this.tbNSF_nsfe2m3uSource = new System.Windows.Forms.TextBox();
             this.btnNSF_nsfe2m3uConvert = new System.Windows.Forms.Button();
             this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.btnGbsM3u_Cancel = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.label13 = new System.Windows.Forms.Label();
             this.tbGBS_gbsm3uSource = new System.Windows.Forms.TextBox();
             this.btnGBS_gbsm3uConvert = new System.Windows.Forms.Button();
             this.tabPage8 = new System.Windows.Forms.TabPage();
@@ -167,10 +173,8 @@
             this.lblTimeElapsed = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.btnGbsM3u_Cancel = new System.Windows.Forms.Button();
-            this.label9 = new System.Windows.Forms.Label();
-            this.btnNsfM3u_Cancel = new System.Windows.Forms.Button();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.cbGBS_OneM3uPerTrack = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -198,6 +202,7 @@
             this.gbHootXML_Options.SuspendLayout();
             this.gbHootXML_Source.SuspendLayout();
             this.tabPage11.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabPage7.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -207,6 +212,7 @@
             this.groupBox4.SuspendLayout();
             this.grpXsfPsf2Exe_Source.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -1283,6 +1289,7 @@
             // 
             // tabPage11
             // 
+            this.tabPage11.Controls.Add(this.groupBox5);
             this.tabPage11.Controls.Add(this.btnNsfM3u_Cancel);
             this.tabPage11.Controls.Add(this.groupBox2);
             this.tabPage11.Location = new System.Drawing.Point(4, 22);
@@ -1292,6 +1299,36 @@
             this.tabPage11.TabIndex = 1;
             this.tabPage11.Text = "NSFE";
             this.tabPage11.UseVisualStyleBackColor = true;
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.cbNSFE_OneM3uPerTrack);
+            this.groupBox5.Location = new System.Drawing.Point(281, 1);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(376, 61);
+            this.groupBox5.TabIndex = 6;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Options";
+            // 
+            // cbNSFE_OneM3uPerTrack
+            // 
+            this.cbNSFE_OneM3uPerTrack.AutoSize = true;
+            this.cbNSFE_OneM3uPerTrack.Location = new System.Drawing.Point(6, 19);
+            this.cbNSFE_OneM3uPerTrack.Name = "cbNSFE_OneM3uPerTrack";
+            this.cbNSFE_OneM3uPerTrack.Size = new System.Drawing.Size(177, 17);
+            this.cbNSFE_OneM3uPerTrack.TabIndex = 0;
+            this.cbNSFE_OneM3uPerTrack.Text = "Output additional .m3u per track";
+            this.cbNSFE_OneM3uPerTrack.UseVisualStyleBackColor = true;
+            // 
+            // btnNsfM3u_Cancel
+            // 
+            this.btnNsfM3u_Cancel.Location = new System.Drawing.Point(593, 140);
+            this.btnNsfM3u_Cancel.Name = "btnNsfM3u_Cancel";
+            this.btnNsfM3u_Cancel.Size = new System.Drawing.Size(75, 23);
+            this.btnNsfM3u_Cancel.TabIndex = 5;
+            this.btnNsfM3u_Cancel.Text = "Cancel";
+            this.btnNsfM3u_Cancel.UseVisualStyleBackColor = true;
+            this.btnNsfM3u_Cancel.Click += new System.EventHandler(this.btnNsfM3u_Cancel_Click);
             // 
             // groupBox2
             // 
@@ -1304,6 +1341,15 @@
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "NSFe to .m3u";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(6, 42);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(171, 13);
+            this.label9.TabIndex = 5;
+            this.label9.Text = "Drag and Drop folders or files here.";
             // 
             // tbNSF_nsfe2m3uSource
             // 
@@ -1326,6 +1372,7 @@
             // 
             // tabPage7
             // 
+            this.tabPage7.Controls.Add(this.groupBox6);
             this.tabPage7.Controls.Add(this.btnGbsM3u_Cancel);
             this.tabPage7.Controls.Add(this.groupBox3);
             this.tabPage7.Location = new System.Drawing.Point(4, 22);
@@ -1334,6 +1381,16 @@
             this.tabPage7.TabIndex = 2;
             this.tabPage7.Text = "GBS";
             this.tabPage7.UseVisualStyleBackColor = true;
+            // 
+            // btnGbsM3u_Cancel
+            // 
+            this.btnGbsM3u_Cancel.Location = new System.Drawing.Point(596, 143);
+            this.btnGbsM3u_Cancel.Name = "btnGbsM3u_Cancel";
+            this.btnGbsM3u_Cancel.Size = new System.Drawing.Size(75, 23);
+            this.btnGbsM3u_Cancel.TabIndex = 6;
+            this.btnGbsM3u_Cancel.Text = "Cancel";
+            this.btnGbsM3u_Cancel.UseVisualStyleBackColor = true;
+            this.btnGbsM3u_Cancel.Click += new System.EventHandler(this.btnGbsM3u_Cancel_Click);
             // 
             // groupBox3
             // 
@@ -1346,6 +1403,15 @@
             this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "GBS  .m3u Builder";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(6, 42);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(171, 13);
+            this.label13.TabIndex = 3;
+            this.label13.Text = "Drag and Drop folders or files here.";
             // 
             // tbGBS_gbsm3uSource
             // 
@@ -1541,43 +1607,25 @@
             this.textBox1.Size = new System.Drawing.Size(259, 20);
             this.textBox1.TabIndex = 1;
             // 
-            // label13
+            // groupBox6
             // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(6, 42);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(171, 13);
-            this.label13.TabIndex = 3;
-            this.label13.Text = "Drag and Drop folders or files here.";
+            this.groupBox6.Controls.Add(this.cbGBS_OneM3uPerTrack);
+            this.groupBox6.Location = new System.Drawing.Point(281, 1);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(376, 61);
+            this.groupBox6.TabIndex = 7;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Options";
             // 
-            // btnGbsM3u_Cancel
+            // cbGBS_OneM3uPerTrack
             // 
-            this.btnGbsM3u_Cancel.Location = new System.Drawing.Point(596, 143);
-            this.btnGbsM3u_Cancel.Name = "btnGbsM3u_Cancel";
-            this.btnGbsM3u_Cancel.Size = new System.Drawing.Size(75, 23);
-            this.btnGbsM3u_Cancel.TabIndex = 6;
-            this.btnGbsM3u_Cancel.Text = "Cancel";
-            this.btnGbsM3u_Cancel.UseVisualStyleBackColor = true;
-            this.btnGbsM3u_Cancel.Click += new System.EventHandler(this.btnGbsM3u_Cancel_Click);
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(6, 42);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(171, 13);
-            this.label9.TabIndex = 5;
-            this.label9.Text = "Drag and Drop folders or files here.";
-            // 
-            // btnNsfM3u_Cancel
-            // 
-            this.btnNsfM3u_Cancel.Location = new System.Drawing.Point(593, 140);
-            this.btnNsfM3u_Cancel.Name = "btnNsfM3u_Cancel";
-            this.btnNsfM3u_Cancel.Size = new System.Drawing.Size(75, 23);
-            this.btnNsfM3u_Cancel.TabIndex = 5;
-            this.btnNsfM3u_Cancel.Text = "Cancel";
-            this.btnNsfM3u_Cancel.UseVisualStyleBackColor = true;
-            this.btnNsfM3u_Cancel.Click += new System.EventHandler(this.btnNsfM3u_Cancel_Click);
+            this.cbGBS_OneM3uPerTrack.AutoSize = true;
+            this.cbGBS_OneM3uPerTrack.Location = new System.Drawing.Point(6, 19);
+            this.cbGBS_OneM3uPerTrack.Name = "cbGBS_OneM3uPerTrack";
+            this.cbGBS_OneM3uPerTrack.Size = new System.Drawing.Size(177, 17);
+            this.cbGBS_OneM3uPerTrack.TabIndex = 0;
+            this.cbGBS_OneM3uPerTrack.Text = "Output additional .m3u per track";
+            this.cbGBS_OneM3uPerTrack.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -1638,6 +1686,8 @@
             this.gbHootXML_Source.ResumeLayout(false);
             this.gbHootXML_Source.PerformLayout();
             this.tabPage11.ResumeLayout(false);
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.tabPage7.ResumeLayout(false);
@@ -1652,6 +1702,8 @@
             this.grpXsfPsf2Exe_Source.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1800,6 +1852,10 @@
         private System.Windows.Forms.Button btnGbsM3u_Cancel;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Button btnNsfM3u_Cancel;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.CheckBox cbNSFE_OneM3uPerTrack;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.CheckBox cbGBS_OneM3uPerTrack;
     }
 }
 

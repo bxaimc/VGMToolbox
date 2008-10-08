@@ -17,7 +17,7 @@ namespace VGMToolbox.tools
             playlistEntry += pFileName + "::";
             playlistEntry += pFileType + ",";
             playlistEntry += pSongNumber + ",";
-            playlistEntry += pTitle + ",";
+            playlistEntry += "" + pTitle.Replace(',', '-') + ",";
             playlistEntry += pTime + ",";
             playlistEntry += pLoop + ",";
             playlistEntry += pFade + ",";
