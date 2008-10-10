@@ -140,6 +140,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\nsf\NsfTools.cs" />
+    <Compile Include="tools\xsf\Smap.cs" />
     <Compile Include="tools\xsf\XsfCompressedProgramExtractorWorker.cs">
       <SubType>Component</SubType>
     </Compile>

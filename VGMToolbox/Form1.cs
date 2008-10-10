@@ -1083,5 +1083,16 @@ namespace VGMToolbox
 
         #endregion
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            doCleanup();
+            Smap smap = new Smap(tb2sf_Source.Text);
+
+            foreach (Smap.SmapSeqStruct s in smap.SequenceArray)
+            {
+                tbOutput.Text += s.label + " - " + s.number + " - " + s.name + Environment.NewLine;
+            }
+        }
+
     }
 }

@@ -96,6 +96,7 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.label8 = new System.Windows.Forms.Label();
             this.grpExamineMdx_XsfExplorer = new System.Windows.Forms.GroupBox();
             this.btnXsf_Cancel = new System.Windows.Forms.Button();
             this.lblExamineXsf_SourceDirectory = new System.Windows.Forms.Label();
@@ -175,7 +176,9 @@
             this.lblTimeElapsed = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
+            this.tabPage15 = new System.Windows.Forms.TabPage();
+            this.tb2sf_Source = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -214,6 +217,7 @@
             this.groupBox4.SuspendLayout();
             this.grpXsfPsf2Exe_Source.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.tabPage15.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -870,6 +874,15 @@
             this.tabPage4.Text = "Tag Viewer";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(9, 144);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(226, 13);
+            this.label8.TabIndex = 5;
+            this.label8.Text = "Also see \\examine\\examine.txt for your output.";
+            // 
             // grpExamineMdx_XsfExplorer
             // 
             this.grpExamineMdx_XsfExplorer.Controls.Add(this.btnXsf_Cancel);
@@ -1467,6 +1480,7 @@
             // tabControl5
             // 
             this.tabControl5.Controls.Add(this.tabPage14);
+            this.tabControl5.Controls.Add(this.tabPage15);
             this.tabControl5.Location = new System.Drawing.Point(0, 0);
             this.tabControl5.Name = "tabControl5";
             this.tabControl5.SelectedIndex = 0;
@@ -1629,14 +1643,33 @@
             this.textBox1.Size = new System.Drawing.Size(259, 20);
             this.textBox1.TabIndex = 1;
             // 
-            // label8
+            // tabPage15
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(9, 144);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(226, 13);
-            this.label8.TabIndex = 5;
-            this.label8.Text = "Also see \\examine\\examine.txt for your output.";
+            this.tabPage15.Controls.Add(this.button1);
+            this.tabPage15.Controls.Add(this.tb2sf_Source);
+            this.tabPage15.Location = new System.Drawing.Point(4, 22);
+            this.tabPage15.Name = "tabPage15";
+            this.tabPage15.Size = new System.Drawing.Size(663, 144);
+            this.tabPage15.TabIndex = 1;
+            this.tabPage15.Text = "2sf";
+            this.tabPage15.UseVisualStyleBackColor = true;
+            // 
+            // tb2sf_Source
+            // 
+            this.tb2sf_Source.Location = new System.Drawing.Point(16, 12);
+            this.tb2sf_Source.Name = "tb2sf_Source";
+            this.tb2sf_Source.Size = new System.Drawing.Size(328, 20);
+            this.tb2sf_Source.TabIndex = 0;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(361, 12);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 1;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Form1
             // 
@@ -1716,6 +1749,8 @@
             this.grpXsfPsf2Exe_Source.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.tabPage15.ResumeLayout(false);
+            this.tabPage15.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1869,6 +1904,9 @@
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.CheckBox cbGBS_OneM3uPerTrack;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TabPage tabPage15;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox tb2sf_Source;
     }
 }
 
