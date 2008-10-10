@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.IO;
 using System.Text;
 
@@ -8,6 +9,10 @@ namespace VGMToolbox.tools.xsf
 {
     class Smap
     {
+        [DllImport("WinMM.dll")]
+        private static extern long mciSendString(string strCommand,
+            StringBuilder strReturn, int iReturnLength, IntPtr hwndCallback);
+
         private const string SEQ_HEADER = "# SEQ:";
 
         public struct SmapSeqStruct
@@ -23,6 +28,7 @@ namespace VGMToolbox.tools.xsf
         public Smap(string pSmapPath)
         {
             parseSmap(pSmapPath);
+            getMidiLength("foo");
         }
 
         private void parseSmap(string pSmapPath)
@@ -56,13 +62,33 @@ namespace VGMToolbox.tools.xsf
         {
             SmapSeqStruct sequence = new SmapSeqStruct();
             sequence.label = pSeqLine.Substring(0, 28).Trim();
-
-            if (!String.IsNullOrEmpty(sequence.label))
+            sequence.number = Int16.Parse(pSeqLine.Substring(28, 6).Trim());
+            if (pSeqLine.Length > 83)
             {
-                sequence.number = Int16.Parse(pSeqLine.Substring(28, 6).Trim());
                 sequence.name = pSeqLine.Substring(84).Trim();
-                this.sequenceArray.Add(sequence);
             }
+            this.sequenceArray.Add(sequence);
+        }
+
+        private void getMidiLength(string pMidiPath)
+        {
+            StringBuilder strReturn = new StringBuilder(128);
+            // IntPtr response = Marshal.AllocHGlobal(128);
+
+            string path = "test.mid";
+            string command;
+
+            command = string.Format("open \"{0}\" type sequencer", path);
+            long err = mciSendString(command, strReturn, 128, IntPtr.Zero);
+            
+            //mciSendString("set time format milliseconds", null, 0, IntPtr.Zero);            
+            //long i = mciSendString("status length", strReturn, 20, IntPtr.Zero);
+            int x = 20;
+
+            
+            
+            
+
         }
     }
 }
