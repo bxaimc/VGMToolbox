@@ -140,6 +140,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\nsf\NsfTools.cs" />
+    <Compile Include="tools\xsf\Rip2sfWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\xsf\Smap.cs" />
     <Compile Include="tools\xsf\XsfCompressedProgramExtractorWorker.cs">
       <SubType>Component</SubType>
@@ -184,6 +187,12 @@
     <Content Include="external\2sf\2sftool.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="external\2sf\DeSmuME_save.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="external\2sf\DeSmuME_trace.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="external\2sf\dst2bin.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -193,10 +202,22 @@
     <Content Include="external\2sf\sdattool.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="external\2sf\zlib1.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="external\2sf\zlib_README.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="external\psfpoint.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="hoot\!hootxml.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="languages.ini">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="rips\dir.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\toolbox.bmp" />

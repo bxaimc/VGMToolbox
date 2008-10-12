@@ -26,6 +26,7 @@ namespace VGMToolbox
         XsfCompressedProgramExtractorWorker xsfCompressedProgramExtractor;
         GbsM3uBuilderWorker gbsM3uBuilder;
         NsfeM3uBuilderWorker nsfeM3uBuilder;
+        Rip2sfWorker rip2sfWorker;
 
         DateTime elapsedTimeStart;
         DateTime elapsedTimeEnd;
@@ -1086,11 +1087,72 @@ namespace VGMToolbox
         private void button1_Click(object sender, EventArgs e)
         {
             doCleanup();
-            Smap smap = new Smap(tb2sf_Source.Text);
+            
+            
+            
+            // Smap smap = new Smap(tb2sf_Source.Text);
 
+            /*
             foreach (Smap.SmapSeqStruct s in smap.SequenceArray)
             {
                 tbOutput.Text += s.label + " - " + s.number + " - " + s.name + Environment.NewLine;
+            }
+            */ 
+        }
+
+        private void tb2sf_Source_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
+                e.Effect = DragDropEffects.All;
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        private void tb2sf_Source_DragDrop(object sender, DragEventArgs e)
+        {
+            doCleanup();
+
+            toolStripStatusLabel1.Text = "2SF Ripping...Begin";
+
+            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            int totalFileCount = 0;
+
+            foreach (string path in s)
+            {
+                if (File.Exists(path))
+                {
+                    totalFileCount++;
+                }
+                else if (Directory.Exists(path))
+                {
+                    totalFileCount += Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
+                }
+            }
+
+            Rip2sfWorker.Rip2sfStruct rip2sfStruct = new Rip2sfWorker.Rip2sfStruct();
+            rip2sfStruct.pPaths = s;
+            rip2sfStruct.totalFiles = totalFileCount;
+
+            rip2sfWorker = new Rip2sfWorker();
+            rip2sfWorker.ProgressChanged += backgroundWorker_ReportProgress;
+            rip2sfWorker.RunWorkerCompleted += Rip2sfWorker_WorkComplete;
+            rip2sfWorker.RunWorkerAsync(rip2sfStruct);
+        }
+
+        private void Rip2sfWorker_WorkComplete(object sender,
+                     RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled)
+            {
+                doCancelCleanup(false);
+                toolStripStatusLabel1.Text = "2SF Ripping...Cancelled";
+                tbOutput.Text += "Operation cancelled.";
+            }
+            else
+            {
+                lblProgressLabel.Text = String.Empty;
+                toolStripStatusLabel1.Text = "2SF Ripping...Complete";
             }
         }
 

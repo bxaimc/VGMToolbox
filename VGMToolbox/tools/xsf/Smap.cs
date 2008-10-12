@@ -55,6 +55,9 @@ namespace VGMToolbox.tools.xsf
                         }
                     }
                 }
+
+                textReader.Close();
+                textReader.Dispose();
             }        
         }
 
@@ -73,22 +76,32 @@ namespace VGMToolbox.tools.xsf
         private void getMidiLength(string pMidiPath)
         {
             StringBuilder strReturn = new StringBuilder(128);
-            // IntPtr response = Marshal.AllocHGlobal(128);
 
-            string path = "test.mid";
+            string path = @"H:\Projects\vgmtoolbox\VGMToolbox\bin\Debug\test.mid";
+            
+            int tempTime;
+            int minutes;
+            int seconds;
+
             string command;
 
-            command = string.Format("open \"{0}\" type sequencer", path);
-            long err = mciSendString(command, strReturn, 128, IntPtr.Zero);
-            
-            //mciSendString("set time format milliseconds", null, 0, IntPtr.Zero);            
-            //long i = mciSendString("status length", strReturn, 20, IntPtr.Zero);
-            int x = 20;
+            long err;
 
-            
-            
-            
+            command = string.Format("open \"{0}\" type sequencer alias MidiFile", path);
+            err = mciSendString(command, strReturn, 128, IntPtr.Zero);
 
+            command = string.Format("set MidiFile time format milliseconds");
+            err = mciSendString(command, strReturn, 128, IntPtr.Zero);
+
+            command = string.Format("status MidiFile length");
+            err = mciSendString(command, strReturn, 128, IntPtr.Zero);
+
+            tempTime = Int32.Parse(strReturn.ToString());
+            minutes = tempTime / 60000;
+            seconds = ((tempTime - (minutes * 60000)) % 60000) / 1000;
+
+            command = string.Format("close MidiFile");
+            err = mciSendString(command, strReturn, 128, IntPtr.Zero);
         }
     }
 }
