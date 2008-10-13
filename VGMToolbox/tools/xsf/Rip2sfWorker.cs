@@ -262,13 +262,13 @@ namespace VGMToolbox.tools.xsf
                 // Do cleamup
                 Directory.Delete(sourceRomDestinationPath, true);
                 Directory.Delete(containerRomDestinationPath, true);
-                Directory.Delete(Path.Combine(pContainerRomPath, "overlay"), true);
-                File.Delete(Path.Combine(pContainerRomPath, "arm7.bin"));
-                File.Delete(Path.Combine(pContainerRomPath, "arm9.bin"));
-                File.Delete(Path.Combine(pContainerRomPath, "banner.bin"));
-                File.Delete(Path.Combine(pContainerRomPath, "header.bin"));
-                File.Delete(Path.Combine(pContainerRomPath, "y7.bin"));
-                File.Delete(Path.Combine(pContainerRomPath, "y9.bin"));
+                Directory.Delete(Path.Combine(Path.GetDirectoryName(pContainerRomPath), "overlay"), true);
+                File.Delete(Path.Combine(Path.GetDirectoryName(pContainerRomPath), "arm7.bin"));
+                File.Delete(Path.Combine(Path.GetDirectoryName(pContainerRomPath), "arm9.bin"));
+                File.Delete(Path.Combine(Path.GetDirectoryName(pContainerRomPath), "banner.bin"));
+                File.Delete(Path.Combine(Path.GetDirectoryName(pContainerRomPath), "header.bin"));
+                File.Delete(Path.Combine(Path.GetDirectoryName(pContainerRomPath), "y7.bin"));
+                File.Delete(Path.Combine(Path.GetDirectoryName(pContainerRomPath), "y9.bin"));
             }
             catch (Exception ex)
             {

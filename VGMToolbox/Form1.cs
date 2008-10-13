@@ -1121,7 +1121,7 @@ namespace VGMToolbox
             rip2sfStruct.pPaths = s;
             rip2sfStruct.totalFiles = totalFileCount;
             rip2sfStruct.containerRomPath = tb2sf_ContainerPath.Text;
-            rip2sfStruct.filePrefix = tb2sf_FilePrefix.Text;
+            rip2sfStruct.filePrefix = tb2sf_FilePrefix.Text.Trim().Replace(' ', '_');
 
             rip2sfWorker = new Rip2sfWorker();
             rip2sfWorker.ProgressChanged += backgroundWorker_ReportProgress;
