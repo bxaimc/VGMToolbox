@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -13,6 +14,10 @@ namespace VGMToolbox.tools.xsf
 {
     class Rip2sfWorker : BackgroundWorker
     {
+        [DllImport("WinMM.dll")]
+        private static extern long mciSendString(string strCommand,
+            StringBuilder strReturn, int iReturnLength, IntPtr hwndCallback);
+        
         private int fileCount = 0;
         private int maxFiles = 0;
 
@@ -20,6 +25,7 @@ namespace VGMToolbox.tools.xsf
         {
             public string[] pPaths;
             public string containerRomPath;
+            public string filePrefix;
             public int totalFiles;
         }
 
@@ -41,7 +47,7 @@ namespace VGMToolbox.tools.xsf
                 {
                     if (!CancellationPending)
                     {
-                        this.rip2sfFromFile(path, pRip2sfStruct.containerRomPath, e);
+                        this.rip2sfFromFile(path, pRip2sfStruct.containerRomPath, pRip2sfStruct.filePrefix, e);
                     }
                     else 
                     {
@@ -96,7 +102,8 @@ namespace VGMToolbox.tools.xsf
         }
         */
 
-        private void rip2sfFromFile(string pPath, string pContainerRomPath, DoWorkEventArgs e)
+        private void rip2sfFromFile(string pPath, string pContainerRomPath, 
+            string pFilePrefix, DoWorkEventArgs e)
         {
             // Report Progress
             int progress = (++fileCount * 100) / maxFiles;
@@ -108,7 +115,7 @@ namespace VGMToolbox.tools.xsf
             try
             {
                 bool processSuccess = false;
-                string containerPath = @"H:\ROMs\Music\[2sf]\[test]\yoshi.nds";
+                // string containerPath = @"H:\ROMs\Music\[2sf]\[test]\yoshi.nds";
 
                 string ndsToolFileName = ".\\external\\2sf\\ndstool.exe";
                 string sdatToolFileName = ".\\external\\2sf\\sdattool.exe";
@@ -117,15 +124,27 @@ namespace VGMToolbox.tools.xsf
                 string dst2BinFileName = ".\\external\\2sf\\dst2bin.exe";
                 string _2sfToolFileName = ".\\external\\2sf\\2sftool.exe";
                 string psfPointPath = ".\\external\\psfpoint.exe";
+                string sseq2MidFileName = ".\\external\\2sf\\sseq2mid.exe";
 
-                string sourceRomDestinationPath = Path.Combine(Path.GetDirectoryName(containerPath), Path.GetFileNameWithoutExtension(pPath));
-                string containerRomDestinationPath = Path.Combine(Path.GetDirectoryName(containerPath), Path.GetFileNameWithoutExtension(containerPath));
+                string sourceRomDestinationPath = Path.Combine(Path.GetDirectoryName(pContainerRomPath), Path.GetFileNameWithoutExtension(pPath));
+                string containerRomDestinationPath = Path.Combine(Path.GetDirectoryName(pContainerRomPath), Path.GetFileNameWithoutExtension(pContainerRomPath));
                 string rebuiltRomName;
                 string rebuiltRomPath;
-                string make2sfPath = Path.Combine(Path.GetDirectoryName(containerPath), "2sfmake");
-                
+                string make2sfPath = Path.Combine(Path.GetDirectoryName(pContainerRomPath), "2sfmake");
 
-                string pFilePrefix = "test";
+                string ripFolder = Path.Combine(".\\rips\\2sf\\", Path.GetFileNameWithoutExtension(pPath)); 
+
+                int sdatIndex = 0;
+                string filePrefix;
+
+                if (String.IsNullOrEmpty(pFilePrefix))
+                {
+                    filePrefix = "test";
+                }
+                else
+                {
+                    filePrefix = pFilePrefix;
+                }
 
                 //////////////////////////////////
                 //Step 1 - Extract the Source ROM
@@ -137,7 +156,7 @@ namespace VGMToolbox.tools.xsf
                 //////////////////////////////////////
                 if (processSuccess)
                 {
-                    processSuccess = this.rip2sf_Step2(ndsToolFileName, containerPath, containerRomDestinationPath);                
+                    processSuccess = this.rip2sf_Step2(ndsToolFileName, pContainerRomPath, containerRomDestinationPath);                
                 }
 
                 /////////////////////////////////
@@ -156,19 +175,20 @@ namespace VGMToolbox.tools.xsf
                         // Step 3 - Replace SDAT and Rebuild ROM
                         /////////////////////////////////////////
                         rebuiltRomName = "modcrap_" + Path.GetFileNameWithoutExtension(sourceSdat) + ".nds";
-                        rebuiltRomPath = Path.Combine(Path.GetDirectoryName(containerPath), rebuiltRomName);
-                        processSuccess = rip2sf_Step3(ndsToolFileName, sourceSdat, destinationSdats[0], containerPath, containerRomDestinationPath, rebuiltRomName);
+                        rebuiltRomPath = Path.Combine(Path.GetDirectoryName(pContainerRomPath), rebuiltRomName);
+                        processSuccess = rip2sf_Step3(ndsToolFileName, sourceSdat, destinationSdats[0], pContainerRomPath, containerRomDestinationPath, rebuiltRomName);
 
-                        ///////////////////////////////
-                        // Step 4 - Unpack Source SDAT
-                        ///////////////////////////////
                         if (processSuccess)
                         {
-                            processSuccess = rip2sf_Step4(sdatToolFileName, sourceSdat, containerPath);
+
+                            ///////////////////////////////
+                            // Step 4 - Unpack Source SDAT
+                            ///////////////////////////////
+                            processSuccess = rip2sf_Step4(sdatToolFileName, sourceSdat, pContainerRomPath);
 
                             if (processSuccess)
                             {
-                                string extractedSdatFolder = Path.Combine(Path.GetDirectoryName(containerPath), Path.GetFileNameWithoutExtension(sourceSdat));
+                                string extractedSdatFolder = Path.Combine(Path.GetDirectoryName(pContainerRomPath), Path.GetFileNameWithoutExtension(sourceSdat));
                                 string[] smapFiles = Directory.GetFiles(extractedSdatFolder, Path.GetFileNameWithoutExtension(sourceSdat) + ".smap", SearchOption.AllDirectories);
                                 Smap smapFile = new Smap(smapFiles[0]);
 
@@ -186,9 +206,20 @@ namespace VGMToolbox.tools.xsf
                                         ///////////////////////
                                         // Step 6 - Run Tracer
                                         ///////////////////////
+                                        
+                                        // rename prefix as needed if has multiple sdats
+                                        if (sourceSdats.Length > 1)
+                                        {
+                                            filePrefix = pFilePrefix + sdatIndex.ToString("X2");
+                                        }
+                                        else
+                                        {
+                                            filePrefix = pFilePrefix;
+                                        }
+                                        
                                         processSuccess = rip2sf_Step6(desmumeTraceFileName, rebuiltRomPath, 
-                                            smapFile.SequenceArray.GetLowerBound(0), smapFile.SequenceArray.GetUpperBound(0), 
-                                            make2sfPath, pFilePrefix);
+                                            smapFile.SequenceArray.GetLowerBound(0), smapFile.SequenceArray.GetUpperBound(0),
+                                            make2sfPath, filePrefix);
 
                                         if (processSuccess)
                                         {
@@ -196,15 +227,48 @@ namespace VGMToolbox.tools.xsf
                                             // Step 7 - Build 2SFs
                                             ///////////////////////
                                             processSuccess = rip2sf_Step7(dst2BinFileName, _2sfToolFileName,
-                                                psfPointPath, make2sfPath, pFilePrefix, smapFile.SequenceArray.GetLowerBound(0),
+                                                psfPointPath, make2sfPath, filePrefix, smapFile.SequenceArray.GetLowerBound(0),
                                                 smapFile.SequenceArray.GetUpperBound(0));
+
+
+                                            /////////////////////////////
+                                            // Step 8 - Time the Tracks
+                                            ////////////////////////////
+                                            processSuccess = rip2sf_Step8(sseq2MidFileName, psfPointPath,
+                                                make2sfPath, extractedSdatFolder, filePrefix, smapFile);
+
+                                            ///////////////////////////////////////////
+                                            // Step 9 - Move the tracks to rips folder
+                                            ///////////////////////////////////////////
+                                            moveRippedTracks(make2sfPath, ripFolder);
+
+                                            // Do Cleanup
+                                            Directory.Delete(make2sfPath, true);
                                         }
                                     }
                                 }
+                                // Do cleanup
+                                Directory.Delete(extractedSdatFolder, true);
                             }
                         }
+                        
+                        // Do cleanup
+                        File.Delete(rebuiltRomPath);
+
+                        // Increment index for dynamic naming
+                        sdatIndex++;
                     }                
                 }
+                // Do cleamup
+                Directory.Delete(sourceRomDestinationPath, true);
+                Directory.Delete(containerRomDestinationPath, true);
+                Directory.Delete(Path.Combine(pContainerRomPath, "overlay"), true);
+                File.Delete(Path.Combine(pContainerRomPath, "arm7.bin"));
+                File.Delete(Path.Combine(pContainerRomPath, "arm9.bin"));
+                File.Delete(Path.Combine(pContainerRomPath, "banner.bin"));
+                File.Delete(Path.Combine(pContainerRomPath, "header.bin"));
+                File.Delete(Path.Combine(pContainerRomPath, "y7.bin"));
+                File.Delete(Path.Combine(pContainerRomPath, "y9.bin"));
             }
             catch (Exception ex)
             {
@@ -408,9 +472,117 @@ namespace VGMToolbox.tools.xsf
             isSuccess = ndsProcess.Start();
             ndsProcess.WaitForExit();
 
+            arguments = " -_fade=7 *.mini2sf";
+            ndsProcess = new Process();
+            ndsProcess.StartInfo = new ProcessStartInfo(Path.GetFileName(psfPointDestination), arguments);
+            ndsProcess.StartInfo.WorkingDirectory = pMake2sfPath;
+            isSuccess = ndsProcess.Start();
+            ndsProcess.WaitForExit();
+
             return isSuccess;
         }
 
+        private bool rip2sf_Step8(string pSseq2MidFileName, string pPsfPointFileName, 
+            string pMake2sfPath, string pExtractedSdatPath, string pFilePrefix, Smap pSmap)
+        {
+            bool isSuccess = false;
+            string arguments;
+            Process ndsProcess;
+
+            StringBuilder strReturn = new StringBuilder(128);
+            int tempTime;
+            int minutes;
+            int seconds;
+            string command;
+            long err;
+
+            // copy psfpoint
+            string psfPointDestination = Path.Combine(pMake2sfPath, Path.GetFileName(pPsfPointFileName));
+            File.Copy(pPsfPointFileName, psfPointDestination, true);
+
+            // Run Sseq2Mid
+            string sseqPath = Path.Combine(pExtractedSdatPath, "Seq");
+            string ssqe2midDestination = Path.Combine(sseqPath, Path.GetFileName(pSseq2MidFileName));
+            File.Copy(pSseq2MidFileName, ssqe2midDestination, true);
+            
+            arguments = " -2 -l >>dp *.sseq";
+            ndsProcess = new Process();
+            ndsProcess.StartInfo = new ProcessStartInfo(ssqe2midDestination, arguments);
+            ndsProcess.StartInfo.WorkingDirectory = sseqPath;
+            isSuccess = ndsProcess.Start();
+            ndsProcess.WaitForExit();
+
+
+
+            foreach (Smap.SmapSeqStruct s in pSmap.SequenceArray)
+            {
+                string _2sfFileName = pFilePrefix + "-" + s.number.ToString("X4") + ".mini2sf";
+
+                if (!String.IsNullOrEmpty(s.name))
+                {
+                    string midiFilePath = Path.Combine(pExtractedSdatPath, s.name + ".mid");
+
+                    if (File.Exists(midiFilePath))
+                    {
+                        command = string.Format("open \"{0}\" type sequencer alias MidiFile", midiFilePath);
+                        err = mciSendString(command, strReturn, 128, IntPtr.Zero);
+
+                        command = string.Format("set MidiFile time format milliseconds");
+                        err = mciSendString(command, strReturn, 128, IntPtr.Zero);
+
+                        command = string.Format("status MidiFile length");
+                        err = mciSendString(command, strReturn, 128, IntPtr.Zero);
+
+                        tempTime = Int32.Parse(strReturn.ToString());
+                        minutes = tempTime / 60000;
+                        seconds = ((tempTime - (minutes * 60000)) % 60000) / 1000;
+
+                        command = string.Format("close MidiFile");
+                        err = mciSendString(command, strReturn, 128, IntPtr.Zero);
+
+                        // Update length on mini2sf
+                        arguments = " -length=\"" + minutes + ":" + seconds.ToString().PadLeft(2, '0') + "\" " + _2sfFileName;
+                        ndsProcess = new Process();
+                        ndsProcess.StartInfo = new ProcessStartInfo(Path.GetFileName(psfPointDestination), arguments);
+                        ndsProcess.StartInfo.WorkingDirectory = pMake2sfPath;
+                        isSuccess = ndsProcess.Start();
+                        ndsProcess.WaitForExit();
+                    }
+                    else
+                    {
+                        // Delete empty sequence 2sf file
+                        File.Delete(Path.Combine(pMake2sfPath, _2sfFileName));
+                    }
+                }
+                else
+                { 
+                    // Delete empty sequence 2sf file
+                    File.Delete(Path.Combine(pMake2sfPath, _2sfFileName));
+                }
+            }
+            
+            return isSuccess;
+        }
+
+        private void moveRippedTracks(string pSourcePath, string pDestinationPath)
+        {
+            if (!Directory.Exists(pDestinationPath))
+            {
+                Directory.CreateDirectory(pDestinationPath);
+            }
+            
+            foreach (string s in Directory.GetFiles(pSourcePath, "*.mini2sf", SearchOption.TopDirectoryOnly))
+            {
+                File.Move(s, Path.Combine(pDestinationPath, Path.GetFileName(s)));
+            }
+
+            foreach (string s in Directory.GetFiles(pSourcePath, "*.2sflib", SearchOption.TopDirectoryOnly))
+            {
+                File.Move(s, Path.Combine(pDestinationPath, Path.GetFileName(s)));
+            }
+
+        }
+        
         protected override void OnDoWork(DoWorkEventArgs e)
         {
             Rip2sfStruct rip2sfStruct = (Rip2sfStruct)e.Argument;

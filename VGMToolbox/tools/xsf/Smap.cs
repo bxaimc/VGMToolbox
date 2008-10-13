@@ -9,10 +9,6 @@ namespace VGMToolbox.tools.xsf
 {
     class Smap
     {
-        [DllImport("WinMM.dll")]
-        private static extern long mciSendString(string strCommand,
-            StringBuilder strReturn, int iReturnLength, IntPtr hwndCallback);
-
         private const string SEQ_HEADER = "# SEQ:";
 
         public struct SmapSeqStruct
@@ -28,7 +24,6 @@ namespace VGMToolbox.tools.xsf
         public Smap(string pSmapPath)
         {
             parseSmap(pSmapPath);
-            getMidiLength("foo");
         }
 
         private void parseSmap(string pSmapPath)
@@ -71,37 +66,6 @@ namespace VGMToolbox.tools.xsf
                 sequence.name = pSeqLine.Substring(84).Trim();
             }
             this.sequenceArray.Add(sequence);
-        }
-
-        private void getMidiLength(string pMidiPath)
-        {
-            StringBuilder strReturn = new StringBuilder(128);
-
-            string path = @"H:\Projects\vgmtoolbox\VGMToolbox\bin\Debug\test.mid";
-            
-            int tempTime;
-            int minutes;
-            int seconds;
-
-            string command;
-
-            long err;
-
-            command = string.Format("open \"{0}\" type sequencer alias MidiFile", path);
-            err = mciSendString(command, strReturn, 128, IntPtr.Zero);
-
-            command = string.Format("set MidiFile time format milliseconds");
-            err = mciSendString(command, strReturn, 128, IntPtr.Zero);
-
-            command = string.Format("status MidiFile length");
-            err = mciSendString(command, strReturn, 128, IntPtr.Zero);
-
-            tempTime = Int32.Parse(strReturn.ToString());
-            minutes = tempTime / 60000;
-            seconds = ((tempTime - (minutes * 60000)) % 60000) / 1000;
-
-            command = string.Format("close MidiFile");
-            err = mciSendString(command, strReturn, 128, IntPtr.Zero);
         }
     }
 }

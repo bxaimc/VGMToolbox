@@ -1084,21 +1084,7 @@ namespace VGMToolbox
 
         #endregion
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            doCleanup();
-            
-            
-            
-            // Smap smap = new Smap(tb2sf_Source.Text);
-
-            /*
-            foreach (Smap.SmapSeqStruct s in smap.SequenceArray)
-            {
-                tbOutput.Text += s.label + " - " + s.number + " - " + s.name + Environment.NewLine;
-            }
-            */ 
-        }
+        #region XSF - 2sf Ripper
 
         private void tb2sf_Source_DragEnter(object sender, DragEventArgs e)
         {
@@ -1111,6 +1097,7 @@ namespace VGMToolbox
         private void tb2sf_Source_DragDrop(object sender, DragEventArgs e)
         {
             doCleanup();
+            do2sfRipCheck();
 
             toolStripStatusLabel1.Text = "2SF Ripping...Begin";
 
@@ -1133,6 +1120,8 @@ namespace VGMToolbox
             Rip2sfWorker.Rip2sfStruct rip2sfStruct = new Rip2sfWorker.Rip2sfStruct();
             rip2sfStruct.pPaths = s;
             rip2sfStruct.totalFiles = totalFileCount;
+            rip2sfStruct.containerRomPath = tb2sf_ContainerPath.Text;
+            rip2sfStruct.filePrefix = tb2sf_FilePrefix.Text;
 
             rip2sfWorker = new Rip2sfWorker();
             rip2sfWorker.ProgressChanged += backgroundWorker_ReportProgress;
@@ -1140,6 +1129,21 @@ namespace VGMToolbox
             rip2sfWorker.RunWorkerAsync(rip2sfStruct);
         }
 
+        private void do2sfRipCheck()
+        {
+            // Verify container file exists
+            if (!File.Exists(tb2sf_ContainerPath.Text))
+            {
+                MessageBox.Show("Container file does not exist.");
+            }
+
+            // Replace invalid filename chars with underscore
+            foreach (char c in Path.GetInvalidFileNameChars())
+            {
+                tb2sf_FilePrefix.Text = tb2sf_FilePrefix.Text.Replace(c, '_');
+            }
+        }
+        
         private void Rip2sfWorker_WorkComplete(object sender,
                      RunWorkerCompletedEventArgs e)
         {
@@ -1155,6 +1159,17 @@ namespace VGMToolbox
                 toolStripStatusLabel1.Text = "2SF Ripping...Complete";
             }
         }
+
+        private void btn2sf_BrowseContainerRom_Click(object sender, EventArgs e)
+        {
+            openFileDialog1 = new OpenFileDialog();
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                tb2sf_ContainerPath.Text = openFileDialog1.FileName;
+            }
+        }
+
+        #endregion
 
     }
 }
