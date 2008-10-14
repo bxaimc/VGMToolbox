@@ -192,7 +192,30 @@ namespace VGMToolbox.tools.xsf
                                 string[] smapFiles = Directory.GetFiles(extractedSdatFolder, Path.GetFileNameWithoutExtension(sourceSdat) + ".smap", SearchOption.AllDirectories);
                                 Smap smapFile = new Smap(smapFiles[0]);
 
-                                // !!! Add code to get streams here !!!
+                                //////////////////////////////
+                                // copy streams to rip folder
+                                //////////////////////////////
+                                string streamsSourceFolder = Path.Combine(extractedSdatFolder, "Strm");
+                                
+                                // get the list of files to move
+                                string[] streamFileList = Directory.GetFiles(streamsSourceFolder, "*.*", SearchOption.AllDirectories);
+
+                                if (streamFileList.Length > 0)
+                                {
+                                    string streamsDestinationFolder = Path.Combine(ripFolder, "streams");
+
+                                    // create destination folder if it doesn't exist (it shouldn't)
+                                    if (!Directory.Exists(streamsDestinationFolder))
+                                    {
+                                        Directory.CreateDirectory(streamsDestinationFolder);
+                                    }
+
+                                    // move the files
+                                    foreach (string s in streamFileList)
+                                    {
+                                        File.Move(s, Path.Combine(streamsDestinationFolder, Path.GetFileName(s)));
+                                    }
+                                }
 
                                 if (smapFile.SequenceArray.Length > 0)
                                 { 
@@ -239,8 +262,9 @@ namespace VGMToolbox.tools.xsf
 
                                             ///////////////////////////////////////////
                                             // Step 9 - Move the tracks to rips folder
-                                            ///////////////////////////////////////////
+                                            ///////////////////////////////////////////                                            
                                             moveRippedTracks(make2sfPath, ripFolder);
+
 
                                             // Do Cleanup
                                             Directory.Delete(make2sfPath, true);
@@ -565,7 +589,7 @@ namespace VGMToolbox.tools.xsf
         }
 
         private void moveRippedTracks(string pSourcePath, string pDestinationPath)
-        {
+        {            
             if (!Directory.Exists(pDestinationPath))
             {
                 Directory.CreateDirectory(pDestinationPath);
@@ -580,7 +604,6 @@ namespace VGMToolbox.tools.xsf
             {
                 File.Move(s, Path.Combine(pDestinationPath, Path.GetFileName(s)));
             }
-
         }
         
         protected override void OnDoWork(DoWorkEventArgs e)
