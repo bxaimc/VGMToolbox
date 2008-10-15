@@ -86,6 +86,7 @@
     <Compile Include="format\Nsf.cs" />
     <Compile Include="format\Nsfe.cs" />
     <Compile Include="format\S98.cs" />
+    <Compile Include="format\Sdat.cs" />
     <Compile Include="format\Spc.cs" />
     <Compile Include="format\Vgm.cs" />
     <Compile Include="format\Wsr.cs" />
