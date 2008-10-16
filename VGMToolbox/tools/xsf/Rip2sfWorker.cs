@@ -496,7 +496,7 @@ namespace VGMToolbox.tools.xsf
             isSuccess = ndsProcess.Start();
             ndsProcess.WaitForExit();
 
-            arguments = " -_fade=7 *.mini2sf";
+            arguments = " -fade=10 *.mini2sf";
             ndsProcess = new Process();
             ndsProcess.StartInfo = new ProcessStartInfo(Path.GetFileName(psfPointDestination), arguments);
             ndsProcess.StartInfo.WorkingDirectory = pMake2sfPath;

@@ -164,12 +164,16 @@
             this.label12 = new System.Windows.Forms.Label();
             this.tbXsfPsf2Exe_Source = new System.Windows.Forms.TextBox();
             this.tabPage15 = new System.Windows.Forms.TabPage();
-            this.label16 = new System.Windows.Forms.Label();
+            this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.tb2sf_FilePrefix = new System.Windows.Forms.TextBox();
-            this.label15 = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.btn2sf_BrowseContainerRom = new System.Windows.Forms.Button();
             this.tb2sf_ContainerPath = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.tb2sf_Source = new System.Windows.Forms.TextBox();
+            this.label15 = new System.Windows.Forms.Label();
             this.tbOutput = new System.Windows.Forms.TextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -183,10 +187,6 @@
             this.lblTimeElapsed = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.groupBox8 = new System.Windows.Forms.GroupBox();
-            this.btn2sf_BrowseContainerRom = new System.Windows.Forms.Button();
-            this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -225,10 +225,10 @@
             this.groupBox4.SuspendLayout();
             this.grpXsfPsf2Exe_Source.SuspendLayout();
             this.tabPage15.SuspendLayout();
-            this.statusStrip1.SuspendLayout();
-            this.groupBox7.SuspendLayout();
-            this.groupBox8.SuspendLayout();
             this.groupBox9.SuspendLayout();
+            this.groupBox8.SuspendLayout();
+            this.groupBox7.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -1580,8 +1580,26 @@
             this.tabPage15.Name = "tabPage15";
             this.tabPage15.Size = new System.Drawing.Size(663, 144);
             this.tabPage15.TabIndex = 1;
-            this.tabPage15.Text = "2sf";
+            this.tabPage15.Text = "2sf Ripper";
             this.tabPage15.UseVisualStyleBackColor = true;
+            // 
+            // groupBox9
+            // 
+            this.groupBox9.Controls.Add(this.tb2sf_FilePrefix);
+            this.groupBox9.Controls.Add(this.label16);
+            this.groupBox9.Location = new System.Drawing.Point(3, 68);
+            this.groupBox9.Name = "groupBox9";
+            this.groupBox9.Size = new System.Drawing.Size(272, 70);
+            this.groupBox9.TabIndex = 9;
+            this.groupBox9.TabStop = false;
+            this.groupBox9.Text = "Options";
+            // 
+            // tb2sf_FilePrefix
+            // 
+            this.tb2sf_FilePrefix.Location = new System.Drawing.Point(6, 19);
+            this.tb2sf_FilePrefix.Name = "tb2sf_FilePrefix";
+            this.tb2sf_FilePrefix.Size = new System.Drawing.Size(100, 20);
+            this.tb2sf_FilePrefix.TabIndex = 5;
             // 
             // label16
             // 
@@ -1592,21 +1610,34 @@
             this.label16.TabIndex = 6;
             this.label16.Text = "Set Name File Prefix";
             // 
-            // tb2sf_FilePrefix
+            // groupBox8
             // 
-            this.tb2sf_FilePrefix.Location = new System.Drawing.Point(6, 19);
-            this.tb2sf_FilePrefix.Name = "tb2sf_FilePrefix";
-            this.tb2sf_FilePrefix.Size = new System.Drawing.Size(100, 20);
-            this.tb2sf_FilePrefix.TabIndex = 5;
+            this.groupBox8.Controls.Add(this.btn2sf_BrowseContainerRom);
+            this.groupBox8.Controls.Add(this.tb2sf_ContainerPath);
+            this.groupBox8.Controls.Add(this.label14);
+            this.groupBox8.Location = new System.Drawing.Point(281, 1);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(379, 61);
+            this.groupBox8.TabIndex = 8;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "Container ROM";
             // 
-            // label15
+            // btn2sf_BrowseContainerRom
             // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(8, 42);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(108, 13);
-            this.label15.TabIndex = 4;
-            this.label15.Text = "Drag ROM to rip here";
+            this.btn2sf_BrowseContainerRom.Location = new System.Drawing.Point(340, 19);
+            this.btn2sf_BrowseContainerRom.Name = "btn2sf_BrowseContainerRom";
+            this.btn2sf_BrowseContainerRom.Size = new System.Drawing.Size(28, 20);
+            this.btn2sf_BrowseContainerRom.TabIndex = 4;
+            this.btn2sf_BrowseContainerRom.Text = "...";
+            this.btn2sf_BrowseContainerRom.UseVisualStyleBackColor = true;
+            this.btn2sf_BrowseContainerRom.Click += new System.EventHandler(this.btn2sf_BrowseContainerRom_Click);
+            // 
+            // tb2sf_ContainerPath
+            // 
+            this.tb2sf_ContainerPath.Location = new System.Drawing.Point(6, 19);
+            this.tb2sf_ContainerPath.Name = "tb2sf_ContainerPath";
+            this.tb2sf_ContainerPath.Size = new System.Drawing.Size(328, 20);
+            this.tb2sf_ContainerPath.TabIndex = 2;
             // 
             // label14
             // 
@@ -1617,12 +1648,16 @@
             this.label14.TabIndex = 3;
             this.label14.Text = "Container ROM Path (Yoshi\'s Island)";
             // 
-            // tb2sf_ContainerPath
+            // groupBox7
             // 
-            this.tb2sf_ContainerPath.Location = new System.Drawing.Point(6, 19);
-            this.tb2sf_ContainerPath.Name = "tb2sf_ContainerPath";
-            this.tb2sf_ContainerPath.Size = new System.Drawing.Size(328, 20);
-            this.tb2sf_ContainerPath.TabIndex = 2;
+            this.groupBox7.Controls.Add(this.tb2sf_Source);
+            this.groupBox7.Controls.Add(this.label15);
+            this.groupBox7.Location = new System.Drawing.Point(3, 1);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size(272, 61);
+            this.groupBox7.TabIndex = 7;
+            this.groupBox7.TabStop = false;
+            this.groupBox7.Text = "Source ROM";
             // 
             // tb2sf_Source
             // 
@@ -1633,6 +1668,15 @@
             this.tb2sf_Source.TabIndex = 0;
             this.tb2sf_Source.DragDrop += new System.Windows.Forms.DragEventHandler(this.tb2sf_Source_DragDrop);
             this.tb2sf_Source.DragEnter += new System.Windows.Forms.DragEventHandler(this.tb2sf_Source_DragEnter);
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(8, 42);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(108, 13);
+            this.label15.TabIndex = 4;
+            this.label15.Text = "Drag ROM to rip here";
             // 
             // tbOutput
             // 
@@ -1717,50 +1761,6 @@
             this.textBox1.Size = new System.Drawing.Size(259, 20);
             this.textBox1.TabIndex = 1;
             // 
-            // groupBox7
-            // 
-            this.groupBox7.Controls.Add(this.tb2sf_Source);
-            this.groupBox7.Controls.Add(this.label15);
-            this.groupBox7.Location = new System.Drawing.Point(3, 1);
-            this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(272, 61);
-            this.groupBox7.TabIndex = 7;
-            this.groupBox7.TabStop = false;
-            this.groupBox7.Text = "Source ROM";
-            // 
-            // groupBox8
-            // 
-            this.groupBox8.Controls.Add(this.btn2sf_BrowseContainerRom);
-            this.groupBox8.Controls.Add(this.tb2sf_ContainerPath);
-            this.groupBox8.Controls.Add(this.label14);
-            this.groupBox8.Location = new System.Drawing.Point(281, 1);
-            this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(379, 61);
-            this.groupBox8.TabIndex = 8;
-            this.groupBox8.TabStop = false;
-            this.groupBox8.Text = "Container ROM";
-            // 
-            // btn2sf_BrowseContainerRom
-            // 
-            this.btn2sf_BrowseContainerRom.Location = new System.Drawing.Point(340, 19);
-            this.btn2sf_BrowseContainerRom.Name = "btn2sf_BrowseContainerRom";
-            this.btn2sf_BrowseContainerRom.Size = new System.Drawing.Size(28, 20);
-            this.btn2sf_BrowseContainerRom.TabIndex = 4;
-            this.btn2sf_BrowseContainerRom.Text = "...";
-            this.btn2sf_BrowseContainerRom.UseVisualStyleBackColor = true;
-            this.btn2sf_BrowseContainerRom.Click += new System.EventHandler(this.btn2sf_BrowseContainerRom_Click);
-            // 
-            // groupBox9
-            // 
-            this.groupBox9.Controls.Add(this.tb2sf_FilePrefix);
-            this.groupBox9.Controls.Add(this.label16);
-            this.groupBox9.Location = new System.Drawing.Point(3, 68);
-            this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(272, 70);
-            this.groupBox9.TabIndex = 9;
-            this.groupBox9.TabStop = false;
-            this.groupBox9.Text = "Options";
-            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1838,14 +1838,14 @@
             this.grpXsfPsf2Exe_Source.ResumeLayout(false);
             this.grpXsfPsf2Exe_Source.PerformLayout();
             this.tabPage15.ResumeLayout(false);
-            this.statusStrip1.ResumeLayout(false);
-            this.statusStrip1.PerformLayout();
-            this.groupBox7.ResumeLayout(false);
-            this.groupBox7.PerformLayout();
-            this.groupBox8.ResumeLayout(false);
-            this.groupBox8.PerformLayout();
             this.groupBox9.ResumeLayout(false);
             this.groupBox9.PerformLayout();
+            this.groupBox8.ResumeLayout(false);
+            this.groupBox8.PerformLayout();
+            this.groupBox7.ResumeLayout(false);
+            this.groupBox7.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
