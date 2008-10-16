@@ -1,0 +1,9 @@
+﻿2sftool.exe is courtesy of unknownfile (unknown.hcs64.com).
+DeSmuME_save.exe is a modified version of Desmume (http://desmume.org/), modified by unknownfile.
+DeSmuME_trace.exe is a modified version of Desmume (http://desmume.org/), modified by unknownfile and hcs.
+dst2bin.exe is courtesy of unknownfile (unknown.hcs64.com).
+ndstool.exe is courtesy of Rafael Vuijk (aka DarkFader) (http://darkfader.net/ds/).
+psfpoint.exe is courtesy of Neil Corlett (http://www.neillcorlett.com/psfpoint/).
+sdattool.exe is courtesy of DJ Bouche (website defunct).
+sseq2mid.exe is courtesy of loveemu (http://loveemu.yh.land.to/wiki/NDS/SDAT.html).
+zlib1.dll is courtesy of the zlib team (http://www.zlib.net/).
