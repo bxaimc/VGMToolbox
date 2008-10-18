@@ -111,11 +111,12 @@ namespace VGMToolbox.tools.xsf
             vProgressStruct.newNode = null;
             vProgressStruct.filename = pPath;
             ReportProgress(progress, vProgressStruct);
-         
+
+            AuditingUtil.ProgressStruct vMessageProgressStruct = new AuditingUtil.ProgressStruct();            
+
             try
             {
                 bool processSuccess = false;
-                // string containerPath = @"H:\ROMs\Music\[2sf]\[test]\yoshi.nds";
 
                 string ndsToolFileName = ".\\external\\2sf\\ndstool.exe";
                 string sdatToolFileName = ".\\external\\2sf\\sdattool.exe";
@@ -148,7 +149,12 @@ namespace VGMToolbox.tools.xsf
 
                 //////////////////////////////////
                 //Step 1 - Extract the Source ROM
-                //////////////////////////////////
+                //////////////////////////////////                
+                // Report Stage of Process
+                vMessageProgressStruct.genericMessage = String.Format("1) Extracting source ROM: {0}", pPath) +
+                    Environment.NewLine;
+                ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct); 
+                
                 processSuccess = this.rip2sf_Step1(ndsToolFileName, pPath, sourceRomDestinationPath);
 
                 //////////////////////////////////////
@@ -156,6 +162,11 @@ namespace VGMToolbox.tools.xsf
                 //////////////////////////////////////
                 if (processSuccess)
                 {
+                    // Report Stage of Process
+                    vMessageProgressStruct.genericMessage = String.Format("2) Extracting container ROM: {0}", pContainerRomPath) +
+                        Environment.NewLine;
+                    ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct);
+                    
                     processSuccess = this.rip2sf_Step2(ndsToolFileName, pContainerRomPath, containerRomDestinationPath);                
                 }
 
@@ -163,17 +174,36 @@ namespace VGMToolbox.tools.xsf
                 // Loop on source rom sdat files
                 /////////////////////////////////
                 if (processSuccess)
-                {                     
+                {
+                    // Report Stage of Process
+                    vMessageProgressStruct.genericMessage = "3.1) Searching for SDATs" + Environment.NewLine;
+                    ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct);
+                    
                     string[] sourceSdats = Directory.GetFiles(sourceRomDestinationPath, "*.sdat", SearchOption.AllDirectories);
+
+                    // Report Stage of Process
+                    vMessageProgressStruct.genericMessage = String.Format("3.2) Found {0} SDATs", sourceSdats.Length) + 
+                        Environment.NewLine;
+                    ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct);
 
                     foreach (string sourceSdat in sourceSdats)
                     {
+                        // Report Stage of Process
+                        vMessageProgressStruct.genericMessage = String.Format("3.3.{0} Processing SDAT {1}", sdatIndex, sdatIndex) +
+                            Environment.NewLine;
+                        ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct);                        
+                        
                         // for now assume yoshi rom (sound_data.sdat)
                         string[] destinationSdats = Directory.GetFiles(containerRomDestinationPath, "sound_data.sdat", SearchOption.AllDirectories);
 
                         /////////////////////////////////////////
                         // Step 3 - Replace SDAT and Rebuild ROM
                         /////////////////////////////////////////
+                        // Report Stage of Process
+                        vMessageProgressStruct.genericMessage = "3.4) Replacing SDAT" +  Environment.NewLine;
+                        ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct);                        
+                        
+                        
                         rebuiltRomName = "modcrap_" + Path.GetFileNameWithoutExtension(sourceSdat) + ".nds";
                         rebuiltRomPath = Path.Combine(Path.GetDirectoryName(pContainerRomPath), rebuiltRomName);
                         processSuccess = rip2sf_Step3(ndsToolFileName, sourceSdat, destinationSdats[0], pContainerRomPath, containerRomDestinationPath, rebuiltRomName);
@@ -184,6 +214,10 @@ namespace VGMToolbox.tools.xsf
                             ///////////////////////////////
                             // Step 4 - Unpack Source SDAT
                             ///////////////////////////////
+                            // Report Stage of Process
+                            vMessageProgressStruct.genericMessage = "4.1) Unpacking SDAT" + Environment.NewLine;
+                            ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct);                        
+                            
                             processSuccess = rip2sf_Step4(sdatToolFileName, sourceSdat, pContainerRomPath);
 
                             if (processSuccess)
@@ -195,6 +229,10 @@ namespace VGMToolbox.tools.xsf
                                 //////////////////////////////
                                 // copy streams to rip folder
                                 //////////////////////////////
+                                // Report Stage of Process
+                                vMessageProgressStruct.genericMessage = "4.2) Copying Streams" + Environment.NewLine;
+                                ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct);                        
+                                
                                 string streamsSourceFolder = Path.Combine(extractedSdatFolder, "Strm");
                                 
                                 // get the list of files to move
@@ -222,6 +260,11 @@ namespace VGMToolbox.tools.xsf
                                     //////////////////////////////////
                                     // Step 5 - Create the Save State
                                     //////////////////////////////////                                    
+
+                                    // Report Stage of Process
+                                    vMessageProgressStruct.genericMessage = "5) Creating Savestate" + Environment.NewLine;
+                                    ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct); 
+                                    
                                     processSuccess = rip2sf_Step5(desmumeSaveFileName, rebuiltRomPath);
 
                                     if (processSuccess)
@@ -229,7 +272,11 @@ namespace VGMToolbox.tools.xsf
                                         ///////////////////////
                                         // Step 6 - Run Tracer
                                         ///////////////////////
+                                        // Report Stage of Process
+                                        vMessageProgressStruct.genericMessage = "6) Run Tracer" + Environment.NewLine;
+                                        ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct); 
                                         
+
                                         // rename prefix as needed if has multiple sdats
                                         if (sourceSdats.Length > 1)
                                         {
@@ -249,6 +296,10 @@ namespace VGMToolbox.tools.xsf
                                             ///////////////////////
                                             // Step 7 - Build 2SFs
                                             ///////////////////////
+                                            // Report Stage of Process
+                                            vMessageProgressStruct.genericMessage = "7) Building 2SFs" + Environment.NewLine;
+                                            ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct); 
+                                            
                                             processSuccess = rip2sf_Step7(dst2BinFileName, _2sfToolFileName,
                                                 psfPointPath, make2sfPath, filePrefix, smapFile.SequenceArray.GetLowerBound(0),
                                                 smapFile.SequenceArray.GetUpperBound(0));
@@ -257,26 +308,46 @@ namespace VGMToolbox.tools.xsf
                                             /////////////////////////////
                                             // Step 8 - Time the Tracks
                                             ////////////////////////////
+                                            // Report Stage of Process
+                                            vMessageProgressStruct.genericMessage = "8) Timing the tracks" + Environment.NewLine;
+                                            ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct); 
+                                            
                                             processSuccess = rip2sf_Step8(sseq2MidFileName, psfPointPath,
                                                 make2sfPath, extractedSdatFolder, filePrefix, smapFile);
 
                                             ///////////////////////////////////////////
                                             // Step 9 - Move the tracks to rips folder
                                             ///////////////////////////////////////////                                            
+                                            // Report Stage of Process
+                                            vMessageProgressStruct.genericMessage = "9) Moving 2sfs to Rip folder" + Environment.NewLine;
+                                            ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct); 
+                                            
                                             moveRippedTracks(make2sfPath, ripFolder);
 
 
                                             // Do Cleanup
+                                            // Report Stage of Process
+                                            vMessageProgressStruct.genericMessage = "10) Cleanup" + Environment.NewLine;
+                                            ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct); 
+                                            
                                             Directory.Delete(make2sfPath, true);
                                         }
                                     }
                                 }
+                                
                                 // Do cleanup
+                                vMessageProgressStruct.genericMessage = "XX) Cleanup" + Environment.NewLine;
+                                ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct); 
+                                
                                 Directory.Delete(extractedSdatFolder, true);
                             }
                         }
                         
                         // Do cleanup
+
+                        vMessageProgressStruct.genericMessage = "XX) Cleanup" + Environment.NewLine;
+                        ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct);                         
+
                         File.Delete(rebuiltRomPath);
 
                         // Increment index for dynamic naming
@@ -284,6 +355,10 @@ namespace VGMToolbox.tools.xsf
                     }                
                 }
                 // Do cleamup
+                // Report Stage of Process
+                vMessageProgressStruct.genericMessage = "XX) Cleanup" + Environment.NewLine;
+                ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct); 
+                
                 Directory.Delete(sourceRomDestinationPath, true);
                 Directory.Delete(containerRomDestinationPath, true);
                 Directory.Delete(Path.Combine(Path.GetDirectoryName(pContainerRomPath), "overlay"), true);
@@ -304,20 +379,40 @@ namespace VGMToolbox.tools.xsf
         }
 
         private bool rip2sf_Step1(string pNdsToolFileName, string pSourceRomPath, string pSourceRomDestinationPath)
-        {
-            // string arguments = @"-x H:\ROMs\Music\[2sf]\RipKit\target.nds -d H:\ROMs\Music\[2sf]\RipKit\targetDir";                
-            
+        {            
             bool isSuccess = false;
             Process ndsProcess;
 
             string arguments = "-x \"" + pSourceRomPath + "\" ";
             arguments += "-d \"" + pSourceRomDestinationPath + "\"";
 
-            ndsProcess = new Process();
-            ndsProcess.StartInfo = new ProcessStartInfo(pNdsToolFileName, arguments);
-            isSuccess = ndsProcess.Start();
-            ndsProcess.WaitForExit();
+            try
+            {
+                ndsProcess = new Process();
+                ndsProcess.StartInfo = new ProcessStartInfo(pNdsToolFileName, arguments);
+                isSuccess = ndsProcess.Start();
+                ndsProcess.WaitForExit();
+                
+                // Check for destination dir to verify succss
+                if (!Directory.Exists(pSourceRomDestinationPath))
+                {
+                    isSuccess = false;
 
+                    AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                    vProgressStruct.newNode = null;
+                    vProgressStruct.errorMessage = String.Format("Error extracting <{0}>.", pSourceRomPath) + Environment.NewLine;
+                    ReportProgress(0, vProgressStruct);                
+                }
+            }
+            catch (Exception ex)
+            {
+                isSuccess = false;
+
+                AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                vProgressStruct.newNode = null;
+                vProgressStruct.errorMessage = String.Format("Error extracting <{0}>.  Error received: ", pSourceRomPath) + ex.Message;
+                ReportProgress(0, vProgressStruct);
+            }
             return isSuccess;
         }
 
@@ -326,47 +421,97 @@ namespace VGMToolbox.tools.xsf
             bool isSuccess = false;
             Process ndsProcess;
 
-            string arguments = "-x \"" + pContainerRomPath + "\"";
-            arguments += " -9 \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "arm9.bin") + "\"";
-            arguments += " -7 \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "arm7.bin") + "\"";
-            arguments += " -y9 \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "y9.bin") + "\"";
-            arguments += " -y7 \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "y7.bin") + "\"";
-            arguments += " -d \"" + pContainerRomDestinationPath + "\"";
-            arguments += " -y \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "overlay") + "\"";
-            arguments += " -t \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "banner.bin") + "\"";
-            arguments += " -h \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "header.bin") + "\"";
+            try
+            {
+
+                string arguments = "-x \"" + pContainerRomPath + "\"";
+                arguments += " -9 \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "arm9.bin") + "\"";
+                arguments += " -7 \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "arm7.bin") + "\"";
+                arguments += " -y9 \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "y9.bin") + "\"";
+                arguments += " -y7 \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "y7.bin") + "\"";
+                arguments += " -d \"" + pContainerRomDestinationPath + "\"";
+                arguments += " -y \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "overlay") + "\"";
+                arguments += " -t \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "banner.bin") + "\"";
+                arguments += " -h \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "header.bin") + "\"";
+
+                ndsProcess = new Process();
+                ndsProcess.StartInfo = new ProcessStartInfo(pNdsToolFileName, arguments);
+                isSuccess = ndsProcess.Start();
+                ndsProcess.WaitForExit();
+
+                // Check for destination dir to verify succss
+                if (!Directory.Exists(pContainerRomDestinationPath))
+                {
+                    isSuccess = false;
+
+                    AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                    vProgressStruct.newNode = null;
+                    vProgressStruct.errorMessage = String.Format("Error extracting <{0}>.", pContainerRomPath) + Environment.NewLine;
+                    ReportProgress(0, vProgressStruct);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                isSuccess = false;
+
+                AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                vProgressStruct.newNode = null;
+                vProgressStruct.errorMessage = String.Format("Error extracting <{0}>.  Error received: ", pContainerRomPath) + ex.Message;
+                ReportProgress(0, vProgressStruct);            
+            }
             
-            ndsProcess = new Process();
-            ndsProcess.StartInfo = new ProcessStartInfo(pNdsToolFileName, arguments);            
-            isSuccess = ndsProcess.Start();
-            ndsProcess.WaitForExit();
-             
             return isSuccess;
         }
 
         private bool rip2sf_Step3(string pNdsToolFileName, string pSourceSdat, string pContainerRomSdat, string pContainerRomPath, string pContainerRomDestinationPath, string pCombinedRomName)
         {
             bool isSuccess = false;
-            Process ndsProcess;
+            Process ndsProcess;                        
+            
+            try
+            {
+                // Replace Container SDAT with Source SDAT
+                File.Copy(pSourceSdat, pContainerRomSdat, true);
 
-            // Replace Container SDAT with Source SDAT
-            File.Copy(pSourceSdat, pContainerRomSdat, true);
+                string combinedRomOutputPath = Path.Combine(Path.GetDirectoryName(pContainerRomPath), pCombinedRomName);
 
-            string arguments = " -c \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), pCombinedRomName) + "\"";
-            arguments += " -9 \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "arm9.bin") + "\"";
-            arguments += " -7 \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "arm7.bin") + "\"";
-            arguments += " -y9 \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "y9.bin") + "\"";
-            arguments += " -y7 \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "y7.bin") + "\"";
-            arguments += " -d \"" + pContainerRomDestinationPath + "\"";
-            arguments += " -y \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "overlay") + "\"";
-            arguments += " -t \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "banner.bin") + "\"";
-            arguments += " -h \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "header.bin") + "\"";
+                string arguments = " -c \"" + combinedRomOutputPath + "\"";
+                arguments += " -9 \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "arm9.bin") + "\"";
+                arguments += " -7 \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "arm7.bin") + "\"";
+                arguments += " -y9 \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "y9.bin") + "\"";
+                arguments += " -y7 \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "y7.bin") + "\"";
+                arguments += " -d \"" + pContainerRomDestinationPath + "\"";
+                arguments += " -y \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "overlay") + "\"";
+                arguments += " -t \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "banner.bin") + "\"";
+                arguments += " -h \"" + Path.Combine(Path.GetDirectoryName(pContainerRomPath), "header.bin") + "\"";
 
-            ndsProcess = new Process();
-            ndsProcess.StartInfo = new ProcessStartInfo(pNdsToolFileName, arguments);
-            isSuccess = ndsProcess.Start();
-            ndsProcess.WaitForExit();
+                ndsProcess = new Process();
+                ndsProcess.StartInfo = new ProcessStartInfo(pNdsToolFileName, arguments);
+                isSuccess = ndsProcess.Start();
+                ndsProcess.WaitForExit();
 
+                // Verify combined ROM was created
+                if (!File.Exists(combinedRomOutputPath))
+                {
+                    isSuccess = false;
+
+                    AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                    vProgressStruct.newNode = null;
+                    vProgressStruct.errorMessage = String.Format("Error creating combined ROM <{0}>.", pCombinedRomName) + Environment.NewLine;
+                    ReportProgress(0, vProgressStruct);
+                }
+            }
+            catch (Exception ex)
+            {
+                isSuccess = false;
+
+                AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                vProgressStruct.newNode = null;
+                vProgressStruct.errorMessage = String.Format("Error creating combined ROM <{0}>.  Error received: ", pCombinedRomName) +ex.Message;
+                ReportProgress(0, vProgressStruct);
+            }
+            
             return isSuccess;
         }
 
@@ -375,20 +520,44 @@ namespace VGMToolbox.tools.xsf
             bool isSuccess = false;
             Process ndsProcess;
 
-            // Copy Source SDAT to Container Rom Directory
-            string tempSdatPath = Path.Combine(Path.GetDirectoryName(pContainerRomPath), Path.GetFileName(pSourceSdat));
-            File.Copy(pSourceSdat, tempSdatPath, true);
+            try
+            {
+                // Copy Source SDAT to Container Rom Directory
+                string tempSdatPath = Path.Combine(Path.GetDirectoryName(pContainerRomPath), Path.GetFileName(pSourceSdat));
+                File.Copy(pSourceSdat, tempSdatPath, true);
 
-            // Extract SDAT
-            string arguments = " -x \"" + tempSdatPath + "\"";
+                // Extract SDAT
+                string arguments = " -x \"" + tempSdatPath + "\"";
 
-            ndsProcess = new Process();
-            ndsProcess.StartInfo = new ProcessStartInfo(pSdatToolFileName, arguments);
-            isSuccess = ndsProcess.Start();
-            ndsProcess.WaitForExit();
+                ndsProcess = new Process();
+                ndsProcess.StartInfo = new ProcessStartInfo(pSdatToolFileName, arguments);
+                isSuccess = ndsProcess.Start();
+                ndsProcess.WaitForExit();
 
-            // Delete Temporary SDAT
-            File.Delete(tempSdatPath);
+                // Delete Temporary SDAT
+                File.Delete(tempSdatPath);
+
+                // Verify SDAT dir was created
+                string sdatOutputPath = Path.Combine(Path.GetDirectoryName(pContainerRomPath), Path.GetFileNameWithoutExtension(pSourceSdat));
+                if (!Directory.Exists(sdatOutputPath))
+                {
+                    isSuccess = false;
+
+                    AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                    vProgressStruct.newNode = null;
+                    vProgressStruct.errorMessage = String.Format("Error extracting SDAT <{0}>.", pSourceSdat) + Environment.NewLine;
+                    ReportProgress(0, vProgressStruct);
+                }
+            }
+            catch (Exception ex)
+            {
+                isSuccess = false;
+
+                AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                vProgressStruct.newNode = null;
+                vProgressStruct.errorMessage = String.Format("Error extracting SDAT <{0}>.  Error received: ", pSourceSdat) + ex.Message;
+                ReportProgress(0, vProgressStruct);            
+            }
 
             return isSuccess;
         }
@@ -401,24 +570,36 @@ namespace VGMToolbox.tools.xsf
             // Build Save State
             string arguments = " \"" + pCombinedRomPath + "\"";
 
-            ndsProcess = new Process();
-            ndsProcess.StartInfo = new ProcessStartInfo(pDesmumeSaveFileName, arguments);
-            isSuccess = ndsProcess.Start();
-            ndsProcess.WaitForExit();
+            try
+            {
+                ndsProcess = new Process();
+                ndsProcess.StartInfo = new ProcessStartInfo(pDesmumeSaveFileName, arguments);
+                isSuccess = ndsProcess.Start();
+                ndsProcess.WaitForExit();
 
-            // Move Save State Files
-            // File.Copy("BASE.DST", Path.Combine(Path.GetDirectoryName(pCombinedRomPath), "BASE.DST"));
-            // File.Copy("main_mem.arm9", Path.Combine(Path.GetDirectoryName(pCombinedRomPath), "main_mem.arm9"));            
-            // File.Copy("Register_Trace.txt", Path.Combine(Path.GetDirectoryName(pCombinedRomPath), "Register_Trace.txt"));
+                // check for output artifacts to verify completion
+                if (!File.Exists("BASE.DST") || 
+                    !File.Exists("main_mem.arm9") || 
+                    !File.Exists("Register_Trace.txt"))
+                {
+                    isSuccess = false;
 
-            // File.Copy("BASE.DST", Path.Combine(@".\external\2sf\", "BASE.DST"), true);
-            // File.Copy("main_mem.arm9", Path.Combine(@".\external\2sf", "main_mem.arm9"), true);
-            // File.Copy("Register_Trace.txt", Path.Combine(@".\external\2sf", "Register_Trace.txt"), true);
+                    AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                    vProgressStruct.newNode = null;
+                    vProgressStruct.errorMessage = "Error creating save state." + Environment.NewLine;
+                    ReportProgress(0, vProgressStruct);                 
+                }
+            }
+            catch (Exception ex)
+            {
+                isSuccess = false;
 
-            // File.Delete("BASE.DST");
-            // File.Delete("main_mem.arm9");
-            // File.Delete("Register_Trace.txt");
-
+                AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                vProgressStruct.newNode = null;
+                vProgressStruct.errorMessage = "Error creating save state.  Error received: " + ex.Message;
+                ReportProgress(0, vProgressStruct);             
+            }
+            
             return isSuccess;
         }
 
@@ -428,29 +609,55 @@ namespace VGMToolbox.tools.xsf
             bool isSuccess = false;
             Process ndsProcess;
 
-            // Run Tracer
-            string arguments = " \"" + pCombinedRomPath + "\"";
-            arguments += " --trace_bottom=" + pStartIndex.ToString() + " --trace_top=" + pEndIndex.ToString();
-
-            ndsProcess = new Process();
-            ndsProcess.StartInfo = new ProcessStartInfo(pDesmumeTraceFileName, arguments);
-            isSuccess = ndsProcess.Start();
-            ndsProcess.WaitForExit();
-
-            // Move Cleaned Files
-            if (!Directory.Exists(pMake2sfPath))
+            try
             {
-                Directory.CreateDirectory(pMake2sfPath);
+                // Run Tracer
+                string arguments = " \"" + pCombinedRomPath + "\"";
+                arguments += " --trace_bottom=" + pStartIndex.ToString() + " --trace_top=" + pEndIndex.ToString();
+
+                ndsProcess = new Process();
+                ndsProcess.StartInfo = new ProcessStartInfo(pDesmumeTraceFileName, arguments);
+                isSuccess = ndsProcess.Start();
+                ndsProcess.WaitForExit();
+
+                // check for needed files
+                if (!File.Exists("clean.nds") || !File.Exists("BASE.DST"))
+                {
+                    isSuccess = false;
+
+                    AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                    vProgressStruct.newNode = null;
+                    vProgressStruct.errorMessage = "Error while running tracer.  Output files do not exist." + Environment.NewLine;
+                    ReportProgress(0, vProgressStruct);   
+                }
+                else
+                {
+                    // Move Cleaned Files
+                    if (!Directory.Exists(pMake2sfPath))
+                    {
+                        Directory.CreateDirectory(pMake2sfPath);
+                    }
+
+                    File.Move("BASE.DST", Path.Combine(pMake2sfPath, "BASE.DST"));
+                    File.Move("clean.nds", Path.Combine(pMake2sfPath, pFilePrefix + ".nds"));
+                }
+                
+                // Delete Uneeded Files
+                File.Delete("data_mask.bin");
+                File.Delete("main_mem.arm9");
+                File.Delete("Register_Trace.txt");
+
+            }
+            catch (Exception ex)
+            {
+                isSuccess = false;
+
+                AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                vProgressStruct.newNode = null;
+                vProgressStruct.errorMessage = "Error while running tracer.  Error received: " + ex.Message;
+                ReportProgress(0, vProgressStruct);            
             }
             
-            File.Move("BASE.DST", Path.Combine(pMake2sfPath, "BASE.DST"));
-            File.Move("clean.nds", Path.Combine(pMake2sfPath, pFilePrefix + ".nds"));
-
-            // Delete Uneeded Files
-            File.Delete("data_mask.bin");
-            File.Delete("main_mem.arm9");
-            File.Delete("Register_Trace.txt");
-
             return isSuccess;
         }
 
@@ -461,47 +668,60 @@ namespace VGMToolbox.tools.xsf
             string arguments;
             Process ndsProcess;
 
-            // Run Dst2Bin
-            arguments = " -z \"" + Path.Combine(pMake2sfPath, "BASE.DST") + "\"";
-            ndsProcess = new Process();
-            ndsProcess.StartInfo = new ProcessStartInfo(pDst2BinFileName, arguments);
-            isSuccess = ndsProcess.Start();
-            ndsProcess.WaitForExit();
+            try
+            {
+                // Run Dst2Bin
+                arguments = " -z \"" + Path.Combine(pMake2sfPath, "BASE.DST") + "\"";
+                ndsProcess = new Process();
+                ndsProcess.StartInfo = new ProcessStartInfo(pDst2BinFileName, arguments);
+                isSuccess = ndsProcess.Start();
+                ndsProcess.WaitForExit();
 
-            // Run 2sfTool
-            arguments = " \"" + Path.Combine(pMake2sfPath, pFilePrefix + ".nds") + "\"";
-            arguments += " \"" + Path.Combine(pMake2sfPath, "base.dst_zlib.bin") + "\" \"" + Path.Combine(pMake2sfPath, pFilePrefix + ".2sflib") + "\"";
-            ndsProcess = new Process();
-            ndsProcess.StartInfo = new ProcessStartInfo(p2sfToolFileName, arguments);
-            isSuccess = ndsProcess.Start();
-            ndsProcess.WaitForExit();
+                // Run 2sfTool
+                arguments = " \"" + Path.Combine(pMake2sfPath, pFilePrefix + ".nds") + "\"";
+                arguments += " \"" + Path.Combine(pMake2sfPath, "base.dst_zlib.bin") + "\" \"" + Path.Combine(pMake2sfPath, pFilePrefix + ".2sflib") + "\"";
+                ndsProcess = new Process();
+                ndsProcess.StartInfo = new ProcessStartInfo(p2sfToolFileName, arguments);
+                isSuccess = ndsProcess.Start();
+                ndsProcess.WaitForExit();
 
-            // Run Dst2Bin
-            arguments = " -mini 236 " + pStartIndex.ToString() + " " + 
-                pEndIndex.ToString() + " \"" + Path.Combine(pMake2sfPath, pFilePrefix + ".2sflib") + "\"";
-            ndsProcess = new Process();
-            ndsProcess.StartInfo = new ProcessStartInfo(pDst2BinFileName, arguments);
-            isSuccess = ndsProcess.Start();
-            ndsProcess.WaitForExit();
+                // Run Dst2Bin
+                arguments = " -mini 236 " + pStartIndex.ToString() + " " +
+                    pEndIndex.ToString() + " \"" + Path.Combine(pMake2sfPath, pFilePrefix + ".2sflib") + "\"";
+                ndsProcess = new Process();
+                ndsProcess.StartInfo = new ProcessStartInfo(pDst2BinFileName, arguments);
+                isSuccess = ndsProcess.Start();
+                ndsProcess.WaitForExit();
 
-            // Reset Lib tag
-            //psfPointPath
-            string psfPointDestination = Path.Combine(pMake2sfPath, Path.GetFileName(pPsfPointFileName));
-            File.Copy(pPsfPointFileName, psfPointDestination);
-            
-            arguments = " -_lib=\"" + pFilePrefix + ".2sflib\" *.mini2sf";
-            ndsProcess = new Process();
-            ndsProcess.StartInfo = new ProcessStartInfo(Path.GetFileName(psfPointDestination), arguments);
-            ndsProcess.StartInfo.WorkingDirectory = pMake2sfPath;
-            isSuccess = ndsProcess.Start();
-            ndsProcess.WaitForExit();
+                // Reset Lib tag
+                //psfPointPath
+                string psfPointDestination = Path.Combine(pMake2sfPath, Path.GetFileName(pPsfPointFileName));
+                File.Copy(pPsfPointFileName, psfPointDestination);
 
-            arguments = " -fade=10 *.mini2sf";
-            ndsProcess = new Process();
-            ndsProcess.StartInfo = new ProcessStartInfo(Path.GetFileName(psfPointDestination), arguments);
-            ndsProcess.StartInfo.WorkingDirectory = pMake2sfPath;
-            isSuccess = ndsProcess.Start();
-            ndsProcess.WaitForExit();
+                arguments = " -_lib=\"" + pFilePrefix + ".2sflib\" *.mini2sf";
+                ndsProcess = new Process();
+                ndsProcess.StartInfo = new ProcessStartInfo(Path.GetFileName(psfPointDestination), arguments);
+                ndsProcess.StartInfo.WorkingDirectory = pMake2sfPath;
+                isSuccess = ndsProcess.Start();
+                ndsProcess.WaitForExit();
+
+                arguments = " -fade=10 *.mini2sf";
+                ndsProcess = new Process();
+                ndsProcess.StartInfo = new ProcessStartInfo(Path.GetFileName(psfPointDestination), arguments);
+                ndsProcess.StartInfo.WorkingDirectory = pMake2sfPath;
+                isSuccess = ndsProcess.Start();
+                ndsProcess.WaitForExit();
+
+            }
+            catch (Exception ex)
+            {
+                isSuccess = false;
+
+                AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                vProgressStruct.newNode = null;
+                vProgressStruct.errorMessage = "Error building 2SFs.  Error received: " + ex.Message;
+                ReportProgress(0, vProgressStruct);             
+            }
 
             return isSuccess;
         }

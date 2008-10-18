@@ -618,14 +618,20 @@ namespace VGMToolbox
         
         #region BACKGROUND WORKER
         private void backgroundWorker_ReportProgress(object sender, ProgressChangedEventArgs e)
-        {
-            if (e.ProgressPercentage != AuditingUtil.IGNORE_PROGRESS)
+        {            
+            if (e.ProgressPercentage != AuditingUtil.IGNORE_PROGRESS &&
+                e.ProgressPercentage != AuditingUtil.PROGRESS_MSG_ONLY)
             {
                 toolStripProgressBar.Value = e.ProgressPercentage;
                 this.Text = "VGMToolbox [" + e.ProgressPercentage + "%]";
             }
-            
-            if (e.UserState != null)
+
+            if ((e.ProgressPercentage == AuditingUtil.PROGRESS_MSG_ONLY) && e.UserState != null)
+            { 
+                AuditingUtil.ProgressStruct vProgressStruct = (AuditingUtil.ProgressStruct)e.UserState;
+                tbOutput.Text += vProgressStruct.genericMessage;
+            }            
+            else if (e.UserState != null)
             {
                 AuditingUtil.ProgressStruct vProgressStruct = (AuditingUtil.ProgressStruct)e.UserState;
 

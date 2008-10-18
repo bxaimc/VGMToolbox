@@ -7,7 +7,7 @@ using System.Text;
 
 namespace VGMToolbox.tools.xsf
 {
-    class Smap
+    public class Smap
     {
         private const string SEQ_HEADER = "# SEQ:";
 
