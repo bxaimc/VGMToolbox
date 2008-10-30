@@ -67,6 +67,21 @@ namespace VGMToolbox.format
         private byte[] stdHeaderHeaderSize;
         private byte[] stdHeaderNumberOfSections;
 
+        private byte[] sdatHeaderSymbOffset;
+        private byte[] sdatHeaderSymbSize;
+
+        private byte[] sdatHeaderInfoOffset;
+        private byte[] sdatHeaderInfoSize;
+
+        private byte[] sdatHeaderFatOffset;
+        private byte[] sdatHeaderFatSize;
+
+        private byte[] sdatHeaderFileOffset;
+        private byte[] sdatHeaderFileSize;
+
+        private byte[] sdatHeaderUnkPadding;
+
+
         // METHODS
         public byte[] getStdHeaderSignature(Stream pStream)
         {
@@ -89,6 +104,48 @@ namespace VGMToolbox.format
             return ParseFile.parseSimpleOffset(pStream, STD_HEADER_NUMBER_OF_SECTIONS_OFFSET, STD_HEADER_NUMBER_OF_SECTIONS_LENGTH);
         }
 
+        public byte[] getSdatHeaderSymbOffset(Stream pStream)
+        {
+            return ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_SYMB_OFFSET_OFFSET, SDAT_HEADER_SYMB_OFFSET_LENGTH);
+        }
+        public byte[] getSdatHeaderSymbSize(Stream pStream)
+        {
+            return ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_SYMB_SIZE_OFFSET, SDAT_HEADER_SYMB_SIZE_LENGTH);
+        }
+
+        public byte[] getSdatHeaderInfoOffset(Stream pStream)
+        {
+            return ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_INFO_OFFSET_OFFSET, SDAT_HEADER_INFO_OFFSET_LENGTH);
+        }
+        public byte[] getSdatHeaderInfoSize(Stream pStream)
+        {
+            return ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_INFO_SIZE_OFFSET, SDAT_HEADER_INFO_SIZE_LENGTH);
+        }
+
+        public byte[] getSdatHeaderFatOffset(Stream pStream)
+        {
+            return ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_FAT_OFFSET_OFFSET, SDAT_HEADER_FAT_OFFSET_LENGTH);
+        }
+        public byte[] getSdatHeaderFatSize(Stream pStream)
+        {
+            return ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_FAT_SIZE_OFFSET, SDAT_HEADER_FAT_SIZE_LENGTH);
+        }
+
+        public byte[] getSdatHeaderFileOffset(Stream pStream)
+        {
+            return ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_FILE_OFFSET_OFFSET, SDAT_HEADER_FILE_OFFSET_LENGTH);
+        }
+        public byte[] getSdatHeaderFileSize(Stream pStream)
+        {
+            return ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_FILE_SIZE_OFFSET, SDAT_HEADER_FILE_SIZE_LENGTH);
+        }
+
+        public byte[] getSdatHeaderUnkPadding(Stream pStream)
+        {
+            return ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_UNK_PADDING_OFFSET, SDAT_HEADER_UNK_PADDING_LENGTH);
+        }
+
+
         private void initialize(Stream pStream)
         { 
             stdHeaderSignature = getStdHeaderSignature(pStream);
@@ -96,6 +153,20 @@ namespace VGMToolbox.format
             stdHeaderFileSize = getStdHeaderFileSize(pStream);
             stdHeaderHeaderSize = getStdHeaderHeaderSize(pStream);
             stdHeaderNumberOfSections = getStdHeaderNumberOfSections(pStream);
+
+            sdatHeaderSymbOffset = getSdatHeaderSymbOffset(pStream);
+            sdatHeaderSymbSize = getSdatHeaderSymbSize(pStream);
+
+            sdatHeaderInfoOffset = getSdatHeaderInfoOffset(pStream);
+            sdatHeaderInfoSize = getSdatHeaderInfoSize(pStream);
+
+            sdatHeaderFatOffset = getSdatHeaderFatOffset(pStream);
+            sdatHeaderFatSize = getSdatHeaderFatSize(pStream);
+
+            sdatHeaderFileOffset = getSdatHeaderFileOffset(pStream);
+            sdatHeaderFileSize = getSdatHeaderFileSize(pStream);
+
+            sdatHeaderUnkPadding = getSdatHeaderUnkPadding(pStream);
         }
 
 
