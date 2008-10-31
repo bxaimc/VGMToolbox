@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.IO;
-using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
-
 using VGMToolbox.auditing;
 
 namespace VGMToolbox.tools.xsf
@@ -112,6 +108,7 @@ namespace VGMToolbox.tools.xsf
             vProgressStruct.filename = pPath;
             ReportProgress(progress, vProgressStruct);
 
+            // Used to output progress messages
             AuditingUtil.ProgressStruct vMessageProgressStruct = new AuditingUtil.ProgressStruct();            
 
             try
@@ -131,9 +128,10 @@ namespace VGMToolbox.tools.xsf
                 string containerRomDestinationPath = Path.Combine(Path.GetDirectoryName(pContainerRomPath), Path.GetFileNameWithoutExtension(pContainerRomPath));
                 string rebuiltRomName;
                 string rebuiltRomPath;
-                string make2sfPath = Path.Combine(Path.GetDirectoryName(pContainerRomPath), "2sfmake");
+                string make2sfPath = Path.Combine(Path.GetDirectoryName(pContainerRomPath), "2sfmake");                
 
                 string ripFolder = Path.Combine(".\\rips\\2sf\\", Path.GetFileNameWithoutExtension(pPath)); 
+                string copySdatDir = Path.Combine(ripFolder, "sdats");
 
                 int sdatIndex = 0;
                 string filePrefix;
@@ -155,7 +153,8 @@ namespace VGMToolbox.tools.xsf
                     Environment.NewLine;
                 ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct); 
                 
-                processSuccess = this.rip2sf_Step1(ndsToolFileName, pPath, sourceRomDestinationPath);
+                // processSuccess = this.rip2sf_Step1(ndsToolFileName, pPath, sourceRomDestinationPath);
+                processSuccess = extractRom(ndsToolFileName, pPath, Path.GetDirectoryName(pContainerRomPath), false);
 
                 //////////////////////////////////////
                 // Step 2 - Extract the Container ROM
@@ -167,7 +166,8 @@ namespace VGMToolbox.tools.xsf
                         Environment.NewLine;
                     ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct);
                     
-                    processSuccess = this.rip2sf_Step2(ndsToolFileName, pContainerRomPath, containerRomDestinationPath);                
+                    // processSuccess = this.rip2sf_Step2(ndsToolFileName, pContainerRomPath, containerRomDestinationPath);                
+                    processSuccess = extractRom(ndsToolFileName, pContainerRomPath, Path.GetDirectoryName(pContainerRomPath), true);
                 }
 
                 /////////////////////////////////
@@ -188,8 +188,31 @@ namespace VGMToolbox.tools.xsf
 
                     foreach (string sourceSdat in sourceSdats)
                     {
+                        // copy sdat to destination
+                        string sdatDestination;
+
+                        // build destination path
+                        if (sourceSdats.Length > 1)
+                        {
+                            sdatDestination = Path.Combine(copySdatDir, sdatIndex + "_" + Path.GetFileName(sourceSdat));
+                        }
+                        else
+                        {
+                            sdatDestination = Path.Combine(copySdatDir, Path.GetFileName(sourceSdat)); ;
+                        }
+                        
+                        // copy file
+                        if (!File.Exists(sdatDestination))
+                        {
+                            if (!Directory.Exists(copySdatDir))
+                            {
+                                Directory.CreateDirectory(copySdatDir);
+                            }
+                            File.Copy(sourceSdat, sdatDestination);
+                        }
+
                         // Report Stage of Process
-                        vMessageProgressStruct.genericMessage = String.Format("3.3.{0} Processing SDAT {1}", sdatIndex, sdatIndex) +
+                        vMessageProgressStruct.genericMessage = String.Format("3.3.{0} Processing SDAT {1}: <{2}>", sdatIndex, sdatIndex, sourceSdat) +
                             Environment.NewLine;
                         ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct);                        
                         
@@ -202,8 +225,7 @@ namespace VGMToolbox.tools.xsf
                         // Report Stage of Process
                         vMessageProgressStruct.genericMessage = "3.4) Replacing SDAT" +  Environment.NewLine;
                         ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct);                        
-                        
-                        
+                                                
                         rebuiltRomName = "modcrap_" + Path.GetFileNameWithoutExtension(sourceSdat) + ".nds";
                         rebuiltRomPath = Path.Combine(Path.GetDirectoryName(pContainerRomPath), rebuiltRomName);
                         processSuccess = rip2sf_Step3(ndsToolFileName, sourceSdat, destinationSdats[0], pContainerRomPath, containerRomDestinationPath, rebuiltRomName);
@@ -309,11 +331,11 @@ namespace VGMToolbox.tools.xsf
                                             // Step 8 - Time the Tracks
                                             ////////////////////////////
                                             // Report Stage of Process
-                                            vMessageProgressStruct.genericMessage = "8) Timing the tracks" + Environment.NewLine;
-                                            ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct); 
+                                            //vMessageProgressStruct.genericMessage = "8) Timing the tracks" + Environment.NewLine;
+                                            //ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct); 
                                             
-                                            processSuccess = rip2sf_Step8(sseq2MidFileName, psfPointPath,
-                                                make2sfPath, extractedSdatFolder, filePrefix, smapFile);
+                                            //processSuccess = rip2sf_Step8(sseq2MidFileName, psfPointPath,
+                                            //    make2sfPath, extractedSdatFolder, filePrefix, smapFile);
 
                                             ///////////////////////////////////////////
                                             // Step 9 - Move the tracks to rips folder
@@ -413,6 +435,86 @@ namespace VGMToolbox.tools.xsf
                 vProgressStruct.errorMessage = String.Format("Error extracting <{0}>.  Error received: ", pSourceRomPath) + ex.Message;
                 ReportProgress(0, vProgressStruct);
             }
+            return isSuccess;
+        }
+
+        private bool extractRom(string pNdsToolFileName, string pSourceRomPath, string pDestinationPath, bool pIsContainerRom)
+        {
+            bool isSuccess = false;
+            Process ndsProcess;
+
+            string sourceRomDestinationPath = Path.Combine(pDestinationPath, Path.GetFileName(pSourceRomPath));
+            string sourceRomExtractionDir = Path.Combine(pDestinationPath, Path.GetFileNameWithoutExtension(sourceRomDestinationPath));
+            string ndsToolDestinationPath = Path.Combine(pDestinationPath, Path.GetFileName(pNdsToolFileName));
+
+            // copy source rom to container rom path
+            if (!File.Exists(sourceRomDestinationPath))
+            {
+                File.Copy(pSourceRomPath, sourceRomDestinationPath);
+            }
+
+            // copy tool to destination path
+            File.Copy(pNdsToolFileName, ndsToolDestinationPath, true);
+
+            // Delete existing extraction dir
+            if (Directory.Exists(sourceRomExtractionDir))
+            {
+                Directory.Delete(sourceRomExtractionDir);
+            }
+
+            // setup arguments
+            string arguments = "-x \"" + Path.GetFileName(pSourceRomPath) + "\" ";  // rom to extract
+            arguments += "-d \"" + Path.GetFileNameWithoutExtension(sourceRomDestinationPath) + "\"";  // destination directory
+
+            if (pIsContainerRom)
+            {
+                arguments += " -9 \"" + Path.Combine(pDestinationPath, "arm9.bin") + "\"";
+                arguments += " -7 \"" + Path.Combine(pDestinationPath, "arm7.bin") + "\"";
+                arguments += " -y9 \"" + Path.Combine(pDestinationPath, "y9.bin") + "\"";
+                arguments += " -y7 \"" + Path.Combine(pDestinationPath, "y7.bin") + "\"";
+                arguments += " -y \"" + Path.Combine(pDestinationPath, "overlay") + "\"";
+                arguments += " -t \"" + Path.Combine(pDestinationPath, "banner.bin") + "\"";
+                arguments += " -h \"" + Path.Combine(pDestinationPath, "header.bin") + "\"";            
+            }
+
+            try
+            {
+                // execute NDSTool and extract the rom contents
+                ndsProcess = new Process();
+                ndsProcess.StartInfo = new ProcessStartInfo(ndsToolDestinationPath, arguments);
+                ndsProcess.StartInfo.WorkingDirectory = pDestinationPath;
+                ndsProcess.StartInfo.UseShellExecute = false;
+                
+                isSuccess = ndsProcess.Start();
+                ndsProcess.WaitForExit();
+
+                // Check for destination dir to verify succss
+                if (!Directory.Exists(sourceRomExtractionDir))
+                {
+                    isSuccess = false;
+
+                    // delete ndstool.exe
+                    File.Delete(ndsToolDestinationPath);
+
+                    AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                    vProgressStruct.newNode = null;
+                    vProgressStruct.errorMessage = String.Format("Error extracting <{0}>.", pSourceRomPath) + Environment.NewLine;
+                    ReportProgress(0, vProgressStruct);
+                }
+            }
+            catch (Exception ex)
+            {
+                isSuccess = false;
+
+                AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                vProgressStruct.newNode = null;
+                vProgressStruct.errorMessage = String.Format("Error extracting <{0}>.  Error received: ", pSourceRomPath) + ex.Message;
+                ReportProgress(0, vProgressStruct);
+            }
+
+            // delete ndstool.exe
+            File.Delete(ndsToolDestinationPath);
+            
             return isSuccess;
         }
 
