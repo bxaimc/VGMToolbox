@@ -81,7 +81,6 @@ namespace VGMToolbox.format
 
         private byte[] sdatHeaderUnkPadding;
 
-
         // METHODS
         public byte[] getStdHeaderSignature(Stream pStream)
         {
