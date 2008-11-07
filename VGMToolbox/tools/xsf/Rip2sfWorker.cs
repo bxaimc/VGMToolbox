@@ -882,7 +882,8 @@ namespace VGMToolbox.tools.xsf
 
                     // delete ndstool.exe
                     File.Delete(ndsToolDestinationPath);
-
+                    
+                    /*
                     Directory.Delete(Path.Combine(pDestinationPath, "overlay"), true);
                     File.Delete(Path.Combine(pDestinationPath, "arm7.bin"));
                     File.Delete(Path.Combine(pDestinationPath, "arm9.bin"));
@@ -890,6 +891,7 @@ namespace VGMToolbox.tools.xsf
                     File.Delete(Path.Combine(pDestinationPath, "header.bin"));
                     File.Delete(Path.Combine(pDestinationPath, "y7.bin"));
                     File.Delete(Path.Combine(pDestinationPath, "y9.bin"));
+                    */
 
                     AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
                     vProgressStruct.newNode = null;
@@ -910,6 +912,7 @@ namespace VGMToolbox.tools.xsf
             // delete ndstool.exe
             File.Delete(ndsToolDestinationPath);
             
+            /*
             Directory.Delete(Path.Combine(pDestinationPath, "overlay"), true);
             File.Delete(Path.Combine(pDestinationPath, "arm7.bin"));
             File.Delete(Path.Combine(pDestinationPath, "arm9.bin"));
@@ -917,6 +920,7 @@ namespace VGMToolbox.tools.xsf
             File.Delete(Path.Combine(pDestinationPath, "header.bin"));
             File.Delete(Path.Combine(pDestinationPath, "y7.bin"));
             File.Delete(Path.Combine(pDestinationPath, "y9.bin"));
+            */
 
             return isSuccess;
         }
