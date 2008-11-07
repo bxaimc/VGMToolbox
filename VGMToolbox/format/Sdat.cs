@@ -1,14 +1,22 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
+using ICSharpCode.SharpZipLib.Checksums;
+
 using VGMToolbox.util;
+using VGMToolbox.util.ObjectPooling;
 
 namespace VGMToolbox.format
 {
-    class Sdat
+    class Sdat : IFormat
     {
+        private static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x53, 0x44, 0x41, 0x54 }; // SDAT
+        private const string FORMAT_ABBREVIATION = "SDAT";
+        private const string HEX_PREFIX = "0x";
+        
         ///////////////////////////////////
         // Standard NDS Header Information
         /// ///////////////////////////////
@@ -81,7 +89,13 @@ namespace VGMToolbox.format
 
         private byte[] sdatHeaderUnkPadding;
 
-        // METHODS
+        // Tag Hash
+        Dictionary<string, string> tagHash = new Dictionary<string, string>();
+
+        // Sections
+        SdatSymbSection symbSection = null;
+
+        // METHODS        
         public byte[] getStdHeaderSignature(Stream pStream)
         {
             return ParseFile.parseSimpleOffset(pStream, STD_HEADER_SIGNATURE_OFFSET, STD_HEADER_SIGNATURE_LENGTH);
@@ -145,8 +159,9 @@ namespace VGMToolbox.format
         }
 
 
-        private void initialize(Stream pStream)
+        public void Initialize(Stream pStream)
         { 
+            // SDAT
             stdHeaderSignature = getStdHeaderSignature(pStream);
             stdHeaderUnkConstant = getStdHeaderUnkConstant(pStream);
             stdHeaderFileSize = getStdHeaderFileSize(pStream);
@@ -166,13 +181,104 @@ namespace VGMToolbox.format
             sdatHeaderFileSize = getSdatHeaderFileSize(pStream);
 
             sdatHeaderUnkPadding = getSdatHeaderUnkPadding(pStream);
+
+            // SYMB
+            if (BitConverter.ToUInt32(this.sdatHeaderSymbSize, 0) > 0)
+            {
+                symbSection = new SdatSymbSection();
+                symbSection.Initialize(pStream, BitConverter.ToInt32(this.sdatHeaderSymbOffset, 0));
+            }
+
+            this.initializeTagHash();
         }
 
+        private void initializeTagHash()
+        {
+            // SDAT
+            tagHash.Add("SDAT - File Size", HEX_PREFIX + BitConverter.ToUInt32(this.stdHeaderFileSize, 0).ToString("X4"));
+            tagHash.Add("SDAT - Header Size", HEX_PREFIX + BitConverter.ToUInt16(this.stdHeaderHeaderSize, 0).ToString("X2"));
+            tagHash.Add("SDAT - Number of Sections", HEX_PREFIX + BitConverter.ToUInt16(this.stdHeaderNumberOfSections, 0).ToString("X2"));
+            tagHash.Add("SDAT - SYMB Offset, Length",
+                HEX_PREFIX + BitConverter.ToUInt32(this.sdatHeaderSymbOffset, 0).ToString("X4") + ", " +
+                HEX_PREFIX + BitConverter.ToUInt32(this.sdatHeaderSymbSize, 0).ToString("X4"));
+            tagHash.Add("SDAT - INFO Offset, Length",
+                HEX_PREFIX + BitConverter.ToUInt32(this.sdatHeaderInfoOffset, 0).ToString("X4") + ", " +
+                HEX_PREFIX + BitConverter.ToUInt32(this.sdatHeaderInfoSize, 0).ToString("X4"));
+            tagHash.Add("SDAT - FAT Offset, Length",
+                HEX_PREFIX + BitConverter.ToUInt32(this.sdatHeaderFatOffset, 0).ToString("X4") + ", " +
+                HEX_PREFIX + BitConverter.ToUInt32(this.sdatHeaderFatSize, 0).ToString("X4"));
+            tagHash.Add("SDAT - FILE Offset, Length",
+                HEX_PREFIX + BitConverter.ToUInt32(this.sdatHeaderFileOffset, 0).ToString("X4") + ", " +
+                HEX_PREFIX + BitConverter.ToUInt32(this.sdatHeaderFileSize, 0).ToString("X4"));
 
+            // SYMB
+            if (symbSection != null)
+            {
+                tagHash.Add("SYMB - Section Size", HEX_PREFIX + BitConverter.ToUInt32(symbSection.StdHeaderSectionSize, 0).ToString("X4"));
+                tagHash.Add("SYMB - SEQ Offset", HEX_PREFIX + BitConverter.ToUInt32(symbSection.SymbRecordSeqOffset, 0).ToString("X4"));
+                tagHash.Add("SYMB - SEQARC Offset", HEX_PREFIX + BitConverter.ToUInt32(symbSection.SymbRecordSeqArcOffset, 0).ToString("X4"));
+                tagHash.Add("SYMB - BANK Offset", HEX_PREFIX + BitConverter.ToUInt32(symbSection.SymbRecordBankOffset, 0).ToString("X4"));
+                tagHash.Add("SYMB - WAVEARC Offset", HEX_PREFIX + BitConverter.ToUInt32(symbSection.SymbRecordWaveArcOffset, 0).ToString("X4"));
+                tagHash.Add("SYMB - PLAYER Offset", HEX_PREFIX + BitConverter.ToUInt32(symbSection.SymbRecordPlayerOffset, 0).ToString("X4"));
+                tagHash.Add("SYMB - GROUP Offset", HEX_PREFIX + BitConverter.ToUInt32(symbSection.SymbRecordGroupOffset, 0).ToString("X4"));
+                tagHash.Add("SYMB - PLAYER2 Offset", HEX_PREFIX + BitConverter.ToUInt32(symbSection.SymbRecordPlayer2Offset, 0).ToString("X4"));
+                tagHash.Add("SYMB - STRM Offset", HEX_PREFIX + BitConverter.ToUInt32(symbSection.SymbRecordStrmOffset, 0).ToString("X4"));
+            }
+
+        }
+
+        // IFomat Required Functions
+        public byte[] GetAsciiSignature()
+        {
+            return ASCII_SIGNATURE;
+        }
+
+        public string GetFileExtensions()
+        {
+            return null;
+        }
+
+        public string GetFormatAbbreviation()
+        { 
+            return FORMAT_ABBREVIATION;
+        }
+
+        public bool IsFileLibrary(string pPath)
+        {
+            return false;
+        }
+
+        public bool HasMultipleFileExtensions()
+        {
+            return false;
+        }
+
+        public int GetStartingSong() { return 0; }
+        public int GetTotalSongs() { return 0; }
+        public string GetSongName() { return null; }
+
+        public string GetHootDriverAlias() { return null; }
+        public string GetHootDriverType() { return null; }
+        public string GetHootDriver() { return null; }
+
+        public Dictionary<string, string> GetTagHash()
+        {
+            return this.tagHash;
+        }
+
+        public void GetDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
+            ref Crc32 pChecksum, bool pUseLibHash)
+        {
+            pChecksum.Reset();
+        }
     }
 
     class SdatSymbSection 
     {
+        public SdatSymbSection() { }
+
+        private static readonly byte[] NULL_BYTE_ARRAY = new byte[] { 0x00 }; // NULL
+
         public const int STD_HEADER_SIGNATURE_OFFSET = 0x00;
         public const int STD_HEADER_SIGNATURE_LENGTH = 4;
 
@@ -204,7 +310,7 @@ namespace VGMToolbox.format
 
         public const int SYMB_RECORD_PLAYER2_OFFSET_OFFSET = 0x20;
         public const int SYMB_RECORD_PLAYER2_OFFSET_LENGTH = 4;
-        // conflict between specs here!
+        
         public const int SYMB_RECORD_STRM_OFFSET_OFFSET = 0x24;
         public const int SYMB_RECORD_STRM_OFFSET_LENGTH = 4;
 
@@ -215,9 +321,141 @@ namespace VGMToolbox.format
         public const int SYMB_ENTRY_NUM_FILES_OFFSET = 0x00;        // RELATIVE TO SECTION OFFSET
         public const int SYMB_ENTRY_NUM_FILES_LENGTH = 4;
 
-        public const int SYMB_ENTRY_FILE_NAMES_BEGIN_OFFSET = 0x04; // RELATIVE TO SECTION OFFSET
+        public const int SYMB_ENTRY_FILE_NAME_SIZE = 4;
 
-        // Add stuff here for subrecords for SEQARC
+        // !!!!! Add stuff here for subrecords for SEQARC
+
+        /////////////
+        // Variables
+        /////////////        
+
+        // private
+        private byte[] stdHeaderSignature;        
+        private byte[] stdHeaderSectionSize;
+        
+        private byte[] symbRecordSeqOffset;
+        private byte[] symbRecordSeqArcOffset;
+        private byte[] symbRecordBankOffset;
+        private byte[] symbRecordWaveArcOffset;
+        private byte[] symbRecordPlayerOffset;
+        private byte[] symbRecordGroupOffset;
+        private byte[] symbRecordPlayer2Offset;
+        private byte[] symbRecordStrmOffset;
+
+        byte[][] symbSeqSubRecords;
+        byte[][] symbSeqFileNames;
+
+        // public
+        public byte[] StdHeaderSignature { get { return stdHeaderSignature; } }
+        public byte[] StdHeaderSectionSize { get { return stdHeaderSectionSize; } }
+
+        public byte[] SymbRecordSeqOffset { get { return symbRecordSeqOffset; } }
+        public byte[] SymbRecordSeqArcOffset { get { return symbRecordSeqArcOffset; } }
+        public byte[] SymbRecordBankOffset { get { return symbRecordBankOffset; } }
+        public byte[] SymbRecordWaveArcOffset { get { return symbRecordWaveArcOffset; } }
+        public byte[] SymbRecordPlayerOffset { get { return symbRecordPlayerOffset; } }
+        public byte[] SymbRecordGroupOffset { get { return symbRecordGroupOffset; } }
+        public byte[] SymbRecordPlayer2Offset { get { return symbRecordPlayer2Offset; } }
+        public byte[] SymbRecordStrmOffset { get { return symbRecordStrmOffset; } }
+
+        ////////////
+        // METHODS
+        ////////////
+        public byte[] getStdHeaderSignature(Stream pStream, int pOffset)
+        {
+            return ParseFile.parseSimpleOffset(pStream, pOffset + STD_HEADER_SIGNATURE_OFFSET, 
+                STD_HEADER_SIGNATURE_LENGTH);
+        }
+        public byte[] getStdHeaderSectionSize(Stream pStream, int pOffset)
+        {
+            return ParseFile.parseSimpleOffset(pStream, pOffset + STD_HEADER_SECTION_SIZE_OFFSET,
+                STD_HEADER_SECTION_SIZE_LENGTH);
+        }
+
+        public byte[] getSymbRecordSeqOffset(Stream pStream, int pOffset)
+        {
+            return ParseFile.parseSimpleOffset(pStream, pOffset + SYMB_RECORD_SEQ_OFFSET_OFFSET,
+                SYMB_RECORD_SEQ_OFFSET_LENGTH);
+        }
+        public byte[] getSymbRecordSeqArcOffset(Stream pStream, int pOffset)
+        {
+            return ParseFile.parseSimpleOffset(pStream, pOffset + SYMB_RECORD_SEQARC_OFFSET_OFFSET,
+                SYMB_RECORD_SEQARC_OFFSET_LENGTH);
+        }
+        public byte[] getSymbRecordBankOffset(Stream pStream, int pOffset)
+        {
+            return ParseFile.parseSimpleOffset(pStream, pOffset + SYMB_RECORD_BANK_OFFSET_OFFSET,
+                SYMB_RECORD_BANK_OFFSET_LENGTH);
+        }
+        public byte[] getSymbRecordWaveArcOffset(Stream pStream, int pOffset)
+        {
+            return ParseFile.parseSimpleOffset(pStream, pOffset + SYMB_RECORD_WAVEARC_OFFSET_OFFSET,
+                SYMB_RECORD_WAVEARC_OFFSET_LENGTH);
+        }
+        public byte[] getSymbRecordPlayerOffset(Stream pStream, int pOffset)
+        {
+            return ParseFile.parseSimpleOffset(pStream, pOffset + SYMB_RECORD_PLAYER_OFFSET_OFFSET,
+                SYMB_RECORD_PLAYER_OFFSET_LENGTH);
+        }
+        public byte[] getSymbRecordGroupOffset(Stream pStream, int pOffset)
+        {
+            return ParseFile.parseSimpleOffset(pStream, pOffset + SYMB_RECORD_GROUP_OFFSET_OFFSET,
+                SYMB_RECORD_GROUP_OFFSET_LENGTH);
+        }
+        public byte[] getSymbRecordPlayer2Offset(Stream pStream, int pOffset)
+        {
+            return ParseFile.parseSimpleOffset(pStream, pOffset + SYMB_RECORD_PLAYER2_OFFSET_OFFSET,
+                SYMB_RECORD_PLAYER2_OFFSET_LENGTH);
+        }
+        public byte[] getSymbRecordStrmOffset(Stream pStream, int pOffset)
+        {
+            return ParseFile.parseSimpleOffset(pStream, pOffset + SYMB_RECORD_STRM_OFFSET_OFFSET,
+                SYMB_RECORD_STRM_OFFSET_LENGTH);
+        }
+
+        public void getSymbSeqSubRecords(Stream pStream, int pOffset)
+        {
+            int intSymbRecordSeqOffset = BitConverter.ToInt32(symbRecordSeqOffset, 0);
+            byte[] subRecordCountBytes = ParseFile.parseSimpleOffset(pStream,
+                pOffset + intSymbRecordSeqOffset + SYMB_ENTRY_NUM_FILES_OFFSET,
+                SYMB_ENTRY_NUM_FILES_LENGTH);
+            int subRecordCount = BitConverter.ToInt32(subRecordCountBytes, 0);
+
+            symbSeqSubRecords = new byte [subRecordCount][];
+            symbSeqFileNames = new byte[subRecordCount][];
+
+            for (int i = 1; i <= subRecordCount; i++)
+            {
+                symbSeqSubRecords[i - 1] = ParseFile.parseSimpleOffset(pStream,
+                    pOffset + intSymbRecordSeqOffset + SYMB_ENTRY_NUM_FILES_OFFSET + (SYMB_ENTRY_FILE_NAME_SIZE * i),
+                    SYMB_ENTRY_NUM_FILES_LENGTH);
+
+                int fileOffset = BitConverter.ToInt32(symbSeqSubRecords[i - 1], 0);
+                int fileLength = ParseFile.getSegmentLength(pStream, pOffset + fileOffset, NULL_BYTE_ARRAY);
+
+                symbSeqFileNames[i - 1] = ParseFile.parseSimpleOffset(pStream, pOffset + fileOffset, fileLength);
+            }
+
+
+        }
+
+        public void Initialize(Stream pStream, int pOffset)
+        {
+            stdHeaderSignature = getStdHeaderSignature(pStream, pOffset);
+            stdHeaderSectionSize = getStdHeaderSectionSize(pStream, pOffset);
+
+            symbRecordSeqOffset = getSymbRecordSeqOffset(pStream, pOffset);
+            getSymbSeqSubRecords(pStream, pOffset);
+            
+            symbRecordSeqArcOffset = getSymbRecordSeqArcOffset(pStream, pOffset);
+            symbRecordBankOffset = getSymbRecordBankOffset(pStream, pOffset);
+            symbRecordWaveArcOffset = getSymbRecordWaveArcOffset(pStream, pOffset);
+            symbRecordPlayerOffset = getSymbRecordPlayerOffset(pStream, pOffset);
+            symbRecordGroupOffset = getSymbRecordGroupOffset(pStream, pOffset);
+            symbRecordPlayer2Offset = getSymbRecordPlayer2Offset(pStream, pOffset);
+            symbRecordStrmOffset = getSymbRecordStrmOffset(pStream, pOffset);
+        }
+
     }
     
     class SdatInfoSection 
