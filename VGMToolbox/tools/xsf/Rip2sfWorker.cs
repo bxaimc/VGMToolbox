@@ -333,7 +333,7 @@ namespace VGMToolbox.tools.xsf
                                         // rename prefix as needed if has multiple sdats
                                         if (sourceSdats.Length > 1)
                                         {
-                                            filePrefix = pFilePrefix + sdatIndex.ToString("X2");
+                                            filePrefix = pFilePrefix + "_" + sdatIndex.ToString("X2");
                                         }
                                         else
                                         {
@@ -394,7 +394,16 @@ namespace VGMToolbox.tools.xsf
                         // Increment index for dynamic naming
                         sdatIndex++;
                     }                
-                }                
+                }
+
+                Directory.Delete(Path.Combine(workingDirectory, "overlay"), true);
+                File.Delete(Path.Combine(workingDirectory, "arm7.bin"));
+                File.Delete(Path.Combine(workingDirectory, "arm9.bin"));
+                File.Delete(Path.Combine(workingDirectory, "banner.bin"));
+                File.Delete(Path.Combine(workingDirectory, "header.bin"));
+                File.Delete(Path.Combine(workingDirectory, "y7.bin"));
+                File.Delete(Path.Combine(workingDirectory, "y9.bin"));
+
                 Directory.Delete(sourceRomDestinationPath, true);
                 Directory.Delete(containerRomDestinationPath, true);
             }
@@ -404,10 +413,11 @@ namespace VGMToolbox.tools.xsf
                 vProgressStruct.newNode = null;
                 vProgressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message;
                 ReportProgress(progress, vProgressStruct);
-            }            
+            }
         }
 
-        // old method
+        #region OLD METHOD
+        
         private bool rip2sf_Step1(string pNdsToolFileName, string pSourceRomPath, string pSourceRomDestinationPath)
         {            
             bool isSuccess = false;
@@ -757,6 +767,8 @@ namespace VGMToolbox.tools.xsf
 
             return isSuccess;
         }
+
+        # endregion
 
         // new method
         private bool extractRom(string pNdsToolFileName, string pSourceRomPath, string pDestinationPath, 
