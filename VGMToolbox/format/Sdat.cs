@@ -94,7 +94,8 @@ namespace VGMToolbox.format
 
         // Sections
         SdatSymbSection symbSection = null;
-        SdatInfoSection infoSection = null;
+        SdatInfoSection infoSection = null;        
+        SdatFileSection fileSection = null;
 
         // METHODS        
         public byte[] getStdHeaderSignature(Stream pStream)
@@ -183,7 +184,7 @@ namespace VGMToolbox.format
 
             sdatHeaderUnkPadding = getSdatHeaderUnkPadding(pStream);
 
-            // SYMB
+            // SYMB Section
             if (BitConverter.ToUInt32(this.sdatHeaderSymbSize, 0) > 0)
             {
                 symbSection = new SdatSymbSection();
@@ -191,12 +192,21 @@ namespace VGMToolbox.format
             }
             
             // INFO
+            /*
             if (BitConverter.ToUInt32(this.sdatHeaderInfoSize, 0) > 0)
             {
                 infoSection = new SdatInfoSection();
                 infoSection.Initialize(pStream, BitConverter.ToInt32(this.sdatHeaderInfoOffset, 0));
             }
-            
+            */
+             
+            // FILE Section
+            if (BitConverter.ToUInt32(this.sdatHeaderFileSize, 0) > 0)
+            {
+                fileSection = new SdatFileSection();
+                fileSection.Initialize(pStream, BitConverter.ToInt32(this.sdatHeaderFileOffset, 0));
+            }
+
             this.initializeTagHash();
         }
 
@@ -246,9 +256,10 @@ namespace VGMToolbox.format
                 tagHash.Add("SYMB - PLAYER2 Offset", HEX_PREFIX + BitConverter.ToUInt32(symbSection.SymbRecordPlayer2Offset, 0).ToString("X4"));
                 tagHash.Add("SYMB - STRM Offset", HEX_PREFIX + BitConverter.ToUInt32(symbSection.SymbRecordStrmOffset, 0).ToString("X4"));
                 
-                addNumberedListToTagHash("SYMB - SEQ", symbSection.SymbSeqFileNames);                                
-                
-                addNumberedListToTagHash("SYMB - WAVEARC", symbSection.SymbWaveArcFileNames);                                
+                addNumberedListToTagHash("SYMB - SEQ", symbSection.SymbSeqFileNames);
+
+                addNumberedListToTagHash("SYMB - BANK", symbSection.SymbBankFileNames);
+                addNumberedListToTagHash("SYMB - WAVEARC", symbSection.SymbWaveArcFileNames);
                 addNumberedListToTagHash("SYMB - PLAYER", symbSection.SymbPlayerFileNames);
                 addNumberedListToTagHash("SYMB - GROUP", symbSection.SymbGroupFileNames);
                 addNumberedListToTagHash("SYMB - PLAYER2", symbSection.SymbPlayer2FileNames);
@@ -257,11 +268,14 @@ namespace VGMToolbox.format
             
             #endregion
 
-            // INFO
-            if (infoSection != null)
-            { 
-            
+            #region initializeTagHash - FILE
+
+            if (fileSection != null)
+            {
+                tagHash.Add("FILE - Total Files", HEX_PREFIX + BitConverter.ToUInt32(fileSection.FileHeaderNumberOfFiles, 0).ToString("X4"));
             }
+
+            #endregion
 
         }
 
@@ -387,6 +401,8 @@ namespace VGMToolbox.format
         private byte[][] symbSeqSubRecords;
         private byte[][] symbSeqFileNames;
 
+        private byte[][] symbBankSubRecords;
+        private byte[][] symbBankFileNames;
         private byte[][] symbWaveArcSubRecords;
         private byte[][] symbWaveArcFileNames;
         private byte[][] symbPlayerSubRecords;
@@ -397,6 +413,12 @@ namespace VGMToolbox.format
         private byte[][] symbPlayer2FileNames;
         private byte[][] symbStrmSubRecords;
         private byte[][] symbStrmFileNames;
+
+        struct sdatSymbRec
+        {
+            public byte[] nEntryOffset;
+            public byte[] nSubRecOffset;
+        }
         
         // public
         public byte[] StdHeaderSignature { get { return stdHeaderSignature; } }
@@ -413,6 +435,7 @@ namespace VGMToolbox.format
 
         public string[] SymbSeqFileNames { get { return getSymbFileNames(symbSeqFileNames); } }
 
+        public string[] SymbBankFileNames { get { return getSymbFileNames(symbBankFileNames); } }
         public string[] SymbWaveArcFileNames { get { return getSymbFileNames(symbWaveArcFileNames); } }
         public string[] SymbPlayerFileNames { get { return getSymbFileNames(symbPlayerFileNames); } }
         public string[] SymbGroupFileNames { get { return getSymbFileNames(symbGroupFileNames); } }
@@ -528,8 +551,14 @@ namespace VGMToolbox.format
 
             // @TODO: Get subrecords for each section
             symbRecordSeqArcOffset = getSymbRecordSeqArcOffset(pStream, pSectionOffset);
+
+            // BANK
             symbRecordBankOffset = getSymbRecordBankOffset(pStream, pSectionOffset);
+            intSymbRecordOffset = BitConverter.ToInt32(symbRecordBankOffset, 0);
+            getSymbSubRecords(pStream, pSectionOffset, intSymbRecordOffset,
+                ref symbBankSubRecords, ref symbBankFileNames);
             
+
             // WAVEARC
             symbRecordWaveArcOffset = getSymbRecordWaveArcOffset(pStream, pSectionOffset);
             intSymbRecordOffset = BitConverter.ToInt32(symbRecordWaveArcOffset, 0);
@@ -796,5 +825,35 @@ namespace VGMToolbox.format
 
         public const int FILE_HEADER_RESERVED_OFFSET = 0x0C;
         public const int FILE_HEADER_RESERVED_LENGTH = 4;
+
+        #region VARIABLES
+
+        private byte[] fileHeaderSignature;
+        private byte[] fileHeaderSectionSize;
+        private byte[] fileHeaderNumberOfFiles;
+        private byte[] fileHeaderReservedSection;
+
+        public byte[] FileHeaderSignature { get { return fileHeaderSignature; } }
+        public byte[] FileHeaderSectionSize { get { return fileHeaderSectionSize; } }
+        public byte[] FileHeaderNumberOfFiles { get { return fileHeaderNumberOfFiles; } }
+        public byte[] FileHeaderReservedSection { get { return fileHeaderReservedSection; } }
+
+        #endregion
+
+        #region METHODS
+
+        public void Initialize(Stream pStream, int pSectionOffset)
+        {
+            fileHeaderSignature = ParseFile.parseSimpleOffset(pStream, pSectionOffset + FILE_HEADER_SIGNATURE_OFFSET,
+                FILE_HEADER_SIGNATURE_LENGTH);
+            fileHeaderSectionSize = ParseFile.parseSimpleOffset(pStream, pSectionOffset + FILE_HEADER_SECTION_SIZE_OFFSET,
+                FILE_HEADER_SECTION_SIZE_LENGTH);
+            fileHeaderNumberOfFiles = ParseFile.parseSimpleOffset(pStream, pSectionOffset + FILE_HEADER_NUMBER_OF_FILES_OFFSET,
+                FILE_HEADER_NUMBER_OF_FILES_LENGTH);
+            fileHeaderReservedSection = ParseFile.parseSimpleOffset(pStream, pSectionOffset + FILE_HEADER_RESERVED_OFFSET,
+                FILE_HEADER_RESERVED_LENGTH);
+        }
+
+        #endregion
     }
 }
