@@ -217,8 +217,8 @@ namespace VGMToolbox.format.sdat
 
             this.initializeTagHash();
             
-            this.extractSseqs(pStream);
-            this.extractStrms(pStream);
+            // this.extractSseqs(pStream);
+            // this.extractStrms(pStream);
         }
 
         private void addNumberedListToTagHash(string pLabel, string[] pList)
@@ -325,7 +325,7 @@ namespace VGMToolbox.format.sdat
             #endregion
         }
 
-        private void extractSseqs(Stream pStream)
+        public void ExtractSseqs(Stream pStream, string pOutputPath)
         {
             BinaryWriter bw;
             string fileName = String.Empty;
@@ -348,7 +348,12 @@ namespace VGMToolbox.format.sdat
                     fileName = String.Format("SSEQ{0}.sseq", fileId.ToString("X4"));
                 }
 
-                fileName = @".\sseq\" + fileName;
+                string outputDirectory = Path.Combine(pOutputPath, "seq");
+                if (!Directory.Exists(outputDirectory))
+                {
+                    Directory.CreateDirectory(outputDirectory);
+                }
+                fileName = Path.Combine(outputDirectory, fileName);
 
                 int read = 0;
                 int totalRead = 0;
@@ -372,10 +377,8 @@ namespace VGMToolbox.format.sdat
 
                 i++;
             }
-
-
         }
-        private void extractStrms(Stream pStream)
+        public void ExtractStrms(Stream pStream, string pOutputPath)
         {
             BinaryWriter bw;
             string fileName = String.Empty;
@@ -398,7 +401,12 @@ namespace VGMToolbox.format.sdat
                     fileName = String.Format("STRM{0}.sseq", fileId.ToString("X4"));
                 }
 
-                fileName = @".\strm\" + fileName;
+                string outputDirectory = Path.Combine(pOutputPath, "strm");
+                if (!Directory.Exists(outputDirectory))
+                {
+                    Directory.CreateDirectory(outputDirectory);
+                }
+                fileName = Path.Combine(outputDirectory, fileName);
 
                 int read = 0;
                 int totalRead = 0;

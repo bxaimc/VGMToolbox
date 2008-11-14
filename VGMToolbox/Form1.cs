@@ -7,12 +7,14 @@ using System.Xml;
 using System.Xml.Serialization;
 
 using VGMToolbox.auditing;
+using VGMToolbox.format.sdat;
 using VGMToolbox.tools;
 using VGMToolbox.tools.gbs;
 using VGMToolbox.tools.hoot;
 using VGMToolbox.tools.nsf;
 using VGMToolbox.tools.xsf;
 using VGMToolbox.util;
+
 
 namespace VGMToolbox
 {
@@ -1176,6 +1178,48 @@ namespace VGMToolbox
         }
 
         #endregion
+
+        private void tbNDS_SdatExtractor_Source_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
+                e.Effect = DragDropEffects.All;
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        private void tbNDS_SdatExtractor_Source_DragDrop(object sender, DragEventArgs e)
+        {
+            toolStripStatusLabel1.Text = "SDAT Extraction...Begin";
+
+            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            string destinationPath;
+
+            foreach (string path in s)
+            {
+                if (File.Exists(path))
+                {
+                    destinationPath = 
+                        Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path));
+                    FileStream fs = File.Open(path, FileMode.Open, FileAccess.Read);
+
+                    Sdat sdat = new Sdat();
+                    sdat.Initialize(fs);
+                    sdat.ExtractSseqs(fs, destinationPath);
+                    sdat.ExtractStrms(fs, destinationPath);
+
+                    fs.Close();
+                    fs.Dispose();
+                    
+                }
+                //else if (Directory.Exists(path))
+                //{
+                //    totalFileCount += Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
+                //}
+            }
+
+            toolStripStatusLabel1.Text = "SDAT Extraction...Complete";
+        }
 
     }
 }
