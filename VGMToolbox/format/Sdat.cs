@@ -193,14 +193,13 @@ namespace VGMToolbox.format
                 symbSection.Initialize(pStream, BitConverter.ToInt32(this.sdatHeaderSymbOffset, 0));
             }
             
-            // INFO
-            /*
+            // INFO            
             if (BitConverter.ToUInt32(this.sdatHeaderInfoSize, 0) > 0)
             {
                 infoSection = new SdatInfoSection();
                 infoSection.Initialize(pStream, BitConverter.ToInt32(this.sdatHeaderInfoOffset, 0));
             }
-            */
+            
              
             // FAT Section
             if (BitConverter.ToUInt32(this.sdatHeaderFatSize, 0) > 0)
@@ -838,7 +837,7 @@ namespace VGMToolbox.format
             for (int i = 1; i <= entryOffsetCount; i++)
             {
                 sdatInfoRec.nEntryOffsets[i - 1] = ParseFile.parseSimpleOffset(pStream,
-                    pSectionOffset + pInfoRecOffset + (INFO_RECORD_STRUCT_COUNT_OFFSET * i),
+                    pSectionOffset + pInfoRecOffset + (INFO_RECORD_STRUCT_OFFSETS_OFFSET * i),
                     INFO_RECORD_STRUCT_OFFSETS_LENGTH);
             }
 
