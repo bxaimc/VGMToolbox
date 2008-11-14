@@ -662,6 +662,13 @@ namespace VGMToolbox.format
         public const int INFO_RECORD_UNUSED_OFFSET = 0x28;
         public const int INFO_RECORD_UNUSED_LENGTH = 24;
 
+        // INFO Record Structure Offsets
+        public const int INFO_RECORD_STRUCT_COUNT_OFFSET = 0x00;
+        public const int INFO_RECORD_STRUCT_COUNT_LENGTH = 4;
+
+        public const int INFO_RECORD_STRUCT_OFFSETS_OFFSET = 0x04;
+        public const int INFO_RECORD_STRUCT_OFFSETS_LENGTH = 4;
+
         //////////////////////////////////////
         // INFO block entries, multiple types
         //////////////////////////////////////
@@ -774,6 +781,12 @@ namespace VGMToolbox.format
         public const int INFO_ENTRY_STRM_RESERVED_OFFSET = 0x07;
         public const int INFO_ENTRY_STRM_RESERVED_LENGTH = 5;
 
+        struct SdatInfoRec
+        {
+            public byte[] nCount;
+            public byte[][] nEntryOffsets;
+        }
+
         /////////////
         // Variables
         /////////////        
@@ -791,6 +804,16 @@ namespace VGMToolbox.format
         private byte[] infoRecordPlayer2Offset;
         private byte[] infoRecordStrmOffset;
 
+        SdatInfoRec seqInfoRec;
+        SdatInfoRec seqArcInfoRec;
+        SdatInfoRec bankInfoRec;
+        SdatInfoRec waveArcInfoRec;
+        SdatInfoRec playerInfoRec;
+        SdatInfoRec groupInfoRec;
+        SdatInfoRec player2InfoRec;
+        SdatInfoRec strmInfoRec;
+
+
         // public
         public byte[] StdHeaderSignature { get { return stdHeaderSignature; } }
         public byte[] StdHeaderSectionSize { get { return stdHeaderSectionSize; } }
@@ -798,23 +821,78 @@ namespace VGMToolbox.format
         ////////////
         // METHODS
         ////////////
-        public byte[] getStdHeaderSignature(Stream pStream, int pSectionOffset)
+
+        private SdatInfoRec getInfoRec(Stream pStream, int pSectionOffset,
+            int pInfoRecOffset)
         {
-            return ParseFile.parseSimpleOffset(pStream, pSectionOffset + STD_HEADER_SIGNATURE_OFFSET,
-                STD_HEADER_SIGNATURE_LENGTH);
-        }
-        public byte[] getStdHeaderSectionSize(Stream pStream, int pSectionOffset)
-        {
-            return ParseFile.parseSimpleOffset(pStream, pSectionOffset + STD_HEADER_SECTION_SIZE_OFFSET,
-                STD_HEADER_SECTION_SIZE_LENGTH);
+            int entryOffsetCount;
+            SdatInfoRec sdatInfoRec = new SdatInfoRec();
+
+            sdatInfoRec.nCount = ParseFile.parseSimpleOffset(pStream,
+                pSectionOffset + pInfoRecOffset + INFO_RECORD_STRUCT_COUNT_OFFSET,
+                INFO_RECORD_STRUCT_COUNT_LENGTH);
+
+            entryOffsetCount = BitConverter.ToInt32(sdatInfoRec.nCount, 0);
+            sdatInfoRec.nEntryOffsets = new byte[entryOffsetCount][];
+
+            for (int i = 1; i <= entryOffsetCount; i++)
+            {
+                sdatInfoRec.nEntryOffsets[i - 1] = ParseFile.parseSimpleOffset(pStream,
+                    pSectionOffset + pInfoRecOffset + (INFO_RECORD_STRUCT_COUNT_OFFSET * i),
+                    INFO_RECORD_STRUCT_OFFSETS_LENGTH);
+            }
+
+            return sdatInfoRec;
         }
 
-        
-        
         public void Initialize(Stream pStream, int pSectionOffset)
         {
-            stdHeaderSignature = getStdHeaderSignature(pStream, pSectionOffset);
-            stdHeaderSectionSize = getStdHeaderSectionSize(pStream, pSectionOffset);
+            stdHeaderSignature = ParseFile.parseSimpleOffset(pStream, pSectionOffset + STD_HEADER_SIGNATURE_OFFSET,
+                STD_HEADER_SIGNATURE_LENGTH);
+            stdHeaderSectionSize = ParseFile.parseSimpleOffset(pStream, pSectionOffset + STD_HEADER_SECTION_SIZE_OFFSET,
+                STD_HEADER_SECTION_SIZE_LENGTH);
+
+            // SEQ
+            infoRecordSeqOffset = ParseFile.parseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_SEQ_OFFSET_OFFSET,
+                INFO_RECORD_SEQ_OFFSET_LENGTH);
+            seqInfoRec = getInfoRec(pStream, pSectionOffset, BitConverter.ToInt32(infoRecordSeqOffset, 0));
+            
+            // SEQARC
+            infoRecordSeqArcOffset = ParseFile.parseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_SEQARC_OFFSET_OFFSET,
+                INFO_RECORD_SEQARC_OFFSET_LENGTH);
+            seqArcInfoRec = getInfoRec(pStream, pSectionOffset, BitConverter.ToInt32(infoRecordSeqArcOffset, 0));
+
+            // BANK
+            infoRecordBankOffset = ParseFile.parseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_BANK_OFFSET_OFFSET,
+                INFO_RECORD_BANK_OFFSET_LENGTH);
+            bankInfoRec = getInfoRec(pStream, pSectionOffset, BitConverter.ToInt32(infoRecordBankOffset, 0));
+            
+            // WAVEARC
+            infoRecordWaveArcOffset = ParseFile.parseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_WAVEARC_OFFSET_OFFSET,
+                INFO_RECORD_WAVEARC_OFFSET_LENGTH);
+            waveArcInfoRec = getInfoRec(pStream, pSectionOffset, BitConverter.ToInt32(infoRecordWaveArcOffset, 0));
+            
+            // PLAYER
+            infoRecordPlayerOffset = ParseFile.parseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_PLAYER_OFFSET_OFFSET,
+                INFO_RECORD_PLAYER_OFFSET_LENGTH);
+            playerInfoRec = getInfoRec(pStream, pSectionOffset, BitConverter.ToInt32(infoRecordPlayerOffset, 0));
+            
+            // GROUP
+            infoRecordGroupOffset = ParseFile.parseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_GROUP_OFFSET_OFFSET,
+                INFO_RECORD_GROUP_OFFSET_LENGTH);
+            groupInfoRec = getInfoRec(pStream, pSectionOffset, BitConverter.ToInt32(infoRecordGroupOffset, 0));
+            
+            // PLAYER2
+            infoRecordPlayer2Offset = ParseFile.parseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_PLAYER2_OFFSET_OFFSET,
+                INFO_RECORD_PLAYER2_OFFSET_LENGTH);
+            player2InfoRec = getInfoRec(pStream, pSectionOffset, BitConverter.ToInt32(infoRecordPlayer2Offset, 0));
+
+            // STRM
+            infoRecordStrmOffset = ParseFile.parseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_STRM_OFFSET_OFFSET,
+                INFO_RECORD_STRM_OFFSET_LENGTH);
+            strmInfoRec = getInfoRec(pStream, pSectionOffset, BitConverter.ToInt32(infoRecordStrmOffset, 0));
+
+
         }
     }
 
