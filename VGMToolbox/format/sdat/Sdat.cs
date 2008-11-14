@@ -434,6 +434,40 @@ namespace VGMToolbox.format.sdat
 
         }
 
+        public void BuildSmap(string pOutputPath)
+        { 
+            buildSmapSeq(pOutputPath);
+        }
+
+        private void buildSmapSeq(string pOutputPath)
+        {
+            StreamWriter sw = File.CreateText(Path.Combine(pOutputPath, "smap.smap"));
+            
+            sw.WriteLine(@"# SEQ:");
+            sw.WriteLine(@"# label                     number fileID bnk vol cpr ppr ply      hsize       size name");
+
+            int i = 0;
+            foreach (SdatInfoSection.SdatInfoSseq s in infoSection.SdatInfoSseqs)
+            {
+                if ((symbSection != null) && (i < symbSection.SymbSeqFileNames.Length))
+                {
+                    sw.Write("  " + symbSection.SymbSeqFileNames[i].PadRight(26));
+                    sw.Write(i.ToString().PadLeft(6));
+                }
+                else
+                {
+                    sw.Write(i.ToString().PadLeft(34));
+                }
+
+                
+
+                i++;
+            }
+
+            sw.Close();
+            sw.Dispose();
+        }
+
         #region IFormat Required Functions
         
         public byte[] GetAsciiSignature()

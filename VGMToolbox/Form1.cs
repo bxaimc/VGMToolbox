@@ -1208,6 +1208,8 @@ namespace VGMToolbox
                     sdat.ExtractSseqs(fs, destinationPath);
                     sdat.ExtractStrms(fs, destinationPath);
 
+                    sdat.BuildSmap(destinationPath);
+
                     fs.Close();
                     fs.Dispose();
                     
