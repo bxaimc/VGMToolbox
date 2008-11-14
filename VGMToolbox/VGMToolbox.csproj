@@ -86,7 +86,11 @@
     <Compile Include="format\Nsf.cs" />
     <Compile Include="format\Nsfe.cs" />
     <Compile Include="format\S98.cs" />
-    <Compile Include="format\Sdat.cs" />
+    <Compile Include="format\sdat\Sdat.cs" />
+    <Compile Include="format\sdat\SdatFatSection.cs" />
+    <Compile Include="format\sdat\SdatFileSection.cs" />
+    <Compile Include="format\sdat\SdatInfoSection.cs" />
+    <Compile Include="format\sdat\SdatSymbSection.cs" />
     <Compile Include="format\Spc.cs" />
     <Compile Include="format\Vgm.cs" />
     <Compile Include="format\Wsr.cs" />
