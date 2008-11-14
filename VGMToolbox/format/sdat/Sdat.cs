@@ -216,6 +216,8 @@ namespace VGMToolbox.format.sdat
             }
 
             this.initializeTagHash();
+            
+            this.extractSseqs(pStream);
         }
 
         private void addNumberedListToTagHash(string pLabel, string[] pList)
@@ -322,6 +324,54 @@ namespace VGMToolbox.format.sdat
             #endregion
         }
 
+        private void extractSseqs(Stream pStream)
+        {
+            BinaryWriter bw;
+            string fileName = String.Empty;
+
+            foreach (SdatInfoSection.SdatInfoSseq s in infoSection.SdatInfoSseqs)
+            {
+                // get file information
+                int fileId = BitConverter.ToInt16(s.fileId, 0);
+                int fileOffset = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
+                int fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
+
+                // get filename, if exists                                
+                if ((symbSection != null) && (fileId < symbSection.SymbSeqFileNames.Length))
+                {
+                    fileName = symbSection.SymbSeqFileNames[fileId] + ".sseq";
+                }
+                else
+                {
+                    fileName = String.Format("SSEQ{0}.sseq", fileId.ToString("X4"));
+                }
+
+                fileName = @".\sseq\" + fileName;
+
+                int read = 0;
+                int totalRead = 0;
+                int maxRead;
+                byte[] data = new byte[4096];
+
+                pStream.Seek(fileOffset, SeekOrigin.Begin);
+                maxRead = fileSize < data.Length? fileSize : data.Length;
+
+                bw = new BinaryWriter(File.Create(fileName));
+
+                while ((maxRead > 0) && (read = pStream.Read(data, 0, maxRead)) > 0)
+                {
+                    bw.Write(data, 0, read);
+
+                    totalRead += read;
+                    maxRead = (fileSize - totalRead) < data.Length ? (fileSize - totalRead) : data.Length;
+                }
+
+                bw.Close();
+            }
+
+
+        }
+
         #region IFormat Required Functions
         
         public byte[] GetAsciiSignature()
@@ -372,3 +422,4 @@ namespace VGMToolbox.format.sdat
 
     }        
 }
+

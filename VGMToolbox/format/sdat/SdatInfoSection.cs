@@ -287,6 +287,7 @@ namespace VGMToolbox.format.sdat
 
         public void Initialize(Stream pStream, int pSectionOffset)
         {
+            // Header Info
             stdHeaderSignature = ParseFile.parseSimpleOffset(pStream, pSectionOffset + STD_HEADER_SIGNATURE_OFFSET,
                 STD_HEADER_SIGNATURE_LENGTH);
             stdHeaderSectionSize = ParseFile.parseSimpleOffset(pStream, pSectionOffset + STD_HEADER_SECTION_SIZE_OFFSET,
