@@ -1204,12 +1204,19 @@ namespace VGMToolbox
                     FileStream fs = File.Open(path, FileMode.Open, FileAccess.Read);
 
                     Sdat sdat = new Sdat();
-                    sdat.Initialize(fs);
-                    sdat.ExtractSseqs(fs, destinationPath);
-                    sdat.ExtractStrms(fs, destinationPath);
 
-                    sdat.BuildSmap(destinationPath);
+                    try
+                    {
+                        sdat.Initialize(fs);
+                        sdat.ExtractSseqs(fs, destinationPath);
+                        sdat.ExtractStrms(fs, destinationPath);
 
+                        // sdat.BuildSmap(destinationPath);
+                    }
+                    catch (Exception _e)
+                    {
+                        MessageBox.Show(_e.Message);
+                    }
                     fs.Close();
                     fs.Dispose();
                     

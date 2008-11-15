@@ -267,31 +267,36 @@ namespace VGMToolbox.format.sdat
             for (int i = 0; i < entryCount; i++)
             {
                 ret[i] = new SdatInfoSseq();
+                int infoOffset = BitConverter.ToInt32(pSdatInfoRec.nEntryOffsets[i], 0);
 
-                ret[i].fileId = ParseFile.parseSimpleOffset(pStream,
-                    pSectionOffset + BitConverter.ToInt32(pSdatInfoRec.nEntryOffsets[i], 0) +
-                    INFO_ENTRY_SEQ_FILEID_OFFSET, INFO_ENTRY_SEQ_FILEID_LENGTH);
-                ret[i].unknown = ParseFile.parseSimpleOffset(pStream,
-                    pSectionOffset + BitConverter.ToInt32(pSdatInfoRec.nEntryOffsets[i], 0) +
-                    INFO_ENTRY_SEQ_UNKNOWN_OFFSET, INFO_ENTRY_SEQ_UNKNOWN_LENGTH);
-                ret[i].bnk = ParseFile.parseSimpleOffset(pStream,
-                    pSectionOffset + BitConverter.ToInt32(pSdatInfoRec.nEntryOffsets[i], 0) +
-                    INFO_ENTRY_SEQ_BANKID_OFFSET, INFO_ENTRY_SEQ_BANKID_LENGTH);
-                ret[i].vol = ParseFile.parseSimpleOffset(pStream,
-                    pSectionOffset + BitConverter.ToInt32(pSdatInfoRec.nEntryOffsets[i], 0) +
-                    INFO_ENTRY_SEQ_VOL_OFFSET, INFO_ENTRY_SEQ_VOL_LENGTH);
-                ret[i].cpr = ParseFile.parseSimpleOffset(pStream,
-                    pSectionOffset + BitConverter.ToInt32(pSdatInfoRec.nEntryOffsets[i], 0) +
-                    INFO_ENTRY_SEQ_CPR_OFFSET, INFO_ENTRY_SEQ_CPR_LENGTH);
-                ret[i].ppr = ParseFile.parseSimpleOffset(pStream,
-                    pSectionOffset + BitConverter.ToInt32(pSdatInfoRec.nEntryOffsets[i], 0) +
-                    INFO_ENTRY_SEQ_PPR_OFFSET, INFO_ENTRY_SEQ_PPR_LENGTH);
-                ret[i].ply = ParseFile.parseSimpleOffset(pStream,
-                    pSectionOffset + BitConverter.ToInt32(pSdatInfoRec.nEntryOffsets[i], 0) +
-                    INFO_ENTRY_SEQ_PLY_OFFSET, INFO_ENTRY_SEQ_PLY_LENGTH);
-                ret[i].unknown2 = ParseFile.parseSimpleOffset(pStream,
-                    pSectionOffset + BitConverter.ToInt32(pSdatInfoRec.nEntryOffsets[i], 0) +
-                    INFO_ENTRY_SEQ_UNKNOWN2_OFFSET, INFO_ENTRY_SEQ_UNKNOWN2_LENGTH);
+                if (infoOffset > 0)
+                {                    
+
+                    ret[i].fileId = ParseFile.parseSimpleOffset(pStream,
+                        pSectionOffset + infoOffset +
+                        INFO_ENTRY_SEQ_FILEID_OFFSET, INFO_ENTRY_SEQ_FILEID_LENGTH);
+                    ret[i].unknown = ParseFile.parseSimpleOffset(pStream,
+                        pSectionOffset + infoOffset +
+                        INFO_ENTRY_SEQ_UNKNOWN_OFFSET, INFO_ENTRY_SEQ_UNKNOWN_LENGTH);
+                    ret[i].bnk = ParseFile.parseSimpleOffset(pStream,
+                        pSectionOffset + infoOffset +
+                        INFO_ENTRY_SEQ_BANKID_OFFSET, INFO_ENTRY_SEQ_BANKID_LENGTH);
+                    ret[i].vol = ParseFile.parseSimpleOffset(pStream,
+                        pSectionOffset + infoOffset +
+                        INFO_ENTRY_SEQ_VOL_OFFSET, INFO_ENTRY_SEQ_VOL_LENGTH);
+                    ret[i].cpr = ParseFile.parseSimpleOffset(pStream,
+                        pSectionOffset + infoOffset +
+                        INFO_ENTRY_SEQ_CPR_OFFSET, INFO_ENTRY_SEQ_CPR_LENGTH);
+                    ret[i].ppr = ParseFile.parseSimpleOffset(pStream,
+                        pSectionOffset + infoOffset +
+                        INFO_ENTRY_SEQ_PPR_OFFSET, INFO_ENTRY_SEQ_PPR_LENGTH);
+                    ret[i].ply = ParseFile.parseSimpleOffset(pStream,
+                        pSectionOffset + infoOffset +
+                        INFO_ENTRY_SEQ_PLY_OFFSET, INFO_ENTRY_SEQ_PLY_LENGTH);
+                    ret[i].unknown2 = ParseFile.parseSimpleOffset(pStream,
+                        pSectionOffset + infoOffset +
+                        INFO_ENTRY_SEQ_UNKNOWN2_OFFSET, INFO_ENTRY_SEQ_UNKNOWN2_LENGTH);
+                }
             }
 
             return ret;

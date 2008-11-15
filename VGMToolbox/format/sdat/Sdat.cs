@@ -215,10 +215,7 @@ namespace VGMToolbox.format.sdat
                 fileSection.Initialize(pStream, BitConverter.ToInt32(this.sdatHeaderFileOffset, 0));
             }
 
-            this.initializeTagHash();
-            
-            // this.extractSseqs(pStream);
-            // this.extractStrms(pStream);
+            //this.initializeTagHash();
         }
 
         private void addNumberedListToTagHash(string pLabel, string[] pList)
@@ -333,48 +330,51 @@ namespace VGMToolbox.format.sdat
             int i = 0;
             foreach (SdatInfoSection.SdatInfoSseq s in infoSection.SdatInfoSseqs)
             {
-                // get file information
-                int fileId = BitConverter.ToInt16(s.fileId, 0);
-                int fileOffset = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
-                int fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
-
-                // get filename, if exists                                
-                if ((symbSection != null) && (i < symbSection.SymbSeqFileNames.Length))
+                if (s.fileId != null)
                 {
-                    fileName = symbSection.SymbSeqFileNames[i] + ".sseq";
-                }
-                else
-                {
-                    fileName = String.Format("SSEQ{0}.sseq", fileId.ToString("X4"));
-                }
+                    // get file information                
+                    int fileId = BitConverter.ToInt16(s.fileId, 0);
+                    int fileOffset = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
+                    int fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
 
-                string outputDirectory = Path.Combine(pOutputPath, "seq");
-                if (!Directory.Exists(outputDirectory))
-                {
-                    Directory.CreateDirectory(outputDirectory);
-                }
-                fileName = Path.Combine(outputDirectory, fileName);
+                    // get filename, if exists                                
+                    if ((symbSection != null) && (i < symbSection.SymbSeqFileNames.Length))
+                    {
+                        fileName = symbSection.SymbSeqFileNames[i] + ".sseq";
+                    }
+                    else
+                    {
+                        fileName = String.Format("SSEQ{0}.sseq", fileId.ToString("X4"));
+                    }
 
-                int read = 0;
-                int totalRead = 0;
-                int maxRead;
-                byte[] data = new byte[4096];
+                    string outputDirectory = Path.Combine(pOutputPath, "seq");
+                    if (!Directory.Exists(outputDirectory))
+                    {
+                        Directory.CreateDirectory(outputDirectory);
+                    }
+                    fileName = Path.Combine(outputDirectory, fileName);
 
-                pStream.Seek(fileOffset, SeekOrigin.Begin);
-                maxRead = fileSize < data.Length? fileSize : data.Length;
+                    int read = 0;
+                    int totalRead = 0;
+                    int maxRead;
+                    byte[] data = new byte[4096];
 
-                bw = new BinaryWriter(File.Create(fileName));
+                    pStream.Seek(fileOffset, SeekOrigin.Begin);
+                    maxRead = fileSize < data.Length ? fileSize : data.Length;
 
-                while ((maxRead > 0) && (read = pStream.Read(data, 0, maxRead)) > 0)
-                {
-                    bw.Write(data, 0, read);
+                    bw = new BinaryWriter(File.Create(fileName));
 
-                    totalRead += read;
-                    maxRead = (fileSize - totalRead) < data.Length ? (fileSize - totalRead) : data.Length;
-                }
+                    while ((maxRead > 0) && (read = pStream.Read(data, 0, maxRead)) > 0)
+                    {
+                        bw.Write(data, 0, read);
 
-                bw.Close();
+                        totalRead += read;
+                        maxRead = (fileSize - totalRead) < data.Length ? (fileSize - totalRead) : data.Length;
+                    }
 
+                    bw.Close();
+                } // if (s.fileId != null)
+                
                 i++;
             }
         }
