@@ -1211,7 +1211,7 @@ namespace VGMToolbox
                         sdat.ExtractSseqs(fs, destinationPath);
                         sdat.ExtractStrms(fs, destinationPath);
 
-                        // sdat.BuildSmap(destinationPath);
+                        sdat.BuildSmap(destinationPath);
                     }
                     catch (Exception _e)
                     {

@@ -386,47 +386,51 @@ namespace VGMToolbox.format.sdat
             int i = 0;
             foreach (SdatInfoSection.SdatInfoStrm s in infoSection.SdatInfoStrms)
             {
-                // get file information
-                int fileId = BitConverter.ToInt16(s.fileId, 0);
-                int fileOffset = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
-                int fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
 
-                // get filename, if exists                                
-                if ((symbSection != null) && (i < symbSection.SymbStrmFileNames.Length))
+                if (s.fileId != null)
                 {
-                    fileName = symbSection.SymbStrmFileNames[i] + ".strm";
+                    // get file information
+                    int fileId = BitConverter.ToInt16(s.fileId, 0);
+                    int fileOffset = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
+                    int fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
+
+                    // get filename, if exists                                
+                    if ((symbSection != null) && (i < symbSection.SymbStrmFileNames.Length))
+                    {
+                        fileName = symbSection.SymbStrmFileNames[i] + ".strm";
+                    }
+                    else
+                    {
+                        fileName = String.Format("STRM{0}.sseq", fileId.ToString("X4"));
+                    }
+
+                    string outputDirectory = Path.Combine(pOutputPath, "strm");
+                    if (!Directory.Exists(outputDirectory))
+                    {
+                        Directory.CreateDirectory(outputDirectory);
+                    }
+                    fileName = Path.Combine(outputDirectory, fileName);
+
+                    int read = 0;
+                    int totalRead = 0;
+                    int maxRead;
+                    byte[] data = new byte[4096];
+
+                    pStream.Seek(fileOffset, SeekOrigin.Begin);
+                    maxRead = fileSize < data.Length ? fileSize : data.Length;
+
+                    bw = new BinaryWriter(File.Create(fileName));
+
+                    while ((maxRead > 0) && (read = pStream.Read(data, 0, maxRead)) > 0)
+                    {
+                        bw.Write(data, 0, read);
+
+                        totalRead += read;
+                        maxRead = (fileSize - totalRead) < data.Length ? (fileSize - totalRead) : data.Length;
+                    }
+
+                    bw.Close();
                 }
-                else
-                {
-                    fileName = String.Format("STRM{0}.sseq", fileId.ToString("X4"));
-                }
-
-                string outputDirectory = Path.Combine(pOutputPath, "strm");
-                if (!Directory.Exists(outputDirectory))
-                {
-                    Directory.CreateDirectory(outputDirectory);
-                }
-                fileName = Path.Combine(outputDirectory, fileName);
-
-                int read = 0;
-                int totalRead = 0;
-                int maxRead;
-                byte[] data = new byte[4096];
-
-                pStream.Seek(fileOffset, SeekOrigin.Begin);
-                maxRead = fileSize < data.Length ? fileSize : data.Length;
-
-                bw = new BinaryWriter(File.Create(fileName));
-
-                while ((maxRead > 0) && (read = pStream.Read(data, 0, maxRead)) > 0)
-                {
-                    bw.Write(data, 0, read);
-
-                    totalRead += read;
-                    maxRead = (fileSize - totalRead) < data.Length ? (fileSize - totalRead) : data.Length;
-                }
-
-                bw.Close();
 
                 i++;
             }
@@ -442,28 +446,41 @@ namespace VGMToolbox.format.sdat
         private void buildSmapSeq(string pOutputPath)
         {
             StreamWriter sw = File.CreateText(Path.Combine(pOutputPath, "smap.smap"));
-            
+
             sw.WriteLine(@"# SEQ:");
             sw.WriteLine(@"# label                     number fileID bnk vol cpr ppr ply      hsize       size name");
 
             int i = 0;
+            string lineOut = String.Empty;
             foreach (SdatInfoSection.SdatInfoSseq s in infoSection.SdatInfoSseqs)
             {
-                if ((symbSection != null) && (i < symbSection.SymbSeqFileNames.Length))
+                lineOut = String.Empty;
+
+                if (s.fileId != null)
                 {
-                    sw.Write("  " + symbSection.SymbSeqFileNames[i].PadRight(26));
-                    sw.Write(i.ToString().PadLeft(6));
+                    lineOut += "  " + symbSection.SymbSeqFileNames[i].PadRight(26).Substring(0, 26);
+                    lineOut += i.ToString().PadLeft(6);
+                    lineOut += BitConverter.ToInt16(s.fileId, 0).ToString().PadLeft(6);
+                    lineOut += BitConverter.ToInt16(s.bnk, 0).ToString().PadLeft(4);
+                    lineOut += s.vol[0].ToString().PadLeft(4);
+                    lineOut += s.cpr[0].ToString().PadLeft(4);
+                    lineOut += s.ppr[0].ToString().PadLeft(4);
+                    lineOut += s.ply[0].ToString().PadLeft(4);
+
+                    lineOut += " ".PadLeft(11); // hsize?
+                    lineOut += BitConverter.ToInt32(fatSection.SdatFatRecs[BitConverter.ToInt16(s.fileId, 0)].nSize, 0).ToString().PadLeft(11);
+                    lineOut += " " + symbSection.SymbSeqFileNames[i] + ".sseq";
                 }
                 else
                 {
-                    sw.Write(i.ToString().PadLeft(34));
+                    lineOut = i.ToString().PadLeft(34);
                 }
 
-                
+                sw.WriteLine(lineOut);
 
                 i++;
             }
-
+        
             sw.Close();
             sw.Dispose();
         }

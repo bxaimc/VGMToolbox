@@ -312,24 +312,29 @@ namespace VGMToolbox.format.sdat
             {
                 ret[i] = new SdatInfoStrm();
 
-                ret[i].fileId = ParseFile.parseSimpleOffset(pStream,
-                    pSectionOffset + BitConverter.ToInt32(pSdatInfoRec.nEntryOffsets[i], 0) +
-                    INFO_ENTRY_STRM_FILEID_OFFSET, INFO_ENTRY_STRM_FILEID_LENGTH);
-                ret[i].unknown = ParseFile.parseSimpleOffset(pStream,
-                    pSectionOffset + BitConverter.ToInt32(pSdatInfoRec.nEntryOffsets[i], 0) +
-                    INFO_ENTRY_STRM_UNKNOWN_OFFSET, INFO_ENTRY_STRM_UNKNOWN_LENGTH);
-                ret[i].vol = ParseFile.parseSimpleOffset(pStream,
-                    pSectionOffset + BitConverter.ToInt32(pSdatInfoRec.nEntryOffsets[i], 0) +
-                    INFO_ENTRY_STRM_VOL_OFFSET, INFO_ENTRY_STRM_VOL_LENGTH);
-                ret[i].pri = ParseFile.parseSimpleOffset(pStream,
-                    pSectionOffset + BitConverter.ToInt32(pSdatInfoRec.nEntryOffsets[i], 0) +
-                    INFO_ENTRY_STRM_PRI_OFFSET, INFO_ENTRY_STRM_PRI_LENGTH);
-                ret[i].ply = ParseFile.parseSimpleOffset(pStream,
-                    pSectionOffset + BitConverter.ToInt32(pSdatInfoRec.nEntryOffsets[i], 0) +
-                    INFO_ENTRY_STRM_PLY_OFFSET, INFO_ENTRY_STRM_PLY_LENGTH);
-                ret[i].reserved = ParseFile.parseSimpleOffset(pStream,
-                    pSectionOffset + BitConverter.ToInt32(pSdatInfoRec.nEntryOffsets[i], 0) +
-                    INFO_ENTRY_STRM_RESERVED_OFFSET, INFO_ENTRY_STRM_RESERVED_LENGTH);
+                int infoOffset = BitConverter.ToInt32(pSdatInfoRec.nEntryOffsets[i], 0);
+
+                if (infoOffset > 0)
+                {
+                    ret[i].fileId = ParseFile.parseSimpleOffset(pStream,
+                        pSectionOffset + infoOffset +
+                        INFO_ENTRY_STRM_FILEID_OFFSET, INFO_ENTRY_STRM_FILEID_LENGTH);
+                    ret[i].unknown = ParseFile.parseSimpleOffset(pStream,
+                        pSectionOffset + infoOffset +
+                        INFO_ENTRY_STRM_UNKNOWN_OFFSET, INFO_ENTRY_STRM_UNKNOWN_LENGTH);
+                    ret[i].vol = ParseFile.parseSimpleOffset(pStream,
+                        pSectionOffset + infoOffset +
+                        INFO_ENTRY_STRM_VOL_OFFSET, INFO_ENTRY_STRM_VOL_LENGTH);
+                    ret[i].pri = ParseFile.parseSimpleOffset(pStream,
+                        pSectionOffset + infoOffset +
+                        INFO_ENTRY_STRM_PRI_OFFSET, INFO_ENTRY_STRM_PRI_LENGTH);
+                    ret[i].ply = ParseFile.parseSimpleOffset(pStream,
+                        pSectionOffset + infoOffset +
+                        INFO_ENTRY_STRM_PLY_OFFSET, INFO_ENTRY_STRM_PLY_LENGTH);
+                    ret[i].reserved = ParseFile.parseSimpleOffset(pStream,
+                        pSectionOffset + infoOffset +
+                        INFO_ENTRY_STRM_RESERVED_OFFSET, INFO_ENTRY_STRM_RESERVED_LENGTH);
+                }
             }
 
             return ret;
