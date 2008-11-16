@@ -1199,8 +1199,9 @@ namespace VGMToolbox
             {
                 if (File.Exists(path))
                 {
-                    destinationPath = 
-                        Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path));
+                    string fileName = Path.GetFileNameWithoutExtension(path);
+                    destinationPath =
+                        Path.Combine(Path.GetDirectoryName(path), fileName);
                     FileStream fs = File.Open(path, FileMode.Open, FileAccess.Read);
 
                     Sdat sdat = new Sdat();
@@ -1211,7 +1212,7 @@ namespace VGMToolbox
                         sdat.ExtractSseqs(fs, destinationPath);
                         sdat.ExtractStrms(fs, destinationPath);
 
-                        sdat.BuildSmap(destinationPath);
+                        sdat.BuildSmap(destinationPath, fileName);
                     }
                     catch (Exception _e)
                     {

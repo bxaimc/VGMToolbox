@@ -438,14 +438,17 @@ namespace VGMToolbox.format.sdat
 
         }
 
-        public void BuildSmap(string pOutputPath)
+        public void BuildSmap(string pOutputPath, string pFilePrefix)
         { 
-            buildSmapSeq(pOutputPath);
+            checkOutputDirectory(pOutputPath);
+
+            buildSmapSeq(pOutputPath, pFilePrefix);
         }
 
-        private void buildSmapSeq(string pOutputPath)
-        {
-            StreamWriter sw = File.CreateText(Path.Combine(pOutputPath, "smap.smap"));
+        private void buildSmapSeq(string pOutputPath, string pFilePrefix)
+        {            
+            string smapFileName = pFilePrefix + ".smap";
+            StreamWriter sw = File.CreateText(Path.Combine(pOutputPath, smapFileName));
 
             sw.WriteLine(@"# SEQ:");
             sw.WriteLine(@"# label                     number fileID bnk vol cpr ppr ply      hsize       size name");
@@ -469,7 +472,7 @@ namespace VGMToolbox.format.sdat
 
                     lineOut += " ".PadLeft(11); // hsize?
                     lineOut += BitConverter.ToInt32(fatSection.SdatFatRecs[BitConverter.ToInt16(s.fileId, 0)].nSize, 0).ToString().PadLeft(11);
-                    lineOut += " " + symbSection.SymbSeqFileNames[i] + ".sseq";
+                    lineOut += @" \seq\" + symbSection.SymbSeqFileNames[i] + ".sseq";
                 }
                 else
                 {
@@ -483,6 +486,14 @@ namespace VGMToolbox.format.sdat
         
             sw.Close();
             sw.Dispose();
+        }
+
+        private void checkOutputDirectory(string pOutputPath)
+        {
+            if (!Directory.Exists(pOutputPath))
+            {
+                Directory.CreateDirectory(pOutputPath);
+            }
         }
 
         #region IFormat Required Functions

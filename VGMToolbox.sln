@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vgmtutil", "vgmtutil\vgmtut
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2sftimer", "2sftimer\2sftimer.csproj", "{ED6BEDC1-924C-4DD6-8C31-0E705BF0E0A2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdatext", "sdatext\sdatext.csproj", "{32BAA74C-D53A-4911-8A75-4590A95B0EB4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{ED6BEDC1-924C-4DD6-8C31-0E705BF0E0A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED6BEDC1-924C-4DD6-8C31-0E705BF0E0A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED6BEDC1-924C-4DD6-8C31-0E705BF0E0A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32BAA74C-D53A-4911-8A75-4590A95B0EB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32BAA74C-D53A-4911-8A75-4590A95B0EB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32BAA74C-D53A-4911-8A75-4590A95B0EB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32BAA74C-D53A-4911-8A75-4590A95B0EB4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
