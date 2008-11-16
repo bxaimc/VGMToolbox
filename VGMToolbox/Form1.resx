@@ -120,6 +120,11 @@
   <metadata name="toolTip_tbMdxSourceFolder.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>278, 17</value>
   </metadata>
+  <data name="tbOutput.Text" xml:space="preserve">
+    <value>- Supported Formats: GBR, GBS, KSS (KSCC), MDX, NSF, NSFE, S98 (v1, v3), SPC (v0.30), VGM, xSF
+
+- Tools: ROM Management, File Examination, Hoot (CSV to Datafile, XML Skeleton Builder), NSFE to NSF + .m3u, GBS .m3u creator, xSF2EXE, 2sfRipper, NDS SDAT Extractor</value>
+  </data>
   <metadata name="statusStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>

@@ -174,6 +174,12 @@
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.tb2sf_Source = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
+            this.tabPage16 = new System.Windows.Forms.TabPage();
+            this.tabControl6 = new System.Windows.Forms.TabControl();
+            this.tabPage17 = new System.Windows.Forms.TabPage();
+            this.groupBox10 = new System.Windows.Forms.GroupBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.tbNDS_SdatExtractor_Source = new System.Windows.Forms.TextBox();
             this.tbOutput = new System.Windows.Forms.TextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -187,12 +193,6 @@
             this.lblTimeElapsed = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.tabPage16 = new System.Windows.Forms.TabPage();
-            this.tabControl6 = new System.Windows.Forms.TabControl();
-            this.tabPage17 = new System.Windows.Forms.TabPage();
-            this.tbNDS_SdatExtractor_Source = new System.Windows.Forms.TextBox();
-            this.groupBox10 = new System.Windows.Forms.GroupBox();
-            this.label17 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -234,11 +234,11 @@
             this.groupBox9.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox7.SuspendLayout();
-            this.statusStrip1.SuspendLayout();
             this.tabPage16.SuspendLayout();
             this.tabControl6.SuspendLayout();
             this.tabPage17.SuspendLayout();
             this.groupBox10.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -900,7 +900,7 @@
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(9, 144);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(226, 13);
+            this.label8.Size = new System.Drawing.Size(228, 13);
             this.label8.TabIndex = 5;
             this.label8.Text = "Also see \\examine\\examine.txt for your output.";
             // 
@@ -1689,6 +1689,66 @@
             this.label15.TabIndex = 4;
             this.label15.Text = "Drag ROM to rip here";
             // 
+            // tabPage16
+            // 
+            this.tabPage16.Controls.Add(this.tabControl6);
+            this.tabPage16.Location = new System.Drawing.Point(4, 22);
+            this.tabPage16.Name = "tabPage16";
+            this.tabPage16.Size = new System.Drawing.Size(674, 169);
+            this.tabPage16.TabIndex = 4;
+            this.tabPage16.Text = "NDS";
+            this.tabPage16.UseVisualStyleBackColor = true;
+            // 
+            // tabControl6
+            // 
+            this.tabControl6.Controls.Add(this.tabPage17);
+            this.tabControl6.Location = new System.Drawing.Point(-1, 0);
+            this.tabControl6.Name = "tabControl6";
+            this.tabControl6.SelectedIndex = 0;
+            this.tabControl6.Size = new System.Drawing.Size(675, 166);
+            this.tabControl6.TabIndex = 0;
+            // 
+            // tabPage17
+            // 
+            this.tabPage17.Controls.Add(this.groupBox10);
+            this.tabPage17.Location = new System.Drawing.Point(4, 22);
+            this.tabPage17.Name = "tabPage17";
+            this.tabPage17.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage17.Size = new System.Drawing.Size(667, 140);
+            this.tabPage17.TabIndex = 0;
+            this.tabPage17.Text = "SDAT Extractor";
+            this.tabPage17.UseVisualStyleBackColor = true;
+            // 
+            // groupBox10
+            // 
+            this.groupBox10.Controls.Add(this.label17);
+            this.groupBox10.Controls.Add(this.tbNDS_SdatExtractor_Source);
+            this.groupBox10.Location = new System.Drawing.Point(6, 6);
+            this.groupBox10.Name = "groupBox10";
+            this.groupBox10.Size = new System.Drawing.Size(294, 59);
+            this.groupBox10.TabIndex = 1;
+            this.groupBox10.TabStop = false;
+            this.groupBox10.Text = "Source SDAT";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(6, 42);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(136, 13);
+            this.label17.TabIndex = 1;
+            this.label17.Text = "Drag SDAT to extract here.";
+            // 
+            // tbNDS_SdatExtractor_Source
+            // 
+            this.tbNDS_SdatExtractor_Source.AllowDrop = true;
+            this.tbNDS_SdatExtractor_Source.Location = new System.Drawing.Point(6, 19);
+            this.tbNDS_SdatExtractor_Source.Name = "tbNDS_SdatExtractor_Source";
+            this.tbNDS_SdatExtractor_Source.Size = new System.Drawing.Size(282, 20);
+            this.tbNDS_SdatExtractor_Source.TabIndex = 0;
+            this.tbNDS_SdatExtractor_Source.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbNDS_SdatExtractor_Source_DragDrop);
+            this.tbNDS_SdatExtractor_Source.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbNDS_SdatExtractor_Source_DragEnter);
+            // 
             // tbOutput
             // 
             this.tbOutput.AcceptsReturn = true;
@@ -1698,8 +1758,7 @@
             this.tbOutput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.tbOutput.Size = new System.Drawing.Size(682, 84);
             this.tbOutput.TabIndex = 0;
-            this.tbOutput.Text = "Supported Formats: GBR, GBS, KSS (KSCC), MDX, NSF, NSFE, S98 (v1, v3), SPC (v0.30" +
-                "), VGM, xSF";
+            this.tbOutput.Text = resources.GetString("tbOutput.Text");
             // 
             // statusStrip1
             // 
@@ -1771,66 +1830,6 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(259, 20);
             this.textBox1.TabIndex = 1;
-            // 
-            // tabPage16
-            // 
-            this.tabPage16.Controls.Add(this.tabControl6);
-            this.tabPage16.Location = new System.Drawing.Point(4, 22);
-            this.tabPage16.Name = "tabPage16";
-            this.tabPage16.Size = new System.Drawing.Size(674, 169);
-            this.tabPage16.TabIndex = 4;
-            this.tabPage16.Text = "NDS";
-            this.tabPage16.UseVisualStyleBackColor = true;
-            // 
-            // tabControl6
-            // 
-            this.tabControl6.Controls.Add(this.tabPage17);
-            this.tabControl6.Location = new System.Drawing.Point(-1, 0);
-            this.tabControl6.Name = "tabControl6";
-            this.tabControl6.SelectedIndex = 0;
-            this.tabControl6.Size = new System.Drawing.Size(675, 166);
-            this.tabControl6.TabIndex = 0;
-            // 
-            // tabPage17
-            // 
-            this.tabPage17.Controls.Add(this.groupBox10);
-            this.tabPage17.Location = new System.Drawing.Point(4, 22);
-            this.tabPage17.Name = "tabPage17";
-            this.tabPage17.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage17.Size = new System.Drawing.Size(667, 140);
-            this.tabPage17.TabIndex = 0;
-            this.tabPage17.Text = "SDAT Extractor";
-            this.tabPage17.UseVisualStyleBackColor = true;
-            // 
-            // tbNDS_SdatExtractor_Source
-            // 
-            this.tbNDS_SdatExtractor_Source.AllowDrop = true;
-            this.tbNDS_SdatExtractor_Source.Location = new System.Drawing.Point(6, 19);
-            this.tbNDS_SdatExtractor_Source.Name = "tbNDS_SdatExtractor_Source";
-            this.tbNDS_SdatExtractor_Source.Size = new System.Drawing.Size(230, 20);
-            this.tbNDS_SdatExtractor_Source.TabIndex = 0;
-            this.tbNDS_SdatExtractor_Source.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbNDS_SdatExtractor_Source_DragDrop);
-            this.tbNDS_SdatExtractor_Source.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbNDS_SdatExtractor_Source_DragEnter);
-            // 
-            // groupBox10
-            // 
-            this.groupBox10.Controls.Add(this.label17);
-            this.groupBox10.Controls.Add(this.tbNDS_SdatExtractor_Source);
-            this.groupBox10.Location = new System.Drawing.Point(6, 6);
-            this.groupBox10.Name = "groupBox10";
-            this.groupBox10.Size = new System.Drawing.Size(294, 66);
-            this.groupBox10.TabIndex = 1;
-            this.groupBox10.TabStop = false;
-            this.groupBox10.Text = "Source SDAT";
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(6, 42);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(136, 13);
-            this.label17.TabIndex = 1;
-            this.label17.Text = "Drag SDAT to extract here.";
             // 
             // Form1
             // 
@@ -1915,13 +1914,13 @@
             this.groupBox8.PerformLayout();
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
-            this.statusStrip1.ResumeLayout(false);
-            this.statusStrip1.PerformLayout();
             this.tabPage16.ResumeLayout(false);
             this.tabControl6.ResumeLayout(false);
             this.tabPage17.ResumeLayout(false);
             this.groupBox10.ResumeLayout(false);
             this.groupBox10.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

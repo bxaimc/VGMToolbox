@@ -76,25 +76,6 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="format\FormatUtil.cs" />
-    <Compile Include="format\Gbr.cs" />
-    <Compile Include="format\Gbs.cs" />
-    <Compile Include="format\IFormat.cs" />
-    <Compile Include="format\Kss.cs" />
-    <Compile Include="format\Kssx.cs" />
-    <Compile Include="format\Mdx.cs" />
-    <Compile Include="format\Nsf.cs" />
-    <Compile Include="format\Nsfe.cs" />
-    <Compile Include="format\S98.cs" />
-    <Compile Include="format\sdat\Sdat.cs" />
-    <Compile Include="format\sdat\SdatFatSection.cs" />
-    <Compile Include="format\sdat\SdatFileSection.cs" />
-    <Compile Include="format\sdat\SdatInfoSection.cs" />
-    <Compile Include="format\sdat\SdatSymbSection.cs" />
-    <Compile Include="format\Spc.cs" />
-    <Compile Include="format\Vgm.cs" />
-    <Compile Include="format\Wsr.cs" />
-    <Compile Include="format\Xsf.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
@@ -145,21 +126,13 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\nsf\NsfTools.cs" />
+    <Compile Include="tools\TreeBuilderWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\xsf\Rip2sfWorker.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tools\xsf\Smap.cs" />
     <Compile Include="tools\xsf\XsfCompressedProgramExtractorWorker.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="util\IDeepCopy.cs" />
-    <Compile Include="util\IniFile.cs" />
-    <Compile Include="util\ObjectPooling\ByteArray.cs" />
-    <Compile Include="util\Encoding.cs" />
-    <Compile Include="util\FileUtil.cs" />
-    <Compile Include="util\ObjectPooling\ObjectPooler.cs" />
-    <Compile Include="util\ParseFile.cs" />
-    <Compile Include="util\TreeBuilderWorker.cs">
       <SubType>Component</SubType>
     </Compile>
   </ItemGroup>
@@ -241,6 +214,16 @@
     <None Include="xsd\datafile.xsd" />
     <None Include="xsd\hoot.dtd" />
     <None Include="xsd\hoot.xsd" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\format\format.csproj">
+      <Project>{3951D6E5-61BE-4D7C-A464-F44D98E9CE83}</Project>
+      <Name>format</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\vgmtutil\vgmtutil.csproj">
+      <Project>{3CE76EEC-D3BC-4AB4-8C54-D2EAFFDADA47}</Project>
+      <Name>vgmtutil</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

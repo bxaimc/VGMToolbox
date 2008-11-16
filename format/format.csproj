@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3951D6E5-61BE-4D7C-A464-F44D98E9CE83}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>format</RootNamespace>
+    <AssemblyName>format</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\VGMToolbox\3rd\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VGMToolbox\format\FormatUtil.cs" />
+    <Compile Include="VGMToolbox\format\Gbr.cs" />
+    <Compile Include="VGMToolbox\format\Gbs.cs" />
+    <Compile Include="VGMToolbox\format\IFormat.cs" />
+    <Compile Include="VGMToolbox\format\Kss.cs" />
+    <Compile Include="VGMToolbox\format\Kssx.cs" />
+    <Compile Include="VGMToolbox\format\Mdx.cs" />
+    <Compile Include="VGMToolbox\format\Nsf.cs" />
+    <Compile Include="VGMToolbox\format\Nsfe.cs" />
+    <Compile Include="VGMToolbox\format\S98.cs" />
+    <Compile Include="VGMToolbox\format\sdat\Sdat.cs" />
+    <Compile Include="VGMToolbox\format\sdat\SdatFatSection.cs" />
+    <Compile Include="VGMToolbox\format\sdat\SdatFileSection.cs" />
+    <Compile Include="VGMToolbox\format\sdat\SdatInfoSection.cs" />
+    <Compile Include="VGMToolbox\format\sdat\SdatSymbSection.cs" />
+    <Compile Include="VGMToolbox\format\sdat\Smap.cs" />
+    <Compile Include="VGMToolbox\format\Spc.cs" />
+    <Compile Include="VGMToolbox\format\Vgm.cs" />
+    <Compile Include="VGMToolbox\format\Wsr.cs" />
+    <Compile Include="VGMToolbox\format\Xsf.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\vgmtutil\vgmtutil.csproj">
+      <Project>{3CE76EEC-D3BC-4AB4-8C54-D2EAFFDADA47}</Project>
+      <Name>vgmtutil</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

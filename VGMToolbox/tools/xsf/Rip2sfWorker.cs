@@ -4,7 +4,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+
 using VGMToolbox.auditing;
+using VGMToolbox.format.sdat;
 
 namespace VGMToolbox.tools.xsf
 {
