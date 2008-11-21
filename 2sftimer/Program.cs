@@ -244,6 +244,8 @@ namespace _2sftimer
 
             try
             {
+                // NEED TO CONVERT TO LOOP
+                
                 File.Copy(pSseq2MidToolPath, sseq2MidDestinationPath, true);
 
                 string arguments = " -2 -l *.sseq";

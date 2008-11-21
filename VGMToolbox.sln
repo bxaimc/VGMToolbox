@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2sftimer", "2sftimer\2sftim
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdatext", "sdatext\sdatext.csproj", "{32BAA74C-D53A-4911-8A75-4590A95B0EB4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mkpsf2fe", "mkpsf2fe\mkpsf2fe.csproj", "{FEAFC2CA-303D-4A42-9F95-DA82FD7622BC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{32BAA74C-D53A-4911-8A75-4590A95B0EB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32BAA74C-D53A-4911-8A75-4590A95B0EB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32BAA74C-D53A-4911-8A75-4590A95B0EB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEAFC2CA-303D-4A42-9F95-DA82FD7622BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEAFC2CA-303D-4A42-9F95-DA82FD7622BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEAFC2CA-303D-4A42-9F95-DA82FD7622BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEAFC2CA-303D-4A42-9F95-DA82FD7622BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
