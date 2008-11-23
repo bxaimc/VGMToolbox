@@ -115,6 +115,7 @@ namespace mkpsf2fe
                 makePsf2Process = new Process();
                 makePsf2Process.StartInfo = new ProcessStartInfo(makePsf2DestinationPath, arguments);
                 makePsf2Process.StartInfo.UseShellExecute = false;
+                makePsf2Process.StartInfo.CreateNoWindow = true;
                 bool isSuccess = makePsf2Process.Start();
                 makePsf2Process.WaitForExit();
 

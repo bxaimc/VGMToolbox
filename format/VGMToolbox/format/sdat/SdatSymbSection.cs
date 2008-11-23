@@ -8,7 +8,7 @@ using VGMToolbox.util.ObjectPooling;
 
 namespace VGMToolbox.format.sdat
 {
-    class SdatSymbSection
+    public class SdatSymbSection
     {
         public SdatSymbSection() { }
 

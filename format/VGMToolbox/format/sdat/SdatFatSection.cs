@@ -8,7 +8,7 @@ using VGMToolbox.util.ObjectPooling;
 
 namespace VGMToolbox.format.sdat
 {
-    class SdatFatSection
+    public class SdatFatSection
     {
         // Section Header
         public const int FAT_HEADER_SIGNATURE_OFFSET = 0x00;

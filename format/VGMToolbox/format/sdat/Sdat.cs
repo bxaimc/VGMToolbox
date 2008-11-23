@@ -16,6 +16,8 @@ namespace VGMToolbox.format.sdat
         private static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x53, 0x44, 0x41, 0x54 }; // SDAT
         private const string FORMAT_ABBREVIATION = "SDAT";
         private const string HEX_PREFIX = "0x";
+
+        public const string SEQUENCE_FILE_EXTENSION = ".sseq";
         
         ///////////////////////////////////
         // Standard NDS Header Information
@@ -93,11 +95,15 @@ namespace VGMToolbox.format.sdat
         Dictionary<string, string> tagHash = new Dictionary<string, string>();
 
         // Sections
-        SdatSymbSection symbSection = null;
-        SdatInfoSection infoSection = null;
-        SdatFatSection fatSection = null;
-        SdatFileSection fileSection = null;
+        private SdatSymbSection symbSection = null;
+        private SdatInfoSection infoSection = null;
+        private SdatFatSection fatSection = null;
+        private SdatFileSection fileSection = null;
 
+        public SdatSymbSection SymbSection { get { return symbSection; } }
+        public SdatInfoSection InfoSection { get { return infoSection; } }
+        public SdatFatSection FatSection { get { return fatSection; } }
+        public SdatFileSection FileSection { get { return fileSection; } }
 
         // METHODS        
         public byte[] getStdHeaderSignature(Stream pStream)

@@ -8,7 +8,7 @@ using VGMToolbox.util.ObjectPooling;
 
 namespace VGMToolbox.format.sdat
 {
-    class SdatFileSection
+    public class SdatFileSection
     {
         public const int FILE_HEADER_SIGNATURE_OFFSET = 0x00;
         public const int FILE_HEADER_SIGNATURE_LENGTH = 4;
