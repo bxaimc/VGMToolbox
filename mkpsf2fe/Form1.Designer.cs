@@ -76,6 +76,8 @@
             this.tbOutput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.tbOutput.Size = new System.Drawing.Size(266, 120);
             this.tbOutput.TabIndex = 3;
+            this.tbOutput.Text = "Source Directory: Path to BD/HD/SQ files.\r\nModules Directory: Path to IRX files.\r" +
+                "\n\r\nNotes: Be sure matching BD/HD/SQ files have the same file name.";
             // 
             // label2
             // 
