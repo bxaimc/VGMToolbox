@@ -125,11 +125,11 @@ namespace _2sftimer
             }
 
             // run timing script
-            Console.WriteLine("Executing Timing Script");
+            Console.WriteLine(Environment.NewLine + "Executing Timing Script");
             executeBatchScript(psfpointPath, pathTo2sf);
 
             // Cleanup
-            Console.WriteLine(Environment.NewLine + "Cleaning Up");
+            Console.WriteLine("Cleaning Up");
             doCleanup(extractedSdatPath, pathTo2sf, psfpointPath);
 
         }
