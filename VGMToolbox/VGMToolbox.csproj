@@ -121,6 +121,9 @@
     <Compile Include="tools\Nds2sfTools.cs" />
     <Compile Include="tools\hoot\HootCsv.cs" />
     <Compile Include="tools\MdxUtil.cs" />
+    <Compile Include="tools\nds\SdatExtractorWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\NezPlug.cs" />
     <Compile Include="tools\nsf\NsfeM3uBuilderWorker.cs">
       <SubType>Component</SubType>

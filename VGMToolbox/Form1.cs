@@ -11,6 +11,7 @@ using VGMToolbox.format.sdat;
 using VGMToolbox.tools;
 using VGMToolbox.tools.gbs;
 using VGMToolbox.tools.hoot;
+using VGMToolbox.tools.nds;
 using VGMToolbox.tools.nsf;
 using VGMToolbox.tools.xsf;
 using VGMToolbox.util;
@@ -29,6 +30,8 @@ namespace VGMToolbox
         GbsM3uBuilderWorker gbsM3uBuilder;
         NsfeM3uBuilderWorker nsfeM3uBuilder;
         Rip2sfWorker rip2sfWorker;
+        SdatExtractorWorker sdatExtractorWorker;
+        
 
         DateTime elapsedTimeStart;
         DateTime elapsedTimeEnd;
@@ -1179,6 +1182,8 @@ namespace VGMToolbox
 
         #endregion
 
+        #region NDS - SDAT EXTRACTOR
+
         private void tbNDS_SdatExtractor_Source_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
@@ -1189,47 +1194,61 @@ namespace VGMToolbox
 
         private void tbNDS_SdatExtractor_Source_DragDrop(object sender, DragEventArgs e)
         {
+            doCleanup();
+
             toolStripStatusLabel1.Text = "SDAT Extraction...Begin";
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-            string destinationPath;
+            int totalFileCount = 0;
 
             foreach (string path in s)
             {
                 if (File.Exists(path))
                 {
-                    string fileName = Path.GetFileNameWithoutExtension(path);
-                    destinationPath =
-                        Path.Combine(Path.GetDirectoryName(path), fileName);
-                    FileStream fs = File.Open(path, FileMode.Open, FileAccess.Read);
-
-                    Sdat sdat = new Sdat();
-
-                    try
-                    {
-                        sdat.Initialize(fs);
-                        sdat.ExtractSseqs(fs, destinationPath);
-                        sdat.ExtractStrms(fs, destinationPath);
-
-                        sdat.BuildSmap(destinationPath, fileName);
-                    }
-                    catch (Exception _e)
-                    {
-                        MessageBox.Show(_e.Message);
-                    }
-                    fs.Close();
-                    fs.Dispose();
-                    
+                    totalFileCount++;
                 }
-                //else if (Directory.Exists(path))
-                //{
-                //    totalFileCount += Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
-                //}
+                else if (Directory.Exists(path))
+                {
+                    totalFileCount += Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
+                }
             }
 
-            toolStripStatusLabel1.Text = "SDAT Extraction...Complete";
+            SdatExtractorWorker.SdatExtractorStruct sdexStruct = new SdatExtractorWorker.SdatExtractorStruct();
+            sdexStruct.pPaths = s;
+            sdexStruct.totalFiles = totalFileCount;
+
+            sdatExtractorWorker = new SdatExtractorWorker();
+            sdatExtractorWorker.ProgressChanged += backgroundWorker_ReportProgress;
+            sdatExtractorWorker.RunWorkerCompleted += SdatExtractorWorker_WorkComplete;
+            sdatExtractorWorker.RunWorkerAsync(sdexStruct);
         }
 
+        private void SdatExtractorWorker_WorkComplete(object sender,
+                     RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled)
+            {
+                doCancelCleanup(false);
+                toolStripStatusLabel1.Text = "SDAT Extraction...Cancelled";
+                tbOutput.Text += "Operation cancelled.";
+            }
+            else
+            {
+                lblProgressLabel.Text = String.Empty;
+                toolStripStatusLabel1.Text = "SDAT Extraction...Complete";
+            }
+        }
+
+        private void btnSdatExtractor_Cancel_Click(object sender, EventArgs e)
+        {
+            if (sdatExtractorWorker != null && sdatExtractorWorker.IsBusy)
+            {
+                tbOutput.Text += "CANCEL PENDING...";
+                sdatExtractorWorker.CancelAsync();
+            }
+        }
+
+        #endregion
     }
 }

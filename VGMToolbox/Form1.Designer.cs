@@ -193,6 +193,7 @@
             this.lblTimeElapsed = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.btnSdatExtractor_Cancel = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -900,7 +901,7 @@
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(9, 144);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(228, 13);
+            this.label8.Size = new System.Drawing.Size(226, 13);
             this.label8.TabIndex = 5;
             this.label8.Text = "Also see \\examine\\examine.txt for your output.";
             // 
@@ -1361,7 +1362,7 @@
             // 
             this.btnNsfM3u_Cancel.Location = new System.Drawing.Point(593, 140);
             this.btnNsfM3u_Cancel.Name = "btnNsfM3u_Cancel";
-            this.btnNsfM3u_Cancel.Size = new System.Drawing.Size(75, 23);
+            this.btnNsfM3u_Cancel.Size = new System.Drawing.Size(75, 20);
             this.btnNsfM3u_Cancel.TabIndex = 5;
             this.btnNsfM3u_Cancel.Text = "Cancel";
             this.btnNsfM3u_Cancel.UseVisualStyleBackColor = true;
@@ -1441,9 +1442,9 @@
             // 
             // btnGbsM3u_Cancel
             // 
-            this.btnGbsM3u_Cancel.Location = new System.Drawing.Point(596, 143);
+            this.btnGbsM3u_Cancel.Location = new System.Drawing.Point(593, 140);
             this.btnGbsM3u_Cancel.Name = "btnGbsM3u_Cancel";
-            this.btnGbsM3u_Cancel.Size = new System.Drawing.Size(75, 23);
+            this.btnGbsM3u_Cancel.Size = new System.Drawing.Size(75, 20);
             this.btnGbsM3u_Cancel.TabIndex = 6;
             this.btnGbsM3u_Cancel.Text = "Cancel";
             this.btnGbsM3u_Cancel.UseVisualStyleBackColor = true;
@@ -1524,9 +1525,9 @@
             // 
             // btnXsfPsf2Exe_Cancel
             // 
-            this.btnXsfPsf2Exe_Cancel.Location = new System.Drawing.Point(582, 115);
+            this.btnXsfPsf2Exe_Cancel.Location = new System.Drawing.Point(583, 118);
             this.btnXsfPsf2Exe_Cancel.Name = "btnXsfPsf2Exe_Cancel";
-            this.btnXsfPsf2Exe_Cancel.Size = new System.Drawing.Size(75, 23);
+            this.btnXsfPsf2Exe_Cancel.Size = new System.Drawing.Size(75, 20);
             this.btnXsfPsf2Exe_Cancel.TabIndex = 6;
             this.btnXsfPsf2Exe_Cancel.Text = "Cancel";
             this.btnXsfPsf2Exe_Cancel.UseVisualStyleBackColor = true;
@@ -1710,6 +1711,7 @@
             // 
             // tabPage17
             // 
+            this.tabPage17.Controls.Add(this.btnSdatExtractor_Cancel);
             this.tabPage17.Controls.Add(this.groupBox10);
             this.tabPage17.Location = new System.Drawing.Point(4, 22);
             this.tabPage17.Name = "tabPage17";
@@ -1735,9 +1737,9 @@
             this.label17.AutoSize = true;
             this.label17.Location = new System.Drawing.Point(6, 42);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(136, 13);
+            this.label17.Size = new System.Drawing.Size(147, 13);
             this.label17.TabIndex = 1;
-            this.label17.Text = "Drag SDAT to extract here.";
+            this.label17.Text = "Drag SDAT(s) to extract here.";
             // 
             // tbNDS_SdatExtractor_Source
             // 
@@ -1830,6 +1832,16 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(259, 20);
             this.textBox1.TabIndex = 1;
+            // 
+            // btnSdatExtractor_Cancel
+            // 
+            this.btnSdatExtractor_Cancel.Location = new System.Drawing.Point(589, 114);
+            this.btnSdatExtractor_Cancel.Name = "btnSdatExtractor_Cancel";
+            this.btnSdatExtractor_Cancel.Size = new System.Drawing.Size(75, 20);
+            this.btnSdatExtractor_Cancel.TabIndex = 6;
+            this.btnSdatExtractor_Cancel.Text = "Cancel";
+            this.btnSdatExtractor_Cancel.UseVisualStyleBackColor = true;
+            this.btnSdatExtractor_Cancel.Click += new System.EventHandler(this.btnSdatExtractor_Cancel_Click);
             // 
             // Form1
             // 
@@ -2091,6 +2103,7 @@
         private System.Windows.Forms.TextBox tbNDS_SdatExtractor_Source;
         private System.Windows.Forms.GroupBox groupBox10;
         private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Button btnSdatExtractor_Cancel;
     }
 }
 
