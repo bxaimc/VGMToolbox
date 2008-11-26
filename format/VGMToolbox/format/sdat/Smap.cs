@@ -33,12 +33,27 @@ namespace VGMToolbox.format.sdat
         public Smap(Sdat pSdat) 
         { 
             // SSEQ
-            sseqSection = new SmapSeqStruct[pSdat.InfoSection.SdatInfoSseqs.Length];
+            this.initializeSseq(pSdat);
+            this.setMinMaxSseq();
+        }
 
-            for (int i = 0; i < sseqSection.Length; i++)
+        private SmapSeqStruct[] sseqSection;
+        public SmapSeqStruct[] SseqSection { get { return sseqSection; } }
+
+        private int minSseq = EMPTY_FILE_ID;
+        private int maxSseq = EMPTY_FILE_ID;
+
+        public int MinSseq { get { return minSseq; } }
+        public int MaxSseq { get { return maxSseq; } }
+
+        private void initializeSseq(Sdat pSdat)
+        {
+            this.sseqSection = new SmapSeqStruct[pSdat.InfoSection.SdatInfoSseqs.Length];
+
+            for (int i = 0; i < this.sseqSection.Length; i++)
             {
-                sseqSection[i] = new SmapSeqStruct();
-                sseqSection[i].number = i;
+                this.sseqSection[i] = new SmapSeqStruct();
+                this.sseqSection[i].number = i;
 
                 if (pSdat.InfoSection.SdatInfoSseqs[i].fileId != null)
                 {
@@ -46,40 +61,59 @@ namespace VGMToolbox.format.sdat
 
                     if (i < pSdat.SymbSection.SymbSeqFileNames.Length)
                     {
-                        sseqSection[i].label = pSdat.SymbSection.SymbSeqFileNames[i];
-                        sseqSection[i].name =
+                        this.sseqSection[i].label = pSdat.SymbSection.SymbSeqFileNames[i];
+                        this.sseqSection[i].name =
                             pSdat.SymbSection.SymbSeqFileNames[i] + Sdat.SEQUENCE_FILE_EXTENSION;
                     }
                     else
                     {
-                        sseqSection[i].label = "SSEQ" + intFileId.ToString("X4");
-                        sseqSection[i].name = String.Format("SSEQ{0}{1}", intFileId.ToString("X4"), Sdat.SEQUENCE_FILE_EXTENSION);
+                        this.sseqSection[i].label = "SSEQ" + intFileId.ToString("X4");
+                        this.sseqSection[i].name = String.Format("SSEQ{0}{1}", intFileId.ToString("X4"), Sdat.SEQUENCE_FILE_EXTENSION);
 
                     }
 
-                    sseqSection[i].fileID = BitConverter.ToInt16(pSdat.InfoSection.SdatInfoSseqs[i].fileId, 0);
-                    sseqSection[i].bnk = BitConverter.ToInt16(pSdat.InfoSection.SdatInfoSseqs[i].bnk, 0);
-                    sseqSection[i].vol = pSdat.InfoSection.SdatInfoSseqs[i].vol[0];
-                    sseqSection[i].cpr = pSdat.InfoSection.SdatInfoSseqs[i].cpr[0];
-                    sseqSection[i].ppr = pSdat.InfoSection.SdatInfoSseqs[i].ppr[0];
-                    sseqSection[i].ply = pSdat.InfoSection.SdatInfoSseqs[i].ply[0];
-                    // sseqSection[i].hsize; @TODO figure this out
-                    sseqSection[i].size =
+                    this.sseqSection[i].fileID = BitConverter.ToInt16(pSdat.InfoSection.SdatInfoSseqs[i].fileId, 0);
+                    this.sseqSection[i].bnk = BitConverter.ToInt16(pSdat.InfoSection.SdatInfoSseqs[i].bnk, 0);
+                    this.sseqSection[i].vol = pSdat.InfoSection.SdatInfoSseqs[i].vol[0];
+                    this.sseqSection[i].cpr = pSdat.InfoSection.SdatInfoSseqs[i].cpr[0];
+                    this.sseqSection[i].ppr = pSdat.InfoSection.SdatInfoSseqs[i].ppr[0];
+                    this.sseqSection[i].ply = pSdat.InfoSection.SdatInfoSseqs[i].ply[0];
+                    // this.sseqSection[i].hsize; @TODO figure this out
+                    this.sseqSection[i].size =
                         BitConverter.ToInt32(pSdat.FatSection.SdatFatRecs[BitConverter.ToInt16(pSdat.InfoSection.SdatInfoSseqs[i].fileId, 0)].nSize, 0);
                 }
                 else
                 {
-                    sseqSection[i].fileID = EMPTY_FILE_ID;
+                    this.sseqSection[i].fileID = EMPTY_FILE_ID;
                 }
             }
         }
 
-        private SmapSeqStruct[] sseqSection;
-        public SmapSeqStruct[] SseqSection { get { return sseqSection; } }
+        private void setMinMaxSseq()
+        {
+            // get minimum sseq with a file id
+            for (int i = 0; i < this.sseqSection.Length; i++)
+            {
+                if (this.sseqSection[i].fileID != EMPTY_FILE_ID)
+                {
+                    this.minSseq = i;                    
+                }
+            }
 
+            // get maximum sseq with a file id
+            for (int i = this.sseqSection.GetUpperBound(0); i > -1; i--)
+            {
+                if (this.sseqSection[i].fileID != EMPTY_FILE_ID)
+                {
+                    this.maxSseq = i;
+                }
+            }
+        }
+
+        // OLD
         private ArrayList sequenceArray = new ArrayList();
         public SmapSeqStruct[] SequenceArray { get { return (SmapSeqStruct[])sequenceArray.ToArray(typeof(SmapSeqStruct)); } }
-
+        
         public Smap(string pSmapPath)
         {
             parseSmap(pSmapPath);
