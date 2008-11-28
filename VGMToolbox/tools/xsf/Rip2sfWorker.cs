@@ -251,22 +251,25 @@ namespace VGMToolbox.tools.xsf
                                 string streamsSourceFolder = Path.Combine(extractedSdatFolder, "Strm");
                                 
                                 // get the list of files to move
-                                string[] streamFileList = Directory.GetFiles(streamsSourceFolder, "*.*", SearchOption.AllDirectories);
-
-                                if (streamFileList.Length > 0)
+                                if (Directory.Exists(streamsSourceFolder))
                                 {
-                                    string streamsDestinationFolder = Path.Combine(ripFolder, "streams");
+                                    string[] streamFileList = Directory.GetFiles(streamsSourceFolder, "*.*", SearchOption.AllDirectories);
 
-                                    // create destination folder if it doesn't exist (it shouldn't)
-                                    if (!Directory.Exists(streamsDestinationFolder))
+                                    if (streamFileList.Length > 0)
                                     {
-                                        Directory.CreateDirectory(streamsDestinationFolder);
-                                    }
+                                        string streamsDestinationFolder = Path.Combine(ripFolder, "streams");
 
-                                    // move the files
-                                    foreach (string s in streamFileList)
-                                    {                                        
-                                        File.Move(s, Path.Combine(streamsDestinationFolder, Path.GetFileName(s)));
+                                        // create destination folder if it doesn't exist (it shouldn't)
+                                        if (!Directory.Exists(streamsDestinationFolder))
+                                        {
+                                            Directory.CreateDirectory(streamsDestinationFolder);
+                                        }
+
+                                        // move the files
+                                        foreach (string s in streamFileList)
+                                        {                                        
+                                            File.Move(s, Path.Combine(streamsDestinationFolder, Path.GetFileName(s)));
+                                        }
                                     }
                                 }
                                 #endregion
@@ -600,10 +603,12 @@ namespace VGMToolbox.tools.xsf
             bool isSuccess = false;
             FileStream fs = null;
 
+            string tempSdatPath = null;
+
             try
             {
                 // Copy Source SDAT to Working Directory
-                string tempSdatPath = Path.Combine(pDestinationPath, Path.GetFileName(pSourceSdat));
+                tempSdatPath = Path.Combine(pDestinationPath, Path.GetFileName(pSourceSdat));
                 File.Copy(pSourceSdat, tempSdatPath, true);
 
                 // Extract SDAT
@@ -615,12 +620,7 @@ namespace VGMToolbox.tools.xsf
                     Path.Combine(pDestinationPath, Path.GetFileNameWithoutExtension(pSourceSdat)));
                 pSdat.ExtractStrms(fs,
                     Path.Combine(pDestinationPath, Path.GetFileNameWithoutExtension(pSourceSdat)));
-
-                isSuccess = true;
-
-                // Delete Temporary SDAT
-                File.Delete(tempSdatPath);
-
+                
                 // Verify SDAT dir was created
                 string sdatOutputPath =
                     Path.Combine(pDestinationPath, Path.GetFileNameWithoutExtension(pSourceSdat));
@@ -632,6 +632,10 @@ namespace VGMToolbox.tools.xsf
                     vProgressStruct.newNode = null;
                     vProgressStruct.errorMessage = String.Format("Error extracting SDAT <{0}>.", pSourceSdat) + Environment.NewLine;
                     ReportProgress(0, vProgressStruct);
+                }
+                else
+                {
+                    isSuccess = true;
                 }
             }
             catch (Exception ex)
@@ -650,6 +654,12 @@ namespace VGMToolbox.tools.xsf
                 {
                     fs.Close();
                     fs.Dispose();
+                }
+
+                // Delete Temporary SDAT
+                if (!String.IsNullOrEmpty(tempSdatPath))
+                {
+                    File.Delete(tempSdatPath);
                 }
             }
 

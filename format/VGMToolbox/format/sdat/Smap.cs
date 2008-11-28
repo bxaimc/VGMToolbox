@@ -96,7 +96,8 @@ namespace VGMToolbox.format.sdat
             {
                 if (this.sseqSection[i].fileID != EMPTY_FILE_ID)
                 {
-                    this.minSseq = i;                    
+                    this.minSseq = this.sseqSection[i].number;
+                    break;
                 }
             }
 
@@ -105,7 +106,8 @@ namespace VGMToolbox.format.sdat
             {
                 if (this.sseqSection[i].fileID != EMPTY_FILE_ID)
                 {
-                    this.maxSseq = i;
+                    this.maxSseq = this.sseqSection[i].number;
+                    break;
                 }
             }
         }
