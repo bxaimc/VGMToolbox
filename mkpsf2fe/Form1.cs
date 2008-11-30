@@ -67,6 +67,10 @@ namespace mkpsf2fe
             File.Copy(Path.Combine(pGenericModulesFolder, "psf2.irx"), Path.Combine(pWorkingFolder, "psf2.irx"), true);
             File.Copy(Path.Combine(pGenericModulesFolder, "sq.irx"), Path.Combine(pWorkingFolder, "sq.irx"), true);
 
+            //File.Copy(Path.Combine(pGenericModulesFolder, "cdvdnul.irx"), Path.Combine(pWorkingFolder, "cdvdnul.irx"), true);
+            //File.Copy(Path.Combine(pGenericModulesFolder, "fakesif.irx"), Path.Combine(pWorkingFolder, "fakesif.irx"), true);
+            //File.Copy(Path.Combine(pGenericModulesFolder, "myhost.irx"), Path.Combine(pWorkingFolder, "myhost.irx"), true);
+
             // copy source modules to working directory
             File.Copy(Path.Combine(pSourceModulesFolder, "LIBSD.IRX"), Path.Combine(pWorkingFolder, "LIBSD.IRX"), true);
             File.Copy(Path.Combine(pSourceModulesFolder, "MODHSYN.IRX"), Path.Combine(pWorkingFolder, "MODHSYN.IRX"), true);
@@ -91,9 +95,13 @@ namespace mkpsf2fe
                 string sourceHdFile = Path.Combine(sourceDirectory, hdFileName);
                 string sourceSqFile = Path.Combine(sourceDirectory, sqFileName);
 
-                string destinationBdFile = Path.Combine(pWorkingFolder, bdFileName);
-                string destinationHdFile = Path.Combine(pWorkingFolder, hdFileName);
-                string destinationSqFile = Path.Combine(pWorkingFolder, sqFileName);
+                //string destinationBdFile = Path.Combine(pWorkingFolder, bdFileName);
+                //string destinationHdFile = Path.Combine(pWorkingFolder, hdFileName);
+                //string destinationSqFile = Path.Combine(pWorkingFolder, sqFileName);
+
+                string destinationBdFile = Path.Combine(pWorkingFolder, "DEFAULT.BD");
+                string destinationHdFile = Path.Combine(pWorkingFolder, "DEFAULT.HD");
+                string destinationSqFile = Path.Combine(pWorkingFolder, "DEFAULT.SQ");
 
                 File.Copy(sourceBdFile, destinationBdFile);
                 File.Copy(sourceHdFile, destinationHdFile);
@@ -105,8 +113,9 @@ namespace mkpsf2fe
                 sw.WriteLine("libsd.irx");
                 sw.WriteLine("modhsyn.irx");
                 sw.WriteLine("modmidi.irx");
-                sw.WriteLine(String.Format("sq.irx -r=5 -d=16383 -s={0} -h={1} -b={2}",
-                    sqFileName, hdFileName, bdFileName));
+                //sw.WriteLine(String.Format("sq.irx -r=5 -d=16383 -s={0} -h={1} -b={2}",
+                //    sqFileName, hdFileName, bdFileName));
+                sw.WriteLine("sq.irx -r=5 -d=16383");
                 sw.Close();
                 sw.Dispose();
 
@@ -133,7 +142,7 @@ namespace mkpsf2fe
 
             }
 
-            //Directory.Delete(pWorkingFolder, true);
+            Directory.Delete(pWorkingFolder, true);
             File.Delete(makePsf2DestinationPath);
         }
 
