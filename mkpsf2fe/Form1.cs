@@ -22,8 +22,11 @@ namespace mkpsf2fe
             tbOutput.Clear();
 
             string[] uniqueSqFiles = this.getUniqueFileNames();
-            makePsf2s(uniqueSqFiles, tbModulesDirectory.Text,
+            if (uniqueSqFiles != null)
+            {
+                makePsf2s(uniqueSqFiles, tbModulesDirectory.Text,
                 WORKING_FOLDER, MODULES_FOLDER, OUTPUT_FOLDER);
+            }
         }
 
         private string[] getUniqueFileNames()
@@ -114,8 +117,8 @@ namespace mkpsf2fe
                 sw.WriteLine("modhsyn.irx");
                 sw.WriteLine("modmidi.irx");
                 //sw.WriteLine(String.Format("sq.irx -r=5 -d=16383 -s={0} -h={1} -b={2}",
-                //    sqFileName, hdFileName, bdFileName));
-                sw.WriteLine("sq.irx -r=5 -d=16383");
+                //    sqFileName, hdFileName, bdFileName));               
+                sw.WriteLine("sq.irx -r=5 -d=16383");                                
                 sw.Close();
                 sw.Dispose();
 
