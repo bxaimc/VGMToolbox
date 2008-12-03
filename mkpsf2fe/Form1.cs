@@ -1,17 +1,17 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
+
+using VGMToolbox.util;
 
 namespace mkpsf2fe
 {
     public partial class Form1 : Form
     {
-        private readonly string WORKING_FOLDER = Path.Combine(".", "working");
-        private readonly string MODULES_FOLDER = Path.Combine(".", "modules");
-        private readonly string PROGRAMS_FOLDER = Path.Combine(".", "programs");
-        private readonly string OUTPUT_FOLDER = Path.Combine(".", "psf2s");
-
+        MkPsf2Worker mkPsf2Worker;
+        
         public Form1()
         {                        
             InitializeComponent();
@@ -20,133 +20,52 @@ namespace mkpsf2fe
         private void btnExecute_Click(object sender, EventArgs e)
         {
             tbOutput.Clear();
+            toolStripStatusLabel1.Text = "Build PSF2s...Begin";
 
-            string[] uniqueSqFiles = this.getUniqueFileNames();
-            if (uniqueSqFiles != null)
-            {
-                makePsf2s(uniqueSqFiles, tbModulesDirectory.Text,
-                WORKING_FOLDER, MODULES_FOLDER, OUTPUT_FOLDER);
-            }
+            MkPsf2Worker.MkPsf2Struct mkStruct = new MkPsf2Worker.MkPsf2Struct();
+            mkStruct.sourcePath = tbSourceDirectory.Text;
+            mkStruct.modulePath = tbModulesDirectory.Text;
+
+            mkPsf2Worker = new MkPsf2Worker();
+            mkPsf2Worker.ProgressChanged += backgroundWorker_ReportProgress;
+            mkPsf2Worker.RunWorkerCompleted += MkPsf2Worker_WorkComplete;
+            mkPsf2Worker.RunWorkerAsync(mkStruct);
         }
 
-        private string[] getUniqueFileNames()
+        private void MkPsf2Worker_WorkComplete(object sender,
+             RunWorkerCompletedEventArgs e)
         {
-            int fileCount = 0;
-            int i = 0;
-            string[] ret = null;
-
-            if (!Directory.Exists(tbSourceDirectory.Text))
+            if (e.Cancelled)
             {
-                tbOutput.Text += String.Format("ERROR: Directory {0} not found.", tbSourceDirectory.Text);
+                toolStripStatusLabel1.Text = "Build PSF2s...Cancelled";
+                tbOutput.Text += "Operation cancelled.";
             }
             else
             {
-                fileCount = Directory.GetFiles(tbSourceDirectory.Text, "*.SQ").Length;
-
-                if (fileCount > 0)
-                {
-                    ret = new string[fileCount];
-                }
-
-
-                foreach (string f in Directory.GetFiles(tbSourceDirectory.Text, "*.SQ"))
-                {
-                    ret[i] = f;
-                    i++;
-                }
+                toolStripStatusLabel1.Text = "Build PSF2s...Complete";
             }
-
-            return ret;
         }
 
-        private void makePsf2s(string[] pUniqueSqFiles, string pSourceModulesFolder, 
-            string pWorkingFolder, string pGenericModulesFolder, string pOutputFolder)
+        private void backgroundWorker_ReportProgress(object sender, ProgressChangedEventArgs e)
         {
-            Process makePsf2Process;
-            
-            Directory.CreateDirectory(pWorkingFolder);           
-            
-            // copy generic modules to working directory
-            File.Copy(Path.Combine(pGenericModulesFolder, "psf2.irx"), Path.Combine(pWorkingFolder, "psf2.irx"), true);
-            File.Copy(Path.Combine(pGenericModulesFolder, "sq.irx"), Path.Combine(pWorkingFolder, "sq.irx"), true);
-
-            //File.Copy(Path.Combine(pGenericModulesFolder, "cdvdnul.irx"), Path.Combine(pWorkingFolder, "cdvdnul.irx"), true);
-            //File.Copy(Path.Combine(pGenericModulesFolder, "fakesif.irx"), Path.Combine(pWorkingFolder, "fakesif.irx"), true);
-            //File.Copy(Path.Combine(pGenericModulesFolder, "myhost.irx"), Path.Combine(pWorkingFolder, "myhost.irx"), true);
-
-            // copy source modules to working directory
-            File.Copy(Path.Combine(pSourceModulesFolder, "LIBSD.IRX"), Path.Combine(pWorkingFolder, "LIBSD.IRX"), true);
-            File.Copy(Path.Combine(pSourceModulesFolder, "MODHSYN.IRX"), Path.Combine(pWorkingFolder, "MODHSYN.IRX"), true);
-            File.Copy(Path.Combine(pSourceModulesFolder, "MODMIDI.IRX"), Path.Combine(pWorkingFolder, "MODMIDI.IRX"), true);
-
-            // copy program
-            string makePsf2SourcePath = Path.Combine(PROGRAMS_FOLDER, "mkpsf2.exe");
-            string makePsf2DestinationPath = Path.Combine(".", "mkpsf2.exe");
-            File.Copy(makePsf2SourcePath, makePsf2DestinationPath, true);
-
-            foreach (string f in pUniqueSqFiles)
-            { 
-                // copy data files to working directory
-                string filePrefix = Path.GetFileNameWithoutExtension(f);
-                string sourceDirectory = Path.GetDirectoryName(f);
-
-                string bdFileName = filePrefix + ".bd";
-                string hdFileName = filePrefix + ".hd";
-                string sqFileName = filePrefix + ".sq";
-
-                string sourceBdFile = Path.Combine(sourceDirectory, bdFileName);
-                string sourceHdFile = Path.Combine(sourceDirectory, hdFileName);
-                string sourceSqFile = Path.Combine(sourceDirectory, sqFileName);
-
-                //string destinationBdFile = Path.Combine(pWorkingFolder, bdFileName);
-                //string destinationHdFile = Path.Combine(pWorkingFolder, hdFileName);
-                //string destinationSqFile = Path.Combine(pWorkingFolder, sqFileName);
-
-                string destinationBdFile = Path.Combine(pWorkingFolder, "DEFAULT.BD");
-                string destinationHdFile = Path.Combine(pWorkingFolder, "DEFAULT.HD");
-                string destinationSqFile = Path.Combine(pWorkingFolder, "DEFAULT.SQ");
-
-                File.Copy(sourceBdFile, destinationBdFile);
-                File.Copy(sourceHdFile, destinationHdFile);
-                File.Copy(sourceSqFile, destinationSqFile);
-
-                // write ini file
-                string iniPath = Path.Combine(pWorkingFolder, "psf2.ini");
-                StreamWriter sw = File.CreateText(iniPath);
-                sw.WriteLine("libsd.irx");
-                sw.WriteLine("modhsyn.irx");
-                sw.WriteLine("modmidi.irx");
-                //sw.WriteLine(String.Format("sq.irx -r=5 -d=16383 -s={0} -h={1} -b={2}",
-                //    sqFileName, hdFileName, bdFileName));               
-                sw.WriteLine("sq.irx -r=5 -d=16383");                                
-                sw.Close();
-                sw.Dispose();
-
-                // run makepsf2                
-                string arguments = String.Format(" {0}.psf2 {1}", filePrefix, pWorkingFolder);
-                makePsf2Process = new Process();
-                makePsf2Process.StartInfo = new ProcessStartInfo(makePsf2DestinationPath, arguments);
-                makePsf2Process.StartInfo.UseShellExecute = false;
-                makePsf2Process.StartInfo.CreateNoWindow = true;
-                bool isSuccess = makePsf2Process.Start();
-                makePsf2Process.WaitForExit();
-
-                if (isSuccess)
-                {
-                    tbOutput.Text += String.Format("{0}.psf2 created.", filePrefix) + 
-                        Environment.NewLine;
-                    File.Move(filePrefix + ".psf2", Path.Combine(pOutputFolder, filePrefix + ".psf2"));
-                }
-
-                File.Delete(destinationBdFile);
-                File.Delete(destinationHdFile);
-                File.Delete(destinationSqFile);
-                File.Delete(iniPath);
-
+            if (e.ProgressPercentage != Constants.IGNORE_PROGRESS &&
+                e.ProgressPercentage != Constants.PROGRESS_MSG_ONLY)
+            {
+                toolStripProgressBar.Value = e.ProgressPercentage;
+                this.Text = "mkpsf2FE [" + e.ProgressPercentage + "%]";
             }
 
-            Directory.Delete(pWorkingFolder, true);
-            File.Delete(makePsf2DestinationPath);
+            if ((e.ProgressPercentage == Constants.PROGRESS_MSG_ONLY) && e.UserState != null)
+            {
+                Constants.ProgressStruct vProgressStruct = (Constants.ProgressStruct)e.UserState;
+                tbOutput.Text += vProgressStruct.genericMessage;
+            }
+            else if (e.UserState != null)
+            {
+                Constants.ProgressStruct vProgressStruct = (Constants.ProgressStruct)e.UserState;
+
+                tbOutput.Text += vProgressStruct.errorMessage == null ? String.Empty : vProgressStruct.errorMessage;
+            }
         }
 
         private void btnSourceDirectoryBrowse_Click(object sender, EventArgs e)
@@ -158,6 +77,21 @@ namespace mkpsf2fe
             }
         }
 
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            if (mkPsf2Worker != null && mkPsf2Worker.IsBusy)
+            {
+                mkPsf2Worker.CancelAsync();
+            }
+        }
 
+        private void btnModulesDirectoryBrowse_Click(object sender, EventArgs e)
+        {
+            folderBrowserDialog = new FolderBrowserDialog();
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {
+                tbModulesDirectory.Text = folderBrowserDialog.SelectedPath;
+            }
+        }
     }
 }
