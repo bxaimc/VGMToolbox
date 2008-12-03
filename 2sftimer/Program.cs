@@ -85,10 +85,13 @@ namespace _2sftimer
             // Loop through SMAP and build timing script
             Console.WriteLine("Building Timing Script");
             string emptyFileDir = Path.Combine(pathTo2sf, EMPTY_FILE_DIRECTORY);
-            
+
+            int totalSequences = smap.SseqSection.Length;
+            int i = 1;
             foreach (Smap.SmapSeqStruct s in smap.SseqSection)
             {
-                Console.Write(".");
+                Console.Write("\r" + String.Format("Processing [{0}/{1}]",
+                    i.ToString().PadLeft(4, '0'), totalSequences.ToString().PadLeft(4, '0')));
                 
                 string rippedFileName = String.Format("{0}-{1}.mini2sf", filePrefix, s.number.ToString("X4"));
                 string rippedFilePath = Path.Combine(pathTo2sf, rippedFileName);
@@ -122,6 +125,7 @@ namespace _2sftimer
                             rippedFilePath, sseqFilePath);
                     }
                 }
+                i++;
             }
 
             // run timing script
