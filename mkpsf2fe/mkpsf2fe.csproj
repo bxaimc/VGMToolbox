@@ -90,6 +90,9 @@
     <Content Include="programs\mkpsf2.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="programs\mkpsf2.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="psf2s\dir.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -24,6 +24,12 @@ namespace mkpsf2fe
         {
             public string sourcePath;
             public string modulePath;
+            
+            public string tickInterval;
+            public string reverb;
+            public string depth;
+            public string tempo;
+            public string volume;
         }
 
         public MkPsf2Worker()
@@ -47,7 +53,7 @@ namespace mkpsf2fe
                 if (uniqueSqFiles != null)
                 {
                     this.maxFiles = uniqueSqFiles.Length;
-                    this.buildPsf2s(uniqueSqFiles, pMkPsf2Struct.modulePath, e);
+                    this.buildPsf2s(uniqueSqFiles, pMkPsf2Struct, e);
                 }
             }
             else
@@ -93,7 +99,7 @@ namespace mkpsf2fe
             return ret;
         }
 
-        private void buildPsf2s(string[] pUniqueSqFiles, string pSourceModulesFolder,
+        private void buildPsf2s(string[] pUniqueSqFiles, MkPsf2Struct pMkPsf2Struct, 
             DoWorkEventArgs e)
         {
             Process makePsf2Process;
@@ -106,9 +112,9 @@ namespace mkpsf2fe
             File.Copy(Path.Combine(MODULES_FOLDER, "sq.irx"), Path.Combine(WORKING_FOLDER, "sq.irx"), true);
 
             // copy source modules to working directory
-            File.Copy(Path.Combine(pSourceModulesFolder, "LIBSD.IRX"), Path.Combine(WORKING_FOLDER, "LIBSD.IRX"), true);
-            File.Copy(Path.Combine(pSourceModulesFolder, "MODHSYN.IRX"), Path.Combine(WORKING_FOLDER, "MODHSYN.IRX"), true);
-            File.Copy(Path.Combine(pSourceModulesFolder, "MODMIDI.IRX"), Path.Combine(WORKING_FOLDER, "MODMIDI.IRX"), true);
+            File.Copy(Path.Combine(pMkPsf2Struct.modulePath, "LIBSD.IRX"), Path.Combine(WORKING_FOLDER, "LIBSD.IRX"), true);
+            File.Copy(Path.Combine(pMkPsf2Struct.modulePath, "MODHSYN.IRX"), Path.Combine(WORKING_FOLDER, "MODHSYN.IRX"), true);
+            File.Copy(Path.Combine(pMkPsf2Struct.modulePath, "MODMIDI.IRX"), Path.Combine(WORKING_FOLDER, "MODMIDI.IRX"), true);
 
             // copy program
             string makePsf2SourcePath = Path.Combine(PROGRAMS_FOLDER, "mkpsf2.exe");
@@ -119,6 +125,8 @@ namespace mkpsf2fe
             {
                 if (!CancellationPending)
                 {
+                    StringBuilder sqArguments = new StringBuilder();
+                    
                     // report progress
                     int progress = (++this.fileCount * 100) / maxFiles;
                     vProgressStruct = new Constants.ProgressStruct();
@@ -152,8 +160,27 @@ namespace mkpsf2fe
                     sw.WriteLine("libsd.irx");
                     sw.WriteLine("modhsyn.irx");
                     sw.WriteLine("modmidi.irx");
-                    sw.WriteLine(String.Format("sq.irx -r=5 -d=16383 -s={0} -h={1} -b={2}",
+                    
+                    // build sq.irx arguments                    
+                    sqArguments.Append(String.IsNullOrEmpty(pMkPsf2Struct.reverb.Trim()) ?
+                        " -r=5" : String.Format(" -r={0}", pMkPsf2Struct.reverb.Trim()));
+                    sqArguments.Append(String.IsNullOrEmpty(pMkPsf2Struct.depth.Trim()) ?
+                        " -d=16383" : String.Format(" -d={0}", pMkPsf2Struct.depth.Trim()));
+
+                    sqArguments.Append(String.IsNullOrEmpty(pMkPsf2Struct.tickInterval.Trim()) ?
+                        String.Empty : String.Format(" -u={0}", pMkPsf2Struct.tickInterval.Trim()));
+                    sqArguments.Append(String.IsNullOrEmpty(pMkPsf2Struct.tempo.Trim()) ?
+                        String.Empty : String.Format(" -t={0}", pMkPsf2Struct.tempo.Trim()));
+                    sqArguments.Append(String.IsNullOrEmpty(pMkPsf2Struct.volume.Trim()) ?
+                        String.Empty : String.Format(" -v={0}", pMkPsf2Struct.volume.Trim()));
+
+                    sqArguments.Append(String.Format(" -s={0} -h={1} -b={2}",
                         sqFileName, hdFileName, bdFileName));
+
+                    //sw.WriteLine(String.Format("sq.irx -r=5 -d=16383 -s={0} -h={1} -b={2}",
+                    //    sqFileName, hdFileName, bdFileName));
+
+                    sw.WriteLine(String.Format("sq.irx {0}", sqArguments.ToString()));
                     sw.Close();
                     sw.Dispose();
 

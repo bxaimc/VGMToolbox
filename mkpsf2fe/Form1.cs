@@ -26,6 +26,12 @@ namespace mkpsf2fe
             mkStruct.sourcePath = tbSourceDirectory.Text;
             mkStruct.modulePath = tbModulesDirectory.Text;
 
+            mkStruct.depth = tbDepth.Text;
+            mkStruct.reverb = tbReverb.Text;
+            mkStruct.tempo = tbTempo.Text;
+            mkStruct.tickInterval = tbTickInterval.Text;
+            mkStruct.volume = tbVolume.Text;
+
             mkPsf2Worker = new MkPsf2Worker();
             mkPsf2Worker.ProgressChanged += backgroundWorker_ReportProgress;
             mkPsf2Worker.RunWorkerCompleted += MkPsf2Worker_WorkComplete;
