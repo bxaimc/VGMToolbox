@@ -174,6 +174,14 @@
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.tb2sf_Source = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
+            this.tabPage18 = new System.Windows.Forms.TabPage();
+            this.groupBox12 = new System.Windows.Forms.GroupBox();
+            this.tb2sfTimer_SetPrefix = new System.Windows.Forms.TextBox();
+            this.groupBox11 = new System.Windows.Forms.GroupBox();
+            this.label20 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.tb2sfTimer_2sfDirectory = new System.Windows.Forms.TextBox();
+            this.tb2sfTimer_SdartPath = new System.Windows.Forms.TextBox();
             this.tabPage16 = new System.Windows.Forms.TabPage();
             this.tabControl6 = new System.Windows.Forms.TabControl();
             this.tabPage17 = new System.Windows.Forms.TabPage();
@@ -194,14 +202,7 @@
             this.lblTimeElapsed = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.tabPage18 = new System.Windows.Forms.TabPage();
-            this.tb2sfTimer_2sfDirectory = new System.Windows.Forms.TextBox();
-            this.tb2sfTimer_SdartPath = new System.Windows.Forms.TextBox();
-            this.tb2sfTimer_SetPrefix = new System.Windows.Forms.TextBox();
-            this.groupBox11 = new System.Windows.Forms.GroupBox();
-            this.label18 = new System.Windows.Forms.Label();
-            this.label20 = new System.Windows.Forms.Label();
-            this.groupBox12 = new System.Windows.Forms.GroupBox();
+            this.btnTestGui = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -243,14 +244,14 @@
             this.groupBox9.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox7.SuspendLayout();
+            this.tabPage18.SuspendLayout();
+            this.groupBox12.SuspendLayout();
+            this.groupBox11.SuspendLayout();
             this.tabPage16.SuspendLayout();
             this.tabControl6.SuspendLayout();
             this.tabPage17.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.statusStrip1.SuspendLayout();
-            this.tabPage18.SuspendLayout();
-            this.groupBox11.SuspendLayout();
-            this.groupBox12.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -912,7 +913,7 @@
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(9, 144);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(228, 13);
+            this.label8.Size = new System.Drawing.Size(226, 13);
             this.label8.TabIndex = 5;
             this.label8.Text = "Also see \\examine\\examine.txt for your output.";
             // 
@@ -1702,6 +1703,79 @@
             this.label15.TabIndex = 4;
             this.label15.Text = "Drag ROM to rip here";
             // 
+            // tabPage18
+            // 
+            this.tabPage18.Controls.Add(this.groupBox12);
+            this.tabPage18.Controls.Add(this.groupBox11);
+            this.tabPage18.Location = new System.Drawing.Point(4, 22);
+            this.tabPage18.Name = "tabPage18";
+            this.tabPage18.Size = new System.Drawing.Size(663, 144);
+            this.tabPage18.TabIndex = 2;
+            this.tabPage18.Text = "2sf Timer";
+            this.tabPage18.UseVisualStyleBackColor = true;
+            // 
+            // groupBox12
+            // 
+            this.groupBox12.Controls.Add(this.tb2sfTimer_SetPrefix);
+            this.groupBox12.Location = new System.Drawing.Point(434, 1);
+            this.groupBox12.Name = "groupBox12";
+            this.groupBox12.Size = new System.Drawing.Size(226, 108);
+            this.groupBox12.TabIndex = 4;
+            this.groupBox12.TabStop = false;
+            this.groupBox12.Text = "Set Prefix";
+            // 
+            // tb2sfTimer_SetPrefix
+            // 
+            this.tb2sfTimer_SetPrefix.Location = new System.Drawing.Point(6, 37);
+            this.tb2sfTimer_SetPrefix.Name = "tb2sfTimer_SetPrefix";
+            this.tb2sfTimer_SetPrefix.Size = new System.Drawing.Size(214, 20);
+            this.tb2sfTimer_SetPrefix.TabIndex = 2;
+            // 
+            // groupBox11
+            // 
+            this.groupBox11.Controls.Add(this.label20);
+            this.groupBox11.Controls.Add(this.label18);
+            this.groupBox11.Controls.Add(this.tb2sfTimer_2sfDirectory);
+            this.groupBox11.Controls.Add(this.tb2sfTimer_SdartPath);
+            this.groupBox11.Location = new System.Drawing.Point(3, 1);
+            this.groupBox11.Name = "groupBox11";
+            this.groupBox11.Size = new System.Drawing.Size(425, 108);
+            this.groupBox11.TabIndex = 3;
+            this.groupBox11.TabStop = false;
+            this.groupBox11.Text = "Source Locations";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(6, 60);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(73, 13);
+            this.label20.TabIndex = 3;
+            this.label20.Text = "Path to SDAT";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(6, 16);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(71, 13);
+            this.label18.TabIndex = 2;
+            this.label18.Text = "mini2sf Folder";
+            // 
+            // tb2sfTimer_2sfDirectory
+            // 
+            this.tb2sfTimer_2sfDirectory.Location = new System.Drawing.Point(6, 37);
+            this.tb2sfTimer_2sfDirectory.Name = "tb2sfTimer_2sfDirectory";
+            this.tb2sfTimer_2sfDirectory.Size = new System.Drawing.Size(316, 20);
+            this.tb2sfTimer_2sfDirectory.TabIndex = 0;
+            // 
+            // tb2sfTimer_SdartPath
+            // 
+            this.tb2sfTimer_SdartPath.Location = new System.Drawing.Point(6, 76);
+            this.tb2sfTimer_SdartPath.Name = "tb2sfTimer_SdartPath";
+            this.tb2sfTimer_SdartPath.Size = new System.Drawing.Size(316, 20);
+            this.tb2sfTimer_SdartPath.TabIndex = 1;
+            // 
             // tabPage16
             // 
             this.tabPage16.Controls.Add(this.tabControl6);
@@ -1855,83 +1929,21 @@
             this.textBox1.Size = new System.Drawing.Size(259, 20);
             this.textBox1.TabIndex = 1;
             // 
-            // tabPage18
+            // btnTestGui
             // 
-            this.tabPage18.Controls.Add(this.groupBox12);
-            this.tabPage18.Controls.Add(this.groupBox11);
-            this.tabPage18.Location = new System.Drawing.Point(4, 22);
-            this.tabPage18.Name = "tabPage18";
-            this.tabPage18.Size = new System.Drawing.Size(663, 144);
-            this.tabPage18.TabIndex = 2;
-            this.tabPage18.Text = "2sf Timer";
-            this.tabPage18.UseVisualStyleBackColor = true;
-            // 
-            // tb2sfTimer_2sfDirectory
-            // 
-            this.tb2sfTimer_2sfDirectory.Location = new System.Drawing.Point(6, 37);
-            this.tb2sfTimer_2sfDirectory.Name = "tb2sfTimer_2sfDirectory";
-            this.tb2sfTimer_2sfDirectory.Size = new System.Drawing.Size(316, 20);
-            this.tb2sfTimer_2sfDirectory.TabIndex = 0;
-            // 
-            // tb2sfTimer_SdartPath
-            // 
-            this.tb2sfTimer_SdartPath.Location = new System.Drawing.Point(6, 76);
-            this.tb2sfTimer_SdartPath.Name = "tb2sfTimer_SdartPath";
-            this.tb2sfTimer_SdartPath.Size = new System.Drawing.Size(316, 20);
-            this.tb2sfTimer_SdartPath.TabIndex = 1;
-            // 
-            // tb2sfTimer_SetPrefix
-            // 
-            this.tb2sfTimer_SetPrefix.Location = new System.Drawing.Point(6, 37);
-            this.tb2sfTimer_SetPrefix.Name = "tb2sfTimer_SetPrefix";
-            this.tb2sfTimer_SetPrefix.Size = new System.Drawing.Size(214, 20);
-            this.tb2sfTimer_SetPrefix.TabIndex = 2;
-            // 
-            // groupBox11
-            // 
-            this.groupBox11.Controls.Add(this.label20);
-            this.groupBox11.Controls.Add(this.label18);
-            this.groupBox11.Controls.Add(this.tb2sfTimer_2sfDirectory);
-            this.groupBox11.Controls.Add(this.tb2sfTimer_SdartPath);
-            this.groupBox11.Location = new System.Drawing.Point(3, 1);
-            this.groupBox11.Name = "groupBox11";
-            this.groupBox11.Size = new System.Drawing.Size(425, 108);
-            this.groupBox11.TabIndex = 3;
-            this.groupBox11.TabStop = false;
-            this.groupBox11.Text = "Source Locations";
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(6, 16);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(71, 13);
-            this.label18.TabIndex = 2;
-            this.label18.Text = "mini2sf Folder";
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(6, 60);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(73, 13);
-            this.label20.TabIndex = 3;
-            this.label20.Text = "Path to SDAT";
-            // 
-            // groupBox12
-            // 
-            this.groupBox12.Controls.Add(this.tb2sfTimer_SetPrefix);
-            this.groupBox12.Location = new System.Drawing.Point(434, 1);
-            this.groupBox12.Name = "groupBox12";
-            this.groupBox12.Size = new System.Drawing.Size(226, 108);
-            this.groupBox12.TabIndex = 4;
-            this.groupBox12.TabStop = false;
-            this.groupBox12.Text = "Set Prefix";
+            this.btnTestGui.Location = new System.Drawing.Point(600, 12);
+            this.btnTestGui.Name = "btnTestGui";
+            this.btnTestGui.Size = new System.Drawing.Size(85, 26);
+            this.btnTestGui.TabIndex = 5;
+            this.btnTestGui.Text = "Test GUI";
+            this.btnTestGui.UseVisualStyleBackColor = true;
+            this.btnTestGui.Click += new System.EventHandler(this.btnTestGui_Click);
             // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(686, 379);
+            this.Controls.Add(this.btnTestGui);
             this.Controls.Add(this.lblTimeElapsed);
             this.Controls.Add(this.lblProgressLabel);
             this.Controls.Add(this.statusStrip1);
@@ -2011,6 +2023,11 @@
             this.groupBox8.PerformLayout();
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
+            this.tabPage18.ResumeLayout(false);
+            this.groupBox12.ResumeLayout(false);
+            this.groupBox12.PerformLayout();
+            this.groupBox11.ResumeLayout(false);
+            this.groupBox11.PerformLayout();
             this.tabPage16.ResumeLayout(false);
             this.tabControl6.ResumeLayout(false);
             this.tabPage17.ResumeLayout(false);
@@ -2018,11 +2035,6 @@
             this.groupBox10.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            this.tabPage18.ResumeLayout(false);
-            this.groupBox11.ResumeLayout(false);
-            this.groupBox11.PerformLayout();
-            this.groupBox12.ResumeLayout(false);
-            this.groupBox12.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2202,6 +2214,7 @@
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.GroupBox groupBox12;
+        private System.Windows.Forms.Button btnTestGui;
     }
 }
 

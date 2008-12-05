@@ -18,5 +18,12 @@ namespace VGMToolbox.util
             public string genericMessage;
             public TreeNode newNode;
         }    
+
+        // Node Tags
+        public struct NodeTagStruct
+        {
+            public string panel;
+        } 
+
     }
 }
