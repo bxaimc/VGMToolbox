@@ -38,6 +38,17 @@ namespace VGMToolbox.util
             return ret;
         }
 
+        public static byte[] parseSimpleOffset(Stream pFileStream, long pOffset, int pLength)
+        {
+            byte[] ret = new byte[pLength];
+
+            pFileStream.Seek(pOffset, SeekOrigin.Begin);
+            BinaryReader br = new BinaryReader(pFileStream);
+            ret = br.ReadBytes(pLength);
+
+            return ret;
+        }
+
         public static void parseSimpleOffset(Stream pFileStream, int pOffset, int pLength, ref ByteArray pOutputBuffer)
         {
             pFileStream.Seek((long)pOffset, SeekOrigin.Begin);
@@ -162,7 +173,40 @@ namespace VGMToolbox.util
                 offset += read;
             }
         }
-        
+
+        public static void ExtractChunkToFile(Stream pStream, long pOffset, int pLength, string pFilePath)
+        {
+            BinaryWriter bw = null;
+
+            try
+            {
+                bw = new BinaryWriter(File.Open(pFilePath, FileMode.Create, FileAccess.Write));
+
+                int read = 0;
+                int totalBytes = 0;
+                byte[] bytes = new byte[4096];
+                pStream.Seek((long)pOffset, SeekOrigin.Begin);
+
+                int maxread = pLength > bytes.Length ? bytes.Length : pLength;
+
+                while ((read = pStream.Read(bytes, 0, maxread)) > 0)
+                {
+                    bw.Write(bytes, 0, read);
+                    totalBytes += read;
+
+                    maxread = (pLength - totalBytes) > bytes.Length ? bytes.Length : (pLength - totalBytes);
+                }
+            }
+            finally
+            {
+                if (bw != null)
+                {
+                    bw.Close();
+                }
+            }
+
+        }
+
         public static void AddChunkToChecksum(Stream pStream, int pOffset, int pLength,
             ref Crc32 pCrc32)
         {

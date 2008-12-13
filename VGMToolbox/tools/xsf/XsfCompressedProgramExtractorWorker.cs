@@ -137,7 +137,7 @@ namespace VGMToolbox.tools.xsf
                         {
                             bw.Write(data);
                         }
-
+                        
                         bw.Close();
                         inflater.Close();
                         inflater.Dispose();                        
