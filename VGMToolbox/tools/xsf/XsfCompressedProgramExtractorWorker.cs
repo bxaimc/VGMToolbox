@@ -10,6 +10,7 @@ using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 
 using VGMToolbox.auditing;
 using VGMToolbox.format;
+using VGMToolbox.util;
 
 namespace VGMToolbox.tools.xsf
 {
@@ -23,6 +24,7 @@ namespace VGMToolbox.tools.xsf
             public string[] pPaths;
             public int totalFiles;
             public bool includeExtension;
+            public bool stripGsfHeader;
         }
 
         public XsfCompressedProgramExtractorWorker()
@@ -44,7 +46,7 @@ namespace VGMToolbox.tools.xsf
                     if (!CancellationPending)
                     {
                         this.extractCompressedProgramFromFile(path, 
-                            pXsfCompressedProgramExtractorStruct.includeExtension, e);
+                            pXsfCompressedProgramExtractorStruct, e);
                     }
                     else 
                     {
@@ -55,7 +57,7 @@ namespace VGMToolbox.tools.xsf
                 else if (Directory.Exists(path))
                 {
                     this.extractCompressedProgramsFromDirectory(path, 
-                        pXsfCompressedProgramExtractorStruct.includeExtension, e);
+                        pXsfCompressedProgramExtractorStruct, e);
 
                     if (CancellationPending)
                     {
@@ -69,13 +71,14 @@ namespace VGMToolbox.tools.xsf
         }
 
 
-        private void extractCompressedProgramsFromDirectory(string pPath, bool pIncludeFileExtension, DoWorkEventArgs e)
+        private void extractCompressedProgramsFromDirectory(string pPath, 
+            XsfCompressedProgramExtractorStruct pXsfCompressedProgramExtractorStruct, DoWorkEventArgs e)
         {
             foreach (string d in Directory.GetDirectories(pPath))
             {
                 if (!CancellationPending)
                 {
-                    this.extractCompressedProgramsFromDirectory(d, pIncludeFileExtension, e);
+                    this.extractCompressedProgramsFromDirectory(d, pXsfCompressedProgramExtractorStruct, e);
                 }
                 else
                 {
@@ -87,7 +90,7 @@ namespace VGMToolbox.tools.xsf
             {
                 if (!CancellationPending)
                 {
-                    this.extractCompressedProgramFromFile(f, pIncludeFileExtension, e);
+                    this.extractCompressedProgramFromFile(f, pXsfCompressedProgramExtractorStruct, e);
                     // fileCount++;
                 }
                 else
@@ -98,7 +101,8 @@ namespace VGMToolbox.tools.xsf
             }                
         }
 
-        private void extractCompressedProgramFromFile(string pPath, bool pIncludeFileExtension, DoWorkEventArgs e)
+        private void extractCompressedProgramFromFile(string pPath, 
+            XsfCompressedProgramExtractorStruct pXsfCompressedProgramExtractorStruct, DoWorkEventArgs e)
         {
             // Report Progress
             int progress = (++fileCount * 100) / maxFiles;
@@ -121,7 +125,7 @@ namespace VGMToolbox.tools.xsf
                     {
                         BinaryWriter bw;
                         string outputFile = Path.GetDirectoryName(pPath) + Path.DirectorySeparatorChar;
-                        outputFile += (pIncludeFileExtension? Path.GetFileName(pPath) : Path.GetFileNameWithoutExtension(pPath)) + ".bin";
+                        outputFile += (pXsfCompressedProgramExtractorStruct.includeExtension? Path.GetFileName(pPath) : Path.GetFileNameWithoutExtension(pPath)) + ".bin";
                         
                         
                         bw = new BinaryWriter(File.Create(outputFile));
@@ -140,7 +144,25 @@ namespace VGMToolbox.tools.xsf
                         
                         bw.Close();
                         inflater.Close();
-                        inflater.Dispose();                        
+                        inflater.Dispose(); 
+                       
+                        // strip GSF header
+                        if (pXsfCompressedProgramExtractorStruct.stripGsfHeader)
+                        {
+                            string strippedOutputFileName = outputFile + ".strip";
+                            
+                            using (FileStream gsfStream = File.OpenRead(outputFile))
+                            {                                
+                                long fileOffset = 0x0C;
+                                int fileLength = (int) (gsfStream.Length - fileOffset) + 1;
+
+                                ParseFile.ExtractChunkToFile(gsfStream, fileOffset, fileLength, 
+                                    strippedOutputFileName);
+                            }
+
+                            File.Copy(strippedOutputFileName, outputFile, true);
+                            File.Delete(strippedOutputFileName);
+                        }
                     }
                 }
                 fs.Close();
