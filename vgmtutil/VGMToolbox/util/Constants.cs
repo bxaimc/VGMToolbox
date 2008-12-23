@@ -22,7 +22,7 @@ namespace VGMToolbox.util
         // Node Tags
         public struct NodeTagStruct
         {
-            public string panel;
+            public string formClass;
         } 
 
     }

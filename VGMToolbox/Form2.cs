@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
+using VGMToolbox.forms;
 using VGMToolbox.util;
 
 namespace VGMToolbox
@@ -98,7 +99,7 @@ namespace VGMToolbox
             TreeNode xsf_xsf2ExeNode = new TreeNode("xSF2EXE");
             
             TreeNode xsf_2sfRipperNode = new TreeNode("2SF Ripper");
-            nodeTag.panel = "pnlXsf_2sfRipper";
+            nodeTag.formClass = "pnlXsf_2sfRipper";
             xsf_2sfRipperNode.Tag = nodeTag;
 
             TreeNode xsf_2sfTimerNode = new TreeNode("2SF Timer");
@@ -115,16 +116,24 @@ namespace VGMToolbox
 
             tools_RootNode.Nodes.Add(xsf_RootNode);
 
-            // NDS
+            /*****************************
+             * NDS
+             ******************************/            
             TreeNode nds_RootNode = new TreeNode("NDS Tools");
+
+            // SDAT Extractor
             TreeNode nds_SdatExtractorNode = new TreeNode("SDAT Extractor");
             nds_RootNode.NodeFont = this.treeviewBoldFont;
 
-            nodeTag.panel = "pnlNds_SdatExtractor";
+            Xsf_SdatExtractorForm xsf_SdatExtractorForm = new Xsf_SdatExtractorForm();
+            this.splitContainer1.Panel2.Controls.Add(xsf_SdatExtractorForm);
+
+            nodeTag.formClass = xsf_SdatExtractorForm.GetType().Name; ;
             nds_SdatExtractorNode.Tag = nodeTag;
 
             nds_RootNode.Nodes.Add(nds_SdatExtractorNode);
 
+            
             tools_RootNode.Nodes.Add(nds_RootNode);
 
             // add Tools node to Root
@@ -144,18 +153,19 @@ namespace VGMToolbox
                 
                 // e.Node.ForeColor = Color.Red; // use this when a process is running?
                 
-                showPanel(Controls, nts.panel);
+                showForm(this.splitContainer1.Panel2.Controls, nts.formClass);
             }
         }
 
-        private void showPanel(Control.ControlCollection pControls, string pPanelName)
+        private void showForm(Control.ControlCollection pControls, string pFormClass)
         {
             foreach (Control ctrl in pControls)
             {
-                if ((ctrl is Panel) && (!String.IsNullOrEmpty(ctrl.Name)))
+                if ((ctrl is Form)&& (!String.IsNullOrEmpty(ctrl.Name)))
                 {
-                    if ((!String.IsNullOrEmpty(pPanelName)) && (pPanelName.Equals(ctrl.Name)))
+                    if ((!String.IsNullOrEmpty(pFormClass)) && (pFormClass.Equals(ctrl.Name)))
                     {
+                        ctrl.Show();
                         ctrl.Visible = true;
                         ctrl.BringToFront();
                     }
@@ -165,7 +175,7 @@ namespace VGMToolbox
                     }
                 }
 
-                showPanel(ctrl.Controls, pPanelName);
+                // showForm(ctrl.Controls, pFormClass);
             }        
         }
     }
