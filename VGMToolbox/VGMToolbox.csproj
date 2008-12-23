@@ -82,6 +82,18 @@
     <Compile Include="Form2.Designer.cs">
       <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\VgmtForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\VgmtForm.Designer.cs">
+      <DependentUpon>VgmtForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="forms\VgmtTreeviewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\VgmtTreeviewForm.Designer.cs">
+      <DependentUpon>VgmtTreeviewForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\Xsf_SdatExtractorForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -96,6 +108,14 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form2.resx">
       <DependentUpon>Form2.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\VgmtForm.resx">
+      <DependentUpon>VgmtForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\VgmtTreeviewForm.resx">
+      <DependentUpon>VgmtTreeviewForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Xsf_SdatExtractorForm.resx">

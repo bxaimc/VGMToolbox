@@ -45,6 +45,7 @@
             // 
             // splitContainer1
             // 
+            this.splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.Location = new System.Drawing.Point(0, 24);
             this.splitContainer1.Name = "splitContainer1";
@@ -61,7 +62,7 @@
             this.tvMenuTree.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tvMenuTree.Location = new System.Drawing.Point(0, 0);
             this.tvMenuTree.Name = "tvMenuTree";
-            this.tvMenuTree.Size = new System.Drawing.Size(215, 396);
+            this.tvMenuTree.Size = new System.Drawing.Size(213, 394);
             this.tvMenuTree.TabIndex = 0;
             // 
             // Form2
