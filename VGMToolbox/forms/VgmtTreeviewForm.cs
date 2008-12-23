@@ -12,6 +12,10 @@ namespace VGMToolbox.forms
     {
         public VgmtTreeviewForm()
         {
+            this.treeView1 = new TreeView();            
+            this.treeView1.Dock = DockStyle.Left;
+            this.treeView1.BringToFront();
+
             InitializeComponent();
         }
     }

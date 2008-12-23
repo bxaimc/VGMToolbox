@@ -50,8 +50,24 @@ namespace VGMToolbox
             // Examine
             ///////////
             TreeNode examine_RootNode = new TreeNode("Examine/Exploration Tools");
+            
+            // Tag Viewer
             TreeNode examine_TagViewerNode = new TreeNode("Tag/Info Viewer");
+            Examine_TagViewerForm examine_TagViewerForm = new Examine_TagViewerForm();
+            this.splitContainer1.Panel2.Controls.Add(examine_TagViewerForm);
+
+            nodeTag.formClass = examine_TagViewerForm.GetType().Name;
+            examine_TagViewerNode.Tag = nodeTag;
+            
+            
+            
+            // MDX Checker
             TreeNode examine_MDXCheckerNode = new TreeNode("MDX Checker");
+            
+            
+            
+            
+            
             examine_RootNode.NodeFont = this.treeviewBoldFont;
 
             examine_RootNode.Nodes.Add(examine_TagViewerNode);
@@ -128,7 +144,7 @@ namespace VGMToolbox
             Xsf_SdatExtractorForm xsf_SdatExtractorForm = new Xsf_SdatExtractorForm();
             this.splitContainer1.Panel2.Controls.Add(xsf_SdatExtractorForm);
 
-            nodeTag.formClass = xsf_SdatExtractorForm.GetType().Name; ;
+            nodeTag.formClass = xsf_SdatExtractorForm.GetType().Name;
             nds_SdatExtractorNode.Tag = nodeTag;
 
             nds_RootNode.Nodes.Add(nds_SdatExtractorNode);

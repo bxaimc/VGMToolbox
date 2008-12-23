@@ -43,7 +43,7 @@
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(547, 0);
+            this.lblProgressLabel.Location = new System.Drawing.Point(547, 0);
             // 
             // tbOutput
             // 
@@ -82,6 +82,8 @@
             this.tbNDS_SdatExtractor_Source.Name = "tbNDS_SdatExtractor_Source";
             this.tbNDS_SdatExtractor_Source.Size = new System.Drawing.Size(282, 20);
             this.tbNDS_SdatExtractor_Source.TabIndex = 0;
+            this.tbNDS_SdatExtractor_Source.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbNDS_SdatExtractor_Source_DragDrop);
+            this.tbNDS_SdatExtractor_Source.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbNDS_SdatExtractor_Source_DragEnter);
             // 
             // Xsf_SdatExtractorForm
             // 

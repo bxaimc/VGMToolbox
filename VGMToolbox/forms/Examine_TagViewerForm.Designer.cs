@@ -1,6 +1,6 @@
 ﻿namespace VGMToolbox.forms
 {
-    partial class VgmtTreeviewForm
+    partial class Examine_TagViewerForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,30 +28,17 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.treeView1 = new System.Windows.Forms.TreeView();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.SuspendLayout();
             // 
-            // treeView1
-            // 
-            this.treeView1.Location = new System.Drawing.Point(0, 26);
-            this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(301, 228);
-            this.treeView1.TabIndex = 4;
-            // 
-            // VgmtTreeviewForm
+            // Examine_TagViewerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(577, 393);
-            this.Controls.Add(this.treeView1);
-            this.Name = "VgmtTreeviewForm";
-            this.Text = "VgmtTreeviewForm";
-            this.Controls.SetChildIndex(this.treeView1, 0);
-            this.Controls.SetChildIndex(this.pnlLabels, 0);
-            this.Controls.SetChildIndex(this.tbOutput, 0);
-            this.Controls.SetChildIndex(this.pnlTitle, 0);
+            this.ClientSize = new System.Drawing.Size(539, 377);
+            this.Name = "Examine_TagViewerForm";
+            this.Text = "Examine_TagViewerForm";
             this.pnlLabels.ResumeLayout(false);
             this.pnlLabels.PerformLayout();
             this.pnlTitle.ResumeLayout(false);
@@ -62,9 +49,5 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.TreeView treeView1;
-
-
     }
 }
