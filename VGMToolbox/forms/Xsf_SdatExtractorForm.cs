@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using VGMToolbox.tools.nds;
+using VGMToolbox.util;
 
 namespace VGMToolbox.forms
 {
@@ -15,32 +16,18 @@ namespace VGMToolbox.forms
     {
         SdatExtractorWorker sdatExtractorWorker;
 
-        DateTime elapsedTimeStart;
-        DateTime elapsedTimeEnd;
-        TimeSpan elapsedTime;
-
         public Xsf_SdatExtractorForm()
         {
             this.TopLevel = false;
             this.FormBorderStyle = FormBorderStyle.None;
-            this.Dock = DockStyle.Fill;           
+            this.Dock = DockStyle.Fill;
             this.lblTitle.Text = "SDAT Extractor";
-            
-            InitializeComponent();
-        }
 
-        private void tbNDS_SdatExtractor_Source_DragEnter(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
-                e.Effect = DragDropEffects.All;
-            else
-                e.Effect = DragDropEffects.None;
+            InitializeComponent();
         }
 
         private void tbNDS_SdatExtractor_Source_DragDrop(object sender, DragEventArgs e)
         {
-            this.tbOutput.Clear();
-            
             toolStripStatusLabel1.Text = "SDAT Extraction...Begin";
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
@@ -82,6 +69,20 @@ namespace VGMToolbox.forms
                 lblProgressLabel.Text = String.Empty;
                 toolStripStatusLabel1.Text = "SDAT Extraction...Complete";
             }
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            if (sdatExtractorWorker != null && sdatExtractorWorker.IsBusy)
+            {
+                tbOutput.Text += "CANCEL PENDING...";
+                sdatExtractorWorker.CancelAsync();
+            }
+        }
+
+        protected override void doDragEnter(object sender, DragEventArgs e)
+        { 
+            base.doDragEnter(sender, e);
         }
     }
 }
