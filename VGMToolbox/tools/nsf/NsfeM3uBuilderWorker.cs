@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Text;
 
-using VGMToolbox.auditing;
 using VGMToolbox.format;
 using VGMToolbox.util;
 
@@ -96,7 +93,7 @@ namespace VGMToolbox.tools.nsf
         {
             // Report Progress
             int progress = (++fileCount * 100) / maxFiles;
-            AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+            Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
             vProgressStruct.newNode = null;
             vProgressStruct.filename = pPath;
             ReportProgress(progress, vProgressStruct);
@@ -179,7 +176,7 @@ namespace VGMToolbox.tools.nsf
             }
             catch (Exception ex)
             {
-                vProgressStruct = new AuditingUtil.ProgressStruct();
+                vProgressStruct = new Constants.ProgressStruct();
                 vProgressStruct.newNode = null;
                 vProgressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message;
                 ReportProgress(progress, vProgressStruct);

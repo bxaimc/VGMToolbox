@@ -34,15 +34,16 @@
             this.pnlLabels = new System.Windows.Forms.Panel();
             this.lblProgressLabel = new System.Windows.Forms.Label();
             this.lblTimeElapsed = new System.Windows.Forms.Label();
-            this.tbOutput = new System.Windows.Forms.TextBox();
             this.pnlTitle = new System.Windows.Forms.Panel();
             this.lblTitle = new System.Windows.Forms.Label();
+            this.tbOutput = new System.Windows.Forms.TextBox();
+            this.pnlButtons = new System.Windows.Forms.Panel();
+            this.btnDoTask = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
             this.statusStrip1.SuspendLayout();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
-            this.panel1.SuspendLayout();
+            this.pnlButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip1
@@ -104,17 +105,6 @@
             this.lblTimeElapsed.TabIndex = 0;
             this.lblTimeElapsed.Text = "Elapsed Time";
             // 
-            // tbOutput
-            // 
-            this.tbOutput.AcceptsReturn = true;
-            this.tbOutput.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.tbOutput.Location = new System.Drawing.Point(0, 275);
-            this.tbOutput.Multiline = true;
-            this.tbOutput.Name = "tbOutput";
-            this.tbOutput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbOutput.Size = new System.Drawing.Size(533, 77);
-            this.tbOutput.TabIndex = 2;
-            // 
             // pnlTitle
             // 
             this.pnlTitle.BackColor = System.Drawing.SystemColors.ControlDark;
@@ -136,32 +126,53 @@
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Section Title";
             // 
+            // tbOutput
+            // 
+            this.tbOutput.AcceptsReturn = true;
+            this.tbOutput.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.tbOutput.Location = new System.Drawing.Point(0, 275);
+            this.tbOutput.Multiline = true;
+            this.tbOutput.Name = "tbOutput";
+            this.tbOutput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.tbOutput.Size = new System.Drawing.Size(533, 77);
+            this.tbOutput.TabIndex = 2;
+            // 
+            // pnlButtons
+            // 
+            this.pnlButtons.Controls.Add(this.btnDoTask);
+            this.pnlButtons.Controls.Add(this.btnCancel);
+            this.pnlButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlButtons.Location = new System.Drawing.Point(0, 255);
+            this.pnlButtons.Name = "pnlButtons";
+            this.pnlButtons.Size = new System.Drawing.Size(533, 20);
+            this.pnlButtons.TabIndex = 4;
+            // 
+            // btnDoTask
+            // 
+            this.btnDoTask.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnDoTask.Location = new System.Drawing.Point(413, 0);
+            this.btnDoTask.Name = "btnDoTask";
+            this.btnDoTask.Size = new System.Drawing.Size(60, 20);
+            this.btnDoTask.TabIndex = 1;
+            this.btnDoTask.Text = "Do Task";
+            this.btnDoTask.UseVisualStyleBackColor = true;
+            // 
             // btnCancel
             // 
             this.btnCancel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnCancel.Location = new System.Drawing.Point(463, 0);
+            this.btnCancel.Location = new System.Drawing.Point(473, 0);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Padding = new System.Windows.Forms.Padding(0, 1, 1, 1);
-            this.btnCancel.Size = new System.Drawing.Size(70, 22);
-            this.btnCancel.TabIndex = 4;
+            this.btnCancel.Size = new System.Drawing.Size(60, 20);
+            this.btnCancel.TabIndex = 0;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.btnCancel);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 253);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(533, 22);
-            this.panel1.TabIndex = 5;
             // 
             // VgmtForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(533, 393);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.pnlButtons);
             this.Controls.Add(this.pnlTitle);
             this.Controls.Add(this.tbOutput);
             this.Controls.Add(this.pnlLabels);
@@ -175,7 +186,7 @@
             this.pnlLabels.PerformLayout();
             this.pnlTitle.ResumeLayout(false);
             this.pnlTitle.PerformLayout();
-            this.panel1.ResumeLayout(false);
+            this.pnlButtons.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -187,12 +198,13 @@
         protected System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         protected System.Windows.Forms.ToolStripProgressBar toolStripProgressBar;
         protected System.Windows.Forms.Panel pnlLabels;
+        protected System.Windows.Forms.Panel pnlTitle;
+        protected System.Windows.Forms.Label lblTitle;
         protected System.Windows.Forms.Label lblProgressLabel;
         protected System.Windows.Forms.Label lblTimeElapsed;
         protected System.Windows.Forms.TextBox tbOutput;
-        protected System.Windows.Forms.Panel pnlTitle;
-        protected System.Windows.Forms.Label lblTitle;
-        private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Panel panel1;
+        protected System.Windows.Forms.Panel pnlButtons;
+        protected System.Windows.Forms.Button btnCancel;
+        protected System.Windows.Forms.Button btnDoTask;
     }
 }

@@ -17,11 +17,10 @@ namespace VGMToolbox.forms
         SdatExtractorWorker sdatExtractorWorker;
 
         public Xsf_SdatExtractorForm()
-        {
-            this.TopLevel = false;
-            this.FormBorderStyle = FormBorderStyle.None;
-            this.Dock = DockStyle.Fill;
+        {            
+            // setup specific input
             this.lblTitle.Text = "SDAT Extractor";
+            this.btnDoTask.Hide();
 
             InitializeComponent();
         }
@@ -81,7 +80,7 @@ namespace VGMToolbox.forms
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
-        { 
+        {
             base.doDragEnter(sender, e);
         }
     }

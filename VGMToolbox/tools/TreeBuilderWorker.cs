@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
-
-using VGMToolbox.auditing;
 using VGMToolbox.format;
+using VGMToolbox.util;
 
 namespace VGMToolbox.tools
 {
@@ -33,7 +31,7 @@ namespace VGMToolbox.tools
 
         private void buildTree(TreeBuilderStruct pTreeBuilderStruct, DoWorkEventArgs e)
         {
-            AuditingUtil.ProgressStruct vProgressStruct;
+            Constants.ProgressStruct vProgressStruct;
             string examineOutputPath = "." + Path.DirectorySeparatorChar + "examine" + 
                 Path.DirectorySeparatorChar + "examine.txt";
             StreamWriter sw = File.CreateText(examineOutputPath);
@@ -67,9 +65,9 @@ namespace VGMToolbox.tools
                 }
                 
                 // Add node, but ignore progress
-                vProgressStruct = new AuditingUtil.ProgressStruct();
+                vProgressStruct = new Constants.ProgressStruct();
                 vProgressStruct.newNode = (TreeNode) t.Clone();
-                ReportProgress(AuditingUtil.IGNORE_PROGRESS, vProgressStruct);                
+                ReportProgress(Constants.IGNORE_PROGRESS, vProgressStruct);                
             }
 
             sw.Close();
@@ -111,7 +109,7 @@ namespace VGMToolbox.tools
         private TreeNode getFileNode(string pFileName, StreamWriter pOutputFileStream, DoWorkEventArgs e)
         {
             int progress = (++fileCount * 100) / maxFiles;
-            AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+            Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
             vProgressStruct.newNode = null;
             vProgressStruct.filename = pFileName;
             ReportProgress(progress, vProgressStruct);
@@ -144,8 +142,8 @@ namespace VGMToolbox.tools
                 }
             }
             catch (Exception ex) 
-            { 
-                vProgressStruct = new AuditingUtil.ProgressStruct();
+            {
+                vProgressStruct = new Constants.ProgressStruct();
                 vProgressStruct.newNode = null;
                 vProgressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pFileName) + ex.Message;
                 ReportProgress(progress, vProgressStruct);

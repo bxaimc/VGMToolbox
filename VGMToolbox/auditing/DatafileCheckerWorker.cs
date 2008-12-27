@@ -6,6 +6,8 @@ using System.IO;
 using System.Text;
 using System.Xml.Serialization;
 
+using VGMToolbox.util;
+
 namespace VGMToolbox.auditing
 {
     class DatafileCheckerWorker : BackgroundWorker
@@ -64,7 +66,7 @@ namespace VGMToolbox.auditing
             foreach (string k in keys)
             {
                 int progress = (++totalItems * 100) / maxItems;
-                AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
                 vProgressStruct.filename = k;
                 ReportProgress(progress, vProgressStruct);
                 

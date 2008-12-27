@@ -4,9 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-
-using VGMToolbox.auditing;
 using VGMToolbox.format.sdat;
+using VGMToolbox.util;
 
 namespace VGMToolbox.tools.xsf
 {
@@ -73,13 +72,13 @@ namespace VGMToolbox.tools.xsf
         {
             // Report Progress
             int progress = (++fileCount * 100) / maxFiles;
-            AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+            Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
             vProgressStruct.newNode = null;
             vProgressStruct.filename = pPath;
             ReportProgress(progress, vProgressStruct);
 
             // Used to output progress messages
-            AuditingUtil.ProgressStruct vMessageProgressStruct = new AuditingUtil.ProgressStruct();            
+            Constants.ProgressStruct vMessageProgressStruct = new Constants.ProgressStruct();            
 
             try
             {
@@ -123,7 +122,7 @@ namespace VGMToolbox.tools.xsf
                 // Report Stage of Process
                 vMessageProgressStruct.genericMessage = String.Format("1) Extracting source ROM: {0}", pPath) +
                     Environment.NewLine;
-                ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct); 
+                ReportProgress(Constants.PROGRESS_MSG_ONLY, vMessageProgressStruct); 
                 
                 // processSuccess = this.rip2sf_Step1(ndsToolFileName, pPath, sourceRomDestinationPath);
                 processSuccess = extractRom(ndsToolFileName, pPath, workingDirectory, false);
@@ -138,7 +137,7 @@ namespace VGMToolbox.tools.xsf
                     // Report Stage of Process
                     vMessageProgressStruct.genericMessage = String.Format("2) Extracting container ROM: {0}", pContainerRomPath) +
                         Environment.NewLine;
-                    ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct);
+                    ReportProgress(Constants.PROGRESS_MSG_ONLY, vMessageProgressStruct);
                     
                     // processSuccess = this.rip2sf_Step2(ndsToolFileName, pContainerRomPath, containerRomDestinationPath);                
                     processSuccess = extractRom(ndsToolFileName, pContainerRomPath, workingDirectory, true);
@@ -153,14 +152,14 @@ namespace VGMToolbox.tools.xsf
                     #region Check for SDATs in Source ROM
                     // Report Stage of Process
                     vMessageProgressStruct.genericMessage = "3.1) Searching for SDATs" + Environment.NewLine;
-                    ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct);
+                    ReportProgress(Constants.PROGRESS_MSG_ONLY, vMessageProgressStruct);
                     
                     string[] sourceSdats = Directory.GetFiles(sourceRomDestinationPath, "*.sdat", SearchOption.AllDirectories);
 
                     // Report Stage of Process
                     vMessageProgressStruct.genericMessage = String.Format("3.2) Found {0} SDATs", sourceSdats.Length) + 
                         Environment.NewLine;
-                    ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct);
+                    ReportProgress(Constants.PROGRESS_MSG_ONLY, vMessageProgressStruct);
                     #endregion
 
                     foreach (string sourceSdat in sourceSdats)
@@ -193,7 +192,7 @@ namespace VGMToolbox.tools.xsf
                         // Report Stage of Process
                         vMessageProgressStruct.genericMessage = String.Format("3.3.{0} Processing SDAT {1}: <{2}>", sdatIndex, sdatIndex, sourceSdat) +
                             Environment.NewLine;
-                        ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct);                        
+                        ReportProgress(Constants.PROGRESS_MSG_ONLY, vMessageProgressStruct);                        
                         
                         // for now assume yoshi rom (sound_data.sdat)
                         string[] destinationSdats = Directory.GetFiles(containerRomDestinationPath, "sound_data.sdat", SearchOption.AllDirectories);
@@ -204,7 +203,7 @@ namespace VGMToolbox.tools.xsf
                         /////////////////////////////////////////
                         // Report Stage of Process
                         vMessageProgressStruct.genericMessage = "3.4) Replacing SDAT" +  Environment.NewLine;
-                        ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct);                        
+                        ReportProgress(Constants.PROGRESS_MSG_ONLY, vMessageProgressStruct);                        
                                                 
                         rebuiltRomName = "modcrap_" + Path.GetFileNameWithoutExtension(sourceSdat) + ".nds";                        
                         
@@ -223,7 +222,7 @@ namespace VGMToolbox.tools.xsf
                             ///////////////////////////////
                             // Report Stage of Process
                             vMessageProgressStruct.genericMessage = "4.1) Unpacking SDAT" + Environment.NewLine;
-                            ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct);
+                            ReportProgress(Constants.PROGRESS_MSG_ONLY, vMessageProgressStruct);
 
                             Sdat currentSdat = new Sdat();
                             processSuccess = extractSdat(sourceSdat, workingDirectory, ref currentSdat);
@@ -246,7 +245,7 @@ namespace VGMToolbox.tools.xsf
                                 //////////////////////////////
                                 // Report Stage of Process
                                 vMessageProgressStruct.genericMessage = "4.2) Copying Streams" + Environment.NewLine;
-                                ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct);                        
+                                ReportProgress(Constants.PROGRESS_MSG_ONLY, vMessageProgressStruct);                        
                                 
                                 string streamsSourceFolder = Path.Combine(extractedSdatFolder, "Strm");
                                 
@@ -284,7 +283,7 @@ namespace VGMToolbox.tools.xsf
 
                                     // Report Stage of Process
                                     vMessageProgressStruct.genericMessage = "5) Creating Savestate" + Environment.NewLine;
-                                    ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct); 
+                                    ReportProgress(Constants.PROGRESS_MSG_ONLY, vMessageProgressStruct); 
                                     
                                     processSuccess = createSaveState(desmumeSaveFileName, zlibFileName, 
                                         workingDirectory, rebuiltRomName);
@@ -298,7 +297,7 @@ namespace VGMToolbox.tools.xsf
                                         ///////////////////////
                                         // Report Stage of Process
                                         vMessageProgressStruct.genericMessage = "6) Run Tracer" + Environment.NewLine;
-                                        ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct); 
+                                        ReportProgress(Constants.PROGRESS_MSG_ONLY, vMessageProgressStruct); 
                                         
 
                                         // rename prefix as needed if has multiple sdats
@@ -323,7 +322,7 @@ namespace VGMToolbox.tools.xsf
                                             ///////////////////////
                                             // Report Stage of Process
                                             vMessageProgressStruct.genericMessage = "7) Building 2SFs" + Environment.NewLine;
-                                            ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct); 
+                                            ReportProgress(Constants.PROGRESS_MSG_ONLY, vMessageProgressStruct); 
                                             
                                             processSuccess = build2sfs(dst2BinFileName, _2sfToolFileName,
                                                 psfPointPath, zlibFileName, workingDirectory,
@@ -334,7 +333,7 @@ namespace VGMToolbox.tools.xsf
                                             ///////////////////////////////////////////                                            
                                             // Report Stage of Process
                                             vMessageProgressStruct.genericMessage = "9) Moving 2sfs to Rip folder" + Environment.NewLine;
-                                            ReportProgress(AuditingUtil.PROGRESS_MSG_ONLY, vMessageProgressStruct); 
+                                            ReportProgress(Constants.PROGRESS_MSG_ONLY, vMessageProgressStruct); 
                                             
                                             moveRippedTracks(workingDirectory, ripFolder);
                                         }
@@ -361,7 +360,7 @@ namespace VGMToolbox.tools.xsf
             }
             catch (Exception ex)
             {
-                vProgressStruct = new AuditingUtil.ProgressStruct();
+                vProgressStruct = new Constants.ProgressStruct();
                 vProgressStruct.newNode = null;
                 vProgressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message;
                 ReportProgress(progress, vProgressStruct);
@@ -427,7 +426,7 @@ namespace VGMToolbox.tools.xsf
                     // delete ndstool.exe
                     File.Delete(ndsToolDestinationPath);
 
-                    AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                    Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
                     vProgressStruct.newNode = null;
                     vProgressStruct.errorMessage = String.Format("Error extracting <{0}>.", pSourceRomPath) + Environment.NewLine;
                     ReportProgress(0, vProgressStruct);
@@ -437,7 +436,7 @@ namespace VGMToolbox.tools.xsf
             {
                 isSuccess = false;
 
-                AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
                 vProgressStruct.newNode = null;
                 vProgressStruct.errorMessage = String.Format("Error extracting <{0}>.  Error received: ", pSourceRomPath) + ex.Message;
                 ReportProgress(0, vProgressStruct);
@@ -502,7 +501,7 @@ namespace VGMToolbox.tools.xsf
                     File.Delete(Path.Combine(pDestinationPath, "y9.bin"));
                     */
 
-                    AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                    Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
                     vProgressStruct.newNode = null;
                     vProgressStruct.errorMessage = String.Format("Error creating combined ROM <{0}>.", pRebuiltRomName) + Environment.NewLine;
                     ReportProgress(0, vProgressStruct);
@@ -512,7 +511,7 @@ namespace VGMToolbox.tools.xsf
             {
                 isSuccess = false;
 
-                AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
                 vProgressStruct.newNode = null;
                 vProgressStruct.errorMessage = String.Format("Error creating combined ROM <{0}>.  Error received: ", pRebuiltRomName) + ex.Message;
                 ReportProgress(0, vProgressStruct);
@@ -576,7 +575,7 @@ namespace VGMToolbox.tools.xsf
                     // delete tool
                     File.Delete(sdatToolDestinationPath);
 
-                    AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                    Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
                     vProgressStruct.newNode = null;
                     vProgressStruct.errorMessage = String.Format("Error extracting SDAT <{0}>.", pSourceSdat) + Environment.NewLine;
                     ReportProgress(0, vProgressStruct);
@@ -586,7 +585,7 @@ namespace VGMToolbox.tools.xsf
             {
                 isSuccess = false;
 
-                AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
                 vProgressStruct.newNode = null;
                 vProgressStruct.errorMessage = String.Format("Error extracting SDAT <{0}>.  Error received: ", pSourceSdat) + ex.Message;
                 ReportProgress(0, vProgressStruct);            
@@ -628,7 +627,7 @@ namespace VGMToolbox.tools.xsf
                 {
                     isSuccess = false;
 
-                    AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                    Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
                     vProgressStruct.newNode = null;
                     vProgressStruct.errorMessage = String.Format("Error extracting SDAT <{0}>.", pSourceSdat) + Environment.NewLine;
                     ReportProgress(0, vProgressStruct);
@@ -642,7 +641,7 @@ namespace VGMToolbox.tools.xsf
             {
                 isSuccess = false;
 
-                AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
                 vProgressStruct.newNode = null;
                 vProgressStruct.errorMessage = String.Format("Error extracting SDAT <{0}>.  Error received: ", pSourceSdat) + ex.Message;
                 ReportProgress(0, vProgressStruct);
@@ -705,7 +704,7 @@ namespace VGMToolbox.tools.xsf
                     File.Delete(desSaveDestinationPath);
                     File.Delete(zlibDestinationPath);
 
-                    AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                    Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
                     vProgressStruct.newNode = null;
                     vProgressStruct.errorMessage = "Error creating save state." + Environment.NewLine;
                     ReportProgress(0, vProgressStruct);                 
@@ -715,7 +714,7 @@ namespace VGMToolbox.tools.xsf
             {
                 isSuccess = false;
 
-                AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
                 vProgressStruct.newNode = null;
                 vProgressStruct.errorMessage = "Error creating save state.  Error received: " + ex.Message;
                 ReportProgress(0, vProgressStruct);             
@@ -768,7 +767,7 @@ namespace VGMToolbox.tools.xsf
                     File.Delete(zlibDestinationPath);
                     File.Delete(Path.Combine(pDestinationPath, pRebuiltRomName));
 
-                    AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                    Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
                     vProgressStruct.newNode = null;
                     vProgressStruct.errorMessage = "Error while running tracer.  Output files do not exist." + Environment.NewLine;
                     ReportProgress(0, vProgressStruct);   
@@ -795,7 +794,7 @@ namespace VGMToolbox.tools.xsf
             {
                 isSuccess = false;
 
-                AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
                 vProgressStruct.newNode = null;
                 vProgressStruct.errorMessage = "Error while running tracer.  Error received: " + ex.Message;
                 ReportProgress(0, vProgressStruct);            
@@ -893,7 +892,7 @@ namespace VGMToolbox.tools.xsf
                 File.Delete(Path.Combine(pWorkingDirectory, "BASE.DST"));
                 File.Delete(Path.Combine(pWorkingDirectory, ndsRomName));
 
-                AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
                 vProgressStruct.newNode = null;
                 vProgressStruct.errorMessage = "Error building 2SFs.  Error received: " + ex.Message;
                 ReportProgress(0, vProgressStruct);             

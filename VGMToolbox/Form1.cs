@@ -1,13 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
-using System.Threading;
 using System.Windows.Forms;
-using System.Xml;
 using System.Xml.Serialization;
 
 using VGMToolbox.auditing;
-using VGMToolbox.format.sdat;
 using VGMToolbox.tools;
 using VGMToolbox.tools.gbs;
 using VGMToolbox.tools.hoot;
@@ -623,22 +620,22 @@ namespace VGMToolbox
         
         #region BACKGROUND WORKER
         private void backgroundWorker_ReportProgress(object sender, ProgressChangedEventArgs e)
-        {            
-            if (e.ProgressPercentage != AuditingUtil.IGNORE_PROGRESS &&
-                e.ProgressPercentage != AuditingUtil.PROGRESS_MSG_ONLY)
+        {
+            if (e.ProgressPercentage != Constants.IGNORE_PROGRESS &&
+                e.ProgressPercentage != Constants.PROGRESS_MSG_ONLY)
             {
                 toolStripProgressBar.Value = e.ProgressPercentage;
                 this.Text = "VGMToolbox [" + e.ProgressPercentage + "%]";
             }
 
-            if ((e.ProgressPercentage == AuditingUtil.PROGRESS_MSG_ONLY) && e.UserState != null)
-            { 
-                AuditingUtil.ProgressStruct vProgressStruct = (AuditingUtil.ProgressStruct)e.UserState;
+            if ((e.ProgressPercentage == Constants.PROGRESS_MSG_ONLY) && e.UserState != null)
+            {
+                Constants.ProgressStruct vProgressStruct = (Constants.ProgressStruct)e.UserState;
                 tbOutput.Text += vProgressStruct.genericMessage;
             }            
             else if (e.UserState != null)
             {
-                AuditingUtil.ProgressStruct vProgressStruct = (AuditingUtil.ProgressStruct)e.UserState;
+                Constants.ProgressStruct vProgressStruct = (Constants.ProgressStruct)e.UserState;
 
                 if (vProgressStruct.newNode != null)
                 {

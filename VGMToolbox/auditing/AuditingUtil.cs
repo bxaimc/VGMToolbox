@@ -5,7 +5,6 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Serialization;
-using System.Windows.Forms;
 
 using ICSharpCode.SharpZipLib.Zip.Compression;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
@@ -16,8 +15,8 @@ namespace VGMToolbox.auditing
     {
         public const string ROM_SPACER = "  ";         // Simple spacer for formatting output lists
 
-        public static readonly int IGNORE_PROGRESS = -1;
-        public static readonly int PROGRESS_MSG_ONLY = -2;
+        // public static readonly int IGNORE_PROGRESS = -1;
+        // public static readonly int PROGRESS_MSG_ONLY = -2;
      
         private Hashtable haveList = new Hashtable();   // Stores list of present files
         private Hashtable missList = new Hashtable();   // Stores list of missing files
@@ -57,6 +56,7 @@ namespace VGMToolbox.auditing
             public bool hasMultipleExtensions;
         }
 
+        /*
         public struct ProgressStruct
         {
             public string filename;
@@ -64,7 +64,8 @@ namespace VGMToolbox.auditing
             public string genericMessage;
             public TreeNode newNode;
         }
-         
+        */
+ 
         #endregion
 
         #region DATFILE TEXT OUTPUT FUNCTIONS

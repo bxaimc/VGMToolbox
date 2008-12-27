@@ -33,16 +33,9 @@
             this.tbNDS_SdatExtractor_Source = new System.Windows.Forms.TextBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
+            this.pnlButtons.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // pnlLabels
-            // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 330);
-            // 
-            // tbOutput
-            // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 253);
             // 
             // groupBox10
             // 
@@ -84,13 +77,15 @@
             this.Name = "Xsf_SdatExtractorForm";
             this.Text = "Xsf_SdatExtractorForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
-            this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);
             this.Controls.SetChildIndex(this.groupBox10, 0);
+            this.Controls.SetChildIndex(this.tbOutput, 0);
+            this.Controls.SetChildIndex(this.pnlButtons, 0);
             this.pnlLabels.ResumeLayout(false);
             this.pnlLabels.PerformLayout();
             this.pnlTitle.ResumeLayout(false);
             this.pnlTitle.PerformLayout();
+            this.pnlButtons.ResumeLayout(false);
             this.groupBox10.ResumeLayout(false);
             this.groupBox10.PerformLayout();
             this.ResumeLayout(false);

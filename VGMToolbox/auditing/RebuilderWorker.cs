@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 
-using System.Windows.Forms;
-
 using ICSharpCode.SharpZipLib.Checksums;
 using ICSharpCode.SharpZipLib.Zip;
 
@@ -156,10 +154,10 @@ namespace VGMToolbox.auditing
             }
             catch (Exception exception)
             {
-                AuditingUtil.ProgressStruct exProgressStruct = new AuditingUtil.ProgressStruct();
+                Constants.ProgressStruct exProgressStruct = new Constants.ProgressStruct();
                 exProgressStruct.filename = pSourceName;
                 exProgressStruct.errorMessage = "Error processing <" + pSourceName + "> " + exception.Message;
-                ReportProgress(AuditingUtil.IGNORE_PROGRESS, exProgressStruct);
+                ReportProgress(Constants.IGNORE_PROGRESS, exProgressStruct);
 
             }
         }
@@ -239,10 +237,10 @@ namespace VGMToolbox.auditing
                     }
                     catch (EndOfStreamException e)
                     {
-                        AuditingUtil.ProgressStruct exProgressStruct = new AuditingUtil.ProgressStruct();
+                        Constants.ProgressStruct exProgressStruct = new Constants.ProgressStruct();
                         exProgressStruct.filename = pFilePath;
                         exProgressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
-                        ReportProgress(AuditingUtil.IGNORE_PROGRESS, exProgressStruct);
+                        ReportProgress(Constants.IGNORE_PROGRESS, exProgressStruct);
 
                         crc32Generator.Reset();
                         // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
@@ -251,10 +249,10 @@ namespace VGMToolbox.auditing
                     }
                     catch (System.OutOfMemoryException e)
                     {
-                        AuditingUtil.ProgressStruct exProgressStruct = new AuditingUtil.ProgressStruct();
+                        Constants.ProgressStruct exProgressStruct = new Constants.ProgressStruct();
                         exProgressStruct.filename = pFilePath;
                         exProgressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
-                        ReportProgress(AuditingUtil.IGNORE_PROGRESS, exProgressStruct);
+                        ReportProgress(Constants.IGNORE_PROGRESS, exProgressStruct);
 
                         crc32Generator.Reset();
                         // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
@@ -263,10 +261,10 @@ namespace VGMToolbox.auditing
                     }
                     catch (IOException e)
                     {
-                        AuditingUtil.ProgressStruct exProgressStruct = new AuditingUtil.ProgressStruct();
+                        Constants.ProgressStruct exProgressStruct = new Constants.ProgressStruct();
                         exProgressStruct.filename = pFilePath;
                         exProgressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
-                        ReportProgress(AuditingUtil.IGNORE_PROGRESS, exProgressStruct);
+                        ReportProgress(Constants.IGNORE_PROGRESS, exProgressStruct);
 
                         crc32Generator.Reset();
                         // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
@@ -351,7 +349,7 @@ namespace VGMToolbox.auditing
                             this.rebuildFile(f, pRebuildSetsStruct, pAuditingUtil, e);
                             
                             int progress = (++fileCount * 100) / maxFiles;
-                            AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                            Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
                             vProgressStruct.filename = f;
                             ReportProgress(progress, vProgressStruct);
                         }
@@ -384,16 +382,16 @@ namespace VGMToolbox.auditing
                                     this.rebuildFile(f, pRebuildSetsStruct, pAuditingUtil, e);                                    
                                     
                                     int progress = (++fileCount * 100) / maxFiles;
-                                    AuditingUtil.ProgressStruct vProgressStruct = new AuditingUtil.ProgressStruct();
+                                    Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
                                     vProgressStruct.filename = f;
                                     ReportProgress(progress, vProgressStruct);
                                 }
                                 catch (Exception ex)
                                 {
-                                    AuditingUtil.ProgressStruct exProgressStruct = new AuditingUtil.ProgressStruct();
+                                    Constants.ProgressStruct exProgressStruct = new Constants.ProgressStruct();
                                     exProgressStruct.filename = f;
                                     exProgressStruct.errorMessage = "[" + f + "] " + ex.Message;
-                                    ReportProgress(AuditingUtil.IGNORE_PROGRESS, exProgressStruct);
+                                    ReportProgress(Constants.IGNORE_PROGRESS, exProgressStruct);
                                 }
                             }
                             else
@@ -437,10 +435,10 @@ namespace VGMToolbox.auditing
             }
             catch (Exception exception2)
             {
-                AuditingUtil.ProgressStruct exProgressStruct = new AuditingUtil.ProgressStruct();
+                Constants.ProgressStruct exProgressStruct = new Constants.ProgressStruct();
                 exProgressStruct.filename = null;
                 exProgressStruct.errorMessage = exception2.Message;
-                ReportProgress(AuditingUtil.IGNORE_PROGRESS, exProgressStruct);
+                ReportProgress(Constants.IGNORE_PROGRESS, exProgressStruct);
             }
         }
 

@@ -18,6 +18,10 @@ namespace VGMToolbox.forms
         
         public VgmtForm()
         {
+            this.TopLevel = false;
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.Dock = DockStyle.Fill;
+            
             InitializeComponent();
         }
 
