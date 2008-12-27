@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
 
 using VGMToolbox.tools.nds;
-using VGMToolbox.util;
 
 namespace VGMToolbox.forms
 {
@@ -18,8 +13,10 @@ namespace VGMToolbox.forms
 
         public Xsf_SdatExtractorForm()
         {            
-            // setup specific input
+            // set title
             this.lblTitle.Text = "SDAT Extractor";
+            
+            // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
 
             InitializeComponent();
@@ -27,6 +24,8 @@ namespace VGMToolbox.forms
 
         private void tbNDS_SdatExtractor_Source_DragDrop(object sender, DragEventArgs e)
         {
+            base.initializeProcessing();
+            
             toolStripStatusLabel1.Text = "SDAT Extraction...Begin";
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);

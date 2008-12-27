@@ -84,12 +84,12 @@
             // 
             this.lblProgressLabel.AutoSize = true;
             this.lblProgressLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.lblProgressLabel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblProgressLabel.Location = new System.Drawing.Point(77, 0);
+            this.lblProgressLabel.Dock = System.Windows.Forms.DockStyle.Left;
+            this.lblProgressLabel.Location = new System.Drawing.Point(73, 0);
             this.lblProgressLabel.MinimumSize = new System.Drawing.Size(456, 0);
             this.lblProgressLabel.Name = "lblProgressLabel";
-            this.lblProgressLabel.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
-            this.lblProgressLabel.Size = new System.Drawing.Size(456, 18);
+            this.lblProgressLabel.Padding = new System.Windows.Forms.Padding(0, 2, 0, 0);
+            this.lblProgressLabel.Size = new System.Drawing.Size(456, 17);
             this.lblProgressLabel.TabIndex = 1;
             this.lblProgressLabel.Text = "Misc Information";
             // 
@@ -100,8 +100,8 @@
             this.lblTimeElapsed.Dock = System.Windows.Forms.DockStyle.Left;
             this.lblTimeElapsed.Location = new System.Drawing.Point(0, 0);
             this.lblTimeElapsed.Name = "lblTimeElapsed";
-            this.lblTimeElapsed.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
-            this.lblTimeElapsed.Size = new System.Drawing.Size(73, 18);
+            this.lblTimeElapsed.Padding = new System.Windows.Forms.Padding(0, 2, 0, 0);
+            this.lblTimeElapsed.Size = new System.Drawing.Size(73, 17);
             this.lblTimeElapsed.TabIndex = 0;
             this.lblTimeElapsed.Text = "Elapsed Time";
             // 
@@ -111,7 +111,7 @@
             this.pnlTitle.Controls.Add(this.lblTitle);
             this.pnlTitle.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pnlTitle.Location = new System.Drawing.Point(0, 0);
+            this.pnlTitle.Location = new System.Drawing.Point(0, 3);
             this.pnlTitle.Name = "pnlTitle";
             this.pnlTitle.Size = new System.Drawing.Size(533, 20);
             this.pnlTitle.TabIndex = 3;
@@ -179,6 +179,7 @@
             this.Controls.Add(this.statusStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "VgmtForm";
+            this.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.Text = "VgmtForm";
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();

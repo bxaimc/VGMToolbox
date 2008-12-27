@@ -33,6 +33,14 @@ namespace VGMToolbox.forms
                 e.Effect = DragDropEffects.None;        
         }
 
+        protected void initializeProcessing()
+        {
+            tbOutput.Clear();
+
+            this.elapsedTimeStart = DateTime.Now;
+            this.showElapsedTime();
+        }
+
         protected void showElapsedTime()
         {
             this.elapsedTimeEnd = DateTime.Now;
