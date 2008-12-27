@@ -16,13 +16,37 @@ namespace VGMToolbox.forms
         protected DateTime elapsedTimeEnd;
         protected TimeSpan elapsedTime;
         
+        protected TreeNode menuTreeNode;
+
+        protected bool errorFound;
+
         public VgmtForm()
         {
+            menuTreeNode = null;
+
             this.TopLevel = false;
             this.FormBorderStyle = FormBorderStyle.None;
             this.Dock = DockStyle.Fill;
-            
+
             InitializeComponent();
+        }
+
+        public VgmtForm(TreeNode pTreeNode)
+        {
+            menuTreeNode = pTreeNode;
+            
+            this.TopLevel = false;
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.Dock = DockStyle.Fill;
+
+            InitializeComponent();
+        }
+
+        public static void ResetNodeColor(TreeNode pTreeNode)
+        {
+            // reset colors to indicate a fresh status
+            pTreeNode.BackColor = Color.White;
+            pTreeNode.ForeColor = Color.Black;
         }
 
         protected virtual void doDragEnter(object sender, DragEventArgs e)
@@ -35,10 +59,42 @@ namespace VGMToolbox.forms
 
         protected void initializeProcessing()
         {
+            errorFound = false;
+            
             tbOutput.Clear();
+
+            setNodeAsWorking();
 
             this.elapsedTimeStart = DateTime.Now;
             this.showElapsedTime();
+        }
+
+        protected void setNodeAsWorking()
+        {
+            // set colors to indicate a working status
+            menuTreeNode.BackColor = Color.Yellow;
+            menuTreeNode.ForeColor = Color.Black;        
+        }
+
+        protected void setNodeAsComplete()
+        {
+            if (errorFound)
+            {
+                setNodeAsError();            
+            }
+            else
+            {
+                // set colors to indicate a complete status
+                menuTreeNode.BackColor = Color.Green;
+                menuTreeNode.ForeColor = Color.White;
+            }
+        }
+
+        protected void setNodeAsError()
+        {            
+            // set colors to indicate a error status
+            menuTreeNode.BackColor = Color.Red;
+            menuTreeNode.ForeColor = Color.White;
         }
 
         protected void showElapsedTime()
@@ -68,10 +124,15 @@ namespace VGMToolbox.forms
                 Constants.ProgressStruct vProgressStruct = (Constants.ProgressStruct)e.UserState;
 
                 lblProgressLabel.Text = vProgressStruct.filename == null ? String.Empty : vProgressStruct.filename;
-                tbOutput.Text += vProgressStruct.errorMessage == null ? String.Empty : vProgressStruct.errorMessage;
+
+                if (!String.IsNullOrEmpty(vProgressStruct.errorMessage))
+                {
+                    tbOutput.Text += vProgressStruct.errorMessage;
+                    errorFound = true;
+                }                
             }
 
             this.showElapsedTime();
-        }
+        }        
     }
 }

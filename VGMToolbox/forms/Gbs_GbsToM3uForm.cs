@@ -3,30 +3,30 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
 
-using VGMToolbox.tools.nds;
+using VGMToolbox.tools.gbs;
 
 namespace VGMToolbox.forms
 {
-    public partial class Xsf_SdatExtractorForm : VgmtForm
+    public partial class Gbs_GbsToM3uForm : VgmtForm
     {
-        SdatExtractorWorker sdatExtractorWorker;
-
-        public Xsf_SdatExtractorForm(TreeNode pTreeNode): base(pTreeNode)
+        GbsM3uBuilderWorker gbsM3uBuilder;
+        
+        public Gbs_GbsToM3uForm(TreeNode pTreeNode): base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = "SDAT Extractor";
+            this.lblTitle.Text = "GBS .m3u Builder";
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
-
+            
             InitializeComponent();
         }
 
-        private void tbNDS_SdatExtractor_Source_DragDrop(object sender, DragEventArgs e)
+        private void tbGBS_gbsm3uSource_DragDrop(object sender, DragEventArgs e)
         {
             base.initializeProcessing();
-            
-            toolStripStatusLabel1.Text = "SDAT Extraction...Begin";
+
+            toolStripStatusLabel1.Text = "GBS .M3U Creation...Begin";
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
@@ -44,28 +44,29 @@ namespace VGMToolbox.forms
                 }
             }
 
-            SdatExtractorWorker.SdatExtractorStruct sdexStruct = new SdatExtractorWorker.SdatExtractorStruct();
-            sdexStruct.pPaths = s;
-            sdexStruct.totalFiles = totalFileCount;
+            GbsM3uBuilderWorker.GbsM3uBuilderStruct gbStruct = new GbsM3uBuilderWorker.GbsM3uBuilderStruct();
+            gbStruct.pPaths = s;
+            gbStruct.totalFiles = totalFileCount;
+            gbStruct.onePlaylistPerFile = cbGBS_OneM3uPerTrack.Checked;
 
-            sdatExtractorWorker = new SdatExtractorWorker();
-            sdatExtractorWorker.ProgressChanged += backgroundWorker_ReportProgress;
-            sdatExtractorWorker.RunWorkerCompleted += SdatExtractorWorker_WorkComplete;
-            sdatExtractorWorker.RunWorkerAsync(sdexStruct);
+            gbsM3uBuilder = new GbsM3uBuilderWorker();
+            gbsM3uBuilder.ProgressChanged += backgroundWorker_ReportProgress;
+            gbsM3uBuilder.RunWorkerCompleted += GbsM3uBuilderWorker_WorkComplete;
+            gbsM3uBuilder.RunWorkerAsync(gbStruct);
         }
-
-        private void SdatExtractorWorker_WorkComplete(object sender,
+        
+        private void GbsM3uBuilderWorker_WorkComplete(object sender,
                      RunWorkerCompletedEventArgs e)
         {
             if (e.Cancelled)
             {
-                toolStripStatusLabel1.Text = "SDAT Extraction...Cancelled";
+                toolStripStatusLabel1.Text = "GBS .M3U Creation...Cancelled";
                 tbOutput.Text += "Operation cancelled.";
             }
             else
             {
                 lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = "SDAT Extraction...Complete";                
+                toolStripStatusLabel1.Text = "GBS .M3U Creation...Complete";
             }
 
             // update node color
@@ -74,10 +75,10 @@ namespace VGMToolbox.forms
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            if (sdatExtractorWorker != null && sdatExtractorWorker.IsBusy)
+            if (gbsM3uBuilder != null && gbsM3uBuilder.IsBusy)
             {
                 tbOutput.Text += "CANCEL PENDING...";
-                sdatExtractorWorker.CancelAsync();
+                gbsM3uBuilder.CancelAsync();
                 this.errorFound = true;
             }
         }

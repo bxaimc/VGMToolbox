@@ -3,30 +3,30 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
 
-using VGMToolbox.tools.nds;
+using VGMToolbox.tools.nsf;
 
 namespace VGMToolbox.forms
 {
-    public partial class Xsf_SdatExtractorForm : VgmtForm
+    public partial class Nsf_Nsfe2NsfM3uForm : VgmtForm
     {
-        SdatExtractorWorker sdatExtractorWorker;
-
-        public Xsf_SdatExtractorForm(TreeNode pTreeNode): base(pTreeNode)
+        NsfeM3uBuilderWorker nsfeM3uBuilder;
+        
+        public Nsf_Nsfe2NsfM3uForm(TreeNode pTreeNode) : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = "SDAT Extractor";
+            this.lblTitle.Text = "NSFE to NSF + .m3u";
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
-
+            
             InitializeComponent();
         }
 
-        private void tbNDS_SdatExtractor_Source_DragDrop(object sender, DragEventArgs e)
+        private void tbNSF_nsfe2m3uSource_DragDrop(object sender, DragEventArgs e)
         {
             base.initializeProcessing();
-            
-            toolStripStatusLabel1.Text = "SDAT Extraction...Begin";
+
+            toolStripStatusLabel1.Text = "NSFE to .M3U Conversion...Begin";
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
@@ -44,28 +44,29 @@ namespace VGMToolbox.forms
                 }
             }
 
-            SdatExtractorWorker.SdatExtractorStruct sdexStruct = new SdatExtractorWorker.SdatExtractorStruct();
-            sdexStruct.pPaths = s;
-            sdexStruct.totalFiles = totalFileCount;
+            NsfeM3uBuilderWorker.NsfeM3uBuilderStruct nsfeStruct = new NsfeM3uBuilderWorker.NsfeM3uBuilderStruct();
+            nsfeStruct.pPaths = s;
+            nsfeStruct.totalFiles = totalFileCount;
+            nsfeStruct.onePlaylistPerFile = cbNSFE_OneM3uPerTrack.Checked;
 
-            sdatExtractorWorker = new SdatExtractorWorker();
-            sdatExtractorWorker.ProgressChanged += backgroundWorker_ReportProgress;
-            sdatExtractorWorker.RunWorkerCompleted += SdatExtractorWorker_WorkComplete;
-            sdatExtractorWorker.RunWorkerAsync(sdexStruct);
+            nsfeM3uBuilder = new NsfeM3uBuilderWorker();
+            nsfeM3uBuilder.ProgressChanged += backgroundWorker_ReportProgress;
+            nsfeM3uBuilder.RunWorkerCompleted += NsfeM3uBuilderWorker_WorkComplete;
+            nsfeM3uBuilder.RunWorkerAsync(nsfeStruct);
         }
 
-        private void SdatExtractorWorker_WorkComplete(object sender,
+        private void NsfeM3uBuilderWorker_WorkComplete(object sender,
                      RunWorkerCompletedEventArgs e)
         {
             if (e.Cancelled)
             {
-                toolStripStatusLabel1.Text = "SDAT Extraction...Cancelled";
+                toolStripStatusLabel1.Text = "NSFE to .M3U Conversion...Cancelled";
                 tbOutput.Text += "Operation cancelled.";
             }
             else
             {
                 lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = "SDAT Extraction...Complete";                
+                toolStripStatusLabel1.Text = "NSFE to .M3U Conversion...Complete";
             }
 
             // update node color
@@ -74,10 +75,10 @@ namespace VGMToolbox.forms
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            if (sdatExtractorWorker != null && sdatExtractorWorker.IsBusy)
+            if (nsfeM3uBuilder != null && nsfeM3uBuilder.IsBusy)
             {
                 tbOutput.Text += "CANCEL PENDING...";
-                sdatExtractorWorker.CancelAsync();
+                nsfeM3uBuilder.CancelAsync();
                 this.errorFound = true;
             }
         }

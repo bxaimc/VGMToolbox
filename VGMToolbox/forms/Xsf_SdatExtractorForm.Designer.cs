@@ -37,14 +37,41 @@
             this.groupBox10.SuspendLayout();
             this.SuspendLayout();
             // 
+            // pnlLabels
+            // 
+            this.pnlLabels.Location = new System.Drawing.Point(0, 396);
+            this.pnlLabels.Size = new System.Drawing.Size(756, 19);
+            // 
+            // pnlTitle
+            // 
+            this.pnlTitle.Size = new System.Drawing.Size(756, 20);
+            // 
+            // tbOutput
+            // 
+            this.tbOutput.Location = new System.Drawing.Point(0, 319);
+            this.tbOutput.Size = new System.Drawing.Size(756, 77);
+            // 
+            // pnlButtons
+            // 
+            this.pnlButtons.Location = new System.Drawing.Point(0, 299);
+            this.pnlButtons.Size = new System.Drawing.Size(756, 20);
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Location = new System.Drawing.Point(696, 0);
+            // 
+            // btnDoTask
+            // 
+            this.btnDoTask.Location = new System.Drawing.Point(636, 0);
+            // 
             // groupBox10
             // 
             this.groupBox10.Controls.Add(this.label17);
             this.groupBox10.Controls.Add(this.tbNDS_SdatExtractor_Source);
             this.groupBox10.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox10.Location = new System.Drawing.Point(0, 20);
+            this.groupBox10.Location = new System.Drawing.Point(0, 23);
             this.groupBox10.Name = "groupBox10";
-            this.groupBox10.Size = new System.Drawing.Size(533, 59);
+            this.groupBox10.Size = new System.Drawing.Size(756, 59);
             this.groupBox10.TabIndex = 6;
             this.groupBox10.TabStop = false;
             this.groupBox10.Text = "Source SDAT";
@@ -72,7 +99,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(533, 393);
+            this.ClientSize = new System.Drawing.Size(756, 437);
             this.Controls.Add(this.groupBox10);
             this.Name = "Xsf_SdatExtractorForm";
             this.Text = "Xsf_SdatExtractorForm";

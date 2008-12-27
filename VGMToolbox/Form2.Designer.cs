@@ -73,6 +73,7 @@
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
+            this.MinimumSize = new System.Drawing.Size(764, 454);
             this.Name = "Form2";
             this.Text = "VGMToolbox v2.0";
             this.splitContainer1.Panel1.ResumeLayout(false);

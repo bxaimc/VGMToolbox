@@ -19,6 +19,10 @@ namespace VGMToolbox
         {
             InitializeComponent();
 
+            // add empty form
+            ZZZ_NotYetImplemented zzz_NotYetImplemented = new ZZZ_NotYetImplemented();
+            this.splitContainer1.Panel2.Controls.Add(zzz_NotYetImplemented);
+
             buildMenuNodes();
         }
 
@@ -29,48 +33,16 @@ namespace VGMToolbox
             TreeNode rootNode = new TreeNode("VGMToolbox");
             rootNode.NodeFont = this.treeviewBoldFont;
 
-            Constants.NodeTagStruct nodeTag = new Constants.NodeTagStruct();
-
             ////////////
             // Auditing
             ////////////
-            TreeNode audting_RootNode = new TreeNode("Auditing Tools");
-            TreeNode audting_DatafileCreatorNode = new TreeNode("Datafile Creator");
-            TreeNode audting_RebuilderNode = new TreeNode("Rebuilder");
-            TreeNode audting_DatafileCheckerNode = new TreeNode("Datafile Checker");
-            audting_RootNode.NodeFont = this.treeviewBoldFont;
-
-            audting_RootNode.Nodes.Add(audting_DatafileCreatorNode);
-            audting_RootNode.Nodes.Add(audting_RebuilderNode);
-            audting_RootNode.Nodes.Add(audting_DatafileCheckerNode);
-
-            rootNode.Nodes.Add(audting_RootNode);
+            TreeNode auditing_RootNode = buildAuditingTreeNode();           
+            rootNode.Nodes.Add(auditing_RootNode);
 
             ///////////
             // Examine
             ///////////
-            TreeNode examine_RootNode = new TreeNode("Examine/Exploration Tools");
-            
-            // Tag Viewer
-            TreeNode examine_TagViewerNode = new TreeNode("Tag/Info Viewer");
-            //Examine_TagViewerForm examine_TagViewerForm = new Examine_TagViewerForm();
-            //this.splitContainer1.Panel2.Controls.Add(examine_TagViewerForm);
-
-            //nodeTag.formClass = examine_TagViewerForm.GetType().Name;
-            //examine_TagViewerNode.Tag = nodeTag;
-                                    
-            // MDX Checker
-            TreeNode examine_MDXCheckerNode = new TreeNode("MDX Checker");
-            
-            
-            
-            
-            
-            examine_RootNode.NodeFont = this.treeviewBoldFont;
-
-            examine_RootNode.Nodes.Add(examine_TagViewerNode);
-            examine_RootNode.Nodes.Add(examine_MDXCheckerNode);
-
+            TreeNode examine_RootNode = buildExamineTreeNode();
             rootNode.Nodes.Add(examine_RootNode);
 
             /////////
@@ -80,6 +52,75 @@ namespace VGMToolbox
             tools_RootNode.NodeFont = this.treeviewBoldFont;
 
             // Hoot
+            TreeNode hoot_RootNode = buildHootTreeNode();
+            tools_RootNode.Nodes.Add(hoot_RootNode);
+
+            // NSF
+            TreeNode nsf_RootNode = buildNsfTreeNode();
+            tools_RootNode.Nodes.Add(nsf_RootNode);
+
+            // GBS
+            TreeNode gbs_RootNode = buildGbsTreeNode();
+            tools_RootNode.Nodes.Add(gbs_RootNode);
+
+            // xSF
+            TreeNode xsf_RootNode = buildXsfTreeNode();
+            tools_RootNode.Nodes.Add(xsf_RootNode);
+            
+            // NDS                        
+            TreeNode nds_RootNode = buildNdsTreeNode();                        
+            tools_RootNode.Nodes.Add(nds_RootNode);
+
+            // add Tools node to Root
+            rootNode.Nodes.Add(tools_RootNode);
+
+            // add Root node to tree
+            tvMenuTree.Nodes.Add(rootNode);
+            tvMenuTree.ExpandAll();
+
+            tvMenuTree.NodeMouseClick += tvMenuTree_doClick;
+        }
+
+        private TreeNode buildAuditingTreeNode()
+        {
+            TreeNode auditing_RootNode = new TreeNode("Auditing Tools");
+            TreeNode auditing_DatafileCreatorNode = new TreeNode("Datafile Creator");
+            TreeNode auditing_RebuilderNode = new TreeNode("Rebuilder");
+            TreeNode auditing_DatafileCheckerNode = new TreeNode("Datafile Checker");
+            auditing_RootNode.NodeFont = this.treeviewBoldFont;
+
+            auditing_RootNode.Nodes.Add(auditing_DatafileCreatorNode);
+            auditing_RootNode.Nodes.Add(auditing_RebuilderNode);
+            auditing_RootNode.Nodes.Add(auditing_DatafileCheckerNode);
+
+            return auditing_RootNode;
+        }
+
+        private TreeNode buildExamineTreeNode()
+        {
+            TreeNode examine_RootNode = new TreeNode("Examine/Exploration Tools");
+
+            // Tag Viewer
+            TreeNode examine_TagViewerNode = new TreeNode("Tag/Info Viewer");
+            //Examine_TagViewerForm examine_TagViewerForm = new Examine_TagViewerForm();
+            //this.splitContainer1.Panel2.Controls.Add(examine_TagViewerForm);
+
+            //nodeTag.formClass = examine_TagViewerForm.GetType().Name;
+            //examine_TagViewerNode.Tag = nodeTag;
+
+            // MDX Checker
+            TreeNode examine_MDXCheckerNode = new TreeNode("MDX Checker");
+
+            examine_RootNode.NodeFont = this.treeviewBoldFont;
+
+            examine_RootNode.Nodes.Add(examine_TagViewerNode);
+            examine_RootNode.Nodes.Add(examine_MDXCheckerNode);
+
+            return examine_RootNode;
+        }
+
+        private TreeNode buildHootTreeNode()
+        {
             TreeNode hoot_RootNode = new TreeNode("Hoot Tools");
             TreeNode hoot_CsvDatafileNode = new TreeNode("CSV to Datafile");
             TreeNode hoot_XmlBuilderNode = new TreeNode("Xml Builder");
@@ -87,35 +128,59 @@ namespace VGMToolbox
 
             hoot_RootNode.Nodes.Add(hoot_CsvDatafileNode);
             hoot_RootNode.Nodes.Add(hoot_XmlBuilderNode);
-            
-            tools_RootNode.Nodes.Add(hoot_RootNode);
 
-            // NSF
+            return hoot_RootNode;
+        }
+
+        private TreeNode buildNsfTreeNode()
+        {
+            Constants.NodeTagStruct nodeTag = new Constants.NodeTagStruct();
+            
             TreeNode nsf_RootNode = new TreeNode("NSF Tools");
             TreeNode nsf_NsfeM3uNode = new TreeNode("NSFE to NSF + M3U");
             nsf_RootNode.NodeFont = this.treeviewBoldFont;
 
-            nsf_RootNode.Nodes.Add(nsf_NsfeM3uNode);
-            
-            tools_RootNode.Nodes.Add(nsf_RootNode);
+            // add form
+            Nsf_Nsfe2NsfM3uForm nsf_Nsfe2NsfM3uForm = new Nsf_Nsfe2NsfM3uForm(nsf_NsfeM3uNode);
+            this.splitContainer1.Panel2.Controls.Add(nsf_Nsfe2NsfM3uForm);
 
-            // GBS
+            // set tag for displaying the form
+            nodeTag.formClass = nsf_Nsfe2NsfM3uForm.GetType().Name;
+            nsf_NsfeM3uNode.Tag = nodeTag;
+
+            nsf_RootNode.Nodes.Add(nsf_NsfeM3uNode);
+
+            return nsf_RootNode;        
+        }
+
+        private TreeNode buildGbsTreeNode()
+        {
+            Constants.NodeTagStruct nodeTag = new Constants.NodeTagStruct();
+            
             TreeNode gbs_RootNode = new TreeNode("GBS Tools");
             TreeNode gbs_M3uNode = new TreeNode("GBS M3U Creator");
             gbs_RootNode.NodeFont = this.treeviewBoldFont;
 
+            // add form
+            Gbs_GbsToM3uForm gbs_GbsToM3uForm = new Gbs_GbsToM3uForm(gbs_M3uNode);
+            this.splitContainer1.Panel2.Controls.Add(gbs_GbsToM3uForm);
+
+            // set tag for displaying the form
+            nodeTag.formClass = gbs_GbsToM3uForm.GetType().Name;
+            gbs_M3uNode.Tag = nodeTag;
+
             gbs_RootNode.Nodes.Add(gbs_M3uNode);
-            
-            tools_RootNode.Nodes.Add(gbs_RootNode);
 
-            // xSF
+            return gbs_RootNode;
+        }
+
+        private TreeNode buildXsfTreeNode()
+        {
             TreeNode xsf_RootNode = new TreeNode("xSF Tools");
-            TreeNode xsf_xsf2ExeNode = new TreeNode("xSF2EXE");
             
-            TreeNode xsf_2sfRipperNode = new TreeNode("2SF Ripper");
-            nodeTag.formClass = "pnlXsf_2sfRipper";
-            xsf_2sfRipperNode.Tag = nodeTag;
+            TreeNode xsf_xsf2ExeNode = new TreeNode("xSF2EXE");
 
+            TreeNode xsf_2sfRipperNode = new TreeNode("2SF Ripper");
             TreeNode xsf_2sfTimerNode = new TreeNode("2SF Timer");
             TreeNode xsf_MkPsf2FENode = new TreeNode("mkpsf2 Front End");
             TreeNode xsf_UnPsf2FENode = new TreeNode("unpsf2 Front End");
@@ -128,35 +193,29 @@ namespace VGMToolbox
             xsf_RootNode.Nodes.Add(xsf_MkPsf2FENode);
             xsf_RootNode.Nodes.Add(xsf_UnPsf2FENode);
 
-            tools_RootNode.Nodes.Add(xsf_RootNode);
-
-            /*****************************
-             * NDS
-             ******************************/            
-            TreeNode nds_RootNode = new TreeNode("NDS Tools");
+            return xsf_RootNode;
+        }
+        
+        private TreeNode buildNdsTreeNode()
+        {
+            Constants.NodeTagStruct nodeTag = new Constants.NodeTagStruct();
+            TreeNode nds_RootNode = new TreeNode("NDS Tools");            
 
             // SDAT Extractor
             TreeNode nds_SdatExtractorNode = new TreeNode("SDAT Extractor");
             nds_RootNode.NodeFont = this.treeviewBoldFont;
 
-            Xsf_SdatExtractorForm xsf_SdatExtractorForm = new Xsf_SdatExtractorForm();
+            // Add SDAT Extractor Form
+            Xsf_SdatExtractorForm xsf_SdatExtractorForm = new Xsf_SdatExtractorForm(nds_SdatExtractorNode);
             this.splitContainer1.Panel2.Controls.Add(xsf_SdatExtractorForm);
 
+            // Set Tag for displaying the Form
             nodeTag.formClass = xsf_SdatExtractorForm.GetType().Name;
             nds_SdatExtractorNode.Tag = nodeTag;
 
             nds_RootNode.Nodes.Add(nds_SdatExtractorNode);
 
-            
-            tools_RootNode.Nodes.Add(nds_RootNode);
-
-            // add Tools node to Root
-            rootNode.Nodes.Add(tools_RootNode);
-
-            tvMenuTree.Nodes.Add(rootNode);
-            tvMenuTree.ExpandAll();
-
-            tvMenuTree.NodeMouseClick += tvMenuTree_doClick;
+            return nds_RootNode;
         }
 
         private void tvMenuTree_doClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -164,15 +223,19 @@ namespace VGMToolbox
             if (e.Node.Tag != null)
             {
                 Constants.NodeTagStruct nts = (Constants.NodeTagStruct)e.Node.Tag;
-                
-                // e.Node.ForeColor = Color.Red; // use this when a process is running?
-                
+
+                VgmtForm.ResetNodeColor(e.Node);
+
                 showForm(this.splitContainer1.Panel2.Controls, nts.formClass);
+            }
+            else
+            {
+                showForm(this.splitContainer1.Panel2.Controls, "ZZZ_NotYetImplemented");
             }
         }
 
         private void showForm(Control.ControlCollection pControls, string pFormClass)
-        {
+        {            
             foreach (Control ctrl in pControls)
             {
                 if ((ctrl is Form)&& (!String.IsNullOrEmpty(ctrl.Name)))

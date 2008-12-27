@@ -62,7 +62,6 @@
             this.toolStripStatusLabel1.AutoSize = false;
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(200, 17);
-            this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
             // 
             // toolStripProgressBar
             // 
@@ -85,13 +84,12 @@
             this.lblProgressLabel.AutoSize = true;
             this.lblProgressLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.lblProgressLabel.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lblProgressLabel.Location = new System.Drawing.Point(73, 0);
+            this.lblProgressLabel.Location = new System.Drawing.Point(51, 0);
             this.lblProgressLabel.MinimumSize = new System.Drawing.Size(456, 0);
             this.lblProgressLabel.Name = "lblProgressLabel";
             this.lblProgressLabel.Padding = new System.Windows.Forms.Padding(0, 2, 0, 0);
             this.lblProgressLabel.Size = new System.Drawing.Size(456, 17);
             this.lblProgressLabel.TabIndex = 1;
-            this.lblProgressLabel.Text = "Misc Information";
             // 
             // lblTimeElapsed
             // 
@@ -101,9 +99,9 @@
             this.lblTimeElapsed.Location = new System.Drawing.Point(0, 0);
             this.lblTimeElapsed.Name = "lblTimeElapsed";
             this.lblTimeElapsed.Padding = new System.Windows.Forms.Padding(0, 2, 0, 0);
-            this.lblTimeElapsed.Size = new System.Drawing.Size(73, 17);
+            this.lblTimeElapsed.Size = new System.Drawing.Size(51, 17);
             this.lblTimeElapsed.TabIndex = 0;
-            this.lblTimeElapsed.Text = "Elapsed Time";
+            this.lblTimeElapsed.Text = "00:00:00";
             // 
             // pnlTitle
             // 
@@ -180,7 +178,6 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "VgmtForm";
             this.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
-            this.Text = "VgmtForm";
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.pnlLabels.ResumeLayout(false);
