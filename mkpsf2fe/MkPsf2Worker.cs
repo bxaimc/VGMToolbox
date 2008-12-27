@@ -45,7 +45,7 @@ namespace mkpsf2fe
         private void makePsf2s(MkPsf2Struct pMkPsf2Struct, DoWorkEventArgs e)
         {
             string[] uniqueSqFiles;
-                        
+
             if (!CancellationPending)
             {
                 // get list of unique files
@@ -105,22 +105,36 @@ namespace mkpsf2fe
             Process makePsf2Process;
             Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
 
-            Directory.CreateDirectory(WORKING_FOLDER);
-
-            // copy generic modules to working directory
-            File.Copy(Path.Combine(MODULES_FOLDER, "psf2.irx"), Path.Combine(WORKING_FOLDER, "psf2.irx"), true);
-            File.Copy(Path.Combine(MODULES_FOLDER, "sq.irx"), Path.Combine(WORKING_FOLDER, "sq.irx"), true);
-
-            // copy source modules to working directory
-            File.Copy(Path.Combine(pMkPsf2Struct.modulePath, "LIBSD.IRX"), Path.Combine(WORKING_FOLDER, "LIBSD.IRX"), true);
-            File.Copy(Path.Combine(pMkPsf2Struct.modulePath, "MODHSYN.IRX"), Path.Combine(WORKING_FOLDER, "MODHSYN.IRX"), true);
-            File.Copy(Path.Combine(pMkPsf2Struct.modulePath, "MODMIDI.IRX"), Path.Combine(WORKING_FOLDER, "MODMIDI.IRX"), true);
-
-            // copy program
             string makePsf2SourcePath = Path.Combine(PROGRAMS_FOLDER, "mkpsf2.exe");
             string makePsf2DestinationPath = Path.Combine(".", "mkpsf2.exe");
-            File.Copy(makePsf2SourcePath, makePsf2DestinationPath, true);
 
+            try
+            {
+                Directory.CreateDirectory(WORKING_FOLDER);
+
+                // copy generic modules to working directory
+                File.Copy(Path.Combine(MODULES_FOLDER, "psf2.irx"), Path.Combine(WORKING_FOLDER, "psf2.irx"), true);
+                File.Copy(Path.Combine(MODULES_FOLDER, "sq.irx"), Path.Combine(WORKING_FOLDER, "sq.irx"), true);
+
+                // copy source modules to working directory
+                File.Copy(Path.Combine(pMkPsf2Struct.modulePath, "LIBSD.IRX"), Path.Combine(WORKING_FOLDER, "LIBSD.IRX"), true);
+                File.Copy(Path.Combine(pMkPsf2Struct.modulePath, "MODHSYN.IRX"), Path.Combine(WORKING_FOLDER, "MODHSYN.IRX"), true);
+                File.Copy(Path.Combine(pMkPsf2Struct.modulePath, "MODMIDI.IRX"), Path.Combine(WORKING_FOLDER, "MODMIDI.IRX"), true);
+
+                // copy program
+                File.Copy(makePsf2SourcePath, makePsf2DestinationPath, true);
+            }
+            catch (Exception ex)
+            {
+                vProgressStruct = new Constants.ProgressStruct();
+                vProgressStruct.newNode = null;
+                vProgressStruct.filename = null;
+                vProgressStruct.errorMessage = ex.Message;
+                ReportProgress(0, vProgressStruct);
+
+                return;
+            }
+            
             foreach (string f in pUniqueSqFiles)
             {
                 if (!CancellationPending)
@@ -132,82 +146,94 @@ namespace mkpsf2fe
                     vProgressStruct = new Constants.ProgressStruct();
                     vProgressStruct.newNode = null;
                     vProgressStruct.filename = f;
-                    ReportProgress(progress, vProgressStruct);                    
-                    
-                    // copy data files to working directory
-                    string filePrefix = Path.GetFileNameWithoutExtension(f);
-                    string sourceDirectory = Path.GetDirectoryName(f);
+                    ReportProgress(progress, vProgressStruct);
 
-                    string bdFileName = filePrefix + ".bd";
-                    string hdFileName = filePrefix + ".hd";
-                    string sqFileName = filePrefix + ".sq";
+                    try
+                    {
 
-                    string sourceBdFile = Path.Combine(sourceDirectory, bdFileName);
-                    string sourceHdFile = Path.Combine(sourceDirectory, hdFileName);
-                    string sourceSqFile = Path.Combine(sourceDirectory, sqFileName);
+                        // copy data files to working directory                    
+                        string filePrefix = Path.GetFileNameWithoutExtension(f);
+                        string sourceDirectory = Path.GetDirectoryName(f);
 
-                    string destinationBdFile = Path.Combine(WORKING_FOLDER, bdFileName);
-                    string destinationHdFile = Path.Combine(WORKING_FOLDER, hdFileName);
-                    string destinationSqFile = Path.Combine(WORKING_FOLDER, sqFileName);
+                        string bdFileName = filePrefix + ".bd";
+                        string hdFileName = filePrefix + ".hd";
+                        string sqFileName = filePrefix + ".sq";
 
-                    File.Copy(sourceBdFile, destinationBdFile);
-                    File.Copy(sourceHdFile, destinationHdFile);
-                    File.Copy(sourceSqFile, destinationSqFile);
+                        string sourceBdFile = Path.Combine(sourceDirectory, bdFileName);
+                        string sourceHdFile = Path.Combine(sourceDirectory, hdFileName);
+                        string sourceSqFile = Path.Combine(sourceDirectory, sqFileName);
 
-                    // write ini file
-                    string iniPath = Path.Combine(WORKING_FOLDER, "psf2.ini");
-                    StreamWriter sw = File.CreateText(iniPath);
-                    sw.WriteLine("libsd.irx");
-                    sw.WriteLine("modhsyn.irx");
-                    sw.WriteLine("modmidi.irx");
-                    
-                    // build sq.irx arguments                    
-                    sqArguments.Append(String.IsNullOrEmpty(pMkPsf2Struct.reverb.Trim()) ?
-                        " -r=5" : String.Format(" -r={0}", pMkPsf2Struct.reverb.Trim()));
-                    sqArguments.Append(String.IsNullOrEmpty(pMkPsf2Struct.depth.Trim()) ?
-                        " -d=16383" : String.Format(" -d={0}", pMkPsf2Struct.depth.Trim()));
+                        string destinationBdFile = Path.Combine(WORKING_FOLDER, bdFileName);
+                        string destinationHdFile = Path.Combine(WORKING_FOLDER, hdFileName);
+                        string destinationSqFile = Path.Combine(WORKING_FOLDER, sqFileName);
 
-                    sqArguments.Append(String.IsNullOrEmpty(pMkPsf2Struct.tickInterval.Trim()) ?
-                        String.Empty : String.Format(" -u={0}", pMkPsf2Struct.tickInterval.Trim()));
-                    sqArguments.Append(String.IsNullOrEmpty(pMkPsf2Struct.tempo.Trim()) ?
-                        String.Empty : String.Format(" -t={0}", pMkPsf2Struct.tempo.Trim()));
-                    sqArguments.Append(String.IsNullOrEmpty(pMkPsf2Struct.volume.Trim()) ?
-                        String.Empty : String.Format(" -v={0}", pMkPsf2Struct.volume.Trim()));
+                        File.Copy(sourceBdFile, destinationBdFile);
+                        File.Copy(sourceHdFile, destinationHdFile);
+                        File.Copy(sourceSqFile, destinationSqFile);
 
-                    sqArguments.Append(String.Format(" -s={0} -h={1} -b={2}",
-                        sqFileName, hdFileName, bdFileName));
+                        // write ini file
+                        string iniPath = Path.Combine(WORKING_FOLDER, "psf2.ini");
+                        StreamWriter sw = File.CreateText(iniPath);
+                        sw.WriteLine("libsd.irx");
+                        sw.WriteLine("modhsyn.irx");
+                        sw.WriteLine("modmidi.irx");
 
-                    //sw.WriteLine(String.Format("sq.irx -r=5 -d=16383 -s={0} -h={1} -b={2}",
-                    //    sqFileName, hdFileName, bdFileName));
+                        // build sq.irx arguments                    
+                        sqArguments.Append(String.IsNullOrEmpty(pMkPsf2Struct.reverb.Trim()) ?
+                            " -r=5" : String.Format(" -r={0}", pMkPsf2Struct.reverb.Trim()));
+                        sqArguments.Append(String.IsNullOrEmpty(pMkPsf2Struct.depth.Trim()) ?
+                            " -d=16383" : String.Format(" -d={0}", pMkPsf2Struct.depth.Trim()));
 
-                    sw.WriteLine(String.Format("sq.irx {0}", sqArguments.ToString()));
-                    sw.Close();
-                    sw.Dispose();
+                        sqArguments.Append(String.IsNullOrEmpty(pMkPsf2Struct.tickInterval.Trim()) ?
+                            String.Empty : String.Format(" -u={0}", pMkPsf2Struct.tickInterval.Trim()));
+                        sqArguments.Append(String.IsNullOrEmpty(pMkPsf2Struct.tempo.Trim()) ?
+                            String.Empty : String.Format(" -t={0}", pMkPsf2Struct.tempo.Trim()));
+                        sqArguments.Append(String.IsNullOrEmpty(pMkPsf2Struct.volume.Trim()) ?
+                            String.Empty : String.Format(" -v={0}", pMkPsf2Struct.volume.Trim()));
 
-                    // run makepsf2                
-                    string arguments = String.Format(" {0}.psf2 {1}", filePrefix, WORKING_FOLDER);
-                    makePsf2Process = new Process();
-                    makePsf2Process.StartInfo = new ProcessStartInfo(makePsf2DestinationPath, arguments);
-                    makePsf2Process.StartInfo.UseShellExecute = false;
-                    makePsf2Process.StartInfo.CreateNoWindow = true;
-                    bool isSuccess = makePsf2Process.Start();
-                    makePsf2Process.WaitForExit();
+                        sqArguments.Append(String.Format(" -s={0} -h={1} -b={2}",
+                            sqFileName, hdFileName, bdFileName));
 
-                    if (isSuccess)
+                        //sw.WriteLine(String.Format("sq.irx -r=5 -d=16383 -s={0} -h={1} -b={2}",
+                        //    sqFileName, hdFileName, bdFileName));
+
+                        sw.WriteLine(String.Format("sq.irx {0}", sqArguments.ToString()));
+                        sw.Close();
+                        sw.Dispose();
+
+                        // run makepsf2                
+                        string arguments = String.Format(" {0}.psf2 {1}", filePrefix, WORKING_FOLDER);
+                        makePsf2Process = new Process();
+                        makePsf2Process.StartInfo = new ProcessStartInfo(makePsf2DestinationPath, arguments);
+                        makePsf2Process.StartInfo.UseShellExecute = false;
+                        makePsf2Process.StartInfo.CreateNoWindow = true;
+                        bool isSuccess = makePsf2Process.Start();
+                        makePsf2Process.WaitForExit();
+
+                        if (isSuccess)
+                        {
+                            vProgressStruct = new Constants.ProgressStruct();
+                            vProgressStruct.newNode = null;
+                            vProgressStruct.genericMessage = String.Format("{0}.psf2 created.", filePrefix) +
+                                Environment.NewLine;
+                            ReportProgress(Constants.PROGRESS_MSG_ONLY, vProgressStruct);
+
+                            File.Move(filePrefix + ".psf2", Path.Combine(OUTPUT_FOLDER, filePrefix + ".psf2"));
+                        }
+
+                        File.Delete(destinationBdFile);
+                        File.Delete(destinationHdFile);
+                        File.Delete(destinationSqFile);
+                        File.Delete(iniPath);
+                    }
+                    catch (Exception ex2)
                     {
                         vProgressStruct = new Constants.ProgressStruct();
                         vProgressStruct.newNode = null;
-                        vProgressStruct.genericMessage = String.Format("{0}.psf2 created.", filePrefix) +
-                            Environment.NewLine;
-                        ReportProgress(Constants.PROGRESS_MSG_ONLY, vProgressStruct);
-
-                        File.Move(filePrefix + ".psf2", Path.Combine(OUTPUT_FOLDER, filePrefix + ".psf2"));
+                        vProgressStruct.filename = f;
+                        vProgressStruct.errorMessage = ex2.Message;
+                        ReportProgress(progress, vProgressStruct);
                     }
-
-                    File.Delete(destinationBdFile);
-                    File.Delete(destinationHdFile);
-                    File.Delete(destinationSqFile);
-                    File.Delete(iniPath);
                 }
                 else
                 {
@@ -215,10 +241,21 @@ namespace mkpsf2fe
                     return;
                 }
 
-            }
+            } // foreach
 
-            Directory.Delete(WORKING_FOLDER, true);
-            File.Delete(makePsf2DestinationPath);
+            try
+            {
+                Directory.Delete(WORKING_FOLDER, true);
+                File.Delete(makePsf2DestinationPath);
+            }
+            catch (Exception ex3)
+            {
+                vProgressStruct = new Constants.ProgressStruct();
+                vProgressStruct.newNode = null;
+                vProgressStruct.filename = null;
+                vProgressStruct.errorMessage = ex3.Message;
+                ReportProgress(100, vProgressStruct);
+            }
         }
 
         protected override void OnDoWork(DoWorkEventArgs e)
