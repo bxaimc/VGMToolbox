@@ -100,7 +100,21 @@ namespace VGMToolbox
             nodeTag.formClass = auditing_DatafileCreatorForm.GetType().Name;
             auditing_DatafileCreatorNode.Tag = nodeTag;
 
+            /////////////
+            // Rebuilder
+            /////////////
             TreeNode auditing_RebuilderNode = new TreeNode("Rebuilder");
+
+            // add form
+            Auditing_RebuilderForm auditing_RebuilderForm =
+                new Auditing_RebuilderForm(auditing_RebuilderNode);
+            this.splitContainer1.Panel2.Controls.Add(auditing_RebuilderForm);
+
+            // set tag for displaying the form
+            nodeTag.formClass = auditing_RebuilderForm.GetType().Name;
+            auditing_RebuilderNode.Tag = nodeTag;
+
+            
             TreeNode auditing_DatafileCheckerNode = new TreeNode("Datafile Checker");
             auditing_RootNode.NodeFont = this.treeviewBoldFont;
 

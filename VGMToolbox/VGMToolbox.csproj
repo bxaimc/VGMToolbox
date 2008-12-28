@@ -88,6 +88,12 @@
     <Compile Include="forms\Auditing_DatafileCreatorForm.Designer.cs">
       <DependentUpon>Auditing_DatafileCreatorForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\Auditing_RebuilderForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\Auditing_RebuilderForm.Designer.cs">
+      <DependentUpon>Auditing_RebuilderForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\Gbs_GbsToM3uForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -154,6 +160,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Auditing_DatafileCreatorForm.resx">
       <DependentUpon>Auditing_DatafileCreatorForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\Auditing_RebuilderForm.resx">
+      <DependentUpon>Auditing_RebuilderForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Gbs_GbsToM3uForm.resx">
