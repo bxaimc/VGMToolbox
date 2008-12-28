@@ -40,6 +40,8 @@
             this.pnlButtons = new System.Windows.Forms.Panel();
             this.btnDoTask = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.statusStrip1.SuspendLayout();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
@@ -165,6 +167,10 @@
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
             // VgmtForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -204,5 +210,7 @@
         protected System.Windows.Forms.Panel pnlButtons;
         protected System.Windows.Forms.Button btnCancel;
         protected System.Windows.Forms.Button btnDoTask;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
     }
 }

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
+using System.IO;
 using System.Windows.Forms;
 
 using VGMToolbox.util;
@@ -103,6 +101,68 @@ namespace VGMToolbox.forms
             this.elapsedTime = new TimeSpan();
             this.elapsedTime = elapsedTimeEnd - elapsedTimeStart;
             this.lblTimeElapsed.Text = String.Format("{0:D2}:{1:D2}:{2:D2}", elapsedTime.Hours, elapsedTime.Minutes, elapsedTime.Seconds);
+        }
+
+        protected string browseForFile(object sender, EventArgs e)
+        {
+            string filename = String.Empty;
+
+            openFileDialog1 = new OpenFileDialog();
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                filename = openFileDialog1.FileName;
+            }
+
+            return filename;
+        }
+
+        protected string browseForFolder(object sender, EventArgs e)
+        {
+            string foldername = String.Empty;
+
+            folderBrowserDialog1 = new FolderBrowserDialog();
+            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+            {
+                foldername = folderBrowserDialog1.SelectedPath;
+            }
+
+            return foldername;
+        }
+
+        protected bool checkTextBox(string pText, string pFieldName)
+        {
+            bool ret = true;
+            
+            if (pText.Trim().Length == 0)
+            {
+                MessageBox.Show(String.Format("{0} cannot be empty.", pFieldName));
+                ret = false;
+            }
+            return ret;
+        }
+
+        protected bool checkFolderExists(string pPath, string pFolderName)
+        {
+            bool ret = true;
+
+            if (!Directory.Exists(pPath))
+            {
+                MessageBox.Show(String.Format("{0} cannot be found.", pFolderName));
+                ret = false;
+            }
+            return ret;
+        }
+
+        protected bool checkFileExists(string pPath, string pFileName)
+        {
+            bool ret = true;
+
+            if (!File.Exists(pPath))
+            {
+                MessageBox.Show(String.Format("{0} cannot be found.", pFileName));
+                ret = false;
+            }
+            return ret;
         }
 
         protected void backgroundWorker_ReportProgress(object sender, ProgressChangedEventArgs e)

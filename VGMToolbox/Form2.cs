@@ -83,8 +83,23 @@ namespace VGMToolbox
 
         private TreeNode buildAuditingTreeNode()
         {
+            Constants.NodeTagStruct nodeTag = new Constants.NodeTagStruct();
             TreeNode auditing_RootNode = new TreeNode("Auditing Tools");
+            
+            ////////////////////
+            // Datafile Creator
+            ////////////////////
             TreeNode auditing_DatafileCreatorNode = new TreeNode("Datafile Creator");
+
+            // add form
+            Auditing_DatafileCreatorForm auditing_DatafileCreatorForm = 
+                new Auditing_DatafileCreatorForm(auditing_DatafileCreatorNode);
+            this.splitContainer1.Panel2.Controls.Add(auditing_DatafileCreatorForm);
+
+            // set tag for displaying the form
+            nodeTag.formClass = auditing_DatafileCreatorForm.GetType().Name;
+            auditing_DatafileCreatorNode.Tag = nodeTag;
+
             TreeNode auditing_RebuilderNode = new TreeNode("Rebuilder");
             TreeNode auditing_DatafileCheckerNode = new TreeNode("Datafile Checker");
             auditing_RootNode.NodeFont = this.treeviewBoldFont;
@@ -121,9 +136,24 @@ namespace VGMToolbox
 
         private TreeNode buildHootTreeNode()
         {
+            Constants.NodeTagStruct nodeTag = new Constants.NodeTagStruct();
             TreeNode hoot_RootNode = new TreeNode("Hoot Tools");
+            
             TreeNode hoot_CsvDatafileNode = new TreeNode("CSV to Datafile");
-            TreeNode hoot_XmlBuilderNode = new TreeNode("Xml Builder");
+            
+            ///////////////
+            // XML Builder
+            ///////////////
+            TreeNode hoot_XmlBuilderNode = new TreeNode("XML Builder");
+
+            // add form
+            Hoot_XmlBuilderForm hoot_XmlBuilderForm = new Hoot_XmlBuilderForm(hoot_XmlBuilderNode);
+            this.splitContainer1.Panel2.Controls.Add(hoot_XmlBuilderForm);
+
+            // set tag for displaying the form
+            nodeTag.formClass = hoot_XmlBuilderForm.GetType().Name;
+            hoot_XmlBuilderNode.Tag = nodeTag;
+            
             hoot_RootNode.NodeFont = this.treeviewBoldFont;
 
             hoot_RootNode.Nodes.Add(hoot_CsvDatafileNode);
@@ -176,11 +206,35 @@ namespace VGMToolbox
 
         private TreeNode buildXsfTreeNode()
         {
+            Constants.NodeTagStruct nodeTag = new Constants.NodeTagStruct();
             TreeNode xsf_RootNode = new TreeNode("xSF Tools");
             
+            ///////////
+            // XSF2EXE
+            ///////////
             TreeNode xsf_xsf2ExeNode = new TreeNode("xSF2EXE");
+            
+            // Add Xsf2Exe Form
+            Xsf_Xsf2ExeForm xsf_Xsf2ExeForm = new Xsf_Xsf2ExeForm(xsf_xsf2ExeNode);
+            this.splitContainer1.Panel2.Controls.Add(xsf_Xsf2ExeForm);
 
+            // Set Tag for displaying the Form
+            nodeTag.formClass = xsf_Xsf2ExeForm.GetType().Name;
+            xsf_xsf2ExeNode.Tag = nodeTag;
+
+            //////////////
+            // 2SF Ripper
+            //////////////
             TreeNode xsf_2sfRipperNode = new TreeNode("2SF Ripper");
+            
+            // Add 2SF Ripper Form
+            Xsf_2sfRipperForm xsf_2sfRipperForm = new Xsf_2sfRipperForm(xsf_2sfRipperNode);
+            this.splitContainer1.Panel2.Controls.Add(xsf_2sfRipperForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.formClass = xsf_2sfRipperForm.GetType().Name;
+            xsf_2sfRipperNode.Tag = nodeTag;
+
             TreeNode xsf_2sfTimerNode = new TreeNode("2SF Timer");
             TreeNode xsf_MkPsf2FENode = new TreeNode("mkpsf2 Front End");
             TreeNode xsf_UnPsf2FENode = new TreeNode("unpsf2 Front End");
