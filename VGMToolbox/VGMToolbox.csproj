@@ -82,6 +82,12 @@
     <Compile Include="Form2.Designer.cs">
       <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\Auditing_DatafileCheckerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\Auditing_DatafileCheckerForm.Designer.cs">
+      <DependentUpon>Auditing_DatafileCheckerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\Auditing_DatafileCreatorForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -156,6 +162,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form2.resx">
       <DependentUpon>Form2.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\Auditing_DatafileCheckerForm.resx">
+      <DependentUpon>Auditing_DatafileCheckerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Auditing_DatafileCreatorForm.resx">

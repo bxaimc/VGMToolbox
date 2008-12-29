@@ -114,8 +114,20 @@ namespace VGMToolbox
             nodeTag.formClass = auditing_RebuilderForm.GetType().Name;
             auditing_RebuilderNode.Tag = nodeTag;
 
-            
+            ////////////////////
+            // Datafile Checker
+            ////////////////////
             TreeNode auditing_DatafileCheckerNode = new TreeNode("Datafile Checker");
+
+            // add form
+            Auditing_DatafileCheckerForm auditing_DatafileCheckerForm =
+                new Auditing_DatafileCheckerForm(auditing_DatafileCheckerNode);
+            this.splitContainer1.Panel2.Controls.Add(auditing_DatafileCheckerForm);
+
+            // set tag for displaying the form
+            nodeTag.formClass = auditing_DatafileCheckerForm.GetType().Name;
+            auditing_DatafileCheckerNode.Tag = nodeTag;            
+            
             auditing_RootNode.NodeFont = this.treeviewBoldFont;
 
             auditing_RootNode.Nodes.Add(auditing_DatafileCreatorNode);
@@ -292,7 +304,8 @@ namespace VGMToolbox
             {
                 Constants.NodeTagStruct nts = (Constants.NodeTagStruct)e.Node.Tag;
 
-                VgmtForm.ResetNodeColor(e.Node);
+                // need to fix this so it only changes if the form is not "running"
+                VgmtForm.ResetNodeColor(e.Node); 
 
                 showForm(this.splitContainer1.Panel2.Controls, nts.formClass);
             }
