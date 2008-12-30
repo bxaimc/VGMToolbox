@@ -271,6 +271,9 @@
     <Compile Include="tools\xsf\Rip2sfWorker.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\xsf\UnpkPsf2Worker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\xsf\XsfCompressedProgramExtractorWorker.cs">
       <SubType>Component</SubType>
     </Compile>

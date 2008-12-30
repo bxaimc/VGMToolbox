@@ -34,6 +34,8 @@ namespace VGMToolbox.format
         private const ushort VERSION_SSF = 0x11;
         private const ushort VERSION_USF = 0x21;
 
+        public const string FORMAT_NAME_PSF2 = "PSF2";
+
         private const int SIG_OFFSET = 0x00;
         private const int SIG_LENGTH = 0x03;
 
@@ -526,7 +528,7 @@ namespace VGMToolbox.format
         {
             this.formatHash = new Hashtable();
             this.formatHash.Add((ushort)1, "PSF1");
-            this.formatHash.Add((ushort)2, "PSF2");
+            this.formatHash.Add((ushort)2, FORMAT_NAME_PSF2);
             this.formatHash.Add((ushort)0x11, "SSF");
             this.formatHash.Add((ushort)0x12, "DSF");
             this.formatHash.Add((ushort)0x13, "MDSF");

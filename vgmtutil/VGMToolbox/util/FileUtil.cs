@@ -40,5 +40,24 @@ namespace VGMToolbox.util
 
             return pBytes;
         }
+
+        public static int GetFileCount(string[] pPaths)
+        {
+            int totalFileCount = 0;
+            
+            foreach (string path in pPaths)
+            {
+                if (File.Exists(path))
+                {
+                    totalFileCount++;
+                }
+                else if (Directory.Exists(path))
+                {
+                    totalFileCount += Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
+                }
+            }
+
+            return totalFileCount;
+        }
     }
 }
