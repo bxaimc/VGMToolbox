@@ -142,6 +142,12 @@
     <Compile Include="forms\Xsf_SdatExtractorForm.Designer.cs">
       <DependentUpon>Xsf_SdatExtractorForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\Xsf_Unpkpsf2FrontEndForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\Xsf_Unpkpsf2FrontEndForm.Designer.cs">
+      <DependentUpon>Xsf_Unpkpsf2FrontEndForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\Xsf_Xsf2ExeForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -198,6 +204,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Xsf_SdatExtractorForm.resx">
       <DependentUpon>Xsf_SdatExtractorForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\Xsf_Unpkpsf2FrontEndForm.resx">
+      <DependentUpon>Xsf_Unpkpsf2FrontEndForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Xsf_Xsf2ExeForm.resx">

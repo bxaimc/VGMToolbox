@@ -263,7 +263,7 @@ namespace VGMToolbox
 
             TreeNode xsf_2sfTimerNode = new TreeNode("2SF Timer");
             TreeNode xsf_MkPsf2FENode = new TreeNode("mkpsf2 Front End");
-            TreeNode xsf_UnPsf2FENode = new TreeNode("unpsf2 Front End");
+            TreeNode xsf_UnPsf2FENode = new TreeNode("unpksf2 Front End");
             xsf_RootNode.NodeFont = this.treeviewBoldFont;
 
 
@@ -305,7 +305,7 @@ namespace VGMToolbox
                 Constants.NodeTagStruct nts = (Constants.NodeTagStruct)e.Node.Tag;
 
                 // need to fix this so it only changes if the form is not "running"
-                VgmtForm.ResetNodeColor(e.Node); 
+                //VgmtForm.ResetNodeColor(e.Node); 
 
                 showForm(this.splitContainer1.Panel2.Controls, nts.formClass);
             }
