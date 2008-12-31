@@ -28,7 +28,6 @@ namespace VGMToolbox.tools
             WorkerSupportsCancellation = true;
         }
 
-
         private void buildTree(TreeBuilderStruct pTreeBuilderStruct, DoWorkEventArgs e)
         {
             Constants.ProgressStruct vProgressStruct;
@@ -155,7 +154,6 @@ namespace VGMToolbox.tools
             return ret;
         }
      
-
         protected override void OnDoWork(DoWorkEventArgs e)
         {
             TreeBuilderStruct treeBuilderStruct = (TreeBuilderStruct)e.Argument;
