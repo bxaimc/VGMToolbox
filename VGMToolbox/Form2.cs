@@ -139,15 +139,17 @@ namespace VGMToolbox
 
         private TreeNode buildExamineTreeNode()
         {
+            Constants.NodeTagStruct nodeTag = new Constants.NodeTagStruct();
             TreeNode examine_RootNode = new TreeNode("Examine/Exploration Tools");
 
             // Tag Viewer
             TreeNode examine_TagViewerNode = new TreeNode("Tag/Info Viewer");
-            //Examine_TagViewerForm examine_TagViewerForm = new Examine_TagViewerForm();
-            //this.splitContainer1.Panel2.Controls.Add(examine_TagViewerForm);
+            Examine_TagViewerForm examine_TagViewerForm = 
+                new Examine_TagViewerForm(examine_TagViewerNode);
+            this.splitContainer1.Panel2.Controls.Add(examine_TagViewerForm);
 
-            //nodeTag.formClass = examine_TagViewerForm.GetType().Name;
-            //examine_TagViewerNode.Tag = nodeTag;
+            nodeTag.formClass = examine_TagViewerForm.GetType().Name;
+            examine_TagViewerNode.Tag = nodeTag;
 
             // MDX Checker
             TreeNode examine_MDXCheckerNode = new TreeNode("MDX Checker");

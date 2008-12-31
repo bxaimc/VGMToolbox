@@ -100,6 +100,12 @@
     <Compile Include="forms\Auditing_RebuilderForm.Designer.cs">
       <DependentUpon>Auditing_RebuilderForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\Examine_TagViewerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\Examine_TagViewerForm.Designer.cs">
+      <DependentUpon>Examine_TagViewerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\Gbs_GbsToM3uForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -123,6 +129,12 @@
     </Compile>
     <Compile Include="forms\Nsf_Nsfe2NsfM3uForm.Designer.cs">
       <DependentUpon>Nsf_Nsfe2NsfM3uForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="forms\TreeViewVgmtForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\TreeViewVgmtForm.Designer.cs">
+      <DependentUpon>TreeViewVgmtForm.cs</DependentUpon>
     </Compile>
     <Compile Include="forms\VgmtForm.cs">
       <SubType>Form</SubType>
@@ -182,6 +194,10 @@
       <DependentUpon>Auditing_RebuilderForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="forms\Examine_TagViewerForm.resx">
+      <DependentUpon>Examine_TagViewerForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="forms\Gbs_GbsToM3uForm.resx">
       <DependentUpon>Gbs_GbsToM3uForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -192,6 +208,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Nsf_Nsfe2NsfM3uForm.resx">
       <DependentUpon>Nsf_Nsfe2NsfM3uForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\TreeViewVgmtForm.resx">
+      <DependentUpon>TreeViewVgmtForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\VgmtForm.resx">
