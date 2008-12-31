@@ -10,7 +10,10 @@ namespace VGMToolbox.forms
 {
     public partial class TreeViewVgmtForm : VgmtForm
     {
-        public TreeViewVgmtForm() : base() { }
+        public TreeViewVgmtForm() : base() 
+        {
+            InitializeComponent();
+        }
         
         public TreeViewVgmtForm(TreeNode pTreeNode) : base(pTreeNode)
         {

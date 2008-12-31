@@ -33,38 +33,21 @@
             this.pnlButtons.SuspendLayout();
             this.SuspendLayout();
             // 
-            // pnlLabels
+            // treeViewTools
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 430);
-            this.pnlLabels.Size = new System.Drawing.Size(777, 19);
-            // 
-            // pnlTitle
-            // 
-            this.pnlTitle.Size = new System.Drawing.Size(777, 20);
-            // 
-            // tbOutput
-            // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 353);
-            this.tbOutput.Size = new System.Drawing.Size(777, 77);
-            // 
-            // pnlButtons
-            // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 333);
-            this.pnlButtons.Size = new System.Drawing.Size(777, 20);
+            this.treeViewTools.LineColor = System.Drawing.Color.Black;
+            this.treeViewTools.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbXsfSource_DragDrop);
+            this.treeViewTools.DragEnter += new System.Windows.Forms.DragEventHandler(this.doDragEnter);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(717, 0);
-            // 
-            // btnDoTask
-            // 
-            this.btnDoTask.Location = new System.Drawing.Point(657, 0);
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // Examine_TagViewerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(777, 471);
+            this.ClientSize = new System.Drawing.Size(823, 366);
             this.Name = "Examine_TagViewerForm";
             this.Text = "Examine_TagViewerForm";
             this.pnlLabels.ResumeLayout(false);

@@ -6,13 +6,77 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
+using VGMToolbox.tools;
+using VGMToolbox.util;
+
 namespace VGMToolbox.forms
 {
     public partial class Examine_TagViewerForm : TreeViewVgmtForm
     {
-        public Examine_TagViewerForm(TreeNode pTreeNode) : base(pTreeNode) 
+        TreeBuilderWorker treeBuilder;
+        
+        public Examine_TagViewerForm() : base() 
         {
             InitializeComponent();
+        }
+
+        public Examine_TagViewerForm(TreeNode pTreeNode) : base(pTreeNode) 
+        {            
+            // set title
+            this.lblTitle.Text = "Tag/Info Viewer";
+
+            // hide the DoTask button since this is a drag and drop form
+            this.btnDoTask.Hide();
+        }
+
+        private void tbXsfSource_DragDrop(object sender, DragEventArgs e)
+        {
+            toolStripStatusLabel1.Text = "Examination...Begin";
+
+            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            int totalFileCount = FileUtil.GetFileCount(s);
+
+            TreeBuilderWorker.TreeBuilderStruct tbStruct = new TreeBuilderWorker.TreeBuilderStruct();
+            tbStruct.pPaths = s;
+            tbStruct.totalFiles = totalFileCount;
+
+            treeBuilder = new TreeBuilderWorker();
+            treeBuilder.ProgressChanged += backgroundWorker_ReportProgress;
+            treeBuilder.RunWorkerCompleted += TreeBuilderWorker_WorkComplete;
+            treeBuilder.RunWorkerAsync(tbStruct);
+        }
+
+        private void TreeBuilderWorker_WorkComplete(object sender,
+                     RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled)
+            {
+                toolStripStatusLabel1.Text = "Examination...Cancelled";
+                tbOutput.Text += "Operation cancelled.";
+            }
+            else
+            {
+                lblProgressLabel.Text = String.Empty;
+                toolStripStatusLabel1.Text = "Examination...Complete";
+            }
+            // update node color
+            setNodeAsComplete();
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            if (treeBuilder != null && treeBuilder.IsBusy)
+            {
+                tbOutput.Text += "CANCEL PENDING...";
+                treeBuilder.CancelAsync();
+                this.errorFound = true;
+            }
+        }
+
+        protected override void doDragEnter(object sender, DragEventArgs e)
+        {
+            base.doDragEnter(sender, e);
         }
     }
 }
