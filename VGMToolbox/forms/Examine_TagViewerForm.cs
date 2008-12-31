@@ -17,20 +17,30 @@ namespace VGMToolbox.forms
         
         public Examine_TagViewerForm() : base() 
         {
-            InitializeComponent();
-        }
-
-        public Examine_TagViewerForm(TreeNode pTreeNode) : base(pTreeNode) 
-        {            
             // set title
             this.lblTitle.Text = "Tag/Info Viewer";
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
+
+            InitializeComponent();
+        }
+
+        public Examine_TagViewerForm(TreeNode pTreeNode) : base(pTreeNode) 
+        {
+            // set title
+            this.lblTitle.Text = "Tag/Info Viewer";
+
+            // hide the DoTask button since this is a drag and drop form
+            this.btnDoTask.Hide();
+
+            InitializeComponent();
         }
 
         private void tbXsfSource_DragDrop(object sender, DragEventArgs e)
         {
+            base.initializeProcessing();
+            
             toolStripStatusLabel1.Text = "Examination...Begin";
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);

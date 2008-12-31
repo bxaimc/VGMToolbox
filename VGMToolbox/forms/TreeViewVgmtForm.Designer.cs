@@ -63,6 +63,7 @@
             // 
             // treeViewTools
             // 
+            this.treeViewTools.AllowDrop = true;
             this.treeViewTools.Dock = System.Windows.Forms.DockStyle.Top;
             this.treeViewTools.Location = new System.Drawing.Point(0, 23);
             this.treeViewTools.Name = "treeViewTools";

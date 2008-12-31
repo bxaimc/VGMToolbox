@@ -165,7 +165,7 @@ namespace VGMToolbox.forms
             return ret;
         }
 
-        protected void backgroundWorker_ReportProgress(object sender, ProgressChangedEventArgs e)
+        protected virtual void backgroundWorker_ReportProgress(object sender, ProgressChangedEventArgs e)
         {
             if (e.ProgressPercentage != Constants.IGNORE_PROGRESS &&
                 e.ProgressPercentage != Constants.PROGRESS_MSG_ONLY)
