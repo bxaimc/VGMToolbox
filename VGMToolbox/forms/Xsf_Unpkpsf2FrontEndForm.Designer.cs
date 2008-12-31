@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.tbPsf2Source = new System.Windows.Forms.TextBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -67,7 +67,7 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.textBox1);
+            this.groupBox1.Controls.Add(this.tbPsf2Source);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(0, 23);
             this.groupBox1.Name = "groupBox1";
@@ -75,14 +75,6 @@
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Source Files/Folders";
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(6, 19);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(282, 20);
-            this.textBox1.TabIndex = 0;
-            this.textBox1.DragEnter += new System.Windows.Forms.DragEventHandler(this.doDragEnter);
             // 
             // label1
             // 
@@ -92,6 +84,16 @@
             this.label1.Size = new System.Drawing.Size(143, 13);
             this.label1.TabIndex = 1;
             this.label1.Text = "Drag PSF2s to Unpack Here";
+            // 
+            // tbPsf2Source
+            // 
+            this.tbPsf2Source.AllowDrop = true;
+            this.tbPsf2Source.Location = new System.Drawing.Point(6, 19);
+            this.tbPsf2Source.Name = "tbPsf2Source";
+            this.tbPsf2Source.Size = new System.Drawing.Size(282, 20);
+            this.tbPsf2Source.TabIndex = 0;
+            this.tbPsf2Source.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbPsf2Source_DragDrop);
+            this.tbPsf2Source.DragEnter += new System.Windows.Forms.DragEventHandler(this.doDragEnter);
             // 
             // Xsf_Unpkpsf2FrontEndForm
             // 
@@ -121,7 +123,7 @@
         #endregion
 
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox tbPsf2Source;
         private System.Windows.Forms.Label label1;
     }
 }

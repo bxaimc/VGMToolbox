@@ -263,7 +263,21 @@ namespace VGMToolbox
 
             TreeNode xsf_2sfTimerNode = new TreeNode("2SF Timer");
             TreeNode xsf_MkPsf2FENode = new TreeNode("mkpsf2 Front End");
+                        
+            //////////////
+            // UNPKPSF2FE
+            //////////////
             TreeNode xsf_UnPsf2FENode = new TreeNode("unpksf2 Front End");
+
+            // Add UnpkPsf2 Ripper Form
+            Xsf_Unpkpsf2FrontEndForm xsf_Unpkpsf2FrontEndForm =
+                new Xsf_Unpkpsf2FrontEndForm(xsf_UnPsf2FENode);
+            this.splitContainer1.Panel2.Controls.Add(xsf_Unpkpsf2FrontEndForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.formClass = xsf_Unpkpsf2FrontEndForm.GetType().Name;
+            xsf_UnPsf2FENode.Tag = nodeTag;
+            
             xsf_RootNode.NodeFont = this.treeviewBoldFont;
 
 
@@ -272,6 +286,7 @@ namespace VGMToolbox
             xsf_RootNode.Nodes.Add(xsf_2sfTimerNode);
             xsf_RootNode.Nodes.Add(xsf_MkPsf2FENode);
             xsf_RootNode.Nodes.Add(xsf_UnPsf2FENode);
+
 
             return xsf_RootNode;
         }

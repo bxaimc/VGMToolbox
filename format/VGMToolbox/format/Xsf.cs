@@ -511,6 +511,7 @@ namespace VGMToolbox.format
             this.reservedSectionLength = this.getReservedSectionLength(pBytes);
             this.compressedProgramLength = this.getCompressedProgramLength(pBytes);
             this.compressedProgramCrc32 = this.getCompressedProgramCrc32(pBytes);
+            this.populateFormatHash();
             this.tagHash = this.getTags(pBytes);         
         }
 
@@ -521,6 +522,7 @@ namespace VGMToolbox.format
             this.reservedSectionLength = this.getReservedSectionLength(pStream);
             this.compressedProgramLength = this.getCompressedProgramLength(pStream);
             this.compressedProgramCrc32 = this.getCompressedProgramCrc32(pStream);
+            this.populateFormatHash();
             this.tagHash = this.getTags(pStream);
         }
 
