@@ -55,7 +55,7 @@ namespace VGMToolbox.forms
                 e.Effect = DragDropEffects.None;        
         }
 
-        protected void initializeProcessing()
+        protected virtual void initializeProcessing()
         {
             errorFound = false;
             

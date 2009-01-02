@@ -148,6 +148,12 @@
     <Compile Include="forms\Xsf_2sfRipperForm.Designer.cs">
       <DependentUpon>Xsf_2sfRipperForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\Xsf_Mkpsf2FrontEndForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\Xsf_Mkpsf2FrontEndForm.Designer.cs">
+      <DependentUpon>Xsf_Mkpsf2FrontEndForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\Xsf_SdatExtractorForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -222,6 +228,10 @@
       <DependentUpon>Xsf_2sfRipperForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="forms\Xsf_Mkpsf2FrontEndForm.resx">
+      <DependentUpon>Xsf_Mkpsf2FrontEndForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="forms\Xsf_SdatExtractorForm.resx">
       <DependentUpon>Xsf_SdatExtractorForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -288,6 +298,9 @@
     <Compile Include="tools\TreeBuilderWorker.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\xsf\MkPsf2Worker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\xsf\Rip2sfWorker.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -321,6 +334,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="external\psf2\mkpsf2.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="external\psf2\unpkpsf2.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -375,6 +391,21 @@
     <Content Include="rips\dir.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="external\psf2\modules\cdvdnul.irx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="external\psf2\modules\fakesif.irx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="external\psf2\modules\myhost.irx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="external\psf2\modules\psf2.irx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="external\psf2\modules\sq.irx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\toolbox.bmp" />
     <None Include="Resources\ToolBox-2.ico" />
     <None Include="Resources\fs.jpg" />

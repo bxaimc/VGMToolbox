@@ -149,6 +149,7 @@
             // 
             // btnDoTask
             // 
+            this.btnDoTask.AutoSize = true;
             this.btnDoTask.Dock = System.Windows.Forms.DockStyle.Right;
             this.btnDoTask.Location = new System.Drawing.Point(413, 0);
             this.btnDoTask.Name = "btnDoTask";
@@ -191,6 +192,7 @@
             this.pnlTitle.ResumeLayout(false);
             this.pnlTitle.PerformLayout();
             this.pnlButtons.ResumeLayout(false);
+            this.pnlButtons.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

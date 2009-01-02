@@ -264,8 +264,21 @@ namespace VGMToolbox
             xsf_2sfRipperNode.Tag = nodeTag;
 
             TreeNode xsf_2sfTimerNode = new TreeNode("2SF Timer");
+            
+            ////////////
+            // MKPSF2FE
+            ////////////
             TreeNode xsf_MkPsf2FENode = new TreeNode("mkpsf2 Front End");
-                        
+
+            // Add UnpkPsf2 Ripper Form
+            Xsf_Mkpsf2FrontEndForm xsf_Mkpsf2FrontEndForm =
+                new Xsf_Mkpsf2FrontEndForm(xsf_MkPsf2FENode);
+            this.splitContainer1.Panel2.Controls.Add(xsf_Mkpsf2FrontEndForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.formClass = xsf_Mkpsf2FrontEndForm.GetType().Name;
+            xsf_MkPsf2FENode.Tag = nodeTag;
+            
             //////////////
             // UNPKPSF2FE
             //////////////

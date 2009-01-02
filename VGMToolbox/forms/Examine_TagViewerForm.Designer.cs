@@ -44,19 +44,23 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 431);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 635);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 354);
+            this.tbOutput.Location = new System.Drawing.Point(0, 558);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 334);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 538);
             // 
             // btnCancel
             // 
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            // 
+            // btnDoTask
+            // 
+            this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // panel1
             // 
@@ -64,7 +68,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 209);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(823, 18);
+            this.panel1.Size = new System.Drawing.Size(777, 18);
             this.panel1.TabIndex = 8;
             // 
             // label1
@@ -81,7 +85,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(823, 472);
+            this.ClientSize = new System.Drawing.Size(777, 676);
             this.Controls.Add(this.panel1);
             this.Name = "Examine_TagViewerForm";
             this.Text = "Examine_TagViewerForm";

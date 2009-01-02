@@ -19,10 +19,8 @@ namespace VGMToolbox.forms
         {
             // set title
             this.lblTitle.Text = "Tag/Info Viewer";
-
-            // hide the DoTask button since this is a drag and drop form
-            this.btnDoTask.Hide();
-
+            this.btnDoTask.Text = "Expand All";
+            
             InitializeComponent();
         }
 
@@ -30,9 +28,7 @@ namespace VGMToolbox.forms
         {
             // set title
             this.lblTitle.Text = "Tag/Info Viewer";
-
-            // hide the DoTask button since this is a drag and drop form
-            this.btnDoTask.Hide();
+            this.btnDoTask.Text = "Expand All";
 
             InitializeComponent();
         }
@@ -87,6 +83,11 @@ namespace VGMToolbox.forms
         protected override void doDragEnter(object sender, DragEventArgs e)
         {
             base.doDragEnter(sender, e);
+        }
+
+        private void btnDoTask_Click(object sender, EventArgs e)
+        {
+            this.treeViewTools.ExpandAll();
         }
     }
 }
