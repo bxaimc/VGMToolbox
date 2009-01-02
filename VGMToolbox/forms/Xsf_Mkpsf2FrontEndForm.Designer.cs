@@ -55,7 +55,7 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 533);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 472);
             this.pnlLabels.Size = new System.Drawing.Size(777, 19);
             // 
             // pnlTitle
@@ -64,12 +64,12 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 456);
+            this.tbOutput.Location = new System.Drawing.Point(0, 395);
             this.tbOutput.Size = new System.Drawing.Size(777, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 436);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 375);
             this.pnlButtons.Size = new System.Drawing.Size(777, 20);
             // 
             // btnCancel
@@ -258,7 +258,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(777, 574);
+            this.ClientSize = new System.Drawing.Size(777, 513);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "Xsf_Mkpsf2FrontEndForm";

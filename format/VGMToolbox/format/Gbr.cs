@@ -213,6 +213,9 @@ namespace VGMToolbox.format
             return this.tagHash;
         }
 
+        public bool UsesLibraries() { return false; }
+        public bool IsLibraryPresent(string pFilePath) { return true; }
+
         public int GetStartingSong() {return 0;}
         public int GetTotalSongs() { return 1; }
         public string GetSongName() { return null; }

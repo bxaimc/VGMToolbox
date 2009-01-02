@@ -204,6 +204,28 @@ namespace VGMToolbox.format
             return this.tagHash;
         }
 
+        public bool UsesLibraries() { return true; }
+        public bool IsLibraryPresent(string pFilePath) 
+        {
+            bool ret = false;
+
+            if (!String.IsNullOrEmpty(this.pdxFileName))
+            {
+                string searchFile =
+                    Path.Combine(Path.GetDirectoryName(Path.GetFullPath(pFilePath)), this.pdxFileName);
+
+                if (File.Exists(searchFile))
+                {
+                    ret = true;
+                }
+            }
+            else
+            {
+                ret = true;
+            }
+            return ret;
+        }
+
         public int GetStartingSong() { return 0; }
         public int GetTotalSongs() { return 0; }
         public string GetSongName() { return null; }

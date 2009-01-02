@@ -442,6 +442,9 @@ namespace VGMToolbox.format
             return _ret;
         }
 
+        public bool UsesLibraries() { return false; }
+        public bool IsLibraryPresent(string pFilePath) { return true; }
+
         public int GetStartingSong() { return Convert.ToInt16(this.startingSong[0]); }
         public int GetTotalSongs() { return Convert.ToInt16(this.totalSongs[0]); }
         public string GetSongName()

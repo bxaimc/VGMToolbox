@@ -26,6 +26,9 @@ namespace VGMToolbox.format
         bool IsFileLibrary(string pPath);
         bool HasMultipleFileExtensions();
 
+        bool UsesLibraries();
+        bool IsLibraryPresent(string pFilePath);
+
         int GetStartingSong();
         int GetTotalSongs();
         string GetSongName();

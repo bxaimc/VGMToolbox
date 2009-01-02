@@ -45,8 +45,12 @@ namespace VGMToolbox.forms
                 }
 
                 lblProgressLabel.Text = vProgressStruct.filename == null ? String.Empty : vProgressStruct.filename;
-                tbOutput.Text += vProgressStruct.errorMessage == null ? String.Empty : vProgressStruct.errorMessage;
-                errorFound = true;
+
+                if (!String.IsNullOrEmpty(vProgressStruct.errorMessage))
+                {
+                    tbOutput.Text += vProgressStruct.errorMessage;
+                    errorFound = true;
+                } 
             }
 
             this.showElapsedTime();

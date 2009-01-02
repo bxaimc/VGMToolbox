@@ -557,7 +557,7 @@ namespace VGMToolbox.format
         {
             bool ret = false;
 
-            string libDirectory = pFilePath.Substring(0, pFilePath.LastIndexOf(Path.DirectorySeparatorChar));
+            string libDirectory = Path.GetDirectoryName(Path.GetFullPath(pFilePath));
 
             foreach (string f in Directory.GetFiles(libDirectory))
             {
@@ -602,6 +602,26 @@ namespace VGMToolbox.format
         public Dictionary<string, string> GetTagHash()
         {
             return this.tagHash;
+        }
+
+        public bool UsesLibraries() { return true; }
+        public bool IsLibraryPresent(string pFilePath) 
+        {
+            bool ret = true;
+
+            string libDirectory = Path.GetDirectoryName(Path.GetFullPath(pFilePath));
+            string[] libPathArray = this.GetLibPathArray(libDirectory);
+
+            foreach (string s in libPathArray)
+            {
+                if (!File.Exists(s))
+                {
+                    ret = false;
+                    break;
+                }
+            }
+
+            return ret;
         }
 
         public int GetStartingSong() { return 0; }

@@ -20,7 +20,9 @@ namespace VGMToolbox.forms
             // set title
             this.lblTitle.Text = "Tag/Info Viewer";
             this.btnDoTask.Text = "Expand All";
-            
+
+            this.tbOutput.Text = "Drag Files or Folders onto the box above to View Information";
+
             InitializeComponent();
         }
 
@@ -29,6 +31,8 @@ namespace VGMToolbox.forms
             // set title
             this.lblTitle.Text = "Tag/Info Viewer";
             this.btnDoTask.Text = "Expand All";
+
+            this.tbOutput.Text = "Drag Files or Folders onto the box above to View Information";
 
             InitializeComponent();
         }
@@ -46,6 +50,7 @@ namespace VGMToolbox.forms
             TreeBuilderWorker.TreeBuilderStruct tbStruct = new TreeBuilderWorker.TreeBuilderStruct();
             tbStruct.pPaths = s;
             tbStruct.totalFiles = totalFileCount;
+            tbStruct.checkForLibs = cbCheckForLibs.Checked;
 
             treeBuilder = new TreeBuilderWorker();
             treeBuilder.ProgressChanged += backgroundWorker_ReportProgress;

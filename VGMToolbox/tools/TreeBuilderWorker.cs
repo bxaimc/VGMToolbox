@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using VGMToolbox.format;
@@ -17,6 +18,7 @@ namespace VGMToolbox.tools
         {
             public string[] pPaths;
             public int totalFiles;
+            public bool checkForLibs;
         }
 
         public TreeBuilderWorker()
@@ -33,7 +35,8 @@ namespace VGMToolbox.tools
             Constants.ProgressStruct vProgressStruct;
             string examineOutputPath = "." + Path.DirectorySeparatorChar + "examine" + 
                 Path.DirectorySeparatorChar + "examine.txt";
-            StreamWriter sw = File.CreateText(examineOutputPath);
+            StreamWriter sw = null;
+            sw = File.CreateText(examineOutputPath);
 
             foreach (string path in pTreeBuilderStruct.pPaths)
             {
@@ -43,22 +46,35 @@ namespace VGMToolbox.tools
                 {
                     if (!CancellationPending)
                     {
-                        t = this.getFileNode(path, sw, e);
+                        t = this.getFileNode(path, sw, pTreeBuilderStruct.checkForLibs, e);
                     }
                     else 
                     {
                         e.Cancel = true;
+
+                        if (sw != null)
+                        {
+                            sw.Close();
+                            sw.Dispose();
+                        }
                         return;
                     }
                 }
                 else if (Directory.Exists(path))
                 {
                     t = new TreeNode(Path.GetFileName(path));
-                    this.getDirectoryNode(path, t, sw, e);
+                    this.getDirectoryNode(path, t, sw, pTreeBuilderStruct.checkForLibs, e);
 
                     if (CancellationPending)
                     {
                         e.Cancel = true;
+
+                        if (sw != null)
+                        {
+                            sw.Close();
+                            sw.Dispose();
+                        }
+                        
                         return;                        
                     }
                 }
@@ -73,15 +89,21 @@ namespace VGMToolbox.tools
             sw.Dispose();
         }
 
-        private void getDirectoryNode(string pDirectory, TreeNode pTreeNode, StreamWriter pOutputFileStream, DoWorkEventArgs e)
+        private void getDirectoryNode(string pDirectory, TreeNode pTreeNode, StreamWriter pOutputFileStream, 
+            bool pCheckForLibs, DoWorkEventArgs e)
         {
             foreach (string d in Directory.GetDirectories(pDirectory))
             {
                 if (!CancellationPending)
                 {
                     TreeNode t = new TreeNode(Path.GetFileName(d));
-                    this.getDirectoryNode(d, t, pOutputFileStream, e);
+                    this.getDirectoryNode(d, t, pOutputFileStream, pCheckForLibs, e);
                     pTreeNode.Nodes.Add(t);
+
+                    if (t.ForeColor == Color.Red)
+                    {
+                        pTreeNode.ForeColor = Color.Red;
+                    }
                 }
                 else
                 {
@@ -93,9 +115,13 @@ namespace VGMToolbox.tools
             {
                 if (!CancellationPending)
                 {
-                    TreeNode t = this.getFileNode(f, pOutputFileStream, e);
+                    TreeNode t = this.getFileNode(f, pOutputFileStream, pCheckForLibs, e);
                     pTreeNode.Nodes.Add(t);
-                    // fileCount++;
+
+                    if (t.ForeColor == Color.Red)
+                    {
+                        pTreeNode.ForeColor = Color.Red;
+                    }
                 }
                 else
                 {
@@ -105,7 +131,8 @@ namespace VGMToolbox.tools
             }
         }
 
-        private TreeNode getFileNode(string pFileName, StreamWriter pOutputFileStream, DoWorkEventArgs e)
+        private TreeNode getFileNode(string pFileName, StreamWriter pOutputFileStream, 
+            bool pCheckForLibs, DoWorkEventArgs e)
         {
             int progress = (++fileCount * 100) / maxFiles;
             Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
@@ -126,6 +153,16 @@ namespace VGMToolbox.tools
                     IFormat vgmData = (IFormat)Activator.CreateInstance(dataType);
                     vgmData.Initialize(fs);
                     Dictionary<string, string> tagHash = vgmData.GetTagHash();
+
+                    // check for libs
+                    if (pCheckForLibs && vgmData.UsesLibraries())
+                    {
+                        if (!vgmData.IsLibraryPresent(pFileName))
+                        {
+                            ret.ForeColor = Color.Red;
+                            ret.Text += " (Missing Library)";
+                        }
+                    }
 
                     char[] trimNull = new char[] { '\0' };
 
