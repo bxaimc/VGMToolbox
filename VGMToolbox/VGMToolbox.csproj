@@ -100,6 +100,12 @@
     <Compile Include="forms\Auditing_RebuilderForm.Designer.cs">
       <DependentUpon>Auditing_RebuilderForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\EmptyForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\EmptyForm.Designer.cs">
+      <DependentUpon>EmptyForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\Examine_TagViewerForm.cs">
       <SubType>Form</SubType>
     </Compile>

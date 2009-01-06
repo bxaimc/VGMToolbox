@@ -65,6 +65,7 @@
             this.tvMenuTree.Name = "tvMenuTree";
             this.tvMenuTree.Size = new System.Drawing.Size(213, 394);
             this.tvMenuTree.TabIndex = 0;
+            this.tvMenuTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvMenuTree_AfterSelect);
             // 
             // Form2
             // 

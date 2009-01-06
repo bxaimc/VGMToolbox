@@ -28,47 +28,64 @@ namespace VGMToolbox
 
         private void buildMenuNodes()
         {
+            Constants.NodeTagStruct nodeTag = new Constants.NodeTagStruct();
             this.treeviewBoldFont = new Font(this.tvMenuTree.Font, FontStyle.Bold);
-            
+
+            // add empty form
+            EmptyForm emptyForm = new EmptyForm();
+            this.splitContainer1.Panel2.Controls.Add(emptyForm);
+
+            // set tag for displaying the empty form
+            nodeTag.formClass = emptyForm.GetType().Name;
+
             TreeNode rootNode = new TreeNode("VGMToolbox");
             rootNode.NodeFont = this.treeviewBoldFont;
+            rootNode.Tag = nodeTag;
 
             ////////////
             // Auditing
             ////////////
-            TreeNode auditing_RootNode = buildAuditingTreeNode();           
-            rootNode.Nodes.Add(auditing_RootNode);
+            TreeNode auditing_RootNode = buildAuditingTreeNode();
+            auditing_RootNode.Tag = nodeTag;
+            rootNode.Nodes.Add(auditing_RootNode);            
 
             ///////////
             // Examine
             ///////////
             TreeNode examine_RootNode = buildExamineTreeNode();
+            examine_RootNode.Tag = nodeTag;
             rootNode.Nodes.Add(examine_RootNode);
 
             /////////
             // Tools
             /////////
             TreeNode tools_RootNode = new TreeNode("Misc. Tools");
+            tools_RootNode.Tag = nodeTag;
             tools_RootNode.NodeFont = this.treeviewBoldFont;
 
             // Hoot
             TreeNode hoot_RootNode = buildHootTreeNode();
+            hoot_RootNode.Tag = nodeTag;
             tools_RootNode.Nodes.Add(hoot_RootNode);
 
             // NSF
             TreeNode nsf_RootNode = buildNsfTreeNode();
+            nsf_RootNode.Tag = nodeTag;
             tools_RootNode.Nodes.Add(nsf_RootNode);
 
             // GBS
             TreeNode gbs_RootNode = buildGbsTreeNode();
+            gbs_RootNode.Tag = nodeTag;
             tools_RootNode.Nodes.Add(gbs_RootNode);
 
             // xSF
             TreeNode xsf_RootNode = buildXsfTreeNode();
+            xsf_RootNode.Tag = nodeTag;
             tools_RootNode.Nodes.Add(xsf_RootNode);
             
             // NDS                        
-            TreeNode nds_RootNode = buildNdsTreeNode();                        
+            TreeNode nds_RootNode = buildNdsTreeNode();
+            nds_RootNode.Tag = nodeTag;
             tools_RootNode.Nodes.Add(nds_RootNode);
 
             // add Tools node to Root
@@ -365,6 +382,23 @@ namespace VGMToolbox
 
                 // showForm(ctrl.Controls, pFormClass);
             }        
+        }
+
+        private void tvMenuTree_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if (e.Node.IsSelected && e.Node.Tag != null)
+            {
+                Constants.NodeTagStruct nts = (Constants.NodeTagStruct)e.Node.Tag;
+
+                // need to fix this so it only changes if the form is not "running"
+                //VgmtForm.ResetNodeColor(e.Node); 
+
+                showForm(this.splitContainer1.Panel2.Controls, nts.formClass);
+            }
+            else
+            {
+                showForm(this.splitContainer1.Panel2.Controls, "ZZZ_NotYetImplemented");
+            }           
         }
     }
 }
