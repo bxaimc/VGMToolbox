@@ -12,18 +12,19 @@ namespace VGMToolbox.tools
         public static string BuildPlaylistEntry(string pFileType, string pFileName, string pSongNumber,
             string pTitle, string pTime, string pLoop, string pFade, string pLoopCount)
         {
+            StringBuilder sb = new StringBuilder();
             string playlistEntry = String.Empty;
 
-            playlistEntry += pFileName + "::";
-            playlistEntry += pFileType + ",";
-            playlistEntry += pSongNumber + ",";
-            playlistEntry += "" + pTitle.Replace(',', '-') + ",";
-            playlistEntry += pTime + ",";
-            playlistEntry += pLoop + ",";
-            playlistEntry += pFade + ",";
-            playlistEntry += pLoopCount;
+            sb.Append(pFileName + "::");
+            sb.Append(pFileType + ",");
+            sb.Append(pSongNumber + ",");
+            sb.Append("" + pTitle.Replace(',', '-') + ",");
+            sb.Append(pTime + ",");
+            sb.Append(pLoop + ",");
+            sb.Append(pFade + ",");
+            sb.Append(pLoopCount);
 
-            return playlistEntry;
+            return sb.ToString();
         }    
     
     }

@@ -141,52 +141,52 @@ namespace VGMToolbox.tools
             ReportProgress(progress, vProgressStruct);
 
             TreeNode ret = new TreeNode(Path.GetFileName(pFileName));
-            FileStream fs = File.OpenRead(pFileName);                                    
-            try
-            {
-                Type dataType = FormatUtil.getObjectType(fs);
-
-                if (dataType != null)
-                {
-                    pOutputFileStream.WriteLine(pFileName);
-                    
-                    IFormat vgmData = (IFormat)Activator.CreateInstance(dataType);
-                    vgmData.Initialize(fs);
-                    Dictionary<string, string> tagHash = vgmData.GetTagHash();
-
-                    // check for libs
-                    if (pCheckForLibs && vgmData.UsesLibraries())
-                    {
-                        if (!vgmData.IsLibraryPresent(pFileName))
-                        {
-                            ret.ForeColor = Color.Red;
-                            ret.Text += " (Missing Library)";
-                        }
-                    }
-
-                    char[] trimNull = new char[] { '\0' };
-
-                    foreach (string s in tagHash.Keys)
-                    {
-                        TreeNode tagNode = new TreeNode(s + ": " + tagHash[s]);
-                        ret.Nodes.Add(tagNode);
-
-                        pOutputFileStream.WriteLine(s + ": " + tagHash[s].TrimEnd(trimNull));
-                    }
-
-                    pOutputFileStream.WriteLine(Environment.NewLine);
-                }
-            }
-            catch (Exception ex) 
-            {
-                vProgressStruct = new Constants.ProgressStruct();
-                vProgressStruct.newNode = null;
-                vProgressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pFileName) + ex.Message;
-                ReportProgress(progress, vProgressStruct);
-            }
             
-            fs.Close();
-            fs.Dispose();
+            using (FileStream fs = File.OpenRead(pFileName))
+            {
+                try
+                {
+                    Type dataType = FormatUtil.getObjectType(fs);
+
+                    if (dataType != null)
+                    {
+                        pOutputFileStream.WriteLine(pFileName);
+
+                        IFormat vgmData = (IFormat)Activator.CreateInstance(dataType);
+                        vgmData.Initialize(fs);
+                        Dictionary<string, string> tagHash = vgmData.GetTagHash();
+
+                        // check for libs
+                        if (pCheckForLibs && vgmData.UsesLibraries())
+                        {
+                            if (!vgmData.IsLibraryPresent(pFileName))
+                            {
+                                ret.ForeColor = Color.Red;
+                                ret.Text += " (Missing Library)";
+                            }
+                        }
+
+                        char[] trimNull = new char[] { '\0' };
+
+                        foreach (string s in tagHash.Keys)
+                        {
+                            TreeNode tagNode = new TreeNode(s + ": " + tagHash[s]);
+                            ret.Nodes.Add(tagNode);
+
+                            pOutputFileStream.WriteLine(s + ": " + tagHash[s].TrimEnd(trimNull));
+                        }
+
+                        pOutputFileStream.WriteLine(Environment.NewLine);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    vProgressStruct = new Constants.ProgressStruct();
+                    vProgressStruct.newNode = null;
+                    vProgressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pFileName) + ex.Message;
+                    ReportProgress(progress, vProgressStruct);
+                }
+            } // using (FileStream fs = File.OpenRead(pFileName))
 
             return ret;
         }

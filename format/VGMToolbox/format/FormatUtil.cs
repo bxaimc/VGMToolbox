@@ -89,13 +89,15 @@ namespace VGMToolbox.format
         public static bool IsZipFile(string pFilePath)
         {
             bool ret = false;
-            FileStream fs = File.OpenRead(pFilePath);
-            byte[] signatureBytes = ParseFile.parseSimpleOffset(fs, HEADER_OFFSET, ZIP_SIGNATURE.Length);
-            
-            fs.Close();
-            fs.Dispose();
+            byte[] signatureBytes = null;
 
-            if (ParseFile.CompareSegment(signatureBytes, HEADER_OFFSET, ZIP_SIGNATURE))
+            using (FileStream fs = File.OpenRead(pFilePath))
+            {
+                signatureBytes = ParseFile.parseSimpleOffset(fs, HEADER_OFFSET, ZIP_SIGNATURE.Length);
+            }
+
+            if ((signatureBytes != null) && 
+                (ParseFile.CompareSegment(signatureBytes, HEADER_OFFSET, ZIP_SIGNATURE)))
             {
                 ret = true;
             }
@@ -106,13 +108,14 @@ namespace VGMToolbox.format
         public static bool IsGzipFile(string pFilePath)
         {
             bool ret = false;
-            FileStream fs = File.OpenRead(pFilePath);
-            byte[] signatureBytes = ParseFile.parseSimpleOffset(fs, HEADER_OFFSET, GZIP_SIGNATURE.Length);
+            byte[] signatureBytes = null;
+            using (FileStream fs = File.OpenRead(pFilePath))
+            {
+                signatureBytes = ParseFile.parseSimpleOffset(fs, HEADER_OFFSET, GZIP_SIGNATURE.Length);
+            }
 
-            fs.Close();
-            fs.Dispose();
-
-            if (ParseFile.CompareSegment(signatureBytes, HEADER_OFFSET, GZIP_SIGNATURE))
+            if ((signatureBytes != null) && 
+                (ParseFile.CompareSegment(signatureBytes, HEADER_OFFSET, GZIP_SIGNATURE)))
             {
                 ret = true;
             }

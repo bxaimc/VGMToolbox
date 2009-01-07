@@ -290,7 +290,6 @@
     <Compile Include="tools\hoot\HootXmlBuilderWorker.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tools\Nds2sfTools.cs" />
     <Compile Include="tools\hoot\HootCsv.cs" />
     <Compile Include="tools\MdxUtil.cs" />
     <Compile Include="tools\nds\SdatExtractorWorker.cs">
