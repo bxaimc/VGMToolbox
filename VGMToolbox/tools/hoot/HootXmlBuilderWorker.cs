@@ -216,7 +216,6 @@ namespace VGMToolbox.tools.hoot
                 
                 }
             }
-        }    
-    
+        }        
     }
 }
