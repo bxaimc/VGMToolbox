@@ -105,7 +105,7 @@ namespace VGMToolbox.format
             this.initializeTagHash();
 
             this.dataOffset = _titleLength + TITLE_TERMINATOR.Length + _pdxLength + PDX_TERMINATOR.Length;
-            this.dataLength = (int)(pStream.Length - this.dataOffset);
+            this.dataLength = (int)(pStream.Length - this.dataOffset) + 1;
         }
 
         private void initializeTagHash()

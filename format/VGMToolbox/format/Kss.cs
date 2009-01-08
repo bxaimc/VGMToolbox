@@ -119,7 +119,7 @@ namespace VGMToolbox.format
 
         public byte[] getData(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, DATA_OFFSET, (int)(pStream.Length - DATA_OFFSET));
+            return ParseFile.parseSimpleOffset(pStream, DATA_OFFSET, (int)(pStream.Length - DATA_OFFSET) + 1);
         }
 
         public void Initialize(Stream pStream)

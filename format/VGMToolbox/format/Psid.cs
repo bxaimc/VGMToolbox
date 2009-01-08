@@ -117,7 +117,7 @@ namespace format.VGMToolbox.format
         public void Initialize(Stream pStream)
         {
             this.asciiSignature = ParseFile.parseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
-            this.versionNumber = ParseFile.parseSimpleOffset(pStream, VERSION_OFFSET, VERSION_LENGTH);
+            this.versionNumber = ParseFile.parseSimpleOffset(pStream, VERSION_OFFSET, VERSION_LENGTH);            
             this.dataOffset = ParseFile.parseSimpleOffset(pStream, DATA_OFFSET_OFFSET, DATA_OFFSET_LENGTH);
             this.loadAddress = ParseFile.parseSimpleOffset(pStream, LOAD_ADDRESS_OFFSET, LOAD_ADDRESS_LENGTH);
             this.initAddress = ParseFile.parseSimpleOffset(pStream, INIT_ADDRESS_OFFSET, INIT_ADDRESS_LENGTH);
@@ -128,12 +128,26 @@ namespace format.VGMToolbox.format
             this.songName = ParseFile.parseSimpleOffset(pStream, NAME_OFFSET, NAME_LENGTH);
             this.songArtist = ParseFile.parseSimpleOffset(pStream, ARTIST_OFFSET, ARTIST_LENGTH);
             this.songCopyright = ParseFile.parseSimpleOffset(pStream, COPYRIGHT_OFFSET, COPYRIGHT_LENGTH);
-            this.v2Flags = ParseFile.parseSimpleOffset(pStream, V2_FLAGS_OFFSET, V2_FLAGS_LENGTH);
-            this.v2StartPage = ParseFile.parseSimpleOffset(pStream, V2_START_PAGE_OFFSET, V2_START_PAGE_LENGTH);
-            this.v2PageLength = ParseFile.parseSimpleOffset(pStream, V2_PAGE_LENGTH_OFFSET, V2_PAGE_LENGTH_LENGTH);
-            this.v2Reserved = ParseFile.parseSimpleOffset(pStream, V2_RESERVED_OFFSET, V2_RESERVED_LENGTH);
+                   
+            // version 2 stuff
+            byte[] versionNumberLE = this.versionNumber;
+            Array.Reverse(versionNumberLE);
+            int intVersionNumber = BitConverter.ToInt16(versionNumberLE, 0);
 
-            // this.data = ParseFile.parseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
+            if (intVersionNumber == 2)
+            {
+                this.v2Flags = ParseFile.parseSimpleOffset(pStream, V2_FLAGS_OFFSET, V2_FLAGS_LENGTH);
+                this.v2StartPage = ParseFile.parseSimpleOffset(pStream, V2_START_PAGE_OFFSET, V2_START_PAGE_LENGTH);
+                this.v2PageLength = ParseFile.parseSimpleOffset(pStream, V2_PAGE_LENGTH_OFFSET, V2_PAGE_LENGTH_LENGTH);
+                this.v2Reserved = ParseFile.parseSimpleOffset(pStream, V2_RESERVED_OFFSET, V2_RESERVED_LENGTH);
+            }
+
+            // data
+            byte[] dataOffsetLE = this.dataOffset;
+            Array.Reverse(dataOffsetLE);
+            int intDataOffset = BitConverter.ToInt16(dataOffsetLE, 0);
+
+            this.data = ParseFile.parseSimpleOffset(pStream, intDataOffset, (int) pStream.Length - intDataOffset + 1);
 
             this.initializeTagHash();
         }
@@ -142,16 +156,27 @@ namespace format.VGMToolbox.format
         {
             System.Text.Encoding enc = System.Text.Encoding.ASCII;
 
+            // BitConverter assumes Little Endian, so reverse the array
+            byte[] tagVersionNumber = this.versionNumber;
+            Array.Reverse(tagVersionNumber);
+
+            byte[] tagTotalSongs = this.totalSongs;
+            Array.Reverse(tagTotalSongs);
+
+            byte[] tagStartSong = this.startingSong;
+            Array.Reverse(tagStartSong);
+
+            // Build Tag Hash
             tagHash.Add("Name", enc.GetString(this.songName));
             tagHash.Add("Artist", enc.GetString(this.songArtist));
             tagHash.Add("Copyright", enc.GetString(this.songCopyright));
-            tagHash.Add("Version", this.versionNumber);
-            // tagHash.Add("Total Songs", this.totalSongs[0].ToString());
-            // tagHash.Add("Starting Song", this.startingSong[0].ToString());
+            tagHash.Add("PSID Version", BitConverter.ToInt16(tagVersionNumber, 0).ToString());
+            tagHash.Add("Total Songs", BitConverter.ToInt16(tagTotalSongs, 0).ToString());
+            tagHash.Add("Starting Song", BitConverter.ToInt16(tagStartSong, 0).ToString());
         }
 
         public void GetDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
-    ref Crc32 pChecksum, bool pUseLibHash)
+            ref Crc32 pChecksum, bool pUseLibHash)
         {
             pChecksum.Reset();
 
@@ -207,8 +232,8 @@ namespace format.VGMToolbox.format
         public bool UsesLibraries() { return false; }
         public bool IsLibraryPresent(string pFilePath) { return true; }
 
-        public int GetStartingSong() { return Convert.ToInt16(this.startingSong[0]); }
-        public int GetTotalSongs() { return Convert.ToInt16(this.totalSongs[0]); }
+        public int GetStartingSong() { return Convert.ToInt16(this.startingSong[1]); }
+        public int GetTotalSongs() { return Convert.ToInt16(this.totalSongs[1]); }
         public string GetSongName()
         {
             System.Text.Encoding enc = System.Text.Encoding.ASCII;
