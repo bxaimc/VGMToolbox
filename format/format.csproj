@@ -36,6 +36,8 @@
       <HintPath>..\VGMToolbox\3rd\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -49,6 +51,7 @@
     <Compile Include="VGMToolbox\format\Nsf.cs" />
     <Compile Include="VGMToolbox\format\Nsfe.cs" />
     <Compile Include="VGMToolbox\format\S98.cs" />
+    <Compile Include="VGMToolbox\format\Psid.cs" />
     <Compile Include="VGMToolbox\format\sdat\Sdat.cs" />
     <Compile Include="VGMToolbox\format\sdat\SdatFatSection.cs" />
     <Compile Include="VGMToolbox\format\sdat\SdatFileSection.cs" />

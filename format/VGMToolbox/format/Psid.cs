@@ -55,5 +55,46 @@ namespace format.VGMToolbox.format.sdat
 
         private const int V2_RESERVED_OFFSET = 0x7A;
         private const int V2_RESERVED_LENGTH = 0x02;
+
+        private byte[] asciiSignature;
+        private byte[] versionNumber;
+        private byte[] dataOffset;
+        private byte[] loadAddress;
+        private byte[] initAddress;
+        private byte[] playAddress;
+        private byte[] totalSongs;
+        private byte[] startingSong;
+        private byte[] speed;
+        private byte[] songName;
+        private byte[] songArtist;
+        private byte[] songCopyright;
+        private byte[] v2Flags;
+        private byte[] v2StartPage;
+        private byte[] v2PageLength;
+        private byte[] v2Reserved;
+        private byte[] data;
+
+        Dictionary<string, string> tagHash = new Dictionary<string, string>();
+
+        public byte[] AsciiSignature { get { return this.asciiSignature; } }
+        public byte[] VersionNumber { get { return this.versionNumber; } }
+        public byte[] DataOffset { get { return this.dataOffset; } }
+        public byte[] LoadAddress { get { return this.loadAddress; } }
+        public byte[] InitAddress { get { return this.initAddress; } }
+        public byte[] PlayAddress { get { return this.playAddress; } }
+        public byte[] TotalSongs { get { return this.totalSongs; } }
+        public byte[] StartingSong { get { return this.startingSong; } }
+        public byte[] Speed { get { return this.speed; } }
+        public byte[] SongName { get { return this.songName; } }
+        public byte[] SongArtist { get { return this.songArtist; } }
+        public byte[] SongCopyright { get { return this.songCopyright; } }
+        public byte[] V2Flags { get { return this.v2Flags; } }
+        public byte[] V2StartPage { get { return this.v2StartPage; } }
+        public byte[] V2PageLength { get { return this.v2PageLength; } }
+        public byte[] V2Reserved { get { return this.v2Reserved; } }
+        public byte[] Data { get { return this.data; } }
+
+
+
     }
 }
