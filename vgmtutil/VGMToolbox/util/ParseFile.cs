@@ -177,6 +177,13 @@ namespace VGMToolbox.util
         public static void ExtractChunkToFile(Stream pStream, long pOffset, int pLength, string pFilePath)
         {
             BinaryWriter bw = null;
+            string fullOutputDirectory = Path.GetDirectoryName(Path.GetFullPath(pFilePath));
+
+            // create output folder if needed
+            if (!Directory.Exists(fullOutputDirectory))
+            {
+                Directory.CreateDirectory(fullOutputDirectory);
+            }
 
             try
             {
