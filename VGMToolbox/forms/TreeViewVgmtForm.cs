@@ -12,6 +12,9 @@ namespace VGMToolbox.forms
 {
     public partial class TreeViewVgmtForm : VgmtForm
     {
+        private TreeNode selectedNode;
+        private TreeNode oldNode;
+        
         public TreeViewVgmtForm() : base() 
         {
             InitializeComponent();
@@ -61,5 +64,53 @@ namespace VGMToolbox.forms
             base.initializeProcessing();
             treeViewTools.Nodes.Clear();
         }
+
+        private void treeViewTools_MouseUp(object sender, MouseEventArgs e)
+        {            
+            if (e.Button == MouseButtons.Right)
+            {
+                // Point where the mouse is clicked.
+                Point p = new Point(e.X, e.Y);
+
+                TreeNode node = treeViewTools.GetNodeAt(p);
+                this.selectedNode = node;
+
+                if (node != null)
+                {
+                    this.oldNode = treeViewTools.SelectedNode;
+                    treeViewTools.SelectedNode = node;
+                    contextMenuStrip1.Show(treeViewTools, p);
+                }
+            }
+        }
+
+        private void filePathToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this.selectedNode != null && this.selectedNode.Tag is Constants.NodeTagStruct)
+            {
+                Constants.NodeTagStruct nts = (Constants.NodeTagStruct) this.selectedNode.Tag;
+                MessageBox.Show("You clicked on node: " + nts.filePath, "File Path");
+                treeViewTools.SelectedNode = this.oldNode;
+                this.selectedNode = this.oldNode;
+                this.oldNode = null;
+            }
+        }
+
+        /*
+        private void treeViewTools_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                treeViewTools.SelectedNode = e.Node;
+                
+                //if (e.Node.Tag != null && e.Node.Tag is Constants.NodeTagStruct)
+                //{
+                //    Constants.NodeTagStruct nts = (Constants.NodeTagStruct) e.Node.Tag;
+                //    MessageBox.Show("You clicked on node: " + nts.filePath, "File Path");
+                //}
+                
+            }
+        }
+        */
     }
 }

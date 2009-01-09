@@ -23,6 +23,7 @@ namespace VGMToolbox.util
         public struct NodeTagStruct
         {
             public string formClass;
+            public string filePath;
         } 
 
     }

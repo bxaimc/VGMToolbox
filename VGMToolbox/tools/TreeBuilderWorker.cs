@@ -141,7 +141,10 @@ namespace VGMToolbox.tools
             ReportProgress(progress, vProgressStruct);
 
             TreeNode ret = new TreeNode(Path.GetFileName(pFileName));
-            
+            Constants.NodeTagStruct nodeTag = new Constants.NodeTagStruct();
+            nodeTag.filePath = pFileName;
+            ret.Tag = nodeTag;
+
             using (FileStream fs = File.OpenRead(pFileName))
             {
                 try
@@ -155,6 +158,9 @@ namespace VGMToolbox.tools
                         IFormat vgmData = (IFormat)Activator.CreateInstance(dataType);
                         vgmData.Initialize(fs);
                         Dictionary<string, string> tagHash = vgmData.GetTagHash();
+                        
+                        // Add Path for possible future use.
+                        tagHash.Add("Path", pFileName);
 
                         // check for libs
                         if (pCheckForLibs && vgmData.UsesLibraries())

@@ -164,13 +164,9 @@ namespace VGMToolbox
             nodeTag.formClass = examine_TagViewerForm.GetType().Name;
             examine_TagViewerNode.Tag = nodeTag;
 
-            // MDX Checker
-            //TreeNode examine_MDXCheckerNode = new TreeNode("MDX Checker");
-
             examine_RootNode.NodeFont = this.treeviewBoldFont;
 
             examine_RootNode.Nodes.Add(examine_TagViewerNode);
-            //examine_RootNode.Nodes.Add(examine_MDXCheckerNode);
 
             return examine_RootNode;
         }
