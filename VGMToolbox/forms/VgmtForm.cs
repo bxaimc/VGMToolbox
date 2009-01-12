@@ -167,22 +167,26 @@ namespace VGMToolbox.forms
 
         protected virtual void backgroundWorker_ReportProgress(object sender, ProgressChangedEventArgs e)
         {
+            Constants.ProgressStruct vProgressStruct = (Constants.ProgressStruct)e.UserState;
+            
             if (e.ProgressPercentage != Constants.IGNORE_PROGRESS &&
                 e.ProgressPercentage != Constants.PROGRESS_MSG_ONLY)
             {
-                this.toolStripProgressBar.Value = e.ProgressPercentage;
+                this.toolStripProgressBar.Value = e.ProgressPercentage;                
                 this.Text = "VGMToolbox [" + e.ProgressPercentage + "%]";
+
+                if (!String.IsNullOrEmpty(vProgressStruct.genericMessage))
+                {
+                    this.tbOutput.Text += vProgressStruct.genericMessage;
+                }
             }
 
             if ((e.ProgressPercentage == Constants.PROGRESS_MSG_ONLY) && e.UserState != null)
             {
-                Constants.ProgressStruct vProgressStruct = (Constants.ProgressStruct)e.UserState;
                 tbOutput.Text += vProgressStruct.genericMessage;
             }
             else if (e.UserState != null)
-            {
-                Constants.ProgressStruct vProgressStruct = (Constants.ProgressStruct)e.UserState;
-
+            {                
                 lblProgressLabel.Text = vProgressStruct.filename == null ? String.Empty : vProgressStruct.filename;
 
                 if (!String.IsNullOrEmpty(vProgressStruct.errorMessage))

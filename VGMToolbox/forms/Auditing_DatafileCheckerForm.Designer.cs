@@ -43,30 +43,30 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 430);
-            this.pnlLabels.Size = new System.Drawing.Size(756, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 472);
+            this.pnlLabels.Size = new System.Drawing.Size(886, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(756, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(886, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 353);
-            this.tbOutput.Size = new System.Drawing.Size(756, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 395);
+            this.tbOutput.Size = new System.Drawing.Size(886, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 333);
-            this.pnlButtons.Size = new System.Drawing.Size(756, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 375);
+            this.pnlButtons.Size = new System.Drawing.Size(886, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(696, 0);
+            this.btnCancel.Location = new System.Drawing.Point(826, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(636, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(766, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDatafileChecker_Check_Click);
             // 
             // groupBox1
@@ -80,7 +80,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(0, 23);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(756, 98);
+            this.groupBox1.Size = new System.Drawing.Size(886, 97);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Source and Destination";
@@ -141,7 +141,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(756, 471);
+            this.ClientSize = new System.Drawing.Size(886, 513);
             this.Controls.Add(this.groupBox1);
             this.Name = "Auditing_DatafileCheckerForm";
             this.Text = "Auditing_DatafileCheckerForm";
@@ -155,6 +155,7 @@
             this.pnlTitle.ResumeLayout(false);
             this.pnlTitle.PerformLayout();
             this.pnlButtons.ResumeLayout(false);
+            this.pnlButtons.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);

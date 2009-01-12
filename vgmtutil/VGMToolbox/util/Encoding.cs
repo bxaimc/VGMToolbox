@@ -22,6 +22,22 @@ namespace VGMToolbox.util
         {
             return getEncodedText(pBytes, CODEPAGE_US);
         }
-        
+
+        public static long GetIntFromString(string pStringNumber)
+        {
+            long ret;
+
+            if (pStringNumber.StartsWith("0x"))
+            {
+                pStringNumber = pStringNumber.Substring(2);
+                ret = long.Parse(pStringNumber, System.Globalization.NumberStyles.HexNumber, null);
+            }
+            else
+            {
+                ret = long.Parse(pStringNumber, System.Globalization.NumberStyles.Integer, null);
+            }
+
+            return ret;
+        }
     }
 }

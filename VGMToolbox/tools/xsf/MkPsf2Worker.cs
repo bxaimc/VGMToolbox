@@ -13,7 +13,7 @@ namespace VGMToolbox.tools.xsf
     {
 
         private readonly string WORKING_FOLDER = 
-            Path.GetFullPath(Path.Combine(".", "working"));
+            Path.GetFullPath(Path.Combine(".", "working_psf2"));
         private readonly string MODULES_FOLDER = 
             Path.GetFullPath(Path.Combine(Path.Combine(Path.Combine(".", "external"), "psf2"), "modules"));
         private readonly string PROGRAMS_FOLDER = 
