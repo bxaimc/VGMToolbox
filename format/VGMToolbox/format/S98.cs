@@ -207,7 +207,7 @@ namespace VGMToolbox.format
                 int v1DataOffset = BitConverter.ToInt32(this.dumpDataOffset, 0);
 
                 this.v1Reserved = this.getV1Reserved(pStream);
-                this.data = ParseFile.parseSimpleOffset(pStream, v1DataOffset, (int)pStream.Length - v1DataOffset + 1);
+                this.data = ParseFile.parseSimpleOffset(pStream, v1DataOffset, (int) pStream.Length - v1DataOffset);
             }
 
 
@@ -219,6 +219,7 @@ namespace VGMToolbox.format
 
                 Int32 tagOffset = BitConverter.ToInt32(this.songNameOffset, 0) + TAG_IDENTIFIER_LENGTH;
                 this.v3Tags = ParseFile.parseSimpleOffset(pStream, tagOffset, (int)pStream.Length - tagOffset);
+                tagOffset -= TAG_IDENTIFIER_LENGTH;
 
                 // check this
                 this.data = ParseFile.parseSimpleOffset(pStream, V3_DEVICE_INFO_OFFSET, tagOffset - V3_DEVICE_INFO_OFFSET);

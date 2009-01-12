@@ -147,7 +147,7 @@ namespace format.VGMToolbox.format
             Array.Reverse(dataOffsetLE);
             int intDataOffset = BitConverter.ToInt16(dataOffsetLE, 0);
 
-            this.data = ParseFile.parseSimpleOffset(pStream, intDataOffset, (int) pStream.Length - intDataOffset + 1);
+            this.data = ParseFile.parseSimpleOffset(pStream, intDataOffset, (int) (pStream.Length - intDataOffset));
 
             this.initializeTagHash();
         }

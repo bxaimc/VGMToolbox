@@ -18,5 +18,11 @@ namespace VGMToolbox.forms
             
             InitializeComponent();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Form1 oldGUI = new Form1();
+            oldGUI.Show();
+        }
     }
 }

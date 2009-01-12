@@ -89,28 +89,11 @@ namespace VGMToolbox.forms
             if (this.selectedNode != null && this.selectedNode.Tag is Constants.NodeTagStruct)
             {
                 Constants.NodeTagStruct nts = (Constants.NodeTagStruct) this.selectedNode.Tag;
-                MessageBox.Show("You clicked on node: " + nts.filePath, "File Path");
+                MessageBox.Show("Path: " + nts.filePath, "File Path");
                 treeViewTools.SelectedNode = this.oldNode;
                 this.selectedNode = this.oldNode;
                 this.oldNode = null;
             }
         }
-
-        /*
-        private void treeViewTools_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
-                treeViewTools.SelectedNode = e.Node;
-                
-                //if (e.Node.Tag != null && e.Node.Tag is Constants.NodeTagStruct)
-                //{
-                //    Constants.NodeTagStruct nts = (Constants.NodeTagStruct) e.Node.Tag;
-                //    MessageBox.Show("You clicked on node: " + nts.filePath, "File Path");
-                //}
-                
-            }
-        }
-        */
     }
 }

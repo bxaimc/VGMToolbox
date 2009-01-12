@@ -159,6 +159,7 @@
             this.tabPage14 = new System.Windows.Forms.TabPage();
             this.btnXsfPsf2Exe_Cancel = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.cbXsfPsf2Exe_StripGsfHeader = new System.Windows.Forms.CheckBox();
             this.cbXsfPsf2Exe_IncludeOrigExt = new System.Windows.Forms.CheckBox();
             this.grpXsfPsf2Exe_Source = new System.Windows.Forms.GroupBox();
             this.label12 = new System.Windows.Forms.Label();
@@ -202,8 +203,6 @@
             this.lblTimeElapsed = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.btnTestGui = new System.Windows.Forms.Button();
-            this.cbXsfPsf2Exe_StripGsfHeader = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.grpDatCreator_Options.SuspendLayout();
@@ -914,7 +913,7 @@
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(9, 144);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(228, 13);
+            this.label8.Size = new System.Drawing.Size(226, 13);
             this.label8.TabIndex = 5;
             this.label8.Text = "Also see \\examine\\examine.txt for your output.";
             // 
@@ -1558,6 +1557,16 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Options";
             // 
+            // cbXsfPsf2Exe_StripGsfHeader
+            // 
+            this.cbXsfPsf2Exe_StripGsfHeader.AutoSize = true;
+            this.cbXsfPsf2Exe_StripGsfHeader.Location = new System.Drawing.Point(6, 38);
+            this.cbXsfPsf2Exe_StripGsfHeader.Name = "cbXsfPsf2Exe_StripGsfHeader";
+            this.cbXsfPsf2Exe_StripGsfHeader.Size = new System.Drawing.Size(209, 17);
+            this.cbXsfPsf2Exe_StripGsfHeader.TabIndex = 1;
+            this.cbXsfPsf2Exe_StripGsfHeader.Text = "Strip GSF Header after Decompression";
+            this.cbXsfPsf2Exe_StripGsfHeader.UseVisualStyleBackColor = true;
+            // 
             // cbXsfPsf2Exe_IncludeOrigExt
             // 
             this.cbXsfPsf2Exe_IncludeOrigExt.AutoSize = true;
@@ -1931,31 +1940,10 @@
             this.textBox1.Size = new System.Drawing.Size(259, 20);
             this.textBox1.TabIndex = 1;
             // 
-            // btnTestGui
-            // 
-            this.btnTestGui.Location = new System.Drawing.Point(600, 12);
-            this.btnTestGui.Name = "btnTestGui";
-            this.btnTestGui.Size = new System.Drawing.Size(85, 26);
-            this.btnTestGui.TabIndex = 5;
-            this.btnTestGui.Text = "Test GUI";
-            this.btnTestGui.UseVisualStyleBackColor = true;
-            this.btnTestGui.Click += new System.EventHandler(this.btnTestGui_Click);
-            // 
-            // cbXsfPsf2Exe_StripGsfHeader
-            // 
-            this.cbXsfPsf2Exe_StripGsfHeader.AutoSize = true;
-            this.cbXsfPsf2Exe_StripGsfHeader.Location = new System.Drawing.Point(6, 38);
-            this.cbXsfPsf2Exe_StripGsfHeader.Name = "cbXsfPsf2Exe_StripGsfHeader";
-            this.cbXsfPsf2Exe_StripGsfHeader.Size = new System.Drawing.Size(209, 17);
-            this.cbXsfPsf2Exe_StripGsfHeader.TabIndex = 1;
-            this.cbXsfPsf2Exe_StripGsfHeader.Text = "Strip GSF Header after Decompression";
-            this.cbXsfPsf2Exe_StripGsfHeader.UseVisualStyleBackColor = true;
-            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(686, 379);
-            this.Controls.Add(this.btnTestGui);
             this.Controls.Add(this.lblTimeElapsed);
             this.Controls.Add(this.lblProgressLabel);
             this.Controls.Add(this.statusStrip1);
@@ -2226,7 +2214,6 @@
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.GroupBox groupBox12;
-        private System.Windows.Forms.Button btnTestGui;
         private System.Windows.Forms.CheckBox cbXsfPsf2Exe_StripGsfHeader;
     }
 }

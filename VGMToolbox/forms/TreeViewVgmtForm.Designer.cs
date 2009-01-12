@@ -80,12 +80,12 @@
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.filePathToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(127, 26);
             // 
             // filePathToolStripMenuItem
             // 
             this.filePathToolStripMenuItem.Name = "filePathToolStripMenuItem";
-            this.filePathToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.filePathToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.filePathToolStripMenuItem.Text = "File Path";
             this.filePathToolStripMenuItem.Click += new System.EventHandler(this.filePathToolStripMenuItem_Click);
             // 

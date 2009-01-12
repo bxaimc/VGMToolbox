@@ -105,7 +105,7 @@ namespace VGMToolbox.format
             this.initializeTagHash();
 
             this.dataOffset = _titleLength + TITLE_TERMINATOR.Length + _pdxLength + PDX_TERMINATOR.Length;
-            this.dataLength = (int)(pStream.Length - this.dataOffset) + 1;
+            this.dataLength = (int)(pStream.Length - this.dataOffset);
         }
 
         private void initializeTagHash()
@@ -135,7 +135,7 @@ namespace VGMToolbox.format
                 fs = new FileStream(pPath, FileMode.Open, FileAccess.Read);
                 fs.Seek(this.dataOffset, SeekOrigin.Begin);
 
-                while ((read = fs.Read(data, 0, 4096)) > 0)
+                while ((read = fs.Read(data, 0, data.Length)) > 0)
                 {
                     pChecksum.Update(data, 0, read);
                 }
