@@ -80,7 +80,12 @@ namespace VGMToolbox.forms
 
                 if (node != null && node.Tag is Constants.NodeTagStruct)
                 {
-                    contextMenuStrip1.Show(treeViewTools, p);
+                    Constants.NodeTagStruct nts = (Constants.NodeTagStruct)node.Tag;
+
+                    if (typeof(IEmbeddedTagsFormat).IsAssignableFrom(Type.GetType(nts.objectType)))
+                    {
+                        contextMenuStrip1.Show(treeViewTools, p);
+                    }
                 }
             }
         }
