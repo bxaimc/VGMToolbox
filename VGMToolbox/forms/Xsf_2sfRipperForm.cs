@@ -14,7 +14,7 @@ namespace VGMToolbox.forms
         public Xsf_2sfRipperForm(TreeNode pTreeNode) : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = "2SF Ripper";
+            this.lblTitle.Text = "2SF Ripper (Old Format)";
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide(); 

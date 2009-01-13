@@ -20,6 +20,7 @@ namespace VGMToolbox.forms
             // set title
             this.lblTitle.Text = "ssfmake Front End (note: Python must be installed and in your PATH.)";
             this.btnDoTask.Text = "Build SSFs";
+            this.tbOutput.Text = "This tool is incomplete and does not function.";
 
             InitializeComponent();
         }

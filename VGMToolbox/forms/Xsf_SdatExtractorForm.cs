@@ -14,7 +14,7 @@ namespace VGMToolbox.forms
         public Xsf_SdatExtractorForm(TreeNode pTreeNode): base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = "SDAT Extractor";
+            this.lblTitle.Text = "Nintendo DS SDAT Extractor";
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();

@@ -79,17 +79,19 @@ namespace VGMToolbox
             xsf_RootNode.Tag = nodeTag;
             tools_RootNode.Nodes.Add(xsf_RootNode);
             
-            // NDS                        
-            TreeNode nds_RootNode = buildNdsTreeNode();
-            nds_RootNode.Tag = nodeTag;
-            tools_RootNode.Nodes.Add(nds_RootNode);
+            // EXTRACTION                        
+            TreeNode ext_RootNode = buildExtractionTreeNode();
+            ext_RootNode.Tag = nodeTag;
+            tools_RootNode.Nodes.Add(ext_RootNode);
 
             // add Tools node to Root
             rootNode.Nodes.Add(tools_RootNode);
 
             // add Root node to tree
             tvMenuTree.Nodes.Add(rootNode);
-            tvMenuTree.ExpandAll();
+            // tvMenuTree.ExpandAll();
+            rootNode.Expand();
+            
 
             tvMenuTree.NodeMouseClick += tvMenuTree_doClick;
         }
@@ -262,7 +264,7 @@ namespace VGMToolbox
             //////////////
             // 2SF Ripper
             //////////////
-            TreeNode xsf_2sfRipperNode = new TreeNode("2SF Ripper");
+            TreeNode xsf_2sfRipperNode = new TreeNode("2SF Ripper (Old Format)");
             
             // Add 2SF Ripper Form
             Xsf_2sfRipperForm xsf_2sfRipperForm = new Xsf_2sfRipperForm(xsf_2sfRipperNode);
@@ -327,26 +329,35 @@ namespace VGMToolbox
             return xsf_RootNode;
         }
         
-        private TreeNode buildNdsTreeNode()
+        private TreeNode buildExtractionTreeNode()
         {
             Constants.NodeTagStruct nodeTag = new Constants.NodeTagStruct();
-            TreeNode nds_RootNode = new TreeNode("NDS Tools");            
+            TreeNode ext_RootNode = new TreeNode("Extraction Tools");
+            ext_RootNode.NodeFont = this.treeviewBoldFont;
+
+            TreeNode ext_NdsNode = new TreeNode("Nintendo DS");
+            ext_NdsNode.NodeFont = this.treeviewBoldFont;
 
             // SDAT Extractor
-            TreeNode nds_SdatExtractorNode = new TreeNode("SDAT Extractor");
-            nds_RootNode.NodeFont = this.treeviewBoldFont;
+            TreeNode ext_SdatExtractorNode = new TreeNode("SDAT Extractor");            
 
             // Add SDAT Extractor Form
-            Xsf_SdatExtractorForm xsf_SdatExtractorForm = new Xsf_SdatExtractorForm(nds_SdatExtractorNode);
+            Xsf_SdatExtractorForm xsf_SdatExtractorForm = new Xsf_SdatExtractorForm(ext_SdatExtractorNode);
             this.splitContainer1.Panel2.Controls.Add(xsf_SdatExtractorForm);
 
             // Set Tag for displaying the Form
             nodeTag.formClass = xsf_SdatExtractorForm.GetType().Name;
-            nds_SdatExtractorNode.Tag = nodeTag;
+            ext_SdatExtractorNode.Tag = nodeTag;
 
-            nds_RootNode.Nodes.Add(nds_SdatExtractorNode);
+            nodeTag = new Constants.NodeTagStruct();
+            EmptyForm emptyForm = new EmptyForm();
+            nodeTag.formClass = emptyForm.GetType().Name;
+            ext_NdsNode.Tag = nodeTag;
 
-            return nds_RootNode;
+            ext_NdsNode.Nodes.Add(ext_SdatExtractorNode);
+            ext_RootNode.Nodes.Add(ext_NdsNode);
+
+            return ext_RootNode;
         }
 
         private void tvMenuTree_doClick(object sender, TreeNodeMouseClickEventArgs e)
