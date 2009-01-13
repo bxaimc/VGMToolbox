@@ -10,7 +10,7 @@ using VGMToolbox.util.ObjectPooling;
 
 namespace VGMToolbox.format
 {
-    public class Nsf : IFormat, IEmbeddedTagsFormat
+    public class Nsf : IFormat, IHootFormat, IEmbeddedTagsFormat
     {
         public static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x4E, 0x45, 0x53, 0x4D, 0x1A };
         public static readonly byte[] CURRENT_VERSION_NUMBER = new byte[] { 0x01};

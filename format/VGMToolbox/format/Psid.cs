@@ -11,16 +11,12 @@ using VGMToolbox.util.ObjectPooling;
 
 namespace format.VGMToolbox.format
 {
-    class Psid : IFormat
+    class Psid : IFormat, IEmbeddedTagsFormat
     {
         # region CONSTANTS
 
         public static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x50, 0x53, 0x49, 0x44 }; // PSID
         private const string FORMAT_ABBREVIATION = "PSID";
-
-        private const string HOOT_DRIVER_ALIAS = null;
-        private const string HOOT_DRIVER_TYPE = null;
-        private const string HOOT_DRIVER = null;
 
         private const int SIG_OFFSET = 0x00;
         private const int SIG_LENGTH = 0x04;
@@ -92,6 +88,10 @@ namespace format.VGMToolbox.format
         private byte[] v2Reserved;
         private byte[] data;
 
+        private byte[] versionNumberLE;
+        private byte[] totalSongsLE;
+        private byte[] startingSongLE;
+
         Dictionary<string, string> tagHash = new Dictionary<string, string>();
 
         public byte[] AsciiSignature { get { return this.asciiSignature; } }
@@ -128,11 +128,20 @@ namespace format.VGMToolbox.format
             this.songName = ParseFile.parseSimpleOffset(pStream, NAME_OFFSET, NAME_LENGTH);
             this.songArtist = ParseFile.parseSimpleOffset(pStream, ARTIST_OFFSET, ARTIST_LENGTH);
             this.songCopyright = ParseFile.parseSimpleOffset(pStream, COPYRIGHT_OFFSET, COPYRIGHT_LENGTH);
-                   
+
+            this.totalSongsLE = new byte[TOTAL_SONGS_LENGTH];
+            Array.Copy(this.totalSongs, this.totalSongsLE, TOTAL_SONGS_LENGTH);
+            Array.Reverse(this.totalSongsLE);
+
+            this.startingSongLE = new byte[STARTING_SONG_LENGTH];
+            Array.Copy(this.startingSong, this.startingSongLE, STARTING_SONG_LENGTH);
+            Array.Reverse(this.startingSongLE);
+
             // version 2 stuff
-            byte[] versionNumberLE = this.versionNumber;
-            Array.Reverse(versionNumberLE);
-            int intVersionNumber = BitConverter.ToInt16(versionNumberLE, 0);
+            this.versionNumberLE = new byte[VERSION_LENGTH]; 
+            Array.Copy(this.versionNumber, this.versionNumberLE, VERSION_LENGTH);
+            Array.Reverse(this.versionNumberLE);
+            int intVersionNumber = BitConverter.ToInt16(this.versionNumberLE, 0);
 
             if (intVersionNumber == 2)
             {
@@ -156,23 +165,13 @@ namespace format.VGMToolbox.format
         {
             System.Text.Encoding enc = System.Text.Encoding.ASCII;
 
-            // BitConverter assumes Little Endian, so reverse the array
-            byte[] tagVersionNumber = this.versionNumber;
-            Array.Reverse(tagVersionNumber);
-
-            byte[] tagTotalSongs = this.totalSongs;
-            Array.Reverse(tagTotalSongs);
-
-            byte[] tagStartSong = this.startingSong;
-            Array.Reverse(tagStartSong);
-
             // Build Tag Hash
             tagHash.Add("Name", enc.GetString(this.songName));
             tagHash.Add("Artist", enc.GetString(this.songArtist));
             tagHash.Add("Copyright", enc.GetString(this.songCopyright));
-            tagHash.Add("PSID Version", BitConverter.ToInt16(tagVersionNumber, 0).ToString());
-            tagHash.Add("Total Songs", BitConverter.ToInt16(tagTotalSongs, 0).ToString());
-            tagHash.Add("Starting Song", BitConverter.ToInt16(tagStartSong, 0).ToString());
+            tagHash.Add("PSID Version", BitConverter.ToInt16(this.versionNumberLE, 0).ToString());
+            tagHash.Add("Total Songs", BitConverter.ToInt16(this.totalSongsLE, 0).ToString());
+            tagHash.Add("Starting Song", BitConverter.ToInt16(this.startingSongLE, 0).ToString());
         }
 
         public void GetDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
@@ -240,11 +239,39 @@ namespace format.VGMToolbox.format
             return enc.GetString(FileUtil.ReplaceNullByteWithSpace(this.songName)).Trim();
         }
 
-        #region HOOT
+        #region EMBEDDED TAG METHODS
 
-        public string GetHootDriverAlias() { return HOOT_DRIVER_ALIAS; }
-        public string GetHootDriverType() { return HOOT_DRIVER_TYPE; }
-        public string GetHootDriver() { return HOOT_DRIVER; }
+        public void UpdateSongName(string pFilePath, string pNewValue)
+        {
+            ParseFile.UpdateTextField(pFilePath, pNewValue, NAME_OFFSET,
+                NAME_LENGTH);
+        }
+        public void UpdateArtist(string pFilePath, string pNewValue)
+        {
+            ParseFile.UpdateTextField(pFilePath, pNewValue, ARTIST_OFFSET,
+                ARTIST_LENGTH);
+        }
+        public void UpdateCopyright(string pFilePath, string pNewValue)
+        {
+            ParseFile.UpdateTextField(pFilePath, pNewValue, COPYRIGHT_OFFSET,
+                COPYRIGHT_LENGTH);
+        }
+
+        public string GetSongNameAsText()
+        {
+            System.Text.Encoding enc = System.Text.Encoding.ASCII;
+            return enc.GetString(this.songName);
+        }
+        public string GetArtistAsText()
+        {
+            System.Text.Encoding enc = System.Text.Encoding.ASCII;
+            return enc.GetString(this.songArtist);
+        }
+        public string GetCopyrightAsText()
+        {
+            System.Text.Encoding enc = System.Text.Encoding.ASCII;
+            return enc.GetString(this.songCopyright);
+        }
 
         #endregion
     }

@@ -22,10 +22,6 @@ namespace VGMToolbox.format
         private const string TYPE_VGM7Z = "VGM7Z";
         private const string TYPE_VGZ = "VGZ";
 
-        private const string HOOT_DRIVER_ALIAS = null;
-        private const string HOOT_DRIVER_TYPE = null;
-        private const string HOOT_DRIVER = null;
-
         private static readonly byte[] VERSION_0100 = new byte[] { 0x00, 0x01, 0x00, 0x00 };
         private static readonly byte[] VERSION_0101 = new byte[] { 0x01, 0x01, 0x00, 0x00 };
         private static readonly byte[] VERSION_0110 = new byte[] { 0x10, 0x01, 0x00, 0x00 };
@@ -690,14 +686,6 @@ namespace VGMToolbox.format
         public int GetStartingSong() { return 0; }
         public int GetTotalSongs() { return 0; }
         public string GetSongName() { return null; }
-
-        #endregion
-
-        #region HOOT
-
-        public string GetHootDriverAlias() { return HOOT_DRIVER_ALIAS; }
-        public string GetHootDriverType() { return HOOT_DRIVER_TYPE; }
-        public string GetHootDriver() { return HOOT_DRIVER; }
 
         #endregion
     }

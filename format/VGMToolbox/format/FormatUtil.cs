@@ -149,6 +149,69 @@ namespace VGMToolbox.format
             return ret;
         }
 
+        public static Type getHootObjectType(FileStream pFileStream)
+        {
+            byte[] signatureBytes;
+
+            // Grab the first few bytes, since a full file read is not needed for the header
+
+            // Check for Gzip compressed (VGM: .vgz files)
+            if (IsGzipFile(pFileStream))
+            {
+                signatureBytes = getGzippedSignatureBytes(pFileStream);
+            }
+            else
+            {
+                signatureBytes = ParseFile.parseSimpleOffset(pFileStream, HEADER_OFFSET, MAX_SIGNATURE_LENGTH);
+            }
+
+            Type ret = null;
+
+            // Get the assembly for this application
+            Assembly asm = Assembly.GetExecutingAssembly();
+
+            // Get all classes being used in this application
+            Type[] asmtypes = asm.GetTypes();
+
+
+            // Loop through classes checking interfaces
+            foreach (Type t in asmtypes)
+            {
+                if (t.IsClass & t.GetInterface("IHootFormat") != null)
+                {
+                    // Create and instance of this format
+                    Object o = asm.CreateInstance(t.FullName);
+
+                    // Set it to the Interface
+                    IHootFormat format = o as IHootFormat;
+
+
+                    if (format.GetAsciiSignature() != null)
+                    {
+                        // Check the header bytes
+                        if (ParseFile.CompareSegment(signatureBytes, HEADER_OFFSET, format.GetAsciiSignature()))
+                        {
+                            ret = Type.GetType(t.FullName);
+                            break;
+                        }
+                    }
+                    else // fall back to extension
+                    {
+                        if (format.GetFileExtensions() != null)
+                        {
+                            string fileExtension = Path.GetExtension(pFileStream.Name).ToUpper();
+                            if (format.GetFileExtensions().Contains(fileExtension))
+                            {
+                                ret = Type.GetType(t.FullName);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            return ret;
+        }
+
         public static bool IsZipFile(string pFilePath)
         {
             bool ret = false;

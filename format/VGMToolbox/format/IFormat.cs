@@ -33,9 +33,9 @@ namespace VGMToolbox.format
         int GetTotalSongs();
         string GetSongName();
 
-        string GetHootDriverAlias();
-        string GetHootDriverType();
-        string GetHootDriver();
+        // string GetHootDriverAlias();
+        // string GetHootDriverType();
+        // string GetHootDriver();
 
         Dictionary<string, string> GetTagHash();
     }

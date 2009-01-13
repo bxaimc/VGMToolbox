@@ -19,10 +19,6 @@ namespace VGMToolbox.format
         public static readonly string PDX_FILE_EXTENSION = ".PDX";
         public static readonly string EXCEPTION_PDX_MISSING = "PDX file for this file was not found.";
 
-        private const string HOOT_DRIVER_ALIAS = null;
-        private const string HOOT_DRIVER_TYPE = null;
-        private const string HOOT_DRIVER = null;
-
         private string title = String.Empty;
         private string pdxFileName = String.Empty;
 
@@ -229,14 +225,6 @@ namespace VGMToolbox.format
         public int GetStartingSong() { return 0; }
         public int GetTotalSongs() { return 0; }
         public string GetSongName() { return null; }
-
-        #endregion
-
-        #region HOOT
-
-        public string GetHootDriverAlias() { return HOOT_DRIVER_ALIAS; }
-        public string GetHootDriverType() { return HOOT_DRIVER_TYPE; }
-        public string GetHootDriver() { return HOOT_DRIVER; }
 
         #endregion
     }    

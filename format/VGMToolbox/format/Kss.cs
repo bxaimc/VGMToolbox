@@ -8,7 +8,7 @@ using VGMToolbox.util.ObjectPooling;
 
 namespace VGMToolbox.format
 {
-    public class Kss : IFormat
+    public class Kss : IFormat, IHootFormat
     {
         private static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x4B, 0x53, 0x43, 0x43 }; // KSCC
         private const string FORMAT_ABBREVIATION = "KSS";

@@ -101,18 +101,17 @@ namespace VGMToolbox.tools.hoot
             vProgressStruct.newNode = null;
             vProgressStruct.filename = pPath;
             ReportProgress(progress, vProgressStruct);
-
           
             VGMToolbox.tools.hoot.game hootGame = null;
 
             try
             {
                 FileStream fs = File.OpenRead(pPath);
-                Type dataType = FormatUtil.getObjectType(fs);
+                Type dataType = FormatUtil.getHootObjectType(fs);
 
                 if (dataType != null)
                 {
-                    IFormat vgmData = (IFormat)Activator.CreateInstance(dataType);
+                    IHootFormat vgmData = (IHootFormat)Activator.CreateInstance(dataType);
                     vgmData.Initialize(fs);
 
                     if (!String.IsNullOrEmpty(vgmData.GetHootDriver()))

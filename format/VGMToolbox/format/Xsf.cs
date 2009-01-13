@@ -19,10 +19,6 @@ namespace VGMToolbox.format
         private static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x50, 0x53, 0x46 }; // PSF
         private const string FORMAT_ABBREVIATION = "PSF";
 
-        private const string HOOT_DRIVER_ALIAS = null;
-        private const string HOOT_DRIVER_TYPE = null;
-        private const string HOOT_DRIVER = null;
-
         private const ushort VERSION_2SF = 0x24;
         private const ushort VERSION_DSF = 0x12;
         private const ushort VERSION_GSF = 0x22;
@@ -627,14 +623,5 @@ namespace VGMToolbox.format
         public int GetStartingSong() { return 0; }
         public int GetTotalSongs() { return 0; }
         public string GetSongName() { return null; }
-
-        #region HOOT
-
-        public string GetHootDriverAlias() { return HOOT_DRIVER_ALIAS; }
-        public string GetHootDriverType() { return HOOT_DRIVER_TYPE; }
-        public string GetHootDriver() { return HOOT_DRIVER; }
-
-        #endregion
-
     }
 }

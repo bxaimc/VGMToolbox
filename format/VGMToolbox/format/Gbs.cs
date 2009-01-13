@@ -9,7 +9,7 @@ using VGMToolbox.util.ObjectPooling;
 
 namespace VGMToolbox.format
 {
-    public class Gbs : IFormat
+    public class Gbs : IFormat, IHootFormat, IEmbeddedTagsFormat
     {
         private static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x47, 0x42, 0x53 }; // GBS
         private const string FORMAT_ABBREVIATION = "GBS";
@@ -260,6 +260,42 @@ namespace VGMToolbox.format
         public string GetHootDriverType() { return HOOT_DRIVER_TYPE; }
         public string GetHootDriver() { return HOOT_DRIVER; } 
         
+        #endregion
+
+        #region EMBEDDED TAG METHODS
+
+        public void UpdateSongName(string pFilePath, string pNewValue)
+        {
+            ParseFile.UpdateTextField(pFilePath, pNewValue, NAME_OFFSET,
+                NAME_LENGTH);
+        }
+        public void UpdateArtist(string pFilePath, string pNewValue)
+        {
+            ParseFile.UpdateTextField(pFilePath, pNewValue, ARTIST_OFFSET,
+                ARTIST_LENGTH);
+        }
+        public void UpdateCopyright(string pFilePath, string pNewValue)
+        {
+            ParseFile.UpdateTextField(pFilePath, pNewValue, COPYRIGHT_OFFSET,
+                COPYRIGHT_LENGTH);
+        }
+
+        public string GetSongNameAsText()
+        {
+            System.Text.Encoding enc = System.Text.Encoding.ASCII;
+            return enc.GetString(this.songName);
+        }
+        public string GetArtistAsText()
+        {
+            System.Text.Encoding enc = System.Text.Encoding.ASCII;
+            return enc.GetString(this.songArtist);
+        }
+        public string GetCopyrightAsText()
+        {
+            System.Text.Encoding enc = System.Text.Encoding.ASCII;
+            return enc.GetString(this.songCopyright);
+        }
+
         #endregion
     }
 }

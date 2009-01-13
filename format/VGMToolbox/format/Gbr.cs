@@ -13,10 +13,6 @@ namespace VGMToolbox.format
         private static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x47, 0x42, 0x52, 0x46 }; // GBRF
         private const string FORMAT_ABBREVIATION = "GBR";
 
-        private const string HOOT_DRIVER_ALIAS = null;
-        private const string HOOT_DRIVER_TYPE = null;
-        private const string HOOT_DRIVER = null;
-
         private const int SIG_OFFSET = 0x00;
         private const int SIG_LENGTH = 0x04;
 
@@ -219,14 +215,6 @@ namespace VGMToolbox.format
         public int GetStartingSong() {return 0;}
         public int GetTotalSongs() { return 1; }
         public string GetSongName() { return null; }
-
-        #endregion
-
-        #region HOOT
-
-        public string GetHootDriverAlias() { return HOOT_DRIVER_ALIAS; }
-        public string GetHootDriverType() { return HOOT_DRIVER_TYPE; }
-        public string GetHootDriver() { return HOOT_DRIVER; }
 
         #endregion
     }
