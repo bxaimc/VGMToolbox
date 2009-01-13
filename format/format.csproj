@@ -44,6 +44,7 @@
     <Compile Include="VGMToolbox\format\FormatUtil.cs" />
     <Compile Include="VGMToolbox\format\Gbr.cs" />
     <Compile Include="VGMToolbox\format\Gbs.cs" />
+    <Compile Include="VGMToolbox\format\IEmbeddedTagsFormat.cs" />
     <Compile Include="VGMToolbox\format\IFormat.cs" />
     <Compile Include="VGMToolbox\format\Kss.cs" />
     <Compile Include="VGMToolbox\format\Kssx.cs" />

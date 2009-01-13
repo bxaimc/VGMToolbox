@@ -276,6 +276,26 @@ namespace VGMToolbox.util
                 remaining -= read;
                 offset += read;
             }
-        }    
+        }
+
+        public static void UpdateTextField(string pFilePath, string pFieldValue, int pOffset,
+            int pMaxLength)
+        {
+            System.Text.Encoding enc = System.Text.Encoding.ASCII;
+
+            using (BinaryWriter bw =
+                new BinaryWriter(File.Open(pFilePath, FileMode.Open, FileAccess.ReadWrite)))
+            {
+                byte[] newBytes = new byte[pMaxLength];
+                byte[] convertedBytes = enc.GetBytes(pFieldValue);
+
+                int numBytesToCopy = 
+                    convertedBytes.Length <= pMaxLength ? convertedBytes.Length : pMaxLength;
+                Array.ConstrainedCopy(convertedBytes, 0, newBytes, 0, numBytesToCopy);
+
+                bw.Seek(pOffset, SeekOrigin.Begin);
+                bw.Write(newBytes);                
+            }
+        }
     }
 }

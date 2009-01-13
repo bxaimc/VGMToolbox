@@ -305,6 +305,7 @@ namespace VGMToolbox
             xsf_UnPsf2FENode.Tag = nodeTag;
             
             // SSFMAKE
+            /*
             TreeNode xsf_SsfMakeFENode = new TreeNode("ssfmake Front End");
             
             Xsf_SsfMakeFrontEndForm xsf_SsfMakeFrontEndForm = 
@@ -313,7 +314,7 @@ namespace VGMToolbox
 
             nodeTag.formClass = xsf_SsfMakeFrontEndForm.GetType().Name;
             xsf_SsfMakeFENode.Tag = nodeTag;
-
+            */
 
             xsf_RootNode.NodeFont = this.treeviewBoldFont;
 
@@ -323,7 +324,7 @@ namespace VGMToolbox
             xsf_RootNode.Nodes.Add(xsf_2sfTimerNode);
             xsf_RootNode.Nodes.Add(xsf_MkPsf2FENode);
             xsf_RootNode.Nodes.Add(xsf_UnPsf2FENode);
-            xsf_RootNode.Nodes.Add(xsf_SsfMakeFENode);
+            // xsf_RootNode.Nodes.Add(xsf_SsfMakeFENode);
 
 
             return xsf_RootNode;

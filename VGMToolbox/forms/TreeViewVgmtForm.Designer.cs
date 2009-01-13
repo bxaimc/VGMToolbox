@@ -40,7 +40,7 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 396);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 487);
             this.pnlLabels.Size = new System.Drawing.Size(823, 19);
             // 
             // pnlTitle
@@ -49,12 +49,12 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 319);
+            this.tbOutput.Location = new System.Drawing.Point(0, 410);
             this.tbOutput.Size = new System.Drawing.Size(823, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 299);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 390);
             this.pnlButtons.Size = new System.Drawing.Size(823, 20);
             // 
             // btnCancel
@@ -80,20 +80,20 @@
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.filePathToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(127, 26);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 48);
             // 
             // filePathToolStripMenuItem
             // 
             this.filePathToolStripMenuItem.Name = "filePathToolStripMenuItem";
-            this.filePathToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
-            this.filePathToolStripMenuItem.Text = "File Path";
+            this.filePathToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.filePathToolStripMenuItem.Text = "Update Tags";
             this.filePathToolStripMenuItem.Click += new System.EventHandler(this.filePathToolStripMenuItem_Click);
             // 
             // TreeViewVgmtForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(823, 437);
+            this.ClientSize = new System.Drawing.Size(823, 528);
             this.Controls.Add(this.treeViewTools);
             this.Name = "TreeViewVgmtForm";
             this.Text = "TreeViewVgmtForm";

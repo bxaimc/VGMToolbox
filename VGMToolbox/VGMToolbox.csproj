@@ -100,6 +100,12 @@
     <Compile Include="forms\Auditing_RebuilderForm.Designer.cs">
       <DependentUpon>Auditing_RebuilderForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\EmbeddedTagsUpdateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\EmbeddedTagsUpdateForm.Designer.cs">
+      <DependentUpon>EmbeddedTagsUpdateForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\EmptyForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -210,6 +216,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Auditing_RebuilderForm.resx">
       <DependentUpon>Auditing_RebuilderForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\EmbeddedTagsUpdateForm.resx">
+      <DependentUpon>EmbeddedTagsUpdateForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Examine_TagViewerForm.resx">

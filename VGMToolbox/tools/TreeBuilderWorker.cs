@@ -140,10 +140,8 @@ namespace VGMToolbox.tools
             vProgressStruct.filename = pFileName;
             ReportProgress(progress, vProgressStruct);
 
-            TreeNode ret = new TreeNode(Path.GetFileName(pFileName));
+            TreeNode ret = new TreeNode(Path.GetFileName(pFileName));            
             Constants.NodeTagStruct nodeTag = new Constants.NodeTagStruct();
-            nodeTag.filePath = pFileName;
-            ret.Tag = nodeTag;
 
             using (FileStream fs = File.OpenRead(pFileName))
             {
@@ -183,6 +181,9 @@ namespace VGMToolbox.tools
                         }
 
                         pOutputFileStream.WriteLine(Environment.NewLine);
+
+                        // add classname to nodeTag
+                        nodeTag.objectType = dataType.AssemblyQualifiedName;
                     }
                 }
                 catch (Exception ex)
@@ -193,6 +194,9 @@ namespace VGMToolbox.tools
                     ReportProgress(progress, vProgressStruct);
                 }
             } // using (FileStream fs = File.OpenRead(pFileName))
+
+            nodeTag.filePath = pFileName;
+            ret.Tag = nodeTag;
 
             return ret;
         }

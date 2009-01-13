@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
+using VGMToolbox.format;
 using VGMToolbox.util;
 
 namespace VGMToolbox.forms
@@ -74,11 +75,11 @@ namespace VGMToolbox.forms
 
                 TreeNode node = treeViewTools.GetNodeAt(p);
                 this.selectedNode = node;
+                this.oldNode = treeViewTools.SelectedNode;
+                treeViewTools.SelectedNode = node;
 
-                if (node != null)
+                if (node != null && node.Tag is Constants.NodeTagStruct)
                 {
-                    this.oldNode = treeViewTools.SelectedNode;
-                    treeViewTools.SelectedNode = node;
                     contextMenuStrip1.Show(treeViewTools, p);
                 }
             }
@@ -89,8 +90,13 @@ namespace VGMToolbox.forms
             if (this.selectedNode != null && this.selectedNode.Tag is Constants.NodeTagStruct)
             {
                 Constants.NodeTagStruct nts = (Constants.NodeTagStruct) this.selectedNode.Tag;
-                MessageBox.Show("Path: " + nts.filePath, "File Path");
-                treeViewTools.SelectedNode = this.oldNode;
+
+                if (typeof(IEmbeddedTagsFormat).IsAssignableFrom(Type.GetType(nts.objectType)))
+                {
+                    EmbeddedTagsUpdateForm etuForm = new EmbeddedTagsUpdateForm(nts);
+                    etuForm.Show();
+                }
+                                
                 this.selectedNode = this.oldNode;
                 this.oldNode = null;
             }
