@@ -14,11 +14,18 @@ namespace VGMToolbox.tools.xsf
         private static readonly string SSFMAKE_FOLDER_PATH =
             Path.GetFullPath(Path.Combine(Path.Combine(Path.Combine(".", "external"), "ssf"), "ssfmake"));
         private static readonly string SSFMAKE_SOURCE_PATH = Path.Combine(SSFMAKE_FOLDER_PATH, "ssfmake.py");
-        
+
+        private static readonly string SSFINFO_FOLDER_PATH =
+            Path.GetFullPath(Path.Combine(Path.Combine(Path.Combine(".", "external"), "ssf"), "ssfinfo"));
+        private static readonly string SSFINFO_SOURCE_PATH = Path.Combine(SSFINFO_FOLDER_PATH, "ssfinfo.py");
+
+
         private static readonly string WORKING_FOLDER =
             Path.GetFullPath(Path.Combine(".", "working_ssf"));
         private static readonly string SSFMAKE_DESTINATION_PATH =
             Path.Combine(WORKING_FOLDER, "ssfmake.py");
+        private static readonly string SSFINFO_DESTINATION_PATH =
+            Path.Combine(WORKING_FOLDER, "ssfinfo.py");
         private static readonly string BIN2PSF_SOURCE_PATH =
             Path.GetFullPath(Path.Combine(Path.Combine(".", "external"), "bin2psf.exe"));
         private static readonly string BIN2PSF_DESTINATION_PATH =
@@ -87,7 +94,7 @@ namespace VGMToolbox.tools.xsf
                     this.progressStruct.newNode = null;
                     this.progressStruct.genericMessage = 
                         "Working Directory Prepared" + Environment.NewLine;
-                    ReportProgress(20, this.progressStruct);
+                    ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
 
                     // modify script
                     if (this.customizeScript(pSsfMakeStruct))
@@ -97,7 +104,18 @@ namespace VGMToolbox.tools.xsf
                         this.progressStruct.newNode = null;
                         this.progressStruct.genericMessage =
                             "Script Modified" + Environment.NewLine;
-                        ReportProgress(40, this.progressStruct);                    
+                        ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);                    
+
+                        // execute script
+                        if (executeScript())
+                        {
+                            // report progress
+                            this.progressStruct = new Constants.ProgressStruct();
+                            this.progressStruct.newNode = null;
+                            this.progressStruct.genericMessage =
+                                "Script Executed" + Environment.NewLine;
+                            ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);                                            
+                        }
                     
                     }
                 }
@@ -106,7 +124,7 @@ namespace VGMToolbox.tools.xsf
 
 
                 // cleanup working folder
-                Directory.Delete(WORKING_FOLDER, true);
+                //Directory.Delete(WORKING_FOLDER, true);
             }
             else
             { 
@@ -174,7 +192,8 @@ namespace VGMToolbox.tools.xsf
         private bool prepareWorkingDir(SsfMakeStruct pSsfMakeStruct)
         {
             bool ret = false;
-            
+            string userFilePath;
+
             try
             {
                 // create working dir
@@ -189,8 +208,24 @@ namespace VGMToolbox.tools.xsf
 
                 File.Copy(mapFileSourcePath, mapFileDestinationPath, true);
                 File.Copy(SSFMAKE_SOURCE_PATH, SSFMAKE_DESTINATION_PATH, true);
+                File.Copy(SSFINFO_SOURCE_PATH, SSFINFO_DESTINATION_PATH, true);
                 File.Copy(BIN2PSF_SOURCE_PATH, BIN2PSF_DESTINATION_PATH, true);
                 File.Copy(PSFPOINT_SOURCE_PATH, PSFPOINT_DESTINATION_PATH, true);
+
+                userFilePath = Path.GetFullPath(pSsfMakeStruct.driver);
+                File.Copy(userFilePath, Path.Combine(WORKING_FOLDER, Path.GetFileName(userFilePath)), true);
+
+                userFilePath = Path.GetFullPath(pSsfMakeStruct.toneData);
+                File.Copy(userFilePath, Path.Combine(WORKING_FOLDER, Path.GetFileName(userFilePath)), true);
+
+                userFilePath = Path.GetFullPath(pSsfMakeStruct.sequenceData);
+                File.Copy(userFilePath, Path.Combine(WORKING_FOLDER, Path.GetFileName(userFilePath)), true);
+
+                if (!String.IsNullOrEmpty(pSsfMakeStruct.dspProgram))
+                {
+                    userFilePath = Path.GetFullPath(pSsfMakeStruct.dspProgram);
+                    File.Copy(userFilePath, Path.Combine(WORKING_FOLDER, Path.GetFileName(userFilePath)), true);
+                }
 
                 ret = true;
             }
@@ -291,6 +326,40 @@ namespace VGMToolbox.tools.xsf
             File.Delete(SSFMAKE_DESTINATION_PATH);
             // rename edited temp file
             File.Move(workingFile, SSFMAKE_DESTINATION_PATH);
+
+            return ret;
+        }
+
+        private bool executeScript()
+        {
+            bool ret = true;
+            Process ssfMakeProcess = null;
+            Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
+
+            try
+            {
+                string arguments = String.Format(" {0}", Path.GetFileName(SSFMAKE_DESTINATION_PATH));
+                ssfMakeProcess = new Process();
+                ssfMakeProcess.StartInfo = new ProcessStartInfo("python.exe", arguments);
+                ssfMakeProcess.StartInfo.WorkingDirectory = WORKING_FOLDER;
+                ssfMakeProcess.StartInfo.UseShellExecute = false;
+                ssfMakeProcess.StartInfo.CreateNoWindow = true;
+                bool isSuccess = ssfMakeProcess.Start();
+                ssfMakeProcess.WaitForExit();
+
+                ssfMakeProcess.Close();
+                ssfMakeProcess.Dispose();
+            }
+            catch (Exception ex)
+            {
+                ret = false;
+                                
+                vProgressStruct = new Constants.ProgressStruct();
+                vProgressStruct.newNode = null;
+                vProgressStruct.filename = null;
+                vProgressStruct.errorMessage = ex.Message;
+                ReportProgress(0, vProgressStruct);
+            }
 
             return ret;
         }

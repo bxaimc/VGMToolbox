@@ -63,30 +63,30 @@
             // pnlLabels
             // 
             this.pnlLabels.Location = new System.Drawing.Point(0, 472);
-            this.pnlLabels.Size = new System.Drawing.Size(886, 19);
+            this.pnlLabels.Size = new System.Drawing.Size(739, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(886, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(739, 20);
             // 
             // tbOutput
             // 
             this.tbOutput.Location = new System.Drawing.Point(0, 395);
-            this.tbOutput.Size = new System.Drawing.Size(886, 77);
+            this.tbOutput.Size = new System.Drawing.Size(739, 77);
             // 
             // pnlButtons
             // 
             this.pnlButtons.Location = new System.Drawing.Point(0, 375);
-            this.pnlButtons.Size = new System.Drawing.Size(886, 20);
+            this.pnlButtons.Size = new System.Drawing.Size(739, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(826, 0);
+            this.btnCancel.Location = new System.Drawing.Point(679, 0);
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(766, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(619, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnExecute_Click);
             // 
             // panel1
@@ -97,7 +97,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 23);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(886, 352);
+            this.panel1.Size = new System.Drawing.Size(739, 352);
             this.panel1.TabIndex = 5;
             // 
             // groupBox2
@@ -118,7 +118,7 @@
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox2.Location = new System.Drawing.Point(0, 123);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(886, 98);
+            this.groupBox2.Size = new System.Drawing.Size(739, 98);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Options";
@@ -196,6 +196,7 @@
             this.tbEffect.Name = "tbEffect";
             this.tbEffect.Size = new System.Drawing.Size(51, 20);
             this.tbEffect.TabIndex = 5;
+            this.tbEffect.Text = "0x00";
             // 
             // tbMixerNumber
             // 
@@ -203,6 +204,7 @@
             this.tbMixerNumber.Name = "tbMixerNumber";
             this.tbMixerNumber.Size = new System.Drawing.Size(51, 20);
             this.tbMixerNumber.TabIndex = 4;
+            this.tbMixerNumber.Text = "0x00";
             // 
             // tbMixerBank
             // 
@@ -211,6 +213,7 @@
             this.tbMixerBank.ReadOnly = true;
             this.tbMixerBank.Size = new System.Drawing.Size(51, 20);
             this.tbMixerBank.TabIndex = 3;
+            this.tbMixerBank.Text = "0x00";
             // 
             // tbVolume
             // 
@@ -218,6 +221,7 @@
             this.tbVolume.Name = "tbVolume";
             this.tbVolume.Size = new System.Drawing.Size(51, 20);
             this.tbVolume.TabIndex = 2;
+            this.tbVolume.Text = "0x7F";
             // 
             // tbSequenceTrack
             // 
@@ -225,6 +229,7 @@
             this.tbSequenceTrack.Name = "tbSequenceTrack";
             this.tbSequenceTrack.Size = new System.Drawing.Size(51, 20);
             this.tbSequenceTrack.TabIndex = 1;
+            this.tbSequenceTrack.Text = "0x00";
             // 
             // tbSequenceBank
             // 
@@ -232,6 +237,7 @@
             this.tbSequenceBank.Name = "tbSequenceBank";
             this.tbSequenceBank.Size = new System.Drawing.Size(51, 20);
             this.tbSequenceBank.TabIndex = 0;
+            this.tbSequenceBank.Text = "0x00";
             this.tbSequenceBank.TextChanged += new System.EventHandler(this.tbSequenceBank_TextChanged);
             // 
             // groupBox1
@@ -247,7 +253,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(886, 123);
+            this.groupBox1.Size = new System.Drawing.Size(739, 123);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Files";
@@ -320,7 +326,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(886, 513);
+            this.ClientSize = new System.Drawing.Size(739, 513);
             this.Controls.Add(this.panel1);
             this.Name = "Xsf_SsfMakeFrontEndForm";
             this.Text = "Xsf_SsfMakeFrontEndForm";
