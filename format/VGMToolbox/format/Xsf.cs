@@ -619,9 +619,5 @@ namespace VGMToolbox.format
 
             return ret;
         }
-
-        public int GetStartingSong() { return 0; }
-        public int GetTotalSongs() { return 0; }
-        public string GetSongName() { return null; }
     }
 }

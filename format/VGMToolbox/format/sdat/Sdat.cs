@@ -532,14 +532,6 @@ namespace VGMToolbox.format.sdat
         public bool UsesLibraries() { return false; }
         public bool IsLibraryPresent(string pFilePath) { return true; }
 
-        public int GetStartingSong() { return 0; }
-        public int GetTotalSongs() { return 0; }
-        public string GetSongName() { return null; }
-
-        public string GetHootDriverAlias() { return null; }
-        public string GetHootDriverType() { return null; }
-        public string GetHootDriver() { return null; }
-
         public Dictionary<string, string> GetTagHash()
         {
             return this.tagHash;

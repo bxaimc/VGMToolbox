@@ -29,14 +29,6 @@ namespace VGMToolbox.format
         bool UsesLibraries();
         bool IsLibraryPresent(string pFilePath);
 
-        int GetStartingSong();
-        int GetTotalSongs();
-        string GetSongName();
-
-        // string GetHootDriverAlias();
-        // string GetHootDriverType();
-        // string GetHootDriver();
-
         Dictionary<string, string> GetTagHash();
     }
 }

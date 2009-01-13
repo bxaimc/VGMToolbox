@@ -231,14 +231,6 @@ namespace format.VGMToolbox.format
         public bool UsesLibraries() { return false; }
         public bool IsLibraryPresent(string pFilePath) { return true; }
 
-        public int GetStartingSong() { return Convert.ToInt16(this.startingSong[1]); }
-        public int GetTotalSongs() { return Convert.ToInt16(this.totalSongs[1]); }
-        public string GetSongName()
-        {
-            System.Text.Encoding enc = System.Text.Encoding.ASCII;
-            return enc.GetString(FileUtil.ReplaceNullByteWithSpace(this.songName)).Trim();
-        }
-
         #region EMBEDDED TAG METHODS
 
         public void UpdateSongName(string pFilePath, string pNewValue)
