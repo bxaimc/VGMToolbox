@@ -33,7 +33,6 @@ namespace VGMToolbox.forms
                 DatafileCreatorWorker.GetGameParamsStruct vGetGameParamsStruct = new DatafileCreatorWorker.GetGameParamsStruct();
                 vGetGameParamsStruct.pDir = tbDatCreator_SourceFolder.Text;
                 vGetGameParamsStruct.pOutputMessage = "";
-                vGetGameParamsStruct.pUseLibHash = false;
                 vGetGameParamsStruct.totalFiles = Directory.GetFiles(tbDatCreator_SourceFolder.Text, "*.*", SearchOption.AllDirectories).Length;
 
                 datCreator = new DatafileCreatorWorker();

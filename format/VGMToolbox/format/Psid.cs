@@ -7,9 +7,8 @@ using ICSharpCode.SharpZipLib.Checksums;
 
 using VGMToolbox.format;
 using VGMToolbox.util;
-using VGMToolbox.util.ObjectPooling;
 
-namespace format.VGMToolbox.format
+namespace VGMToolbox.format
 {
     class Psid : IFormat, IEmbeddedTagsFormat
     {
@@ -96,6 +95,7 @@ namespace format.VGMToolbox.format
         private byte[] data;
 
         private byte[] versionNumberLE;
+        private int intVersionNumber;
         private byte[] totalSongsLE;
         private byte[] startingSongLE;
 
@@ -149,9 +149,9 @@ namespace format.VGMToolbox.format
             this.versionNumberLE = new byte[VERSION_LENGTH]; 
             Array.Copy(this.versionNumber, this.versionNumberLE, VERSION_LENGTH);
             Array.Reverse(this.versionNumberLE);
-            int intVersionNumber = BitConverter.ToInt16(this.versionNumberLE, 0);
+            this.intVersionNumber = BitConverter.ToInt16(this.versionNumberLE, 0);
 
-            if (intVersionNumber == 2)
+            if (this.intVersionNumber == 2)
             {
                 this.v2Flags = ParseFile.parseSimpleOffset(pStream, V2_FLAGS_OFFSET, V2_FLAGS_LENGTH);
                 this.v2StartPage = ParseFile.parseSimpleOffset(pStream, V2_START_PAGE_OFFSET, V2_START_PAGE_LENGTH);
@@ -182,17 +182,12 @@ namespace format.VGMToolbox.format
             tagHash.Add("Starting Song", BitConverter.ToInt16(this.startingSongLE, 0).ToString());
         }
 
-        public void GetDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
-            ref Crc32 pChecksum, bool pUseLibHash)
+        public void GetDatFileCrc32(ref Crc32 pChecksum)
         {
             pChecksum.Reset();
 
             /*
-            private byte[] v2Flags;
-            private byte[] v2StartPage;
-            private byte[] v2PageLength;
             private byte[] v2Reserved;
-            private byte[] data;
             */
 
             pChecksum.Update(versionNumber);
@@ -202,6 +197,13 @@ namespace format.VGMToolbox.format
             pChecksum.Update(totalSongs);
             pChecksum.Update(startingSong);
             pChecksum.Update(speed);
+
+            if (this.intVersionNumber == 2)
+            {
+                pChecksum.Update(v2Flags);
+                pChecksum.Update(v2StartPage);
+                pChecksum.Update(v2PageLength);
+            }
 
             pChecksum.Update(data);
         }
@@ -221,10 +223,7 @@ namespace format.VGMToolbox.format
             return FORMAT_ABBREVIATION;
         }
 
-        public bool IsFileLibrary(string pPath)
-        {
-            return false;
-        }
+        public bool IsFileLibrary() { return false; }
 
         public bool HasMultipleFileExtensions()
         {

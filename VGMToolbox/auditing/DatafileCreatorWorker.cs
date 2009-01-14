@@ -8,7 +8,6 @@ using ICSharpCode.SharpZipLib.Checksums;
 
 using VGMToolbox.format;
 using VGMToolbox.util;
-using VGMToolbox.util.ObjectPooling;
 
 namespace VGMToolbox.auditing
 {
@@ -16,14 +15,12 @@ namespace VGMToolbox.auditing
     {
         private string dir;
         private ArrayList romList;
-        private Dictionary<string, ByteArray> libHash;
         private int fileCount = 0;
 
         public struct GetGameParamsStruct
         { 
             public string pDir; 
             public string pOutputMessage; 
-            public bool pUseLibHash;
             public int totalFiles;
         }
         
@@ -53,7 +50,7 @@ namespace VGMToolbox.auditing
             return datHeader;
         }
 
-        public rom buildRom(string pDirectory, string pFileName, bool pUseLibHash)
+        public rom buildRom(string pDirectory, string pFileName)
         {
             string path = pFileName.Substring((pDirectory.LastIndexOf(this.dir) + this.dir.Length));
             FileStream fs = File.OpenRead(pFileName);
@@ -86,8 +83,7 @@ namespace VGMToolbox.auditing
 
                     // vgmData.getDatFileCrc32(pFileName, ref libHash, ref crc32Generator,
                     //    ref md5CryptoStream, ref sha1CryptoStream, pUseLibHash, pStreamInput);
-                    vgmData.GetDatFileCrc32(pFileName, ref libHash, ref crc32Generator,
-                        pUseLibHash);
+                    vgmData.GetDatFileCrc32(ref crc32Generator);
                     vgmData = null;
                 }
                 catch (EndOfStreamException _es)
@@ -189,7 +185,6 @@ namespace VGMToolbox.auditing
                         if (pDepth == 1)
                         {
                             this.romList = new ArrayList();
-                            this.libHash = new Dictionary<string, ByteArray>();
                             this.dir = d;
                         }
 
@@ -206,7 +201,7 @@ namespace VGMToolbox.auditing
 
                                 try
                                 {
-                                    rom romfile = buildRom(d, f, pGetGameParamsStruct.pUseLibHash);
+                                    rom romfile = buildRom(d, f);
                                     if (romfile.name != null)
                                     {
                                         // Convert to use Array of rom?
@@ -240,12 +235,6 @@ namespace VGMToolbox.auditing
                                 set.name = d.Substring(d.LastIndexOf(Path.DirectorySeparatorChar) + 1);
                                 set.description = set.name;
                                 gameList.Add(set);
-
-                                if (pGetGameParamsStruct.pUseLibHash)
-                                {
-                                    for (int i = 1; i < 5; i++)
-                                        ObjectPooler.Instance.DoneWithByteArray(i);
-                                }
                             }
                         }
                         else 

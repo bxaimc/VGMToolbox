@@ -5,7 +5,6 @@ using System.IO;
 using ICSharpCode.SharpZipLib.Checksums;
 
 using VGMToolbox.util;
-using VGMToolbox.util.ObjectPooling;
 
 namespace VGMToolbox.format
 {
@@ -133,8 +132,7 @@ namespace VGMToolbox.format
             }
         }
 
-        public void GetDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
-            ref Crc32 pChecksum, bool pUseLibHash)
+        public void GetDatFileCrc32(ref Crc32 pChecksum)
         {
             int read;
             byte[] data;
@@ -145,34 +143,23 @@ namespace VGMToolbox.format
             // Add data segment
             if (this.dataLength > 0)
             {
-                data = new byte[4096];
-
-                fs = new FileStream(pPath, FileMode.Open, FileAccess.Read);
-                fs.Seek(this.dataOffset, SeekOrigin.Begin);
-
-                while ((read = fs.Read(data, 0, data.Length)) > 0)
-                {
-                    pChecksum.Update(data, 0, read);
-                }
-
-                fs.Close();
-                fs.Dispose();
+                pChecksum.Update(this.dataBytes);
             }
 
             // Add PDX if found
             if (pdxFileName != null && !this.pdxFileName.Equals(String.Empty))
             {
-                string pdxPath = Path.GetDirectoryName(pPath) + Path.DirectorySeparatorChar + 
-                    this.pdxFileName;
+                string pdxPath = Path.GetDirectoryName(this.filePath) + 
+                    Path.DirectorySeparatorChar + this.pdxFileName;
 
                 if (File.Exists(pdxPath))
                 {
                     data = new byte[4096];
 
-                    fs = new FileStream(pPath, FileMode.Open, FileAccess.Read);
+                    fs = new FileStream(pdxPath, FileMode.Open, FileAccess.Read);
                     fs.Seek(this.dataOffset, SeekOrigin.Begin);
 
-                    while ((read = fs.Read(data, 0, 4096)) > 0)
+                    while ((read = fs.Read(data, 0, data.Length)) > 0)
                     {
                         pChecksum.Update(data, 0, read);
                     }
@@ -204,10 +191,7 @@ namespace VGMToolbox.format
             return FORMAT_ABBREVIATION;
         }
 
-        public bool IsFileLibrary(string pPath)
-        {
-            return false;
-        }
+        public bool IsFileLibrary() { return false; }
 
         public bool HasMultipleFileExtensions()
         {
@@ -245,8 +229,7 @@ namespace VGMToolbox.format
 
         #region ISingleTagFormat Functions
 
-        public string GetTagAsText() { return title; }
-        
+        public string GetTagAsText() { return title; }        
         public void UpdateTag(string pNewValue)
         {
             string tempFilePath = Path.GetTempFileName();

@@ -7,7 +7,6 @@ using ICSharpCode.SharpZipLib.Checksums;
 using ICSharpCode.SharpZipLib.GZip;
 
 using VGMToolbox.util;
-using VGMToolbox.util.ObjectPooling;
 
 namespace VGMToolbox.format
 {
@@ -433,10 +432,7 @@ namespace VGMToolbox.format
             return "VGM";
         }
 
-        public bool IsFileLibrary(string pPath)
-        {
-            return false;
-        }
+        public bool IsFileLibrary() { return false; }
 
         public bool HasMultipleFileExtensions()
         {
@@ -555,8 +551,7 @@ namespace VGMToolbox.format
             this.eofAbsoluteOffset = BitConverter.ToInt32(this.eofOffset, 0) + EOF_OFFSET_OFFSET;
         }
         
-        public void GetDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
-            ref Crc32 pChecksum, bool pUseLibHash)
+        public void GetDatFileCrc32(ref Crc32 pChecksum)
         {
             int intVersion = INT_VERSION_UNKNOWN;
             
@@ -589,7 +584,7 @@ namespace VGMToolbox.format
             }
 
             // Add data
-            FileStream fs = new FileStream(pPath, FileMode.Open, FileAccess.Read);
+            FileStream fs = new FileStream(this.filePath, FileMode.Open, FileAccess.Read);
             this.addDataSection(fs, ref pChecksum);
             fs.Close();
             fs.Dispose();

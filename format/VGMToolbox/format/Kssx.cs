@@ -4,7 +4,6 @@ using System.IO;
 using ICSharpCode.SharpZipLib.Checksums;
 
 using VGMToolbox.util;
-using VGMToolbox.util.ObjectPooling;
 
 namespace VGMToolbox.format
 {

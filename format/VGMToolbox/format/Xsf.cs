@@ -9,7 +9,6 @@ using ICSharpCode.SharpZipLib.Zip.Compression;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 
 using VGMToolbox.util;
-using VGMToolbox.util.ObjectPooling;
 
 namespace VGMToolbox.format
 {
@@ -123,146 +122,32 @@ namespace VGMToolbox.format
             return BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, COMPRESSED_SIZE_OFFSET, COMPRESSED_SIZE_LENGTH), 0);
         }
 
-        public void GetDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
-            ref Crc32 pChecksum, bool pUseLibHash)
+        public void GetDatFileCrc32(ref Crc32 pChecksum)
         {
-            FileStream fs = File.OpenRead(pPath);
+            using (FileStream fs = File.OpenRead(this.filePath))
+            {
+                // Reserved Section
+                ParseFile.AddChunkToChecksum(fs, (int)RESERVED_SECTION_OFFSET,
+                    (int)this.reservedSectionLength, ref pChecksum);
 
-            // Reserved Section
-            ParseFile.AddChunkToChecksum(fs, (int)RESERVED_SECTION_OFFSET,
-                (int)this.reservedSectionLength, ref pChecksum);
-
-            // Compressed Program
-            addDecompressedProgramChecksum(fs, ref pChecksum);
-
-            fs.Close();
-            fs.Dispose();
+                // Compressed Program
+                addDecompressedProgramChecksum(fs, ref pChecksum);
+            }
 
             // Libs
-            string[] libPaths = this.GetLibPathArray(pPath.Substring(0, pPath.LastIndexOf(Path.DirectorySeparatorChar)));
+            string[] libPaths = this.GetLibPathArray();
 
             foreach (string f in libPaths)
             {
-                if (!pUseLibHash || !pLibHash.ContainsKey(f))
+                using (FileStream lfs = File.OpenRead(f))
                 {
-                    using (FileStream lfs = File.OpenRead(f))
-                    {
-                        Xsf libXsf = new Xsf();
-                        libXsf.Initialize(lfs, f);
-
-
-                        if (!pUseLibHash)
-                        {
-                            libXsf.GetDatFileCrc32(f, ref pLibHash, ref pChecksum, pUseLibHash);
-                        }
-                        else
-                        {
-                            int parseArrayIndex = -1;
-                            ByteArray parseArray = ObjectPooler.Instance.GetFreeByteArray(ref parseArrayIndex);
-
-                            int dummy = -1;
-                            pLibHash.Add(f, ObjectPooler.Instance.GetFreeByteArray(ref dummy));
-
-                            lfs.Seek((long)RESERVED_SECTION_OFFSET, SeekOrigin.Begin);
-                            parseArray.ArrayLength = lfs.Read(parseArray.ByArray, 0, (int)libXsf.ReservedSectionLength);
-                            parseArray.ByArray.CopyTo(pLibHash[f].ByArray, 0);
-                            pLibHash[f].ArrayLength = (int)libXsf.ReservedSectionLength;
-
-                            libXsf.getDecompressedProgram(lfs, ref parseArray);
-
-                            Array.Copy(parseArray.ByArray, 0, pLibHash[f].ByArray, libXsf.ReservedSectionLength, parseArray.ArrayLength);
-                            pLibHash[f].ArrayLength += parseArray.ArrayLength;
-
-                            // Update Checksums
-                            pChecksum.Update(pLibHash[f].ByArray, 0, pLibHash[f].ArrayLength);
-
-                            ObjectPooler.Instance.DoneWithByteArray(parseArrayIndex);
-                        }
-                        libXsf = null;
-                    }
-                }
+                    Xsf libXsf = new Xsf();
+                    libXsf.Initialize(lfs, f);
+                    libXsf.GetDatFileCrc32(ref pChecksum);
+                    libXsf = null;
+                }                
             }
         }
-
-        /*
-        public void getDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
-            ref Crc32 pChecksum, ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream, bool pUseLibHash, bool pStreamInput)
-        {            
-            FileStream fs = File.OpenRead(pPath);
-
-            // Reserved Section
-            ParseFile.AddChunkToChecksum(fs, (int)RESERVED_SECTION_OFFSET,
-                (int)this.reservedSectionLength, ref pChecksum, ref pMd5CryptoStream,
-                ref pSha1CryptoStream);
-            
-            // Compressed Program
-            addDecompressedProgramChecksum(fs, ref pChecksum, ref pMd5CryptoStream, ref pSha1CryptoStream);
-            
-            //ObjectPooler.Instance.DoneWithByteArray(decompressedProgramIndex);
-            fs.Close();
-            fs.Dispose();
-
-            // Libs
-            string[] libPaths = this.GetLibPathArray(pPath.Substring(0, pPath.LastIndexOf(Path.DirectorySeparatorChar)));
-
-            foreach (string f in libPaths)
-            {
-                if (!pUseLibHash || !pLibHash.ContainsKey(f))
-                {
-                    using (FileStream lfs = File.OpenRead(f))
-                    {
-                        Xsf libXsf = new Xsf();
-                        if (!pStreamInput)
-                        {
-                            int xsfIndex = -1;
-                            ByteArray xsfByteArray = ObjectPooler.Instance.GetFreeByteArray(ref xsfIndex);
-                            ParseFile.ReadWholeArray(lfs, xsfByteArray.ByArray, (int)lfs.Length);
-                            xsfByteArray.ArrayLength = (int)lfs.Length;
-                            libXsf.initialize(xsfByteArray);
-                            ObjectPooler.Instance.DoneWithByteArray(xsfIndex);
-                        }
-                        else 
-                        {
-                            libXsf.initialize(lfs);
-                        }
-                        
-
-                        if (!pUseLibHash)
-                        {
-                            libXsf.getDatFileCrc32(f, ref pLibHash, ref pChecksum, ref pMd5CryptoStream, 
-                                ref pSha1CryptoStream, pUseLibHash, pStreamInput);
-                        }
-                        else
-                        {
-                            int parseArrayIndex = -1;
-                            ByteArray parseArray = ObjectPooler.Instance.GetFreeByteArray(ref parseArrayIndex);
-                            
-                            int dummy = -1;
-                            pLibHash.Add(f, ObjectPooler.Instance.GetFreeByteArray(ref dummy));
-                            
-                            lfs.Seek((long) RESERVED_SECTION_OFFSET, SeekOrigin.Begin);
-                            parseArray.ArrayLength = lfs.Read(parseArray.ByArray, 0, (int) libXsf.ReservedSectionLength);
-                            parseArray.ByArray.CopyTo(pLibHash[f].ByArray, 0);
-                            pLibHash[f].ArrayLength = (int)libXsf.ReservedSectionLength;
-
-                            libXsf.getDecompressedProgram(lfs, ref parseArray);
-
-                            Array.Copy(parseArray.ByArray, 0, pLibHash[f].ByArray, libXsf.ReservedSectionLength, parseArray.ArrayLength);
-                            pLibHash[f].ArrayLength += parseArray.ArrayLength;
-
-                            // Update Checksums
-                            pChecksum.Update(pLibHash[f].ByArray, 0, pLibHash[f].ArrayLength);
-                            pMd5CryptoStream.Write(pLibHash[f].ByArray, 0, pLibHash[f].ArrayLength);
-                            pSha1CryptoStream.Write(pLibHash[f].ByArray, 0, pLibHash[f].ArrayLength);
-
-                            ObjectPooler.Instance.DoneWithByteArray(parseArrayIndex);
-                        }                        
-                        libXsf = null;
-                    }
-                }
-            }
-        }
-        */
 
         protected void addDecompressedProgramChecksum(FileStream pFileStream, ref Crc32 pChecksum)
         {
@@ -309,6 +194,7 @@ namespace VGMToolbox.format
             }                        
         }
 
+        /*
         public void getDecompressedProgram(FileStream pFileStream, ref ByteArray pOutputBuffer)
         {
             if (this.compressedProgramLength > 0)
@@ -339,7 +225,7 @@ namespace VGMToolbox.format
                 pOutputBuffer.ArrayLength = 0;
             }
         }
-
+        */
         public string getFormat()
         {
             return this.formatHash[(ushort)this.versionByte[0]].ToString();
@@ -350,7 +236,7 @@ namespace VGMToolbox.format
             return FORMAT_ABBREVIATION;
         }
 
-        public string[] GetLibPathArray(string pPath)
+        public string[] GetLibPathArray()
         {
             ArrayList libPaths = new ArrayList();
             string libPath = String.Empty;
@@ -361,14 +247,14 @@ namespace VGMToolbox.format
             // Grab the _lib files from the tags.  Sort them and get the checksum bytes of each one.
             if (tagHash.ContainsKey("_lib"))
             {
-                libPath = pPath + Path.DirectorySeparatorChar + tagHash["_lib"];
+                libPath = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(this.filePath)), tagHash["_lib"]);
                 libPaths.Add(libPath.Trim().ToUpper());
 
                 while (libsFound)
                 {
                     if (tagHash.ContainsKey("_lib" + i.ToString()))
                     {
-                        libPaths.Add(pPath + Path.DirectorySeparatorChar + tagHash["_lib" + i.ToString()]);
+                        libPaths.Add(Path.Combine(Path.GetDirectoryName(Path.GetFullPath(this.filePath)), tagHash["_lib" + i.ToString()]));
                         i++;
                     }
                     else
@@ -426,12 +312,13 @@ namespace VGMToolbox.format
             return getTags(pBytes, tagOffset, pBytes.Length);
         }
 
+        /*
         protected Dictionary<string, string> getTags(ByteArray pBytes)
         {
             int tagOffset = (int) (RESERVED_SECTION_OFFSET + this.reservedSectionLength + this.compressedProgramLength + ASCII_TAG.Length);
             return getTags(pBytes.ByArray, tagOffset, pBytes.ArrayLength);
         }
-
+        */
         protected Dictionary<string, string> getTags(Stream pStream)
         {
             Dictionary<string, string> ret = new Dictionary<string, string>();
@@ -557,11 +444,11 @@ namespace VGMToolbox.format
             return flag;
         }
 
-        public bool IsFileLibrary(string pFilePath)
+        public bool IsFileLibrary()
         {
             bool ret = false;
 
-            string libDirectory = Path.GetDirectoryName(Path.GetFullPath(pFilePath));
+            string libDirectory = Path.GetDirectoryName(Path.GetFullPath(this.filePath));
 
             foreach (string f in Directory.GetFiles(libDirectory))
             {
@@ -575,9 +462,9 @@ namespace VGMToolbox.format
                         fs.Seek(0, SeekOrigin.Begin);
                         Xsf checkFile = new Xsf();
                         checkFile.Initialize(fs, f);
-                        ArrayList libPathArray = new ArrayList(checkFile.GetLibPathArray(libDirectory));
+                        ArrayList libPathArray = new ArrayList(checkFile.GetLibPathArray());
 
-                        if (libPathArray.Contains(pFilePath.ToUpper()))
+                        if (libPathArray.Contains(this.filePath.ToUpper()))
                         {
                             ret = true;
                             fs.Close();
@@ -614,7 +501,7 @@ namespace VGMToolbox.format
             bool ret = true;
 
             string libDirectory = Path.GetDirectoryName(Path.GetFullPath(this.filePath));
-            string[] libPathArray = this.GetLibPathArray(libDirectory);
+            string[] libPathArray = this.GetLibPathArray();
 
             foreach (string s in libPathArray)
             {

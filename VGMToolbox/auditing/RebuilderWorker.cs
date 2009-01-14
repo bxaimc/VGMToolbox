@@ -15,7 +15,6 @@ namespace VGMToolbox.auditing
 {
     class RebuilderWorker : BackgroundWorker
     {
-        private Dictionary<string, ByteArray> libHash;
         private const string CACHE_DB_FILENAME = "_cache.db";
         private ArrayList libFilesForDeletion = new ArrayList();
         private ArrayList tempDirsForDeletion = new ArrayList();
@@ -227,12 +226,11 @@ namespace VGMToolbox.auditing
                         IFormat vgmData = (IFormat)Activator.CreateInstance(formatType);
                         vgmData.Initialize(fs, pFilePath);
 
-                        isFileLibrary = vgmData.IsFileLibrary(pFilePath);
+                        isFileLibrary = vgmData.IsFileLibrary();
                         hasMultipleExtensions = vgmData.HasMultipleFileExtensions();
                         // vgmData.getDatFileCrc32(pFilePath, ref libHash, ref crc32Generator,
                         //    ref md5CryptoStream, ref sha1CryptoStream, false, pStreamInput);                    
-                        vgmData.GetDatFileCrc32(pFilePath, ref libHash, ref crc32Generator,
-                            false);
+                        vgmData.GetDatFileCrc32(ref crc32Generator);
                         vgmData = null;
                     }
                     catch (EndOfStreamException e)

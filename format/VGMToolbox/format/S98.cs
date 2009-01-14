@@ -6,7 +6,6 @@ using System.IO;
 using ICSharpCode.SharpZipLib.Checksums;
 
 using VGMToolbox.util;
-using VGMToolbox.util.ObjectPooling;
 
 namespace VGMToolbox.format
 {
@@ -336,8 +335,7 @@ namespace VGMToolbox.format
             deviceHash.Add(16, "DCSG (SN76489)");
         }
 
-        public void GetDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
-            ref Crc32 pChecksum, bool pUseLibHash)
+        public void GetDatFileCrc32(ref Crc32 pChecksum)
         {
             pChecksum.Reset();
 
@@ -372,10 +370,7 @@ namespace VGMToolbox.format
             return FORMAT_ABBREVIATION;
         }
 
-        public bool IsFileLibrary(string pPath)
-        {
-            return false;
-        }
+        public bool IsFileLibrary() { return false; }
 
         public bool HasMultipleFileExtensions()
         {
