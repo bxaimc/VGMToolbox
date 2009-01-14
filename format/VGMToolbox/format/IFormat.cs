@@ -21,13 +21,17 @@ namespace VGMToolbox.format
         bool HasMultipleFileExtensions();
 
         bool UsesLibraries();
-        bool IsLibraryPresent(string pFilePath);
+        bool IsLibraryPresent();
 
         Dictionary<string, string> GetTagHash();
 
         void GetDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
             ref Crc32 pChecksum, bool pUseLibHash);
-        
+
+        // void GetDatFileCrc32(ref Crc32 pChecksum);
+
+
+
         //void getDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash, 
         //    ref Crc32 pChecksum, ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream, 
         //    bool pUseLibHash);

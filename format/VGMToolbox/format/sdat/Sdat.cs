@@ -541,7 +541,7 @@ namespace VGMToolbox.format.sdat
         }
 
         public bool UsesLibraries() { return false; }
-        public bool IsLibraryPresent(string pFilePath) { return true; }
+        public bool IsLibraryPresent() { return true; }
 
         public Dictionary<string, string> GetTagHash()
         {

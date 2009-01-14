@@ -237,7 +237,7 @@ namespace format.VGMToolbox.format
         }
 
         public bool UsesLibraries() { return false; }
-        public bool IsLibraryPresent(string pFilePath) { return true; }
+        public bool IsLibraryPresent() { return true; }
 
         #region EMBEDDED TAG METHODS
 

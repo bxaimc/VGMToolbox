@@ -220,14 +220,14 @@ namespace VGMToolbox.format
         }
 
         public bool UsesLibraries() { return true; }
-        public bool IsLibraryPresent(string pFilePath) 
+        public bool IsLibraryPresent() 
         {
             bool ret = false;
 
             if (!String.IsNullOrEmpty(this.pdxFileName))
             {
                 string searchFile =
-                    Path.Combine(Path.GetDirectoryName(Path.GetFullPath(pFilePath)), this.pdxFileName);
+                    Path.Combine(Path.GetDirectoryName(Path.GetFullPath(this.filePath)), this.pdxFileName);
 
                 if (File.Exists(searchFile))
                 {

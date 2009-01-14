@@ -609,11 +609,11 @@ namespace VGMToolbox.format
         }
 
         public bool UsesLibraries() { return true; }
-        public bool IsLibraryPresent(string pFilePath) 
+        public bool IsLibraryPresent() 
         {
             bool ret = true;
 
-            string libDirectory = Path.GetDirectoryName(Path.GetFullPath(pFilePath));
+            string libDirectory = Path.GetDirectoryName(Path.GetFullPath(this.filePath));
             string[] libPathArray = this.GetLibPathArray(libDirectory);
 
             foreach (string s in libPathArray)

@@ -163,7 +163,7 @@ namespace VGMToolbox.tools
                         // check for libs
                         if (pCheckForLibs && vgmData.UsesLibraries())
                         {
-                            if (!vgmData.IsLibraryPresent(pFileName))
+                            if (!vgmData.IsLibraryPresent())
                             {
                                 ret.ForeColor = Color.Red;
                                 ret.Text += " (Missing Library)";
