@@ -116,7 +116,7 @@ namespace VGMToolbox.tools.nds
 
                     try
                     {
-                        sdat.Initialize(fs);
+                        sdat.Initialize(fs, pPath);
                         sdat.ExtractSseqs(fs, destinationPath);
                         sdat.ExtractStrms(fs, destinationPath);
                         sdat.BuildSmap(destinationPath, fileName);

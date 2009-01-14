@@ -146,8 +146,9 @@ namespace VGMToolbox.format
         }
 
 
-        public void Initialize(Stream pStream)
+        public void Initialize(Stream pStream, string pFilePath)
         {
+            this.filePath = pFilePath;
             this.asciiSignature = this.getAsciiSignature(pStream);
             this.numberOfBanks = this.getNumberOfBanks(pStream);
             this.initial0000_3FFFBankOffset = this.getInitial0000_3FFFBankOffset(pStream);

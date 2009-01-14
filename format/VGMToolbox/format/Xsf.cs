@@ -148,7 +148,7 @@ namespace VGMToolbox.format
                     using (FileStream lfs = File.OpenRead(f))
                     {
                         Xsf libXsf = new Xsf();
-                        libXsf.Initialize(lfs);
+                        libXsf.Initialize(lfs, f);
 
 
                         if (!pUseLibHash)
@@ -518,8 +518,9 @@ namespace VGMToolbox.format
             this.tagHash = this.getTags(pBytes);         
         }
 
-        public void Initialize(Stream pStream)
+        public void Initialize(Stream pStream, string pFilePath)                 
         {
+            this.filePath = pFilePath;
             this.asciiSignature = this.getSignatureTag(pStream);
             this.versionByte = this.getVersionTag(pStream);
             this.reservedSectionLength = this.getReservedSectionLength(pStream);
@@ -573,7 +574,7 @@ namespace VGMToolbox.format
                     {
                         fs.Seek(0, SeekOrigin.Begin);
                         Xsf checkFile = new Xsf();
-                        checkFile.Initialize(fs);
+                        checkFile.Initialize(fs, f);
                         ArrayList libPathArray = new ArrayList(checkFile.GetLibPathArray(libDirectory));
 
                         if (libPathArray.Contains(pFilePath.ToUpper()))

@@ -112,7 +112,7 @@ namespace VGMToolbox.tools.hoot
                 if (dataType != null)
                 {
                     IHootFormat vgmData = (IHootFormat)Activator.CreateInstance(dataType);
-                    vgmData.Initialize(fs);
+                    vgmData.Initialize(fs, pPath);
 
                     if (!String.IsNullOrEmpty(vgmData.GetHootDriver()))
                     {

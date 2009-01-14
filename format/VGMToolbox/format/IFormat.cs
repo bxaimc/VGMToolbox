@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Security.Cryptography;
-using System.Text;
 
 using ICSharpCode.SharpZipLib.Checksums;
 
@@ -17,8 +14,7 @@ namespace VGMToolbox.format
         byte[] GetAsciiSignature();
         string GetFileExtensions();  // Should return values only if getAsciiSignature returns NULL
 
-        //void initialize(byte[] pBytes);
-        void Initialize(Stream pStream);
+        void Initialize(Stream pStream, string pFilePath);
                
         string GetFormatAbbreviation();
         bool IsFileLibrary(string pPath);

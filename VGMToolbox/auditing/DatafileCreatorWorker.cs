@@ -82,7 +82,7 @@ namespace VGMToolbox.auditing
                 try
                 {
                     IFormat vgmData = (IFormat)Activator.CreateInstance(formatType);
-                    vgmData.Initialize(fs);
+                    vgmData.Initialize(fs, pFileName);
 
                     // vgmData.getDatFileCrc32(pFileName, ref libHash, ref crc32Generator,
                     //    ref md5CryptoStream, ref sha1CryptoStream, pUseLibHash, pStreamInput);

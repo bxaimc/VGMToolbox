@@ -129,8 +129,9 @@ namespace VGMToolbox.format
             return ParseFile.parseSimpleOffset(pStream, DATA_OFFSET, (int)(pStream.Length - DATA_OFFSET));
         }
 
-        public void Initialize(Stream pStream)
+        public void Initialize(Stream pStream, string pFilePath)
         {
+            this.filePath = pFilePath;
             this.asciiSignature = this.getAsciiSignature(pStream);
             this.z80Load = this.getZ80Load(pStream);
             this.initDataLength = this.getInitDataLength(pStream);

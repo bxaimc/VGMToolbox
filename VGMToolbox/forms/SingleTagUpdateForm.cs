@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
 
 using VGMToolbox.format;
@@ -12,12 +7,12 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.forms
 {
-    public partial class EmbeddedTagsUpdateForm : Form
+    public partial class SingleTagUpdateForm : Form
     {
         Constants.NodeTagStruct nodeTagInfo;
-        IEmbeddedTagsFormat vgmData;
-
-        public EmbeddedTagsUpdateForm(Constants.NodeTagStruct pNts)
+        ISingleTagFormat vgmData;
+        
+        public SingleTagUpdateForm(Constants.NodeTagStruct pNts)
         {
             nodeTagInfo = pNts;
             
@@ -28,16 +23,14 @@ namespace VGMToolbox.forms
 
         private void loadCurrentTagInformation()
         {
-            using (FileStream fs = 
+            using (FileStream fs =
                 File.Open(this.nodeTagInfo.filePath, FileMode.Open, FileAccess.Read))
             {
                 this.vgmData =
-                    (IEmbeddedTagsFormat)Activator.CreateInstance(Type.GetType(this.nodeTagInfo.objectType));
+                    (ISingleTagFormat)Activator.CreateInstance(Type.GetType(this.nodeTagInfo.objectType));
                 this.vgmData.Initialize(fs, this.nodeTagInfo.filePath);
 
-                this.tbName.Text = this.vgmData.GetSongNameAsText();
-                this.tbArtist.Text = this.vgmData.GetArtistAsText();
-                this.tbCopyright.Text = this.vgmData.GetCopyrightAsText();
+                this.tbTag.Text = this.vgmData.GetTagAsText();
             }
         }
 
@@ -49,9 +42,7 @@ namespace VGMToolbox.forms
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            this.vgmData.UpdateSongName(this.tbName.Text);
-            this.vgmData.UpdateArtist(this.tbArtist.Text);
-            this.vgmData.UpdateCopyright(this.tbCopyright.Text);
+            this.vgmData.UpdateTag(this.tbTag.Text);
 
             MessageBox.Show(String.Format("Tags for \"{0}\" have been updated.  Changes will not be displayed in the tree until you add the files again.", Path.GetFileName(this.vgmData.FilePath)));
             this.Close();

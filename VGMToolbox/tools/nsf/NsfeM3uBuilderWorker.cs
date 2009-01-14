@@ -112,7 +112,7 @@ namespace VGMToolbox.tools.nsf
 
                     Nsfe nsfeData = new Nsfe();
                     fs.Seek(0, SeekOrigin.Begin);
-                    nsfeData.Initialize(fs);
+                    nsfeData.Initialize(fs, pPath);
 
                     string outputFile = Path.GetDirectoryName(pPath) + Path.DirectorySeparatorChar +
                         Path.GetFileNameWithoutExtension(pPath) + ".m3u";

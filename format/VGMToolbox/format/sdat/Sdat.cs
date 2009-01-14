@@ -178,8 +178,10 @@ namespace VGMToolbox.format.sdat
         }
 
 
-        public void Initialize(Stream pStream)
+        public void Initialize(Stream pStream, string pFilePath)
         { 
+            this.filePath = pFilePath;
+            
             // SDAT
             stdHeaderSignature = getStdHeaderSignature(pStream);
             stdHeaderUnkConstant = getStdHeaderUnkConstant(pStream);

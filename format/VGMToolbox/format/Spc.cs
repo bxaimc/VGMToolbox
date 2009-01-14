@@ -330,9 +330,10 @@ namespace VGMToolbox.format
         {
             return ParseFile.parseSimpleOffset(pBytes, EX_ID666_HEADER_CHUNK_SIZE_OFFSET, EX_ID666_HEADER_CHUNK_SIZE_LENGTH);
         }
-                        
-        public void Initialize(Stream pStream)
+
+        public void Initialize(Stream pStream, string pFilePath)
         {
+            this.filePath = pFilePath;
             this.asciiSignature = this.getAsciiSignature(pStream);
             this.dummy26 = this.getDummy26(pStream);
             this.headerHasId666 = this.getHeaderHasId666(pStream);

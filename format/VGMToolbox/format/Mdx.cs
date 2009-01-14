@@ -9,7 +9,7 @@ using VGMToolbox.util.ObjectPooling;
 
 namespace VGMToolbox.format
 {
-    public class Mdx : IFormat
+    public class Mdx : IFormat, ISingleTagFormat
     {
         private const string FORMAT_ABBREVIATION = "MDX";
         
@@ -29,6 +29,10 @@ namespace VGMToolbox.format
         private string title = String.Empty;
         private string pdxFileName = String.Empty;
 
+        private byte[] titleBytes;
+        private byte[] pdxBytes;
+        private byte[] dataBytes;
+        
         private int titleLength;
 
         private int pdxOffset;
@@ -80,25 +84,29 @@ namespace VGMToolbox.format
                 this.pdxLength + PDX_TERMINATOR.Length;
             this.dataLength = (int)(pBytes.Length - this.dataOffset);
         }
-        public void Initialize(Stream pStream)
+
+        public void Initialize(Stream pStream, string pFilePath)
         {
+            this.filePath = pFilePath;
+            
             // Title
             this.titleLength = ParseFile.getSegmentLength(pStream, 0, TITLE_TERMINATOR);
             
             if (this.titleLength > 0)
             {
-                this.title = VGMToolbox.util.Encoding.getJpEncodedText(ParseFile.parseSimpleOffset(pStream, 0,
-                         this.titleLength));
+                this.titleBytes = ParseFile.parseSimpleOffset(pStream, 0, this.titleLength);
+                this.title = VGMToolbox.util.Encoding.getJpEncodedText(this.titleBytes);
             }
 
             // PDX
             this.pdxOffset = this.titleLength + TITLE_TERMINATOR.Length;
             this.pdxLength = ParseFile.getSegmentLength(pStream, this.pdxOffset, PDX_TERMINATOR);
-            
-            if (this.pdxOffset > 0)
+
+            if (this.pdxLength > 0)
             {
-                this.pdxFileName = VGMToolbox.util.Encoding.getJpEncodedText(ParseFile.parseSimpleOffset(pStream,
-                                this.pdxOffset, this.pdxLength));
+                this.pdxBytes = ParseFile.parseSimpleOffset(pStream, this.pdxOffset, this.pdxLength);
+                this.pdxFileName = VGMToolbox.util.Encoding.getJpEncodedText(this.pdxBytes);
+                
                 string pdxExtension = Path.GetExtension(this.pdxFileName);
 
                 if (pdxExtension.Equals(String.Empty))
@@ -112,6 +120,7 @@ namespace VGMToolbox.format
             this.dataOffset = this.titleLength + TITLE_TERMINATOR.Length +
                 this.pdxLength + PDX_TERMINATOR.Length;
             this.dataLength = (int)(pStream.Length - this.dataOffset);
+            this.dataBytes = ParseFile.parseSimpleOffset(pStream, this.dataOffset, this.dataLength);
         }
 
         private void initializeTagHash()
@@ -230,6 +239,36 @@ namespace VGMToolbox.format
                 ret = true;
             }
             return ret;
+        }
+
+        #endregion
+
+        #region ISingleTagFormat Functions
+
+        public string GetTagAsText() { return title; }
+        
+        public void UpdateTag(string pNewValue)
+        {
+            string tempFilePath = Path.GetTempFileName();
+
+            using (BinaryWriter bw =
+                new BinaryWriter(File.Open(tempFilePath, FileMode.Open, FileAccess.ReadWrite)))
+            {
+                byte[] newTagBytes = 
+                    System.Text.Encoding.GetEncoding(VGMToolbox.util.Encoding.CODEPAGE_JP).GetBytes(pNewValue);
+
+                bw.Write(newTagBytes);
+                bw.Write(TITLE_TERMINATOR);
+                if (pdxBytes != null)
+                {
+                    bw.Write(pdxBytes);
+                }
+                bw.Write(PDX_TERMINATOR);
+                bw.Write(dataBytes);                
+            }
+
+            File.Delete(this.filePath);
+            File.Move(tempFilePath, this.filePath);
         }
 
         #endregion

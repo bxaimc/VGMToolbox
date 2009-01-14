@@ -447,9 +447,11 @@ namespace VGMToolbox.format
         {
             return this.tagHash;
         }
-    
-        public void Initialize(Stream pStream)
+
+        public void Initialize(Stream pStream, string pFilePath)
         {
+            this.filePath = pFilePath;
+            
             if (FormatUtil.IsGzipFile(pStream))
             {
                 GZipInputStream gZipInputStream = new GZipInputStream(pStream);
@@ -472,7 +474,7 @@ namespace VGMToolbox.format
                 }
 
                 gZipFileStream.Seek(0, SeekOrigin.Begin);
-                this.Initialize(gZipFileStream);
+                this.Initialize(gZipFileStream, tempGzipFile);
 
                 gZipFileStream.Close();
                 gZipFileStream.Dispose();

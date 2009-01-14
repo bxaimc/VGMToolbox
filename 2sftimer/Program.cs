@@ -72,8 +72,8 @@ namespace _2sftimer
             string extractedSseqPath = Path.Combine(extractedSdatPath, "Seq");
             
             FileStream fs = File.Open(pathToSdat, FileMode.Open, FileAccess.Read);
-            Sdat sdat = new Sdat();            
-            sdat.Initialize(fs);
+            Sdat sdat = new Sdat();
+            sdat.Initialize(fs, pathToSdat);
             sdat.ExtractSseqs(fs, extractedSdatPath);            
             fs.Close();
             fs.Dispose();

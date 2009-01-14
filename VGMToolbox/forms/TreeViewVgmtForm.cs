@@ -82,7 +82,8 @@ namespace VGMToolbox.forms
                 {
                     Constants.NodeTagStruct nts = (Constants.NodeTagStruct)node.Tag;
 
-                    if (typeof(IEmbeddedTagsFormat).IsAssignableFrom(Type.GetType(nts.objectType)))
+                    if (typeof(IEmbeddedTagsFormat).IsAssignableFrom(Type.GetType(nts.objectType)) ||
+                        typeof(ISingleTagFormat).IsAssignableFrom(Type.GetType(nts.objectType)))
                     {
                         contextMenuStrip1.Show(treeViewTools, p);
                     }
@@ -100,6 +101,11 @@ namespace VGMToolbox.forms
                 {
                     EmbeddedTagsUpdateForm etuForm = new EmbeddedTagsUpdateForm(nts);
                     etuForm.Show();
+                }
+                else if (typeof(ISingleTagFormat).IsAssignableFrom(Type.GetType(nts.objectType)))
+                {
+                    SingleTagUpdateForm stuForm = new SingleTagUpdateForm(nts);
+                    stuForm.Show();
                 }
                                 
                 this.selectedNode = this.oldNode;

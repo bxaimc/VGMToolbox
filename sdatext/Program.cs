@@ -42,7 +42,7 @@ namespace sdatext
                 fs = File.OpenRead(filePath);
                 Sdat sdat = new Sdat();
 
-                sdat.Initialize(fs);
+                sdat.Initialize(fs, filePath);
                 sdat.BuildSmap(outputPath, fileName);
                 sdat.ExtractSseqs(fs, outputPath);
                 sdat.ExtractStrms(fs, outputPath);

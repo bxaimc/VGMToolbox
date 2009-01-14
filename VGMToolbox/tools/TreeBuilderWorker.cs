@@ -154,11 +154,11 @@ namespace VGMToolbox.tools
                         pOutputFileStream.WriteLine(pFileName);
 
                         IFormat vgmData = (IFormat)Activator.CreateInstance(dataType);
-                        vgmData.Initialize(fs);
+                        vgmData.Initialize(fs, pFileName);
                         Dictionary<string, string> tagHash = vgmData.GetTagHash();
                         
                         // Add Path for possible future use.
-                        tagHash.Add("Path", pFileName);
+                        tagHash.Add("Path", vgmData.FilePath);
 
                         // check for libs
                         if (pCheckForLibs && vgmData.UsesLibraries())

@@ -114,7 +114,7 @@ namespace VGMToolbox.tools.xsf
                 if (dataType != null && dataType.Name.Equals("Xsf"))
                 {
                     Xsf vgmData = new Xsf();
-                    vgmData.Initialize(fs);
+                    vgmData.Initialize(fs, pPath);
 
                     if (vgmData.CompressedProgramLength > 0)
                     {

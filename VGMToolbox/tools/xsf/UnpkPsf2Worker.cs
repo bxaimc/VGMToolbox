@@ -84,7 +84,7 @@ namespace VGMToolbox.tools.xsf
                     if (dataType != null && dataType.Name.Equals("Xsf"))
                     {
                         Xsf psf2File = new Xsf();
-                        psf2File.Initialize(fs);
+                        psf2File.Initialize(fs, pPath);
 
                         if (psf2File.getFormat().Equals(Xsf.FORMAT_NAME_PSF2))
                         {

@@ -22,7 +22,7 @@ namespace VGMToolbox.forms
             this.btnDoTask.Text = "Expand All";
 
             this.tbOutput.Text = "Drag Files or Folders onto the box above to View Information." + System.Environment.NewLine;
-            this.tbOutput.Text += "Right Click on filenames to update the tags (GBS/NSF/PSID only)." + System.Environment.NewLine;
+            this.tbOutput.Text += "Right Click on filenames to update the tags (GBS/NSF/MDX/PSID only)." + System.Environment.NewLine;
 
             InitializeComponent();
         }
@@ -34,7 +34,7 @@ namespace VGMToolbox.forms
             this.btnDoTask.Text = "Expand All";
 
             this.tbOutput.Text = "Drag Files or Folders onto the box above to View Information." + System.Environment.NewLine;
-            this.tbOutput.Text += "Right Click on filenames to update the tags (GBS/NSF/PSID only)." + System.Environment.NewLine;
+            this.tbOutput.Text += "Right Click on filenames to update the tags (GBS/NSF/MDX/PSID only)." + System.Environment.NewLine;
             
             InitializeComponent();
         }

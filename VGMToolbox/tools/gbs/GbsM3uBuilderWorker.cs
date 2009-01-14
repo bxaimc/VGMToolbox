@@ -115,7 +115,7 @@ namespace VGMToolbox.tools.gbs
 
                     Gbs gbsData = new Gbs();
                     fs.Seek(0, SeekOrigin.Begin);
-                    gbsData.Initialize(fs);
+                    gbsData.Initialize(fs, pPath);
 
                     string outputFile = Path.GetDirectoryName(pPath) + Path.DirectorySeparatorChar + 
                         Path.GetFileNameWithoutExtension(pPath) + ".m3u";

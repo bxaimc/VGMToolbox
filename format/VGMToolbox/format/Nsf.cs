@@ -220,8 +220,9 @@ namespace VGMToolbox.format
             return ParseFile.parseSimpleOffset(pStream, DATA_OFFSET, (int) (pStream.Length - DATA_OFFSET));
         }
 
-        public void Initialize(Stream pStream)
+        public void Initialize(Stream pStream, string pFilePath)
         {
+            this.filePath = pFilePath;
             this.asciiSignature = this.getAsciiSignature(pStream);
             this.versionNumber = this.getVersionNumber(pStream);
             this.totalSongs = this.getTotalSongs(pStream);
@@ -473,19 +474,19 @@ namespace VGMToolbox.format
 
         #region EMBEDDED TAG METHODS
 
-        public void UpdateSongName(string pFilePath, string pNewValue)
+        public void UpdateSongName(string pNewValue)
         {
-            ParseFile.UpdateTextField(pFilePath, pNewValue, NAME_OFFSET,
+            ParseFile.UpdateTextField(this.filePath, pNewValue, NAME_OFFSET,
                 NAME_LENGTH);
         }        
-        public void UpdateArtist(string pFilePath, string pNewValue)
+        public void UpdateArtist(string pNewValue)
         {
-            ParseFile.UpdateTextField(pFilePath, pNewValue, ARTIST_OFFSET,
+            ParseFile.UpdateTextField(this.filePath, pNewValue, ARTIST_OFFSET,
                 ARTIST_LENGTH);
         }
-        public void UpdateCopyright(string pFilePath, string pNewValue)
+        public void UpdateCopyright(string pNewValue)
         {
-            ParseFile.UpdateTextField(pFilePath, pNewValue, COPYRIGHT_OFFSET,
+            ParseFile.UpdateTextField(this.filePath, pNewValue, COPYRIGHT_OFFSET,
                 COPYRIGHT_LENGTH);
         }
 

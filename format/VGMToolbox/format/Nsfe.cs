@@ -185,8 +185,9 @@ namespace VGMToolbox.format
             }
         }
 
-        public void Initialize(Stream pStream)
+        public void Initialize(Stream pStream, string pFilePath)
         {
+            this.filePath =  pFilePath;
             this.asciiSignature = this.getAsciiSignature(pStream);
             this.getChunks(pStream);
 

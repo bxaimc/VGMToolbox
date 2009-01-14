@@ -614,7 +614,7 @@ namespace VGMToolbox.tools.xsf
                 fs = File.OpenRead(tempSdatPath);
                 pSdat = new Sdat();
 
-                pSdat.Initialize(fs);
+                pSdat.Initialize(fs, tempSdatPath);
                 pSdat.ExtractSseqs(fs,
                     Path.Combine(pDestinationPath, Path.GetFileNameWithoutExtension(pSourceSdat)));
                 pSdat.ExtractStrms(fs,

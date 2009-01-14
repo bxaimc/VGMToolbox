@@ -225,7 +225,7 @@ namespace VGMToolbox.auditing
                     try
                     {
                         IFormat vgmData = (IFormat)Activator.CreateInstance(formatType);
-                        vgmData.Initialize(fs);
+                        vgmData.Initialize(fs, pFilePath);
 
                         isFileLibrary = vgmData.IsFileLibrary(pFilePath);
                         hasMultipleExtensions = vgmData.HasMultipleFileExtensions();

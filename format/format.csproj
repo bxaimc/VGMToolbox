@@ -36,8 +36,6 @@
       <HintPath>..\VGMToolbox\3rd\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -47,6 +45,7 @@
     <Compile Include="VGMToolbox\format\IEmbeddedTagsFormat.cs" />
     <Compile Include="VGMToolbox\format\IFormat.cs" />
     <Compile Include="VGMToolbox\format\IHootFormat.cs" />
+    <Compile Include="VGMToolbox\format\ISingleTagFormat.cs" />
     <Compile Include="VGMToolbox\format\Kss.cs" />
     <Compile Include="VGMToolbox\format\Kssx.cs" />
     <Compile Include="VGMToolbox\format\Mdx.cs" />
