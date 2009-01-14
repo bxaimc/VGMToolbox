@@ -78,6 +78,13 @@ namespace VGMToolbox.format
 
         private const int EXTENDED_INFO_OFFSET = 0x10200;
 
+        private string filePath;
+        public string FilePath
+        {
+            get { return filePath; }
+            set { filePath = value; }
+        }
+
         private byte[] asciiSignature;
         private byte[] dummy26;
         private byte[] headerHasId666;

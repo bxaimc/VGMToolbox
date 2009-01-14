@@ -88,6 +88,13 @@ namespace VGMToolbox.format
 
         private const int DATA_OFFSET = 0x80;
 
+        private string filePath;
+        public string FilePath
+        {
+            get { return filePath; }
+            set { filePath = value; }
+        }
+
         private byte[] asciiSignature;
         private byte[] versionNumber;
         private byte[] totalSongs;

@@ -52,6 +52,13 @@ namespace VGMToolbox.format
         private const string ASCII_TAG = "[TAG]";
         private const string TAG_UTF8_INDICATOR = "utf8=";
 
+        private string filePath;
+        public string FilePath 
+        {
+            get { return filePath; }
+            set { filePath = value; }
+        }
+
         private byte[] asciiSignature;
         private byte[] versionByte;
         private uint reservedSectionLength;

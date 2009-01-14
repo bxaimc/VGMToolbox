@@ -12,17 +12,15 @@ namespace VGMToolbox.format
 {
     public interface IFormat
     {
+        string FilePath { get; set; }
+        
         byte[] GetAsciiSignature();
         string GetFileExtensions();  // Should return values only if getAsciiSignature returns NULL
-        
-        void GetDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
-            ref Crc32 pChecksum, bool pUseLibHash);        
-        //void getDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash, 
-        //    ref Crc32 pChecksum, ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream, 
-        //    bool pUseLibHash);
-        string GetFormatAbbreviation();
+
         //void initialize(byte[] pBytes);
         void Initialize(Stream pStream);
+               
+        string GetFormatAbbreviation();
         bool IsFileLibrary(string pPath);
         bool HasMultipleFileExtensions();
 
@@ -30,5 +28,12 @@ namespace VGMToolbox.format
         bool IsLibraryPresent(string pFilePath);
 
         Dictionary<string, string> GetTagHash();
+
+        void GetDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash,
+            ref Crc32 pChecksum, bool pUseLibHash);
+        
+        //void getDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash, 
+        //    ref Crc32 pChecksum, ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream, 
+        //    bool pUseLibHash);
     }
 }

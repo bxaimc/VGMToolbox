@@ -47,7 +47,14 @@ namespace VGMToolbox.format
         private const int UNUSED_LENGTH = 0x10;
 
         private const int DATA_OFFSET = 0x20;
-        
+
+        private string filePath;
+        public string FilePath
+        {
+            get { return filePath; }
+            set { filePath = value; }
+        }
+
         private byte[] asciiSignature;
         private byte[] numberOfBanks;
         private byte[] initial0000_3FFFBankOffset;

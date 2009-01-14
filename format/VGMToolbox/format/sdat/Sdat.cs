@@ -19,6 +19,8 @@ namespace VGMToolbox.format.sdat
 
         public const string SEQUENCE_FILE_EXTENSION = ".sseq";
         
+
+
         ///////////////////////////////////
         // Standard NDS Header Information
         /// ///////////////////////////////
@@ -71,6 +73,13 @@ namespace VGMToolbox.format.sdat
         /////////////
         // Variables
         /////////////
+        private string filePath;
+        public string FilePath
+        {
+            get { return filePath; }
+            set { filePath = value; }
+        }
+                
         private byte[] stdHeaderSignature;
         private byte[] stdHeaderUnkConstant;
         private byte[] stdHeaderFileSize;

@@ -74,6 +74,13 @@ namespace VGMToolbox.format
         private const int STARTING_SONG_OFFSET = 0x09;
         private const int STARTING_SONG_LENGTH = 0x01;
 
+        private string filePath;
+        public string FilePath
+        {
+            get { return filePath; }
+            set { filePath = value; }
+        }
+
         private byte[] loadAddress;
         private byte[] initAddress;
         private byte[] playAddress;

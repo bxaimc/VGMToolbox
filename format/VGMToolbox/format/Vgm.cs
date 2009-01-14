@@ -63,6 +63,13 @@ namespace VGMToolbox.format
 
         private const int VGM_DATA_OFFSET_PRE150 = 0x40;
 
+        private string filePath;
+        public string FilePath
+        {
+            get { return filePath; }
+            set { filePath = value; }
+        }
+
         private byte[] signatureTag;
         private byte[] eofOffset;
         private byte[] version;

@@ -70,6 +70,13 @@ namespace format.VGMToolbox.format
 
         #region FIELDS
 
+        private string filePath;
+        public string FilePath
+        {
+            get { return filePath; }
+            set { filePath = value; }
+        }
+
         private byte[] asciiSignature;
         private byte[] versionNumber;
         private byte[] dataOffset;

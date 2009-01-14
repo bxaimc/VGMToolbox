@@ -19,8 +19,20 @@ namespace VGMToolbox.format
         public static readonly string PDX_FILE_EXTENSION = ".PDX";
         public static readonly string EXCEPTION_PDX_MISSING = "PDX file for this file was not found.";
 
+        private string filePath;
+        public string FilePath
+        {
+            get { return filePath; }
+            set { filePath = value; }
+        }
+
         private string title = String.Empty;
         private string pdxFileName = String.Empty;
+
+        private int titleLength;
+
+        private int pdxOffset;
+        private int pdxLength;
 
         private int dataOffset;
         private int dataLength;
@@ -36,60 +48,57 @@ namespace VGMToolbox.format
             initialize(pBytes);
         }
 
-        public string Title
-        {
-            get { return title; }
-        }
-        public string PdxFileName
-        {
-            get { return pdxFileName; }
-        }
+        public string Title { get { return title; } }
+        public string PdxFileName { get { return pdxFileName; } }
+
 
         public void initialize(byte[] pBytes)
         {
-            int _titleLength;
-            int _pdxLength;
+            // int _titleLength;
+            // int _pdxLength;
 
             // Title
-            _titleLength = ParseFile.getSegmentLength(pBytes, 0, TITLE_TERMINATOR);
-            if (_titleLength > 0)
+            this.titleLength = ParseFile.getSegmentLength(pBytes, 0, TITLE_TERMINATOR);
+
+            if (this.titleLength > 0)
             {
                 title = VGMToolbox.util.Encoding.getJpEncodedText(ParseFile.parseSimpleOffset(pBytes, 0,
-                         _titleLength));
+                         this.titleLength));
             }
 
             // PDX
-            _pdxLength = ParseFile.getSegmentLength(pBytes,
-                            (_titleLength + TITLE_TERMINATOR.Length), PDX_TERMINATOR);
-            if (_pdxLength > 0)
+            this.pdxOffset = this.titleLength + TITLE_TERMINATOR.Length;
+            this.pdxLength = ParseFile.getSegmentLength(pBytes,
+                            (this.titleLength + TITLE_TERMINATOR.Length), PDX_TERMINATOR);
+            if (this.pdxLength > 0)
             {
                 pdxFileName = VGMToolbox.util.Encoding.getJpEncodedText(ParseFile.parseSimpleOffset(pBytes,
-                                (_titleLength + TITLE_TERMINATOR.Length), _pdxLength));
+                                (this.titleLength + TITLE_TERMINATOR.Length), this.pdxLength));
             }
 
-            this.dataOffset = _titleLength + _pdxLength;
+            this.dataOffset = this.titleLength + TITLE_TERMINATOR.Length +
+                this.pdxLength + PDX_TERMINATOR.Length;
+            this.dataLength = (int)(pBytes.Length - this.dataOffset);
         }
-
         public void Initialize(Stream pStream)
         {
-            int _titleLength;
-            int _pdxLength;
-
             // Title
-            _titleLength = ParseFile.getSegmentLength(pStream, 0, TITLE_TERMINATOR);
-            if (_titleLength > 0)
+            this.titleLength = ParseFile.getSegmentLength(pStream, 0, TITLE_TERMINATOR);
+            
+            if (this.titleLength > 0)
             {
                 this.title = VGMToolbox.util.Encoding.getJpEncodedText(ParseFile.parseSimpleOffset(pStream, 0,
-                         _titleLength));
+                         this.titleLength));
             }
 
             // PDX
-            _pdxLength = ParseFile.getSegmentLength(pStream,
-                            (_titleLength + TITLE_TERMINATOR.Length), PDX_TERMINATOR);
-            if (_pdxLength > 0)
+            this.pdxOffset = this.titleLength + TITLE_TERMINATOR.Length;
+            this.pdxLength = ParseFile.getSegmentLength(pStream, this.pdxOffset, PDX_TERMINATOR);
+            
+            if (this.pdxOffset > 0)
             {
                 this.pdxFileName = VGMToolbox.util.Encoding.getJpEncodedText(ParseFile.parseSimpleOffset(pStream,
-                                (_titleLength + TITLE_TERMINATOR.Length), _pdxLength));
+                                this.pdxOffset, this.pdxLength));
                 string pdxExtension = Path.GetExtension(this.pdxFileName);
 
                 if (pdxExtension.Equals(String.Empty))
@@ -100,7 +109,8 @@ namespace VGMToolbox.format
 
             this.initializeTagHash();
 
-            this.dataOffset = _titleLength + TITLE_TERMINATOR.Length + _pdxLength + PDX_TERMINATOR.Length;
+            this.dataOffset = this.titleLength + TITLE_TERMINATOR.Length +
+                this.pdxLength + PDX_TERMINATOR.Length;
             this.dataLength = (int)(pStream.Length - this.dataOffset);
         }
 

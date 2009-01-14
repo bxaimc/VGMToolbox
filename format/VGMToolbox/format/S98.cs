@@ -22,6 +22,13 @@ namespace VGMToolbox.format
         private const string TAG_UTF8_INDICATOR = "utf8=";
         private const int TAG_IDENTIFIER_LENGTH = 5;
 
+        private string filePath;
+        public string FilePath
+        {
+            get { return filePath; }
+            set { filePath = value; }
+        }
+
         struct S98Device
         { 
             public byte[] DeviceType;

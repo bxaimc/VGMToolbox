@@ -46,6 +46,13 @@ namespace VGMToolbox.format
 
         private const int DATA_OFFSET = 0x10;
 
+        private string filePath;
+        public string FilePath
+        {
+            get { return filePath; }
+            set { filePath = value; }
+        }
+
         private byte[] asciiSignature;
         private byte[] z80Load;
         private byte[] initDataLength;
