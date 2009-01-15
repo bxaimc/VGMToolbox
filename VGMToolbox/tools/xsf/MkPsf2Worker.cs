@@ -11,6 +11,7 @@ namespace VGMToolbox.tools.xsf
 {
     class MkPsf2Worker : BackgroundWorker
     {
+        private const int NO_SEQ_NUM_FOUND = -1;
 
         private readonly string WORKING_FOLDER = 
             Path.GetFullPath(Path.Combine(".", "working_psf2"));
@@ -34,6 +35,9 @@ namespace VGMToolbox.tools.xsf
             public string depth;
             public string tempo;
             public string volume;
+
+            public bool useSeqOffset;
+            public string seqOffset;
         }
 
         public MkPsf2Worker()
@@ -195,11 +199,18 @@ namespace VGMToolbox.tools.xsf
                         sqArguments.Append(String.IsNullOrEmpty(pMkPsf2Struct.volume.Trim()) ?
                             String.Empty : String.Format(" -v={0}", pMkPsf2Struct.volume.Trim()));
 
-                        sqArguments.Append(String.Format(" -s={0} -h={1} -b={2}",
-                            sqFileName, hdFileName, bdFileName));
+                        if (pMkPsf2Struct.useSeqOffset)
+                        {
+                            int seqNumber = getSequenceNumber(pMkPsf2Struct, sourceSqFile);
 
-                        //sw.WriteLine(String.Format("sq.irx -r=5 -d=16383 -s={0} -h={1} -b={2}",
-                        //    sqFileName, hdFileName, bdFileName));
+                            if (seqNumber != NO_SEQ_NUM_FOUND)
+                            {
+                                sqArguments.Append(String.Format(" -n={0}", seqNumber));
+                            }        
+                        }
+
+                        sqArguments.Append(String.Format(" -s={0} -h={1} -b={2}",
+                            sqFileName, hdFileName, bdFileName));                        
 
                         sw.WriteLine(String.Format("sq.irx {0}", sqArguments.ToString()));
                         sw.Close();
@@ -265,6 +276,23 @@ namespace VGMToolbox.tools.xsf
                 vProgressStruct.errorMessage = ex3.Message;
                 ReportProgress(100, vProgressStruct);
             }
+        }
+
+        private int getSequenceNumber(MkPsf2Struct pMkPsf2Struct, string pFileName)
+        {
+            int ret = NO_SEQ_NUM_FOUND;
+            long seqOffset = 
+                VGMToolbox.util.Encoding.GetIntFromString(pMkPsf2Struct.seqOffset);
+
+            using (FileStream fs = File.OpenRead(Path.GetFullPath(pFileName)))
+            {
+                byte[] seqNumberBytes = ParseFile.parseSimpleOffset(fs, seqOffset, 1);
+                ret = seqNumberBytes[0];
+
+                fs.Close();
+            }
+
+            return ret;
         }
 
         protected override void OnDoWork(DoWorkEventArgs e)

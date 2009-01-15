@@ -39,6 +39,9 @@ namespace VGMToolbox.forms
             mkStruct.tickInterval = tbTickInterval.Text;
             mkStruct.volume = tbVolume.Text;
 
+            mkStruct.useSeqOffset = cbCheckForSequence.Checked;
+            mkStruct.seqOffset = tbSequencePosition.Text;
+
             mkPsf2Worker = new MkPsf2Worker();
             mkPsf2Worker.ProgressChanged += backgroundWorker_ReportProgress;
             mkPsf2Worker.RunWorkerCompleted += MkPsf2Worker_WorkComplete;
@@ -80,6 +83,11 @@ namespace VGMToolbox.forms
         private void btnModulesDirectoryBrowse_Click(object sender, EventArgs e)
         {
             tbModulesDirectory.Text = base.browseForFolder(sender, e);
+        }
+
+        private void cbCheckForSequence_CheckedChanged(object sender, EventArgs e)
+        {
+            this.tbSequencePosition.ReadOnly = !this.cbCheckForSequence.Checked;
         }
     }
 }
