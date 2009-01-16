@@ -274,8 +274,17 @@ namespace VGMToolbox
             nodeTag.formClass = xsf_2sfRipperForm.GetType().Name;
             xsf_2sfRipperNode.Tag = nodeTag;
 
+            //////////////
+            // 2SF Timer
+            //////////////
             TreeNode xsf_2sfTimerNode = new TreeNode("2SF Timer");
-            
+
+            Xsf_2sfTimerForm xsf_2sfTimerForm = new Xsf_2sfTimerForm(xsf_2sfTimerNode);
+            this.splitContainer1.Panel2.Controls.Add(xsf_2sfTimerForm);
+
+            nodeTag.formClass = xsf_2sfTimerForm.GetType().Name;
+            xsf_2sfTimerNode.Tag = nodeTag;
+
             ////////////
             // MKPSF2FE
             ////////////
