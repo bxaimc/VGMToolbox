@@ -59,30 +59,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 487);
-            this.pnlLabels.Size = new System.Drawing.Size(808, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 409);
+            this.pnlLabels.Size = new System.Drawing.Size(739, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(808, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(739, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 410);
-            this.tbOutput.Size = new System.Drawing.Size(808, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 332);
+            this.tbOutput.Size = new System.Drawing.Size(739, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 390);
-            this.pnlButtons.Size = new System.Drawing.Size(808, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 312);
+            this.pnlButtons.Size = new System.Drawing.Size(739, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(748, 0);
+            this.btnCancel.Location = new System.Drawing.Point(679, 0);
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(688, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(619, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnExecute_Click);
             // 
             // groupBox1
@@ -96,7 +97,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(0, 23);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(808, 102);
+            this.groupBox1.Size = new System.Drawing.Size(739, 102);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Directories";
@@ -168,7 +169,7 @@
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox2.Location = new System.Drawing.Point(0, 125);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(808, 73);
+            this.groupBox2.Size = new System.Drawing.Size(739, 73);
             this.groupBox2.TabIndex = 10;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Options (Leave empty for defaults)";
@@ -276,7 +277,7 @@
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox3.Location = new System.Drawing.Point(0, 198);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(808, 54);
+            this.groupBox3.Size = new System.Drawing.Size(739, 54);
             this.groupBox3.TabIndex = 11;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Special Sequence Options";
@@ -294,7 +295,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(808, 528);
+            this.ClientSize = new System.Drawing.Size(739, 450);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);

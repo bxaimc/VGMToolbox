@@ -20,8 +20,10 @@ namespace VGMToolbox.forms
             // set title
             this.lblTitle.Text = "mkpsf2 Front End";
             this.btnDoTask.Text = "Build PSF2s";
-
+            
             InitializeComponent();
+
+            this.groupBox3.Hide();
         }
 
         private void btnExecute_Click(object sender, EventArgs e)
@@ -38,9 +40,6 @@ namespace VGMToolbox.forms
             mkStruct.tempo = tbTempo.Text;
             mkStruct.tickInterval = tbTickInterval.Text;
             mkStruct.volume = tbVolume.Text;
-
-            mkStruct.useSeqOffset = cbCheckForSequence.Checked;
-            mkStruct.seqOffset = tbSequencePosition.Text;
 
             mkPsf2Worker = new MkPsf2Worker();
             mkPsf2Worker.ProgressChanged += backgroundWorker_ReportProgress;
