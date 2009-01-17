@@ -22,8 +22,6 @@ namespace VGMToolbox.forms
             this.btnDoTask.Text = "Build PSF2s";
             
             InitializeComponent();
-
-            this.groupBox3.Hide();
         }
 
         private void btnExecute_Click(object sender, EventArgs e)
@@ -82,11 +80,6 @@ namespace VGMToolbox.forms
         private void btnModulesDirectoryBrowse_Click(object sender, EventArgs e)
         {
             tbModulesDirectory.Text = base.browseForFolder(sender, e);
-        }
-
-        private void cbCheckForSequence_CheckedChanged(object sender, EventArgs e)
-        {
-            this.tbSequencePosition.ReadOnly = !this.cbCheckForSequence.Checked;
         }
     }
 }

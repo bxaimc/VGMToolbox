@@ -60,6 +60,14 @@ namespace VGMToolbox.util
             return totalFileCount;
         }
 
+        public static string CleanFileName(string pDirtyFileName)
+        {
+            foreach (char c in Path.GetInvalidFileNameChars())
+            {
+                pDirtyFileName = pDirtyFileName.Replace(c, '_');
+            }
 
+            return pDirtyFileName;
+        }
     }
 }

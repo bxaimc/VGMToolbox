@@ -46,15 +46,11 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.tbReverb = new System.Windows.Forms.TextBox();
-            this.cbCheckForSequence = new System.Windows.Forms.CheckBox();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.tbSequencePosition = new System.Windows.Forms.TextBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
@@ -177,7 +173,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(151, 19);
+            this.label8.Location = new System.Drawing.Point(233, 15);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(42, 13);
             this.label8.TabIndex = 9;
@@ -185,7 +181,7 @@
             // 
             // tbVolume
             // 
-            this.tbVolume.Location = new System.Drawing.Point(199, 15);
+            this.tbVolume.Location = new System.Drawing.Point(281, 11);
             this.tbVolume.MaxLength = 3;
             this.tbVolume.Name = "tbVolume";
             this.tbVolume.Size = new System.Drawing.Size(36, 20);
@@ -227,16 +223,16 @@
             // 
             // tbDepth
             // 
-            this.tbDepth.Location = new System.Drawing.Point(105, 15);
+            this.tbDepth.Location = new System.Drawing.Point(174, 12);
             this.tbDepth.MaxLength = 5;
             this.tbDepth.Name = "tbDepth";
-            this.tbDepth.Size = new System.Drawing.Size(41, 20);
+            this.tbDepth.Size = new System.Drawing.Size(47, 20);
             this.tbDepth.TabIndex = 3;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(68, 19);
+            this.label5.Location = new System.Drawing.Point(102, 18);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(36, 13);
             this.label5.TabIndex = 2;
@@ -259,44 +255,11 @@
             this.tbReverb.Size = new System.Drawing.Size(19, 20);
             this.tbReverb.TabIndex = 0;
             // 
-            // cbCheckForSequence
-            // 
-            this.cbCheckForSequence.AutoSize = true;
-            this.cbCheckForSequence.Location = new System.Drawing.Point(9, 19);
-            this.cbCheckForSequence.Name = "cbCheckForSequence";
-            this.cbCheckForSequence.Size = new System.Drawing.Size(122, 17);
-            this.cbCheckForSequence.TabIndex = 10;
-            this.cbCheckForSequence.Text = "Use SEQ Number at";
-            this.cbCheckForSequence.UseVisualStyleBackColor = true;
-            this.cbCheckForSequence.CheckedChanged += new System.EventHandler(this.cbCheckForSequence_CheckedChanged);
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.tbSequencePosition);
-            this.groupBox3.Controls.Add(this.cbCheckForSequence);
-            this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox3.Location = new System.Drawing.Point(0, 198);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(739, 54);
-            this.groupBox3.TabIndex = 11;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Special Sequence Options";
-            // 
-            // tbSequencePosition
-            // 
-            this.tbSequencePosition.Location = new System.Drawing.Point(137, 17);
-            this.tbSequencePosition.Name = "tbSequencePosition";
-            this.tbSequencePosition.ReadOnly = true;
-            this.tbSequencePosition.Size = new System.Drawing.Size(75, 20);
-            this.tbSequencePosition.TabIndex = 11;
-            this.tbSequencePosition.Text = "0x3C";
-            // 
             // Xsf_Mkpsf2FrontEndForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(739, 450);
-            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "Xsf_Mkpsf2FrontEndForm";
@@ -307,7 +270,6 @@
             this.Controls.SetChildIndex(this.pnlButtons, 0);
             this.Controls.SetChildIndex(this.groupBox1, 0);
             this.Controls.SetChildIndex(this.groupBox2, 0);
-            this.Controls.SetChildIndex(this.groupBox3, 0);
             this.pnlLabels.ResumeLayout(false);
             this.pnlLabels.PerformLayout();
             this.pnlTitle.ResumeLayout(false);
@@ -318,8 +280,6 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -345,8 +305,5 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox tbReverb;
-        private System.Windows.Forms.CheckBox cbCheckForSequence;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.TextBox tbSequencePosition;
     }
 }

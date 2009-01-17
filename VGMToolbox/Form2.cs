@@ -313,6 +313,20 @@ namespace VGMToolbox
             nodeTag.formClass = xsf_Unpkpsf2FrontEndForm.GetType().Name;
             xsf_UnPsf2FENode.Tag = nodeTag;
             
+            /////////////////
+            // PSF2TOPSF2LIB
+            /////////////////
+            TreeNode xsf_Psf2ToPsf2LibNode = new TreeNode("PSF2 to PSF2LIB");
+
+            // Add UnpkPsf2 Ripper Form
+            Xsf_Psf2ToPsf2LibForm xsf_Psf2ToPsf2LibForm =
+                new Xsf_Psf2ToPsf2LibForm(xsf_Psf2ToPsf2LibNode);
+            this.splitContainer1.Panel2.Controls.Add(xsf_Psf2ToPsf2LibForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.formClass = xsf_Psf2ToPsf2LibForm.GetType().Name;
+            xsf_Psf2ToPsf2LibNode.Tag = nodeTag;
+
             // SSFMAKE
             /*
             TreeNode xsf_SsfMakeFENode = new TreeNode("ssfmake Front End");
@@ -333,6 +347,7 @@ namespace VGMToolbox
             xsf_RootNode.Nodes.Add(xsf_2sfTimerNode);
             xsf_RootNode.Nodes.Add(xsf_MkPsf2FENode);
             xsf_RootNode.Nodes.Add(xsf_UnPsf2FENode);
+            xsf_RootNode.Nodes.Add(xsf_Psf2ToPsf2LibNode);
             // xsf_RootNode.Nodes.Add(xsf_SsfMakeFENode);
 
 
