@@ -20,6 +20,7 @@ namespace VGMToolbox.forms
             this.lblTitle.Text = "PSF2 to PSF2LIB (Library Builder)";
             this.btnDoTask.Text = "Combine PSF2s";
             this.tbOutput.Text = "Files must all use the same modules." + Environment.NewLine;
+            this.tbOutput.Text += "This works for standard CSL rips only." + Environment.NewLine;
             this.tbOutput.Text += "Files will be output in the 'rips\\psf2s' subfolder underneath VGMToolbox." + Environment.NewLine;
 
             InitializeComponent();

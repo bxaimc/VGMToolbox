@@ -6,6 +6,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
+using ICSharpCode.SharpZipLib.Checksums;
+
 using VGMToolbox.format;
 using VGMToolbox.util;
 
@@ -189,19 +191,59 @@ namespace VGMToolbox.tools.xsf
         private bool moveNonIniFiles(string pSourceDirectory, string pDestinationDirectory)
         {
             bool isSuccess = true;
+            Crc32 crc32Generator = new Crc32();
+            string fileDestinationPath;
+            string fileExtension;
+            string fileName;
+
+            Psf2.Psf2IniSqIrxStruct psf2IniStruct;
 
             if (!Directory.Exists(pDestinationDirectory))
             {
                 Directory.CreateDirectory(pDestinationDirectory);
             }
 
-            foreach (string f in Directory.GetFiles(pSourceDirectory))
+            // get .ini and parse
+            string iniPath = Path.Combine(pSourceDirectory, "psf2.ini");
+            using (FileStream fs = File.OpenRead(iniPath))
             {
-                if (Path.GetExtension(f) != ".ini")
+                psf2IniStruct = Psf2.ParseClsIniFile(fs);
+                fs.Close();
+            }
+
+            foreach (string f in Directory.GetFiles(pSourceDirectory, "*.*", SearchOption.AllDirectories))
+            {
+                fileDestinationPath = String.Empty;
+                
+                // check if it is one of the SQ/BD/HD files
+                fileName = Path.GetFileName(f).ToUpper();
+                fileExtension = Path.GetExtension(f).ToUpper();
+
+                if (fileName.Equals(psf2IniStruct.BdFileName)) 
+                {
+                    psf2IniStruct.BdFileName = this.getChecksumString(f) + fileExtension;
+                    fileDestinationPath = Path.Combine(pDestinationDirectory, psf2IniStruct.BdFileName);
+                }
+                else if (fileName.Equals(psf2IniStruct.HdFileName)) 
+                {
+                    psf2IniStruct.HdFileName = this.getChecksumString(f) + fileExtension;
+                    fileDestinationPath = Path.Combine(pDestinationDirectory, psf2IniStruct.HdFileName);
+                }
+                else if (fileName.Equals(psf2IniStruct.SqFileName)) 
+                {
+                    psf2IniStruct.SqFileName = this.getChecksumString(f) + fileExtension;
+                    fileDestinationPath = Path.Combine(pDestinationDirectory, psf2IniStruct.SqFileName);
+                }
+                else if (fileExtension != ".INI")
+                {
+                    fileDestinationPath = Path.Combine(pDestinationDirectory, Path.GetFileName(f));
+                }
+
+                if (!String.IsNullOrEmpty(fileDestinationPath))
                 {
                     try
                     {
-                        File.Copy(f, Path.Combine(pDestinationDirectory, Path.GetFileName(f)), true);
+                        File.Copy(f, fileDestinationPath, true);
                     }
                     catch (Exception _e)
                     {
@@ -212,12 +254,16 @@ namespace VGMToolbox.tools.xsf
                         this.progressStruct.newNode = null;
                         this.progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", f) + _e.Message;
                         ReportProgress(progress, this.progressStruct);
-                        
+
                         break;
                     }
-                    File.Delete(f);
-                }
+
+                    File.Delete(f);               
+                }                                
             }
+
+            // rebuild .ini file
+            Psf2.WriteClsIniFile(psf2IniStruct, iniPath);
 
             return isSuccess;         
         }
@@ -255,7 +301,7 @@ namespace VGMToolbox.tools.xsf
             {
                 isSuccess = false;
                 
-                if ((makePsf2Process != null) && (!makePsf2Process.HasExited))
+                if ((makePsf2Process != null))
                 {
                     makePsf2Process.Close();
                     makePsf2Process.Dispose();
@@ -434,6 +480,22 @@ namespace VGMToolbox.tools.xsf
                 this.progressStruct.errorMessage = "Error cleaning up.  Error received: " + ex.Message;
                 ReportProgress(progress, this.progressStruct);            
             }
+        }
+
+        private string getChecksumString(string pFileName)
+        {
+            string ret;
+            Crc32 crc32Generator = new Crc32();
+            
+            crc32Generator.Reset();
+            using (FileStream fs = File.OpenRead(pFileName))
+            {
+                ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
+                fs.Close();
+            }
+
+            ret = crc32Generator.Value.ToString("X2");
+            return ret;
         }
 
         protected override void OnDoWork(DoWorkEventArgs e)
