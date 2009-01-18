@@ -494,7 +494,7 @@ namespace VGMToolbox.tools.xsf
                 fs.Close();
             }
 
-            ret = crc32Generator.Value.ToString("X2");
+            ret = crc32Generator.Value.ToString("X8");
             return ret;
         }
 
