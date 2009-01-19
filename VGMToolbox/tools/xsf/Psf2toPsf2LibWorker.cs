@@ -219,17 +219,17 @@ namespace VGMToolbox.tools.xsf
                 fileName = Path.GetFileName(f).ToUpper();
                 fileExtension = Path.GetExtension(f).ToUpper();
 
-                if (fileName.Equals(psf2IniStruct.BdFileName)) 
+                if (fileName.Equals(Path.GetFileName(psf2IniStruct.BdFileName))) 
                 {
                     psf2IniStruct.BdFileName = this.getChecksumString(f) + fileExtension;
                     fileDestinationPath = Path.Combine(pDestinationDirectory, psf2IniStruct.BdFileName);
                 }
-                else if (fileName.Equals(psf2IniStruct.HdFileName)) 
+                else if (fileName.Equals(Path.GetFileName(psf2IniStruct.HdFileName))) 
                 {
                     psf2IniStruct.HdFileName = this.getChecksumString(f) + fileExtension;
                     fileDestinationPath = Path.Combine(pDestinationDirectory, psf2IniStruct.HdFileName);
                 }
-                else if (fileName.Equals(psf2IniStruct.SqFileName)) 
+                else if (fileName.Equals(Path.GetFileName(psf2IniStruct.SqFileName))) 
                 {
                     psf2IniStruct.SqFileName = this.getChecksumString(f) + fileExtension;
                     fileDestinationPath = Path.Combine(pDestinationDirectory, psf2IniStruct.SqFileName);
