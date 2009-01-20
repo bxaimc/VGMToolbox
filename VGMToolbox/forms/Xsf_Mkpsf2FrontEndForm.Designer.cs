@@ -46,40 +46,43 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.tbReverb = new System.Windows.Forms.TextBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.label2 = new System.Windows.Forms.Label();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 409);
-            this.pnlLabels.Size = new System.Drawing.Size(739, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 449);
+            this.pnlLabels.Size = new System.Drawing.Size(699, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(739, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(699, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 332);
-            this.tbOutput.Size = new System.Drawing.Size(739, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 372);
+            this.tbOutput.Size = new System.Drawing.Size(699, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 312);
-            this.pnlButtons.Size = new System.Drawing.Size(739, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 352);
+            this.pnlButtons.Size = new System.Drawing.Size(699, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(679, 0);
+            this.btnCancel.Location = new System.Drawing.Point(639, 0);
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(619, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(579, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnExecute_Click);
             // 
             // groupBox1
@@ -93,7 +96,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(0, 23);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(739, 102);
+            this.groupBox1.Size = new System.Drawing.Size(699, 102);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Directories";
@@ -165,7 +168,7 @@
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox2.Location = new System.Drawing.Point(0, 125);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(739, 73);
+            this.groupBox2.Size = new System.Drawing.Size(699, 73);
             this.groupBox2.TabIndex = 10;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Options (Leave empty for defaults)";
@@ -255,11 +258,32 @@
             this.tbReverb.Size = new System.Drawing.Size(19, 20);
             this.tbReverb.TabIndex = 0;
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.label2);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Location = new System.Drawing.Point(0, 198);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(699, 25);
+            this.panel1.TabIndex = 11;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.label2.Location = new System.Drawing.Point(0, 0);
+            this.label2.Name = "label2";
+            this.label2.Padding = new System.Windows.Forms.Padding(5);
+            this.label2.Size = new System.Drawing.Size(330, 23);
+            this.label2.TabIndex = 0;
+            this.label2.Text = "mkpsf2.exe is written by Neill Corlett (http://www.neillcorlett.com/).";
+            // 
             // Xsf_Mkpsf2FrontEndForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(739, 450);
+            this.ClientSize = new System.Drawing.Size(699, 490);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "Xsf_Mkpsf2FrontEndForm";
@@ -270,6 +294,7 @@
             this.Controls.SetChildIndex(this.pnlButtons, 0);
             this.Controls.SetChildIndex(this.groupBox1, 0);
             this.Controls.SetChildIndex(this.groupBox2, 0);
+            this.Controls.SetChildIndex(this.panel1, 0);
             this.pnlLabels.ResumeLayout(false);
             this.pnlLabels.PerformLayout();
             this.pnlTitle.ResumeLayout(false);
@@ -280,6 +305,8 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -305,5 +332,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox tbReverb;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label label2;
     }
 }

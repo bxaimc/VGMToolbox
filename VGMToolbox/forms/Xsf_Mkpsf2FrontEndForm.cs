@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 using VGMToolbox.tools.xsf;
@@ -21,6 +17,10 @@ namespace VGMToolbox.forms
             this.lblTitle.Text = "mkpsf2 Front End";
             this.btnDoTask.Text = "Build PSF2s";
             
+            this.tbOutput.Text = "Source Directory: Path to BD/HD/SQ files." + Environment.NewLine;
+            this.tbOutput.Text += "Modules Directory: Path to IRX files." + Environment.NewLine + Environment.NewLine;
+            this.tbOutput.Text += "Notes: Be sure matching BD/HD/SQ files have the same file name.";
+
             InitializeComponent();
         }
 
