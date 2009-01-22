@@ -177,7 +177,6 @@ namespace VGMToolbox.format.sdat
             return ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_UNK_PADDING_OFFSET, SDAT_HEADER_UNK_PADDING_LENGTH);
         }
 
-
         public void Initialize(Stream pStream, string pFilePath)
         { 
             this.filePath = pFilePath;

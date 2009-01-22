@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Windows.Forms;
 
 using ICSharpCode.SharpZipLib.Checksums;
 
@@ -16,26 +17,26 @@ namespace VGMToolbox.tools.xsf
     class Psf2toPsf2LibWorker : BackgroundWorker
     {
         private static readonly string PSF2_PROGRAMS_FOLDER =
-            Path.GetFullPath(Path.Combine(Path.Combine(".", "external"), "psf2"));
+            Path.GetFullPath(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "psf2"));
         private static readonly string UNPKPSF2_SOURCE_PATH =
             Path.Combine(PSF2_PROGRAMS_FOLDER, "unpkpsf2.exe");
         private static readonly string MKPSF2_SOURCE_PATH =
             Path.Combine(PSF2_PROGRAMS_FOLDER, "mkpsf2.exe");
 
         private static readonly string PSFPOINT_SOURCE_PATH =
-            Path.GetFullPath(Path.Combine(Path.Combine(".", "external"), "psfpoint.exe"));
+            Path.GetFullPath(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "psfpoint.exe"));
         private static readonly string PSFPOINT_BATCH_FILE = "psfpoint_batch.bat";
 
         private static readonly string PSF2LIB_WORKING_FOLDER =
-            Path.GetFullPath(Path.Combine(".", "working_psf2lib"));
+            Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "working_psf2lib"));
         private static readonly string PSF2LIB_WORKING_SUBFOLDER =
             Path.GetFullPath(Path.Combine(PSF2LIB_WORKING_FOLDER, "lib"));
         
         private static readonly string PSF2_WORKING_FOLDER =
-            Path.GetFullPath(Path.Combine(".", "working_psf2"));
+            Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "working_psf2"));
 
         private static readonly string PSF2_RIPS_FOLDER =
-            Path.GetFullPath(Path.Combine(Path.Combine(".", "rips"), "psf2s"));
+            Path.GetFullPath(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "rips"), "psf2s"));
 
         Constants.ProgressStruct progressStruct;
         private int fileCount;

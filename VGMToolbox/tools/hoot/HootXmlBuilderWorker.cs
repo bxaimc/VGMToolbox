@@ -3,6 +3,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.IO;
 using System.Xml.Serialization;
+using System.Windows.Forms;
 using VGMToolbox.format;
 using VGMToolbox.util;
 
@@ -12,7 +13,8 @@ namespace VGMToolbox.tools.hoot
     {
         private int fileCount = 0;
         private int maxFiles = 0;
-        ArrayList hootGamesArrayList = new ArrayList();
+        private ArrayList hootGamesArrayList = new ArrayList();
+        private Constants.ProgressStruct progressStruct;
 
         public struct HootXmlBuilderStruct
         {
@@ -27,11 +29,11 @@ namespace VGMToolbox.tools.hoot
             fileCount = 0;
             maxFiles = 0;
             hootGamesArrayList = new ArrayList();
+            progressStruct = new Constants.ProgressStruct();
             
             WorkerReportsProgress = true;
             WorkerSupportsCancellation = true;
         }
-
 
         private void buildXmlFiles(HootXmlBuilderStruct pHootXmlBuilderStruct, DoWorkEventArgs e)
         {            
@@ -83,7 +85,6 @@ namespace VGMToolbox.tools.hoot
                 if (!CancellationPending)
                 {
                     this.buildFileHootGame(f, e);
-                    // fileCount++;
                 }
                 else
                 {
@@ -97,10 +98,9 @@ namespace VGMToolbox.tools.hoot
         {
             // Report Progress
             int progress = (++fileCount * 100) / maxFiles;
-            Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
-            vProgressStruct.newNode = null;
-            vProgressStruct.filename = pPath;
-            ReportProgress(progress, vProgressStruct);
+            this.progressStruct.Clear();
+            this.progressStruct.filename = pPath;
+            ReportProgress(progress, this.progressStruct);
           
             VGMToolbox.tools.hoot.game hootGame = null;
 
@@ -144,10 +144,12 @@ namespace VGMToolbox.tools.hoot
                         hootGame.titlelist = new VGMToolbox.tools.hoot.title[vgmData.GetTotalSongs()];
                         int j = 0;
                         int totalSongs = vgmData.GetTotalSongs();
+                        VGMToolbox.tools.hoot.title hootTitle;
+
                         // for (int i = vgmData.GetStartingSong(); i < (vgmData.GetStartingSong() + vgmData.GetTotalSongs()); i++)
                         for (int i = 0; i < totalSongs; i++)
                         {
-                            VGMToolbox.tools.hoot.title hootTitle = new VGMToolbox.tools.hoot.title();
+                            hootTitle = new VGMToolbox.tools.hoot.title();
                             hootTitle.code = "0x" + i.ToString("X2");
                             hootTitle.Value = "BGM #" + i.ToString("X2");
 
@@ -164,10 +166,9 @@ namespace VGMToolbox.tools.hoot
             }
             catch (Exception ex)
             {
-                vProgressStruct = new Constants.ProgressStruct();
-                vProgressStruct.newNode = null;
-                vProgressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message;
-                ReportProgress(progress, vProgressStruct);
+                this.progressStruct.Clear();
+                this.progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message;
+                ReportProgress(progress, this.progressStruct);
             }            
         }    
 
@@ -189,7 +190,7 @@ namespace VGMToolbox.tools.hoot
 
                 if (hootXmlBuilderStruct.combineOutput)
                 {
-                    outputPath = "." + Path.DirectorySeparatorChar + "hoot" +
+                    outputPath = Path.GetDirectoryName(Application.ExecutablePath) + Path.DirectorySeparatorChar + "hoot" +
                         Path.DirectorySeparatorChar + "[combined] hootgame.xml";
                     
                     XmlSerializer serializer = new XmlSerializer(hootGames.GetType());
@@ -203,7 +204,7 @@ namespace VGMToolbox.tools.hoot
                 {
                     foreach (VGMToolbox.tools.hoot.game g in hootGames)
                     {
-                        outputPath = "." + Path.DirectorySeparatorChar + "hoot" +
+                        outputPath = Path.GetDirectoryName(Application.ExecutablePath) + Path.DirectorySeparatorChar + "hoot" +
                             Path.DirectorySeparatorChar + g.romlist.rom[0].Value + ".xml";
 
                         XmlSerializer serializer = new XmlSerializer(g.GetType());

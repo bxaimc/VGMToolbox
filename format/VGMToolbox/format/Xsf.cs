@@ -18,6 +18,8 @@ namespace VGMToolbox.format
         private static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x50, 0x53, 0x46 }; // PSF
         private const string FORMAT_ABBREVIATION = "PSF";
 
+        private const int READ_CHUNK_SIZE = 71680;
+
         private const ushort VERSION_2SF = 0x24;
         private const ushort VERSION_DSF = 0x12;
         private const ushort VERSION_GSF = 0x22;
@@ -155,12 +157,12 @@ namespace VGMToolbox.format
             {
                 InflaterInputStream inflater;
                 int read;
-                byte[] data = new byte[4096];
+                byte[] data = new byte[READ_CHUNK_SIZE];
 
                 pFileStream.Seek((long)(RESERVED_SECTION_OFFSET + this.reservedSectionLength), SeekOrigin.Begin);
                 inflater = new InflaterInputStream(pFileStream);
 
-                while ((read = inflater.Read(data, 0, 4096)) > 0)
+                while ((read = inflater.Read(data, 0, READ_CHUNK_SIZE)) > 0)
                 {
                     pChecksum.Update(data, 0, read);
                 }
@@ -177,12 +179,12 @@ namespace VGMToolbox.format
             {
                 InflaterInputStream inflater;
                 int read;
-                byte[] data = new byte[4096];
+                byte[] data = new byte[READ_CHUNK_SIZE];
 
                 pFileStream.Seek((long)(RESERVED_SECTION_OFFSET + this.reservedSectionLength), SeekOrigin.Begin);
-                inflater = new InflaterInputStream(pFileStream);                
+                inflater = new InflaterInputStream(pFileStream);
 
-                while ((read = inflater.Read(data, 0, 4096)) > 0)
+                while ((read = inflater.Read(data, 0, READ_CHUNK_SIZE)) > 0)
                 {
                     pChecksum.Update(data, 0, read);
                     pMd5CryptoStream.Write(data, 0, read);
@@ -448,21 +450,26 @@ namespace VGMToolbox.format
         {
             bool ret = false;
 
+            FileStream fs;
+            Type formatType;
+            Xsf checkFile;
+            ArrayList libPathArray;
+
             string libDirectory = Path.GetDirectoryName(Path.GetFullPath(this.filePath));
 
             foreach (string f in Directory.GetFiles(libDirectory))
             {
                 try
                 {
-                    FileStream fs = File.OpenRead(f);
-                    Type formatType = FormatUtil.getObjectType(fs);
+                    fs = File.OpenRead(f);
+                    formatType = FormatUtil.getObjectType(fs);
 
                     if (formatType == this.GetType())
                     {
                         fs.Seek(0, SeekOrigin.Begin);
-                        Xsf checkFile = new Xsf();
+                        checkFile = new Xsf();
                         checkFile.Initialize(fs, f);
-                        ArrayList libPathArray = new ArrayList(checkFile.GetLibPathArray());
+                        libPathArray = new ArrayList(checkFile.GetLibPathArray());
 
                         if (libPathArray.Contains(this.filePath.ToUpper()))
                         {

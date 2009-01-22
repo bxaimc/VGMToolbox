@@ -43,30 +43,30 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 487);
-            this.pnlLabels.Size = new System.Drawing.Size(868, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 397);
+            this.pnlLabels.Size = new System.Drawing.Size(757, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(868, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(757, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 410);
-            this.tbOutput.Size = new System.Drawing.Size(868, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 320);
+            this.tbOutput.Size = new System.Drawing.Size(757, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 390);
-            this.pnlButtons.Size = new System.Drawing.Size(868, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 300);
+            this.pnlButtons.Size = new System.Drawing.Size(757, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(808, 0);
+            this.btnCancel.Location = new System.Drawing.Point(697, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(748, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(637, 0);
             // 
             // contextMenuStrip1
             // 
@@ -96,8 +96,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.AutoScroll = true;
-            this.splitContainer1.Size = new System.Drawing.Size(868, 367);
-            this.splitContainer1.SplitterDistance = 195;
+            this.splitContainer1.Size = new System.Drawing.Size(757, 277);
+            this.splitContainer1.SplitterDistance = 156;
             this.splitContainer1.TabIndex = 8;
             // 
             // treeViewTools
@@ -106,14 +106,14 @@
             this.treeViewTools.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeViewTools.Location = new System.Drawing.Point(0, 0);
             this.treeViewTools.Name = "treeViewTools";
-            this.treeViewTools.Size = new System.Drawing.Size(868, 195);
+            this.treeViewTools.Size = new System.Drawing.Size(757, 156);
             this.treeViewTools.TabIndex = 8;
             // 
             // TreeViewVgmtForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(868, 528);
+            this.ClientSize = new System.Drawing.Size(757, 438);
             this.Controls.Add(this.splitContainer1);
             this.Name = "TreeViewVgmtForm";
             this.Text = "TreeViewVgmtForm";

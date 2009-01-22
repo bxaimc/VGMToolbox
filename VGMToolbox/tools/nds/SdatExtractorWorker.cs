@@ -15,6 +15,7 @@ namespace VGMToolbox.tools.nds
     {
         private int fileCount = 0;
         private int maxFiles = 0;
+        private Constants.ProgressStruct progressStruct;
 
         public struct SdatExtractorStruct
         {
@@ -26,6 +27,7 @@ namespace VGMToolbox.tools.nds
         {
             fileCount = 0;
             maxFiles = 0;
+            progressStruct = new Constants.ProgressStruct();
             
             WorkerReportsProgress = true;
             WorkerSupportsCancellation = true;
@@ -82,7 +84,6 @@ namespace VGMToolbox.tools.nds
                 if (!CancellationPending)
                 {
                     this.extractSdatFromFile(f, e);
-                    // fileCount++;
                 }
                 else
                 {
@@ -96,10 +97,9 @@ namespace VGMToolbox.tools.nds
         {
             // Report Progress
             int progress = (++fileCount * 100) / maxFiles;
-            Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
-            vProgressStruct.newNode = null;
-            vProgressStruct.filename = pPath;
-            ReportProgress(progress, vProgressStruct);
+            this.progressStruct.Clear();
+            this.progressStruct.filename = pPath;
+            ReportProgress(progress, this.progressStruct);
          
             try
             {
@@ -123,10 +123,9 @@ namespace VGMToolbox.tools.nds
                     }
                     catch (Exception ex)
                     {
-                        vProgressStruct = new Constants.ProgressStruct();
-                        vProgressStruct.newNode = null;
-                        vProgressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message;
-                        ReportProgress(progress, vProgressStruct);                        
+                        this.progressStruct.Clear();
+                        this.progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message;
+                        ReportProgress(progress, this.progressStruct);                        
                     }
                 }
                 fs.Close();
@@ -134,10 +133,9 @@ namespace VGMToolbox.tools.nds
             }
             catch (Exception ex)
             {
-                vProgressStruct = new Constants.ProgressStruct();
-                vProgressStruct.newNode = null;
-                vProgressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message;
-                ReportProgress(progress, vProgressStruct);
+                this.progressStruct.Clear();
+                this.progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message;
+                ReportProgress(progress, this.progressStruct);
             }            
         }    
 

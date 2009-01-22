@@ -40,7 +40,7 @@
             // 
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(756, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(762, 24);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -54,8 +54,8 @@
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.tvMenuTree);
-            this.splitContainer1.Size = new System.Drawing.Size(756, 396);
-            this.splitContainer1.SplitterDistance = 215;
+            this.splitContainer1.Size = new System.Drawing.Size(762, 396);
+            this.splitContainer1.SplitterDistance = 216;
             this.splitContainer1.TabIndex = 2;
             // 
             // tvMenuTree
@@ -63,7 +63,7 @@
             this.tvMenuTree.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tvMenuTree.Location = new System.Drawing.Point(0, 0);
             this.tvMenuTree.Name = "tvMenuTree";
-            this.tvMenuTree.Size = new System.Drawing.Size(211, 392);
+            this.tvMenuTree.Size = new System.Drawing.Size(212, 392);
             this.tvMenuTree.TabIndex = 0;
             this.tvMenuTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvMenuTree_AfterSelect);
             // 
@@ -71,12 +71,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(756, 420);
+            this.ClientSize = new System.Drawing.Size(762, 420);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.MinimumSize = new System.Drawing.Size(764, 454);
+            this.MinimumSize = new System.Drawing.Size(770, 454);
             this.Name = "Form2";
             this.Text = "VGMToolbox v2.0";
             this.splitContainer1.Panel1.ResumeLayout(false);

@@ -14,9 +14,6 @@ namespace VGMToolbox.auditing
     class AuditingUtil
     {
         public const string ROM_SPACER = "  ";         // Simple spacer for formatting output lists
-
-        // public static readonly int IGNORE_PROGRESS = -1;
-        // public static readonly int PROGRESS_MSG_ONLY = -2;
      
         private Hashtable haveList = new Hashtable();   // Stores list of present files
         private Hashtable missList = new Hashtable();   // Stores list of missing files
@@ -26,7 +23,6 @@ namespace VGMToolbox.auditing
         private ArrayList unknownFiles = new ArrayList();
 
         public Hashtable ChecksumHash { get { return checksumHash; } }
-
 
         #region CONSTRUCTORS
         
@@ -55,16 +51,6 @@ namespace VGMToolbox.auditing
             public bool isFilePresent;
             public bool hasMultipleExtensions;
         }
-
-        /*
-        public struct ProgressStruct
-        {
-            public string filename;
-            public string errorMessage;
-            public string genericMessage;
-            public TreeNode newNode;
-        }
-        */
  
         #endregion
 
@@ -76,26 +62,26 @@ namespace VGMToolbox.auditing
         /// <returns>String list of all games and roms in the datafile.</returns>
         public string BuildDatafileList()
         {
-            string ret = "";
+            StringBuilder ret = new StringBuilder();
 
             foreach (game g in datafile.game)
             {
-                ret += buildGameList(g);
+                ret.Append(buildGameList(g));
             }
 
-            return ret;
+            return ret.ToString();
         }
 
         private string BuildDatafileList(datafile pDatafile)
         {
-            string ret = String.Empty;
+            StringBuilder ret = new StringBuilder();
 
             foreach (game g in pDatafile.game)
             {
-                ret += buildGameList(g);
+                ret.Append(buildGameList(g));
             }
 
-            return ret;
+            return ret.ToString();
         }
 
         /// <summary>
@@ -105,14 +91,15 @@ namespace VGMToolbox.auditing
         /// <returns>String list of the game name and all roms in the game.</returns>
         private string buildGameList(game pGame)
         {
-            string ret = System.Environment.NewLine + pGame.name + System.Environment.NewLine;
+            StringBuilder ret = new StringBuilder();
+            ret.Append(System.Environment.NewLine + pGame.name + System.Environment.NewLine);
 
             foreach (rom r in pGame.rom)
             {
-                ret += buildRomOutput(r);
+                ret.Append(buildRomOutput(r));
             }
 
-            return ret;
+            return ret.ToString();
         }
 
         /// <summary>

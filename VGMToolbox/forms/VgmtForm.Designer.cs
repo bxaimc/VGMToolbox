@@ -55,7 +55,7 @@
             this.toolStripProgressBar});
             this.statusStrip1.Location = new System.Drawing.Point(0, 371);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(533, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(539, 22);
             this.statusStrip1.TabIndex = 0;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -78,7 +78,7 @@
             this.pnlLabels.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pnlLabels.Location = new System.Drawing.Point(0, 352);
             this.pnlLabels.Name = "pnlLabels";
-            this.pnlLabels.Size = new System.Drawing.Size(533, 19);
+            this.pnlLabels.Size = new System.Drawing.Size(539, 19);
             this.pnlLabels.TabIndex = 1;
             // 
             // lblProgressLabel
@@ -113,7 +113,7 @@
             this.pnlTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.pnlTitle.Location = new System.Drawing.Point(0, 3);
             this.pnlTitle.Name = "pnlTitle";
-            this.pnlTitle.Size = new System.Drawing.Size(533, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(539, 20);
             this.pnlTitle.TabIndex = 3;
             // 
             // lblTitle
@@ -134,7 +134,7 @@
             this.tbOutput.Multiline = true;
             this.tbOutput.Name = "tbOutput";
             this.tbOutput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbOutput.Size = new System.Drawing.Size(533, 77);
+            this.tbOutput.Size = new System.Drawing.Size(539, 77);
             this.tbOutput.TabIndex = 2;
             // 
             // pnlButtons
@@ -144,14 +144,14 @@
             this.pnlButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pnlButtons.Location = new System.Drawing.Point(0, 255);
             this.pnlButtons.Name = "pnlButtons";
-            this.pnlButtons.Size = new System.Drawing.Size(533, 20);
+            this.pnlButtons.Size = new System.Drawing.Size(539, 20);
             this.pnlButtons.TabIndex = 4;
             // 
             // btnDoTask
             // 
             this.btnDoTask.AutoSize = true;
             this.btnDoTask.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnDoTask.Location = new System.Drawing.Point(413, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(419, 0);
             this.btnDoTask.Name = "btnDoTask";
             this.btnDoTask.Size = new System.Drawing.Size(60, 20);
             this.btnDoTask.TabIndex = 1;
@@ -161,7 +161,7 @@
             // btnCancel
             // 
             this.btnCancel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnCancel.Location = new System.Drawing.Point(473, 0);
+            this.btnCancel.Location = new System.Drawing.Point(479, 0);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(60, 20);
             this.btnCancel.TabIndex = 0;
@@ -176,7 +176,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(533, 393);
+            this.ClientSize = new System.Drawing.Size(539, 393);
             this.Controls.Add(this.pnlButtons);
             this.Controls.Add(this.pnlTitle);
             this.Controls.Add(this.tbOutput);

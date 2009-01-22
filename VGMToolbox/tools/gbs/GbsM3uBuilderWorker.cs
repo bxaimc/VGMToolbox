@@ -14,6 +14,7 @@ namespace VGMToolbox.tools.gbs
     {
         private int fileCount = 0;
         private int maxFiles = 0;
+        private Constants.ProgressStruct progressStruct;
 
         public struct GbsM3uBuilderStruct
         {
@@ -26,11 +27,11 @@ namespace VGMToolbox.tools.gbs
         {
             fileCount = 0;
             maxFiles = 0;
-            
+            progressStruct = new Constants.ProgressStruct();
+
             WorkerReportsProgress = true;
             WorkerSupportsCancellation = true;
         }
-
 
         private void buildM3uFiles(GbsM3uBuilderStruct pGbsM3uBuilderStruct, DoWorkEventArgs e)
         {
@@ -82,7 +83,6 @@ namespace VGMToolbox.tools.gbs
                 if (!CancellationPending)
                 {
                     this.buildM3uForFile(f, pOnePlaylistPerFile, e);
-                    // fileCount++;
                 }
                 else
                 {
@@ -96,10 +96,9 @@ namespace VGMToolbox.tools.gbs
         {
             // Report Progress
             int progress = (++fileCount * 100) / maxFiles;
-            Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
-            vProgressStruct.newNode = null;
-            vProgressStruct.filename = pPath;
-            ReportProgress(progress, vProgressStruct);
+            this.progressStruct.Clear();
+            this.progressStruct.filename = pPath;
+            ReportProgress(progress, this.progressStruct);
           
             try
             {
@@ -150,10 +149,9 @@ namespace VGMToolbox.tools.gbs
             }
             catch (Exception ex)
             {
-                vProgressStruct = new Constants.ProgressStruct();
-                vProgressStruct.newNode = null;
-                vProgressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message;
-                ReportProgress(progress, vProgressStruct);
+                this.progressStruct.Clear();
+                this.progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message;
+                ReportProgress(progress, this.progressStruct);
             }            
         }
 

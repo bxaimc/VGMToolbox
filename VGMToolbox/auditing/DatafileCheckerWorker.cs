@@ -14,7 +14,8 @@ namespace VGMToolbox.auditing
     {
         private int totalItems;
         private int maxItems;
-        
+        Constants.ProgressStruct progressStruct;
+
         public struct DatafileCheckerStruct
         {            
             public string datafilePath;
@@ -62,18 +63,21 @@ namespace VGMToolbox.auditing
         private void checkForDupes(AuditingUtil pAuditingUtil, StreamWriter pStreamwriter)
         {
             ArrayList keys = new ArrayList(pAuditingUtil.ChecksumHash.Keys);
+            int progress;
             
+            this.progressStruct = new Constants.ProgressStruct();
+
             foreach (string k in keys)
             {
-                int progress = (++totalItems * 100) / maxItems;
-                Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
-                vProgressStruct.filename = k;
-                ReportProgress(progress, vProgressStruct);
+                progress = (++totalItems * 100) / maxItems;
+                this.progressStruct.filename = k;
+                ReportProgress(progress, this.progressStruct);
                 
                 ArrayList gameList = (ArrayList)pAuditingUtil.ChecksumHash[k];
                 if (gameList.Count > 1)
                 {
                     pStreamwriter.Write(String.Format("Checksum: {0}", k) + Environment.NewLine);
+                    
                     foreach (AuditingUtil.ChecksumStruct cs in gameList)
                     {
                         pStreamwriter.Write(AuditingUtil.ROM_SPACER + cs.game + 

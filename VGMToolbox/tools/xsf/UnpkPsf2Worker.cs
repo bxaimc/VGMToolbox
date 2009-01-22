@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Windows.Forms;
 
 using VGMToolbox.format;
 using VGMToolbox.util;
@@ -15,8 +16,8 @@ namespace VGMToolbox.tools.xsf
         private int fileCount = 0;
         private int maxFiles = 0;
 
-        private readonly string PROGRAM_PATH = 
-            Path.Combine(Path.Combine(Path.Combine(".", "external"), "psf2"), "unpkpsf2.exe");
+        private readonly string PROGRAM_PATH =
+            Path.Combine(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "psf2"), "unpkpsf2.exe");
 
         public struct UnpkPsf2Struct
         {

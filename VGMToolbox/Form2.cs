@@ -360,8 +360,16 @@ namespace VGMToolbox
             TreeNode ext_RootNode = new TreeNode("Extraction Tools");
             ext_RootNode.NodeFont = this.treeviewBoldFont;
 
+            ///////
+            // NDS
+            ///////
             TreeNode ext_NdsNode = new TreeNode("Nintendo DS");
             ext_NdsNode.NodeFont = this.treeviewBoldFont;
+
+            nodeTag = new Constants.NodeTagStruct();
+            EmptyForm emptyForm = new EmptyForm();
+            nodeTag.formClass = emptyForm.GetType().Name;
+            ext_NdsNode.Tag = nodeTag;
 
             // SDAT Extractor
             TreeNode ext_SdatExtractorNode = new TreeNode("SDAT Extractor");            
@@ -374,13 +382,21 @@ namespace VGMToolbox
             nodeTag.formClass = xsf_SdatExtractorForm.GetType().Name;
             ext_SdatExtractorNode.Tag = nodeTag;
 
+            ///////
+            // PC
+            ///////
+            TreeNode ext_PcNode = new TreeNode("PC");
+            ext_PcNode.NodeFont = this.treeviewBoldFont;
+
             nodeTag = new Constants.NodeTagStruct();
-            EmptyForm emptyForm = new EmptyForm();
+            emptyForm = new EmptyForm();
             nodeTag.formClass = emptyForm.GetType().Name;
-            ext_NdsNode.Tag = nodeTag;
+            ext_PcNode.Tag = nodeTag;
+
 
             ext_NdsNode.Nodes.Add(ext_SdatExtractorNode);
             ext_RootNode.Nodes.Add(ext_NdsNode);
+            ext_RootNode.Nodes.Add(ext_PcNode);
 
             return ext_RootNode;
         }

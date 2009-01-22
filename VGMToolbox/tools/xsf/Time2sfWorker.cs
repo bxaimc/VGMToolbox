@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Forms;
 
 using VGMToolbox.format.sdat;
 using VGMToolbox.util;
@@ -13,10 +14,10 @@ namespace VGMToolbox.tools.xsf
 {
     class Time2sfWorker : BackgroundWorker
     {
-        private static readonly string SSEQ2MID_SOURCE_PATH = 
-            Path.Combine(Path.Combine(Path.Combine(".", "external"), "2sf"), "sseq2mid.exe");
+        private static readonly string SSEQ2MID_SOURCE_PATH =
+            Path.Combine(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "2sf"), "sseq2mid.exe");
         private static readonly string PSFPOINT_SOURCE_PATH =
-            Path.GetFullPath(Path.Combine(Path.Combine(".", "external"), "psfpoint.exe"));
+            Path.GetFullPath(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "psfpoint.exe"));
 
         private const string EMPTY_FILE_DIRECTORY = "Empty_Files";
 

@@ -13,6 +13,7 @@ namespace VGMToolbox.tools
     {
         private int fileCount = 0;
         private int maxFiles = 0;
+        private Constants.ProgressStruct progressStruct;
 
         public struct TreeBuilderStruct
         {
@@ -25,22 +26,24 @@ namespace VGMToolbox.tools
         {
             fileCount = 0;
             maxFiles = 0;
-            
+            progressStruct = new Constants.ProgressStruct();
+
             WorkerReportsProgress = true;
             WorkerSupportsCancellation = true;
         }
 
         private void buildTree(TreeBuilderStruct pTreeBuilderStruct, DoWorkEventArgs e)
         {
-            Constants.ProgressStruct vProgressStruct;
-            string examineOutputPath = "." + Path.DirectorySeparatorChar + "examine" + 
-                Path.DirectorySeparatorChar + "examine.txt";
+            TreeNode t;
+            string examineOutputPath =
+                Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "examine"), "examine.txt");
+            
             StreamWriter sw = null;
             sw = File.CreateText(examineOutputPath);
 
             foreach (string path in pTreeBuilderStruct.pPaths)
             {
-                TreeNode t = null;
+                t = null;
 
                 if (File.Exists(path))
                 {
@@ -80,9 +83,9 @@ namespace VGMToolbox.tools
                 }
                 
                 // Add node, but ignore progress
-                vProgressStruct = new Constants.ProgressStruct();
-                vProgressStruct.newNode = (TreeNode) t.Clone();
-                ReportProgress(Constants.IGNORE_PROGRESS, vProgressStruct);                
+                this.progressStruct.Clear();
+                this.progressStruct.newNode = (TreeNode)t.Clone();
+                ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);                
             }
 
             sw.Close();
@@ -92,11 +95,13 @@ namespace VGMToolbox.tools
         private void getDirectoryNode(string pDirectory, TreeNode pTreeNode, StreamWriter pOutputFileStream, 
             bool pCheckForLibs, DoWorkEventArgs e)
         {
+            TreeNode t;
+            
             foreach (string d in Directory.GetDirectories(pDirectory))
             {
                 if (!CancellationPending)
                 {
-                    TreeNode t = new TreeNode(Path.GetFileName(d));
+                    t = new TreeNode(Path.GetFileName(d));
                     this.getDirectoryNode(d, t, pOutputFileStream, pCheckForLibs, e);
                     pTreeNode.Nodes.Add(t);
 
@@ -111,11 +116,12 @@ namespace VGMToolbox.tools
                     break;
                 }
             }                        
+            
             foreach (string f in Directory.GetFiles(pDirectory))
             {
                 if (!CancellationPending)
                 {
-                    TreeNode t = this.getFileNode(f, pOutputFileStream, pCheckForLibs, e);
+                    t = this.getFileNode(f, pOutputFileStream, pCheckForLibs, e);
                     pTreeNode.Nodes.Add(t);
 
                     if (t.ForeColor == Color.Red)
@@ -135,13 +141,13 @@ namespace VGMToolbox.tools
             bool pCheckForLibs, DoWorkEventArgs e)
         {
             int progress = (++fileCount * 100) / maxFiles;
-            Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
-            vProgressStruct.newNode = null;
-            vProgressStruct.filename = pFileName;
-            ReportProgress(progress, vProgressStruct);
+            this.progressStruct.Clear();
+            this.progressStruct.filename = pFileName;
+            ReportProgress(progress, this.progressStruct);
 
             TreeNode ret = new TreeNode(Path.GetFileName(pFileName));            
             Constants.NodeTagStruct nodeTag = new Constants.NodeTagStruct();
+            TreeNode tagNode;
 
             using (FileStream fs = File.OpenRead(pFileName))
             {
@@ -171,10 +177,10 @@ namespace VGMToolbox.tools
                         }
 
                         char[] trimNull = new char[] { '\0' };
-
+                        
                         foreach (string s in tagHash.Keys)
                         {
-                            TreeNode tagNode = new TreeNode(s + ": " + tagHash[s]);
+                            tagNode = new TreeNode(s + ": " + tagHash[s]);
                             ret.Nodes.Add(tagNode);
 
                             pOutputFileStream.WriteLine(s + ": " + tagHash[s].TrimEnd(trimNull));
@@ -188,10 +194,9 @@ namespace VGMToolbox.tools
                 }
                 catch (Exception ex)
                 {
-                    vProgressStruct = new Constants.ProgressStruct();
-                    vProgressStruct.newNode = null;
-                    vProgressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pFileName) + ex.Message;
-                    ReportProgress(progress, vProgressStruct);
+                    this.progressStruct.Clear();
+                    this.progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pFileName) + ex.Message;
+                    ReportProgress(progress, this.progressStruct);
                 }
             } // using (FileStream fs = File.OpenRead(pFileName))
 

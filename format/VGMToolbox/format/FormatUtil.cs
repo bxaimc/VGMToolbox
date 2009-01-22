@@ -48,15 +48,19 @@ namespace VGMToolbox.format
 
 
             // Loop through classes checking interfaces
+            Object o;
+            IFormat format;
+            string fileExtension;
+            
             foreach (Type t in asmtypes)
             {
                 if (t.IsClass & t.GetInterface("IFormat") != null)
                 {
                     // Create and instance of this format
-                    Object o = asm.CreateInstance(t.FullName);
+                    o = asm.CreateInstance(t.FullName);
                     
                     // Set it to the Interface
-                    IFormat format = o as IFormat;
+                    format = o as IFormat;
 
 
                     if (format.GetAsciiSignature() != null)
@@ -72,7 +76,7 @@ namespace VGMToolbox.format
                     {
                         if (format.GetFileExtensions() != null)
                         {
-                            string fileExtension = Path.GetExtension(pFileStream.Name).ToUpper();
+                            fileExtension = Path.GetExtension(pFileStream.Name).ToUpper();
                             if (format.GetFileExtensions().Contains(fileExtension))
                             {
                                 ret = Type.GetType(t.FullName);
@@ -112,15 +116,19 @@ namespace VGMToolbox.format
 
 
             // Loop through classes checking interfaces
+            Object o;
+            IFormat format;
+            string fileExtension;
+
             foreach (Type t in asmtypes)
             {
                 if (t.IsClass & t.GetInterface("IEmbeddedTagsFormat") != null)
                 {
                     // Create and instance of this format
-                    Object o = asm.CreateInstance(t.FullName);
+                    o = asm.CreateInstance(t.FullName);
 
                     // Set it to the Interface
-                    IFormat format = o as IFormat;
+                    format = o as IFormat;
 
 
                     if (format.GetAsciiSignature() != null)
@@ -136,7 +144,7 @@ namespace VGMToolbox.format
                     {
                         if (format.GetFileExtensions() != null)
                         {
-                            string fileExtension = Path.GetExtension(pFileStream.Name).ToUpper();
+                            fileExtension = Path.GetExtension(pFileStream.Name).ToUpper();
                             if (format.GetFileExtensions().Contains(fileExtension))
                             {
                                 ret = Type.GetType(t.FullName);
@@ -175,15 +183,19 @@ namespace VGMToolbox.format
 
 
             // Loop through classes checking interfaces
+            Object o;
+            IHootFormat format;
+            string fileExtension;
+
             foreach (Type t in asmtypes)
             {
                 if (t.IsClass & t.GetInterface("IHootFormat") != null)
                 {
                     // Create and instance of this format
-                    Object o = asm.CreateInstance(t.FullName);
+                    o = asm.CreateInstance(t.FullName);
 
                     // Set it to the Interface
-                    IHootFormat format = o as IHootFormat;
+                    format = o as IHootFormat;
 
 
                     if (format.GetAsciiSignature() != null)
@@ -199,7 +211,7 @@ namespace VGMToolbox.format
                     {
                         if (format.GetFileExtensions() != null)
                         {
-                            string fileExtension = Path.GetExtension(pFileStream.Name).ToUpper();
+                            fileExtension = Path.GetExtension(pFileStream.Name).ToUpper();
                             if (format.GetFileExtensions().Contains(fileExtension))
                             {
                                 ret = Type.GetType(t.FullName);

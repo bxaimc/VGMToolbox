@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Windows.Forms;
 
 using VGMToolbox.util;
 
@@ -12,10 +13,10 @@ namespace mkpsf2fe
     class MkPsf2Worker : BackgroundWorker
     {
 
-        private readonly string WORKING_FOLDER = Path.Combine(".", "working");
-        private readonly string MODULES_FOLDER = Path.Combine(".", "modules");
-        private readonly string PROGRAMS_FOLDER = Path.Combine(".", "programs");
-        private readonly string OUTPUT_FOLDER = Path.Combine(".", "psf2s");
+        private readonly string WORKING_FOLDER = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "working");
+        private readonly string MODULES_FOLDER = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "modules");
+        private readonly string PROGRAMS_FOLDER = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "programs");
+        private readonly string OUTPUT_FOLDER = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "psf2s");
         
         private int fileCount = 0;
         private int maxFiles = 0;
@@ -106,7 +107,7 @@ namespace mkpsf2fe
             Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
 
             string makePsf2SourcePath = Path.Combine(PROGRAMS_FOLDER, "mkpsf2.exe");
-            string makePsf2DestinationPath = Path.Combine(".", "mkpsf2.exe");
+            string makePsf2DestinationPath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "mkpsf2.exe");
 
             try
             {

@@ -17,6 +17,14 @@ namespace VGMToolbox.util
             public string errorMessage;
             public string genericMessage;
             public TreeNode newNode;
+
+            public void Clear()
+            {
+                filename = String.Empty;
+                errorMessage = String.Empty;
+                genericMessage = String.Empty;
+                newNode = null;
+            }
         }    
 
         // Node Tags

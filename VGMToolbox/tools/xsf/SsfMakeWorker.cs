@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Windows.Forms;
 
 using VGMToolbox.util;
 
@@ -12,26 +13,26 @@ namespace VGMToolbox.tools.xsf
     class SsfMakeWorker : BackgroundWorker
     {
         private static readonly string SSFMAKE_FOLDER_PATH =
-            Path.GetFullPath(Path.Combine(Path.Combine(Path.Combine(".", "external"), "ssf"), "ssfmake"));
+            Path.GetFullPath(Path.Combine(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "ssf"), "ssfmake"));
         private static readonly string SSFMAKE_SOURCE_PATH = Path.Combine(SSFMAKE_FOLDER_PATH, "ssfmake.py");
 
         private static readonly string SSFINFO_FOLDER_PATH =
-            Path.GetFullPath(Path.Combine(Path.Combine(Path.Combine(".", "external"), "ssf"), "ssfinfo"));
+            Path.GetFullPath(Path.Combine(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "ssf"), "ssfinfo"));
         private static readonly string SSFINFO_SOURCE_PATH = Path.Combine(SSFINFO_FOLDER_PATH, "ssfinfo.py");
 
 
         private static readonly string WORKING_FOLDER =
-            Path.GetFullPath(Path.Combine(".", "working_ssf"));
+            Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "working_ssf"));
         private static readonly string SSFMAKE_DESTINATION_PATH =
             Path.Combine(WORKING_FOLDER, "ssfmake.py");
         private static readonly string SSFINFO_DESTINATION_PATH =
             Path.Combine(WORKING_FOLDER, "ssfinfo.py");
         private static readonly string BIN2PSF_SOURCE_PATH =
-            Path.GetFullPath(Path.Combine(Path.Combine(".", "external"), "bin2psf.exe"));
+            Path.GetFullPath(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "bin2psf.exe"));
         private static readonly string BIN2PSF_DESTINATION_PATH =
             Path.GetFullPath(Path.Combine(WORKING_FOLDER, "bin2psf.exe"));        
         private static readonly string PSFPOINT_SOURCE_PATH =
-            Path.GetFullPath(Path.Combine(Path.Combine(".", "external"), "psfpoint.exe"));
+            Path.GetFullPath(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "psfpoint.exe"));
         private static readonly string PSFPOINT_DESTINATION_PATH =
             Path.GetFullPath(Path.Combine(WORKING_FOLDER, "psfpoint.exe"));
 

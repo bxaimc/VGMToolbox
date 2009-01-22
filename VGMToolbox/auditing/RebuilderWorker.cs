@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 
@@ -9,7 +8,6 @@ using ICSharpCode.SharpZipLib.Zip;
 
 using VGMToolbox.format;
 using VGMToolbox.util;
-using VGMToolbox.util.ObjectPooling;
 
 namespace VGMToolbox.auditing
 {
@@ -20,6 +18,7 @@ namespace VGMToolbox.auditing
         private ArrayList tempDirsForDeletion = new ArrayList();
         private int fileCount = 0;
         private int maxFiles = 0;
+        private Constants.ProgressStruct progressStruct;
 
         public struct RebuildSetsStruct
         { 
@@ -37,6 +36,7 @@ namespace VGMToolbox.auditing
         {
             fileCount = 0;
             maxFiles = 0;
+            progressStruct = new Constants.ProgressStruct();
 
             WorkerReportsProgress = true;
             WorkerSupportsCancellation = true;
@@ -73,14 +73,20 @@ namespace VGMToolbox.auditing
             byte[] data = new byte[4096];
             string pZipFilePath = String.Empty;
 
+            string filePath;
+            string path;
+            string destinationPath = String.Empty;
+            string searchPattern;
+            
+            // ZipEntry tempZipEntry;
+            ZipFile zf;
+
             try
             {
                 foreach (AuditingUtil.ChecksumStruct cs in pDestinationFiles)
                 {
-                    string filePath = buildFilePath(cs.game, Path.ChangeExtension(cs.rom, Path.GetExtension(pSourceFile.Name)));
-                    string path = pDestination + filePath.Substring(0, filePath.LastIndexOf(Path.DirectorySeparatorChar));
-                    string destinationPath = String.Empty;
-                    string searchPattern;
+                    filePath = buildFilePath(cs.game, Path.ChangeExtension(cs.rom, Path.GetExtension(pSourceFile.Name)));
+                    path = pDestination + filePath.Substring(0, filePath.LastIndexOf(Path.DirectorySeparatorChar));
 
                     if (hasMultipleExtensions)
                     {
@@ -91,14 +97,13 @@ namespace VGMToolbox.auditing
                         searchPattern = Path.GetFileName(cs.rom);
                     }
                     
-                    ZipEntry tempZipEntry = null;
+                    // tempZipEntry = null;
 
                     if (pCompressOutput)
                     {
                         pZipFilePath = pDestination + cs.game + ".zip";
                         pSourceFile.Seek(0, SeekOrigin.Begin);
 
-                        ZipFile zf;
                         if (File.Exists(pZipFilePath))
                         {
                             zf = new ZipFile(pZipFilePath);
@@ -149,14 +154,14 @@ namespace VGMToolbox.auditing
                             streamWriter.Dispose();
                         }
                     }
-                }
+                } // foreach (AuditingUtil.ChecksumStruct cs in pDestinationFiles)
             }
             catch (Exception exception)
             {
-                Constants.ProgressStruct exProgressStruct = new Constants.ProgressStruct();
-                exProgressStruct.filename = pSourceName;
-                exProgressStruct.errorMessage = "Error processing <" + pSourceName + "> " + exception.Message;
-                ReportProgress(Constants.IGNORE_PROGRESS, exProgressStruct);
+                this.progressStruct.Clear();
+                this.progressStruct.filename = pSourceName;
+                this.progressStruct.errorMessage = "Error processing <" + pSourceName + "> " + exception.Message;
+                ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
 
             }
         }
@@ -235,10 +240,10 @@ namespace VGMToolbox.auditing
                     }
                     catch (EndOfStreamException e)
                     {
-                        Constants.ProgressStruct exProgressStruct = new Constants.ProgressStruct();
-                        exProgressStruct.filename = pFilePath;
-                        exProgressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
-                        ReportProgress(Constants.IGNORE_PROGRESS, exProgressStruct);
+                        this.progressStruct.Clear();
+                        this.progressStruct.filename = pFilePath;
+                        this.progressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
+                        ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
 
                         crc32Generator.Reset();
                         // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
@@ -247,10 +252,10 @@ namespace VGMToolbox.auditing
                     }
                     catch (System.OutOfMemoryException e)
                     {
-                        Constants.ProgressStruct exProgressStruct = new Constants.ProgressStruct();
-                        exProgressStruct.filename = pFilePath;
-                        exProgressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
-                        ReportProgress(Constants.IGNORE_PROGRESS, exProgressStruct);
+                        this.progressStruct.Clear();
+                        this.progressStruct.filename = pFilePath;
+                        this.progressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
+                        ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
 
                         crc32Generator.Reset();
                         // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
@@ -259,10 +264,10 @@ namespace VGMToolbox.auditing
                     }
                     catch (IOException e)
                     {
-                        Constants.ProgressStruct exProgressStruct = new Constants.ProgressStruct();
-                        exProgressStruct.filename = pFilePath;
-                        exProgressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
-                        ReportProgress(Constants.IGNORE_PROGRESS, exProgressStruct);
+                        this.progressStruct.Clear();
+                        this.progressStruct.filename = pFilePath;
+                        this.progressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
+                        ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
 
                         crc32Generator.Reset();
                         // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
@@ -331,6 +336,9 @@ namespace VGMToolbox.auditing
         private void rebuildSets(RebuildSetsStruct pRebuildSetsStruct, AuditingUtil pAuditingUtil,
             uint pDepth, DoWorkEventArgs e)
         {
+            int progress;
+            RebuildSetsStruct subdirRebuildSetsStruct;
+            
             try
             {
                 if (pDepth++ == 0)
@@ -346,10 +354,10 @@ namespace VGMToolbox.auditing
                         {
                             this.rebuildFile(f, pRebuildSetsStruct, pAuditingUtil, e);
                             
-                            int progress = (++fileCount * 100) / maxFiles;
-                            Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
-                            vProgressStruct.filename = f;
-                            ReportProgress(progress, vProgressStruct);
+                            progress = (++fileCount * 100) / maxFiles;
+                            this.progressStruct.Clear();
+                            this.progressStruct.filename = f;
+                            ReportProgress(progress, this.progressStruct);
                         }
                         else
                         {
@@ -357,7 +365,7 @@ namespace VGMToolbox.auditing
                             doCancelCleanup(pAuditingUtil, pRebuildSetsStruct.pDestinationDir);
                             return;
                         }
-                    }
+                    } // foreach (string f in Directory.GetFiles(pRebuildSetsStruct.pSourceDir))
                     if (!CancellationPending)
                     {
                         this.deleteQueuedLibFiles();
@@ -379,17 +387,17 @@ namespace VGMToolbox.auditing
                                 {
                                     this.rebuildFile(f, pRebuildSetsStruct, pAuditingUtil, e);                                    
                                     
-                                    int progress = (++fileCount * 100) / maxFiles;
-                                    Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
-                                    vProgressStruct.filename = f;
-                                    ReportProgress(progress, vProgressStruct);
+                                    progress = (++fileCount * 100) / maxFiles;
+                                    this.progressStruct.Clear();
+                                    this.progressStruct.filename = f;
+                                    ReportProgress(progress, this.progressStruct);
                                 }
                                 catch (Exception ex)
                                 {
-                                    Constants.ProgressStruct exProgressStruct = new Constants.ProgressStruct();
-                                    exProgressStruct.filename = f;
-                                    exProgressStruct.errorMessage = "[" + f + "] " + ex.Message;
-                                    ReportProgress(Constants.IGNORE_PROGRESS, exProgressStruct);
+                                    this.progressStruct.Clear();
+                                    this.progressStruct.filename = f;
+                                    this.progressStruct.errorMessage = "[" + f + "] " + ex.Message;
+                                    ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
                                 }
                             }
                             else
@@ -402,7 +410,9 @@ namespace VGMToolbox.auditing
 
                         if (!CancellationPending)
                         {
-                            RebuildSetsStruct subdirRebuildSetsStruct = pRebuildSetsStruct;
+
+                            // RebuildSetsStruct subdirRebuildSetsStruct = pRebuildSetsStruct;
+                            subdirRebuildSetsStruct = pRebuildSetsStruct;                            
                             subdirRebuildSetsStruct.pSourceDir = d;
                             this.rebuildSets(subdirRebuildSetsStruct, pAuditingUtil, pDepth, e);
 
@@ -433,10 +443,10 @@ namespace VGMToolbox.auditing
             }
             catch (Exception exception2)
             {
-                Constants.ProgressStruct exProgressStruct = new Constants.ProgressStruct();
-                exProgressStruct.filename = null;
-                exProgressStruct.errorMessage = exception2.Message;
-                ReportProgress(Constants.IGNORE_PROGRESS, exProgressStruct);
+                this.progressStruct.Clear();
+                this.progressStruct.filename = null;
+                this.progressStruct.errorMessage = exception2.Message;
+                ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
             }
         }
 

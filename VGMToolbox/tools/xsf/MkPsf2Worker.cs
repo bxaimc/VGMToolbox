@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Windows.Forms;
 
 using VGMToolbox.util;
 
@@ -14,14 +15,14 @@ namespace VGMToolbox.tools.xsf
     {
         private const int NO_SEQ_NUM_FOUND = -1;
 
-        private readonly string WORKING_FOLDER = 
-            Path.GetFullPath(Path.Combine(".", "working_psf2"));
-        private readonly string MODULES_FOLDER = 
-            Path.GetFullPath(Path.Combine(Path.Combine(Path.Combine(".", "external"), "psf2"), "modules"));
-        private readonly string PROGRAMS_FOLDER = 
-            Path.GetFullPath(Path.Combine(Path.Combine(".", "external"), "psf2"));
-        private readonly string OUTPUT_FOLDER = 
-            Path.GetFullPath(Path.Combine(Path.Combine(".", "rips"), "psf2s"));
+        private readonly string WORKING_FOLDER =
+            Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "working_psf2"));
+        private readonly string MODULES_FOLDER =
+            Path.GetFullPath(Path.Combine(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "psf2"), "modules"));
+        private readonly string PROGRAMS_FOLDER =
+            Path.GetFullPath(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "psf2"));
+        private readonly string OUTPUT_FOLDER =
+            Path.GetFullPath(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "rips"), "psf2s"));
 
         private const long PSF2_CSL_SEQ_COUNT_OFFSET = 0x3C;
         private const long PSF2_CSL_SEQ_OFFSET_BEGIN = 0x40;
@@ -117,7 +118,7 @@ namespace VGMToolbox.tools.xsf
             Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
 
             string makePsf2SourcePath = Path.Combine(PROGRAMS_FOLDER, "mkpsf2.exe");
-            string makePsf2DestinationPath = Path.Combine(".", "mkpsf2.exe");
+            string makePsf2DestinationPath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "mkpsf2.exe");
 
             try
             {

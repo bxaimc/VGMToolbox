@@ -52,7 +52,7 @@ namespace VGMToolbox.forms
             TreeBuilderWorker.TreeBuilderStruct tbStruct = new TreeBuilderWorker.TreeBuilderStruct();
             tbStruct.pPaths = s;
             tbStruct.totalFiles = totalFileCount;
-            // tbStruct.checkForLibs = cbCheckForLibs.Checked;
+            tbStruct.checkForLibs = cbCheckForLibs.Checked;
 
             treeBuilder = new TreeBuilderWorker();
             treeBuilder.ProgressChanged += backgroundWorker_ReportProgress;

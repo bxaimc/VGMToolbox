@@ -248,6 +248,10 @@
       <DependentUpon>Gbs_GbsToM3uForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="forms\Hoot_CsvDatafileForm.resx">
+      <DependentUpon>Hoot_CsvDatafileForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="forms\Hoot_XmlBuilderForm.resx">
       <DependentUpon>Hoot_XmlBuilderForm.cs</DependentUpon>
       <SubType>Designer</SubType>
