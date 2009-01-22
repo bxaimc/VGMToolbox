@@ -28,31 +28,29 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.cbCheckForLibs = new System.Windows.Forms.CheckBox();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // treeViewTools
             // 
             this.treeViewTools.LineColor = System.Drawing.Color.Black;
+            this.treeViewTools.Size = new System.Drawing.Size(868, 194);
             this.treeViewTools.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbXsfSource_DragDrop);
             this.treeViewTools.DragEnter += new System.Windows.Forms.DragEventHandler(this.doDragEnter);
             // 
-            // pnlLabels
+            // splitContainer1
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 472);
             // 
-            // tbOutput
+            // splitContainer1.Panel2
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 395);
-            // 
-            // pnlButtons
-            // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 375);
+            this.splitContainer1.Panel2.Controls.Add(this.cbCheckForLibs);
+            this.splitContainer1.SplitterDistance = 194;
             // 
             // btnCancel
             // 
@@ -62,24 +60,15 @@
             // 
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.cbCheckForLibs);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox1.Location = new System.Drawing.Point(0, 209);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(777, 44);
-            this.groupBox1.TabIndex = 8;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Options";
-            // 
             // cbCheckForLibs
             // 
             this.cbCheckForLibs.AutoSize = true;
-            this.cbCheckForLibs.Location = new System.Drawing.Point(6, 19);
+            this.cbCheckForLibs.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cbCheckForLibs.Location = new System.Drawing.Point(0, 0);
             this.cbCheckForLibs.Name = "cbCheckForLibs";
-            this.cbCheckForLibs.Size = new System.Drawing.Size(171, 17);
-            this.cbCheckForLibs.TabIndex = 0;
+            this.cbCheckForLibs.Padding = new System.Windows.Forms.Padding(5);
+            this.cbCheckForLibs.Size = new System.Drawing.Size(868, 27);
+            this.cbCheckForLibs.TabIndex = 1;
             this.cbCheckForLibs.Text = "Check for Missing Library Files ";
             this.cbCheckForLibs.UseVisualStyleBackColor = true;
             // 
@@ -87,24 +76,19 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(777, 513);
-            this.Controls.Add(this.groupBox1);
+            this.ClientSize = new System.Drawing.Size(868, 528);
             this.Name = "Examine_TagViewerForm";
             this.Text = "Examine_TagViewerForm";
-            this.Controls.SetChildIndex(this.pnlLabels, 0);
-            this.Controls.SetChildIndex(this.tbOutput, 0);
-            this.Controls.SetChildIndex(this.pnlTitle, 0);
-            this.Controls.SetChildIndex(this.pnlButtons, 0);
-            this.Controls.SetChildIndex(this.treeViewTools, 0);
-            this.Controls.SetChildIndex(this.groupBox1, 0);
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            this.splitContainer1.Panel2.PerformLayout();
+            this.splitContainer1.ResumeLayout(false);
             this.pnlLabels.ResumeLayout(false);
             this.pnlLabels.PerformLayout();
             this.pnlTitle.ResumeLayout(false);
             this.pnlTitle.PerformLayout();
             this.pnlButtons.ResumeLayout(false);
             this.pnlButtons.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -112,8 +96,9 @@
 
         #endregion
 
-        private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.CheckBox cbCheckForLibs;
+
+
 
     }
 }
