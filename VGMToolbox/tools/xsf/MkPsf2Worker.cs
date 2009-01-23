@@ -36,7 +36,8 @@ namespace VGMToolbox.tools.xsf
         {
             public string sourcePath;
             public string modulePath;
-            
+            public string outputFolder;
+
             public string tickInterval;
             public string reverb;
             public string depth;
@@ -250,12 +251,12 @@ namespace VGMToolbox.tools.xsf
                                             Environment.NewLine;
                                         ReportProgress(Constants.PROGRESS_MSG_ONLY, vProgressStruct);
 
-                                        if (!Directory.Exists(OUTPUT_FOLDER))
+                                        if (!Directory.Exists(Path.Combine(OUTPUT_FOLDER, pMkPsf2Struct.outputFolder)))
                                         {
-                                            Directory.CreateDirectory(OUTPUT_FOLDER);
+                                            Directory.CreateDirectory(Path.Combine(OUTPUT_FOLDER, pMkPsf2Struct.outputFolder));
                                         }
 
-                                        File.Move(outputFilePrefix + ".psf2", Path.Combine(OUTPUT_FOLDER, outputFilePrefix + ".psf2"));
+                                        File.Move(outputFilePrefix + ".psf2", Path.Combine(Path.Combine(OUTPUT_FOLDER, pMkPsf2Struct.outputFolder), outputFilePrefix + ".psf2"));
                                     }
 
                                     File.Delete(iniPath);
@@ -323,8 +324,11 @@ namespace VGMToolbox.tools.xsf
 
             using (FileStream fs = File.OpenRead(Path.GetFullPath(pFileName)))
             {
-                byte[] seqNumberBytes = ParseFile.parseSimpleOffset(fs, seqOffset, 1);
-                ret = seqNumberBytes[0] > 0? seqNumberBytes[0] : 1;
+                // byte[] seqNumberBytes = ParseFile.parseSimpleOffset(fs, seqOffset, 1);
+                byte[] seqNumberBytes = ParseFile.parseSimpleOffset(fs, seqOffset, 4);
+                ret = System.BitConverter.ToInt32(seqNumberBytes, 0);
+
+                ret = ret > 0 ? ret : 1;
 
                 this.buildValidSequenceArray(fs, ret);
 

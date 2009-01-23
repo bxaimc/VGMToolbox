@@ -32,6 +32,7 @@ namespace VGMToolbox.forms
             MkPsf2Worker.MkPsf2Struct mkStruct = new MkPsf2Worker.MkPsf2Struct();
             mkStruct.sourcePath = tbSourceDirectory.Text;
             mkStruct.modulePath = tbModulesDirectory.Text;
+            mkStruct.outputFolder = tbOutputFolderName.Text;
 
             mkStruct.depth = tbDepth.Text;
             mkStruct.reverb = tbReverb.Text;
