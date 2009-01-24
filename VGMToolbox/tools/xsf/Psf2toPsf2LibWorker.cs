@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
 
@@ -38,15 +39,25 @@ namespace VGMToolbox.tools.xsf
         private static readonly string PSF2_RIPS_FOLDER =
             Path.GetFullPath(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "rips"), "psf2s"));
 
+        private const string BD_HASH_KEY = "BD";
+        private const string HD_HASH_KEY = "HD";
+        private const string SQ_HASH_KEY = "SQ";
+
         Constants.ProgressStruct progressStruct;
         private int fileCount;
         private int maxFiles;
+        private Dictionary<string, Dictionary<string, string>> fileNameHash;
+
 
         public Psf2toPsf2LibWorker()
         {
             fileCount = 0;
             maxFiles = 0;
-            
+            fileNameHash = new Dictionary<string, Dictionary<string, string>>();
+            fileNameHash.Add(BD_HASH_KEY, new Dictionary<string, string>());
+            fileNameHash.Add(HD_HASH_KEY, new Dictionary<string, string>());
+            fileNameHash.Add(SQ_HASH_KEY, new Dictionary<string, string>());
+
             WorkerReportsProgress = true;
             WorkerSupportsCancellation = true;
         }
@@ -222,17 +233,17 @@ namespace VGMToolbox.tools.xsf
 
                 if (fileName.Equals(Path.GetFileName(psf2IniStruct.BdFileName))) 
                 {
-                    psf2IniStruct.BdFileName = this.getChecksumString(f) + fileExtension;
+                    psf2IniStruct.BdFileName = this.getFileNameForChecksum(f, BD_HASH_KEY) + fileExtension;
                     fileDestinationPath = Path.Combine(pDestinationDirectory, psf2IniStruct.BdFileName);
                 }
                 else if (fileName.Equals(Path.GetFileName(psf2IniStruct.HdFileName))) 
                 {
-                    psf2IniStruct.HdFileName = this.getChecksumString(f) + fileExtension;
+                    psf2IniStruct.HdFileName = this.getFileNameForChecksum(f, HD_HASH_KEY) + fileExtension;
                     fileDestinationPath = Path.Combine(pDestinationDirectory, psf2IniStruct.HdFileName);
                 }
                 else if (fileName.Equals(Path.GetFileName(psf2IniStruct.SqFileName))) 
                 {
-                    psf2IniStruct.SqFileName = this.getChecksumString(f) + fileExtension;
+                    psf2IniStruct.SqFileName = this.getFileNameForChecksum(f, SQ_HASH_KEY) + fileExtension;
                     fileDestinationPath = Path.Combine(pDestinationDirectory, psf2IniStruct.SqFileName);
                 }
                 else if (fileExtension != ".INI")
@@ -483,19 +494,29 @@ namespace VGMToolbox.tools.xsf
             }
         }
 
-        private string getChecksumString(string pFileName)
+        private string getFileNameForChecksum(string pFileName, string pHashKey)
         {
+            string checksumKey;
+            string newFileName;
             string ret;
-            Crc32 crc32Generator = new Crc32();
             
-            crc32Generator.Reset();
             using (FileStream fs = File.OpenRead(pFileName))
             {
-                ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
-                fs.Close();
+                checksumKey = String.Format("{0}_{1}_{2}", ParseFile.GetCrc32OfFullFile(fs), ParseFile.GetMd5OfFullFile(fs),
+                    ParseFile.GetSha1OfFullFile(fs));
             }
 
-            ret = crc32Generator.Value.ToString("X8");
+            if (this.fileNameHash[pHashKey].ContainsKey(checksumKey))
+            {
+                ret = this.fileNameHash[pHashKey][checksumKey];
+            }
+            else
+            {
+                newFileName = this.fileNameHash[pHashKey].Count.ToString("X8");
+                this.fileNameHash[pHashKey].Add(checksumKey, newFileName);
+                ret = newFileName;
+            }
+            
             return ret;
         }
 

@@ -7,6 +7,9 @@ namespace VGMToolbox.util
 {
     public class Constants
     {
+        public const int FILE_READ_CHUNK_SIZE = 71680;
+        
+        
         // Progress Bar items
         public static readonly int IGNORE_PROGRESS = -1;
         public static readonly int PROGRESS_MSG_ONLY = -2;

@@ -278,6 +278,58 @@ namespace VGMToolbox.util
             }
         }
 
+        public static string ByteArrayToString(byte[] pBytes)
+        {
+            StringBuilder sBuilder = new StringBuilder();
+
+            // Loop through each byte of the hashed data 
+            // and format each one as a hexadecimal string.
+            for (int i = 0; i < pBytes.Length; i++)
+            {
+                sBuilder.Append(pBytes[i].ToString("X2"));
+            }
+
+            return sBuilder.ToString();
+        }
+
+        public static string GetCrc32OfFullFile(FileStream pFileStream)
+        {
+            Crc32 crc32Generator = new Crc32();            
+            
+            long remaining = pFileStream.Length;
+            byte[] data = new byte[Constants.FILE_READ_CHUNK_SIZE];
+            int read;
+
+            pFileStream.Seek(0, SeekOrigin.Begin);
+            crc32Generator.Reset();
+
+            while ((read = pFileStream.Read(data, 0, data.Length)) > 0)
+            {
+                crc32Generator.Update(data, 0, read);
+            }
+
+            return crc32Generator.Value.ToString("X8");
+        }
+
+        public static string GetMd5OfFullFile(FileStream pFileStream)
+        {
+            MD5CryptoServiceProvider md5Hash = new MD5CryptoServiceProvider();
+
+            pFileStream.Seek(0, SeekOrigin.Begin);
+            md5Hash.ComputeHash(pFileStream);
+            return ByteArrayToString(md5Hash.Hash);
+        }
+
+
+        public static string GetSha1OfFullFile(FileStream pFileStream)
+        {
+            SHA1CryptoServiceProvider sha1Hash = new SHA1CryptoServiceProvider();
+
+            pFileStream.Seek(0, SeekOrigin.Begin);
+            sha1Hash.ComputeHash(pFileStream);
+            return ByteArrayToString(sha1Hash.Hash);
+        }
+
         public static void UpdateTextField(string pFilePath, string pFieldValue, int pOffset,
             int pMaxLength)
         {
