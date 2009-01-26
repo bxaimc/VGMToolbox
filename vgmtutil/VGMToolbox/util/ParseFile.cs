@@ -13,6 +13,8 @@ namespace VGMToolbox.util
 {
     public class ParseFile
     {
+        public static int MAX_BUFFER_SIZE = 70000;
+        
         public static byte[] parseSimpleOffset(byte[] pBytes, int pOffset, int pLength)
         {
             byte[] ret = new byte[pLength];
@@ -128,11 +130,73 @@ namespace VGMToolbox.util
             return ret;
         }
 
+        public static long GetNextOffset(Stream pStream, long pOffset, byte[] pSearchBytes)
+        {
+            long initialStreamPosition = pStream.Position;
+
+            bool itemFound = false;
+            long absoluteOffset = pOffset;
+            long relativeOffset;
+            byte[] checkBytes = new byte[MAX_BUFFER_SIZE];
+            byte[] compareBytes;
+
+            long ret = -1;
+
+            while (!itemFound && (absoluteOffset < pStream.Length))
+            {
+                pStream.Position = absoluteOffset;
+                pStream.Read(checkBytes, 0, MAX_BUFFER_SIZE);
+                relativeOffset = 0;
+
+                while (!itemFound && (relativeOffset < MAX_BUFFER_SIZE))
+                {
+                    if ((relativeOffset + pSearchBytes.Length) < checkBytes.Length)
+                    {
+                        compareBytes = new byte[pSearchBytes.Length];
+                        Array.Copy(checkBytes, relativeOffset,
+                            compareBytes, 0, pSearchBytes.Length);
+
+                        if (CompareSegment(compareBytes, 0, pSearchBytes))
+                        {
+                            itemFound = true;
+                            ret = absoluteOffset + relativeOffset;
+                            break;
+                        }
+                    }
+                    relativeOffset++;
+                }
+
+                absoluteOffset += (MAX_BUFFER_SIZE - pSearchBytes.Length);
+            }
+
+            // return stream to incoming position
+            pStream.Position = initialStreamPosition;
+
+            return ret;
+        }
+
         public static bool CompareSegment(byte[] pBytes, int pOffset, byte[] pTarget)
         {
             Boolean ret = true;
             uint j = 0;
             for (int i = pOffset; i < pTarget.Length; i++)
+            {
+                if (pBytes[i] != pTarget[j])
+                {
+                    ret = false;
+                    break;
+                }
+                j++;
+            }
+
+            return ret;
+        }
+
+        public static bool CompareSegment(byte[] pBytes, long pOffset, byte[] pTarget)
+        {
+            Boolean ret = true;
+            uint j = 0;
+            for (long i = pOffset; i < pTarget.Length; i++)
             {
                 if (pBytes[i] != pTarget[j])
                 {
