@@ -22,7 +22,7 @@ namespace sdatext
             // get file path and check it exists
             Console.WriteLine("Checking if file exists.");
             
-            filePath = args[0];
+            filePath = Path.GetFullPath(args[0]);
 
             if (!File.Exists(filePath))
             {

@@ -354,7 +354,8 @@ namespace VGMToolbox.format.sdat
                     int fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
 
                     // get filename, if exists                                
-                    if ((symbSection != null) && (i < symbSection.SymbSeqFileNames.Length))
+                    if ((symbSection != null) && (i < symbSection.SymbSeqFileNames.Length) && 
+                        (!String.IsNullOrEmpty(symbSection.SymbSeqFileNames[i])))
                     {
                         fileName = symbSection.SymbSeqFileNames[i] + ".sseq";
                     }
@@ -411,7 +412,8 @@ namespace VGMToolbox.format.sdat
                     int fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
 
                     // get filename, if exists                                
-                    if ((symbSection != null) && (i < symbSection.SymbStrmFileNames.Length))
+                    if ((symbSection != null) && (i < symbSection.SymbStrmFileNames.Length) &&
+                        (!String.IsNullOrEmpty(symbSection.SymbStrmFileNames[i])))
                     {
                         fileName = symbSection.SymbStrmFileNames[i] + ".strm";
                     }
@@ -464,6 +466,8 @@ namespace VGMToolbox.format.sdat
         private void buildSmapSeq(string pOutputPath, string pFilePrefix)
         {            
             string smapFileName = pFilePrefix + ".smap";
+            string fileName;
+            int fileId;
             StreamWriter sw = File.CreateText(Path.Combine(pOutputPath, smapFileName));
 
             sw.WriteLine(@"# SEQ:");
@@ -477,7 +481,20 @@ namespace VGMToolbox.format.sdat
 
                 if (s.fileId != null)
                 {
-                    lineOut += "  " + symbSection.SymbSeqFileNames[i].PadRight(26).Substring(0, 26);
+                    fileId = BitConverter.ToInt16(s.fileId, 0);
+                    
+                    // get filename, if exists                                
+                    if ((symbSection != null) && (i < symbSection.SymbSeqFileNames.Length) &&
+                        (!String.IsNullOrEmpty(symbSection.SymbSeqFileNames[i])))
+                    {
+                        fileName = symbSection.SymbSeqFileNames[i] + ".sseq";
+                    }
+                    else
+                    {
+                        fileName = String.Format("SSEQ{0}.sseq", fileId.ToString("X4"));
+                    }
+
+                    lineOut += "  " + fileName.PadRight(26).Substring(0, 26);
                     lineOut += i.ToString().PadLeft(6);
                     lineOut += BitConverter.ToInt16(s.fileId, 0).ToString().PadLeft(7);
                     lineOut += BitConverter.ToInt16(s.bnk, 0).ToString().PadLeft(4);
@@ -488,7 +505,7 @@ namespace VGMToolbox.format.sdat
 
                     lineOut += " ".PadLeft(11); // hsize?
                     lineOut += BitConverter.ToInt32(fatSection.SdatFatRecs[BitConverter.ToInt16(s.fileId, 0)].nSize, 0).ToString().PadLeft(11);
-                    lineOut += @" \seq\" + symbSection.SymbSeqFileNames[i] + ".sseq";
+                    lineOut += @" \seq\" + fileName;
                 }
                 else
                 {
