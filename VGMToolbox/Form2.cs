@@ -246,20 +246,11 @@ namespace VGMToolbox
         private TreeNode buildXsfTreeNode()
         {
             Constants.NodeTagStruct nodeTag = new Constants.NodeTagStruct();
+            EmptyForm emptyForm = new EmptyForm();
             TreeNode xsf_RootNode = new TreeNode("xSF Tools");
-            
-            ///////////
-            // XSF2EXE
-            ///////////
-            TreeNode xsf_xsf2ExeNode = new TreeNode("xSF2EXE");
-            
-            // Add Xsf2Exe Form
-            Xsf_Xsf2ExeForm xsf_Xsf2ExeForm = new Xsf_Xsf2ExeForm(xsf_xsf2ExeNode);
-            this.splitContainer1.Panel2.Controls.Add(xsf_Xsf2ExeForm);
+            TreeNode _2sf_RootNode = new TreeNode("2SF");
+            TreeNode psf2_RootNode = new TreeNode("PSF2");
 
-            // Set Tag for displaying the Form
-            nodeTag.formClass = xsf_Xsf2ExeForm.GetType().Name;
-            xsf_xsf2ExeNode.Tag = nodeTag;
 
             //////////////
             // 2SF Ripper
@@ -327,6 +318,20 @@ namespace VGMToolbox
             nodeTag.formClass = xsf_Psf2ToPsf2LibForm.GetType().Name;
             xsf_Psf2ToPsf2LibNode.Tag = nodeTag;
 
+            /////////////////
+            // PSF2SQEXTRACTOR
+            /////////////////
+            TreeNode xsf_Psf2SqExtractorNode = new TreeNode("PSF2 SQ Extractor");
+
+            // Add UnpkPsf2 Ripper Form
+            Xsf_Psf2SqExtractorForm xsf_Psf2SqExtractorForm =
+                new Xsf_Psf2SqExtractorForm(xsf_Psf2SqExtractorNode);
+            this.splitContainer1.Panel2.Controls.Add(xsf_Psf2SqExtractorForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.formClass = xsf_Psf2SqExtractorForm.GetType().Name;
+            xsf_Psf2SqExtractorNode.Tag = nodeTag;
+
             // SSFMAKE
             /*
             TreeNode xsf_SsfMakeFENode = new TreeNode("ssfmake Front End");
@@ -339,15 +344,38 @@ namespace VGMToolbox
             xsf_SsfMakeFENode.Tag = nodeTag;
             */
 
+            ///////////
+            // XSF2EXE
+            ///////////
+            TreeNode xsf_xsf2ExeNode = new TreeNode("xSF2EXE");
+
+            // Add Xsf2Exe Form
+            Xsf_Xsf2ExeForm xsf_Xsf2ExeForm = new Xsf_Xsf2ExeForm(xsf_xsf2ExeNode);
+            this.splitContainer1.Panel2.Controls.Add(xsf_Xsf2ExeForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.formClass = xsf_Xsf2ExeForm.GetType().Name;
+            xsf_xsf2ExeNode.Tag = nodeTag;
+
+            nodeTag.formClass = emptyForm.GetType().Name;
             xsf_RootNode.NodeFont = this.treeviewBoldFont;
 
-
             xsf_RootNode.Nodes.Add(xsf_xsf2ExeNode);
-            xsf_RootNode.Nodes.Add(xsf_2sfRipperNode);
-            xsf_RootNode.Nodes.Add(xsf_2sfTimerNode);
-            xsf_RootNode.Nodes.Add(xsf_MkPsf2FENode);
-            xsf_RootNode.Nodes.Add(xsf_UnPsf2FENode);
-            xsf_RootNode.Nodes.Add(xsf_Psf2ToPsf2LibNode);
+
+            _2sf_RootNode.NodeFont = this.treeviewBoldFont;
+            _2sf_RootNode.Tag = nodeTag;
+            _2sf_RootNode.Nodes.Add(xsf_2sfRipperNode);
+            _2sf_RootNode.Nodes.Add(xsf_2sfTimerNode);
+            xsf_RootNode.Nodes.Add(_2sf_RootNode);
+
+            psf2_RootNode.NodeFont = this.treeviewBoldFont;
+            psf2_RootNode.Tag = nodeTag;
+            psf2_RootNode.Nodes.Add(xsf_MkPsf2FENode);
+            psf2_RootNode.Nodes.Add(xsf_UnPsf2FENode);
+            psf2_RootNode.Nodes.Add(xsf_Psf2ToPsf2LibNode);
+            psf2_RootNode.Nodes.Add(xsf_Psf2SqExtractorNode);            
+            xsf_RootNode.Nodes.Add(psf2_RootNode);            
+
             // xsf_RootNode.Nodes.Add(xsf_SsfMakeFENode);
 
 
