@@ -16,17 +16,28 @@ namespace VGMToolbox.tools.xsf
     {
         private const uint MIN_TEXT_SECTION_OFFSET = 0x80010000;
         private const uint PC_OFFSET_CORRECTION = 0x8000F800;
-        
+
+        private readonly string WORKING_FOLDER =
+            Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "working_psf"));
+        private readonly string PROGRAMS_FOLDER =
+            Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"));
+        private readonly string OUTPUT_FOLDER =
+            Path.GetFullPath(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "rips"), "psfs"));
+
+
         private int fileCount = 0;
         private int maxFiles = 0;
         Constants.ProgressStruct progressStruct;
 
         public struct Bin2PsfStruct
         {
-            public string[] sourcePaths;
+            public string sourcePath;
+            public string exePath;
             public string seqOffset;
             public string vhOffset;
             public string vbOffset;
+
+            public string outputFolder;
         }
 
         public Bin2PsfWorker()
@@ -41,98 +52,229 @@ namespace VGMToolbox.tools.xsf
 
         private void makePsfs(Bin2PsfStruct pBin2PsfStruct, DoWorkEventArgs e)
         {
-            maxFiles = FileUtil.GetFileCount(pBin2PsfStruct.sourcePaths);
+            string[] uniqueSqFiles;
 
-            foreach (string path in pBin2PsfStruct.sourcePaths)
+            if (!CancellationPending)
             {
-                if (File.Exists(path))
+                // get list of unique files
+                uniqueSqFiles = this.getUniqueFileNames(pBin2PsfStruct.sourcePath);
+                if (uniqueSqFiles != null)
                 {
-                    if (!CancellationPending)
-                    {
-                        this.makePsfFromFile(path, pBin2PsfStruct, e);
-                    }
-                    else
-                    {
-                        e.Cancel = true;
-                        return;
-                    }
+                    this.maxFiles = uniqueSqFiles.Length;
+                    this.buildPsfs(uniqueSqFiles, pBin2PsfStruct, e);
                 }
-                else if (Directory.Exists(path))
-                {
-                    this.makePsfsFromDirectory(path, pBin2PsfStruct, e);
+            }
+            else
+            {
+                e.Cancel = true;
+                return;
+            }
 
-                    if (CancellationPending)
-                    {
-                        e.Cancel = true;
-                        return;
-                    }
-                }
-            }            
             return;
         }
 
-        private void makePsfFromFile(string pPath, Bin2PsfStruct pBin2PsfStruct, DoWorkEventArgs e)
+        private string[] getUniqueFileNames(string pSourceDirectory)
         {
+            int fileCount = 0;
+            int i = 0;
+            string[] ret = null;
+            
+            if (!Directory.Exists(pSourceDirectory))
+            {
+                this.progressStruct.Clear();
+                this.progressStruct.errorMessage = String.Format("ERROR: Directory {0} not found.", pSourceDirectory);
+                ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
+            }
+            else
+            {
+                fileCount = Directory.GetFiles(pSourceDirectory, "*.SEQ").Length;
+
+                if (fileCount > 0)
+                {
+                    ret = new string[fileCount];
+                }
+
+                foreach (string f in Directory.GetFiles(pSourceDirectory, "*.SEQ"))
+                {
+                    ret[i] = f;
+                    i++;
+                }
+            }
+
+            return ret;
+        }
+
+        private void buildPsfs(string[] pUniqueSqFiles, Bin2PsfStruct pBin2PsfStruct,
+            DoWorkEventArgs e)
+        {
+            Process bin2PsfProcess;
+            int progress;
+            StringBuilder bin2PsfArguments = new StringBuilder();
+            bool isSuccess;
+
             byte[] textSectionOffset;
             long textSectionOffsetValue;
             long pcOffsetSeq;
             long pcOffsetVb;
             long pcOffsetVh;
-            
-            // Report Progress
-            int progress = (++fileCount * 100) / maxFiles;
-            progressStruct.Clear();
-            progressStruct.filename = pPath;
-            ReportProgress(progress, progressStruct);
 
-            using (FileStream fs = File.OpenRead(pPath))
+            FileInfo fi;
+
+            string bin2PsfSourcePath = Path.Combine(PROGRAMS_FOLDER, "bin2psf.exe");
+            string bin2PsfDestinationPath = Path.Combine(WORKING_FOLDER, "bin2psf.exe");
+
+            try
             {
-                textSectionOffset = ParseFile.parseSimpleOffset(fs, 0x18, 4);
-                textSectionOffsetValue = BitConverter.ToUInt32(textSectionOffset, 0);
+                Directory.CreateDirectory(WORKING_FOLDER);
 
-                pcOffsetSeq = textSectionOffsetValue - MIN_TEXT_SECTION_OFFSET +
-                    VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.seqOffset) - 
-                    PC_OFFSET_CORRECTION;
-                pcOffsetVb = textSectionOffsetValue - MIN_TEXT_SECTION_OFFSET +
-                    VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.vbOffset) -
-                    PC_OFFSET_CORRECTION;
-                pcOffsetVh = textSectionOffsetValue - MIN_TEXT_SECTION_OFFSET +
-                    VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.vhOffset) -
-                    PC_OFFSET_CORRECTION;
-
-
-                progressStruct.Clear();
-                progressStruct.genericMessage = String.Format("<{0}> [0x{1}][0x{2}][0x{3}]",
-                    pPath, pcOffsetSeq.ToString("X8"), pcOffsetVb.ToString("X8"), pcOffsetVh.ToString("X8"));
-                ReportProgress(Constants.PROGRESS_MSG_ONLY, progressStruct);
+                // copy program
+                File.Copy(bin2PsfSourcePath, bin2PsfDestinationPath, true);
             }
-        }    
+            catch (Exception ex)
+            {
+                this.progressStruct.Clear();
+                this.progressStruct.errorMessage = ex.Message;
+                ReportProgress(0, this.progressStruct);
 
-        private void makePsfsFromDirectory(string pPath, Bin2PsfStruct pBin2PsfStruct, DoWorkEventArgs e)
-        {
-            foreach (string d in Directory.GetDirectories(pPath))
+                return;
+            }
+
+            foreach (string f in pUniqueSqFiles)
             {
                 if (!CancellationPending)
                 {
-                    this.makePsfsFromDirectory(d, pBin2PsfStruct, e);
+                    bin2PsfArguments.Length = 0;
+
+                    // report progress
+                    progress = (++this.fileCount * 100) / maxFiles;
+                    this.progressStruct.Clear();
+                    this.progressStruct.filename = f;
+                    ReportProgress(progress, this.progressStruct);
+
+                    try
+                    {
+                        // copy data files to working directory                    
+                        string filePrefix = Path.GetFileNameWithoutExtension(f);
+                        string sourceDirectory = Path.GetDirectoryName(f);
+
+                        string seqFileName = filePrefix + ".seq";
+                        string vbFileName = filePrefix + ".vb";
+                        string vhFileName = filePrefix + ".vh";
+
+                        string sourceSeqFile = Path.Combine(sourceDirectory, seqFileName);
+                        string sourceVbFile = Path.Combine(sourceDirectory, vbFileName);
+                        string sourceVhFile = Path.Combine(sourceDirectory, vhFileName);
+
+                        string destinationExeFile = Path.Combine(WORKING_FOLDER, filePrefix + ".BIN");
+                        string destinationSeqFile = Path.Combine(WORKING_FOLDER, seqFileName);
+                        string destinationVbFile = Path.Combine(WORKING_FOLDER, vbFileName);
+                        string destinationVhFile = Path.Combine(WORKING_FOLDER, vhFileName);
+
+                        fi = new FileInfo(sourceSeqFile);
+
+                        if (fi.Length > 0) // only make for nonempty SEQ files
+                        {
+                            File.Copy(pBin2PsfStruct.exePath, destinationExeFile);
+                            File.Copy(sourceSeqFile, destinationSeqFile);
+                            File.Copy(sourceVbFile, destinationVbFile);
+                            File.Copy(sourceVhFile, destinationVhFile);
+                                                        
+                            // determine offsets
+                            using (FileStream fs = File.OpenRead(destinationExeFile))
+                            {
+                                // get offset of text section
+                                textSectionOffset = ParseFile.parseSimpleOffset(fs, 0x18, 4);
+                                textSectionOffsetValue = BitConverter.ToUInt32(textSectionOffset, 0);
+
+                                // calculate pc offsets
+                                pcOffsetSeq = textSectionOffsetValue - MIN_TEXT_SECTION_OFFSET +
+                                    VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.seqOffset) -
+                                    PC_OFFSET_CORRECTION;
+                                pcOffsetVb = textSectionOffsetValue - MIN_TEXT_SECTION_OFFSET +
+                                    VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.vbOffset) -
+                                    PC_OFFSET_CORRECTION;
+                                pcOffsetVh = textSectionOffsetValue - MIN_TEXT_SECTION_OFFSET +
+                                    VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.vhOffset) -
+                                    PC_OFFSET_CORRECTION;
+                            }
+
+                            // insert the data
+                            fi = new FileInfo(destinationSeqFile);
+                            ParseFile.ReplaceFileChunk(destinationSeqFile, 0, fi.Length, 
+                                destinationExeFile, pcOffsetSeq);
+                            fi = new FileInfo(destinationVbFile);
+                            ParseFile.ReplaceFileChunk(destinationVbFile, 0, fi.Length,
+                                destinationExeFile, pcOffsetVb);
+                            fi = new FileInfo(destinationVhFile);
+                            ParseFile.ReplaceFileChunk(destinationVhFile, 0, fi.Length,
+                                destinationExeFile, pcOffsetVh);
+
+                            // build bin2psf arguments                    
+                            bin2PsfArguments.Append(String.Format(" psf 1 {0}.bin", filePrefix));
+
+                            // run bin2psf                
+                            bin2PsfProcess = new Process();
+                            bin2PsfProcess.StartInfo = new ProcessStartInfo(bin2PsfDestinationPath, bin2PsfArguments.ToString());
+                            bin2PsfProcess.StartInfo.WorkingDirectory = WORKING_FOLDER;
+                            bin2PsfProcess.StartInfo.UseShellExecute = false;
+                            bin2PsfProcess.StartInfo.CreateNoWindow = true;
+                            isSuccess = bin2PsfProcess.Start();
+                            bin2PsfProcess.WaitForExit();
+
+                            if (isSuccess)
+                            {
+                                this.progressStruct.Clear();
+                                this.progressStruct.genericMessage = String.Format("{0}.psf created.", filePrefix) +
+                                    Environment.NewLine;
+                                ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
+
+                                if (!Directory.Exists(Path.Combine(OUTPUT_FOLDER, pBin2PsfStruct.outputFolder)))
+                                {
+                                    Directory.CreateDirectory(Path.Combine(OUTPUT_FOLDER, pBin2PsfStruct.outputFolder));
+                                }
+                                File.Move(Path.Combine(WORKING_FOLDER, filePrefix + ".psf"), 
+                                    Path.Combine(Path.Combine(OUTPUT_FOLDER, pBin2PsfStruct.outputFolder), filePrefix + ".psf"));
+                            }
+
+                            File.Delete(destinationExeFile);
+                            File.Delete(destinationSeqFile);
+                            File.Delete(destinationVbFile);
+                            File.Delete(destinationVhFile);
+
+                        } // if (fi.Length > 0)
+                        else
+                        {
+                            this.progressStruct.Clear();
+                            this.progressStruct.genericMessage = String.Format("WARNING: {0}.SEQ has ZERO length.  Skipping...", filePrefix) +
+                                Environment.NewLine;
+                            ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
+                        }
+                    }
+                    catch (Exception ex2)
+                    {
+                        this.progressStruct.Clear();
+                        this.progressStruct.filename = f;
+                        this.progressStruct.errorMessage = ex2.Message;
+                        ReportProgress(progress, this.progressStruct);
+                    }
                 }
                 else
                 {
                     e.Cancel = true;
-                    break;
-                }
-            }
-            foreach (string f in Directory.GetFiles(pPath))
+                    return;
+                } // if (!CancellationPending)
+
+            } // foreach (string f in pUniqueSqFiles)
+
+            try
             {
-                if (!CancellationPending)
-                {
-                    this.makePsfFromFile(f, pBin2PsfStruct, e);
-                }
-                else
-                {
-                    e.Cancel = true;
-                    break;
-                }
+                Directory.Delete(WORKING_FOLDER, true);
+            }
+            catch (Exception ex3)
+            {
+                this.progressStruct.Clear();
+                this.progressStruct.errorMessage = ex3.Message;
+                ReportProgress(100, this.progressStruct);
             }
         }
 

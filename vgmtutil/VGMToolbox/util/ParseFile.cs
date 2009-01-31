@@ -413,5 +413,35 @@ namespace VGMToolbox.util
                 bw.Write(newBytes);                
             }
         }
+
+        public static void ReplaceFileChunk(string pSourceFilePath, long pSourceOffset,
+            long pLength, string pDestinationFilePath, long pDestinationOffset)
+        {
+            int read = 0;
+            long maxread;
+            int totalBytes = 0;
+            byte[] bytes = new byte[MAX_BUFFER_SIZE];
+
+            using (BinaryWriter bw =
+                new BinaryWriter(File.Open(pDestinationFilePath, FileMode.Open, FileAccess.ReadWrite)))
+            {
+                using (BinaryReader br = 
+                    new BinaryReader(File.Open(pSourceFilePath, FileMode.Open, FileAccess.Read)))                
+                {
+                    br.BaseStream.Position = pSourceOffset;
+                    bw.BaseStream.Position = pDestinationOffset;
+
+                    maxread = pLength > bytes.Length ? bytes.Length : pLength;
+
+                    while ((read = br.Read(bytes, 0, (int) maxread)) > 0)
+                    {
+                        bw.Write(bytes, 0, read);
+                        totalBytes += read;
+
+                        maxread = (pLength - totalBytes) > bytes.Length ? bytes.Length : (pLength - totalBytes);
+                    }                    
+                }
+            }
+        }
     }
 }

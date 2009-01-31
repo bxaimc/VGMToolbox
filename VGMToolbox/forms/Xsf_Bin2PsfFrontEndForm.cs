@@ -19,9 +19,11 @@ namespace VGMToolbox.forms
         {
             // set title
             this.lblTitle.Text = "bin2psf Front End";
-            this.btnDoTask.Hide();
+            this.btnDoTask.Text = "Make PSFs";
 
             InitializeComponent();
+
+            this.tbOutput.Text = "Currently nonfunctional.";
         }
 
         private void Bin2PsfWorker_WorkComplete(object sender,
@@ -57,19 +59,29 @@ namespace VGMToolbox.forms
             base.doDragEnter(sender, e);
         }
 
-        private void tbSource_DragDrop(object sender, DragEventArgs e)
+        private void btnExeBrowse_Click(object sender, EventArgs e)
+        {
+            tbExePath.Text = base.browseForFile(sender, e);
+        }
+
+        private void btnSourceDirectoryBrowse_Click(object sender, EventArgs e)
+        {
+            tbSourceFilesPath.Text = base.browseForFolder(sender, e);
+        }
+
+        private void btnDoTask_Click(object sender, EventArgs e)
         {
             base.initializeProcessing();
 
             toolStripStatusLabel1.Text = "PSF Creation...Begin";
 
-            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
-
             Bin2PsfWorker.Bin2PsfStruct bpStruct = new Bin2PsfWorker.Bin2PsfStruct();
-            bpStruct.sourcePaths = s;
+            bpStruct.sourcePath = tbSourceFilesPath.Text;
             bpStruct.seqOffset = tbSeqOffset.Text;
             bpStruct.vbOffset = tbVbOffset.Text;
             bpStruct.vhOffset = tbVhOffset.Text;
+            bpStruct.exePath = tbExePath.Text;
+            bpStruct.outputFolder = tbOutputFolderName.Text;
 
             bin2PsfWorker = new Bin2PsfWorker();
             bin2PsfWorker.ProgressChanged += backgroundWorker_ReportProgress;
