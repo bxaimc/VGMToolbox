@@ -18,7 +18,7 @@ namespace VGMToolbox.forms
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = "bin2psf.exe Front End";
+            this.lblTitle.Text = "bin2psf Front End";
             this.btnDoTask.Hide();
 
             InitializeComponent();
@@ -67,7 +67,9 @@ namespace VGMToolbox.forms
 
             Bin2PsfWorker.Bin2PsfStruct bpStruct = new Bin2PsfWorker.Bin2PsfStruct();
             bpStruct.sourcePaths = s;
-            bpStruct.dataOffset = tbDataOffset.Text;
+            bpStruct.seqOffset = tbSeqOffset.Text;
+            bpStruct.vbOffset = tbVbOffset.Text;
+            bpStruct.vhOffset = tbVhOffset.Text;
 
             bin2PsfWorker = new Bin2PsfWorker();
             bin2PsfWorker.ProgressChanged += backgroundWorker_ReportProgress;

@@ -24,7 +24,9 @@ namespace VGMToolbox.tools.xsf
         public struct Bin2PsfStruct
         {
             public string[] sourcePaths;
-            public string dataOffset;
+            public string seqOffset;
+            public string vhOffset;
+            public string vbOffset;
         }
 
         public Bin2PsfWorker()
@@ -73,7 +75,9 @@ namespace VGMToolbox.tools.xsf
         {
             byte[] textSectionOffset;
             long textSectionOffsetValue;
-            long pcOffset;
+            long pcOffsetSeq;
+            long pcOffsetVb;
+            long pcOffsetVh;
             
             // Report Progress
             int progress = (++fileCount * 100) / maxFiles;
@@ -86,12 +90,20 @@ namespace VGMToolbox.tools.xsf
                 textSectionOffset = ParseFile.parseSimpleOffset(fs, 0x18, 4);
                 textSectionOffsetValue = BitConverter.ToUInt32(textSectionOffset, 0);
 
-                pcOffset = textSectionOffsetValue - MIN_TEXT_SECTION_OFFSET +
-                    VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.dataOffset) - 
+                pcOffsetSeq = textSectionOffsetValue - MIN_TEXT_SECTION_OFFSET +
+                    VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.seqOffset) - 
+                    PC_OFFSET_CORRECTION;
+                pcOffsetVb = textSectionOffsetValue - MIN_TEXT_SECTION_OFFSET +
+                    VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.vbOffset) -
+                    PC_OFFSET_CORRECTION;
+                pcOffsetVh = textSectionOffsetValue - MIN_TEXT_SECTION_OFFSET +
+                    VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.vhOffset) -
                     PC_OFFSET_CORRECTION;
 
+
                 progressStruct.Clear();
-                progressStruct.genericMessage = String.Format("<{0}> [{1}]", pPath, pcOffset.ToString("X16"));
+                progressStruct.genericMessage = String.Format("<{0}> [0x{1}][0x{2}][0x{3}]",
+                    pPath, pcOffsetSeq.ToString("X8"), pcOffsetVb.ToString("X8"), pcOffsetVh.ToString("X8"));
                 ReportProgress(Constants.PROGRESS_MSG_ONLY, progressStruct);
             }
         }    
