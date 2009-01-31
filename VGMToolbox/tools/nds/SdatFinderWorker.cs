@@ -11,6 +11,8 @@ namespace VGMToolbox.tools.nds
 {
     class SdatFinderWorker : BackgroundWorker
     {
+        static readonly byte[] SDAT_SIG_BYTES = new byte[] { 0x53, 0x44, 0x41, 0x54 }; // SDAT
+        
         private int fileCount = 0;
         private int maxFiles = 0;
         private Constants.ProgressStruct progressStruct;
@@ -109,37 +111,26 @@ namespace VGMToolbox.tools.nds
             this.progressStruct.Clear();
             this.progressStruct.filename = pPath;
             ReportProgress(progress, this.progressStruct);
-         
-            /*
+
             try
             {
-                FileStream fs = File.OpenRead(pPath);
-                Type dataType = FormatUtil.getObjectType(fs);
-
-                if (dataType != null && dataType.Name.Equals("Sdat"))
+                using (FileStream fs = File.Open(Path.GetFullPath(pPath), FileMode.Open, FileAccess.Read))
                 {
-                    string fileName = Path.GetFileNameWithoutExtension(pPath);
-                    string destinationPath =
-                        Path.Combine(Path.GetDirectoryName(pPath), fileName);
+                    previousOffset = 0;
 
-                    Sdat sdat = new Sdat();
+                    while ((sdatOffset = ParseFile.GetNextOffset(fs, previousOffset, SDAT_SIG_BYTES)) != -1)
+                    {
+                        sdatSizeBytes = ParseFile.parseSimpleOffset(fs, sdatOffset + 8, 4);
+                        sdatSize = BitConverter.ToInt32(sdatSizeBytes, 0);
 
-                    try
-                    {
-                        sdat.Initialize(fs, pPath);
-                        sdat.ExtractSseqs(fs, destinationPath);
-                        sdat.ExtractStrms(fs, destinationPath);
-                        sdat.BuildSmap(destinationPath, fileName);
-                    }
-                    catch (Exception ex)
-                    {
-                        this.progressStruct.Clear();
-                        this.progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message;
-                        ReportProgress(progress, this.progressStruct);                        
+                        outputPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(pPath), Path.Combine(filePrefix,
+                            String.Format("sound_data_{0}.sdat", sdatIndex++.ToString("X2")))));
+
+                        ParseFile.ExtractChunkToFile(fs, sdatOffset, sdatSize, outputPath);
+
+                        previousOffset = sdatOffset + sdatSize;
                     }
                 }
-                fs.Close();
-                fs.Dispose();        
             }
             catch (Exception ex)
             {
@@ -147,8 +138,6 @@ namespace VGMToolbox.tools.nds
                 this.progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message;
                 ReportProgress(progress, this.progressStruct);
             }            
-             * 
-             */ 
         }    
 
         protected override void OnDoWork(DoWorkEventArgs e)

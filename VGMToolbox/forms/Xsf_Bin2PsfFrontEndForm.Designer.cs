@@ -96,7 +96,7 @@
             this.groupBox1.Size = new System.Drawing.Size(844, 96);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Source PSX-EXEs";
+            this.groupBox1.Text = "Source";
             // 
             // tbOutputFolderName
             // 
@@ -155,9 +155,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(3, 22);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(77, 13);
+            this.label1.Size = new System.Drawing.Size(60, 13);
             this.label1.TabIndex = 1;
-            this.label1.Text = "PSX-EXE Path";
+            this.label1.Text = "Driver Path";
             // 
             // tbExePath
             // 

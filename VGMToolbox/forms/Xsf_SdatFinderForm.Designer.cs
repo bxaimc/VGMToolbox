@@ -39,7 +39,7 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 635);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 470);
             this.pnlLabels.Size = new System.Drawing.Size(844, 19);
             // 
             // pnlTitle
@@ -48,17 +48,18 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 558);
+            this.tbOutput.Location = new System.Drawing.Point(0, 393);
             this.tbOutput.Size = new System.Drawing.Size(844, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 538);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 373);
             this.pnlButtons.Size = new System.Drawing.Size(844, 20);
             // 
             // btnCancel
             // 
             this.btnCancel.Location = new System.Drawing.Point(784, 0);
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDoTask
             // 
@@ -72,6 +73,7 @@
             this.tbSourceFiles.Size = new System.Drawing.Size(282, 20);
             this.tbSourceFiles.TabIndex = 0;
             this.tbSourceFiles.TabStop = false;
+            this.tbSourceFiles.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbSourceFiles_DragDrop);
             this.tbSourceFiles.DragEnter += new System.Windows.Forms.DragEventHandler(this.doDragEnter);
             // 
             // groupBox1
@@ -99,7 +101,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(844, 676);
+            this.ClientSize = new System.Drawing.Size(844, 511);
             this.Controls.Add(this.groupBox1);
             this.Name = "Xsf_SdatFinderForm";
             this.Text = "Xsf_SdatFinderForm";

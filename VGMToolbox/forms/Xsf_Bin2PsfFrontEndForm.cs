@@ -22,8 +22,6 @@ namespace VGMToolbox.forms
             this.btnDoTask.Text = "Make PSFs";
 
             InitializeComponent();
-
-            this.tbOutput.Text = "Currently nonfunctional.";
         }
 
         private void Bin2PsfWorker_WorkComplete(object sender,

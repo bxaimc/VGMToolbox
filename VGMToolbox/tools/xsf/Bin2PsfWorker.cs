@@ -187,17 +187,6 @@ namespace VGMToolbox.tools.xsf
                                 textSectionOffsetValue = BitConverter.ToUInt32(textSectionOffset, 0);
 
                                 // calculate pc offsets
-                                /*
-                                pcOffsetSeq = textSectionOffsetValue - MIN_TEXT_SECTION_OFFSET +
-                                    VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.seqOffset) -
-                                    PC_OFFSET_CORRECTION;
-                                pcOffsetVb = textSectionOffsetValue - MIN_TEXT_SECTION_OFFSET +
-                                    VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.vbOffset) -
-                                    PC_OFFSET_CORRECTION;
-                                pcOffsetVh = textSectionOffsetValue - MIN_TEXT_SECTION_OFFSET +
-                                    VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.vhOffset) -
-                                    PC_OFFSET_CORRECTION;
-                                */
                                 pcOffsetSeq = VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.seqOffset) -
                                     textSectionOffsetValue + PC_OFFSET_CORRECTION;
                                 pcOffsetVb = VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.vbOffset) -
