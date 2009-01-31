@@ -53,7 +53,7 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 447);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 470);
             this.pnlLabels.Size = new System.Drawing.Size(844, 19);
             // 
             // pnlTitle
@@ -62,12 +62,12 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 370);
+            this.tbOutput.Location = new System.Drawing.Point(0, 393);
             this.tbOutput.Size = new System.Drawing.Size(844, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 350);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 373);
             this.pnlButtons.Size = new System.Drawing.Size(844, 20);
             // 
             // btnCancel
@@ -178,7 +178,7 @@
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox2.Location = new System.Drawing.Point(0, 119);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(844, 99);
+            this.groupBox2.Size = new System.Drawing.Size(844, 100);
             this.groupBox2.TabIndex = 6;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Options";
@@ -186,7 +186,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 48);
+            this.label4.Location = new System.Drawing.Point(3, 75);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(52, 13);
             this.label4.TabIndex = 5;
@@ -194,7 +194,7 @@
             // 
             // tbVbOffset
             // 
-            this.tbVbOffset.Location = new System.Drawing.Point(86, 45);
+            this.tbVbOffset.Location = new System.Drawing.Point(86, 72);
             this.tbVbOffset.Name = "tbVbOffset";
             this.tbVbOffset.Size = new System.Drawing.Size(218, 20);
             this.tbVbOffset.TabIndex = 4;
@@ -202,7 +202,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 74);
+            this.label3.Location = new System.Drawing.Point(3, 48);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(53, 13);
             this.label3.TabIndex = 3;
@@ -210,7 +210,7 @@
             // 
             // tbVhOffset
             // 
-            this.tbVhOffset.Location = new System.Drawing.Point(86, 71);
+            this.tbVhOffset.Location = new System.Drawing.Point(86, 45);
             this.tbVhOffset.Name = "tbVhOffset";
             this.tbVhOffset.Size = new System.Drawing.Size(218, 20);
             this.tbVhOffset.TabIndex = 2;
@@ -235,7 +235,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(844, 488);
+            this.ClientSize = new System.Drawing.Size(844, 511);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "Xsf_Bin2PsfFrontEndForm";

@@ -94,6 +94,16 @@ namespace VGMToolbox.tools.nds
 
         private void findSdatsInFile(string pPath, DoWorkEventArgs e)
         {
+            string filePrefix = Path.GetFileNameWithoutExtension(pPath);
+            string outputPath;
+
+            int sdatIndex = 0;
+            long sdatOffset;
+            long previousOffset;
+
+            byte[] sdatSizeBytes;
+            int sdatSize;
+            
             // Report Progress
             int progress = (++fileCount * 100) / maxFiles;
             this.progressStruct.Clear();

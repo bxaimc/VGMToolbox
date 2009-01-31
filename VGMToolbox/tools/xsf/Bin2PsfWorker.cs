@@ -200,9 +200,9 @@ namespace VGMToolbox.tools.xsf
                                 */
                                 pcOffsetSeq = VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.seqOffset) -
                                     textSectionOffsetValue + PC_OFFSET_CORRECTION;
-                                pcOffsetVb = VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.vhOffset) -
+                                pcOffsetVb = VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.vbOffset) -
                                     textSectionOffsetValue + PC_OFFSET_CORRECTION;
-                                pcOffsetVh = VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.vbOffset) -
+                                pcOffsetVh = VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.vhOffset) -
                                     textSectionOffsetValue + PC_OFFSET_CORRECTION;
                             }
 
