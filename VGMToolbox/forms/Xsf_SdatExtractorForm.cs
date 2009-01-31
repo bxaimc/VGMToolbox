@@ -15,6 +15,7 @@ namespace VGMToolbox.forms
         {
             // set title
             this.lblTitle.Text = "Nintendo DS SDAT Extractor";
+            this.tbOutput.Text = "Extract SSEQ and STRM from SDATs";
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();

@@ -430,6 +430,17 @@ namespace VGMToolbox
             nodeTag.formClass = xsf_SdatExtractorForm.GetType().Name;
             ext_SdatExtractorNode.Tag = nodeTag;
 
+            // SDAT Finder
+            TreeNode ext_SdatFinderNode = new TreeNode("SDAT Finder");
+
+            // Add SDAT Extractor Form
+            Xsf_SdatFinderForm xsf_SdatFinderForm = new Xsf_SdatFinderForm(ext_SdatFinderNode);
+            this.splitContainer1.Panel2.Controls.Add(xsf_SdatFinderForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.formClass = xsf_SdatFinderForm.GetType().Name;
+            ext_SdatFinderNode.Tag = nodeTag;
+
             ///////
             // PC
             ///////
@@ -443,6 +454,7 @@ namespace VGMToolbox
 
 
             ext_NdsNode.Nodes.Add(ext_SdatExtractorNode);
+            ext_NdsNode.Nodes.Add(ext_SdatFinderNode);            
             ext_RootNode.Nodes.Add(ext_NdsNode);
             ext_RootNode.Nodes.Add(ext_PcNode);
 

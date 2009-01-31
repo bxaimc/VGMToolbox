@@ -15,7 +15,7 @@ namespace VGMToolbox.tools.xsf
     class Bin2PsfWorker : BackgroundWorker
     {
         private const uint MIN_TEXT_SECTION_OFFSET = 0x80010000;
-        private const uint PC_OFFSET_CORRECTION = 0x8000F800;
+        private const uint PC_OFFSET_CORRECTION = 0x800;
 
         private readonly string WORKING_FOLDER =
             Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "working_psf"));
@@ -187,6 +187,7 @@ namespace VGMToolbox.tools.xsf
                                 textSectionOffsetValue = BitConverter.ToUInt32(textSectionOffset, 0);
 
                                 // calculate pc offsets
+                                /*
                                 pcOffsetSeq = textSectionOffsetValue - MIN_TEXT_SECTION_OFFSET +
                                     VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.seqOffset) -
                                     PC_OFFSET_CORRECTION;
@@ -196,6 +197,13 @@ namespace VGMToolbox.tools.xsf
                                 pcOffsetVh = textSectionOffsetValue - MIN_TEXT_SECTION_OFFSET +
                                     VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.vhOffset) -
                                     PC_OFFSET_CORRECTION;
+                                */
+                                pcOffsetSeq = VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.seqOffset) -
+                                    textSectionOffsetValue + PC_OFFSET_CORRECTION;
+                                pcOffsetVb = VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.vhOffset) -
+                                    textSectionOffsetValue + PC_OFFSET_CORRECTION;
+                                pcOffsetVh = VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.vbOffset) -
+                                    textSectionOffsetValue + PC_OFFSET_CORRECTION;
                             }
 
                             // insert the data

@@ -196,6 +196,12 @@
     <Compile Include="forms\Xsf_SdatExtractorForm.Designer.cs">
       <DependentUpon>Xsf_SdatExtractorForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\Xsf_SdatFinderForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\Xsf_SdatFinderForm.Designer.cs">
+      <DependentUpon>Xsf_SdatFinderForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\Xsf_SsfMakeFrontEndForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -302,6 +308,10 @@
       <DependentUpon>Xsf_SdatExtractorForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="forms\Xsf_SdatFinderForm.resx">
+      <DependentUpon>Xsf_SdatFinderForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="forms\Xsf_SsfMakeFrontEndForm.resx">
       <DependentUpon>Xsf_SsfMakeFrontEndForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -357,6 +367,9 @@
     <Compile Include="tools\hoot\HootCsv.cs" />
     <Compile Include="tools\MdxUtil.cs" />
     <Compile Include="tools\nds\SdatExtractorWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tools\nds\SdatFinderWorker.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\NezPlug.cs" />

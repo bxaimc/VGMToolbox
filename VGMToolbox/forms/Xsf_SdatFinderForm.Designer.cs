@@ -1,6 +1,6 @@
 ﻿namespace VGMToolbox.forms
 {
-    partial class Xsf_SdatExtractorForm
+    partial class Xsf_SdatFinderForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,13 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupBox10 = new System.Windows.Forms.GroupBox();
-            this.label17 = new System.Windows.Forms.Label();
-            this.tbNDS_SdatExtractor_Source = new System.Windows.Forms.TextBox();
+            this.tbSourceFiles = new System.Windows.Forms.TextBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
-            this.groupBox10.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
@@ -64,58 +64,58 @@
             // 
             this.btnDoTask.Location = new System.Drawing.Point(724, 0);
             // 
-            // groupBox10
+            // tbSourceFiles
             // 
-            this.groupBox10.Controls.Add(this.label17);
-            this.groupBox10.Controls.Add(this.tbNDS_SdatExtractor_Source);
-            this.groupBox10.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox10.Location = new System.Drawing.Point(0, 23);
-            this.groupBox10.Name = "groupBox10";
-            this.groupBox10.Size = new System.Drawing.Size(844, 59);
-            this.groupBox10.TabIndex = 6;
-            this.groupBox10.TabStop = false;
-            this.groupBox10.Text = "Source SDAT";
+            this.tbSourceFiles.AllowDrop = true;
+            this.tbSourceFiles.Location = new System.Drawing.Point(6, 19);
+            this.tbSourceFiles.Name = "tbSourceFiles";
+            this.tbSourceFiles.Size = new System.Drawing.Size(282, 20);
+            this.tbSourceFiles.TabIndex = 0;
+            this.tbSourceFiles.TabStop = false;
+            this.tbSourceFiles.DragEnter += new System.Windows.Forms.DragEventHandler(this.doDragEnter);
             // 
-            // label17
+            // groupBox1
             // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(6, 42);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(147, 13);
-            this.label17.TabIndex = 1;
-            this.label17.Text = "Drag SDAT(s) to extract here.";
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.tbSourceFiles);
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBox1.Location = new System.Drawing.Point(0, 23);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(844, 62);
+            this.groupBox1.TabIndex = 5;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Source Files";
             // 
-            // tbNDS_SdatExtractor_Source
+            // label1
             // 
-            this.tbNDS_SdatExtractor_Source.AllowDrop = true;
-            this.tbNDS_SdatExtractor_Source.Location = new System.Drawing.Point(6, 19);
-            this.tbNDS_SdatExtractor_Source.Name = "tbNDS_SdatExtractor_Source";
-            this.tbNDS_SdatExtractor_Source.Size = new System.Drawing.Size(282, 20);
-            this.tbNDS_SdatExtractor_Source.TabIndex = 0;
-            this.tbNDS_SdatExtractor_Source.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbNDS_SdatExtractor_Source_DragDrop);
-            this.tbNDS_SdatExtractor_Source.DragEnter += new System.Windows.Forms.DragEventHandler(this.doDragEnter);
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 42);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(125, 13);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Drag files to search here.";
             // 
-            // Xsf_SdatExtractorForm
+            // Xsf_SdatFinderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(844, 676);
-            this.Controls.Add(this.groupBox10);
-            this.Name = "Xsf_SdatExtractorForm";
-            this.Text = "Xsf_SdatExtractorForm";
+            this.Controls.Add(this.groupBox1);
+            this.Name = "Xsf_SdatFinderForm";
+            this.Text = "Xsf_SdatFinderForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
-            this.Controls.SetChildIndex(this.pnlTitle, 0);
-            this.Controls.SetChildIndex(this.groupBox10, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
+            this.Controls.SetChildIndex(this.pnlTitle, 0);
             this.Controls.SetChildIndex(this.pnlButtons, 0);
+            this.Controls.SetChildIndex(this.groupBox1, 0);
             this.pnlLabels.ResumeLayout(false);
             this.pnlLabels.PerformLayout();
             this.pnlTitle.ResumeLayout(false);
             this.pnlTitle.PerformLayout();
             this.pnlButtons.ResumeLayout(false);
             this.pnlButtons.PerformLayout();
-            this.groupBox10.ResumeLayout(false);
-            this.groupBox10.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -123,8 +123,9 @@
 
         #endregion
 
-        private System.Windows.Forms.GroupBox groupBox10;
-        private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.TextBox tbNDS_SdatExtractor_Source;
+        private System.Windows.Forms.TextBox tbSourceFiles;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Label label1;
+
     }
 }

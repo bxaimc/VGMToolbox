@@ -4,8 +4,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Forms;
+
 using VGMToolbox.format.sdat;
 using VGMToolbox.util;
+
 
 namespace VGMToolbox.tools.xsf
 {
@@ -84,13 +87,13 @@ namespace VGMToolbox.tools.xsf
             {
                 bool processSuccess = false;
 
-                string ndsToolFileName = ".\\external\\2sf\\ndstool.exe";
-                string desmumeSaveFileName = ".\\external\\2sf\\DeSmuME_save.exe";
-                string desmumeTraceFileName = ".\\external\\2sf\\DeSmuME_trace.exe";
-                string zlibFileName = ".\\external\\2sf\\zlib1.dll";
-                string dst2BinFileName = ".\\external\\2sf\\dst2bin.exe";
-                string _2sfToolFileName = ".\\external\\2sf\\2sftool.exe";
-                string psfPointPath = ".\\external\\psfpoint.exe";
+                string ndsToolFileName = Application.StartupPath  + "\\external\\2sf\\ndstool.exe";
+                string desmumeSaveFileName = Application.StartupPath + "\\external\\2sf\\DeSmuME_save.exe";
+                string desmumeTraceFileName = Application.StartupPath + "\\external\\2sf\\DeSmuME_trace.exe";
+                string zlibFileName = Application.StartupPath + "\\external\\2sf\\zlib1.dll";
+                string dst2BinFileName = Application.StartupPath + "\\external\\2sf\\dst2bin.exe";
+                string _2sfToolFileName = Application.StartupPath + "\\external\\2sf\\2sftool.exe";
+                string psfPointPath = Application.StartupPath + "\\external\\psfpoint.exe";
 
                 string sourceRomDestinationPath = Path.Combine(Path.GetDirectoryName(pContainerRomPath), Path.GetFileNameWithoutExtension(pPath));
                 string containerRomDestinationPath = Path.Combine(Path.GetDirectoryName(pContainerRomPath), Path.GetFileNameWithoutExtension(pContainerRomPath));
