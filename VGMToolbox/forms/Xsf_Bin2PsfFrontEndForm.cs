@@ -81,6 +81,9 @@ namespace VGMToolbox.forms
             bpStruct.exePath = tbExePath.Text;
             bpStruct.outputFolder = tbOutputFolderName.Text;
 
+            bpStruct.makeMiniPsfs = cbMinipsf.Checked;
+            bpStruct.psflibName = tbPsflibName.Text;
+
             bin2PsfWorker = new Bin2PsfWorker();
             bin2PsfWorker.ProgressChanged += backgroundWorker_ReportProgress;
             bin2PsfWorker.RunWorkerCompleted += Bin2PsfWorker_WorkComplete;
