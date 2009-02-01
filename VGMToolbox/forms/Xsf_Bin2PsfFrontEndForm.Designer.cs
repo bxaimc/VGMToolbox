@@ -44,6 +44,9 @@
             this.tbVhOffset = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.tbSeqOffset = new System.Windows.Forms.TextBox();
+            this.tbPsflibName = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.cbMinipsf = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -53,7 +56,7 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 470);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 635);
             this.pnlLabels.Size = new System.Drawing.Size(844, 19);
             // 
             // pnlTitle
@@ -62,12 +65,12 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 393);
+            this.tbOutput.Location = new System.Drawing.Point(0, 558);
             this.tbOutput.Size = new System.Drawing.Size(844, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 373);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 538);
             this.pnlButtons.Size = new System.Drawing.Size(844, 20);
             // 
             // btnCancel
@@ -82,6 +85,9 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.cbMinipsf);
+            this.groupBox1.Controls.Add(this.label7);
+            this.groupBox1.Controls.Add(this.tbPsflibName);
             this.groupBox1.Controls.Add(this.tbOutputFolderName);
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.btnExeBrowse);
@@ -93,7 +99,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(0, 23);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(844, 96);
+            this.groupBox1.Size = new System.Drawing.Size(844, 132);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Source";
@@ -176,7 +182,7 @@
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.tbSeqOffset);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox2.Location = new System.Drawing.Point(0, 119);
+            this.groupBox2.Location = new System.Drawing.Point(0, 155);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(844, 100);
             this.groupBox2.TabIndex = 6;
@@ -231,11 +237,39 @@
             this.tbSeqOffset.Size = new System.Drawing.Size(218, 20);
             this.tbSeqOffset.TabIndex = 0;
             // 
+            // tbPsflibName
+            // 
+            this.tbPsflibName.Location = new System.Drawing.Point(86, 96);
+            this.tbPsflibName.Name = "tbPsflibName";
+            this.tbPsflibName.ReadOnly = true;
+            this.tbPsflibName.Size = new System.Drawing.Size(218, 20);
+            this.tbPsflibName.TabIndex = 16;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(6, 99);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(72, 13);
+            this.label7.TabIndex = 17;
+            this.label7.Text = "PSFLib Name";
+            // 
+            // cbMinipsf
+            // 
+            this.cbMinipsf.AutoSize = true;
+            this.cbMinipsf.Location = new System.Drawing.Point(310, 98);
+            this.cbMinipsf.Name = "cbMinipsf";
+            this.cbMinipsf.Size = new System.Drawing.Size(101, 17);
+            this.cbMinipsf.TabIndex = 18;
+            this.cbMinipsf.Text = "Output .minipsfs";
+            this.cbMinipsf.UseVisualStyleBackColor = true;
+            this.cbMinipsf.CheckedChanged += new System.EventHandler(this.cbMinipsf_CheckedChanged);
+            // 
             // Xsf_Bin2PsfFrontEndForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(844, 511);
+            this.ClientSize = new System.Drawing.Size(844, 676);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "Xsf_Bin2PsfFrontEndForm";
@@ -279,5 +313,8 @@
         private System.Windows.Forms.Button btnSourceDirectoryBrowse;
         private System.Windows.Forms.TextBox tbOutputFolderName;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.CheckBox cbMinipsf;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox tbPsflibName;
     }
 }

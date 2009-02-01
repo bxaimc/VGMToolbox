@@ -86,5 +86,18 @@ namespace VGMToolbox.forms
             bin2PsfWorker.RunWorkerCompleted += Bin2PsfWorker_WorkComplete;
             bin2PsfWorker.RunWorkerAsync(bpStruct);
         }
+
+        private void cbMinipsf_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbMinipsf.Checked)
+            {
+                tbPsflibName.ReadOnly = false;
+            }
+            else
+            {
+                tbPsflibName.ReadOnly = true;
+                tbPsflibName.Clear();
+            }
+        }
     }
 }

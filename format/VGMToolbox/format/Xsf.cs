@@ -50,7 +50,7 @@ namespace VGMToolbox.format
 
         public const int RESERVED_SECTION_OFFSET = 0x10;                
         
-        private const string ASCII_TAG = "[TAG]";
+        public const string ASCII_TAG = "[TAG]";
         private const string TAG_UTF8_INDICATOR = "utf8=";
 
         private string filePath;

@@ -38,6 +38,8 @@ namespace VGMToolbox.tools.xsf
             public string vbOffset;
 
             public string outputFolder;
+            public bool makeMiniPsfs;
+            public string psflibName;
         }
 
         public Bin2PsfWorker()
@@ -111,7 +113,10 @@ namespace VGMToolbox.tools.xsf
             int progress;
             StringBuilder bin2PsfArguments = new StringBuilder();
             bool isSuccess;
-
+            string builtFilePath;
+            string outputExtension;
+            string ripOutputFolder = Path.Combine(OUTPUT_FOLDER, pBin2PsfStruct.outputFolder);
+            
             byte[] textSectionOffset;
             long textSectionOffsetValue;
             long pcOffsetSeq;
@@ -137,6 +142,16 @@ namespace VGMToolbox.tools.xsf
                 ReportProgress(0, this.progressStruct);
 
                 return;
+            }
+
+            // setup output extension
+            if (pBin2PsfStruct.makeMiniPsfs)
+            {
+                outputExtension = "minipsf";
+            }
+            else
+            {
+                outputExtension = "psf";
             }
 
             foreach (string f in pUniqueSqFiles)
@@ -169,6 +184,7 @@ namespace VGMToolbox.tools.xsf
                         string destinationSeqFile = Path.Combine(WORKING_FOLDER, seqFileName);
                         string destinationVbFile = Path.Combine(WORKING_FOLDER, vbFileName);
                         string destinationVhFile = Path.Combine(WORKING_FOLDER, vhFileName);
+                        builtFilePath = Path.Combine(WORKING_FOLDER, filePrefix + "." + outputExtension);
 
                         fi = new FileInfo(sourceSeqFile);
 
@@ -207,7 +223,7 @@ namespace VGMToolbox.tools.xsf
                                 destinationExeFile, pcOffsetVh);
 
                             // build bin2psf arguments                    
-                            bin2PsfArguments.Append(String.Format(" psf 1 {0}.bin", filePrefix));
+                            bin2PsfArguments.Append(String.Format(" {0} 1 {1}.bin", outputExtension, filePrefix));                                                        
 
                             // run bin2psf                
                             bin2PsfProcess = new Process();
@@ -220,17 +236,29 @@ namespace VGMToolbox.tools.xsf
 
                             if (isSuccess)
                             {
+                                // add lib tag
+                                using (FileStream ofs = File.Open(builtFilePath, FileMode.Append, FileAccess.Write))
+                                {
+                                    using (BinaryWriter bw = new BinaryWriter(ofs))
+                                    {
+                                        System.Text.Encoding enc = System.Text.Encoding.ASCII;
+
+                                        bw.Write(Xsf.ASCII_TAG); // [TAG]
+                                        bw.Write(enc.GetBytes(String.Format("_lb={0}", pBin2PsfStruct.psflibName)));
+                                        bw.Write(0x0A);
+                                    }
+                                }
+                                
                                 this.progressStruct.Clear();
-                                this.progressStruct.genericMessage = String.Format("{0}.psf created.", filePrefix) +
+                                this.progressStruct.genericMessage = String.Format("{0}.{1} created.", filePrefix, outputExtension) +
                                     Environment.NewLine;
                                 ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
 
-                                if (!Directory.Exists(Path.Combine(OUTPUT_FOLDER, pBin2PsfStruct.outputFolder)))
+                                if (!Directory.Exists(ripOutputFolder))
                                 {
                                     Directory.CreateDirectory(Path.Combine(OUTPUT_FOLDER, pBin2PsfStruct.outputFolder));
                                 }
-                                File.Move(Path.Combine(WORKING_FOLDER, filePrefix + ".psf"), 
-                                    Path.Combine(Path.Combine(OUTPUT_FOLDER, pBin2PsfStruct.outputFolder), filePrefix + ".psf"));
+                                File.Move(builtFilePath, Path.Combine(ripOutputFolder, Path.GetFileName(builtFilePath)));
                             }
 
                             File.Delete(destinationExeFile);
