@@ -134,7 +134,7 @@ namespace VGMToolbox.tools.xsf
 
                         while ((read = inflater.Read(data, 0, data.Length)) > 0)
                         {
-                            bw.Write(data);
+                            bw.Write(data, 0, read);
                         }
                         
                         bw.Close();
