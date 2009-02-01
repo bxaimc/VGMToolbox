@@ -118,7 +118,7 @@ namespace VGMToolbox.tools.xsf
                     // setup vals for progress bar
                     this.maxFiles = smap.SseqSection.Length;
                     this.fileCount = 0;
-
+                    int progress; 
                     // loop through SMAP SSEQs
                     foreach (Smap.SmapSeqStruct s in smap.SseqSection)
                     {                                                
@@ -129,7 +129,7 @@ namespace VGMToolbox.tools.xsf
                             string rippedFilePath = Path.Combine(pTime2sfStruct.pathTo2sf, rippedFileName);
 
                             // report progress
-                            int progress = (++this.fileCount * 100) / this.maxFiles;
+                            progress = (++this.fileCount * 100) / this.maxFiles;
                             this.progressStruct = new Constants.ProgressStruct();
                             this.progressStruct.newNode = null;
                             this.progressStruct.filename = rippedFilePath;
@@ -162,9 +162,7 @@ namespace VGMToolbox.tools.xsf
                                     processSuccess = this.buildFileTimingBatch(pTime2sfStruct.pathTo2sf,
                                         rippedFilePath, sseqFilePath);
                                 }
-                            }
-                            
-                            this.fileCount++;
+                            }                            
                         }
                         else
                         {

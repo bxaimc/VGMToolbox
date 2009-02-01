@@ -103,7 +103,7 @@ namespace VGMToolbox.tools.xsf
 
                 string workingDirectory = Path.GetDirectoryName(pContainerRomPath);
 
-                string ripFolder = Path.Combine(".\\rips\\2sf\\", Path.GetFileNameWithoutExtension(pPath)); 
+                string ripFolder = Path.Combine(Application.StartupPath + "\\rips\\2sf\\", Path.GetFileNameWithoutExtension(pPath)); 
                 string copySdatDir = Path.Combine(ripFolder, "sdats");
 
                 int sdatIndex = 0;
