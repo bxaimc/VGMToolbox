@@ -244,7 +244,7 @@ namespace VGMToolbox.tools.xsf
                                         System.Text.Encoding enc = System.Text.Encoding.ASCII;
 
                                         bw.Write(Xsf.ASCII_TAG); // [TAG]
-                                        bw.Write(enc.GetBytes(String.Format("_lb={0}", pBin2PsfStruct.psflibName)));
+                                        bw.Write(enc.GetBytes(String.Format("_lib={0}", pBin2PsfStruct.psflibName)));
                                         bw.Write(0x0A);
                                     }
                                 }
