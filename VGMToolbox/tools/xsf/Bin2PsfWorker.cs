@@ -237,18 +237,21 @@ namespace VGMToolbox.tools.xsf
                             if (isSuccess)
                             {
                                 // add lib tag
-                                using (FileStream ofs = File.Open(builtFilePath, FileMode.Append, FileAccess.Write))
+                                if (pBin2PsfStruct.makeMiniPsfs)
                                 {
-                                    using (BinaryWriter bw = new BinaryWriter(ofs))
+                                    using (FileStream ofs = File.Open(builtFilePath, FileMode.Open, FileAccess.Write))
                                     {
-                                        System.Text.Encoding enc = System.Text.Encoding.ASCII;
+                                        ofs.Seek(0, SeekOrigin.End);
+                                        using (BinaryWriter bw = new BinaryWriter(ofs))
+                                        {
+                                            System.Text.Encoding enc = System.Text.Encoding.ASCII;
 
-                                        bw.Write(Xsf.ASCII_TAG); // [TAG]
-                                        bw.Write(enc.GetBytes(String.Format("_lib={0}", pBin2PsfStruct.psflibName)));
-                                        bw.Write(0x0A);
+                                            bw.Write(enc.GetBytes(Xsf.ASCII_TAG)); // [TAG]
+                                            bw.Write(enc.GetBytes(String.Format("_lib={0}", pBin2PsfStruct.psflibName)));
+                                            bw.Write(new byte[] { 0x0A });
+                                        }
                                     }
                                 }
-                                
                                 this.progressStruct.Clear();
                                 this.progressStruct.genericMessage = String.Format("{0}.{1} created.", filePrefix, outputExtension) +
                                     Environment.NewLine;
