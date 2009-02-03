@@ -20,7 +20,8 @@ namespace VGMToolbox.forms
             // set title
             this.lblTitle.Text = "ssfmake Front End (note: Python must be installed and in your PATH.)";
             this.btnDoTask.Text = "Build SSFs";
-            this.tbOutput.Text = "This tool is incomplete and does not function.";
+            this.tbOutput.Text = "This tool is incomplete and does not function." + Environment.NewLine;
+            this.tbOutput.Text += "Please name data collections as SEQ/BIN/EXB, or check 'Use seqext and tonext to seek data'.";
 
             InitializeComponent();
         }
@@ -37,11 +38,12 @@ namespace VGMToolbox.forms
             smStruct.mixerBank = tbMixerBank.Text;
             smStruct.mixerNumber = tbMixerNumber.Text;
             smStruct.effectNumber = tbEffect.Text;
-            smStruct.useDsp = String.IsNullOrEmpty(tbDsp.Text)? "0" : "1";
+            smStruct.useDsp = "0"; // logic within worker will set this
             smStruct.driver = tbDriver.Text;
-            smStruct.toneData = tbToneData.Text;
-            smStruct.sequenceData = tbSequence.Text;
-            smStruct.dspProgram = tbDsp.Text;
+
+            smStruct.sourcePath = tbSourcePath.Text;
+            smStruct.outputFolder = tbOutputFolder.Text;
+            smStruct.findData = cbSeekData.Checked;
 
             ssfMakeWorker = new SsfMakeWorker();
             ssfMakeWorker.ProgressChanged += backgroundWorker_ReportProgress;
@@ -93,5 +95,16 @@ namespace VGMToolbox.forms
 
             tbMixerBank.ReadOnly = cbMatchSeqBank.Checked;
         }
+
+        private void btnBrowseDriver_Click(object sender, EventArgs e)
+        {
+            tbDriver.Text = base.browseForFile(sender, e);
+        }
+
+        private void btnBrowseSource_Click(object sender, EventArgs e)
+        {
+            tbSourcePath.Text = base.browseForFolder(sender, e);
+        }
+
     }
 }

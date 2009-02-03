@@ -20,7 +20,6 @@ namespace VGMToolbox.tools.xsf
             Path.GetFullPath(Path.Combine(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "ssf"), "ssfinfo"));
         private static readonly string SSFINFO_SOURCE_PATH = Path.Combine(SSFINFO_FOLDER_PATH, "ssfinfo.py");
 
-
         private static readonly string WORKING_FOLDER =
             Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "working_ssf"));
         private static readonly string SSFMAKE_DESTINATION_PATH =
@@ -35,6 +34,9 @@ namespace VGMToolbox.tools.xsf
             Path.GetFullPath(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "psfpoint.exe"));
         private static readonly string PSFPOINT_DESTINATION_PATH =
             Path.GetFullPath(Path.Combine(WORKING_FOLDER, "psfpoint.exe"));
+
+        private readonly string OUTPUT_FOLDER =
+            Path.GetFullPath(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "rips"), "ssfs"));
 
         private const int LINE_NUM_SEQ_BANK = 130;
         private const int LINE_NUM_SEQ_TRACK = 131;
@@ -52,10 +54,16 @@ namespace VGMToolbox.tools.xsf
 
         private const int LINE_NUM_OUT_FILE = 145;
 
+        private const string FILE_EXTENSION_SEQUENCE = ".SEQ";
+        private const string FILE_EXTENSION_TONE = ".BIN";
+        private const string FILE_EXTENSION_DSP = ".EXB";
+
+        private int fileCount;
+        private int maxFiles;
         Constants.ProgressStruct progressStruct = new Constants.ProgressStruct();
 
         public struct SsfMakeStruct
-        {
+        {            
             public string sequenceBank;
             public string sequenceTrack;
             public string volume;
@@ -66,18 +74,24 @@ namespace VGMToolbox.tools.xsf
             
             public string driver;
             public string map;
-            public string toneData;
-            public string sequenceData;
-            public string dspProgram;
+
+            public string sourcePath;
+            public string outputFolder;
+            public bool findData;
         }
 
         public SsfMakeWorker()
-        {            
+        {
+            fileCount = 0;
+            maxFiles = 0;
+            this.progressStruct = new Constants.ProgressStruct();
+
             WorkerReportsProgress = true;
             WorkerSupportsCancellation = true;
         }
 
-        private void makeSsfs(SsfMakeStruct pSsfMakeStruct, DoWorkEventArgs e)
+        /*
+        private void makeSsfsOld(SsfMakeStruct pSsfMakeStruct, DoWorkEventArgs e)
         {
             this.progressStruct = new Constants.ProgressStruct();
             
@@ -141,14 +155,136 @@ namespace VGMToolbox.tools.xsf
 
             return;
         }
+        */
+ 
+        private void makeSsfs(SsfMakeStruct pSsfMakeStruct, DoWorkEventArgs e)
+        {
+            string[] uniqueSqFiles;
 
-        private string getMapFile(SsfMakeStruct pSsfMakeStruct)
+            if (!CancellationPending)
+            {
+                if (!pSsfMakeStruct.findData) // data has already been identified
+                {
+                    // get list of unique files
+                    uniqueSqFiles = this.getUniqueFileNames(pSsfMakeStruct.sourcePath);
+                    if (uniqueSqFiles != null)
+                    {
+                        this.maxFiles = uniqueSqFiles.Length;
+                        this.buildSsfs(uniqueSqFiles, pSsfMakeStruct, e);
+                    }
+                }
+                else // use seqext.py and tonext.py to find data
+                { 
+                
+                }
+            }
+            else
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            return;
+        }
+
+        private string[] getUniqueFileNames(string pSourceDirectory)
+        {
+            int fileCount = 0;
+            int i = 0;
+            string[] ret = null;
+
+            if (!Directory.Exists(pSourceDirectory))
+            {
+                this.progressStruct.Clear();
+                this.progressStruct.errorMessage = String.Format("ERROR: Directory {0} not found.", pSourceDirectory);
+                ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
+            }
+            else
+            {
+                fileCount = Directory.GetFiles(pSourceDirectory, "*.SEQ").Length;
+
+                if (fileCount > 0)
+                {
+                    ret = new string[fileCount];
+                }
+
+                foreach (string f in Directory.GetFiles(pSourceDirectory, "*.SEQ"))
+                {
+                    ret[i] = f;
+                    i++;
+                }
+            }
+
+            return ret;
+        }
+
+        private void buildSsfs(string[] pUniqueSqFiles, SsfMakeStruct pSsfMakeStruct,
+            DoWorkEventArgs e)
+        {
+            Process ssfmakeProcess;
+            int progress = 0;
+            StringBuilder ssfmakeArguments = new StringBuilder();
+            bool isSuccess;
+
+            string filePrefixPath;
+            string filePrefix;
+
+            string ripOutputFolder = Path.Combine(OUTPUT_FOLDER, pSsfMakeStruct.outputFolder);
+
+            FileInfo fi;
+
+
+            foreach (string f in pUniqueSqFiles)
+            {
+                if (!CancellationPending)
+                {
+                    try
+                    {
+                        // report progress
+                        progress = (++this.fileCount * 100) / maxFiles;
+                        this.progressStruct.Clear();
+                        this.progressStruct.filename = f;
+                        ReportProgress(progress, this.progressStruct);
+
+                        filePrefix = Path.GetFileNameWithoutExtension(f);
+                        filePrefixPath = Path.Combine(Path.GetDirectoryName(f), filePrefix);
+
+                        pSsfMakeStruct.map = getMapFile(pSsfMakeStruct, filePrefixPath);
+
+                        if (!String.IsNullOrEmpty(pSsfMakeStruct.map))
+                        {
+                            this.prepareWorkingDir(pSsfMakeStruct, filePrefixPath);
+                            this.customizeScript(pSsfMakeStruct, filePrefix);
+                            this.executeScript(); // add code to redirect output to window
+
+
+                            Directory.Delete(WORKING_FOLDER, true);
+                        }                        
+                    }
+                    catch (Exception ex2)
+                    {
+                        this.progressStruct.Clear();
+                        this.progressStruct.filename = f;
+                        this.progressStruct.errorMessage = ex2.Message;
+                        ReportProgress(progress, this.progressStruct);
+                    }
+                }
+                else
+                {
+                    e.Cancel = true;
+                    return;
+                } // if (!CancellationPending)
+
+            } // foreach (string f in pUniqueSqFiles)
+        }
+
+        private string getMapFile(SsfMakeStruct pSsfMakeStruct, string pSourceFilePrefix)
         {
             FileInfo fi;
             string ret = null;
 
-            string seqPath = Path.GetFullPath(pSsfMakeStruct.sequenceData);
-            string tonePath = Path.GetFullPath(pSsfMakeStruct.toneData);
+            string seqPath = Path.GetFullPath(pSourceFilePrefix + FILE_EXTENSION_SEQUENCE);
+            string tonePath = Path.GetFullPath(pSourceFilePrefix + FILE_EXTENSION_TONE);
 
             fi = new FileInfo(seqPath);
             long seqSize = fi.Length;
@@ -190,7 +326,7 @@ namespace VGMToolbox.tools.xsf
             return ret;
         }
 
-        private bool prepareWorkingDir(SsfMakeStruct pSsfMakeStruct)
+        private bool prepareWorkingDir(SsfMakeStruct pSsfMakeStruct, string pSourceFilePrefix)
         {
             bool ret = false;
             string userFilePath;
@@ -216,16 +352,17 @@ namespace VGMToolbox.tools.xsf
                 userFilePath = Path.GetFullPath(pSsfMakeStruct.driver);
                 File.Copy(userFilePath, Path.Combine(WORKING_FOLDER, Path.GetFileName(userFilePath)), true);
 
-                userFilePath = Path.GetFullPath(pSsfMakeStruct.toneData);
+                userFilePath = Path.GetFullPath(Path.Combine(pSsfMakeStruct.sourcePath, pSourceFilePrefix + FILE_EXTENSION_TONE));
                 File.Copy(userFilePath, Path.Combine(WORKING_FOLDER, Path.GetFileName(userFilePath)), true);
 
-                userFilePath = Path.GetFullPath(pSsfMakeStruct.sequenceData);
+                userFilePath = Path.GetFullPath(Path.Combine(pSsfMakeStruct.sourcePath, pSourceFilePrefix + FILE_EXTENSION_SEQUENCE));
                 File.Copy(userFilePath, Path.Combine(WORKING_FOLDER, Path.GetFileName(userFilePath)), true);
 
-                if (!String.IsNullOrEmpty(pSsfMakeStruct.dspProgram))
+                userFilePath = Path.GetFullPath(Path.Combine(pSsfMakeStruct.sourcePath, pSourceFilePrefix + FILE_EXTENSION_DSP));
+                if (File.Exists(userFilePath))
                 {
-                    userFilePath = Path.GetFullPath(pSsfMakeStruct.dspProgram);
                     File.Copy(userFilePath, Path.Combine(WORKING_FOLDER, Path.GetFileName(userFilePath)), true);
+                    pSsfMakeStruct.useDsp = "1";
                 }
 
                 ret = true;
@@ -234,10 +371,7 @@ namespace VGMToolbox.tools.xsf
             {
                 Directory.Delete(WORKING_FOLDER, true);
 
-                // no suitable map found
-                progressStruct = new Constants.ProgressStruct();
-                progressStruct.newNode = null;
-                progressStruct.filename = null;
+                progressStruct.Clear();
                 progressStruct.errorMessage = String.Format("ERROR: {0}", _ex.Message);
                 ReportProgress(0, progressStruct);
             }
@@ -245,7 +379,7 @@ namespace VGMToolbox.tools.xsf
             return ret;
         }
 
-        private bool customizeScript(SsfMakeStruct pSsfMakeStruct)
+        private bool customizeScript(SsfMakeStruct pSsfMakeStruct, string pSourceFilePrefix)
         {            
             bool ret = true;
             int lineNumber;
@@ -294,17 +428,24 @@ namespace VGMToolbox.tools.xsf
                         writer.WriteLine(String.Format("nmap = '{0}'    # sound area map", pSsfMakeStruct.map));
                         break;
                     case LINE_NUM_TONE_DATA:
-                        writer.WriteLine(String.Format("nbin = '{0}'    # tone data", Path.GetFileName(pSsfMakeStruct.toneData)));
+                        writer.WriteLine(String.Format("nbin = '{0}'    # tone data", Path.GetFileName(pSourceFilePrefix + FILE_EXTENSION_TONE)));
                         break;
                     case LINE_NUM_SEQ_DATA:
-                        writer.WriteLine(String.Format("nseq = '{0}'    # sequence data", Path.GetFileName(pSsfMakeStruct.sequenceData)));
+                        writer.WriteLine(String.Format("nseq = '{0}'    # sequence data", Path.GetFileName(pSourceFilePrefix + FILE_EXTENSION_SEQUENCE)));
                         break;
                     case LINE_NUM_DSP_PROGRAM:
-                        writer.WriteLine(String.Format("nexb = '{0}'    # DSP program", Path.GetFileName(pSsfMakeStruct.dspProgram)));
+                        if (File.Exists(Path.GetFullPath(pSourceFilePrefix + FILE_EXTENSION_DSP)))
+                        {
+                            writer.WriteLine(String.Format("nexb = '{0}'    # DSP program", Path.GetFileName(pSourceFilePrefix + FILE_EXTENSION_DSP)));
+                        }
+                        else
+                        {
+                            writer.WriteLine(String.Format("nexb = '{0}'    # DSP program", String.Empty));                        
+                        }
                         break;
 
                     case LINE_NUM_OUT_FILE:
-                        writer.WriteLine(String.Format("nout = 'ssfdata.ssf'    # output file name (if .ssflib, create ssflib and minissfs for each track in the bank)", "ssfdata.ssf"));
+                        writer.WriteLine(String.Format("nout = '{0}.ssf'    # output file name (if .ssflib, create ssflib and minissfs for each track in the bank)", Path.GetFileNameWithoutExtension(pSourceFilePrefix)));
                         break;
                 
                     default:
@@ -337,38 +478,31 @@ namespace VGMToolbox.tools.xsf
             Process ssfMakeProcess = null;
             Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
 
-            try
-            {
-                string arguments = String.Format(" {0}", Path.GetFileName(SSFMAKE_DESTINATION_PATH));
-                ssfMakeProcess = new Process();
-                ssfMakeProcess.StartInfo = new ProcessStartInfo("python.exe", arguments);
-                ssfMakeProcess.StartInfo.WorkingDirectory = WORKING_FOLDER;
-                ssfMakeProcess.StartInfo.UseShellExecute = false;
-                ssfMakeProcess.StartInfo.CreateNoWindow = true;
-                bool isSuccess = ssfMakeProcess.Start();
-                ssfMakeProcess.WaitForExit();
+            string arguments = String.Format(" {0}", Path.GetFileName(SSFMAKE_DESTINATION_PATH));
+            ssfMakeProcess = new Process();
+            ssfMakeProcess.StartInfo = new ProcessStartInfo("python.exe", arguments);
+            ssfMakeProcess.StartInfo.WorkingDirectory = WORKING_FOLDER;
+            ssfMakeProcess.StartInfo.UseShellExecute = false;
+            ssfMakeProcess.StartInfo.CreateNoWindow = true;
+            bool isSuccess = ssfMakeProcess.Start();
+            ssfMakeProcess.WaitForExit();
 
-                ssfMakeProcess.Close();
-                ssfMakeProcess.Dispose();
-            }
-            catch (Exception ex)
-            {
-                ret = false;
-                                
-                vProgressStruct = new Constants.ProgressStruct();
-                vProgressStruct.newNode = null;
-                vProgressStruct.filename = null;
-                vProgressStruct.errorMessage = ex.Message;
-                ReportProgress(0, vProgressStruct);
-            }
+            ssfMakeProcess.Close();
+            ssfMakeProcess.Dispose();
 
             return ret;
         }
 
+        /*
+        private bool moveSsfToRpFolder(string pSourceFilePrefix)
+        {
+            userFilePath = Path.GetFullPath(Path.Combine(pSsfMakeStruct.sourcePath, pSourceFilePrefix + FILE_EXTENSION_TONE));
+            File.Copy(userFilePath, Path.Combine(WORKING_FOLDER, Path.GetFileName(userFilePath)), true);
+        }
+        */
         protected override void OnDoWork(DoWorkEventArgs e)
         {
             SsfMakeStruct ssfMakeStruct = (SsfMakeStruct)e.Argument;
-
             this.makeSsfs(ssfMakeStruct, e);
         }
     }
