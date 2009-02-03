@@ -20,8 +20,10 @@ namespace VGMToolbox.forms
             // set title
             this.lblTitle.Text = "ssfmake Front End (note: Python must be installed and in your PATH.)";
             this.btnDoTask.Text = "Build SSFs";
-            this.tbOutput.Text = "This tool is incomplete and does not function." + Environment.NewLine;
-            this.tbOutput.Text += "Please name data collections as SEQ/BIN/EXB, or check 'Use seqext and tonext to seek data'.";
+            this.tbOutput.Text += "ssfmake.py, ssfinfo.py, seqext.py, and tonext.py are all written by kingshriek (snesmusic.org/hoot/kingshriek/ssf/)." + Environment.NewLine;
+            this.tbOutput.Text += "Please name data collections as SEQ/BIN/EXB." + Environment.NewLine;
+            this.tbOutput.Text += "DSP map checking not yet implemented." + Environment.NewLine;
+            this.tbOutput.Text += "Auto searching works best (only?) when all files are within a single archive." + Environment.NewLine;
 
             InitializeComponent();
         }

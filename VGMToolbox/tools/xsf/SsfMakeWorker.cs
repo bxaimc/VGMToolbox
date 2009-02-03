@@ -12,6 +12,11 @@ namespace VGMToolbox.tools.xsf
 {
     class SsfMakeWorker : BackgroundWorker
     {
+        private static readonly string SSFTOOL_FOLDER_PATH =
+            Path.GetFullPath(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "ssf"));
+        private static readonly string SEQEXT_SOURCE_PATH = Path.Combine(SSFTOOL_FOLDER_PATH, "seqext.py");
+        private static readonly string TONEXT_SOURCE_PATH = Path.Combine(SSFTOOL_FOLDER_PATH, "tonext.py");
+
         private static readonly string SSFMAKE_FOLDER_PATH =
             Path.GetFullPath(Path.Combine(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "ssf"), "ssfmake"));
         private static readonly string SSFMAKE_SOURCE_PATH = Path.Combine(SSFMAKE_FOLDER_PATH, "ssfmake.py");
@@ -22,6 +27,8 @@ namespace VGMToolbox.tools.xsf
 
         private static readonly string WORKING_FOLDER =
             Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "working_ssf"));
+        private static readonly string WORKING_FOLDER_SEEK =
+            Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "working_ssf_seek"));
         private static readonly string SSFMAKE_DESTINATION_PATH =
             Path.Combine(WORKING_FOLDER, "ssfmake.py");
         private static readonly string SSFINFO_DESTINATION_PATH =
@@ -163,20 +170,26 @@ namespace VGMToolbox.tools.xsf
 
             if (!CancellationPending)
             {
-                if (!pSsfMakeStruct.findData) // data has already been identified
+                if (pSsfMakeStruct.findData)
                 {
-                    // get list of unique files
-                    uniqueSqFiles = this.getUniqueFileNames(pSsfMakeStruct.sourcePath);
-                    if (uniqueSqFiles != null)
-                    {
-                        this.maxFiles = uniqueSqFiles.Length;
-                        this.buildSsfs(uniqueSqFiles, pSsfMakeStruct, e);
-                    }
+                    // extract the data using seqext.py and tonext.py
+                    this.extractData(pSsfMakeStruct);
+                    
+                    // set source path to folder with our extracted data
+                    pSsfMakeStruct.sourcePath = WORKING_FOLDER_SEEK;
                 }
-                else // use seqext.py and tonext.py to find data
-                { 
-                
+
+
+                // get list of unique files
+                uniqueSqFiles = this.getUniqueFileNames(pSsfMakeStruct.sourcePath);
+                if (uniqueSqFiles != null)
+                {
+                    this.maxFiles = uniqueSqFiles.Length;
+                    this.buildSsfs(uniqueSqFiles, pSsfMakeStruct, e);
                 }
+
+                Directory.Delete(WORKING_FOLDER_SEEK, true);
+
             }
             else
             {
@@ -221,7 +234,6 @@ namespace VGMToolbox.tools.xsf
         private void buildSsfs(string[] pUniqueSqFiles, SsfMakeStruct pSsfMakeStruct,
             DoWorkEventArgs e)
         {
-            Process ssfmakeProcess;
             int progress = 0;
             StringBuilder ssfmakeArguments = new StringBuilder();
             bool isSuccess;
@@ -232,7 +244,6 @@ namespace VGMToolbox.tools.xsf
             string ripOutputFolder = Path.Combine(OUTPUT_FOLDER, pSsfMakeStruct.outputFolder);
 
             FileInfo fi;
-
 
             foreach (string f in pUniqueSqFiles)
             {
@@ -256,7 +267,7 @@ namespace VGMToolbox.tools.xsf
                             this.prepareWorkingDir(pSsfMakeStruct, filePrefixPath);
                             this.customizeScript(pSsfMakeStruct, filePrefix);
                             this.executeScript(); // add code to redirect output to window
-
+                            this.moveSsfToRipFolder(pSsfMakeStruct, filePrefix, ripOutputFolder);
 
                             Directory.Delete(WORKING_FOLDER, true);
                         }                        
@@ -493,13 +504,97 @@ namespace VGMToolbox.tools.xsf
             return ret;
         }
 
-        /*
-        private bool moveSsfToRpFolder(string pSourceFilePrefix)
+        private void moveSsfToRipFolder(SsfMakeStruct pSsfMakeStruct, string filePrefix,
+            string ripOutputFolder)
         {
-            userFilePath = Path.GetFullPath(Path.Combine(pSsfMakeStruct.sourcePath, pSourceFilePrefix + FILE_EXTENSION_TONE));
-            File.Copy(userFilePath, Path.Combine(WORKING_FOLDER, Path.GetFileName(userFilePath)), true);
+            string sourceFile = Path.Combine(WORKING_FOLDER, filePrefix + ".SSF");
+            string destinationFile = Path.Combine(ripOutputFolder, filePrefix + ".SSF");
+
+            if (!Directory.Exists(ripOutputFolder))
+            {
+                Directory.CreateDirectory(ripOutputFolder);
+            }
+
+            File.Copy(sourceFile, destinationFile, true);
         }
-        */
+
+
+        private void extractData(SsfMakeStruct pSsfMakeStruct)
+        {
+            string destinationPath;
+            string arguments;
+            bool isSuccess;
+            Process extractionProcess = null;
+
+            // create temp folder
+            if (!Directory.Exists(WORKING_FOLDER_SEEK))
+            {
+                Directory.CreateDirectory(WORKING_FOLDER_SEEK);
+            }
+
+            // copy scripts
+            string seqextScriptPath = Path.Combine(WORKING_FOLDER_SEEK, Path.GetFileName(SEQEXT_SOURCE_PATH));
+            string tonextScriptPath = Path.Combine(WORKING_FOLDER_SEEK, Path.GetFileName(TONEXT_SOURCE_PATH));
+
+            File.Copy(SEQEXT_SOURCE_PATH, seqextScriptPath, true);
+            File.Copy(TONEXT_SOURCE_PATH, tonextScriptPath, true);
+
+            foreach (string file in Directory.GetFiles(pSsfMakeStruct.sourcePath))
+            {
+                try
+                {
+                    // copy to working dir
+                    destinationPath = Path.Combine(WORKING_FOLDER_SEEK, Path.GetFileName(file));
+                    File.Copy(file, destinationPath, true);
+
+                    // extract SEQ
+                    arguments = String.Format(" {0} {1} .",
+                        Path.GetFileName(seqextScriptPath), Path.GetFileName(file));
+                    extractionProcess = new Process();
+                    extractionProcess.StartInfo = new ProcessStartInfo("python.exe", arguments);
+                    extractionProcess.StartInfo.WorkingDirectory = WORKING_FOLDER_SEEK;
+                    extractionProcess.StartInfo.UseShellExecute = false;
+                    extractionProcess.StartInfo.CreateNoWindow = true;
+                    isSuccess = extractionProcess.Start();
+                    extractionProcess.WaitForExit();
+                    extractionProcess.Close();
+
+                    // extract TONE
+                    arguments = String.Format(" {0} {1} .",
+                        Path.GetFileName(tonextScriptPath), Path.GetFileName(file));
+                    extractionProcess = new Process();
+                    extractionProcess.StartInfo = new ProcessStartInfo("python.exe", arguments);
+                    extractionProcess.StartInfo.WorkingDirectory = WORKING_FOLDER_SEEK;
+                    extractionProcess.StartInfo.UseShellExecute = false;
+                    extractionProcess.StartInfo.CreateNoWindow = true;
+                    isSuccess = extractionProcess.Start();
+                    extractionProcess.WaitForExit();
+                    extractionProcess.Close();
+                    extractionProcess.Dispose();
+
+                    // delete the original
+                    File.Delete(destinationPath);
+                }
+                catch (Exception _e)
+                {
+                    this.progressStruct.Clear();
+                    this.progressStruct.errorMessage = _e.Message;
+                    ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
+                }
+                finally
+                {
+                    if (extractionProcess != null)
+                    {
+                        extractionProcess.Dispose();
+                    }
+                }
+            }
+
+            // delete the scripts
+            File.Delete(seqextScriptPath);
+            File.Delete(tonextScriptPath);
+        }
+
         protected override void OnDoWork(DoWorkEventArgs e)
         {
             SsfMakeStruct ssfMakeStruct = (SsfMakeStruct)e.Argument;
