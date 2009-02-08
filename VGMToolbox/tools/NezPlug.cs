@@ -18,7 +18,7 @@ namespace VGMToolbox.tools
             sb.Append(pFileName + "::");
             sb.Append(pFileType + ",");
             sb.Append(pSongNumber + ",");
-            sb.Append("" + pTitle.Replace(',', '-') + ",");
+            sb.Append("" + pTitle.Replace(",", "\\,") + ",");
             sb.Append(pTime + ",");
             sb.Append(pLoop + ",");
             sb.Append(pFade + ",");

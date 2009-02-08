@@ -245,7 +245,7 @@ namespace VGMToolbox.tools.xsf
                                         using (BinaryWriter bw = new BinaryWriter(ofs))
                                         {
                                             System.Text.Encoding enc = System.Text.Encoding.ASCII;
-
+                                            
                                             bw.Write(enc.GetBytes(Xsf.ASCII_TAG)); // [TAG]
                                             bw.Write(enc.GetBytes(String.Format("_lib={0}", pBin2PsfStruct.psflibName)));
                                             bw.Write(new byte[] { 0x0A });

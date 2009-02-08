@@ -46,14 +46,14 @@
             this.tbSequenceTrack = new System.Windows.Forms.TextBox();
             this.tbSequenceBank = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.tbOutputFolder = new System.Windows.Forms.TextBox();
             this.btnBrowseSource = new System.Windows.Forms.Button();
             this.btnBrowseDriver = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.tbSourcePath = new System.Windows.Forms.TextBox();
             this.tbDriver = new System.Windows.Forms.TextBox();
-            this.tbOutputFolder = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -65,31 +65,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 385);
-            this.pnlLabels.Size = new System.Drawing.Size(844, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 391);
+            this.pnlLabels.Size = new System.Drawing.Size(936, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(844, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(936, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 308);
-            this.tbOutput.Size = new System.Drawing.Size(844, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 314);
+            this.tbOutput.Size = new System.Drawing.Size(936, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 288);
-            this.pnlButtons.Size = new System.Drawing.Size(844, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 294);
+            this.pnlButtons.Size = new System.Drawing.Size(936, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(784, 0);
+            this.btnCancel.Location = new System.Drawing.Point(876, 0);
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(724, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(816, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnExecute_Click);
             // 
             // panel1
@@ -101,7 +101,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 23);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(844, 265);
+            this.panel1.Size = new System.Drawing.Size(936, 271);
             this.panel1.TabIndex = 5;
             // 
             // groupBox3
@@ -110,7 +110,7 @@
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox3.Location = new System.Drawing.Point(0, 206);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(844, 39);
+            this.groupBox3.Size = new System.Drawing.Size(936, 39);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Options";
@@ -143,7 +143,7 @@
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox2.Location = new System.Drawing.Point(0, 108);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(844, 98);
+            this.groupBox2.Size = new System.Drawing.Size(936, 98);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Settings";
@@ -278,10 +278,27 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(844, 108);
+            this.groupBox1.Size = new System.Drawing.Size(936, 108);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Files";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(6, 74);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(71, 13);
+            this.label3.TabIndex = 9;
+            this.label3.Text = "Output Folder";
+            // 
+            // tbOutputFolder
+            // 
+            this.tbOutputFolder.Location = new System.Drawing.Point(101, 71);
+            this.tbOutputFolder.Name = "tbOutputFolder";
+            this.tbOutputFolder.Size = new System.Drawing.Size(247, 20);
+            this.tbOutputFolder.TabIndex = 8;
+            this.tbOutputFolder.Text = "mySsfFolder";
             // 
             // btnBrowseSource
             // 
@@ -335,28 +352,11 @@
             this.tbDriver.Size = new System.Drawing.Size(247, 20);
             this.tbDriver.TabIndex = 0;
             // 
-            // tbOutputFolder
-            // 
-            this.tbOutputFolder.Location = new System.Drawing.Point(101, 71);
-            this.tbOutputFolder.Name = "tbOutputFolder";
-            this.tbOutputFolder.Size = new System.Drawing.Size(247, 20);
-            this.tbOutputFolder.TabIndex = 8;
-            this.tbOutputFolder.Text = "mySsfFolder";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 74);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(71, 13);
-            this.label3.TabIndex = 9;
-            this.label3.Text = "Output Folder";
-            // 
             // Xsf_SsfMakeFrontEndForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(844, 426);
+            this.ClientSize = new System.Drawing.Size(936, 432);
             this.Controls.Add(this.panel1);
             this.Name = "Xsf_SsfMakeFrontEndForm";
             this.Text = "Xsf_SsfMakeFrontEndForm";

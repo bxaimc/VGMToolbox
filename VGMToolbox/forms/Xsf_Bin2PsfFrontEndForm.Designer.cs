@@ -56,31 +56,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 635);
-            this.pnlLabels.Size = new System.Drawing.Size(844, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 391);
+            this.pnlLabels.Size = new System.Drawing.Size(936, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(844, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(936, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 558);
-            this.tbOutput.Size = new System.Drawing.Size(844, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 314);
+            this.tbOutput.Size = new System.Drawing.Size(936, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 538);
-            this.pnlButtons.Size = new System.Drawing.Size(844, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 294);
+            this.pnlButtons.Size = new System.Drawing.Size(936, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(784, 0);
+            this.btnCancel.Location = new System.Drawing.Point(876, 0);
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(724, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(816, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // groupBox1
@@ -99,7 +99,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(0, 23);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(844, 132);
+            this.groupBox1.Size = new System.Drawing.Size(936, 132);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Source";
@@ -184,7 +184,7 @@
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox2.Location = new System.Drawing.Point(0, 155);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(844, 100);
+            this.groupBox2.Size = new System.Drawing.Size(936, 100);
             this.groupBox2.TabIndex = 6;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Options";
@@ -269,7 +269,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(844, 676);
+            this.ClientSize = new System.Drawing.Size(936, 432);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "Xsf_Bin2PsfFrontEndForm";
