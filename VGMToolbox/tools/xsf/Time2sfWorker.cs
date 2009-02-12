@@ -41,6 +41,7 @@ namespace VGMToolbox.tools.xsf
             public string pathTo2sf;
             public string pathToSdat;
             public string filePrefix;
+            public bool doSingleLoop;
         }
 
         public Time2sfWorker()
@@ -153,8 +154,8 @@ namespace VGMToolbox.tools.xsf
                                 string sseqFilePath = Path.Combine(extractedSseqPath, s.name);
 
                                 // convert sseq file to midi
-                                processSuccess = this.convertSseqFile(SSEQ2MID_SOURCE_PATH, 
-                                    pTime2sfStruct.pathTo2sf,  sseqFilePath);
+                                processSuccess = this.convertSseqFile(SSEQ2MID_SOURCE_PATH,
+                                    pTime2sfStruct.pathTo2sf, sseqFilePath, pTime2sfStruct.doSingleLoop);
 
                                 // time file
                                 if (processSuccess)
@@ -185,10 +186,10 @@ namespace VGMToolbox.tools.xsf
         }
 
         private bool convertSseqFile(string pSseq2MidToolPath, string pMini2sfPath,
-            string pSseqFilePath)
+            string pSseqFilePath, bool pDoSingleLoop)
         {
-            Process ndsProcess;
             bool isSuccess;
+            string sseqOutputFile = String.Empty;
 
             // convert existing sseq to mid            
             string sseqPath = Path.GetDirectoryName(pSseqFilePath);
@@ -199,18 +200,29 @@ namespace VGMToolbox.tools.xsf
             {
                 File.Copy(pSseq2MidToolPath, sseq2MidDestinationPath, true);
 
-                string arguments = String.Format(" -2 -l {0}", Path.GetFileName(pSseqFilePath));
+                // pDoSingleLoop
+                string arguments;
 
-                ndsProcess = new Process();
-
-                ndsProcess.StartInfo = new ProcessStartInfo(sseq2MidDestinationPath, arguments);
-                ndsProcess.StartInfo.WorkingDirectory = sseqPath;
-                ndsProcess.StartInfo.UseShellExecute = false;
-                ndsProcess.StartInfo.CreateNoWindow = true;
-                ndsProcess.StartInfo.RedirectStandardOutput = true;
-                isSuccess = ndsProcess.Start();
-                string sseqOutputFile = ndsProcess.StandardOutput.ReadToEnd();
-                ndsProcess.WaitForExit();
+                if (pDoSingleLoop)
+                {
+                    arguments = String.Format(" -1 -l {0}", Path.GetFileName(pSseqFilePath));
+                }
+                else
+                {
+                    arguments = String.Format(" -2 -l {0}", Path.GetFileName(pSseqFilePath));
+                }
+                
+                using (Process ndsProcess = new Process())
+                {
+                    ndsProcess.StartInfo = new ProcessStartInfo(sseq2MidDestinationPath, arguments);
+                    ndsProcess.StartInfo.WorkingDirectory = sseqPath;
+                    ndsProcess.StartInfo.UseShellExecute = false;
+                    ndsProcess.StartInfo.CreateNoWindow = true;
+                    ndsProcess.StartInfo.RedirectStandardOutput = true;
+                    isSuccess = ndsProcess.Start();
+                    sseqOutputFile = ndsProcess.StandardOutput.ReadToEnd();
+                    ndsProcess.WaitForExit();                
+                }
 
                 // output redirected standard output
                 string textOutputPath = Path.Combine(pMini2sfPath, "text");

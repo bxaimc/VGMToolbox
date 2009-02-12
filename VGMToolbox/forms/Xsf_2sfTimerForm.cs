@@ -38,6 +38,7 @@ namespace VGMToolbox.forms
             t2Struct.pathTo2sf = tbPathTo2sfs.Text;
             t2Struct.pathToSdat = tbSdatPath.Text;
             t2Struct.filePrefix = tbFilePrefix.Text;
+            t2Struct.doSingleLoop = cbOneLoop.Checked;
 
             time2sfWorker = new Time2sfWorker();
             time2sfWorker.ProgressChanged += backgroundWorker_ReportProgress;
