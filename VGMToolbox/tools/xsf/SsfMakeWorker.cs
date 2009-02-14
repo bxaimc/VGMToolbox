@@ -248,7 +248,9 @@ namespace VGMToolbox.tools.xsf
             
             string anticipatedTonePath;
             string potentialFilePath;
-            string potentialFileName;            
+            string potentialFileName;
+
+            int totalTracks;
 
             string ripOutputFolder = Path.Combine(OUTPUT_FOLDER, pSsfMakeStruct.outputFolder);
 
@@ -287,15 +289,17 @@ namespace VGMToolbox.tools.xsf
                         filePrefix = Path.GetFileNameWithoutExtension(f);
                         filePrefixPath = Path.Combine(Path.GetDirectoryName(f), filePrefix);
 
-                        pSsfMakeStruct.map = getMapFile(pSsfMakeStruct, filePrefixPath);
+                        pSsfMakeStruct.map = getMapFile(pSsfMakeStruct, filePrefixPath);                        
 
                         if (!String.IsNullOrEmpty(pSsfMakeStruct.map))
                         {
+                            totalTracks = this.getNumberOfTracks(f);
+                            
                             if (this.prepareWorkingDir(pSsfMakeStruct, filePrefixPath))
                             {
-                                this.customizeScript(pSsfMakeStruct, filePrefix);
+                                this.customizeScript(pSsfMakeStruct, filePrefix, totalTracks);
                                 this.executeScript();
-                                this.moveSsfToRipFolder(pSsfMakeStruct, filePrefix, ripOutputFolder);
+                                this.moveSsfToRipFolder(ripOutputFolder, totalTracks);
                             }
 
                             Directory.Delete(WORKING_FOLDER, true);
@@ -434,7 +438,8 @@ namespace VGMToolbox.tools.xsf
             return ret;
         }
 
-        private bool customizeScript(SsfMakeStruct pSsfMakeStruct, string pSourceFilePrefix)
+        private bool customizeScript(SsfMakeStruct pSsfMakeStruct, string pSourceFilePrefix,
+            int pTotalTracks)
         {            
             bool ret = true;
             int lineNumber;
@@ -500,7 +505,14 @@ namespace VGMToolbox.tools.xsf
                         break;
 
                     case LINE_NUM_OUT_FILE:
-                        writer.WriteLine(String.Format("nout = '{0}.ssf'    # output file name (if .ssflib, create ssflib and minissfs for each track in the bank)", Path.GetFileNameWithoutExtension(pSourceFilePrefix)));
+                        if (pTotalTracks > 1)
+                        {
+                            writer.WriteLine(String.Format("nout = '{0}.ssflib'    # output file name (if .ssflib, create ssflib and minissfs for each track in the bank)", Path.GetFileNameWithoutExtension(pSourceFilePrefix)));                        
+                        }
+                        else
+                        {
+                            writer.WriteLine(String.Format("nout = '{0}.ssf'    # output file name (if .ssflib, create ssflib and minissfs for each track in the bank)", Path.GetFileNameWithoutExtension(pSourceFilePrefix)));                        
+                        }
                         break;
                 
                     default:
@@ -579,18 +591,45 @@ namespace VGMToolbox.tools.xsf
             return ret;
         }
 
-        private void moveSsfToRipFolder(SsfMakeStruct pSsfMakeStruct, string filePrefix,
-            string ripOutputFolder)
+        private void moveSsfToRipFolder(string ripOutputFolder, int pTotalTracks)
         {
-            string sourceFile = Path.Combine(WORKING_FOLDER, filePrefix + ".SSF");
-            string destinationFile = Path.Combine(ripOutputFolder, filePrefix + ".SSF");
+            string destinationFile;
+
+            string[] sourceFiles;
 
             if (!Directory.Exists(ripOutputFolder))
             {
                 Directory.CreateDirectory(ripOutputFolder);
             }
 
-            File.Copy(sourceFile, destinationFile, true);
+            if (pTotalTracks > 1)
+            {
+                sourceFiles = Directory.GetFiles(WORKING_FOLDER, "*.MINISSF");
+
+                foreach (string f in sourceFiles)
+                {
+                    destinationFile = Path.Combine(ripOutputFolder, Path.GetFileName(f));
+                    File.Copy(f, destinationFile, false);
+                }
+
+                sourceFiles = Directory.GetFiles(WORKING_FOLDER, "*.SSFLIB");
+
+                foreach (string f in sourceFiles)
+                {
+                    destinationFile = Path.Combine(ripOutputFolder, Path.GetFileName(f));
+                    File.Copy(f, destinationFile, false);
+                }
+            }
+            else 
+            {
+                sourceFiles = Directory.GetFiles(WORKING_FOLDER, "*.SSF");
+
+                foreach (string f in sourceFiles)
+                {
+                    destinationFile = Path.Combine(ripOutputFolder, Path.GetFileName(f));
+                    File.Copy(f, destinationFile, false);
+                }            
+            }
         }
 
         private void extractData(SsfMakeStruct pSsfMakeStruct)
@@ -701,24 +740,48 @@ namespace VGMToolbox.tools.xsf
                 Path.Combine(ripOutputFolder, Path.GetFileName(PSFPOINT_SOURCE_PATH));
             File.Copy(PSFPOINT_SOURCE_PATH, psfpointDestinationPath, true);
 
-            // extract SEQ
-            arguments = String.Format(" {0} {1} .",
-                Path.GetFileName(ssftimeDestinationPath), "*.ssf");
             using (Process timingProcess = new Process())
             {
+                // time .ssf
+                arguments = String.Format(" {0} {1} .",
+                    Path.GetFileName(ssftimeDestinationPath), "*.ssf");
+                
                 timingProcess.StartInfo = new ProcessStartInfo("python.exe", arguments);
                 timingProcess.StartInfo.WorkingDirectory = ripOutputFolder;
                 timingProcess.StartInfo.UseShellExecute = false;
                 timingProcess.StartInfo.CreateNoWindow = true;
-                // timingProcess.StartInfo.RedirectStandardOutput = true;
                 isSuccess = timingProcess.Start();
-                // seekOutput = timingProcess.StandardOutput.ReadToEnd();
+                timingProcess.WaitForExit();
+                timingProcess.Close();
+
+                // time .minissf
+                arguments = String.Format(" {0} {1} .",
+                    Path.GetFileName(ssftimeDestinationPath), "*.minissf");
+                
+                timingProcess.StartInfo = new ProcessStartInfo("python.exe", arguments);
+                timingProcess.StartInfo.WorkingDirectory = ripOutputFolder;
+                timingProcess.StartInfo.UseShellExecute = false;
+                timingProcess.StartInfo.CreateNoWindow = true;
+                isSuccess = timingProcess.Start();
                 timingProcess.WaitForExit();
             }
 
             // delete ssftime.py and psfpoint.exe
             File.Delete(ssftimeDestinationPath);
             File.Delete(psfpointDestinationPath);
+        }
+
+        private int getNumberOfTracks(string pSequencePath)
+        {
+            int ret = 1;
+
+            using (FileStream fs = File.OpenRead(pSequencePath))
+            {
+                fs.Position = 1;
+                ret = fs.ReadByte();            
+            }
+
+            return ret;
         }
 
         protected override void OnDoWork(DoWorkEventArgs e)
