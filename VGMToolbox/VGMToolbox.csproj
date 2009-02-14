@@ -452,6 +452,9 @@
     <Content Include="external\ssf\ssfmake\ssfmake.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="external\ssf\ssftime.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="external\ssf\tonext.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -529,6 +532,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="external\ssf\ssfmake\GEN_DSP8040.MAP">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="external\ssf\ssfmake\GEN_SEQ07000.MAP">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="external\ssf\ssfmake\GEN_SEQ08000.MAP">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="external\ssf\ssfmake\GEN_SEQ10000.MAP">

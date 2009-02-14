@@ -16,6 +16,7 @@ namespace VGMToolbox.tools.xsf
             Path.GetFullPath(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "ssf"));
         private static readonly string SEQEXT_SOURCE_PATH = Path.Combine(SSFTOOL_FOLDER_PATH, "seqext.py");
         private static readonly string TONEXT_SOURCE_PATH = Path.Combine(SSFTOOL_FOLDER_PATH, "tonext.py");
+        private static readonly string SSFTIME_SOURCE_PATH = Path.Combine(SSFTOOL_FOLDER_PATH, "ssftime.py");
 
         private static readonly string SSFMAKE_FOLDER_PATH =
             Path.GetFullPath(Path.Combine(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "ssf"), "ssfmake"));
@@ -186,9 +187,13 @@ namespace VGMToolbox.tools.xsf
                 {
                     this.maxFiles = uniqueSqFiles.Length;
                     this.buildSsfs(uniqueSqFiles, pSsfMakeStruct, e);
+                    this.timeSsfs(Path.Combine(OUTPUT_FOLDER, pSsfMakeStruct.outputFolder));
                 }
 
-                Directory.Delete(WORKING_FOLDER_SEEK, true);
+                if (Directory.Exists(WORKING_FOLDER_SEEK))
+                {
+                    Directory.Delete(WORKING_FOLDER_SEEK, true);
+                }
 
             }
             else
@@ -240,10 +245,32 @@ namespace VGMToolbox.tools.xsf
 
             string filePrefixPath;
             string filePrefix;
+            
+            string anticipatedTonePath;
+            string potentialFilePath;
+            string potentialFileName;            
 
             string ripOutputFolder = Path.Combine(OUTPUT_FOLDER, pSsfMakeStruct.outputFolder);
 
             FileInfo fi;
+
+            // check for more seq than tones and try to match based on file name (Riglordsaga)
+            foreach (string f in pUniqueSqFiles)
+            {
+                anticipatedTonePath = Path.ChangeExtension(f, FILE_EXTENSION_TONE);
+
+                if (!File.Exists(anticipatedTonePath))
+                {
+                    filePrefix = Path.GetFileNameWithoutExtension(f);
+                    potentialFileName = filePrefix.Substring(0, filePrefix.IndexOf('_') + 1) + "000" + FILE_EXTENSION_TONE; // TRY XXXX_000.BIN
+                    potentialFilePath = Path.Combine(Path.GetDirectoryName(f), potentialFileName);
+
+                    if (File.Exists(potentialFilePath))
+                    {
+                        File.Copy(potentialFilePath, anticipatedTonePath);
+                    }
+                }
+            }
 
             foreach (string f in pUniqueSqFiles)
             {
@@ -264,13 +291,22 @@ namespace VGMToolbox.tools.xsf
 
                         if (!String.IsNullOrEmpty(pSsfMakeStruct.map))
                         {
-                            this.prepareWorkingDir(pSsfMakeStruct, filePrefixPath);
-                            this.customizeScript(pSsfMakeStruct, filePrefix);
-                            this.executeScript(); // add code to redirect output to window
-                            this.moveSsfToRipFolder(pSsfMakeStruct, filePrefix, ripOutputFolder);
+                            if (this.prepareWorkingDir(pSsfMakeStruct, filePrefixPath))
+                            {
+                                this.customizeScript(pSsfMakeStruct, filePrefix);
+                                this.executeScript();
+                                this.moveSsfToRipFolder(pSsfMakeStruct, filePrefix, ripOutputFolder);
+                            }
 
                             Directory.Delete(WORKING_FOLDER, true);
-                        }                        
+                        }
+                        else
+                        {
+                            this.progressStruct.Clear();
+                            this.progressStruct.filename = f;
+                            this.progressStruct.errorMessage = "[ERROR - NO SUITABLE MAP FILE FOUND]: " + f + Environment.NewLine;
+                            ReportProgress(progress, this.progressStruct);                        
+                        }
                     }
                     catch (Exception ex2)
                     {
@@ -305,7 +341,15 @@ namespace VGMToolbox.tools.xsf
 
             if (pSsfMakeStruct.useDsp.Equals("0"))
             {
-                if ((toneSize <= 0x65000) && (seqSize <= 0x10000))
+                if ((toneSize <= 0x6E000) && (seqSize <= 0x07000))
+                {
+                    ret = "GEN_SEQ07000.MAP";
+                }                
+                else if ((toneSize <= 0x6D000) && (seqSize <= 0x08000))
+                {
+                    ret = "GEN_SEQ08000.MAP";
+                }
+                else if ((toneSize <= 0x65000) && (seqSize <= 0x10000))
                 {
                     ret = "GEN_SEQ10000.MAP";
                 }
@@ -485,21 +529,52 @@ namespace VGMToolbox.tools.xsf
 
         private bool executeScript()
         {
-            bool ret = true;
-            Process ssfMakeProcess = null;
-            Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
+            bool ret = false;
+            bool isSuccess;
 
+            string ssfMakeOutput;
+            string ssfMakeError = String.Empty;
             string arguments = String.Format(" {0}", Path.GetFileName(SSFMAKE_DESTINATION_PATH));
-            ssfMakeProcess = new Process();
-            ssfMakeProcess.StartInfo = new ProcessStartInfo("python.exe", arguments);
-            ssfMakeProcess.StartInfo.WorkingDirectory = WORKING_FOLDER;
-            ssfMakeProcess.StartInfo.UseShellExecute = false;
-            ssfMakeProcess.StartInfo.CreateNoWindow = true;
-            bool isSuccess = ssfMakeProcess.Start();
-            ssfMakeProcess.WaitForExit();
 
-            ssfMakeProcess.Close();
-            ssfMakeProcess.Dispose();
+            using (Process ssfMakeProcess = new Process())
+            {
+                try
+                {
+                    ssfMakeProcess.StartInfo = new ProcessStartInfo("python.exe", arguments);
+                    ssfMakeProcess.StartInfo.WorkingDirectory = WORKING_FOLDER;
+                    ssfMakeProcess.StartInfo.UseShellExecute = false;
+                    ssfMakeProcess.StartInfo.CreateNoWindow = true;
+                    ssfMakeProcess.StartInfo.RedirectStandardOutput = true;
+                    ssfMakeProcess.StartInfo.RedirectStandardError = true;
+                    isSuccess = ssfMakeProcess.Start();
+                    ssfMakeOutput = ssfMakeProcess.StandardOutput.ReadToEnd();
+                    ssfMakeError = ssfMakeProcess.StandardError.ReadToEnd();
+                    ssfMakeProcess.WaitForExit();
+
+                    this.progressStruct.Clear();
+                    this.progressStruct.genericMessage = ssfMakeOutput + Environment.NewLine;
+                    this.ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
+
+                    ret = true && isSuccess;
+                }
+                catch (Exception _e)
+                {
+                    ret = false;
+                    this.progressStruct.Clear();
+                    this.progressStruct.errorMessage = _e.Message;
+                    ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
+                }
+                finally
+                {
+                    if (!String.IsNullOrEmpty(ssfMakeError))
+                    {
+                        ret = false;
+                        this.progressStruct.Clear();
+                        this.progressStruct.errorMessage = "[ERROR - SSFMAKE]" + ssfMakeError + Environment.NewLine;
+                        ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);                    
+                    }
+                }
+            }
 
             return ret;
         }
@@ -518,12 +593,12 @@ namespace VGMToolbox.tools.xsf
             File.Copy(sourceFile, destinationFile, true);
         }
 
-
         private void extractData(SsfMakeStruct pSsfMakeStruct)
         {
             string destinationPath;
             string arguments;
             bool isSuccess;
+            string seekOutput;
             Process extractionProcess = null;
 
             // create temp folder
@@ -555,9 +630,17 @@ namespace VGMToolbox.tools.xsf
                     extractionProcess.StartInfo.WorkingDirectory = WORKING_FOLDER_SEEK;
                     extractionProcess.StartInfo.UseShellExecute = false;
                     extractionProcess.StartInfo.CreateNoWindow = true;
+                    extractionProcess.StartInfo.RedirectStandardOutput = true;
                     isSuccess = extractionProcess.Start();
+                    seekOutput = extractionProcess.StandardOutput.ReadToEnd();
                     extractionProcess.WaitForExit();
                     extractionProcess.Close();
+
+                    this.progressStruct.Clear();
+                    this.progressStruct.genericMessage = String.Format("[SEQEXT - {0}]", Path.GetFileName(file)) +
+                        Environment.NewLine + seekOutput;
+                    this.ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
+
 
                     // extract TONE
                     arguments = String.Format(" {0} {1} .",
@@ -567,10 +650,18 @@ namespace VGMToolbox.tools.xsf
                     extractionProcess.StartInfo.WorkingDirectory = WORKING_FOLDER_SEEK;
                     extractionProcess.StartInfo.UseShellExecute = false;
                     extractionProcess.StartInfo.CreateNoWindow = true;
+                    extractionProcess.StartInfo.RedirectStandardOutput = true;
                     isSuccess = extractionProcess.Start();
+                    seekOutput = extractionProcess.StandardOutput.ReadToEnd();
                     extractionProcess.WaitForExit();
+                    
                     extractionProcess.Close();
                     extractionProcess.Dispose();
+
+                    this.progressStruct.Clear();
+                    this.progressStruct.genericMessage = String.Format("[TONEXT - {0}]", Path.GetFileName(file)) +
+                        Environment.NewLine + seekOutput + Environment.NewLine;
+                    this.ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
 
                     // delete the original
                     File.Delete(destinationPath);
@@ -593,6 +684,41 @@ namespace VGMToolbox.tools.xsf
             // delete the scripts
             File.Delete(seqextScriptPath);
             File.Delete(tonextScriptPath);
+        }
+
+        private void timeSsfs(string ripOutputFolder)
+        {
+            string arguments;
+            bool isSuccess;
+
+            // copy ssftime.py to rip folder
+            string ssftimeDestinationPath = 
+                Path.Combine(ripOutputFolder, Path.GetFileName(SSFTIME_SOURCE_PATH));
+            File.Copy(SSFTIME_SOURCE_PATH, ssftimeDestinationPath, true);
+
+            // copy psfpoint.exe to rip folder
+            string psfpointDestinationPath =
+                Path.Combine(ripOutputFolder, Path.GetFileName(PSFPOINT_SOURCE_PATH));
+            File.Copy(PSFPOINT_SOURCE_PATH, psfpointDestinationPath, true);
+
+            // extract SEQ
+            arguments = String.Format(" {0} {1} .",
+                Path.GetFileName(ssftimeDestinationPath), "*.ssf");
+            using (Process timingProcess = new Process())
+            {
+                timingProcess.StartInfo = new ProcessStartInfo("python.exe", arguments);
+                timingProcess.StartInfo.WorkingDirectory = ripOutputFolder;
+                timingProcess.StartInfo.UseShellExecute = false;
+                timingProcess.StartInfo.CreateNoWindow = true;
+                // timingProcess.StartInfo.RedirectStandardOutput = true;
+                isSuccess = timingProcess.Start();
+                // seekOutput = timingProcess.StandardOutput.ReadToEnd();
+                timingProcess.WaitForExit();
+            }
+
+            // delete ssftime.py and psfpoint.exe
+            File.Delete(ssftimeDestinationPath);
+            File.Delete(psfpointDestinationPath);
         }
 
         protected override void OnDoWork(DoWorkEventArgs e)
