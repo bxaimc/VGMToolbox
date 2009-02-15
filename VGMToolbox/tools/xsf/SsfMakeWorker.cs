@@ -85,6 +85,7 @@ namespace VGMToolbox.tools.xsf
 
             public string sourcePath;
             public string outputFolder;
+            public string dspFile;
             public bool findData;
         }
 
@@ -175,7 +176,17 @@ namespace VGMToolbox.tools.xsf
                 {
                     // extract the data using seqext.py and tonext.py
                     this.extractData(pSsfMakeStruct);
+
+                    // grab DSP data from source dir
+                    string exbFileName;
+                    string[] exbFiles = Directory.GetFiles(pSsfMakeStruct.sourcePath, "*.EXB");
                     
+                    foreach (string f in exbFiles)
+                    { 
+                        exbFileName = Path.GetFileName(f);
+                        File.Copy(f, Path.Combine(WORKING_FOLDER_SEEK, exbFileName), true);
+                    }
+
                     // set source path to folder with our extracted data
                     pSsfMakeStruct.sourcePath = WORKING_FOLDER_SEEK;
                 }
@@ -194,7 +205,6 @@ namespace VGMToolbox.tools.xsf
                 {
                     Directory.Delete(WORKING_FOLDER_SEEK, true);
                 }
-
             }
             else
             {
@@ -241,12 +251,13 @@ namespace VGMToolbox.tools.xsf
         {
             int progress = 0;
             StringBuilder ssfmakeArguments = new StringBuilder();
-            bool isSuccess;
 
             string filePrefixPath;
             string filePrefix;
             
             string anticipatedTonePath;
+            string anticipatedDspPath;
+
             string potentialFilePath;
             string potentialFileName;
 
@@ -254,25 +265,39 @@ namespace VGMToolbox.tools.xsf
 
             string ripOutputFolder = Path.Combine(OUTPUT_FOLDER, pSsfMakeStruct.outputFolder);
 
-            FileInfo fi;
-
-            // check for more seq than tones and try to match based on file name (Riglordsaga)
-            foreach (string f in pUniqueSqFiles)
+            // check for more seq than tones/dsp and try to match based on file name (Riglordsaga)
+            if (pSsfMakeStruct.findData)
             {
-                anticipatedTonePath = Path.ChangeExtension(f, FILE_EXTENSION_TONE);
-
-                if (!File.Exists(anticipatedTonePath))
+                foreach (string f in pUniqueSqFiles)
                 {
-                    filePrefix = Path.GetFileNameWithoutExtension(f);
-                    potentialFileName = filePrefix.Substring(0, filePrefix.IndexOf('_') + 1) + "000" + FILE_EXTENSION_TONE; // TRY XXXX_000.BIN
-                    potentialFilePath = Path.Combine(Path.GetDirectoryName(f), potentialFileName);
+                    anticipatedTonePath = Path.ChangeExtension(f, FILE_EXTENSION_TONE);
+                    anticipatedDspPath = Path.ChangeExtension(f, FILE_EXTENSION_DSP);
 
-                    if (File.Exists(potentialFilePath))
+                    if (!File.Exists(anticipatedTonePath))
                     {
-                        File.Copy(potentialFilePath, anticipatedTonePath);
+                        filePrefix = Path.GetFileNameWithoutExtension(f);
+                        potentialFileName = filePrefix.Substring(0, filePrefix.IndexOf('_') + 1) + "000" + FILE_EXTENSION_TONE; // TRY XXXX_000.BIN
+                        potentialFilePath = Path.Combine(Path.GetDirectoryName(f), potentialFileName);
+
+                        if (File.Exists(potentialFilePath))
+                        {
+                            File.Copy(potentialFilePath, anticipatedTonePath);
+                        }
+                    }
+
+                    if (!File.Exists(anticipatedDspPath))
+                    {
+                        filePrefix = Path.GetFileNameWithoutExtension(f);
+                        potentialFileName = filePrefix.Substring(0, filePrefix.IndexOf('_')) + FILE_EXTENSION_DSP; // TRY XXXX.EXB
+                        potentialFilePath = Path.Combine(Path.GetDirectoryName(f), potentialFileName);
+
+                        if (File.Exists(potentialFilePath))
+                        {
+                            File.Copy(potentialFilePath, anticipatedDspPath);
+                        }
                     }
                 }
-            }
+            } // if (pSsfMakeStruct.findData)
 
             foreach (string f in pUniqueSqFiles)
             {
@@ -289,7 +314,13 @@ namespace VGMToolbox.tools.xsf
                         filePrefix = Path.GetFileNameWithoutExtension(f);
                         filePrefixPath = Path.Combine(Path.GetDirectoryName(f), filePrefix);
 
-                        pSsfMakeStruct.map = getMapFile(pSsfMakeStruct, filePrefixPath);                        
+                        if (!String.IsNullOrEmpty(pSsfMakeStruct.dspFile) ||
+                            File.Exists(Path.ChangeExtension(f, FILE_EXTENSION_DSP)))
+                        {
+                            pSsfMakeStruct.useDsp = "1";
+                        }
+                        
+                        pSsfMakeStruct.map = getMapFile(pSsfMakeStruct, filePrefixPath);
 
                         if (!String.IsNullOrEmpty(pSsfMakeStruct.map))
                         {
@@ -417,11 +448,17 @@ namespace VGMToolbox.tools.xsf
                 userFilePath = Path.GetFullPath(Path.Combine(pSsfMakeStruct.sourcePath, pSourceFilePrefix + FILE_EXTENSION_SEQUENCE));
                 File.Copy(userFilePath, Path.Combine(WORKING_FOLDER, Path.GetFileName(userFilePath)), true);
 
-                userFilePath = Path.GetFullPath(Path.Combine(pSsfMakeStruct.sourcePath, pSourceFilePrefix + FILE_EXTENSION_DSP));
-                if (File.Exists(userFilePath))
+                if (String.IsNullOrEmpty(pSsfMakeStruct.dspFile))
                 {
-                    File.Copy(userFilePath, Path.Combine(WORKING_FOLDER, Path.GetFileName(userFilePath)), true);
-                    pSsfMakeStruct.useDsp = "1";
+                    userFilePath = Path.GetFullPath(Path.Combine(pSsfMakeStruct.sourcePath, pSourceFilePrefix + FILE_EXTENSION_DSP));
+                    if (File.Exists(userFilePath))
+                    {
+                        File.Copy(userFilePath, Path.Combine(WORKING_FOLDER, Path.GetFileName(userFilePath)), true);
+                    }
+                }
+                else
+                {
+                    File.Copy(pSsfMakeStruct.dspFile, Path.Combine(WORKING_FOLDER, Path.GetFileName(pSsfMakeStruct.dspFile)), true);
                 }
 
                 ret = true;
@@ -494,13 +531,20 @@ namespace VGMToolbox.tools.xsf
                         writer.WriteLine(String.Format("nseq = '{0}'    # sequence data", Path.GetFileName(pSourceFilePrefix + FILE_EXTENSION_SEQUENCE)));
                         break;
                     case LINE_NUM_DSP_PROGRAM:
-                        if (File.Exists(Path.GetFullPath(pSourceFilePrefix + FILE_EXTENSION_DSP)))
+                        if (String.IsNullOrEmpty(pSsfMakeStruct.dspFile))
                         {
-                            writer.WriteLine(String.Format("nexb = '{0}'    # DSP program", Path.GetFileName(pSourceFilePrefix + FILE_EXTENSION_DSP)));
+                            if (File.Exists(Path.GetFullPath(pSourceFilePrefix + FILE_EXTENSION_DSP)))
+                            {
+                                writer.WriteLine(String.Format("nexb = '{0}'    # DSP program", Path.GetFileName(pSourceFilePrefix + FILE_EXTENSION_DSP)));
+                            }
+                            else
+                            {
+                                writer.WriteLine(String.Format("nexb = '{0}'    # DSP program", String.Empty));
+                            }
                         }
                         else
                         {
-                            writer.WriteLine(String.Format("nexb = '{0}'    # DSP program", String.Empty));                        
+                            writer.WriteLine(String.Format("nexb = '{0}'    # DSP program", Path.GetFileName(pSsfMakeStruct.dspFile)));
                         }
                         break;
 
@@ -701,7 +745,7 @@ namespace VGMToolbox.tools.xsf
                     this.progressStruct.genericMessage = String.Format("[TONEXT - {0}]", Path.GetFileName(file)) +
                         Environment.NewLine + seekOutput + Environment.NewLine;
                     this.ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
-
+                   
                     // delete the original
                     File.Delete(destinationPath);
                 }
@@ -718,7 +762,8 @@ namespace VGMToolbox.tools.xsf
                         extractionProcess.Dispose();
                     }
                 }
-            }
+            
+            } // foreach (string file in Directory.GetFiles(pSsfMakeStruct.sourcePath))
 
             // delete the scripts
             File.Delete(seqextScriptPath);

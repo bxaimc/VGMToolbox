@@ -42,6 +42,8 @@ namespace VGMToolbox.forms
             smStruct.effectNumber = tbEffect.Text;
             smStruct.useDsp = "0"; // logic within worker will set this
             smStruct.driver = tbDriver.Text;
+            // smStruct.map = tbMapFile.Text.Trim();
+            smStruct.dspFile = tbDspFile.Text;
 
             smStruct.sourcePath = tbSourcePath.Text;
             smStruct.outputFolder = tbOutputFolder.Text;
@@ -108,5 +110,9 @@ namespace VGMToolbox.forms
             tbSourcePath.Text = base.browseForFolder(sender, e);
         }
 
+        private void btnBrowseDsp_Click(object sender, EventArgs e)
+        {
+            tbDspFile.Text = base.browseForFile(sender, e);
+        }
     }
 }

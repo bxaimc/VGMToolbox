@@ -54,6 +54,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.tbSourcePath = new System.Windows.Forms.TextBox();
             this.tbDriver = new System.Windows.Forms.TextBox();
+            this.tbDspFile = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.btnBrowseDsp = new System.Windows.Forms.Button();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -65,31 +68,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 391);
-            this.pnlLabels.Size = new System.Drawing.Size(936, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 635);
+            this.pnlLabels.Size = new System.Drawing.Size(816, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(936, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(816, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 314);
-            this.tbOutput.Size = new System.Drawing.Size(936, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 558);
+            this.tbOutput.Size = new System.Drawing.Size(816, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 294);
-            this.pnlButtons.Size = new System.Drawing.Size(936, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 538);
+            this.pnlButtons.Size = new System.Drawing.Size(816, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(876, 0);
+            this.btnCancel.Location = new System.Drawing.Point(756, 0);
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(816, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(696, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnExecute_Click);
             // 
             // panel1
@@ -101,16 +104,16 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 23);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(936, 271);
+            this.panel1.Size = new System.Drawing.Size(816, 515);
             this.panel1.TabIndex = 5;
             // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.cbSeekData);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox3.Location = new System.Drawing.Point(0, 206);
+            this.groupBox3.Location = new System.Drawing.Point(0, 222);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(936, 39);
+            this.groupBox3.Size = new System.Drawing.Size(816, 81);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Options";
@@ -120,9 +123,11 @@
             this.cbSeekData.AutoSize = true;
             this.cbSeekData.Location = new System.Drawing.Point(6, 19);
             this.cbSeekData.Name = "cbSeekData";
-            this.cbSeekData.Size = new System.Drawing.Size(353, 17);
+            this.cbSeekData.Size = new System.Drawing.Size(326, 56);
             this.cbSeekData.TabIndex = 0;
-            this.cbSeekData.Text = "Ignore Extensions, use seqext.py and tonext.py to find data (no DSP).";
+            this.cbSeekData.Text = "Ignore Extensions, use seqext.py and tonext.py to find data.\r\nWill grab .EXB file" +
+                "s from Source Path if availible.  Make sure the\r\n.EXB filenames match the files " +
+                "containing SEQ/TONE\r\n data.";
             this.cbSeekData.UseVisualStyleBackColor = true;
             // 
             // groupBox2
@@ -141,9 +146,9 @@
             this.groupBox2.Controls.Add(this.tbSequenceTrack);
             this.groupBox2.Controls.Add(this.tbSequenceBank);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox2.Location = new System.Drawing.Point(0, 108);
+            this.groupBox2.Location = new System.Drawing.Point(0, 124);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(936, 98);
+            this.groupBox2.Size = new System.Drawing.Size(816, 98);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Settings";
@@ -267,6 +272,9 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnBrowseDsp);
+            this.groupBox1.Controls.Add(this.label4);
+            this.groupBox1.Controls.Add(this.tbDspFile);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.tbOutputFolder);
             this.groupBox1.Controls.Add(this.btnBrowseSource);
@@ -278,7 +286,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(936, 108);
+            this.groupBox1.Size = new System.Drawing.Size(816, 124);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Files";
@@ -294,7 +302,7 @@
             // 
             // tbOutputFolder
             // 
-            this.tbOutputFolder.Location = new System.Drawing.Point(101, 71);
+            this.tbOutputFolder.Location = new System.Drawing.Point(140, 71);
             this.tbOutputFolder.Name = "tbOutputFolder";
             this.tbOutputFolder.Size = new System.Drawing.Size(247, 20);
             this.tbOutputFolder.TabIndex = 8;
@@ -302,7 +310,7 @@
             // 
             // btnBrowseSource
             // 
-            this.btnBrowseSource.Location = new System.Drawing.Point(354, 45);
+            this.btnBrowseSource.Location = new System.Drawing.Point(393, 45);
             this.btnBrowseSource.Name = "btnBrowseSource";
             this.btnBrowseSource.Size = new System.Drawing.Size(25, 20);
             this.btnBrowseSource.TabIndex = 7;
@@ -312,7 +320,7 @@
             // 
             // btnBrowseDriver
             // 
-            this.btnBrowseDriver.Location = new System.Drawing.Point(354, 19);
+            this.btnBrowseDriver.Location = new System.Drawing.Point(393, 19);
             this.btnBrowseDriver.Name = "btnBrowseDriver";
             this.btnBrowseDriver.Size = new System.Drawing.Size(25, 20);
             this.btnBrowseDriver.TabIndex = 6;
@@ -340,23 +348,49 @@
             // 
             // tbSourcePath
             // 
-            this.tbSourcePath.Location = new System.Drawing.Point(101, 45);
+            this.tbSourcePath.Location = new System.Drawing.Point(140, 45);
             this.tbSourcePath.Name = "tbSourcePath";
             this.tbSourcePath.Size = new System.Drawing.Size(247, 20);
             this.tbSourcePath.TabIndex = 1;
             // 
             // tbDriver
             // 
-            this.tbDriver.Location = new System.Drawing.Point(101, 19);
+            this.tbDriver.Location = new System.Drawing.Point(140, 19);
             this.tbDriver.Name = "tbDriver";
             this.tbDriver.Size = new System.Drawing.Size(247, 20);
             this.tbDriver.TabIndex = 0;
+            // 
+            // tbDspFile
+            // 
+            this.tbDspFile.Location = new System.Drawing.Point(140, 97);
+            this.tbDspFile.Name = "tbDspFile";
+            this.tbDspFile.Size = new System.Drawing.Size(247, 20);
+            this.tbDspFile.TabIndex = 10;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 100);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(128, 13);
+            this.label4.TabIndex = 11;
+            this.label4.Text = "Single DSP File (Optional)";
+            // 
+            // btnBrowseDsp
+            // 
+            this.btnBrowseDsp.Location = new System.Drawing.Point(393, 97);
+            this.btnBrowseDsp.Name = "btnBrowseDsp";
+            this.btnBrowseDsp.Size = new System.Drawing.Size(25, 20);
+            this.btnBrowseDsp.TabIndex = 13;
+            this.btnBrowseDsp.Text = "...";
+            this.btnBrowseDsp.UseVisualStyleBackColor = true;
+            this.btnBrowseDsp.Click += new System.EventHandler(this.btnBrowseDsp_Click);
             // 
             // Xsf_SsfMakeFrontEndForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(936, 432);
+            this.ClientSize = new System.Drawing.Size(816, 676);
             this.Controls.Add(this.panel1);
             this.Name = "Xsf_SsfMakeFrontEndForm";
             this.Text = "Xsf_SsfMakeFrontEndForm";
@@ -411,6 +445,9 @@
         private System.Windows.Forms.CheckBox cbSeekData;
         private System.Windows.Forms.TextBox tbOutputFolder;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox tbDspFile;
+        private System.Windows.Forms.Button btnBrowseDsp;
 
     }
 }
