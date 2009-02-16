@@ -232,11 +232,16 @@ namespace VGMToolbox.format
             uint blockCount = 
                 ((pPsf2DirectoryEntry.UncompressedSize + pPsf2DirectoryEntry.BlockSize) - 1) / pPsf2DirectoryEntry.BlockSize;
             UInt32[] blockTable = new UInt32[blockCount];
+
+            string tempCompressedFile = Path.GetTempFileName();
+
             byte[] uncompressedBlock;
             byte[] compressedBlock;
             int bytesRead;
             int bytesInflated;
-            Inflater inflater = new Inflater();
+            int totalBytesInflated = 0;
+
+
 
             using (FileStream pfs = File.Open(this.FilePath, FileMode.Open, FileAccess.Read))
             {
@@ -250,27 +255,46 @@ namespace VGMToolbox.format
 
                 pfs.Position = (long)(pPsf2DirectoryEntry.Offset + (blockCount * 4));
 
-                using (FileStream fs = File.Open(pDestinationFile, FileMode.Create, FileAccess.Write))
+                using (FileStream fs = File.Open(tempCompressedFile, FileMode.Create, FileAccess.Write))
                 {
                     if (!IsEmptyFile(pPsf2DirectoryEntry))
                     {
+                        // write compressed bytes to temp file
                         using (BinaryWriter bw = new BinaryWriter(fs))
-                        {                            
-                            uncompressedBlock = new byte[pPsf2DirectoryEntry.BlockSize];
-
+                        {                                                        
                             foreach (UInt32 b in blockTable)
                             {
                                 compressedBlock = new byte[b];
-                                bytesRead = pfs.Read(compressedBlock, 0, (int) b);
-                                inflater.SetInput(compressedBlock, 0, bytesRead);
-                                bytesInflated = inflater.Inflate(uncompressedBlock, 0, (int) pPsf2DirectoryEntry.BlockSize);
-
-                                bw.Write(uncompressedBlock, 0, bytesInflated);
-                            }                            
-                        }
+                                bytesRead = pfs.Read(compressedBlock, 0, (int)b);
+                                bw.Write(compressedBlock, 0, bytesRead);
+                            }                        
+                        }                           
                     }
                 }
 
+                using (FileStream fs = File.Open(tempCompressedFile, FileMode.Open, FileAccess.Read))
+                {
+                    using (FileStream outputFs = File.Open(pDestinationFile, FileMode.Create, FileAccess.Write))
+                    {
+                        using (InflaterInputStream inflaterStream = new InflaterInputStream(fs))
+                        {
+                            uncompressedBlock = new byte[pPsf2DirectoryEntry.BlockSize];
+
+                            using (BinaryWriter bw = new BinaryWriter(outputFs))
+                            {
+                                
+                                // !DOESN'T SEEM TO WORK ON ALL FILES?
+                                
+                                while ((bytesInflated =
+                                            inflaterStream.Read(uncompressedBlock, 0, (int)pPsf2DirectoryEntry.BlockSize)) > 0)
+                                {
+                                    bw.Write(uncompressedBlock, 0, bytesInflated);
+                                }                            
+                            }
+                        }
+                    }
+                }
+                File.Delete(tempCompressedFile);
             }
         }
 
