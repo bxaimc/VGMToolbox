@@ -84,10 +84,10 @@ namespace VGMToolbox.tools.xsf
 
                     if (dataType != null && dataType.Name.Equals("Xsf"))
                     {
-                        Xsf psf2File = new Xsf();
+                        Psf2 psf2File = new Psf2();
                         psf2File.Initialize(fs, pPath);
 
-                        if (psf2File.getFormat().Equals(Xsf.FORMAT_NAME_PSF2))
+                        if (psf2File.getFormat().Equals(Psf2.FORMAT_NAME_PSF2))
                         {
 
                             string filePath = Path.GetFullPath(pPath);
@@ -106,6 +106,9 @@ namespace VGMToolbox.tools.xsf
                                 unpkPsf2Process.WaitForExit();
                                 unpkPsf2Process.Close();
                                 unpkPsf2Process.Dispose();
+                                
+                                // fs.Close();
+                                // psf2File.Unpack(outputDir);
                             }
                             catch (Exception ex)
                             {

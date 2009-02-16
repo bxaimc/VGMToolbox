@@ -3,12 +3,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
+using ICSharpCode.SharpZipLib.Zip.Compression;
+using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
+
+using VGMToolbox.util;
+
 namespace VGMToolbox.format
 {
     public class Psf2 : Xsf
     {
         public const string SQ_FILE = "SQ.IRX";
-        
+        private Psf2DirectoryEntry[] directoryEntries;
+
+
         public struct Psf2IniSqIrxStruct
         {
             public string SqFileName;
@@ -21,6 +28,14 @@ namespace VGMToolbox.format
             public string Depth;
             public string Tempo;
             public string Volume;
+        }
+
+        public struct Psf2DirectoryEntry
+        {
+            public string Filename;
+            public UInt32 Offset;
+            public UInt32 UncompressedSize;
+            public UInt32 BlockSize;
         }
 
         public static Psf2IniSqIrxStruct ParseClsIniFile(Stream pStream)
@@ -145,6 +160,132 @@ namespace VGMToolbox.format
                 sw.Write(Environment.NewLine);
                 sw.Close();
             }
+        }
+
+        public void Unpack(string pDestinationFolder)
+        {
+            this.directoryEntries = this.getDirectoryEntries(Xsf.RESERVED_SECTION_OFFSET);
+            this.extractDirectory(this.directoryEntries, pDestinationFolder);
+        }
+
+        private Psf2DirectoryEntry[] getDirectoryEntries(UInt32 pOffset)
+        {
+            UInt32 numberOfDirectoryEntries;
+            Psf2DirectoryEntry[] ret;
+            System.Text.Encoding enc = System.Text.Encoding.ASCII;
+
+            using (FileStream fs = File.Open(this.FilePath, FileMode.Open, FileAccess.Read))
+            {
+                numberOfDirectoryEntries =
+                    BitConverter.ToUInt32(ParseFile.parseSimpleOffset(fs, pOffset, 4), 0);
+                ret = new Psf2DirectoryEntry[numberOfDirectoryEntries];
+
+                for (UInt32 i = 0; i < numberOfDirectoryEntries; i++)
+                {
+                    ret[i].Filename =
+                        enc.GetString(FileUtil.ReplaceNullByteWithSpace(ParseFile.parseSimpleOffset(fs, (pOffset + 4) + (48 * i), 36))).Trim();
+                    ret[i].Offset =
+                        Xsf.RESERVED_SECTION_OFFSET +
+                        BitConverter.ToUInt32(ParseFile.parseSimpleOffset(fs, (pOffset + 4) + (48 * i) + 36, 4), 0);
+                    ret[i].UncompressedSize =
+                        BitConverter.ToUInt32(ParseFile.parseSimpleOffset(fs, (pOffset + 4) + (48 * i) + 40, 4), 0);
+                    ret[i].BlockSize =
+                        BitConverter.ToUInt32(ParseFile.parseSimpleOffset(fs, (pOffset + 4) + (48 * i) + 44, 4), 0);
+                }
+            }
+            return ret;
+        }
+
+        private void extractDirectory(Psf2DirectoryEntry[] pPsf2DirectoryEntries, string pDestinationFolder)
+        {
+            Psf2DirectoryEntry[] directoryEntries;
+            string outputFolder = Path.GetFullPath(pDestinationFolder);            
+            string filename;
+
+            System.Text.Encoding enc = System.Text.Encoding.ASCII;
+
+            // create destination directory if needed
+            if (!Directory.Exists(pDestinationFolder))
+            {
+                Directory.CreateDirectory(pDestinationFolder);
+            }
+
+            // loop through entries and process
+            foreach (Psf2DirectoryEntry p in this.directoryEntries)
+            {
+                filename = Path.Combine(pDestinationFolder, p.Filename);
+
+                if (IsSubdirectory(p))
+                {
+                    directoryEntries = this.getDirectoryEntries(p.Offset);
+                    this.extractDirectory(directoryEntries, filename);
+                }
+                else
+                {
+                    this.extractFile(p, filename);
+                }
+            }
+        }
+
+        private void extractFile(Psf2DirectoryEntry pPsf2DirectoryEntry, string pDestinationFile)
+        {            
+            uint blockCount = 
+                ((pPsf2DirectoryEntry.UncompressedSize + pPsf2DirectoryEntry.BlockSize) - 1) / pPsf2DirectoryEntry.BlockSize;
+            UInt32[] blockTable = new UInt32[blockCount];
+            byte[] uncompressedBlock;
+            byte[] compressedBlock;
+            int bytesRead;
+            int bytesInflated;
+            Inflater inflater = new Inflater();
+
+            using (FileStream pfs = File.Open(this.FilePath, FileMode.Open, FileAccess.Read))
+            {
+                pfs.Position = (long) pPsf2DirectoryEntry.Offset;
+
+                for (int i = 0; i < blockCount; i++)
+                {
+                    blockTable[i] =
+                        BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pfs, (long)pPsf2DirectoryEntry.Offset + (i * 4), 4), 0);
+                }
+
+                pfs.Position = (long)(pPsf2DirectoryEntry.Offset + (blockCount * 4));
+
+                using (FileStream fs = File.Open(pDestinationFile, FileMode.Create, FileAccess.Write))
+                {
+                    if (!IsEmptyFile(pPsf2DirectoryEntry))
+                    {
+                        using (BinaryWriter bw = new BinaryWriter(fs))
+                        {                            
+                            uncompressedBlock = new byte[pPsf2DirectoryEntry.BlockSize];
+
+                            foreach (UInt32 b in blockTable)
+                            {
+                                compressedBlock = new byte[b];
+                                bytesRead = pfs.Read(compressedBlock, 0, (int) b);
+                                inflater.SetInput(compressedBlock, 0, bytesRead);
+                                bytesInflated = inflater.Inflate(uncompressedBlock, 0, (int) pPsf2DirectoryEntry.BlockSize);
+
+                                bw.Write(uncompressedBlock, 0, bytesInflated);
+                            }                            
+                        }
+                    }
+                }
+
+            }
+        }
+
+        public static bool IsEmptyFile(Psf2DirectoryEntry pPsf2DirectoryEntry)
+        {
+            return (pPsf2DirectoryEntry.UncompressedSize == 0 &&
+                    pPsf2DirectoryEntry.BlockSize == 0 &&
+                    pPsf2DirectoryEntry.Offset == 0);
+        }
+
+        public static bool IsSubdirectory(Psf2DirectoryEntry pPsf2DirectoryEntry)
+        {
+            return (pPsf2DirectoryEntry.UncompressedSize == 0 &&
+                    pPsf2DirectoryEntry.BlockSize == 0 &&
+                    pPsf2DirectoryEntry.Offset != 0);
         }
     }
 }
