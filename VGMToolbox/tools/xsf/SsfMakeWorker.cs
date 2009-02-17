@@ -175,7 +175,7 @@ namespace VGMToolbox.tools.xsf
                 if (pSsfMakeStruct.findData)
                 {
                     // extract the data using seqext.py and tonext.py
-                    this.extractData(pSsfMakeStruct);
+                    this.extractData(pSsfMakeStruct, e);
 
                     // grab DSP data from source dir
                     string exbFileName;
@@ -533,7 +533,7 @@ namespace VGMToolbox.tools.xsf
                     case LINE_NUM_DSP_PROGRAM:
                         if (String.IsNullOrEmpty(pSsfMakeStruct.dspFile))
                         {
-                            if (File.Exists(Path.GetFullPath(pSourceFilePrefix + FILE_EXTENSION_DSP)))
+                            if (File.Exists(Path.GetFullPath(Path.Combine(WORKING_FOLDER, pSourceFilePrefix + FILE_EXTENSION_DSP))))
                             {
                                 writer.WriteLine(String.Format("nexb = '{0}'    # DSP program", Path.GetFileName(pSourceFilePrefix + FILE_EXTENSION_DSP)));
                             }
@@ -676,7 +676,7 @@ namespace VGMToolbox.tools.xsf
             }
         }
 
-        private void extractData(SsfMakeStruct pSsfMakeStruct)
+        private void extractData(SsfMakeStruct pSsfMakeStruct, DoWorkEventArgs e)
         {
             string destinationPath;
             string arguments;
@@ -699,68 +699,76 @@ namespace VGMToolbox.tools.xsf
 
             foreach (string file in Directory.GetFiles(pSsfMakeStruct.sourcePath))
             {
-                try
-                {
-                    // copy to working dir
-                    destinationPath = Path.Combine(WORKING_FOLDER_SEEK, Path.GetFileName(file));
-                    File.Copy(file, destinationPath, true);
-
-                    // extract SEQ
-                    arguments = String.Format(" {0} {1} .",
-                        Path.GetFileName(seqextScriptPath), Path.GetFileName(file));
-                    extractionProcess = new Process();
-                    extractionProcess.StartInfo = new ProcessStartInfo("python.exe", arguments);
-                    extractionProcess.StartInfo.WorkingDirectory = WORKING_FOLDER_SEEK;
-                    extractionProcess.StartInfo.UseShellExecute = false;
-                    extractionProcess.StartInfo.CreateNoWindow = true;
-                    extractionProcess.StartInfo.RedirectStandardOutput = true;
-                    isSuccess = extractionProcess.Start();
-                    seekOutput = extractionProcess.StandardOutput.ReadToEnd();
-                    extractionProcess.WaitForExit();
-                    extractionProcess.Close();
-
-                    this.progressStruct.Clear();
-                    this.progressStruct.genericMessage = String.Format("[SEQEXT - {0}]", Path.GetFileName(file)) +
-                        Environment.NewLine + seekOutput;
-                    this.ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
-
-
-                    // extract TONE
-                    arguments = String.Format(" {0} {1} .",
-                        Path.GetFileName(tonextScriptPath), Path.GetFileName(file));
-                    extractionProcess = new Process();
-                    extractionProcess.StartInfo = new ProcessStartInfo("python.exe", arguments);
-                    extractionProcess.StartInfo.WorkingDirectory = WORKING_FOLDER_SEEK;
-                    extractionProcess.StartInfo.UseShellExecute = false;
-                    extractionProcess.StartInfo.CreateNoWindow = true;
-                    extractionProcess.StartInfo.RedirectStandardOutput = true;
-                    isSuccess = extractionProcess.Start();
-                    seekOutput = extractionProcess.StandardOutput.ReadToEnd();
-                    extractionProcess.WaitForExit();
-                    
-                    extractionProcess.Close();
-                    extractionProcess.Dispose();
-
-                    this.progressStruct.Clear();
-                    this.progressStruct.genericMessage = String.Format("[TONEXT - {0}]", Path.GetFileName(file)) +
-                        Environment.NewLine + seekOutput + Environment.NewLine;
-                    this.ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
-                   
-                    // delete the original
-                    File.Delete(destinationPath);
-                }
-                catch (Exception _e)
-                {
-                    this.progressStruct.Clear();
-                    this.progressStruct.errorMessage = _e.Message;
-                    ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
-                }
-                finally
-                {
-                    if (extractionProcess != null)
+                if (!CancellationPending)
+                {                
+                    try
                     {
+                        // copy to working dir
+                        destinationPath = Path.Combine(WORKING_FOLDER_SEEK, Path.GetFileName(file));
+                        File.Copy(file, destinationPath, true);
+
+                        // extract SEQ
+                        arguments = String.Format(" {0} {1} .",
+                            Path.GetFileName(seqextScriptPath), Path.GetFileName(file));
+                        extractionProcess = new Process();
+                        extractionProcess.StartInfo = new ProcessStartInfo("python.exe", arguments);
+                        extractionProcess.StartInfo.WorkingDirectory = WORKING_FOLDER_SEEK;
+                        extractionProcess.StartInfo.UseShellExecute = false;
+                        extractionProcess.StartInfo.CreateNoWindow = true;
+                        extractionProcess.StartInfo.RedirectStandardOutput = true;
+                        isSuccess = extractionProcess.Start();
+                        seekOutput = extractionProcess.StandardOutput.ReadToEnd();
+                        extractionProcess.WaitForExit();
+                        extractionProcess.Close();
+
+                        this.progressStruct.Clear();
+                        this.progressStruct.genericMessage = String.Format("[SEQEXT - {0}]", Path.GetFileName(file)) +
+                            Environment.NewLine + seekOutput;
+                        this.ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
+
+
+                        // extract TONE
+                        arguments = String.Format(" {0} {1} .",
+                            Path.GetFileName(tonextScriptPath), Path.GetFileName(file));
+                        extractionProcess = new Process();
+                        extractionProcess.StartInfo = new ProcessStartInfo("python.exe", arguments);
+                        extractionProcess.StartInfo.WorkingDirectory = WORKING_FOLDER_SEEK;
+                        extractionProcess.StartInfo.UseShellExecute = false;
+                        extractionProcess.StartInfo.CreateNoWindow = true;
+                        extractionProcess.StartInfo.RedirectStandardOutput = true;
+                        isSuccess = extractionProcess.Start();
+                        seekOutput = extractionProcess.StandardOutput.ReadToEnd();
+                        extractionProcess.WaitForExit();
+                        
+                        extractionProcess.Close();
                         extractionProcess.Dispose();
+
+                        this.progressStruct.Clear();
+                        this.progressStruct.genericMessage = String.Format("[TONEXT - {0}]", Path.GetFileName(file)) +
+                            Environment.NewLine + seekOutput + Environment.NewLine;
+                        this.ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
+                       
+                        // delete the original
+                        File.Delete(destinationPath);
                     }
+                    catch (Exception _e)
+                    {
+                        this.progressStruct.Clear();
+                        this.progressStruct.errorMessage = _e.Message;
+                        ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
+                    }
+                    finally
+                    {
+                        if (extractionProcess != null)
+                        {
+                            extractionProcess.Dispose();
+                        }
+                    }
+                }
+                else
+                {
+                    e.Cancel = true;
+                    return;
                 }
             
             } // foreach (string file in Directory.GetFiles(pSsfMakeStruct.sourcePath))

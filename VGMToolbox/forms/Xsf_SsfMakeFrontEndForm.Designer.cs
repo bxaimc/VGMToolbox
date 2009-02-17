@@ -46,6 +46,9 @@
             this.tbSequenceTrack = new System.Windows.Forms.TextBox();
             this.tbSequenceBank = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnBrowseDsp = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.tbDspFile = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.tbOutputFolder = new System.Windows.Forms.TextBox();
             this.btnBrowseSource = new System.Windows.Forms.Button();
@@ -54,9 +57,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.tbSourcePath = new System.Windows.Forms.TextBox();
             this.tbDriver = new System.Windows.Forms.TextBox();
-            this.tbDspFile = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.btnBrowseDsp = new System.Windows.Forms.Button();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -68,31 +68,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 635);
-            this.pnlLabels.Size = new System.Drawing.Size(816, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 725);
+            this.pnlLabels.Size = new System.Drawing.Size(1314, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(816, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(1314, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 558);
-            this.tbOutput.Size = new System.Drawing.Size(816, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 648);
+            this.tbOutput.Size = new System.Drawing.Size(1314, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 538);
-            this.pnlButtons.Size = new System.Drawing.Size(816, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 628);
+            this.pnlButtons.Size = new System.Drawing.Size(1314, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(756, 0);
+            this.btnCancel.Location = new System.Drawing.Point(1254, 0);
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(696, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(1194, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnExecute_Click);
             // 
             // panel1
@@ -104,7 +104,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 23);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(816, 515);
+            this.panel1.Size = new System.Drawing.Size(1314, 605);
             this.panel1.TabIndex = 5;
             // 
             // groupBox3
@@ -113,7 +113,7 @@
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox3.Location = new System.Drawing.Point(0, 222);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(816, 81);
+            this.groupBox3.Size = new System.Drawing.Size(1314, 81);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Options";
@@ -148,7 +148,7 @@
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox2.Location = new System.Drawing.Point(0, 124);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(816, 98);
+            this.groupBox2.Size = new System.Drawing.Size(1314, 98);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Settings";
@@ -286,10 +286,36 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(816, 124);
+            this.groupBox1.Size = new System.Drawing.Size(1314, 124);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Files";
+            // 
+            // btnBrowseDsp
+            // 
+            this.btnBrowseDsp.Location = new System.Drawing.Point(393, 97);
+            this.btnBrowseDsp.Name = "btnBrowseDsp";
+            this.btnBrowseDsp.Size = new System.Drawing.Size(25, 20);
+            this.btnBrowseDsp.TabIndex = 13;
+            this.btnBrowseDsp.Text = "...";
+            this.btnBrowseDsp.UseVisualStyleBackColor = true;
+            this.btnBrowseDsp.Click += new System.EventHandler(this.btnBrowseDsp_Click);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 100);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(128, 13);
+            this.label4.TabIndex = 11;
+            this.label4.Text = "Single DSP File (Optional)";
+            // 
+            // tbDspFile
+            // 
+            this.tbDspFile.Location = new System.Drawing.Point(140, 97);
+            this.tbDspFile.Name = "tbDspFile";
+            this.tbDspFile.Size = new System.Drawing.Size(247, 20);
+            this.tbDspFile.TabIndex = 10;
             // 
             // label3
             // 
@@ -360,37 +386,11 @@
             this.tbDriver.Size = new System.Drawing.Size(247, 20);
             this.tbDriver.TabIndex = 0;
             // 
-            // tbDspFile
-            // 
-            this.tbDspFile.Location = new System.Drawing.Point(140, 97);
-            this.tbDspFile.Name = "tbDspFile";
-            this.tbDspFile.Size = new System.Drawing.Size(247, 20);
-            this.tbDspFile.TabIndex = 10;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 100);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(128, 13);
-            this.label4.TabIndex = 11;
-            this.label4.Text = "Single DSP File (Optional)";
-            // 
-            // btnBrowseDsp
-            // 
-            this.btnBrowseDsp.Location = new System.Drawing.Point(393, 97);
-            this.btnBrowseDsp.Name = "btnBrowseDsp";
-            this.btnBrowseDsp.Size = new System.Drawing.Size(25, 20);
-            this.btnBrowseDsp.TabIndex = 13;
-            this.btnBrowseDsp.Text = "...";
-            this.btnBrowseDsp.UseVisualStyleBackColor = true;
-            this.btnBrowseDsp.Click += new System.EventHandler(this.btnBrowseDsp_Click);
-            // 
             // Xsf_SsfMakeFrontEndForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(816, 676);
+            this.ClientSize = new System.Drawing.Size(1314, 766);
             this.Controls.Add(this.panel1);
             this.Name = "Xsf_SsfMakeFrontEndForm";
             this.Text = "Xsf_SsfMakeFrontEndForm";
