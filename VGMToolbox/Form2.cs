@@ -359,6 +359,16 @@ namespace VGMToolbox
             nodeTag.formClass = xsf_SsfMakeFrontEndForm.GetType().Name;
             xsf_SsfMakeFENode.Tag = nodeTag;
             
+            // SEQ/TON Extractors
+            TreeNode xsf_SsfSeqTonExtFENode = new TreeNode("seqext/tonext Front End");
+
+            Xsf_SsfSeqTonExtForm xsf_SsfSeqTonExtForm =
+                new Xsf_SsfSeqTonExtForm(xsf_SsfSeqTonExtFENode);
+            this.splitContainer1.Panel2.Controls.Add(xsf_SsfSeqTonExtForm);
+
+            nodeTag.formClass = xsf_SsfSeqTonExtForm.GetType().Name;
+            xsf_SsfSeqTonExtFENode.Tag = nodeTag;
+
 
             ///////////
             // XSF2EXE
@@ -400,6 +410,7 @@ namespace VGMToolbox
             ssf_RootNode.NodeFont = this.treeviewBoldFont;
             ssf_RootNode.Tag = nodeTag;
             ssf_RootNode.Nodes.Add(xsf_SsfMakeFENode);
+            ssf_RootNode.Nodes.Add(xsf_SsfSeqTonExtFENode);            
             xsf_RootNode.Nodes.Add(ssf_RootNode);
 
             return xsf_RootNode;

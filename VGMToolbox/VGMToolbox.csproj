@@ -208,6 +208,12 @@
     <Compile Include="forms\Xsf_SsfMakeFrontEndForm.Designer.cs">
       <DependentUpon>Xsf_SsfMakeFrontEndForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\Xsf_SsfSeqTonExtForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\Xsf_SsfSeqTonExtForm.Designer.cs">
+      <DependentUpon>Xsf_SsfSeqTonExtForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\Xsf_Unpkpsf2FrontEndForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -316,6 +322,10 @@
       <DependentUpon>Xsf_SsfMakeFrontEndForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="forms\Xsf_SsfSeqTonExtForm.resx">
+      <DependentUpon>Xsf_SsfSeqTonExtForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="forms\Xsf_Unpkpsf2FrontEndForm.resx">
       <DependentUpon>Xsf_Unpkpsf2FrontEndForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -396,6 +406,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\xsf\SsfMakeWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tools\xsf\SsfSeqTonExtractorWorker.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\xsf\Time2sfWorker.cs">

@@ -39,30 +39,30 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 635);
-            this.pnlLabels.Size = new System.Drawing.Size(844, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 487);
+            this.pnlLabels.Size = new System.Drawing.Size(868, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(844, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(868, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 558);
-            this.tbOutput.Size = new System.Drawing.Size(844, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 410);
+            this.tbOutput.Size = new System.Drawing.Size(868, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 538);
-            this.pnlButtons.Size = new System.Drawing.Size(844, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 390);
+            this.pnlButtons.Size = new System.Drawing.Size(868, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(784, 0);
+            this.btnCancel.Location = new System.Drawing.Point(808, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(724, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(748, 0);
             // 
             // groupBox10
             // 
@@ -71,7 +71,7 @@
             this.groupBox10.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox10.Location = new System.Drawing.Point(0, 23);
             this.groupBox10.Name = "groupBox10";
-            this.groupBox10.Size = new System.Drawing.Size(844, 59);
+            this.groupBox10.Size = new System.Drawing.Size(868, 59);
             this.groupBox10.TabIndex = 6;
             this.groupBox10.TabStop = false;
             this.groupBox10.Text = "Source SDAT";
@@ -99,7 +99,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(844, 676);
+            this.ClientSize = new System.Drawing.Size(868, 528);
             this.Controls.Add(this.groupBox10);
             this.Name = "Xsf_SdatExtractorForm";
             this.Text = "Xsf_SdatExtractorForm";
