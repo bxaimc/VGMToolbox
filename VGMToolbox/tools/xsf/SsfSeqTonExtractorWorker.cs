@@ -170,6 +170,11 @@ namespace VGMToolbox.tools.xsf
 
                 if (extractedFiles.Length > 0)
                 {
+                    if (File.Exists(outputFolder))
+                    {
+                        outputFolder += "_" + new Random().Next().ToString();
+                    }
+                    
                     if (!Directory.Exists(outputFolder))
                     {
                         Directory.CreateDirectory(outputFolder);
