@@ -39,31 +39,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 470);
-            this.pnlLabels.Size = new System.Drawing.Size(844, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 635);
+            this.pnlLabels.Size = new System.Drawing.Size(816, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(844, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(816, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 393);
-            this.tbOutput.Size = new System.Drawing.Size(844, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 558);
+            this.tbOutput.Size = new System.Drawing.Size(816, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 373);
-            this.pnlButtons.Size = new System.Drawing.Size(844, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 538);
+            this.pnlButtons.Size = new System.Drawing.Size(816, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(784, 0);
+            this.btnCancel.Location = new System.Drawing.Point(756, 0);
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(724, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(696, 0);
             // 
             // tbSourceFiles
             // 
@@ -83,7 +83,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(0, 23);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(844, 62);
+            this.groupBox1.Size = new System.Drawing.Size(816, 62);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Source Files";
@@ -101,7 +101,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(844, 511);
+            this.ClientSize = new System.Drawing.Size(816, 676);
             this.Controls.Add(this.groupBox1);
             this.Name = "Xsf_SdatFinderForm";
             this.Text = "Xsf_SdatFinderForm";

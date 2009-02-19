@@ -454,6 +454,30 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_ExtractionRootNode"]);
             ext_RootNode.NodeFont = this.treeviewBoldFont;
 
+            ///////////
+            // GENERIC
+            ///////////
+            TreeNode ext_GenericNode =
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_ExtractionGenericRootNode"]);
+            ext_GenericNode.NodeFont = this.treeviewBoldFont;
+
+            nodeTag = new Constants.NodeTagStruct();
+            EmptyForm emptyForm = new EmptyForm();
+            nodeTag.formClass = emptyForm.GetType().Name;
+            ext_GenericNode.Tag = nodeTag;
+
+            // Offset Finder
+            TreeNode ext_OffsetFinderNode =
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_OffsetFinderNode"]);
+
+            // Add SDAT Extractor Form
+            Extract_OffsetFinderForm extract_OffsetFinderForm = new Extract_OffsetFinderForm(ext_OffsetFinderNode);
+            this.splitContainer1.Panel2.Controls.Add(extract_OffsetFinderForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.formClass = extract_OffsetFinderForm.GetType().Name;
+            ext_OffsetFinderNode.Tag = nodeTag;
+
             ///////
             // NDS
             ///////
@@ -462,7 +486,6 @@ namespace VGMToolbox
             ext_NdsNode.NodeFont = this.treeviewBoldFont;
 
             nodeTag = new Constants.NodeTagStruct();
-            EmptyForm emptyForm = new EmptyForm();
             nodeTag.formClass = emptyForm.GetType().Name;
             ext_NdsNode.Tag = nodeTag;
 
@@ -502,10 +525,13 @@ namespace VGMToolbox
             nodeTag.formClass = emptyForm.GetType().Name;
             ext_PcNode.Tag = nodeTag;
 
-
+            ext_GenericNode.Nodes.Add(ext_OffsetFinderNode);
+            ext_RootNode.Nodes.Add(ext_GenericNode);
+            
             ext_NdsNode.Nodes.Add(ext_SdatExtractorNode);
             ext_NdsNode.Nodes.Add(ext_SdatFinderNode);            
             ext_RootNode.Nodes.Add(ext_NdsNode);
+            
             ext_RootNode.Nodes.Add(ext_PcNode);
 
             return ext_RootNode;
