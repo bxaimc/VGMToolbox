@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.IO;
@@ -19,28 +20,44 @@ namespace VGMToolbox.forms
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = "Datafile Checker";
-            this.btnDoTask.Text = "Check";
+            this.lblTitle.Text =
+                ConfigurationSettings.AppSettings["Form_AuditDatafileChecker_Title"];
+            this.btnDoTask.Text =
+                ConfigurationSettings.AppSettings["Form_AuditDatafileChecker_DoTaskButton"];
 
             this.btnCancel.Hide();
 
             InitializeComponent();
+
+            // languages
+            this.gbSourceDestination.Text = 
+                ConfigurationSettings.AppSettings["Form_AuditDatafileChecker_GroupSource"];
+            this.lblSourceDataFile.Text = 
+                ConfigurationSettings.AppSettings["Form_AuditDatafileChecker_LblSourceDataFile"];
+            this.lblReportDestination.Text = 
+                ConfigurationSettings.AppSettings["Form_AuditDatafileChecker_LblReportDestination"];
+                    
         }
 
         private void btnDatafileChecker_Check_Click(object sender, EventArgs e)
         {
-            base.initializeProcessing();
+            if (base.checkFileExists(tbDatafileChecker_SourceFile.Text, this.lblSourceDataFile.Text) &&
+                base.checkFolderExists(tbDatafileChecker_OutputPath.Text, this.lblReportDestination.Text))
+            {
+                base.initializeProcessing();
 
-            toolStripStatusLabel1.Text = "Checking Datafile...Begin";
+                toolStripStatusLabel1.Text = 
+                    ConfigurationSettings.AppSettings["Form_AuditDatafileChecker_MessageBegin"];
 
-            DatafileCheckerWorker.DatafileCheckerStruct datafileCheckerStruct = new DatafileCheckerWorker.DatafileCheckerStruct();
-            datafileCheckerStruct.datafilePath = tbDatafileChecker_SourceFile.Text;
-            datafileCheckerStruct.outputPath = tbDatafileChecker_OutputPath.Text;
+                DatafileCheckerWorker.DatafileCheckerStruct datafileCheckerStruct = new DatafileCheckerWorker.DatafileCheckerStruct();
+                datafileCheckerStruct.datafilePath = tbDatafileChecker_SourceFile.Text;
+                datafileCheckerStruct.outputPath = tbDatafileChecker_OutputPath.Text;
 
-            datafileCheckerWorker = new DatafileCheckerWorker();
-            datafileCheckerWorker.ProgressChanged += backgroundWorker_ReportProgress;
-            datafileCheckerWorker.RunWorkerCompleted += datafileCheckerWorker_WorkComplete;
-            datafileCheckerWorker.RunWorkerAsync(datafileCheckerStruct);
+                datafileCheckerWorker = new DatafileCheckerWorker();
+                datafileCheckerWorker.ProgressChanged += backgroundWorker_ReportProgress;
+                datafileCheckerWorker.RunWorkerCompleted += datafileCheckerWorker_WorkComplete;
+                datafileCheckerWorker.RunWorkerAsync(datafileCheckerStruct);
+            }
         }
 
         private void datafileCheckerWorker_WorkComplete(object sender,
@@ -48,13 +65,15 @@ namespace VGMToolbox.forms
         {
             if (e.Cancelled)
             {
-                toolStripStatusLabel1.Text = "Checking Datafile...Cancelled";
-                tbOutput.Text += "Operation cancelled.";
+                toolStripStatusLabel1.Text = 
+                    ConfigurationSettings.AppSettings["Form_AuditDatafileChecker_MessageCancel"];
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
             }
             else
             {
                 lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = "Checking Datafile...Complete";
+                toolStripStatusLabel1.Text =
+                    ConfigurationSettings.AppSettings["Form_AuditDatafileChecker_MessageComplete"];
             }
 
             // update node color

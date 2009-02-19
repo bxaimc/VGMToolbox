@@ -141,30 +141,6 @@ namespace VGMToolbox.forms
             return ret;
         }
 
-        protected bool checkFolderExists(string pPath, string pFolderName)
-        {
-            bool ret = true;
-
-            if (!Directory.Exists(pPath))
-            {
-                MessageBox.Show(String.Format("{0} cannot be found.", pFolderName));
-                ret = false;
-            }
-            return ret;
-        }
-
-        protected bool checkFileExists(string pPath, string pFileName)
-        {
-            bool ret = true;
-
-            if (!File.Exists(pPath))
-            {
-                MessageBox.Show(String.Format("{0} cannot be found.", pFileName));
-                ret = false;
-            }
-            return ret;
-        }
-
         protected virtual void backgroundWorker_ReportProgress(object sender, ProgressChangedEventArgs e)
         {
             Constants.ProgressStruct vProgressStruct = (Constants.ProgressStruct)e.UserState;
@@ -197,6 +173,32 @@ namespace VGMToolbox.forms
             }
 
             this.showElapsedTime();
-        }        
+        }
+
+        protected bool checkFileExists(string pPath, string pLabel)
+        {
+            bool ret = true;
+
+            if (!File.Exists(pPath))
+            {
+                ret = false;
+                MessageBox.Show(String.Format("Cannot find the file selected for \"{0}\": <{1}>", pLabel, pPath), "File Not Found.");
+            }
+
+            return ret;
+        }
+
+        protected bool checkFolderExists(string pPath, string pLabel)
+        {
+            bool ret = true;
+
+            if (!Directory.Exists(pPath))
+            {
+                ret = false;
+                MessageBox.Show(String.Format("Cannot find the directory selected for \"{0}\": <{1}>", pLabel, pPath), "Directory Not Found.");
+            }
+
+            return ret;
+        }
     }
 }

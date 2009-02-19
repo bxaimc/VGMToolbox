@@ -520,6 +520,7 @@
     <Content Include="rips\dir.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="App.config" />
     <None Include="external\psf2\modules\cdvdnul.irx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

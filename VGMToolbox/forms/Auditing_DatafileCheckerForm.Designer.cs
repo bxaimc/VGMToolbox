@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.gbSourceDestination = new System.Windows.Forms.GroupBox();
+            this.lblReportDestination = new System.Windows.Forms.Label();
+            this.lblSourceDataFile = new System.Windows.Forms.Label();
             this.tbDatafileChecker_BrowseDestination = new System.Windows.Forms.Button();
             this.tbDatafileChecker_BrowseSource = new System.Windows.Forms.Button();
             this.tbDatafileChecker_OutputPath = new System.Windows.Forms.TextBox();
@@ -38,70 +38,70 @@
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.gbSourceDestination.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 472);
-            this.pnlLabels.Size = new System.Drawing.Size(886, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 487);
+            this.pnlLabels.Size = new System.Drawing.Size(868, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(886, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(868, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 395);
-            this.tbOutput.Size = new System.Drawing.Size(886, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 410);
+            this.tbOutput.Size = new System.Drawing.Size(868, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 375);
-            this.pnlButtons.Size = new System.Drawing.Size(886, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 390);
+            this.pnlButtons.Size = new System.Drawing.Size(868, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(826, 0);
+            this.btnCancel.Location = new System.Drawing.Point(808, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(766, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(748, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDatafileChecker_Check_Click);
             // 
-            // groupBox1
+            // gbSourceDestination
             // 
-            this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Controls.Add(this.tbDatafileChecker_BrowseDestination);
-            this.groupBox1.Controls.Add(this.tbDatafileChecker_BrowseSource);
-            this.groupBox1.Controls.Add(this.tbDatafileChecker_OutputPath);
-            this.groupBox1.Controls.Add(this.tbDatafileChecker_SourceFile);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox1.Location = new System.Drawing.Point(0, 23);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(886, 97);
-            this.groupBox1.TabIndex = 5;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Source and Destination";
+            this.gbSourceDestination.Controls.Add(this.lblReportDestination);
+            this.gbSourceDestination.Controls.Add(this.lblSourceDataFile);
+            this.gbSourceDestination.Controls.Add(this.tbDatafileChecker_BrowseDestination);
+            this.gbSourceDestination.Controls.Add(this.tbDatafileChecker_BrowseSource);
+            this.gbSourceDestination.Controls.Add(this.tbDatafileChecker_OutputPath);
+            this.gbSourceDestination.Controls.Add(this.tbDatafileChecker_SourceFile);
+            this.gbSourceDestination.Dock = System.Windows.Forms.DockStyle.Top;
+            this.gbSourceDestination.Location = new System.Drawing.Point(0, 23);
+            this.gbSourceDestination.Name = "gbSourceDestination";
+            this.gbSourceDestination.Size = new System.Drawing.Size(868, 97);
+            this.gbSourceDestination.TabIndex = 5;
+            this.gbSourceDestination.TabStop = false;
+            this.gbSourceDestination.Text = "Source and Destination";
             // 
-            // label5
+            // lblReportDestination
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(3, 55);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(138, 13);
-            this.label5.TabIndex = 5;
-            this.label5.Text = "Report(s) Destination Folder";
+            this.lblReportDestination.AutoSize = true;
+            this.lblReportDestination.Location = new System.Drawing.Point(3, 55);
+            this.lblReportDestination.Name = "lblReportDestination";
+            this.lblReportDestination.Size = new System.Drawing.Size(138, 13);
+            this.lblReportDestination.TabIndex = 5;
+            this.lblReportDestination.Text = "Report(s) Destination Folder";
             // 
-            // label4
+            // lblSourceDataFile
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 18);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(80, 13);
-            this.label4.TabIndex = 4;
-            this.label4.Text = "Source Datafile";
+            this.lblSourceDataFile.AutoSize = true;
+            this.lblSourceDataFile.Location = new System.Drawing.Point(3, 18);
+            this.lblSourceDataFile.Name = "lblSourceDataFile";
+            this.lblSourceDataFile.Size = new System.Drawing.Size(80, 13);
+            this.lblSourceDataFile.TabIndex = 4;
+            this.lblSourceDataFile.Text = "Source Datafile";
             // 
             // tbDatafileChecker_BrowseDestination
             // 
@@ -141,23 +141,23 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(886, 513);
-            this.Controls.Add(this.groupBox1);
+            this.ClientSize = new System.Drawing.Size(868, 528);
+            this.Controls.Add(this.gbSourceDestination);
             this.Name = "Auditing_DatafileCheckerForm";
             this.Text = "Auditing_DatafileCheckerForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);
             this.Controls.SetChildIndex(this.pnlButtons, 0);
-            this.Controls.SetChildIndex(this.groupBox1, 0);
+            this.Controls.SetChildIndex(this.gbSourceDestination, 0);
             this.pnlLabels.ResumeLayout(false);
             this.pnlLabels.PerformLayout();
             this.pnlTitle.ResumeLayout(false);
             this.pnlTitle.PerformLayout();
             this.pnlButtons.ResumeLayout(false);
             this.pnlButtons.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.gbSourceDestination.ResumeLayout(false);
+            this.gbSourceDestination.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -165,9 +165,9 @@
 
         #endregion
 
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.GroupBox gbSourceDestination;
+        private System.Windows.Forms.Label lblReportDestination;
+        private System.Windows.Forms.Label lblSourceDataFile;
         private System.Windows.Forms.Button tbDatafileChecker_BrowseDestination;
         private System.Windows.Forms.Button tbDatafileChecker_BrowseSource;
         private System.Windows.Forms.TextBox tbDatafileChecker_OutputPath;

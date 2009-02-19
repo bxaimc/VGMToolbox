@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -34,7 +35,8 @@ namespace VGMToolbox
             // set tag for displaying the empty form
             nodeTag.formClass = emptyForm.GetType().Name;
 
-            TreeNode rootNode = new TreeNode("VGMToolbox");
+            TreeNode rootNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_RootNode"]);
             rootNode.NodeFont = this.treeviewBoldFont;
             rootNode.Tag = nodeTag;
 
@@ -55,7 +57,8 @@ namespace VGMToolbox
             /////////
             // Tools
             /////////
-            TreeNode tools_RootNode = new TreeNode("Misc. Tools");
+            TreeNode tools_RootNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_MiscellaneousToolsNode"]);
             tools_RootNode.Tag = nodeTag;
             tools_RootNode.NodeFont = this.treeviewBoldFont;
 
@@ -99,12 +102,14 @@ namespace VGMToolbox
         private TreeNode buildAuditingTreeNode()
         {
             Constants.NodeTagStruct nodeTag = new Constants.NodeTagStruct();
-            TreeNode auditing_RootNode = new TreeNode("Auditing Tools");
+            TreeNode auditing_RootNode =
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_AuditingRootNode"]);
             
             ////////////////////
             // Datafile Creator
             ////////////////////
-            TreeNode auditing_DatafileCreatorNode = new TreeNode("Datafile Creator");
+            TreeNode auditing_DatafileCreatorNode =
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_DatafileCreatorNode"]);
 
             // add form
             Auditing_DatafileCreatorForm auditing_DatafileCreatorForm = 
@@ -118,7 +123,8 @@ namespace VGMToolbox
             /////////////
             // Rebuilder
             /////////////
-            TreeNode auditing_RebuilderNode = new TreeNode("Rebuilder");
+            TreeNode auditing_RebuilderNode =
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_RebuilderNode"]);
 
             // add form
             Auditing_RebuilderForm auditing_RebuilderForm =
@@ -132,7 +138,8 @@ namespace VGMToolbox
             ////////////////////
             // Datafile Checker
             ////////////////////
-            TreeNode auditing_DatafileCheckerNode = new TreeNode("Datafile Checker");
+            TreeNode auditing_DatafileCheckerNode =
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_DatafileCheckerNode"]);
 
             // add form
             Auditing_DatafileCheckerForm auditing_DatafileCheckerForm =
@@ -155,10 +162,12 @@ namespace VGMToolbox
         private TreeNode buildExamineTreeNode()
         {
             Constants.NodeTagStruct nodeTag = new Constants.NodeTagStruct();
-            TreeNode examine_RootNode = new TreeNode("Examine/Exploration Tools");
+            TreeNode examine_RootNode =
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_ExamineRootNode"]);
 
             // Tag Viewer
-            TreeNode examine_TagViewerNode = new TreeNode("Tag/Info Viewer");
+            TreeNode examine_TagViewerNode =
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_TagViewerNode"]);
             Examine_TagViewerForm examine_TagViewerForm = 
                 new Examine_TagViewerForm(examine_TagViewerNode);
             this.splitContainer1.Panel2.Controls.Add(examine_TagViewerForm);
@@ -176,14 +185,17 @@ namespace VGMToolbox
         private TreeNode buildHootTreeNode()
         {
             Constants.NodeTagStruct nodeTag = new Constants.NodeTagStruct();
-            TreeNode hoot_RootNode = new TreeNode("Hoot Tools");
-            
-            TreeNode hoot_CsvDatafileNode = new TreeNode("CSV to Datafile");
+            TreeNode hoot_RootNode =
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_HootRootNode"]);
+
+            TreeNode hoot_CsvDatafileNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_CsvDatafileNode"]);
             
             ///////////////
             // XML Builder
             ///////////////
-            TreeNode hoot_XmlBuilderNode = new TreeNode("XML Builder");
+            TreeNode hoot_XmlBuilderNode =
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_XmlBuilderNode"]);
 
             // add form
             Hoot_XmlBuilderForm hoot_XmlBuilderForm = new Hoot_XmlBuilderForm(hoot_XmlBuilderNode);
@@ -204,9 +216,11 @@ namespace VGMToolbox
         private TreeNode buildNsfTreeNode()
         {
             Constants.NodeTagStruct nodeTag = new Constants.NodeTagStruct();
-            
-            TreeNode nsf_RootNode = new TreeNode("NSF Tools");
-            TreeNode nsf_NsfeM3uNode = new TreeNode("NSFE to NSF + M3U");
+
+            TreeNode nsf_RootNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_NsfRootNode"]);
+            TreeNode nsf_NsfeM3uNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_NsfeM3uNode"]);
             nsf_RootNode.NodeFont = this.treeviewBoldFont;
 
             // add form
@@ -225,9 +239,11 @@ namespace VGMToolbox
         private TreeNode buildGbsTreeNode()
         {
             Constants.NodeTagStruct nodeTag = new Constants.NodeTagStruct();
-            
-            TreeNode gbs_RootNode = new TreeNode("GBS Tools");
-            TreeNode gbs_M3uNode = new TreeNode("GBS M3U Creator");
+
+            TreeNode gbs_RootNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_GbsRootNode"]);
+            TreeNode gbs_M3uNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_GbsM3uNode"]);
             gbs_RootNode.NodeFont = this.treeviewBoldFont;
 
             // add form
@@ -247,17 +263,23 @@ namespace VGMToolbox
         {
             Constants.NodeTagStruct nodeTag = new Constants.NodeTagStruct();
             EmptyForm emptyForm = new EmptyForm();
-            TreeNode xsf_RootNode = new TreeNode("xSF Tools");
-            TreeNode _2sf_RootNode = new TreeNode("2SF");
-            TreeNode psf_RootNode = new TreeNode("PSF");
-            TreeNode psf2_RootNode = new TreeNode("PSF2");
-            TreeNode ssf_RootNode = new TreeNode("SSF");
+            TreeNode xsf_RootNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_XsfRootNode"]);
+            TreeNode _2sf_RootNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_2sfRootNode"]);
+            TreeNode psf_RootNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_PsfRootNode"]);
+            TreeNode psf2_RootNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_Psf2RootNode"]);
+            TreeNode ssf_RootNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SsfRootNode"]);
 
 
             //////////////
             // 2SF Ripper
             //////////////
-            TreeNode xsf_2sfRipperNode = new TreeNode("2SF Ripper (Old Format)");
+            TreeNode xsf_2sfRipperNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_2sfRipperOldNode"]);
             
             // Add 2SF Ripper Form
             Xsf_2sfRipperForm xsf_2sfRipperForm = new Xsf_2sfRipperForm(xsf_2sfRipperNode);
@@ -270,7 +292,8 @@ namespace VGMToolbox
             //////////////
             // 2SF Timer
             //////////////
-            TreeNode xsf_2sfTimerNode = new TreeNode("2SF Timer");
+            TreeNode xsf_2sfTimerNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_2sfTimerNode"]);
 
             Xsf_2sfTimerForm xsf_2sfTimerForm = new Xsf_2sfTimerForm(xsf_2sfTimerNode);
             this.splitContainer1.Panel2.Controls.Add(xsf_2sfTimerForm);
@@ -281,7 +304,8 @@ namespace VGMToolbox
             ////////////
             // MKPSF2FE
             ////////////
-            TreeNode xsf_MkPsf2FENode = new TreeNode("mkpsf2 Front End");
+            TreeNode xsf_MkPsf2FENode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_MkPsf2FENode"]);
 
             // Add UnpkPsf2 Ripper Form
             Xsf_Mkpsf2FrontEndForm xsf_Mkpsf2FrontEndForm =
@@ -295,7 +319,8 @@ namespace VGMToolbox
             //////////////
             // UNPKPSF2FE
             //////////////
-            TreeNode xsf_UnPsf2FENode = new TreeNode("unpksf2 Front End");
+            TreeNode xsf_UnPsf2FENode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_UnPkPsf2FENode"]);
 
             // Add UnpkPsf2 Ripper Form
             Xsf_Unpkpsf2FrontEndForm xsf_Unpkpsf2FrontEndForm =
@@ -309,7 +334,8 @@ namespace VGMToolbox
             /////////////////
             // PSF2TOPSF2LIB
             /////////////////
-            TreeNode xsf_Psf2ToPsf2LibNode = new TreeNode("PSF2 to PSF2LIB");
+            TreeNode xsf_Psf2ToPsf2LibNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_Psf2ToPsf2LibNode"]);
 
             // Add UnpkPsf2 Ripper Form
             Xsf_Psf2ToPsf2LibForm xsf_Psf2ToPsf2LibForm =
@@ -323,7 +349,8 @@ namespace VGMToolbox
             /////////////////
             // PSF2SQEXTRACTOR
             /////////////////
-            TreeNode xsf_Psf2SqExtractorNode = new TreeNode("PSF2 SQ Extractor");
+            TreeNode xsf_Psf2SqExtractorNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_Psf2SqExtractorNode"]);
 
             // Add UnpkPsf2 Ripper Form
             Xsf_Psf2SqExtractorForm xsf_Psf2SqExtractorForm =
@@ -337,7 +364,8 @@ namespace VGMToolbox
             //////////////
             // BIN2PSF FE
             //////////////
-            TreeNode xsf_Bin2PsfFENode = new TreeNode("bin2psf Front End");
+            TreeNode xsf_Bin2PsfFENode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_Bin2PsfFENode"]);
 
             // Add UnpkPsf2 Ripper Form
             Xsf_Bin2PsfFrontEndForm xsf_Bin2PsfFrontEndForm =
@@ -349,8 +377,9 @@ namespace VGMToolbox
             xsf_Bin2PsfFENode.Tag = nodeTag;
                         
             // SSFMAKE
-            
-            TreeNode xsf_SsfMakeFENode = new TreeNode("ssfmake Front End");
+
+            TreeNode xsf_SsfMakeFENode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SsfMakeFENode"]);
             
             Xsf_SsfMakeFrontEndForm xsf_SsfMakeFrontEndForm = 
                 new Xsf_SsfMakeFrontEndForm(xsf_SsfMakeFENode);
@@ -360,7 +389,8 @@ namespace VGMToolbox
             xsf_SsfMakeFENode.Tag = nodeTag;
             
             // SEQ/TON Extractors
-            TreeNode xsf_SsfSeqTonExtFENode = new TreeNode("seqext/tonext Front End");
+            TreeNode xsf_SsfSeqTonExtFENode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SsfSeqTonExtFENode"]);
 
             Xsf_SsfSeqTonExtForm xsf_SsfSeqTonExtForm =
                 new Xsf_SsfSeqTonExtForm(xsf_SsfSeqTonExtFENode);
@@ -373,7 +403,8 @@ namespace VGMToolbox
             ///////////
             // XSF2EXE
             ///////////
-            TreeNode xsf_xsf2ExeNode = new TreeNode("xSF2EXE");
+            TreeNode xsf_xsf2ExeNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_Xsf2ExeNode"]);
 
             // Add Xsf2Exe Form
             Xsf_Xsf2ExeForm xsf_Xsf2ExeForm = new Xsf_Xsf2ExeForm(xsf_xsf2ExeNode);
@@ -419,13 +450,15 @@ namespace VGMToolbox
         private TreeNode buildExtractionTreeNode()
         {
             Constants.NodeTagStruct nodeTag = new Constants.NodeTagStruct();
-            TreeNode ext_RootNode = new TreeNode("Extraction Tools");
+            TreeNode ext_RootNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_ExtractionRootNode"]);
             ext_RootNode.NodeFont = this.treeviewBoldFont;
 
             ///////
             // NDS
             ///////
-            TreeNode ext_NdsNode = new TreeNode("Nintendo DS");
+            TreeNode ext_NdsNode =
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_ExtractionNdsRootNode"]);
             ext_NdsNode.NodeFont = this.treeviewBoldFont;
 
             nodeTag = new Constants.NodeTagStruct();
@@ -434,7 +467,8 @@ namespace VGMToolbox
             ext_NdsNode.Tag = nodeTag;
 
             // SDAT Extractor
-            TreeNode ext_SdatExtractorNode = new TreeNode("SDAT Extractor");            
+            TreeNode ext_SdatExtractorNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SdatExtractorNode"]);            
 
             // Add SDAT Extractor Form
             Xsf_SdatExtractorForm xsf_SdatExtractorForm = new Xsf_SdatExtractorForm(ext_SdatExtractorNode);
@@ -445,7 +479,8 @@ namespace VGMToolbox
             ext_SdatExtractorNode.Tag = nodeTag;
 
             // SDAT Finder
-            TreeNode ext_SdatFinderNode = new TreeNode("SDAT Finder");
+            TreeNode ext_SdatFinderNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SdatFinderNode"]);
 
             // Add SDAT Extractor Form
             Xsf_SdatFinderForm xsf_SdatFinderForm = new Xsf_SdatFinderForm(ext_SdatFinderNode);
@@ -458,7 +493,8 @@ namespace VGMToolbox
             ///////
             // PC
             ///////
-            TreeNode ext_PcNode = new TreeNode("PC");
+            TreeNode ext_PcNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_ExtractionPcRootNode"]);
             ext_PcNode.NodeFont = this.treeviewBoldFont;
 
             nodeTag = new Constants.NodeTagStruct();
