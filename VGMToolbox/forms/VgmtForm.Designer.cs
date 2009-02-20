@@ -136,6 +136,7 @@
             this.tbOutput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.tbOutput.Size = new System.Drawing.Size(539, 77);
             this.tbOutput.TabIndex = 2;
+            this.tbOutput.DoubleClick += new System.EventHandler(this.tbOutput_DoubleClick);
             // 
             // pnlButtons
             // 

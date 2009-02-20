@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -59,7 +60,7 @@ namespace VGMToolbox.forms
         {
             errorFound = false;
             
-            tbOutput.Clear();
+            this.tbOutput.Clear();
 
             setNodeAsWorking();
 
@@ -135,7 +136,7 @@ namespace VGMToolbox.forms
             
             if (pText.Trim().Length == 0)
             {
-                MessageBox.Show(String.Format("{0} cannot be empty.", pFieldName));
+                MessageBox.Show(String.Format("{0} cannot be empty.", pFieldName), "Required Field Missing.");
                 ret = false;
             }
             return ret;
@@ -199,6 +200,20 @@ namespace VGMToolbox.forms
             }
 
             return ret;
+        }
+
+        private void tbOutput_DoubleClick(object sender, EventArgs e)
+        {
+            string tempFileName = Path.GetTempFileName();
+            
+            // write output to a temp file
+            using (StreamWriter sw = new StreamWriter(File.Open(tempFileName, FileMode.Open, FileAccess.Write)))
+            {
+                sw.Write(tbOutput.Text);
+            }
+
+            File.Move(tempFileName, Path.ChangeExtension(tempFileName, ".txt"));
+            Process.Start(Path.ChangeExtension(tempFileName, ".txt"));
         }
     }
 }
