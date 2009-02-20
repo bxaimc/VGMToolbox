@@ -44,31 +44,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 513);
-            this.pnlLabels.Size = new System.Drawing.Size(816, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 725);
+            this.pnlLabels.Size = new System.Drawing.Size(1314, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(816, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(1314, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 436);
-            this.tbOutput.Size = new System.Drawing.Size(816, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 648);
+            this.tbOutput.Size = new System.Drawing.Size(1314, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 416);
-            this.pnlButtons.Size = new System.Drawing.Size(816, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 628);
+            this.pnlButtons.Size = new System.Drawing.Size(1314, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(756, 0);
+            this.btnCancel.Location = new System.Drawing.Point(1254, 0);
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(696, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(1194, 0);
             // 
             // groupBox1
             // 
@@ -77,7 +77,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(0, 23);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(816, 61);
+            this.groupBox1.Size = new System.Drawing.Size(1314, 61);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Files to Search";
@@ -109,7 +109,7 @@
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox2.Location = new System.Drawing.Point(0, 84);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(816, 45);
+            this.groupBox2.Size = new System.Drawing.Size(1314, 45);
             this.groupBox2.TabIndex = 6;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Criteria";
@@ -144,7 +144,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(816, 554);
+            this.ClientSize = new System.Drawing.Size(1314, 766);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "Extract_OffsetFinderForm";
