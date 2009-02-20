@@ -24,6 +24,8 @@ namespace VGMToolbox.forms
                 ConfigurationSettings.AppSettings["Form_AuditDatafileChecker_Title"];
             this.btnDoTask.Text =
                 ConfigurationSettings.AppSettings["Form_AuditDatafileChecker_DoTaskButton"];
+            this.tbOutput.Text =
+                ConfigurationSettings.AppSettings["Form_AuditDatafileChecker_IntroText"];
 
             this.btnCancel.Hide();
 

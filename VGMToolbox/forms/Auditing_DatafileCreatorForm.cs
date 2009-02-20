@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Configuration;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml.Serialization;
@@ -16,10 +17,16 @@ namespace VGMToolbox.forms
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = "Datafile Creator";
-            this.btnDoTask.Text = "Create";
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_AuditDatafileCreator_Title"];
+            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_AuditDatafileCreator_DoTaskButton"];
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_AuditDatafileCreator_IntroText"];
 
             InitializeComponent();
+
+            this.gbHeader.Text = ConfigurationSettings.AppSettings["Form_AuditDatafileCreator_GroupHeader"];
+            this.gbSourceDestPaths.Text = ConfigurationSettings.AppSettings["Form_AuditDatafileCreator_GroupSourceDestination"];
+
+            this.lblHeaderName.Text = ConfigurationSettings.AppSettings["Form_AuditDatafileCreator_LblHeaderName"];
         }
 
         private void btnDatCreator_BuildDat_Click(object sender, EventArgs e)
@@ -28,7 +35,8 @@ namespace VGMToolbox.forms
 
             if (checkDatafileCreatorInputs())
             {
-                toolStripStatusLabel1.Text = "Building Datafile...";
+                toolStripStatusLabel1.Text = 
+                    ConfigurationSettings.AppSettings["Form_AuditDatafileCreator_MessageBegin"];
 
                 DatafileCreatorWorker.GetGameParamsStruct vGetGameParamsStruct = new DatafileCreatorWorker.GetGameParamsStruct();
                 vGetGameParamsStruct.pDir = tbDatCreator_SourceFolder.Text;
@@ -47,8 +55,10 @@ namespace VGMToolbox.forms
         {
             if (e.Cancelled)
             {
-                toolStripStatusLabel1.Text = "Building Datafile...Canceled";
-                tbOutput.Text += "Operation canceled.";
+                toolStripStatusLabel1.Text = 
+                    ConfigurationSettings.AppSettings["Form_AuditDatafileCreator_MessageCancel"];
+                tbOutput.Text +=
+                    ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
             }
             else
             {
@@ -69,7 +79,8 @@ namespace VGMToolbox.forms
                 textWriter.Close();
                 textWriter.Dispose();
 
-                toolStripStatusLabel1.Text = "Building Datafile...Complete";
+                toolStripStatusLabel1.Text = 
+                    ConfigurationSettings.AppSettings["Form_AuditDatafileCreator_MessageComplete"];
             }
 
             // update node color
@@ -80,7 +91,7 @@ namespace VGMToolbox.forms
         {
             if (datCreator != null && datCreator.IsBusy)
             {
-                tbOutput.Text += "CANCEL PENDING...";
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
                 datCreator.CancelAsync();
                 this.errorFound = true;
             }
