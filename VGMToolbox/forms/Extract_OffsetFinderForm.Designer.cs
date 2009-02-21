@@ -337,6 +337,7 @@
             this.tbSearchStringOffset.Name = "tbSearchStringOffset";
             this.tbSearchStringOffset.Size = new System.Drawing.Size(92, 20);
             this.tbSearchStringOffset.TabIndex = 0;
+            this.tbSearchStringOffset.Text = "0x00";
             // 
             // Extract_OffsetFinderForm
             // 

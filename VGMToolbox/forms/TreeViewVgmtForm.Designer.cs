@@ -43,42 +43,42 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 397);
-            this.pnlLabels.Size = new System.Drawing.Size(757, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 513);
+            this.pnlLabels.Size = new System.Drawing.Size(816, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(757, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(816, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 320);
-            this.tbOutput.Size = new System.Drawing.Size(757, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 436);
+            this.tbOutput.Size = new System.Drawing.Size(816, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 300);
-            this.pnlButtons.Size = new System.Drawing.Size(757, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 416);
+            this.pnlButtons.Size = new System.Drawing.Size(816, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(697, 0);
+            this.btnCancel.Location = new System.Drawing.Point(756, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(637, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(696, 0);
             // 
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.filePathToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(147, 26);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(136, 26);
             // 
             // filePathToolStripMenuItem
             // 
             this.filePathToolStripMenuItem.Name = "filePathToolStripMenuItem";
-            this.filePathToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.filePathToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.filePathToolStripMenuItem.Text = "Update Tags";
             this.filePathToolStripMenuItem.Click += new System.EventHandler(this.filePathToolStripMenuItem_Click);
             // 
@@ -96,8 +96,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.AutoScroll = true;
-            this.splitContainer1.Size = new System.Drawing.Size(757, 277);
-            this.splitContainer1.SplitterDistance = 156;
+            this.splitContainer1.Size = new System.Drawing.Size(816, 393);
+            this.splitContainer1.SplitterDistance = 221;
             this.splitContainer1.TabIndex = 8;
             // 
             // treeViewTools
@@ -106,14 +106,14 @@
             this.treeViewTools.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeViewTools.Location = new System.Drawing.Point(0, 0);
             this.treeViewTools.Name = "treeViewTools";
-            this.treeViewTools.Size = new System.Drawing.Size(757, 156);
+            this.treeViewTools.Size = new System.Drawing.Size(816, 221);
             this.treeViewTools.TabIndex = 8;
             // 
             // TreeViewVgmtForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(757, 438);
+            this.ClientSize = new System.Drawing.Size(816, 554);
             this.Controls.Add(this.splitContainer1);
             this.Name = "TreeViewVgmtForm";
             this.Text = "TreeViewVgmtForm";

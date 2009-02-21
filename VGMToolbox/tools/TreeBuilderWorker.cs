@@ -11,6 +11,9 @@ namespace VGMToolbox.tools
 {
     class TreeBuilderWorker : BackgroundWorker
     {
+        public static readonly string EXAMINE_OUTPUT_PATH =
+            Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "examine"), "examine.txt");
+        
         private int fileCount = 0;
         private int maxFiles = 0;
         private Constants.ProgressStruct progressStruct;
@@ -35,11 +38,9 @@ namespace VGMToolbox.tools
         private void buildTree(TreeBuilderStruct pTreeBuilderStruct, DoWorkEventArgs e)
         {
             TreeNode t;
-            string examineOutputPath =
-                Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "examine"), "examine.txt");
             
             StreamWriter sw = null;
-            sw = File.CreateText(examineOutputPath);
+            sw = File.CreateText(EXAMINE_OUTPUT_PATH);
 
             foreach (string path in pTreeBuilderStruct.pPaths)
             {

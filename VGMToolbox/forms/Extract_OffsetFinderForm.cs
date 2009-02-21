@@ -23,7 +23,11 @@ namespace VGMToolbox.forms
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
-                        
+
+            this.tbOutput.Text = "Search for offsets, or search for offsets and cut based on input criteria." + Environment.NewLine;
+            this.tbOutput.Text += "- Use \"Search String is at Offset\" for file types that have their Magic Bytes at a nonzero offset (i.e. SSF Driver) " + Environment.NewLine;
+            this.tbOutput.Text += "- Use \"Cut Size is at Offset\" for file types that store their length in the header." + Environment.NewLine;
+
             InitializeComponent();
 
             this.createEndianList();
