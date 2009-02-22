@@ -36,9 +36,10 @@
             this.label2 = new System.Windows.Forms.Label();
             this.tbSearchString = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.cbDoCut = new System.Windows.Forms.CheckBox();
             this.label11 = new System.Windows.Forms.Label();
             this.tbOutputExtension = new System.Windows.Forms.TextBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.gbCutSizeOptions = new System.Windows.Forms.GroupBox();
             this.cbOffsetSize = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
@@ -59,36 +60,36 @@
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            this.groupBox4.SuspendLayout();
+            this.gbCutSizeOptions.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 513);
-            this.pnlLabels.Size = new System.Drawing.Size(816, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 512);
+            this.pnlLabels.Size = new System.Drawing.Size(763, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(816, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(763, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 436);
-            this.tbOutput.Size = new System.Drawing.Size(816, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 435);
+            this.tbOutput.Size = new System.Drawing.Size(763, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 416);
-            this.pnlButtons.Size = new System.Drawing.Size(816, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 415);
+            this.pnlButtons.Size = new System.Drawing.Size(763, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(756, 0);
+            this.btnCancel.Location = new System.Drawing.Point(703, 0);
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(696, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(643, 0);
             // 
             // groupBox1
             // 
@@ -97,7 +98,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(0, 23);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(816, 61);
+            this.groupBox1.Size = new System.Drawing.Size(763, 61);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Files to Search";
@@ -129,7 +130,7 @@
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox2.Location = new System.Drawing.Point(0, 84);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(816, 45);
+            this.groupBox2.Size = new System.Drawing.Size(763, 45);
             this.groupBox2.TabIndex = 6;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Criteria";
@@ -162,23 +163,35 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.cbDoCut);
             this.groupBox3.Controls.Add(this.label11);
             this.groupBox3.Controls.Add(this.tbOutputExtension);
-            this.groupBox3.Controls.Add(this.groupBox4);
+            this.groupBox3.Controls.Add(this.gbCutSizeOptions);
             this.groupBox3.Controls.Add(this.label3);
             this.groupBox3.Controls.Add(this.tbSearchStringOffset);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox3.Location = new System.Drawing.Point(0, 129);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(816, 161);
+            this.groupBox3.Size = new System.Drawing.Size(763, 182);
             this.groupBox3.TabIndex = 7;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Cut Options (all values are relative to the location of the file to be cut)";
             // 
+            // cbDoCut
+            // 
+            this.cbDoCut.AutoSize = true;
+            this.cbDoCut.Location = new System.Drawing.Point(9, 19);
+            this.cbDoCut.Name = "cbDoCut";
+            this.cbDoCut.Size = new System.Drawing.Size(83, 17);
+            this.cbDoCut.TabIndex = 15;
+            this.cbDoCut.Text = "Extract Files";
+            this.cbDoCut.UseVisualStyleBackColor = true;
+            this.cbDoCut.CheckedChanged += new System.EventHandler(this.cbDoCut_CheckedChanged);
+            // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(234, 22);
+            this.label11.Location = new System.Drawing.Point(234, 43);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(107, 13);
             this.label11.TabIndex = 14;
@@ -186,31 +199,31 @@
             // 
             // tbOutputExtension
             // 
-            this.tbOutputExtension.Location = new System.Drawing.Point(347, 19);
+            this.tbOutputExtension.Location = new System.Drawing.Point(347, 40);
             this.tbOutputExtension.Name = "tbOutputExtension";
             this.tbOutputExtension.Size = new System.Drawing.Size(92, 20);
             this.tbOutputExtension.TabIndex = 13;
             // 
-            // groupBox4
+            // gbCutSizeOptions
             // 
-            this.groupBox4.Controls.Add(this.cbOffsetSize);
-            this.groupBox4.Controls.Add(this.label9);
-            this.groupBox4.Controls.Add(this.label8);
-            this.groupBox4.Controls.Add(this.cbByteOrder);
-            this.groupBox4.Controls.Add(this.label7);
-            this.groupBox4.Controls.Add(this.label6);
-            this.groupBox4.Controls.Add(this.label5);
-            this.groupBox4.Controls.Add(this.label4);
-            this.groupBox4.Controls.Add(this.tbStaticCutsize);
-            this.groupBox4.Controls.Add(this.tbCutSizeOffset);
-            this.groupBox4.Controls.Add(this.rbOffsetBasedCutSize);
-            this.groupBox4.Controls.Add(this.rbStaticCutSize);
-            this.groupBox4.Location = new System.Drawing.Point(9, 45);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(430, 111);
-            this.groupBox4.TabIndex = 2;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Cut Size Options";
+            this.gbCutSizeOptions.Controls.Add(this.cbOffsetSize);
+            this.gbCutSizeOptions.Controls.Add(this.label9);
+            this.gbCutSizeOptions.Controls.Add(this.label8);
+            this.gbCutSizeOptions.Controls.Add(this.cbByteOrder);
+            this.gbCutSizeOptions.Controls.Add(this.label7);
+            this.gbCutSizeOptions.Controls.Add(this.label6);
+            this.gbCutSizeOptions.Controls.Add(this.label5);
+            this.gbCutSizeOptions.Controls.Add(this.label4);
+            this.gbCutSizeOptions.Controls.Add(this.tbStaticCutsize);
+            this.gbCutSizeOptions.Controls.Add(this.tbCutSizeOffset);
+            this.gbCutSizeOptions.Controls.Add(this.rbOffsetBasedCutSize);
+            this.gbCutSizeOptions.Controls.Add(this.rbStaticCutSize);
+            this.gbCutSizeOptions.Location = new System.Drawing.Point(9, 66);
+            this.gbCutSizeOptions.Name = "gbCutSizeOptions";
+            this.gbCutSizeOptions.Size = new System.Drawing.Size(430, 111);
+            this.gbCutSizeOptions.TabIndex = 2;
+            this.gbCutSizeOptions.TabStop = false;
+            this.gbCutSizeOptions.Text = "Cut Size Options";
             // 
             // cbOffsetSize
             // 
@@ -325,7 +338,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 22);
+            this.label3.Location = new System.Drawing.Point(6, 43);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(124, 13);
             this.label3.TabIndex = 1;
@@ -333,7 +346,7 @@
             // 
             // tbSearchStringOffset
             // 
-            this.tbSearchStringOffset.Location = new System.Drawing.Point(136, 19);
+            this.tbSearchStringOffset.Location = new System.Drawing.Point(136, 40);
             this.tbSearchStringOffset.Name = "tbSearchStringOffset";
             this.tbSearchStringOffset.Size = new System.Drawing.Size(92, 20);
             this.tbSearchStringOffset.TabIndex = 0;
@@ -343,7 +356,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(816, 554);
+            this.ClientSize = new System.Drawing.Size(763, 553);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -368,8 +381,8 @@
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
+            this.gbCutSizeOptions.ResumeLayout(false);
+            this.gbCutSizeOptions.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -387,7 +400,7 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.TextBox tbSearchStringOffset;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.GroupBox gbCutSizeOptions;
         private System.Windows.Forms.RadioButton rbOffsetBasedCutSize;
         private System.Windows.Forms.RadioButton rbStaticCutSize;
         private System.Windows.Forms.TextBox tbStaticCutsize;
@@ -402,5 +415,6 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox tbOutputExtension;
         private System.Windows.Forms.ComboBox cbOffsetSize;
+        private System.Windows.Forms.CheckBox cbDoCut;
     }
 }

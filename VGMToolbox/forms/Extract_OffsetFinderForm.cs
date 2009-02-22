@@ -19,7 +19,7 @@ namespace VGMToolbox.forms
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = "Simple Cutter";
+            this.lblTitle.Text = "Simple Cutter/Offset Finder";
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
@@ -32,6 +32,7 @@ namespace VGMToolbox.forms
 
             this.createEndianList();
             this.createOffsetSizeList();
+            this.resetCutSection();
         }
 
         private void OffsetFinderWorker_WorkComplete(object sender,
@@ -82,7 +83,7 @@ namespace VGMToolbox.forms
                 ofStruct.searchString = tbSearchString.Text;
                 ofStruct.treatSearchStringAsHex = cbSearchAsHex.Checked;
 
-                if (this.rbOffsetBasedCutSize.Checked || this.rbStaticCutSize.Checked)
+                if (cbDoCut.Checked)
                 {
                     ofStruct.cutFile = true;
 
@@ -166,8 +167,7 @@ namespace VGMToolbox.forms
         {
             bool ret = base.checkTextBox(this.tbSearchString.Text, "Search String");
 
-
-            if (this.rbOffsetBasedCutSize.Checked || this.rbStaticCutSize.Checked)
+            if (cbDoCut.Checked)
             {                
                 ret = ret && base.checkTextBox(this.tbOutputExtension.Text, "Output Extension");
 
@@ -184,6 +184,90 @@ namespace VGMToolbox.forms
             }
 
             return ret;
+        }
+
+        private void cbDoCut_CheckedChanged(object sender, EventArgs e)
+        {
+            this.resetCutSection();
+        }
+
+        private void resetCutSection()
+        {
+            if (cbDoCut.Checked)
+            {
+                tbSearchStringOffset.ReadOnly = false;
+                tbOutputExtension.ReadOnly = false;
+
+                rbStaticCutSize.Enabled = true;
+                rbOffsetBasedCutSize.Enabled = true;
+
+                rbStaticCutSize.Checked = false;
+                rbOffsetBasedCutSize.Checked = false;
+
+                tbStaticCutsize.ReadOnly = false;
+                tbCutSizeOffset.ReadOnly = false;
+                cbOffsetSize.Enabled = true;
+                cbByteOrder.Enabled = true;
+
+                tbSearchStringOffset.Show();
+                tbOutputExtension.Show();
+                rbStaticCutSize.Show();
+                rbOffsetBasedCutSize.Show();
+                rbStaticCutSize.Show();
+                rbOffsetBasedCutSize.Show();
+                tbStaticCutsize.Show();
+                tbCutSizeOffset.Show();
+                cbOffsetSize.Show();
+                cbByteOrder.Show();
+
+                gbCutSizeOptions.Show();
+                label3.Show();
+                label4.Show();
+                label5.Show();
+                label6.Show();
+                label7.Show();
+                label8.Show();
+                label9.Show();
+                label11.Show();
+            }
+            else
+            {
+                tbSearchStringOffset.ReadOnly = true;
+                tbOutputExtension.ReadOnly = true;
+
+                rbStaticCutSize.Checked = false;
+                rbOffsetBasedCutSize.Checked = false;
+
+                rbStaticCutSize.Enabled = false;
+                rbOffsetBasedCutSize.Enabled = false;
+
+                tbStaticCutsize.ReadOnly = true;
+                tbCutSizeOffset.ReadOnly = true;
+                cbOffsetSize.Enabled = false;
+                cbByteOrder.Enabled = false;
+
+
+                tbSearchStringOffset.Hide();
+                tbOutputExtension.Hide();
+                rbStaticCutSize.Hide();
+                rbOffsetBasedCutSize.Hide();
+                rbStaticCutSize.Hide();
+                rbOffsetBasedCutSize.Hide();
+                tbStaticCutsize.Hide();
+                tbCutSizeOffset.Hide();
+                cbOffsetSize.Hide();
+                cbByteOrder.Hide();
+
+                gbCutSizeOptions.Hide();
+                label3.Hide();
+                label4.Hide();
+                label5.Hide();
+                label6.Hide();
+                label7.Hide();
+                label8.Hide();
+                label9.Hide();
+                label11.Hide();
+            }        
         }
     }
 }
