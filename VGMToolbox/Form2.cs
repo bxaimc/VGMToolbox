@@ -150,11 +150,30 @@ namespace VGMToolbox
             nodeTag.formClass = auditing_DatafileCheckerForm.GetType().Name;
             auditing_DatafileCheckerNode.Tag = nodeTag;            
             
+            //////////////////////
+            // Collection Builder
+            //////////////////////
+            
+            /*
+            TreeNode auditing_CollectionBuilderNode =
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_CollectionBuilderNode"]);
+
+            // add form
+            Auditing_CollectionBuilderForm auditing_CollectionBuilderForm =
+                new Auditing_CollectionBuilderForm(auditing_CollectionBuilderNode);
+            this.splitContainer1.Panel2.Controls.Add(auditing_CollectionBuilderForm);
+
+            // set tag for displaying the form
+            nodeTag.formClass = auditing_CollectionBuilderForm.GetType().Name;
+            auditing_CollectionBuilderNode.Tag = nodeTag;            
+            */
+
             auditing_RootNode.NodeFont = this.treeviewBoldFont;
 
             auditing_RootNode.Nodes.Add(auditing_DatafileCreatorNode);
             auditing_RootNode.Nodes.Add(auditing_RebuilderNode);
             auditing_RootNode.Nodes.Add(auditing_DatafileCheckerNode);
+            // auditing_RootNode.Nodes.Add(auditing_CollectionBuilderNode);
 
             return auditing_RootNode;
         }
