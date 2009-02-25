@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{8A96D568-CB21-4E64-8FD2-849A8E2B2D4F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -196,6 +196,12 @@
     <Compile Include="forms\Xsf_Psf2SqExtractorForm.Designer.cs">
       <DependentUpon>Xsf_Psf2SqExtractorForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\Xsf_Psf2TimerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\Xsf_Psf2TimerForm.Designer.cs">
+      <DependentUpon>Xsf_Psf2TimerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\Xsf_Psf2ToPsf2LibForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -256,6 +262,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Auditing_CollectionBuilderForm.resx">
       <DependentUpon>Auditing_CollectionBuilderForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Auditing_DatafileCheckerForm.resx">
       <DependentUpon>Auditing_DatafileCheckerForm.cs</DependentUpon>
@@ -323,6 +330,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Xsf_Psf2SqExtractorForm.resx">
       <DependentUpon>Xsf_Psf2SqExtractorForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\Xsf_Psf2TimerForm.resx">
+      <DependentUpon>Xsf_Psf2TimerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Xsf_Psf2ToPsf2LibForm.resx">
@@ -419,6 +430,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\xsf\Psf2SqExtractorWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tools\xsf\Psf2TimerWorker.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\xsf\Psf2toPsf2LibWorker.cs">

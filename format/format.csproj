@@ -53,6 +53,7 @@
     <Compile Include="VGMToolbox\format\Mdx.cs" />
     <Compile Include="VGMToolbox\format\Nsf.cs" />
     <Compile Include="VGMToolbox\format\Nsfe.cs" />
+    <Compile Include="VGMToolbox\format\Ps2SequenceData.cs" />
     <Compile Include="VGMToolbox\format\Psf2.cs" />
     <Compile Include="VGMToolbox\format\S98.cs" />
     <Compile Include="VGMToolbox\format\Psid.cs" />

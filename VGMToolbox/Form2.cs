@@ -380,6 +380,20 @@ namespace VGMToolbox
             nodeTag.formClass = xsf_Psf2SqExtractorForm.GetType().Name;
             xsf_Psf2SqExtractorNode.Tag = nodeTag;
 
+            /////////////////
+            // PSF2TIMER
+            /////////////////
+            TreeNode xsf_Psf2TimerNode =
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_Psf2TimerNode"]);
+
+            // Add UnpkPsf2 Ripper Form
+            Xsf_Psf2TimerForm xsf_Psf2TimerForm = new Xsf_Psf2TimerForm(xsf_Psf2TimerNode);
+            this.splitContainer1.Panel2.Controls.Add(xsf_Psf2TimerForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.formClass = xsf_Psf2TimerForm.GetType().Name;
+            xsf_Psf2TimerNode.Tag = nodeTag;
+
             //////////////
             // BIN2PSF FE
             //////////////
@@ -454,7 +468,8 @@ namespace VGMToolbox
             psf2_RootNode.Nodes.Add(xsf_MkPsf2FENode);
             psf2_RootNode.Nodes.Add(xsf_UnPsf2FENode);
             psf2_RootNode.Nodes.Add(xsf_Psf2ToPsf2LibNode);
-            psf2_RootNode.Nodes.Add(xsf_Psf2SqExtractorNode);            
+            psf2_RootNode.Nodes.Add(xsf_Psf2SqExtractorNode);
+            psf2_RootNode.Nodes.Add(xsf_Psf2TimerNode);
             xsf_RootNode.Nodes.Add(psf2_RootNode);
 
             ssf_RootNode.NodeFont = this.treeviewBoldFont;
