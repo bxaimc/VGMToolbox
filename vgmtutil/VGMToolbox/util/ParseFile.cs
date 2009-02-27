@@ -32,10 +32,13 @@ namespace VGMToolbox.util
         public static byte[] parseSimpleOffset(Stream pFileStream, int pOffset, int pLength)
         {
             byte[] ret = new byte[pLength];
+            long currentStreamPosition = pFileStream.Position;
 
             pFileStream.Seek((long)pOffset, SeekOrigin.Begin);
             BinaryReader br = new BinaryReader(pFileStream);
             ret = br.ReadBytes((int)pLength);
+
+            pFileStream.Position = currentStreamPosition;
 
             return ret;
         }
@@ -43,19 +46,24 @@ namespace VGMToolbox.util
         public static byte[] parseSimpleOffset(Stream pFileStream, long pOffset, int pLength)
         {
             byte[] ret = new byte[pLength];
+            long currentStreamPosition = pFileStream.Position;
 
             pFileStream.Seek(pOffset, SeekOrigin.Begin);
             BinaryReader br = new BinaryReader(pFileStream);
             ret = br.ReadBytes(pLength);
+
+            pFileStream.Position = currentStreamPosition;
 
             return ret;
         }
 
         public static void parseSimpleOffset(Stream pFileStream, int pOffset, int pLength, ref ByteArray pOutputBuffer)
         {
+            long currentStreamPosition = pFileStream.Position;
             pFileStream.Seek((long)pOffset, SeekOrigin.Begin);
             BinaryReader br = new BinaryReader(pFileStream);           
             br.Read(pOutputBuffer.ByArray, 0, (int) pLength);
+            pFileStream.Position = currentStreamPosition;
         }
 
         public static int getSegmentLength(byte[] pBytes, int pOffset, byte[] pTerminator)

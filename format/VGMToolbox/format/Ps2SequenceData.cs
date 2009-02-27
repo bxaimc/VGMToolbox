@@ -55,7 +55,7 @@ namespace VGMToolbox.format
         public struct MidiDataChunkStruct
         {
             public UInt32 sequenceOffsetRelativeToChunk;
-            public UInt16 unknown;
+            public UInt16 resolution;
         }
 
         public Ps2SequenceData(Stream pStream)
@@ -153,6 +153,53 @@ namespace VGMToolbox.format
                 long endOfTrackOffset = ParseFile.GetNextOffset(pStream, (long)midiBlockOffset, END_OF_TRACK_BYTES);
 
                 ret = (UInt32)endOfTrackOffset;
+            }
+
+            return ret;
+        }
+
+        public long getTimeForSequenceNumber(Stream pStream, int pSequenceNumber)
+        {
+            long ret = 0;
+            
+            if (pSequenceNumber <= this.midiChunk.maxSeqCount &&
+                this.midiChunk.subSeqOffsetAddr[pSequenceNumber] != EMPTY_MIDI_OFFSET)
+            {
+                long tempo = this.getTempoForSequenceNumber(pStream, pSequenceNumber);
+                long eofOffset = this.getEndOfTrackForSequenceNumber(pStream, pSequenceNumber);
+                Int32 midiBlockOffset = MIDI_CHUNK_OFFSET + this.midiChunk.subSeqOffsetAddr[pSequenceNumber];
+
+                MidiDataChunkStruct dataChunkHeader = new MidiDataChunkStruct();
+                dataChunkHeader.sequenceOffsetRelativeToChunk = BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, (long)midiBlockOffset, 4), 0);
+                dataChunkHeader.resolution = BitConverter.ToUInt16(ParseFile.parseSimpleOffset(pStream, (long)(midiBlockOffset + 4), 2), 0);
+
+                if (dataChunkHeader.sequenceOffsetRelativeToChunk == 6) // uncompressed
+                {
+                    pStream.Position = (long)(midiBlockOffset + dataChunkHeader.sequenceOffsetRelativeToChunk);
+                    
+                    int currentByte;
+                    int previousByte;
+
+                    int previousCommand;
+                    long previousCommandOffset;
+
+                    while (pStream.Position < eofOffset)
+                    {
+                        currentByte = pStream.ReadByte();
+
+                        if (currentByte >= 128) // command
+                        {
+                            
+                            
+                            previousCommand = currentByte;
+                            previousCommandOffset = pStream.Position;
+                        }
+                        else                   // data
+                        {
+                            previousByte = currentByte;
+                        }
+                    }
+                }                
             }
 
             return ret;
