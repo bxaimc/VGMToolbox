@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -160,8 +161,25 @@ namespace VGMToolbox.format
 
         public long getTimeForSequenceNumber(Stream pStream, int pSequenceNumber)
         {
+            // useful references
+            //http://www.dogsbodynet.com/fileformats/midi.html
+            //http://faydoc.tripod.com/formats/mid.htm
+            //http://cnx.org/content/m15052/latest/
+            //http://jedi.ks.uiuc.edu/~johns/links/music/midifile.html
+            //http://www.sonicspot.com/guide/midifiles.html
+            //http://www.ccarh.org/courses/253/assignment/midifile/
+            // http://www.skytopia.com/project/articles/midi.html
+            // http://opensource.jdkoftinoff.com/jdks/svn/trunk/libjdkmidi/trunk/src/
+
+            long bytesToRead;
             long ret = 0;
-            
+
+            int[] chantype =
+            {
+              0, 0, 0, 0, 0, 0, 0, 0,         // 0x00 through 0x70
+              2, 2, 2, 2, 1, 1, 2, 0          // 0x80 through 0xf0
+            };
+
             if (pSequenceNumber <= this.midiChunk.maxSeqCount &&
                 this.midiChunk.subSeqOffsetAddr[pSequenceNumber] != EMPTY_MIDI_OFFSET)
             {
@@ -178,29 +196,106 @@ namespace VGMToolbox.format
                     pStream.Position = (long)(midiBlockOffset + dataChunkHeader.sequenceOffsetRelativeToChunk);
                     
                     int currentByte;
-                    int previousByte;
+                    //long currentOffset;
+                    //int previousByte = -1;
+                    UInt64 totalTicks = 0;
 
-                    int previousCommand;
-                    long previousCommandOffset;
 
-                    while (pStream.Position < eofOffset)
+                    // int previousCommand = -1;
+                    //long previousCommandOffset = -1;
+                    //int previousCommandDataBlocksCount;
+                    //int currentCommandDataBlocksCount;
+
+                    while (pStream.Position < eofOffset)                    
                     {
-                        currentByte = pStream.ReadByte();
 
-                        if (currentByte >= 128) // command
-                        {
+                        /* 
+                        currentByte = pStream.ReadByte();
+                          currentOffset = pStream.Position - 1;
+
+                          if (currentByte >= 128) // command
+                          {
+                              currentCommandDataBlocksCount =
+                                  getByteCountForCommand(pStream, currentByte, pStream.Position - 1);
+
+                              if ((previousCommand > 0))
+                              { 
+                                  previousCommandDataBlocksCount =
+                                      getByteCountForCommand(pStream, previousCommand, previousCommandOffset);
+
+                                  // check for delta time blocks
+                                  if ((previousCommandOffset + previousCommandDataBlocksCount) < currentOffset)
+                                  {
+                                      // get delta blocks
+                                      totalTicks += getDeltaTime(pStream, (previousCommandOffset + previousCommandDataBlocksCount), 
+                                          (currentOffset));
+                                  }
+                              }
                             
-                            
-                            previousCommand = currentByte;
-                            previousCommandOffset = pStream.Position;
-                        }
-                        else                   // data
-                        {
-                            previousByte = currentByte;
-                        }
+                              previousCommand = currentByte;
+                              previousCommandOffset = pStream.Position - 1;
+
+                              // goto the next command
+                              pStream.Position += (currentCommandDataBlocksCount - 1);
+                          }
+                          else                   // data
+                          {
+                              previousByte = currentByte;
+                          }
+                       */
                     }
                 }                
             }
+
+            return ret;
+        }
+
+        private int getByteCountForCommand(Stream pStream, int pCommand, long pCommandOffset)
+        {
+            int ret = 0;
+            int noteOnCheck;
+            int commandId = pCommand & 0xF0;
+
+            switch (commandId)
+            { 
+                case 0x80: // note off
+                case 0xC0: // program change
+                case 0xD0: // channel aftertouch
+                    ret = 2;
+                    break;
+                case 0xA0: // key aftertouch
+                case 0xB0: // control change
+                case 0xE0: // pitch wheel change
+                    ret = 3;
+                    break;
+                case 0xF0:
+                    ret = ParseFile.parseSimpleOffset(pStream, pCommandOffset + 2, 1)[0] + 3;
+                    break;
+                case 0x90: // note on (needs work)
+                    ret = 3;
+
+                    noteOnCheck = ParseFile.parseSimpleOffset(pStream, pCommandOffset + 2, 1)[0];
+                    if ((noteOnCheck & 0xF0) == 0x80)
+                    {
+                        ret = 2;
+                    }
+
+                    break;
+            }
+
+            return ret;
+        }
+
+        private UInt32 getDeltaTime(Stream pStream, long pStartOffset, long pEndOffset)
+        {
+            UInt32 ret = 0;
+            int deltaLength = (int)(pEndOffset - pStartOffset);
+            byte[] deltaBytes = ParseFile.parseSimpleOffset(pStream, pStartOffset, deltaLength);
+            byte[] timeBytes = new byte[4];
+
+            Array.Copy(deltaBytes, 0, timeBytes, (timeBytes.Length - deltaLength), deltaLength);
+            Array.Reverse(timeBytes); // convert to little endian
+            ret = BitConverter.ToUInt32(timeBytes, 0);
 
             return ret;
         }
