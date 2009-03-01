@@ -107,11 +107,11 @@ namespace VGMToolbox.format
                     }
                     if (String.IsNullOrEmpty(ret.HdFileName)) 
                     { 
-                        ret.BdFileName = "DEFAULT.HD"; 
+                        ret.HdFileName = "DEFAULT.HD"; 
                     }
                     if (String.IsNullOrEmpty(ret.SqFileName)) 
                     { 
-                        ret.BdFileName = "DEFAULT.SQ"; 
+                        ret.SqFileName = "DEFAULT.SQ"; 
                     }
 
                     break;
