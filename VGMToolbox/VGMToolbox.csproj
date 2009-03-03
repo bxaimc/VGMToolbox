@@ -172,6 +172,12 @@
     <Compile Include="forms\Xsf_2sfRipperForm.Designer.cs">
       <DependentUpon>Xsf_2sfRipperForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\Xsf_2sfSdatOptimizerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\Xsf_2sfSdatOptimizerForm.Designer.cs">
+      <DependentUpon>Xsf_2sfSdatOptimizerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\Xsf_2sfTimerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -316,6 +322,10 @@
       <DependentUpon>Xsf_2sfRipperForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="forms\Xsf_2sfSdatOptimizerForm.resx">
+      <DependentUpon>Xsf_2sfSdatOptimizerForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="forms\Xsf_2sfTimerForm.resx">
       <DependentUpon>Xsf_2sfTimerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -439,6 +449,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\xsf\Rip2sfWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tools\xsf\SdatOptimizerWorker.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\xsf\SsfMakeWorker.cs">

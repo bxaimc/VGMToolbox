@@ -108,7 +108,7 @@ namespace VGMToolbox.format.sdat
         public const int INFO_ENTRY_BANK_WAVEARCID3_LENGTH = 2;
 
         public const int INFO_ENTRY_BANK_WAVEARCID4_OFFSET = 0x0A;
-        public const int INFO_ENTRY_BANK_WAVEARCID5_LENGTH = 2;
+        public const int INFO_ENTRY_BANK_WAVEARCID4_LENGTH = 2;
 
         // WAVARC
         public const int INFO_ENTRY_WAVARC_FILEID_OFFSET = 0x00;
@@ -185,6 +185,19 @@ namespace VGMToolbox.format.sdat
             public byte[] unknown2;
         }
 
+        public struct SdatInfoBank
+        {
+            public byte[] fileId;
+            public byte[] unknown;
+            public byte[][] wa;
+        }
+
+        public struct SdatInfoWaveArc
+        {
+            public byte[] fileId;
+            public byte[] unknown;
+        }
+
         public struct SdatInfoStrm
         {
             public byte[] fileId;
@@ -222,6 +235,8 @@ namespace VGMToolbox.format.sdat
         SdatInfoRec strmInfoRec;
 
         SdatInfoSseq[] sdatInfoSseqs;
+        SdatInfoBank[] sdatInfoBanks;
+        SdatInfoWaveArc[] sdatInfoWaveArcs;
         SdatInfoStrm[] sdatInfoStrms;
 
         // public
@@ -229,6 +244,8 @@ namespace VGMToolbox.format.sdat
         public byte[] StdHeaderSectionSize { get { return stdHeaderSectionSize; } }
 
         public SdatInfoSseq[] SdatInfoSseqs { get { return sdatInfoSseqs; } }
+        public SdatInfoBank[] SdatInfoBanks { get { return sdatInfoBanks; } }
+        public SdatInfoWaveArc[] SdatInfoWaveArcs { get { return sdatInfoWaveArcs; } }
         public SdatInfoStrm[] SdatInfoStrms { get { return sdatInfoStrms; } }
 
         ////////////
@@ -302,6 +319,71 @@ namespace VGMToolbox.format.sdat
             return ret;
         }
 
+        private SdatInfoBank[] getInfoBankEntries(Stream pStream, int pSectionOffset,
+            SdatInfoRec pSdatInfoRec)
+        {
+            int entryCount = BitConverter.ToInt32(pSdatInfoRec.nCount, 0);
+            SdatInfoBank[] ret = new SdatInfoBank[entryCount];
+
+            for (int i = 0; i < entryCount; i++)
+            {
+                ret[i] = new SdatInfoBank();
+                ret[i].wa = new byte[4][];
+                int infoOffset = BitConverter.ToInt32(pSdatInfoRec.nEntryOffsets[i], 0);
+
+                if (infoOffset > 0)
+                {
+
+                    ret[i].fileId = ParseFile.parseSimpleOffset(pStream,
+                        pSectionOffset + infoOffset +
+                        INFO_ENTRY_BANK_FILEID_OFFSET, INFO_ENTRY_BANK_FILEID_LENGTH);                                        
+                    ret[i].unknown = ParseFile.parseSimpleOffset(pStream,
+                        pSectionOffset + infoOffset +
+                        INFO_ENTRY_BANK_UNKNOWN_OFFSET, INFO_ENTRY_BANK_UNKNOWN_LENGTH);
+
+                    ret[i].wa[0] = ParseFile.parseSimpleOffset(pStream,
+                        pSectionOffset + infoOffset +
+                        INFO_ENTRY_BANK_WAVEARCID1_OFFSET, INFO_ENTRY_BANK_WAVEARCID1_LENGTH);
+                    ret[i].wa[1] = ParseFile.parseSimpleOffset(pStream,
+                        pSectionOffset + infoOffset +
+                        INFO_ENTRY_BANK_WAVEARCID2_OFFSET, INFO_ENTRY_BANK_WAVEARCID2_LENGTH);
+                    ret[i].wa[2] = ParseFile.parseSimpleOffset(pStream,
+                        pSectionOffset + infoOffset +
+                        INFO_ENTRY_BANK_WAVEARCID3_OFFSET, INFO_ENTRY_BANK_WAVEARCID3_LENGTH);
+                    ret[i].wa[3] = ParseFile.parseSimpleOffset(pStream,
+                        pSectionOffset + infoOffset +
+                        INFO_ENTRY_BANK_WAVEARCID4_OFFSET, INFO_ENTRY_BANK_WAVEARCID4_LENGTH);
+                }
+            }
+
+            return ret;
+        }
+
+        private SdatInfoWaveArc[] getInfoWaveArcEntries(Stream pStream, int pSectionOffset,
+            SdatInfoRec pSdatInfoRec)
+        {
+            int entryCount = BitConverter.ToInt32(pSdatInfoRec.nCount, 0);
+            SdatInfoWaveArc[] ret = new SdatInfoWaveArc[entryCount];
+
+            for (int i = 0; i < entryCount; i++)
+            {
+                ret[i] = new SdatInfoWaveArc();
+                int infoOffset = BitConverter.ToInt32(pSdatInfoRec.nEntryOffsets[i], 0);
+
+                if (infoOffset > 0)
+                {
+                    ret[i].fileId = ParseFile.parseSimpleOffset(pStream,
+                        pSectionOffset + infoOffset +
+                        INFO_ENTRY_WAVARC_FILEID_OFFSET, INFO_ENTRY_WAVARC_FILEID_LENGTH);
+                    ret[i].unknown = ParseFile.parseSimpleOffset(pStream,
+                        pSectionOffset + infoOffset +
+                        INFO_ENTRY_WAVARC_UNKNOWN_OFFSET, INFO_ENTRY_WAVARC_UNKNOWN_LENGTH);
+                }
+            }
+
+            return ret;
+        }
+
         private SdatInfoStrm[] getInfoStrmEntries(Stream pStream, int pSectionOffset,
             SdatInfoRec pSdatInfoRec)
         {
@@ -363,11 +445,13 @@ namespace VGMToolbox.format.sdat
             infoRecordBankOffset = ParseFile.parseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_BANK_OFFSET_OFFSET,
                 INFO_RECORD_BANK_OFFSET_LENGTH);
             bankInfoRec = getInfoRec(pStream, pSectionOffset, BitConverter.ToInt32(infoRecordBankOffset, 0));
+            sdatInfoBanks = getInfoBankEntries(pStream, pSectionOffset, bankInfoRec);
 
             // WAVEARC
             infoRecordWaveArcOffset = ParseFile.parseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_WAVEARC_OFFSET_OFFSET,
                 INFO_RECORD_WAVEARC_OFFSET_LENGTH);
             waveArcInfoRec = getInfoRec(pStream, pSectionOffset, BitConverter.ToInt32(infoRecordWaveArcOffset, 0));
+            sdatInfoWaveArcs = getInfoWaveArcEntries(pStream, pSectionOffset, waveArcInfoRec);
 
             // PLAYER
             infoRecordPlayerOffset = ParseFile.parseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_PLAYER_OFFSET_OFFSET,

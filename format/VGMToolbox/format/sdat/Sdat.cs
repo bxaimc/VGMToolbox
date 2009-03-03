@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -18,8 +19,9 @@ namespace VGMToolbox.format.sdat
         private const string HEX_PREFIX = "0x";
 
         public const string SEQUENCE_FILE_EXTENSION = ".sseq";
-        
 
+        private static readonly byte[] EMPTY_WAVEARC = new byte[] { 0xFF, 0xFF};
+        public const int NO_SEQUENCE_RESTRICTION = -1;
 
         ///////////////////////////////////
         // Standard NDS Header Information
@@ -115,92 +117,30 @@ namespace VGMToolbox.format.sdat
         public SdatFileSection FileSection { get { return fileSection; } }
 
         // METHODS        
-        public byte[] getStdHeaderSignature(Stream pStream)
-        {
-            return ParseFile.parseSimpleOffset(pStream, STD_HEADER_SIGNATURE_OFFSET, STD_HEADER_SIGNATURE_LENGTH);
-        }
-        public byte[] getStdHeaderUnkConstant(Stream pStream)
-        {
-            return ParseFile.parseSimpleOffset(pStream, STD_HEADER_UNK_CONSTANT_OFFSET, STD_HEADER_UNK_CONSTANT_LENGTH);
-        }
-        public byte[] getStdHeaderFileSize(Stream pStream)
-        {
-            return ParseFile.parseSimpleOffset(pStream, STD_HEADER_FILE_SIZE_OFFSET, STD_HEADER_FILE_SIZE_LENGTH);
-        }
-        public byte[] getStdHeaderHeaderSize(Stream pStream)
-        {
-            return ParseFile.parseSimpleOffset(pStream, STD_HEADER_HEADER_SIZE_OFFSET, STD_HEADER_HEADER_SIZE_LENGTH);
-        }
-        public byte[] getStdHeaderNumberOfSections(Stream pStream)
-        {
-            return ParseFile.parseSimpleOffset(pStream, STD_HEADER_NUMBER_OF_SECTIONS_OFFSET, STD_HEADER_NUMBER_OF_SECTIONS_LENGTH);
-        }
-
-        public byte[] getSdatHeaderSymbOffset(Stream pStream)
-        {
-            return ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_SYMB_OFFSET_OFFSET, SDAT_HEADER_SYMB_OFFSET_LENGTH);
-        }
-        public byte[] getSdatHeaderSymbSize(Stream pStream)
-        {
-            return ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_SYMB_SIZE_OFFSET, SDAT_HEADER_SYMB_SIZE_LENGTH);
-        }
-
-        public byte[] getSdatHeaderInfoOffset(Stream pStream)
-        {
-            return ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_INFO_OFFSET_OFFSET, SDAT_HEADER_INFO_OFFSET_LENGTH);
-        }
-        public byte[] getSdatHeaderInfoSize(Stream pStream)
-        {
-            return ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_INFO_SIZE_OFFSET, SDAT_HEADER_INFO_SIZE_LENGTH);
-        }
-
-        public byte[] getSdatHeaderFatOffset(Stream pStream)
-        {
-            return ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_FAT_OFFSET_OFFSET, SDAT_HEADER_FAT_OFFSET_LENGTH);
-        }
-        public byte[] getSdatHeaderFatSize(Stream pStream)
-        {
-            return ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_FAT_SIZE_OFFSET, SDAT_HEADER_FAT_SIZE_LENGTH);
-        }
-
-        public byte[] getSdatHeaderFileOffset(Stream pStream)
-        {
-            return ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_FILE_OFFSET_OFFSET, SDAT_HEADER_FILE_OFFSET_LENGTH);
-        }
-        public byte[] getSdatHeaderFileSize(Stream pStream)
-        {
-            return ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_FILE_SIZE_OFFSET, SDAT_HEADER_FILE_SIZE_LENGTH);
-        }
-
-        public byte[] getSdatHeaderUnkPadding(Stream pStream)
-        {
-            return ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_UNK_PADDING_OFFSET, SDAT_HEADER_UNK_PADDING_LENGTH);
-        }
-
         public void Initialize(Stream pStream, string pFilePath)
         { 
             this.filePath = pFilePath;
             
             // SDAT
-            stdHeaderSignature = getStdHeaderSignature(pStream);
-            stdHeaderUnkConstant = getStdHeaderUnkConstant(pStream);
-            stdHeaderFileSize = getStdHeaderFileSize(pStream);
-            stdHeaderHeaderSize = getStdHeaderHeaderSize(pStream);
-            stdHeaderNumberOfSections = getStdHeaderNumberOfSections(pStream);
+            stdHeaderSignature = ParseFile.parseSimpleOffset(pStream, STD_HEADER_SIGNATURE_OFFSET, STD_HEADER_SIGNATURE_LENGTH);
+            stdHeaderUnkConstant = ParseFile.parseSimpleOffset(pStream, STD_HEADER_UNK_CONSTANT_OFFSET, STD_HEADER_UNK_CONSTANT_LENGTH);
+            stdHeaderFileSize = ParseFile.parseSimpleOffset(pStream, STD_HEADER_FILE_SIZE_OFFSET, STD_HEADER_FILE_SIZE_LENGTH);
+            stdHeaderHeaderSize = ParseFile.parseSimpleOffset(pStream, STD_HEADER_HEADER_SIZE_OFFSET, STD_HEADER_HEADER_SIZE_LENGTH);
+            stdHeaderNumberOfSections = ParseFile.parseSimpleOffset(pStream, STD_HEADER_NUMBER_OF_SECTIONS_OFFSET, STD_HEADER_NUMBER_OF_SECTIONS_LENGTH);
 
-            sdatHeaderSymbOffset = getSdatHeaderSymbOffset(pStream);
-            sdatHeaderSymbSize = getSdatHeaderSymbSize(pStream);
+            sdatHeaderSymbOffset = ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_SYMB_OFFSET_OFFSET, SDAT_HEADER_SYMB_OFFSET_LENGTH);
+            sdatHeaderSymbSize = ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_SYMB_SIZE_OFFSET, SDAT_HEADER_SYMB_SIZE_LENGTH);
 
-            sdatHeaderInfoOffset = getSdatHeaderInfoOffset(pStream);
-            sdatHeaderInfoSize = getSdatHeaderInfoSize(pStream);
+            sdatHeaderInfoOffset = ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_INFO_OFFSET_OFFSET, SDAT_HEADER_INFO_OFFSET_LENGTH);
+            sdatHeaderInfoSize = ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_INFO_SIZE_OFFSET, SDAT_HEADER_INFO_SIZE_LENGTH);
 
-            sdatHeaderFatOffset = getSdatHeaderFatOffset(pStream);
-            sdatHeaderFatSize = getSdatHeaderFatSize(pStream);
+            sdatHeaderFatOffset = ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_FAT_OFFSET_OFFSET, SDAT_HEADER_FAT_OFFSET_LENGTH);
+            sdatHeaderFatSize = ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_FAT_SIZE_OFFSET, SDAT_HEADER_FAT_SIZE_LENGTH);
 
-            sdatHeaderFileOffset = getSdatHeaderFileOffset(pStream);
-            sdatHeaderFileSize = getSdatHeaderFileSize(pStream);
+            sdatHeaderFileOffset = ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_FILE_OFFSET_OFFSET, SDAT_HEADER_FILE_OFFSET_LENGTH);
+            sdatHeaderFileSize = ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_FILE_SIZE_OFFSET, SDAT_HEADER_FILE_SIZE_LENGTH);
 
-            sdatHeaderUnkPadding = getSdatHeaderUnkPadding(pStream);
+            sdatHeaderUnkPadding = ParseFile.parseSimpleOffset(pStream, SDAT_HEADER_UNK_PADDING_OFFSET, SDAT_HEADER_UNK_PADDING_LENGTH);
 
             // SYMB Section
             if (BitConverter.ToUInt32(this.sdatHeaderSymbSize, 0) > 0)
@@ -452,8 +392,136 @@ namespace VGMToolbox.format.sdat
 
                 i++;
             }
+        }
 
+        public void OptimizeForZlib(int pStartSequence, int pEndSequence)
+        {
+            this.ZeroOutStrms();
+            this.ZeroOutWavArcs(pStartSequence, pEndSequence);
+            this.ZeroOutBanks(pStartSequence, pEndSequence);
+        }
 
+        private void ZeroOutStrms()
+        {            
+            foreach (SdatInfoSection.SdatInfoStrm s in infoSection.SdatInfoStrms)
+            {
+                if (s.fileId != null)
+                {
+                    // get file information
+                    int fileId = BitConverter.ToInt16(s.fileId, 0);
+                    int fileOffset = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
+                    int fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
+
+                    ParseFile.ZeroOutFileChunk(this.filePath, fileOffset, fileSize);   
+                }
+            }
+        }
+
+        private void ZeroOutWavArcs(int pStartSequence, int pEndSequence)
+        {
+            UInt16 bankId;
+            SdatInfoSection.SdatInfoBank bankInfo;
+            bool checkSequences = false;
+            bool[] waveArcIsUsed = new bool[infoSection.SdatInfoWaveArcs.Length];
+
+            if ((pStartSequence != NO_SEQUENCE_RESTRICTION) && (pEndSequence != NO_SEQUENCE_RESTRICTION))
+            {
+                checkSequences = true;
+            }
+
+            int i = 0;
+            int j;
+            foreach (SdatInfoSection.SdatInfoSseq s in infoSection.SdatInfoSseqs)
+            {
+                if ((!checkSequences) ||
+                    ((checkSequences) && (i >= pStartSequence) && (i <= pEndSequence)))
+                {
+                    bankId = BitConverter.ToUInt16(s.bnk, 0);
+                    bankInfo = infoSection.SdatInfoBanks[bankId];
+
+                    for (j = 0; j < 4; j++)
+                    {
+                        if (!ParseFile.CompareSegment(bankInfo.wa[j], 0, EMPTY_WAVEARC))
+                        {
+                            waveArcIsUsed[BitConverter.ToUInt16(bankInfo.wa[j], 0)] = true;                            
+                        }
+                    }
+                }
+                
+                i++;
+            }
+
+            for (i = 0; i < waveArcIsUsed.Length; i++)
+            {
+                if (!waveArcIsUsed[i])
+                {
+                    this.ZeroOutWaveArc((ushort) i);
+                }
+            }
+        }
+        private void ZeroOutWaveArc(UInt16 pWaveArcId)
+        {
+            SdatInfoSection.SdatInfoWaveArc waveArcInfo = new SdatInfoSection.SdatInfoWaveArc();
+            waveArcInfo = infoSection.SdatInfoWaveArcs[pWaveArcId];
+
+            if (waveArcInfo.fileId != null)
+            {
+                // get file information
+                int fileId = BitConverter.ToInt16(waveArcInfo.fileId, 0);
+                int fileOffset = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
+                int fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
+
+                ParseFile.ZeroOutFileChunk(this.filePath, fileOffset, fileSize);
+            }
+        }
+
+        private void ZeroOutBanks(int pStartSequence, int pEndSequence)
+        {
+            UInt16 bankId;
+            SdatInfoSection.SdatInfoBank bankInfo;
+            bool checkSequences = false;
+            bool[] bankIsUsed = new bool[infoSection.SdatInfoBanks.Length];
+
+            if ((pStartSequence != NO_SEQUENCE_RESTRICTION) && (pEndSequence != NO_SEQUENCE_RESTRICTION))
+            {
+                checkSequences = true;
+            }
+
+            int i = 0;
+            foreach (SdatInfoSection.SdatInfoSseq s in infoSection.SdatInfoSseqs)
+            {
+                if ((!checkSequences) ||
+                    ((checkSequences) && (i >= pStartSequence) && (i <= pEndSequence)))
+                {
+                    bankId = BitConverter.ToUInt16(s.bnk, 0);
+                    bankIsUsed[bankId] = true;                   
+                }
+
+                i++;
+            }
+
+            for (i = 0; i < bankIsUsed.Length; i++)
+            {
+                if (!bankIsUsed[i])
+                {
+                    this.ZeroOutBank((ushort)i);
+                }
+            }
+        }
+        private void ZeroOutBank(UInt16 pBankId)
+        {
+            SdatInfoSection.SdatInfoBank bankInfo = new SdatInfoSection.SdatInfoBank();
+            bankInfo = infoSection.SdatInfoBanks[pBankId];
+
+            if (bankInfo.fileId != null)
+            {
+                // get file information
+                int fileId = BitConverter.ToInt16(bankInfo.fileId, 0);
+                int fileOffset = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
+                int fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
+
+                ParseFile.ZeroOutFileChunk(this.filePath, fileOffset, fileSize);
+            }
         }
 
         public void BuildSmap(string pOutputPath, string pFilePrefix)
@@ -548,23 +616,13 @@ namespace VGMToolbox.format.sdat
 
         public bool IsFileLibrary() { return false; }
 
-        public bool HasMultipleFileExtensions()
-        {
-            return false;
-        }
+        public bool HasMultipleFileExtensions() { return false; }
 
         public bool UsesLibraries() { return false; }
         public bool IsLibraryPresent() { return true; }
 
-        public Dictionary<string, string> GetTagHash()
-        {
-            return this.tagHash;
-        }
-
-        public void GetDatFileCrc32(ref Crc32 pChecksum)
-        {
-            pChecksum.Reset();
-        }
+        public Dictionary<string, string> GetTagHash() { return this.tagHash; }
+        public void GetDatFileCrc32(ref Crc32 pChecksum) { pChecksum.Reset();}
         
         #endregion
 

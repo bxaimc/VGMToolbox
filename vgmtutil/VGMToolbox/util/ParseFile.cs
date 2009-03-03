@@ -392,7 +392,6 @@ namespace VGMToolbox.util
             return ByteArrayToString(md5Hash.Hash);
         }
 
-
         public static string GetSha1OfFullFile(FileStream pFileStream)
         {
             SHA1CryptoServiceProvider sha1Hash = new SHA1CryptoServiceProvider();
@@ -448,6 +447,28 @@ namespace VGMToolbox.util
 
                         maxread = (pLength - totalBytes) > bytes.Length ? bytes.Length : (pLength - totalBytes);
                     }                    
+                }
+            }
+        }
+
+        public static void ZeroOutFileChunk(string pPath, long pOffset, int pLength)
+        {
+            int bytesToWrite = pLength;
+            byte[] bytes;
+
+            int maxWrite = bytesToWrite > MAX_BUFFER_SIZE ? MAX_BUFFER_SIZE : bytesToWrite;
+
+            using (BinaryWriter bw = 
+                new BinaryWriter(File.Open(pPath, FileMode.Open, FileAccess.Write)))
+            {
+                bw.BaseStream.Position = pOffset;
+                
+                while (bytesToWrite > 0)
+                {
+                    bytes = new byte[maxWrite];
+                    bw.Write(bytes);
+                    bytesToWrite -= maxWrite;
+                    maxWrite = bytesToWrite > bytes.Length ? bytes.Length : bytesToWrite;
                 }
             }
         }

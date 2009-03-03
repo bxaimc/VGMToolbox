@@ -320,6 +320,18 @@ namespace VGMToolbox
             nodeTag.formClass = xsf_2sfTimerForm.GetType().Name;
             xsf_2sfTimerNode.Tag = nodeTag;
 
+            //////////////////
+            // SDAT Optimizer
+            //////////////////
+            TreeNode xsf_SdatOptimizerNode =
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SdatOptimizerNode"]);
+
+            Xsf_2sfSdatOptimizerForm xsf_2sfSdatOptimizerForm = new Xsf_2sfSdatOptimizerForm(xsf_SdatOptimizerNode);
+            this.splitContainer1.Panel2.Controls.Add(xsf_2sfSdatOptimizerForm);
+
+            nodeTag.formClass = xsf_2sfSdatOptimizerForm.GetType().Name;
+            xsf_SdatOptimizerNode.Tag = nodeTag;
+
             ////////////
             // MKPSF2FE
             ////////////
@@ -456,6 +468,7 @@ namespace VGMToolbox
             _2sf_RootNode.Tag = nodeTag;
             _2sf_RootNode.Nodes.Add(xsf_2sfRipperNode);
             _2sf_RootNode.Nodes.Add(xsf_2sfTimerNode);
+            _2sf_RootNode.Nodes.Add(xsf_SdatOptimizerNode);            
             xsf_RootNode.Nodes.Add(_2sf_RootNode);
 
             psf_RootNode.NodeFont = this.treeviewBoldFont;
