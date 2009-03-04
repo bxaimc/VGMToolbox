@@ -32,10 +32,11 @@
             this.tbSourceSdat = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.tbStartSequence = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.cbIncludeAllSseq = new System.Windows.Forms.CheckBox();
             this.tbEndSequence = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.tbStartSequence = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -45,7 +46,7 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 403);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 487);
             this.pnlLabels.Size = new System.Drawing.Size(868, 19);
             // 
             // pnlTitle
@@ -54,12 +55,12 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 326);
+            this.tbOutput.Location = new System.Drawing.Point(0, 410);
             this.tbOutput.Size = new System.Drawing.Size(868, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 306);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 390);
             this.pnlButtons.Size = new System.Drawing.Size(868, 20);
             // 
             // btnCancel
@@ -104,6 +105,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.cbIncludeAllSseq);
             this.groupBox1.Controls.Add(this.tbEndSequence);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.tbStartSequence);
@@ -116,21 +118,26 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Options";
             // 
-            // label1
+            // cbIncludeAllSseq
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 16);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(95, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Starting Sequence";
+            this.cbIncludeAllSseq.AutoSize = true;
+            this.cbIncludeAllSseq.Checked = true;
+            this.cbIncludeAllSseq.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbIncludeAllSseq.Location = new System.Drawing.Point(165, 15);
+            this.cbIncludeAllSseq.Name = "cbIncludeAllSseq";
+            this.cbIncludeAllSseq.Size = new System.Drawing.Size(132, 17);
+            this.cbIncludeAllSseq.TabIndex = 4;
+            this.cbIncludeAllSseq.Text = "Include All Sequences";
+            this.cbIncludeAllSseq.UseVisualStyleBackColor = true;
+            this.cbIncludeAllSseq.CheckedChanged += new System.EventHandler(this.cbIncludeAllSseq_CheckedChanged);
             // 
-            // tbStartSequence
+            // tbEndSequence
             // 
-            this.tbStartSequence.Location = new System.Drawing.Point(107, 13);
-            this.tbStartSequence.Name = "tbStartSequence";
-            this.tbStartSequence.Size = new System.Drawing.Size(52, 20);
-            this.tbStartSequence.TabIndex = 1;
+            this.tbEndSequence.Location = new System.Drawing.Point(107, 37);
+            this.tbEndSequence.Name = "tbEndSequence";
+            this.tbEndSequence.ReadOnly = true;
+            this.tbEndSequence.Size = new System.Drawing.Size(52, 20);
+            this.tbEndSequence.TabIndex = 3;
             // 
             // label2
             // 
@@ -141,18 +148,28 @@
             this.label2.TabIndex = 2;
             this.label2.Text = "Ending Sequence";
             // 
-            // tbEndSequence
+            // tbStartSequence
             // 
-            this.tbEndSequence.Location = new System.Drawing.Point(107, 37);
-            this.tbEndSequence.Name = "tbEndSequence";
-            this.tbEndSequence.Size = new System.Drawing.Size(52, 20);
-            this.tbEndSequence.TabIndex = 3;
+            this.tbStartSequence.Location = new System.Drawing.Point(107, 13);
+            this.tbStartSequence.Name = "tbStartSequence";
+            this.tbStartSequence.ReadOnly = true;
+            this.tbStartSequence.Size = new System.Drawing.Size(52, 20);
+            this.tbStartSequence.TabIndex = 1;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 16);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(95, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Starting Sequence";
             // 
             // Xsf_2sfSdatOptimizerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(868, 444);
+            this.ClientSize = new System.Drawing.Size(868, 528);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox10);
             this.Name = "Xsf_2sfSdatOptimizerForm";
@@ -188,5 +205,6 @@
         private System.Windows.Forms.TextBox tbEndSequence;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox tbStartSequence;
+        private System.Windows.Forms.CheckBox cbIncludeAllSseq;
     }
 }

@@ -39,8 +39,12 @@ namespace VGMToolbox.forms
 
             SdatOptimizerWorker.SdatOptimizerStruct soptStruct = new SdatOptimizerWorker.SdatOptimizerStruct();
             soptStruct.sourcePaths = s;
-            soptStruct.startSequence = tbStartSequence.Text;
-            soptStruct.endSequence = tbEndSequence.Text;
+
+            if (!cbIncludeAllSseq.Checked)
+            {
+                soptStruct.startSequence = tbStartSequence.Text;
+                soptStruct.endSequence = tbEndSequence.Text;
+            }
 
             sdatOptimizerWorker = new SdatOptimizerWorker();
             sdatOptimizerWorker.ProgressChanged += backgroundWorker_ReportProgress;
@@ -79,6 +83,20 @@ namespace VGMToolbox.forms
         protected override void doDragEnter(object sender, DragEventArgs e)
         {
             base.doDragEnter(sender, e);
+        }
+
+        private void cbIncludeAllSseq_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbIncludeAllSseq.Checked)
+            {
+                tbStartSequence.ReadOnly = true;
+                tbEndSequence.ReadOnly = true;
+            }
+            else
+            {
+                tbStartSequence.ReadOnly = false;
+                tbEndSequence.ReadOnly = false;            
+            }
         }
     }
 }

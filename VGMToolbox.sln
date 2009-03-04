@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mkpsf2fe", "mkpsf2fe\mkpsf2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dbutil", "dbutil\dbutil.csproj", "{6ECB41D4-6EC9-44D3-B3E9-D8478968116E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdatopt", "sdatopt\sdatopt.csproj", "{396F6881-244B-4C06-8D44-11D17CFBF06B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{6ECB41D4-6EC9-44D3-B3E9-D8478968116E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6ECB41D4-6EC9-44D3-B3E9-D8478968116E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6ECB41D4-6EC9-44D3-B3E9-D8478968116E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{396F6881-244B-4C06-8D44-11D17CFBF06B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{396F6881-244B-4C06-8D44-11D17CFBF06B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{396F6881-244B-4C06-8D44-11D17CFBF06B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{396F6881-244B-4C06-8D44-11D17CFBF06B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
