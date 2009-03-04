@@ -23,6 +23,14 @@ namespace VGMToolbox.format.sdat
         private static readonly byte[] EMPTY_WAVEARC = new byte[] { 0xFF, 0xFF};
         public const int NO_SEQUENCE_RESTRICTION = -1;
 
+        struct SmapFatDataStruct
+        {
+            public int FileId;
+            public UInt32 Offset;
+            public UInt32 Size;
+            public string Name;
+        }
+
         ///////////////////////////////////
         // Standard NDS Header Information
         /// ///////////////////////////////
@@ -104,6 +112,9 @@ namespace VGMToolbox.format.sdat
 
         // Tag Hash
         Dictionary<string, string> tagHash = new Dictionary<string, string>();
+
+        // Smap Fat Info Struct
+        SmapFatDataStruct[] smapFatInfo;
 
         // Sections
         private SdatSymbSection symbSection = null;
@@ -528,7 +539,18 @@ namespace VGMToolbox.format.sdat
         { 
             checkOutputDirectory(pOutputPath);
 
+            this.smapFatInfo = new SmapFatDataStruct[this.FatSection.SdatFatRecs.Length];
+
+            for (int i = 0; i < this.smapFatInfo.Length; i++)
+            {
+                this.smapFatInfo[i] = new SmapFatDataStruct();
+            }
+
             buildSmapSeq(pOutputPath, pFilePrefix);
+            buildSmapBank(pOutputPath, pFilePrefix);
+            buildSmapWaveArc(pOutputPath, pFilePrefix);
+            buildSmapStrm(pOutputPath, pFilePrefix);
+            buildSmapFat(pOutputPath, pFilePrefix);
         }
 
         private void buildSmapSeq(string pOutputPath, string pFilePrefix)
@@ -536,6 +558,9 @@ namespace VGMToolbox.format.sdat
             string smapFileName = pFilePrefix + ".smap";
             string fileName;
             int fileId;
+
+            SmapFatDataStruct fatData;
+            
             StreamWriter sw = File.CreateText(Path.Combine(pOutputPath, smapFileName));
 
             sw.WriteLine(@"# SEQ:");
@@ -562,7 +587,7 @@ namespace VGMToolbox.format.sdat
                         fileName = String.Format("SSEQ{0}.sseq", fileId.ToString("X4"));
                     }
 
-                    lineOut += "  " + fileName.PadRight(26).Substring(0, 26);
+                    lineOut += "  " + Path.GetFileNameWithoutExtension(fileName).PadRight(26).Substring(0, 26);
                     lineOut += i.ToString().PadLeft(6);
                     lineOut += BitConverter.ToInt16(s.fileId, 0).ToString().PadLeft(7);
                     lineOut += BitConverter.ToInt16(s.bnk, 0).ToString().PadLeft(4);
@@ -573,7 +598,13 @@ namespace VGMToolbox.format.sdat
 
                     lineOut += " ".PadLeft(11); // hsize?
                     lineOut += BitConverter.ToInt32(fatSection.SdatFatRecs[BitConverter.ToInt16(s.fileId, 0)].nSize, 0).ToString().PadLeft(11);
-                    lineOut += @" \seq\" + fileName;
+                    lineOut += @" \Seq\" + fileName;
+
+                    fatData.FileId = fileId;
+                    fatData.Offset = BitConverter.ToUInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
+                    fatData.Size = BitConverter.ToUInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
+                    fatData.Name = @" \Seq\" + fileName;
+                    this.smapFatInfo[fileId] = fatData;
                 }
                 else
                 {
@@ -585,6 +616,248 @@ namespace VGMToolbox.format.sdat
                 i++;
             }
         
+            sw.Close();
+            sw.Dispose();
+        }
+
+        private void buildSmapBank(string pOutputPath, string pFilePrefix)
+        {
+            string smapFileName = pFilePrefix + ".smap";
+            string fileName;
+            int fileId;
+
+            SmapFatDataStruct fatData;
+            
+            StreamWriter sw = new StreamWriter(File.Open(Path.Combine(pOutputPath, smapFileName), FileMode.Append, FileAccess.Write));
+
+            sw.WriteLine();
+            sw.WriteLine(@"# BANK:");
+            sw.WriteLine(@"# label                     number fileID wa0 wa1 wa2 wa3         hsize        size name");
+
+            int i = 0;
+            string lineOut = String.Empty;
+
+            foreach (SdatInfoSection.SdatInfoBank s in infoSection.SdatInfoBanks)
+            {
+                lineOut = String.Empty;
+
+                if (s.fileId != null)
+                {
+                    fileId = BitConverter.ToInt16(s.fileId, 0);
+
+                    // get filename, if exists                                
+                    if ((symbSection != null) && (i < symbSection.SymbBankFileNames.Length) &&
+                        (!String.IsNullOrEmpty(symbSection.SymbBankFileNames[i])))
+                    {
+                        fileName = symbSection.SymbBankFileNames[i] + ".sbnk";
+                    }
+                    else
+                    {
+                        fileName = String.Format("SBNK{0}.sbnk", fileId.ToString("X4"));
+                    }
+
+                    lineOut += "  " + Path.GetFileNameWithoutExtension(fileName).PadRight(26).Substring(0, 26);
+                    lineOut += i.ToString().PadLeft(6);
+                    lineOut += BitConverter.ToInt16(s.fileId, 0).ToString().PadLeft(7);
+
+                    for (int j = 0; j < 4; j++)
+                    {
+                        if (ParseFile.CompareSegment(s.wa[j], 0, EMPTY_WAVEARC))
+                        {
+                            lineOut += String.Empty.PadLeft(4);
+                        }
+                        else
+                        {
+                            lineOut += BitConverter.ToUInt16(s.wa[j], 0).ToString().PadLeft(4);
+                        }
+                    }
+
+                    lineOut += BitConverter.ToInt32(fatSection.SdatFatRecs[BitConverter.ToInt16(s.fileId, 0)].nSize, 0).ToString().PadLeft(26);
+                    lineOut += @" \Bank\" + fileName;
+
+                    fatData.FileId = fileId;
+                    fatData.Offset = BitConverter.ToUInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
+                    fatData.Size = BitConverter.ToUInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
+                    fatData.Name = @" \Bank\" + fileName;
+                    this.smapFatInfo[fileId] = fatData;
+                }
+                else
+                {
+                    lineOut = i.ToString().PadLeft(34);
+                }
+
+                sw.WriteLine(lineOut);
+
+                i++;
+            }
+
+            sw.Close();
+            sw.Dispose();
+        }
+
+        private void buildSmapWaveArc(string pOutputPath, string pFilePrefix)
+        {
+            string smapFileName = pFilePrefix + ".smap";
+            string fileName;
+            int fileId;
+
+            SmapFatDataStruct fatData;
+            
+            StreamWriter sw = new StreamWriter(File.Open(Path.Combine(pOutputPath, smapFileName), FileMode.Append, FileAccess.Write));
+
+            sw.WriteLine();
+            sw.WriteLine(@"# WAVEARC:");
+            sw.WriteLine(@"# label                     number fileID                                      size name");
+
+            int i = 0;
+            string lineOut = String.Empty;
+
+            foreach (SdatInfoSection.SdatInfoWaveArc s in infoSection.SdatInfoWaveArcs)
+            {
+                lineOut = String.Empty;
+
+                if (s.fileId != null)
+                {
+                    fileId = BitConverter.ToInt16(s.fileId, 0);
+
+                    // get filename, if exists                                
+                    if ((symbSection != null) && (i < symbSection.SymbWaveArcFileNames.Length) &&
+                        (!String.IsNullOrEmpty(symbSection.SymbWaveArcFileNames[i])))
+                    {
+                        fileName = symbSection.SymbWaveArcFileNames[i] + ".swar";
+                    }
+                    else
+                    {
+                        fileName = String.Format("SWAR{0}.swar", fileId.ToString("X4"));
+                    }
+
+                    lineOut += "  " + Path.GetFileNameWithoutExtension(fileName).PadRight(26).Substring(0, 26);
+                    lineOut += i.ToString().PadLeft(6);
+                    lineOut += BitConverter.ToInt16(s.fileId, 0).ToString().PadLeft(7);
+
+                    lineOut += BitConverter.ToInt32(fatSection.SdatFatRecs[BitConverter.ToInt16(s.fileId, 0)].nSize, 0).ToString().PadLeft(42);
+                    lineOut += @" \WaveArc\" + fileName;
+
+                    fatData.FileId = fileId;
+                    fatData.Offset = BitConverter.ToUInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
+                    fatData.Size = BitConverter.ToUInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
+                    fatData.Name = @" \WaveArc\" + fileName;
+                    this.smapFatInfo[fileId] = fatData;
+                }
+                else
+                {
+                    lineOut = i.ToString().PadLeft(34);
+                }
+
+                sw.WriteLine(lineOut);
+
+                i++;
+            }
+
+            sw.Close();
+            sw.Dispose();
+        }
+
+        private void buildSmapStrm(string pOutputPath, string pFilePrefix)
+        {
+            string smapFileName = pFilePrefix + ".smap";
+            string fileName;
+            int fileId;
+
+            SmapFatDataStruct fatData;
+            
+            StreamWriter sw = new StreamWriter(File.Open(Path.Combine(pOutputPath, smapFileName), FileMode.Append, FileAccess.Write));
+
+            sw.WriteLine();
+            sw.WriteLine(@"# STRM:");
+            sw.WriteLine(@"# label                     number fileID vol pri ply                          size name");
+
+            int i = 0;
+            string lineOut = String.Empty;
+            
+            foreach (SdatInfoSection.SdatInfoStrm s in infoSection.SdatInfoStrms)
+            {
+                lineOut = String.Empty;
+
+                if (s.fileId != null)
+                {
+                    fileId = BitConverter.ToInt16(s.fileId, 0);
+
+                    // get filename, if exists                                
+                    if ((symbSection != null) && (i < symbSection.SymbStrmFileNames.Length) &&
+                        (!String.IsNullOrEmpty(symbSection.SymbStrmFileNames[i])))
+                    {
+                        fileName = symbSection.SymbStrmFileNames[i] + ".strm";
+                    }
+                    else
+                    {
+                        fileName = String.Format("STRM{0}.strm", fileId.ToString("X4"));
+                    }
+
+                    lineOut += "  " + Path.GetFileNameWithoutExtension(fileName).PadRight(26).Substring(0, 26);
+                    lineOut += i.ToString().PadLeft(6);
+                    lineOut += BitConverter.ToInt16(s.fileId, 0).ToString().PadLeft(7);
+                    lineOut += s.vol[0].ToString().PadLeft(4);
+                    lineOut += s.pri[0].ToString().PadLeft(4);
+                    lineOut += s.ply[0].ToString().PadLeft(4);
+
+                    lineOut += BitConverter.ToInt32(fatSection.SdatFatRecs[BitConverter.ToInt16(s.fileId, 0)].nSize, 0).ToString().PadLeft(30);
+                    lineOut += @" \Strm\" + fileName;
+
+                    fatData.FileId = fileId;
+                    fatData.Offset = BitConverter.ToUInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
+                    fatData.Size = BitConverter.ToUInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
+                    fatData.Name = @" \Strm\" + fileName;
+                    this.smapFatInfo[fileId] = fatData;
+                }
+                else
+                {
+                    lineOut = i.ToString().PadLeft(34);
+                }
+
+                sw.WriteLine(lineOut);
+
+                i++;
+            }
+
+            sw.Close();
+            sw.Dispose();
+        }
+
+        private void buildSmapFat(string pOutputPath, string pFilePrefix)
+        {
+            string smapFileName = pFilePrefix + ".smap";
+            SmapFatDataStruct s;            
+            StreamWriter sw = new StreamWriter(File.Open(Path.Combine(pOutputPath, smapFileName), FileMode.Append, FileAccess.Write));
+
+            sw.WriteLine();
+            sw.WriteLine(@"# FAT:");
+            sw.WriteLine(@"# fileID     offset       size name");
+
+            string lineOut = String.Empty;
+
+            for (int i = 0; i < this.smapFatInfo.Length; i++)
+            {
+                lineOut = String.Empty;
+
+                s = this.smapFatInfo[i];
+
+                if (!String.IsNullOrEmpty(s.Name))
+                {
+                    s = this.smapFatInfo[i];
+                    lineOut = s.FileId.ToString().PadLeft(8);
+                    lineOut += (" 0x" + s.Offset.ToString("X8")).PadLeft(10);
+                    lineOut += s.Size.ToString().PadLeft(11);
+                    lineOut += "  " + s.Name;
+                }
+                else
+                {
+                    lineOut = i.ToString().PadLeft(8);
+                }
+
+                sw.WriteLine(lineOut);
+            }
+
             sw.Close();
             sw.Dispose();
         }
