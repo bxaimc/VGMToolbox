@@ -72,7 +72,8 @@ namespace sdatopt
                     sdat.OptimizeForZlib(startSequence, endSequence);
                 }
 
-                File.Move(sdatOptimizingPath, sdatCompletedPath);
+                File.Copy(sdatOptimizingPath, sdatCompletedPath, true);
+                File.Delete(sdatOptimizingPath);
 
             }
         }
