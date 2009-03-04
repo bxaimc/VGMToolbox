@@ -123,7 +123,8 @@ namespace VGMToolbox.tools.xsf
                     sdat.OptimizeForZlib(startSequence, endSequence);                
                 }
 
-                File.Move(sdatOptimizingPath, sdatCompletedPath);
+                File.Copy(sdatOptimizingPath, sdatCompletedPath, true);
+                File.Delete(sdatOptimizingPath);
             }
             catch (Exception ex)
             {

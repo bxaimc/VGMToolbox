@@ -59,6 +59,14 @@ namespace VGMToolbox.format.sdat
         public const int SYMB_ENTRY_FILE_NAME_SIZE = 4;
 
         // !!!!! Add stuff here for subrecords for SEQARC
+        public const int SYMB_ENTRY_SEQARC_COUNT_OFFSET = 0x00;
+        public const int SYMB_ENTRY_SEQARC_COUNT_LENGTH = 4;
+
+        public const int SYMB_ENTRY_SEQARC_SUBENTRY_FILENAME_OFFSET = 0x00;
+        public const int SYMB_ENTRY_SEQARC_SUBENTRY_FILENAME_LENGTH = 4;
+
+        public const int SYMB_ENTRY_SEQARC_SUBENTRY_SUBREC_OFFSET_OFFSET = 0x04;
+        public const int SYMB_ENTRY_SEQARC_SUBENTRY_SUBREC_OFFSET_LENGTH = 4;
 
         /////////////
         // Variables
@@ -80,6 +88,8 @@ namespace VGMToolbox.format.sdat
         private byte[][] symbSeqSubRecords;
         private byte[][] symbSeqFileNames;
 
+        private byte[][] symbSeqArcFileNames;
+
         private byte[][] symbBankSubRecords;
         private byte[][] symbBankFileNames;
         private byte[][] symbWaveArcSubRecords;
@@ -94,19 +104,15 @@ namespace VGMToolbox.format.sdat
         private byte[][] symbStrmFileNames;
 
         private SdatSymbolRec sdatSymbolRecSeq;
-        // private SdatSymbolRec sdatSymbolRecSeqArc;
+        
+        private SdatSymbolRec sdatSymbolRecSeqArc;
+        
         private SdatSymbolRec sdatSymbolRecBank;
         private SdatSymbolRec sdatSymbolRecWaveArc;
         private SdatSymbolRec sdatSymbolRecPlayer;
         private SdatSymbolRec sdatSymbolRecGroup;
         private SdatSymbolRec sdatSymbolRecPlayer2;
         private SdatSymbolRec sdatSymbolRecStrm;
-
-        struct sdatSymbRec
-        {
-            public byte[] nEntryOffset;
-            public byte[] nSubRecOffset;
-        }
 
         public struct SdatSymbolRec
         {
@@ -128,7 +134,7 @@ namespace VGMToolbox.format.sdat
         public byte[] SymbRecordStrmOffset { get { return symbRecordStrmOffset; } }
 
         public string[] SymbSeqFileNames { get { return getSymbFileNames(symbSeqFileNames); } }
-
+        public string[] SymbSeqArcFileNames { get { return getSymbFileNames(symbSeqArcFileNames); } }
         public string[] SymbBankFileNames { get { return getSymbFileNames(symbBankFileNames); } }
         public string[] SymbWaveArcFileNames { get { return getSymbFileNames(symbWaveArcFileNames); } }
         public string[] SymbPlayerFileNames { get { return getSymbFileNames(symbPlayerFileNames); } }
@@ -209,34 +215,61 @@ namespace VGMToolbox.format.sdat
                 SYMB_RECORD_STRM_OFFSET_LENGTH);
         }
 
-        public void getSymbRecord(Stream pStream, int pSectionOffset, int pSubSectionOffset,
+        public void getSeqArcSymbRecord(Stream pStream, int pSectionOffset, int pSubSectionOffset,
             ref byte[][] pSymbFileNames, ref SdatSymbolRec pSdatSymbolRec)
         {
             pSdatSymbolRec = new SdatSymbolRec();
             
             pSdatSymbolRec.nCount = ParseFile.parseSimpleOffset(pStream,
-                pSectionOffset + pSubSectionOffset + SYMB_ENTRY_NUM_FILES_OFFSET,
-                SYMB_ENTRY_NUM_FILES_LENGTH);
+                pSectionOffset + pSubSectionOffset + SYMB_ENTRY_SEQARC_COUNT_OFFSET,
+                SYMB_ENTRY_SEQARC_COUNT_LENGTH);
 
             int subRecordCount = BitConverter.ToInt32(pSdatSymbolRec.nCount, 0);
 
-            // pSymbSubRecords = new byte[subRecordCount][];
             pSymbFileNames = new byte[subRecordCount][];
 
             pSdatSymbolRec.nEntryOffsets = new byte[subRecordCount][];
 
             for (int i = 1; i <= subRecordCount; i++)
             {
-                //pSymbSubRecords[i - 1] = ParseFile.parseSimpleOffset(pStream,
-                //    pSectionOffset + pSubSectionOffset + SYMB_ENTRY_NUM_FILES_OFFSET + (SYMB_ENTRY_FILE_NAME_SIZE * i),
-                //    SYMB_ENTRY_NUM_FILES_LENGTH);
+                pSdatSymbolRec.nEntryOffsets[i - 1] = ParseFile.parseSimpleOffset(pStream,
+                    pSectionOffset + pSubSectionOffset + SYMB_ENTRY_NUM_FILES_OFFSET + (SYMB_ENTRY_FILE_NAME_SIZE * i) + (SYMB_ENTRY_SEQARC_SUBENTRY_SUBREC_OFFSET_LENGTH * (i - 1)),
+                    SYMB_ENTRY_NUM_FILES_LENGTH);
 
+                int fileOffset = BitConverter.ToInt32(pSdatSymbolRec.nEntryOffsets[i - 1], 0);
+
+                if (fileOffset > 0)
+                {
+                    int fileLength = ParseFile.getSegmentLength(pStream, pSectionOffset + fileOffset, NULL_BYTE_ARRAY);
+                    pSymbFileNames[i - 1] = ParseFile.parseSimpleOffset(pStream, pSectionOffset + fileOffset, fileLength);
+                }
+                else
+                {
+                    pSymbFileNames[i - 1] = null;
+                }
+            }
+        }
+
+        public void getSymbRecord(Stream pStream, int pSectionOffset, int pSubSectionOffset,
+            ref byte[][] pSymbFileNames, ref SdatSymbolRec pSdatSymbolRec)
+        {
+            pSdatSymbolRec = new SdatSymbolRec();
+
+            pSdatSymbolRec.nCount = ParseFile.parseSimpleOffset(pStream,
+                pSectionOffset + pSubSectionOffset + SYMB_ENTRY_NUM_FILES_OFFSET,
+                SYMB_ENTRY_NUM_FILES_LENGTH);
+
+            int subRecordCount = BitConverter.ToInt32(pSdatSymbolRec.nCount, 0);
+
+            pSymbFileNames = new byte[subRecordCount][];
+
+            pSdatSymbolRec.nEntryOffsets = new byte[subRecordCount][];
+
+            for (int i = 1; i <= subRecordCount; i++)
+            {
                 pSdatSymbolRec.nEntryOffsets[i - 1] = ParseFile.parseSimpleOffset(pStream,
                     pSectionOffset + pSubSectionOffset + SYMB_ENTRY_NUM_FILES_OFFSET + (SYMB_ENTRY_FILE_NAME_SIZE * i),
                     SYMB_ENTRY_NUM_FILES_LENGTH);
-
-                //int fileOffset = BitConverter.ToInt32(pSymbSubRecords[i - 1], 0);
-                //int fileLength = ParseFile.getSegmentLength(pStream, pSectionOffset + fileOffset, NULL_BYTE_ARRAY);
 
                 int fileOffset = BitConverter.ToInt32(pSdatSymbolRec.nEntryOffsets[i - 1], 0);
 
@@ -267,6 +300,9 @@ namespace VGMToolbox.format.sdat
 
             // @TODO: Get subrecords for each SEQARC
             symbRecordSeqArcOffset = getSymbRecordSeqArcOffset(pStream, pSectionOffset);
+            intSymbRecordOffset = BitConverter.ToInt32(symbRecordSeqArcOffset, 0);
+            getSeqArcSymbRecord(pStream, pSectionOffset, intSymbRecordOffset,
+                ref symbSeqArcFileNames, ref sdatSymbolRecSeqArc);
 
             // BANK
             symbRecordBankOffset = getSymbRecordBankOffset(pStream, pSectionOffset);

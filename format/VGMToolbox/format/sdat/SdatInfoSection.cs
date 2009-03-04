@@ -185,6 +185,12 @@ namespace VGMToolbox.format.sdat
             public byte[] unknown2;
         }
 
+        public struct SdatInfoSeqArc
+        {
+            public byte[] fileId;
+            public byte[] unknown;
+        }
+
         public struct SdatInfoBank
         {
             public byte[] fileId;
@@ -235,6 +241,7 @@ namespace VGMToolbox.format.sdat
         SdatInfoRec strmInfoRec;
 
         SdatInfoSseq[] sdatInfoSseqs;
+        SdatInfoSeqArc[] sdatInfoSeqArcs;
         SdatInfoBank[] sdatInfoBanks;
         SdatInfoWaveArc[] sdatInfoWaveArcs;
         SdatInfoStrm[] sdatInfoStrms;
@@ -244,6 +251,7 @@ namespace VGMToolbox.format.sdat
         public byte[] StdHeaderSectionSize { get { return stdHeaderSectionSize; } }
 
         public SdatInfoSseq[] SdatInfoSseqs { get { return sdatInfoSseqs; } }
+        public SdatInfoSeqArc[] SdatInfoSeqArcs { get { return sdatInfoSeqArcs; } }
         public SdatInfoBank[] SdatInfoBanks { get { return sdatInfoBanks; } }
         public SdatInfoWaveArc[] SdatInfoWaveArcs { get { return sdatInfoWaveArcs; } }
         public SdatInfoStrm[] SdatInfoStrms { get { return sdatInfoStrms; } }
@@ -313,6 +321,31 @@ namespace VGMToolbox.format.sdat
                     ret[i].unknown2 = ParseFile.parseSimpleOffset(pStream,
                         pSectionOffset + infoOffset +
                         INFO_ENTRY_SEQ_UNKNOWN2_OFFSET, INFO_ENTRY_SEQ_UNKNOWN2_LENGTH);
+                }
+            }
+
+            return ret;
+        }
+
+        private SdatInfoSeqArc[] getInfoSeqArcEntries(Stream pStream, int pSectionOffset,
+            SdatInfoRec pSdatInfoRec)
+        {
+            int entryCount = BitConverter.ToInt32(pSdatInfoRec.nCount, 0);
+            SdatInfoSeqArc[] ret = new SdatInfoSeqArc[entryCount];
+
+            for (int i = 0; i < entryCount; i++)
+            {
+                ret[i] = new SdatInfoSeqArc();
+                int infoOffset = BitConverter.ToInt32(pSdatInfoRec.nEntryOffsets[i], 0);
+
+                if (infoOffset > 0)
+                {
+                    ret[i].fileId = ParseFile.parseSimpleOffset(pStream,
+                        pSectionOffset + infoOffset +
+                        INFO_ENTRY_SEQARC_FILEID_OFFSET, INFO_ENTRY_SEQARC_FILEID_LENGTH);
+                    ret[i].unknown = ParseFile.parseSimpleOffset(pStream,
+                        pSectionOffset + infoOffset +
+                        INFO_ENTRY_SEQARC_UNKNOWN_OFFSET, INFO_ENTRY_SEQARC_UNKNOWN_LENGTH);
                 }
             }
 
@@ -440,6 +473,7 @@ namespace VGMToolbox.format.sdat
             infoRecordSeqArcOffset = ParseFile.parseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_SEQARC_OFFSET_OFFSET,
                 INFO_RECORD_SEQARC_OFFSET_LENGTH);
             seqArcInfoRec = getInfoRec(pStream, pSectionOffset, BitConverter.ToInt32(infoRecordSeqArcOffset, 0));
+            sdatInfoSeqArcs = getInfoSeqArcEntries(pStream, pSectionOffset, seqArcInfoRec);
 
             // BANK
             infoRecordBankOffset = ParseFile.parseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_BANK_OFFSET_OFFSET,

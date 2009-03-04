@@ -547,6 +547,7 @@ namespace VGMToolbox.format.sdat
             }
 
             buildSmapSeq(pOutputPath, pFilePrefix);
+            buildSmapSeqArc(pOutputPath, pFilePrefix);
             buildSmapBank(pOutputPath, pFilePrefix);
             buildSmapWaveArc(pOutputPath, pFilePrefix);
             buildSmapStrm(pOutputPath, pFilePrefix);
@@ -616,6 +617,69 @@ namespace VGMToolbox.format.sdat
                 i++;
             }
         
+            sw.Close();
+            sw.Dispose();
+        }
+
+        private void buildSmapSeqArc(string pOutputPath, string pFilePrefix)
+        {
+            string smapFileName = pFilePrefix + ".smap";
+            string fileName;
+            int fileId;
+
+            SmapFatDataStruct fatData;
+
+            StreamWriter sw = new StreamWriter(File.Open(Path.Combine(pOutputPath, smapFileName), FileMode.Append, FileAccess.Write));
+
+            sw.WriteLine();
+            sw.WriteLine(@"# SEQARC:");
+            sw.WriteLine(@"# label                     number fileID                                      size name");
+
+            int i = 0;
+            string lineOut = String.Empty;
+
+            foreach (SdatInfoSection.SdatInfoSeqArc s in infoSection.SdatInfoSeqArcs)
+            {
+                lineOut = String.Empty;
+
+                if (s.fileId != null)
+                {
+                    fileId = BitConverter.ToInt16(s.fileId, 0);
+
+                    // get filename, if exists                                
+                    if ((symbSection != null) && (i < symbSection.SymbSeqArcFileNames.Length) &&
+                        (!String.IsNullOrEmpty(symbSection.SymbSeqArcFileNames[i])))
+                    {
+                        fileName = symbSection.SymbSeqArcFileNames[i] + ".ssar";
+                    }
+                    else
+                    {
+                        fileName = String.Format("SSAR{0}.ssar", fileId.ToString("X4"));
+                    }
+
+                    lineOut += "  " + Path.GetFileNameWithoutExtension(fileName).PadRight(26).Substring(0, 26);
+                    lineOut += i.ToString().PadLeft(6);
+                    lineOut += BitConverter.ToInt16(s.fileId, 0).ToString().PadLeft(7);
+
+                    lineOut += BitConverter.ToInt32(fatSection.SdatFatRecs[BitConverter.ToInt16(s.fileId, 0)].nSize, 0).ToString().PadLeft(42);
+                    lineOut += @" \SeqArc\" + fileName;
+
+                    fatData.FileId = fileId;
+                    fatData.Offset = BitConverter.ToUInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
+                    fatData.Size = BitConverter.ToUInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
+                    fatData.Name = @" \SeqArc\" + fileName;
+                    this.smapFatInfo[fileId] = fatData;
+                }
+                else
+                {
+                    lineOut = i.ToString().PadLeft(34);
+                }
+
+                sw.WriteLine(lineOut);
+
+                i++;
+            }
+
             sw.Close();
             sw.Dispose();
         }
