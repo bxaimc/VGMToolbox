@@ -30,6 +30,13 @@ namespace sdatopt
                 string sdatCompletedPath;
                 
                 string filename = Path.GetFullPath(args[0]);
+
+                if (!File.Exists(filename))
+                {
+                    Console.WriteLine("Cannot find SDAT: {0}", filename);
+                    return;
+                }
+                
                 int startSequence = Sdat.NO_SEQUENCE_RESTRICTION;
                 int endSequence = Sdat.NO_SEQUENCE_RESTRICTION;
 

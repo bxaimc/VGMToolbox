@@ -29,6 +29,7 @@ namespace _2sftimer
             string filePrefix;
             string smapPath = String.Empty;
             bool processSuccess = false;
+            string emptyFolderFileName;
 
             if (args.Length != 3)
             {
@@ -63,12 +64,26 @@ namespace _2sftimer
             string sseq2MidPath = Path.Combine(Path.Combine(".", "helper"), "sseq2mid.exe");
             string psfpointPath = Path.Combine(Path.Combine(".", "helper"), "psfpoint.exe");
 
+            // delete old .bat file
+            string psfpointBatchFilePath = Path.Combine(Path.Combine(pathTo2sf, "text"), PSFPOINT_BATCH_TXT);
+
+            if (File.Exists(psfpointBatchFilePath))
+            {
+                Console.WriteLine("Deleting Old Batch File");
+                File.Delete(psfpointBatchFilePath);
+            }
+            
             Console.WriteLine();
 
             // Extract SDAT
             Console.WriteLine("Extracting SDAT");
 
             string extractedSdatPath = extractedSdatPath = Path.Combine(Path.GetDirectoryName(pathToSdat), Path.GetFileNameWithoutExtension(pathToSdat));
+            if (Directory.Exists(extractedSdatPath))
+            {
+                extractedSdatPath += String.Format("_temp_{0}", new Random().Next().ToString()); 
+            }
+
             string extractedSseqPath = Path.Combine(extractedSdatPath, "Seq");
             
             FileStream fs = File.Open(pathToSdat, FileMode.Open, FileAccess.Read);
@@ -107,7 +122,9 @@ namespace _2sftimer
 
                     if (File.Exists(rippedFilePath))
                     {
-                        File.Move(rippedFilePath, Path.Combine(emptyFileDir, rippedFileName));
+                        emptyFolderFileName = Path.Combine(emptyFileDir, rippedFileName);
+                        File.Copy(rippedFilePath, emptyFolderFileName, true);
+                        File.Delete(rippedFilePath);
                     }
                 }
                 else
@@ -217,7 +234,7 @@ namespace _2sftimer
             else
             {
                 sw = new StreamWriter(File.Open(psfpointBatchFilePath, FileMode.Append, FileAccess.Write));
-            } 
+            }
 
             try
             {
@@ -308,7 +325,7 @@ namespace _2sftimer
             ndsProcess.WaitForExit();
 
             // delete files
-            File.Delete(psfpointDestinationPath);
+            // File.Delete(psfpointDestinationPath);
             File.Delete(psfpointBatchFileDestinationPath);
         }
 

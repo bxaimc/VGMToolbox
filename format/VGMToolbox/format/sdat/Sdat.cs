@@ -444,8 +444,9 @@ namespace VGMToolbox.format.sdat
             int j;
             foreach (SdatInfoSection.SdatInfoSseq s in infoSection.SdatInfoSseqs)
             {
-                if ((!checkSequences) ||
-                    ((checkSequences) && (i >= pStartSequence) && (i <= pEndSequence)))
+                if ((s.fileId != null) &&
+                    ((!checkSequences) ||
+                    ((checkSequences) && (i >= pStartSequence) && (i <= pEndSequence))))
                 {
                     bankId = BitConverter.ToUInt16(s.bnk, 0);
                     bankInfo = infoSection.SdatInfoBanks[bankId];
@@ -489,7 +490,6 @@ namespace VGMToolbox.format.sdat
         private void ZeroOutBanks(int pStartSequence, int pEndSequence)
         {
             UInt16 bankId;
-            SdatInfoSection.SdatInfoBank bankInfo;
             bool checkSequences = false;
             bool[] bankIsUsed = new bool[infoSection.SdatInfoBanks.Length];
 
@@ -501,8 +501,9 @@ namespace VGMToolbox.format.sdat
             int i = 0;
             foreach (SdatInfoSection.SdatInfoSseq s in infoSection.SdatInfoSseqs)
             {
-                if ((!checkSequences) ||
-                    ((checkSequences) && (i >= pStartSequence) && (i <= pEndSequence)))
+                if ((s.fileId != null) && 
+                    ((!checkSequences) ||
+                    ((checkSequences) && (i >= pStartSequence) && (i <= pEndSequence))))
                 {
                     bankId = BitConverter.ToUInt16(s.bnk, 0);
                     bankIsUsed[bankId] = true;                   

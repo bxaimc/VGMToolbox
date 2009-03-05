@@ -58,6 +58,7 @@ namespace VGMToolbox.tools.xsf
             bool haveDirectoryError = false;
             string extractedSdatPath;
             string extractedSseqPath;
+            string emptyFolderFileName;
 
             if (!CancellationPending)
             {
@@ -98,9 +99,22 @@ namespace VGMToolbox.tools.xsf
                     Smap smap;
                     bool processSuccess = false;
 
+                    // delete old .bat file
+                    string psfpointBatchFilePath = Path.Combine(Path.Combine(pTime2sfStruct.pathTo2sf, "text"), PSFPOINT_BATCH_TXT);
+
+                    if (File.Exists(psfpointBatchFilePath))
+                    {
+                        File.Delete(psfpointBatchFilePath);
+                    }
+
                     // extract SDAT
                     extractedSdatPath =
                         Path.Combine(Path.GetDirectoryName(pTime2sfStruct.pathToSdat), Path.GetFileNameWithoutExtension(pTime2sfStruct.pathToSdat));
+                    if (Directory.Exists(extractedSdatPath))
+                    {
+                        extractedSdatPath += String.Format("_temp_{0}", new Random().Next().ToString());
+                    }
+
                     extractedSseqPath = Path.Combine(extractedSdatPath, "Seq");
 
                     using (FileStream fs = File.Open(pTime2sfStruct.pathToSdat, FileMode.Open, FileAccess.Read))
@@ -146,7 +160,9 @@ namespace VGMToolbox.tools.xsf
 
                                 if (File.Exists(rippedFilePath))
                                 {
-                                    File.Move(rippedFilePath, Path.Combine(emptyFileDir, rippedFileName));
+                                    emptyFolderFileName = Path.Combine(emptyFileDir, rippedFileName);
+                                    File.Copy(rippedFilePath, emptyFolderFileName, true);
+                                    File.Delete(rippedFilePath);
                                 }
                             }
                             else
