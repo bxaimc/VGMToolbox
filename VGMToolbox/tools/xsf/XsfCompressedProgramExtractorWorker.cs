@@ -5,6 +5,7 @@ using System.IO;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 
 using VGMToolbox.format;
+using VGMToolbox.format.util;
 using VGMToolbox.util;
 
 namespace VGMToolbox.tools.xsf
@@ -113,55 +114,11 @@ namespace VGMToolbox.tools.xsf
 
                 if (dataType != null && dataType.Name.Equals("Xsf"))
                 {
-                    Xsf vgmData = new Xsf();
-                    vgmData.Initialize(fs, pPath);
-
-                    if (vgmData.CompressedProgramLength > 0)
-                    {
-                        BinaryWriter bw;
-                        string outputFile = Path.GetDirectoryName(pPath) + Path.DirectorySeparatorChar;
-                        outputFile += (pXsfCompressedProgramExtractorStruct.includeExtension? Path.GetFileName(pPath) : Path.GetFileNameWithoutExtension(pPath)) + ".bin";
-                        
-                        
-                        bw = new BinaryWriter(File.Create(outputFile));
-                        
-                        InflaterInputStream inflater;
-                        int read;
-                        byte[] data = new byte[4096];
-
-                        fs.Seek((long)(Xsf.RESERVED_SECTION_OFFSET + vgmData.ReservedSectionLength), SeekOrigin.Begin);
-                        inflater = new InflaterInputStream(fs);
-
-                        while ((read = inflater.Read(data, 0, data.Length)) > 0)
-                        {
-                            bw.Write(data, 0, read);
-                        }
-                        
-                        bw.Close();
-                        inflater.Close();
-                        inflater.Dispose(); 
-                       
-                        // strip GSF header
-                        if (pXsfCompressedProgramExtractorStruct.stripGsfHeader)
-                        {
-                            string strippedOutputFileName = outputFile + ".strip";
-                            
-                            using (FileStream gsfStream = File.OpenRead(outputFile))
-                            {                                
-                                long fileOffset = 0x0C;
-                                int fileLength = (int) (gsfStream.Length - fileOffset) + 1;
-
-                                ParseFile.ExtractChunkToFile(gsfStream, fileOffset, fileLength, 
-                                    strippedOutputFileName);
-                            }
-
-                            File.Copy(strippedOutputFileName, outputFile, true);
-                            File.Delete(strippedOutputFileName);
-                        }
-                    }
+                    XsfUtil.Xsf2ExeStruct xsf2ExeStruct = new XsfUtil.Xsf2ExeStruct();
+                    xsf2ExeStruct.IncludeExtension = pXsfCompressedProgramExtractorStruct.includeExtension;
+                    xsf2ExeStruct.StripGsfHeader = pXsfCompressedProgramExtractorStruct.stripGsfHeader;
+                    XsfUtil.Xsf2Exe(fs, pPath, xsf2ExeStruct);
                 }
-                fs.Close();
-                fs.Dispose();
             }
             catch (Exception ex)
             {

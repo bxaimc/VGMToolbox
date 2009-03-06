@@ -55,10 +55,17 @@ namespace sdatopt
                 {
                     Type dataType = FormatUtil.getObjectType(fs);
 
-                    if (dataType != null && dataType.Name.Equals("Sdat"))
+                    if (dataType != null)
                     {
-                        sdat = new Sdat();
-                        sdat.Initialize(fs, sdatOptimizingPath);
+                        if (dataType.Name.Equals("Sdat"))
+                        {
+                            sdat = new Sdat();
+                            sdat.Initialize(fs, sdatOptimizingPath);
+                        }
+                        else if (dataType.Name.Equals("Xsf"))
+                        {
+
+                        }
                     }
                 }
 

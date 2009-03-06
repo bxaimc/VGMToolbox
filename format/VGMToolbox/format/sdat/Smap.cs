@@ -59,7 +59,9 @@ namespace VGMToolbox.format.sdat
                 {
                     int intFileId = BitConverter.ToInt16(pSdat.InfoSection.SdatInfoSseqs[i].fileId, 0);
 
-                    if (i < pSdat.SymbSection.SymbSeqFileNames.Length)
+                    if ((pSdat.SymbSection != null) && 
+                        (i < pSdat.SymbSection.SymbSeqFileNames.Length) &&
+                        (!String.IsNullOrEmpty(pSdat.SymbSection.SymbSeqFileNames[i])))
                     {
                         this.sseqSection[i].label = pSdat.SymbSection.SymbSeqFileNames[i];
                         this.sseqSection[i].name =

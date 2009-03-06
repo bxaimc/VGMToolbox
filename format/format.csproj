@@ -64,6 +64,7 @@
     <Compile Include="VGMToolbox\format\sdat\SdatSymbSection.cs" />
     <Compile Include="VGMToolbox\format\sdat\Smap.cs" />
     <Compile Include="VGMToolbox\format\Spc.cs" />
+    <Compile Include="VGMToolbox\format\util\XsfUtil.cs" />
     <Compile Include="VGMToolbox\format\Vgm.cs" />
     <Compile Include="VGMToolbox\format\Wsr.cs" />
     <Compile Include="VGMToolbox\format\Xsf.cs" />
