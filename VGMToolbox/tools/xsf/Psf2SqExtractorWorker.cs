@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using VGMToolbox.format;
+using VGMToolbox.format.util;
 using VGMToolbox.util;
 
 namespace VGMToolbox.tools.xsf

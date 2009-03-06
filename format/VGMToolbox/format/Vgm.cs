@@ -6,6 +6,7 @@ using System.Text;
 using ICSharpCode.SharpZipLib.Checksums;
 using ICSharpCode.SharpZipLib.GZip;
 
+using VGMToolbox.format.util;
 using VGMToolbox.util;
 
 namespace VGMToolbox.format
@@ -626,7 +627,7 @@ namespace VGMToolbox.format
                     }
                 }
 
-                ParseFile.AddChunkToChecksum(gZipFileStream, this.vgmDataAbsoluteOffset, bytesToRead,
+                ChecksumUtil.AddChunkToChecksum(gZipFileStream, this.vgmDataAbsoluteOffset, bytesToRead,
                     ref pChecksum);
 
                 gZipFileStream.Close();
@@ -635,7 +636,7 @@ namespace VGMToolbox.format
             }
             else
             {
-                ParseFile.AddChunkToChecksum(pFileStream, this.vgmDataAbsoluteOffset, bytesToRead,
+                ChecksumUtil.AddChunkToChecksum(pFileStream, this.vgmDataAbsoluteOffset, bytesToRead,
                     ref pChecksum);
             }
 

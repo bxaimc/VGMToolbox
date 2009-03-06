@@ -5,6 +5,7 @@ using System.Text;
 
 using VGMToolbox.format;
 using VGMToolbox.format.sdat;
+using VGMToolbox.format.util;
 using VGMToolbox.util;
 
 namespace sdatopt
@@ -51,7 +52,7 @@ namespace sdatopt
 
                 File.Copy(filename, sdatOptimizingPath, true);
 
-                using (FileStream fs = File.Open(sdatOptimizingPath, FileMode.Open, FileAccess.ReadWrite))
+                using (FileStream fs = File.Open(sdatOptimizingPath, FileMode.Open, FileAccess.Read))
                 {
                     Type dataType = FormatUtil.getObjectType(fs);
 
@@ -62,9 +63,15 @@ namespace sdatopt
                             sdat = new Sdat();
                             sdat.Initialize(fs, sdatOptimizingPath);
                         }
-                        else if (dataType.Name.Equals("Xsf"))
+                        else if (dataType.Name.Equals("Xsf")) // is a 2sflib, unpack the sdat
                         {
+                            Xsf libFile = new Xsf();
+                            libFile.Initialize(fs, sdatOptimizingPath);
 
+                            if (libFile.getFormat().Equals(Xsf.FORMAT_NAME_2SF))
+                            { 
+                                
+                            }
                         }
                     }
                 }

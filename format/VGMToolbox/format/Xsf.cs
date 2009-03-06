@@ -8,6 +8,7 @@ using ICSharpCode.SharpZipLib.Checksums;
 using ICSharpCode.SharpZipLib.Zip.Compression;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 
+using VGMToolbox.format.util;
 using VGMToolbox.util;
 
 namespace VGMToolbox.format
@@ -32,6 +33,7 @@ namespace VGMToolbox.format
         private const ushort VERSION_USF = 0x21;
 
         public const string FORMAT_NAME_PSF2 = "PSF2";
+        public const string FORMAT_NAME_2SF = "2SF";
 
         private const int SIG_OFFSET = 0x00;
         private const int SIG_LENGTH = 0x03;
@@ -129,7 +131,7 @@ namespace VGMToolbox.format
             using (FileStream fs = File.OpenRead(this.filePath))
             {
                 // Reserved Section
-                ParseFile.AddChunkToChecksum(fs, (int)RESERVED_SECTION_OFFSET,
+                ChecksumUtil.AddChunkToChecksum(fs, (int)RESERVED_SECTION_OFFSET,
                     (int)this.reservedSectionLength, ref pChecksum);
 
                 // Compressed Program

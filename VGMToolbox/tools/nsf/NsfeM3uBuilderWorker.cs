@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.IO;
 
 using VGMToolbox.format;
+using VGMToolbox.format.util;
 using VGMToolbox.util;
 
 namespace VGMToolbox.tools.nsf

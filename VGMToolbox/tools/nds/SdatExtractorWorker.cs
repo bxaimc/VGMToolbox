@@ -7,6 +7,7 @@ using System.Text;
 using VGMToolbox.auditing;
 using VGMToolbox.format;
 using VGMToolbox.format.sdat;
+using VGMToolbox.format.util;
 using VGMToolbox.util;
 
 namespace VGMToolbox.tools.nds

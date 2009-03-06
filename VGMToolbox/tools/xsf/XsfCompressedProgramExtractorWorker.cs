@@ -109,16 +109,10 @@ namespace VGMToolbox.tools.xsf
          
             try
             {
-                FileStream fs = File.OpenRead(pPath);
-                Type dataType = FormatUtil.getObjectType(fs);
-
-                if (dataType != null && dataType.Name.Equals("Xsf"))
-                {
-                    XsfUtil.Xsf2ExeStruct xsf2ExeStruct = new XsfUtil.Xsf2ExeStruct();
-                    xsf2ExeStruct.IncludeExtension = pXsfCompressedProgramExtractorStruct.includeExtension;
-                    xsf2ExeStruct.StripGsfHeader = pXsfCompressedProgramExtractorStruct.stripGsfHeader;
-                    XsfUtil.Xsf2Exe(fs, pPath, xsf2ExeStruct);
-                }
+                XsfUtil.Xsf2ExeStruct xsf2ExeStruct = new XsfUtil.Xsf2ExeStruct();
+                xsf2ExeStruct.IncludeExtension = pXsfCompressedProgramExtractorStruct.includeExtension;
+                xsf2ExeStruct.StripGsfHeader = pXsfCompressedProgramExtractorStruct.stripGsfHeader;
+                XsfUtil.Xsf2Exe(pPath, xsf2ExeStruct);
             }
             catch (Exception ex)
             {

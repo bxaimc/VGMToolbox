@@ -7,6 +7,7 @@ using System.IO;
 using ICSharpCode.SharpZipLib.Checksums;
 
 using VGMToolbox.format;
+using VGMToolbox.format.util;
 using VGMToolbox.util;
 
 namespace VGMToolbox.auditing
@@ -99,7 +100,7 @@ namespace VGMToolbox.auditing
                     crc32Generator.Reset();
                     // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator, 
                     //    ref md5CryptoStream, ref sha1CryptoStream);
-                    ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
+                    ChecksumUtil.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
                 }
                 catch (System.OutOfMemoryException _es)
                 {
@@ -112,7 +113,7 @@ namespace VGMToolbox.auditing
                     crc32Generator.Reset();
                     // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
                     //    ref md5CryptoStream, ref sha1CryptoStream);
-                    ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
+                    ChecksumUtil.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
                 }
                 catch (IOException _es)
                 {
@@ -124,7 +125,7 @@ namespace VGMToolbox.auditing
                     crc32Generator.Reset();
                     // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
                     //    ref md5CryptoStream, ref sha1CryptoStream);
-                    ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
+                    ChecksumUtil.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
                 }
             }
 
@@ -132,7 +133,7 @@ namespace VGMToolbox.auditing
             {
                 // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
                 //    ref md5CryptoStream, ref sha1CryptoStream);
-                ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
+                ChecksumUtil.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
             }
 
             /*

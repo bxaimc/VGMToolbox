@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using ICSharpCode.SharpZipLib.Checksums;
 
 using VGMToolbox.format;
+using VGMToolbox.format.util;
 using VGMToolbox.util;
 
 namespace VGMToolbox.tools.xsf
@@ -502,8 +503,8 @@ namespace VGMToolbox.tools.xsf
             
             using (FileStream fs = File.OpenRead(pFileName))
             {
-                checksumKey = String.Format("{0}_{1}_{2}", ParseFile.GetCrc32OfFullFile(fs), ParseFile.GetMd5OfFullFile(fs),
-                    ParseFile.GetSha1OfFullFile(fs));
+                checksumKey = String.Format("{0}_{1}_{2}", ChecksumUtil.GetCrc32OfFullFile(fs), ChecksumUtil.GetMd5OfFullFile(fs),
+                    ChecksumUtil.GetSha1OfFullFile(fs));
             }
 
             if (this.fileNameHash[pHashKey].ContainsKey(checksumKey))
