@@ -207,8 +207,8 @@ namespace VGMToolbox
             TreeNode hoot_RootNode =
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_HootRootNode"]);
 
-            TreeNode hoot_CsvDatafileNode = 
-                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_CsvDatafileNode"]);
+            //TreeNode hoot_CsvDatafileNode = 
+            //    new TreeNode(ConfigurationSettings.AppSettings["MenuTree_CsvDatafileNode"]);
             
             ///////////////
             // XML Builder
@@ -226,7 +226,7 @@ namespace VGMToolbox
             
             hoot_RootNode.NodeFont = this.treeviewBoldFont;
 
-            hoot_RootNode.Nodes.Add(hoot_CsvDatafileNode);
+            // hoot_RootNode.Nodes.Add(hoot_CsvDatafileNode);
             hoot_RootNode.Nodes.Add(hoot_XmlBuilderNode);
 
             return hoot_RootNode;

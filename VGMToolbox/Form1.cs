@@ -96,7 +96,7 @@ namespace VGMToolbox
                 {
                     if (File.Exists(s[i]))
                     {
-                        parentNode = new TreeNode(FileUtil.trimPath(s[i]));
+                        parentNode = new TreeNode(Path.GetFileName(s[i]));
                         treeViewTools.Nodes.Add(parentNode);
                         mdxTools.getPdxForFile(s[i], tbOutput, parentNode, cbMdxCheckPdxExist.Checked);
                     }

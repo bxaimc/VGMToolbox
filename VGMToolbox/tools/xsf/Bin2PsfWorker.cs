@@ -213,13 +213,13 @@ namespace VGMToolbox.tools.xsf
 
                             // insert the data
                             fi = new FileInfo(destinationSeqFile);
-                            ParseFile.ReplaceFileChunk(destinationSeqFile, 0, fi.Length, 
+                            FileUtil.ReplaceFileChunk(destinationSeqFile, 0, fi.Length, 
                                 destinationExeFile, pcOffsetSeq);
                             fi = new FileInfo(destinationVbFile);
-                            ParseFile.ReplaceFileChunk(destinationVbFile, 0, fi.Length,
+                            FileUtil.ReplaceFileChunk(destinationVbFile, 0, fi.Length,
                                 destinationExeFile, pcOffsetVb);
                             fi = new FileInfo(destinationVhFile);
-                            ParseFile.ReplaceFileChunk(destinationVhFile, 0, fi.Length,
+                            FileUtil.ReplaceFileChunk(destinationVhFile, 0, fi.Length,
                                 destinationExeFile, pcOffsetVh);
 
                             // build bin2psf arguments                    

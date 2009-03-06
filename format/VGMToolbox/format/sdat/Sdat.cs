@@ -423,7 +423,7 @@ namespace VGMToolbox.format.sdat
                     int fileOffset = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
                     int fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
 
-                    ParseFile.ZeroOutFileChunk(this.filePath, fileOffset, fileSize);   
+                    FileUtil.ZeroOutFileChunk(this.filePath, fileOffset, fileSize);   
                 }
             }
         }
@@ -483,7 +483,7 @@ namespace VGMToolbox.format.sdat
                 int fileOffset = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
                 int fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
 
-                ParseFile.ZeroOutFileChunk(this.filePath, fileOffset, fileSize);
+                FileUtil.ZeroOutFileChunk(this.filePath, fileOffset, fileSize);
             }
         }
 
@@ -532,7 +532,7 @@ namespace VGMToolbox.format.sdat
                 int fileOffset = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
                 int fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
 
-                ParseFile.ZeroOutFileChunk(this.filePath, fileOffset, fileSize);
+                FileUtil.ZeroOutFileChunk(this.filePath, fileOffset, fileSize);
             }
         }
 

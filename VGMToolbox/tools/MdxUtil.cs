@@ -29,7 +29,7 @@ namespace VGMToolbox.tools
             {
                 FileStream fs = File.OpenRead(pFileName);
                 byte[] data = new byte[fs.Length];
-                ParseFile.ReadWholeArray(fs, data);
+                FileUtil.ReadWholeArray(fs, data);
                 fs.Close();
                 fs.Dispose();
                 Mdx mdx = new Mdx(data);
@@ -39,7 +39,7 @@ namespace VGMToolbox.tools
                 if (pParentNode != null)
                 { 
                     // create file node
-                    TreeNode fileNode = new TreeNode(FileUtil.trimPath(pFileName));
+                    TreeNode fileNode = new TreeNode(Path.GetFileName(pFileName));
                     TreeNode titleNode = new TreeNode("Title: " + mdx.Title);
                     TreeNode pdxNode = new TreeNode("PDX: " + mdx.PdxFileName);
 
@@ -76,7 +76,7 @@ namespace VGMToolbox.tools
                 }
                 
                 // build PDX path
-                pdxPath = FileUtil.replaceFileName(pFileName, pdxFileName);
+                pdxPath = Path.Combine(Path.GetDirectoryName(pFileName), pdxFileName);
 
                 if (!pdxHash.ContainsKey(pdxPath))
                 {                                        
@@ -123,7 +123,7 @@ namespace VGMToolbox.tools
             {
                 FileStream fs = File.OpenRead(pFileName);
                 byte[] data = new byte[fs.Length];
-                ParseFile.ReadWholeArray(fs, data);
+                FileUtil.ReadWholeArray(fs, data);
                 fs.Close();
                 fs.Dispose();
                 Mdx mdx = new Mdx(data);
@@ -138,7 +138,7 @@ namespace VGMToolbox.tools
             if (pParentNode != null)
             {
                 // create file node
-                TreeNode fileNode = new TreeNode(FileUtil.trimPath(pFileName));
+                TreeNode fileNode = new TreeNode(Path.GetFileName(pFileName));
                 TreeNode titleNode = new TreeNode("Title: " + pMdx.Title);
                 TreeNode pdxNode = new TreeNode("PDX: " + pMdx.PdxFileName);
 

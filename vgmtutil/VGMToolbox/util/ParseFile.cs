@@ -9,7 +9,19 @@ namespace VGMToolbox.util
 {
     public class ParseFile
     {
-        public static int MAX_BUFFER_SIZE = 70000;
+        public struct FindOffsetStruct
+        {
+            public string searchString;
+            public bool treatSearchStringAsHex;
+
+            public bool cutFile;
+            public string searchStringOffset;
+            public string cutSize;
+            public string cutSizeOffsetSize;
+            public bool isCutSizeAnOffset;
+            public string outputFileExtension;
+            public bool isLittleEndian;
+        }
         
         public static byte[] parseSimpleOffset(byte[] pBytes, int pOffset, int pLength)
         {
@@ -141,7 +153,7 @@ namespace VGMToolbox.util
             bool itemFound = false;
             long absoluteOffset = pOffset;
             long relativeOffset;
-            byte[] checkBytes = new byte[MAX_BUFFER_SIZE];
+            byte[] checkBytes = new byte[Constants.FILE_READ_CHUNK_SIZE];
             byte[] compareBytes;
 
             long ret = -1;
@@ -149,10 +161,10 @@ namespace VGMToolbox.util
             while (!itemFound && (absoluteOffset < pStream.Length))
             {
                 pStream.Position = absoluteOffset;
-                pStream.Read(checkBytes, 0, MAX_BUFFER_SIZE);
+                pStream.Read(checkBytes, 0, Constants.FILE_READ_CHUNK_SIZE);
                 relativeOffset = 0;
 
-                while (!itemFound && (relativeOffset < MAX_BUFFER_SIZE))
+                while (!itemFound && (relativeOffset < Constants.FILE_READ_CHUNK_SIZE))
                 {
                     if ((relativeOffset + pSearchBytes.Length) < checkBytes.Length)
                     {
@@ -170,7 +182,7 @@ namespace VGMToolbox.util
                     relativeOffset++;
                 }
 
-                absoluteOffset += (MAX_BUFFER_SIZE - pSearchBytes.Length);
+                absoluteOffset += (Constants.FILE_READ_CHUNK_SIZE - pSearchBytes.Length);
             }
 
             // return stream to incoming position
@@ -211,35 +223,6 @@ namespace VGMToolbox.util
             }
 
             return ret;
-        }
-
-        /// <summary>
-        /// Reads data into a complete array, throwing an EndOfStreamException
-        /// if the stream runs out of data first, or if an IOException
-        /// naturally occurs.
-        /// </summary>
-        /// <param name="stream">The stream to read data from</param>
-        /// <param name="data">The array to read bytes into. The array
-        /// will be completely filled from the stream, so an appropriate
-        /// size must be given.</param>
-        public static void ReadWholeArray(Stream stream, byte[] data)
-        {
-            ReadWholeArray(stream, data, data.Length);            
-        }
-
-        public static void ReadWholeArray(Stream stream, byte[] data, int pLength)
-        {
-            int offset = 0;
-            int remaining = pLength;
-            while (remaining > 0)
-            {
-                int read = stream.Read(data, offset, remaining);
-                if (read <= 0)
-                    throw new EndOfStreamException
-                        (String.Format("End of stream reached with {0} bytes left to read", remaining));
-                remaining -= read;
-                offset += read;
-            }
         }
 
         public static void ExtractChunkToFile(Stream pStream, long pOffset, int pLength, string pFilePath)
@@ -296,76 +279,152 @@ namespace VGMToolbox.util
             return sBuilder.ToString();
         }
 
-        public static void UpdateTextField(string pFilePath, string pFieldValue, int pOffset,
-            int pMaxLength)
+        public static string FindOffsetAndCutFile(string pPath, FindOffsetStruct pFindOffsetStruct)
         {
+            int i;
+            int j = 0;
+            byte[] searchBytes;
             System.Text.Encoding enc = System.Text.Encoding.ASCII;
 
-            using (BinaryWriter bw =
-                new BinaryWriter(File.Open(pFilePath, FileMode.Open, FileAccess.ReadWrite)))
+            long cutStart;
+            long cutSize;
+            long cutSizeOffset;
+            byte[] cutSizeBytes;
+
+            long previousPosition;
+            string outputFolder;
+            string outputFile;
+            int chunkCount = 0;
+
+            long offset;
+            long previousOffset;
+
+            bool skipCut;
+
+            StringBuilder ret = new StringBuilder();
+
+            if (pFindOffsetStruct.treatSearchStringAsHex)
             {
-                byte[] newBytes = new byte[pMaxLength];
-                byte[] convertedBytes = enc.GetBytes(pFieldValue);
+                searchBytes = new byte[pFindOffsetStruct.searchString.Length / 2];
 
-                int numBytesToCopy = 
-                    convertedBytes.Length <= pMaxLength ? convertedBytes.Length : pMaxLength;
-                Array.ConstrainedCopy(convertedBytes, 0, newBytes, 0, numBytesToCopy);
-
-                bw.Seek(pOffset, SeekOrigin.Begin);
-                bw.Write(newBytes);                
-            }
-        }
-
-        public static void ReplaceFileChunk(string pSourceFilePath, long pSourceOffset,
-            long pLength, string pDestinationFilePath, long pDestinationOffset)
-        {
-            int read = 0;
-            long maxread;
-            int totalBytes = 0;
-            byte[] bytes = new byte[MAX_BUFFER_SIZE];
-
-            using (BinaryWriter bw =
-                new BinaryWriter(File.Open(pDestinationFilePath, FileMode.Open, FileAccess.ReadWrite)))
-            {
-                using (BinaryReader br = 
-                    new BinaryReader(File.Open(pSourceFilePath, FileMode.Open, FileAccess.Read)))                
+                // convert the search string to bytes
+                for (i = 0; i < pFindOffsetStruct.searchString.Length; i += 2)
                 {
-                    br.BaseStream.Position = pSourceOffset;
-                    bw.BaseStream.Position = pDestinationOffset;
+                    searchBytes[j] = BitConverter.GetBytes(Int16.Parse(pFindOffsetStruct.searchString.Substring(i, 2), System.Globalization.NumberStyles.AllowHexSpecifier))[0];
+                    j++;
+                }
+            }
+            else
+            {
+                searchBytes = enc.GetBytes(pFindOffsetStruct.searchString);
+            }
 
-                    maxread = pLength > bytes.Length ? bytes.Length : pLength;
+            FileInfo fi = new FileInfo(pPath);
 
-                    while ((read = br.Read(bytes, 0, (int) maxread)) > 0)
+            using (FileStream fs = File.Open(Path.GetFullPath(pPath), FileMode.Open, FileAccess.Read))
+            {
+                ret.AppendFormat("[{0}]", pPath);
+                ret.Append(Environment.NewLine);
+
+                previousOffset = 0;
+                outputFolder = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(pPath),
+                    Path.GetFileNameWithoutExtension(pPath) + "_CUT"));
+
+                while ((offset = ParseFile.GetNextOffset(fs, previousOffset, searchBytes)) != -1)
+                {
+                    if (pFindOffsetStruct.cutFile)
                     {
-                        bw.Write(bytes, 0, read);
-                        totalBytes += read;
+                        skipCut = false;
 
-                        maxread = (pLength - totalBytes) > bytes.Length ? bytes.Length : (pLength - totalBytes);
-                    }                    
+                        cutStart = offset - VGMToolbox.util.Encoding.GetIntFromString(pFindOffsetStruct.searchStringOffset);
+
+                        if (pFindOffsetStruct.isCutSizeAnOffset)
+                        {
+                            cutSizeOffset = cutStart + VGMToolbox.util.Encoding.GetIntFromString(pFindOffsetStruct.cutSize);
+                            previousPosition = fs.Position;
+                            cutSizeBytes = ParseFile.parseSimpleOffset(fs, cutSizeOffset,
+                                (int)VGMToolbox.util.Encoding.GetIntFromString(pFindOffsetStruct.cutSizeOffsetSize));
+                            fs.Position = previousPosition;
+
+                            if (!pFindOffsetStruct.isLittleEndian)
+                            {
+                                Array.Reverse(cutSizeBytes);
+                            }
+
+                            switch (cutSizeBytes.Length)
+                            {
+                                case 1:
+                                    cutSize = cutSizeBytes[0];
+                                    break;
+                                case 2:
+                                    cutSize = BitConverter.ToInt16(cutSizeBytes, 0);
+                                    break;
+                                case 4:
+                                    cutSize = BitConverter.ToInt32(cutSizeBytes, 0);
+                                    break;
+                                default:
+                                    cutSize = 0;
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            cutSize = VGMToolbox.util.Encoding.GetIntFromString(pFindOffsetStruct.cutSize);
+                        }
+
+                        outputFile = String.Format("{0}_{1}{2}", Path.GetFileNameWithoutExtension(pPath), chunkCount.ToString("X8"), pFindOffsetStruct.outputFileExtension);
+
+                        if (cutStart < 0)
+                        {
+                            ret.AppendFormat("  Warning: For string found at: 0x{0}, cut begin is less than 0 ({1})...Skipping",
+                                offset.ToString("X8"), cutStart.ToString("X8"));
+                            ret.Append(Environment.NewLine);
+
+                            skipCut = true;
+                        }
+                        else if (cutSize < 0)
+                        {
+                            ret.AppendFormat("  Warning: For string found at: 0x{0}, cut size is less than 0 ({1})...Skipping",
+                                offset.ToString("X8"), cutSize.ToString("X8"));
+                            ret.Append(Environment.NewLine);
+
+                            skipCut = true;
+                        }
+                        else if ((cutStart + cutSize) > fi.Length)
+                        {
+                            ret.AppendFormat("  Warning: For string found at: 0x{0}, total file end will go past the end of the file ({1})",
+                                offset.ToString("X8"), (cutStart + cutSize).ToString("X8"));
+                            ret.Append(Environment.NewLine);
+                        }
+
+                        if (skipCut)
+                        {
+                            previousOffset = offset + 1;
+                        }
+                        else
+                        {
+                            ParseFile.ExtractChunkToFile(fs, cutStart, (int)cutSize, Path.Combine(outputFolder, outputFile));
+
+                            ret.AppendFormat("  Extracted [{3}] begining at 0x{0}, for string found at: 0x{1}, with size 0x{2}",
+                                cutStart.ToString("X8"), offset.ToString("X8"), cutSize.ToString("X8"), outputFile);
+                            ret.Append(Environment.NewLine);
+
+                            previousOffset = offset + cutSize;
+                            chunkCount++;
+                        }
+                    }
+                    else
+                    {
+                        // just append the offset
+                        ret.AppendFormat("  String found at: 0x{0}", offset.ToString("X8"));
+                        ret.Append(Environment.NewLine);
+
+                        previousOffset = offset + searchBytes.Length;
+                    }
                 }
             }
-        }
 
-        public static void ZeroOutFileChunk(string pPath, long pOffset, int pLength)
-        {
-            int bytesToWrite = pLength;
-            byte[] bytes;
-
-            int maxWrite = bytesToWrite > MAX_BUFFER_SIZE ? MAX_BUFFER_SIZE : bytesToWrite;
-
-            using (BinaryWriter bw = 
-                new BinaryWriter(File.Open(pPath, FileMode.Open, FileAccess.Write)))
-            {
-                bw.BaseStream.Position = pOffset;
-                
-                while (bytesToWrite > 0)
-                {
-                    bytes = new byte[maxWrite];
-                    bw.Write(bytes);
-                    bytesToWrite -= maxWrite;
-                    maxWrite = bytesToWrite > bytes.Length ? bytes.Length : bytesToWrite;
-                }
-            }
+            return ret.ToString();
         }
     }
 }

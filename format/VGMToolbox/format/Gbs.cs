@@ -269,17 +269,17 @@ namespace VGMToolbox.format
 
         public void UpdateSongName(string pNewValue)
         {
-            ParseFile.UpdateTextField(this.filePath, pNewValue, NAME_OFFSET,
+            FileUtil.UpdateTextField(this.filePath, pNewValue, NAME_OFFSET,
                 NAME_LENGTH);
         }
         public void UpdateArtist(string pNewValue)
         {
-            ParseFile.UpdateTextField(this.filePath, pNewValue, ARTIST_OFFSET,
+            FileUtil.UpdateTextField(this.filePath, pNewValue, ARTIST_OFFSET,
                 ARTIST_LENGTH);
         }
         public void UpdateCopyright(string pNewValue)
         {
-            ParseFile.UpdateTextField(this.filePath, pNewValue, COPYRIGHT_OFFSET,
+            FileUtil.UpdateTextField(this.filePath, pNewValue, COPYRIGHT_OFFSET,
                 COPYRIGHT_LENGTH);
         }
 
