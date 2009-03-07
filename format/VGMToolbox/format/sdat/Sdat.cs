@@ -14,7 +14,10 @@ namespace VGMToolbox.format.sdat
 {
     public class Sdat : IFormat
     {
-        private static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x53, 0x44, 0x41, 0x54 }; // SDAT
+        public static readonly byte[] ASCII_SIGNATURE = 
+            new byte[] { 0x53, 0x44, 0x41, 0x54, 0xFF, 0xFE, 0x00, 0x01 }; // SDAT
+        public const string ASCII_SIGNATURE_STRING = "53444154FFFE0001";
+
         private const string FORMAT_ABBREVIATION = "SDAT";
         private const string HEX_PREFIX = "0x";
 

@@ -279,7 +279,7 @@ namespace VGMToolbox.util
             return sBuilder.ToString();
         }
 
-        public static string FindOffsetAndCutFile(string pPath, FindOffsetStruct pFindOffsetStruct)
+        public static string FindOffsetAndCutFile(string pPath, FindOffsetStruct pFindOffsetStruct, ref string pMessages)
         {
             int i;
             int j = 0;
@@ -424,7 +424,8 @@ namespace VGMToolbox.util
                 }
             }
 
-            return ret.ToString();
+            pMessages = ret.ToString();
+            return outputFolder;
         }
     }
 }

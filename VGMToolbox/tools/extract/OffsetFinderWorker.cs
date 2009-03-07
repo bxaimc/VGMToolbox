@@ -130,7 +130,8 @@ namespace VGMToolbox.tools.extract
                 findOffsetStruct.outputFileExtension = pOffsetFinderStruct.outputFileExtension;
                 findOffsetStruct.isLittleEndian = pOffsetFinderStruct.isLittleEndian;
 
-                string output = ParseFile.FindOffsetAndCutFile(pPath, findOffsetStruct);
+                string output = String.Empty;
+                ParseFile.FindOffsetAndCutFile(pPath, findOffsetStruct, ref output);
 
                 this.progressStruct.Clear();
                 this.progressStruct.genericMessage = output;

@@ -5,14 +5,13 @@ using System.IO;
 using System.Text;
 
 using VGMToolbox.format;
+using VGMToolbox.format.sdat;
 using VGMToolbox.util;
 
 namespace VGMToolbox.tools.nds
 {
     class SdatFinderWorker : BackgroundWorker
-    {
-        static readonly byte[] SDAT_SIG_BYTES = new byte[] { 0x53, 0x44, 0x41, 0x54 }; // SDAT
-        
+    {               
         private int fileCount = 0;
         private int maxFiles = 0;
         private Constants.ProgressStruct progressStruct;
@@ -118,7 +117,7 @@ namespace VGMToolbox.tools.nds
                 {
                     previousOffset = 0;
 
-                    while ((sdatOffset = ParseFile.GetNextOffset(fs, previousOffset, SDAT_SIG_BYTES)) != -1)
+                    while ((sdatOffset = ParseFile.GetNextOffset(fs, previousOffset, Sdat.ASCII_SIGNATURE)) != -1)
                     {
                         sdatSizeBytes = ParseFile.parseSimpleOffset(fs, sdatOffset + 8, 4);
                         sdatSize = BitConverter.ToInt32(sdatSizeBytes, 0);

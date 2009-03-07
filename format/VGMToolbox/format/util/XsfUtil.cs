@@ -18,8 +18,10 @@ namespace VGMToolbox.format.util
             public bool StripGsfHeader;        
         }
 
-        public static void Xsf2Exe(string pPath, Xsf2ExeStruct pXsf2ExeStruct)
+        public static string Xsf2Exe(string pPath, Xsf2ExeStruct pXsf2ExeStruct)
         {
+            string outputFile = null;
+            
             using (FileStream fs = File.OpenRead(pPath))
             {
                 Type dataType = FormatUtil.getObjectType(fs);
@@ -30,7 +32,7 @@ namespace VGMToolbox.format.util
                 if (vgmData.CompressedProgramLength > 0)
                 {
                     BinaryWriter bw;
-                    string outputFile = Path.GetDirectoryName(pPath) + Path.DirectorySeparatorChar;
+                    outputFile = Path.GetDirectoryName(pPath) + Path.DirectorySeparatorChar;
                     outputFile += (pXsf2ExeStruct.IncludeExtension ? Path.GetFileName(pPath) : Path.GetFileNameWithoutExtension(pPath)) + ".bin";
 
 
@@ -72,6 +74,8 @@ namespace VGMToolbox.format.util
 
                 } // if (vgmData.CompressedProgramLength > 0)
             } // using (FileStream fs = File.OpenRead(pPath))       
+
+            return outputFile;
         }    
     }
 }
