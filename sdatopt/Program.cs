@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -49,6 +50,8 @@ namespace sdatopt
                 string[] extractedSdats = null;
                 string decompressedDataPath = null;
                 string extractedToFolder = null;
+
+                ArrayList cleanupList = new ArrayList();
 
                 string filename = Path.GetFullPath(args[0]);
 
@@ -108,7 +111,7 @@ namespace sdatopt
                                     decompressedDataPath = XsfUtil.Xsf2Exe(sdatOptimizingPath, xsf2ExeStruct);
 
                                     // extract SDAT
-                                    Console.WriteLine("Extracting SDAT from Decompressing Compressed Data Section.");
+                                    Console.WriteLine("Extracting SDAT from Decompressed Compressed Data Section.");
 
                                     ParseFile.FindOffsetStruct findOffsetStruct;
                                     findOffsetStruct.searchString = Sdat.ASCII_SIGNATURE_STRING;
@@ -160,7 +163,7 @@ namespace sdatopt
 
                     if (sdat != null)
                     {
-                        if (!args[1].Trim().Equals("ALL"))
+                        if (!args[1].Trim().ToUpper().Equals("ALL"))
                         {                                                        
                             if (!String.IsNullOrEmpty(args[1]))
                             {
@@ -215,12 +218,15 @@ namespace sdatopt
                         File.Delete(decompressedDataPath);
                         Directory.Delete(extractedToFolder, true);
                     }
-                    
-                    Console.WriteLine("Copying to OPTIMIZED file.");
+
+                                      
+                    Console.WriteLine("Copying to OPTIMIZED file.");                    
                     File.Copy(sdatOptimizingPath, sdatCompletedPath, true);
 
                     Console.WriteLine("Deleting OPTIMIZING file.");
                     File.Delete(sdatOptimizingPath);
+
+
 
                     Console.WriteLine("Optimization Complete.");
                 }

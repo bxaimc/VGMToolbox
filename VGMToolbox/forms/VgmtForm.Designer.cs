@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
@@ -42,6 +43,7 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.statusStrip1.SuspendLayout();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
@@ -136,6 +138,7 @@
             this.tbOutput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.tbOutput.Size = new System.Drawing.Size(539, 77);
             this.tbOutput.TabIndex = 2;
+            this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             this.tbOutput.DoubleClick += new System.EventHandler(this.tbOutput_DoubleClick);
             // 
             // pnlButtons
@@ -215,5 +218,6 @@
         protected System.Windows.Forms.Button btnDoTask;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
