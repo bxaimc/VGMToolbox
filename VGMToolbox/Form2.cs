@@ -297,16 +297,16 @@ namespace VGMToolbox
             //////////////
             // 2SF Ripper
             //////////////
-            TreeNode xsf_2sfRipperNode = 
-                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_2sfRipperOldNode"]);
+            //TreeNode xsf_2sfRipperNode = 
+            //    new TreeNode(ConfigurationSettings.AppSettings["MenuTree_2sfRipperOldNode"]);
             
-            // Add 2SF Ripper Form
-            Xsf_2sfRipperForm xsf_2sfRipperForm = new Xsf_2sfRipperForm(xsf_2sfRipperNode);
-            this.splitContainer1.Panel2.Controls.Add(xsf_2sfRipperForm);
+            //// Add 2SF Ripper Form
+            //Xsf_2sfRipperForm xsf_2sfRipperForm = new Xsf_2sfRipperForm(xsf_2sfRipperNode);
+            //this.splitContainer1.Panel2.Controls.Add(xsf_2sfRipperForm);
 
-            // Set Tag for displaying the Form
-            nodeTag.formClass = xsf_2sfRipperForm.GetType().Name;
-            xsf_2sfRipperNode.Tag = nodeTag;
+            //// Set Tag for displaying the Form
+            //nodeTag.formClass = xsf_2sfRipperForm.GetType().Name;
+            //xsf_2sfRipperNode.Tag = nodeTag;
 
             //////////////
             // 2SF Timer
@@ -466,7 +466,7 @@ namespace VGMToolbox
 
             _2sf_RootNode.NodeFont = this.treeviewBoldFont;
             _2sf_RootNode.Tag = nodeTag;
-            _2sf_RootNode.Nodes.Add(xsf_2sfRipperNode);
+            //_2sf_RootNode.Nodes.Add(xsf_2sfRipperNode);
             _2sf_RootNode.Nodes.Add(xsf_2sfTimerNode);
             // _2sf_RootNode.Nodes.Add(xsf_SdatOptimizerNode);            
             xsf_RootNode.Nodes.Add(_2sf_RootNode);
