@@ -66,7 +66,7 @@ namespace VGMToolbox.tools.xsf
         {
             UInt32 tempo;
             UInt32 endOfTrack;
-            long time;
+            double time;
 
             // Report Progress
             int progress = (++fileCount * 100) / maxFiles;
@@ -94,9 +94,12 @@ namespace VGMToolbox.tools.xsf
                         endOfTrack = ps2SequenceData.getEndOfTrackForSequenceNumber(fs, i);
                         this.progressStruct.Clear();
                         this.progressStruct.genericMessage = String.Format("  End of Track Offset for track {0}: 0x{1}", i.ToString(), endOfTrack.ToString("X8")) + Environment.NewLine;
-                        ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct); 
+                        ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
 
-                        time = ps2SequenceData.getTimeForSequenceNumber(fs, i);
+                        time = ps2SequenceData.getTimeInSecondsForSequenceNumber(fs, i);
+                        this.progressStruct.Clear();
+                        this.progressStruct.genericMessage = String.Format("  Time in Seconds (without loops) for track {0}: {1}", i.ToString(), time.ToString()) + Environment.NewLine;
+                        ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
                     }
                 }
             }

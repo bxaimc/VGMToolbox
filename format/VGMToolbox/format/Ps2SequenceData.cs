@@ -158,9 +158,7 @@ namespace VGMToolbox.format
             return ret;
         }
 
-
-
-        public long getTimeForSequenceNumber(Stream pStream, int pSequenceNumber)
+        public double getTimeInSecondsForSequenceNumber(Stream pStream, int pSequenceNumber)
         {
             // useful references
             //http://www.dogsbodynet.com/fileformats/midi.html
@@ -172,7 +170,7 @@ namespace VGMToolbox.format
             // http://www.skytopia.com/project/articles/midi.html
             // http://opensource.jdkoftinoff.com/jdks/svn/trunk/libjdkmidi/trunk/src/
 
-            long ret = 0;
+            double ret = 0;
 
             int[] chantype =
             {
@@ -194,7 +192,7 @@ namespace VGMToolbox.format
                 if (dataChunkHeader.sequenceOffsetRelativeToChunk == 6) // uncompressed
                 {
                     pStream.Position = (long)(midiBlockOffset + dataChunkHeader.sequenceOffsetRelativeToChunk);
-                    
+
                     int currentByte;
                     int currentByte1;
                     long currentOffset = 0;
@@ -202,7 +200,7 @@ namespace VGMToolbox.format
                     int metaCommandByte;
                     int metaCommandLengthByte;
                     int dataByte1;
-                    int dataByte2;                                        
+                    int dataByte2;
                     UInt64 currentTicks;
                     UInt64 totalTicks = 0;
 
@@ -210,15 +208,15 @@ namespace VGMToolbox.format
                     bool running = false;
                     bool emptyTimeFollows = false;
                     int needed;
-                    
-                    while (pStream.Position < eofOffset)                    
+
+                    while (pStream.Position < eofOffset)
                     {
                         // get time
                         if (!emptyTimeFollows)
                         {
                             currentByte = pStream.ReadByte();
                             currentOffset = pStream.Position - 1;
-                                                        
+
                             if ((currentByte & 0x80) != 0)
                             {
                                 currentTicks = (ulong)(currentByte & 0x7F);
@@ -253,13 +251,13 @@ namespace VGMToolbox.format
                             {
                                 running = true;
                                 needed = chantype[(status >> 4) & 0xF];
-                            }                        
+                            }
                         }
                         else
                         {
                             status = currentByte;
                             running = false;
-                            needed = chantype[( status >> 4 ) & 0xF];
+                            needed = chantype[(status >> 4) & 0xF];
                         }
 
                         if (needed != 0)
@@ -302,23 +300,23 @@ namespace VGMToolbox.format
                                 else
                                 {
                                     emptyTimeFollows = false;
-                                }                            
+                                }
                             }
-                            
-                            currentOffset = pStream.Position - 1;    
+
+                            currentOffset = pStream.Position - 1;
                             continue;
                         }
 
                         switch (currentByte)
-                        { 
+                        {
                             case 0xFF:
                                 // need to skip relevant bytes
                                 metaCommandByte = pStream.ReadByte();
                                 currentOffset = pStream.Position - 1;
- 
-                               // check for tempo switch here
+
+                                // check for tempo switch here
                                 if (metaCommandByte == 0x51)
-                                { 
+                                {
                                     // tempo switch
                                 }
 
@@ -328,11 +326,15 @@ namespace VGMToolbox.format
 
                                 break;
                         }
-
-                        ulong x = (totalTicks * (ulong) tempo)/dataChunkHeader.resolution;
-                        double sec = ( x * Math.Pow(10, -6));
                     }
-                }                
+
+                    ulong x = (totalTicks * (ulong)tempo) / dataChunkHeader.resolution;
+                    ret = (x * Math.Pow(10, -6));
+                }
+                else
+                {
+                    throw new Exception("Compressed Sequences Not Supported.");
+                }
             }
 
             return ret;
