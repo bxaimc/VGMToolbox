@@ -281,7 +281,7 @@ namespace VGMToolbox.format
                                 {
                                     emptyTimeFollows = true;
 
-                                    if ((dataByte2 & 0x8F) == dataByte2)
+                                    if ((dataByte2 & 0x8F) == dataByte2) // need to check that command byte is 0x90 also
                                     {
                                         thisMayBeAZeroVelocityNoteOn = true;
                                     }
