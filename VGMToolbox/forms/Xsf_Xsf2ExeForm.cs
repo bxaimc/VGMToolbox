@@ -50,6 +50,7 @@ namespace VGMToolbox.forms
             xcpeStruct.totalFiles = totalFileCount;
             xcpeStruct.includeExtension = cbXsfPsf2Exe_IncludeOrigExt.Checked;
             xcpeStruct.stripGsfHeader = cbXsfPsf2Exe_StripGsfHeader.Checked;
+            xcpeStruct.extractReservedSection = cbExtractReservedSection.Checked;
 
             xsfCompressedProgramExtractor = new XsfCompressedProgramExtractorWorker();
             xsfCompressedProgramExtractor.ProgressChanged += backgroundWorker_ReportProgress;

@@ -108,7 +108,7 @@ namespace sdatopt
                                     XsfUtil.Xsf2ExeStruct xsf2ExeStruct = new XsfUtil.Xsf2ExeStruct();
                                     xsf2ExeStruct.IncludeExtension = true;
                                     xsf2ExeStruct.StripGsfHeader = false;
-                                    decompressedDataPath = XsfUtil.Xsf2Exe(sdatOptimizingPath, xsf2ExeStruct);
+                                    decompressedDataPath = XsfUtil.ExtractCompressedDataSection(sdatOptimizingPath, xsf2ExeStruct);
 
                                     // extract SDAT
                                     Console.WriteLine("Extracting SDAT from Decompressed Compressed Data Section.");

@@ -566,6 +566,7 @@
     <Content Include="readme.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\bolo2.gif" />
     <Content Include="rips\dir.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

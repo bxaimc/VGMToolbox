@@ -18,7 +18,7 @@ namespace VGMToolbox.format.util
             public bool StripGsfHeader;        
         }
 
-        public static string Xsf2Exe(string pPath, Xsf2ExeStruct pXsf2ExeStruct)
+        public static string ExtractCompressedDataSection(string pPath, Xsf2ExeStruct pXsf2ExeStruct)
         {
             string outputFile = null;
             
@@ -33,7 +33,7 @@ namespace VGMToolbox.format.util
                 {
                     BinaryWriter bw;
                     outputFile = Path.GetDirectoryName(pPath) + Path.DirectorySeparatorChar;
-                    outputFile += (pXsf2ExeStruct.IncludeExtension ? Path.GetFileName(pPath) : Path.GetFileNameWithoutExtension(pPath)) + ".bin";
+                    outputFile += (pXsf2ExeStruct.IncludeExtension ? Path.GetFileName(pPath) : Path.GetFileNameWithoutExtension(pPath)) + ".data.bin";
 
 
                     bw = new BinaryWriter(File.Create(outputFile));
@@ -76,8 +76,32 @@ namespace VGMToolbox.format.util
             } // using (FileStream fs = File.OpenRead(pPath))       
 
             return outputFile;
-        }    
+        }
 
+        public static string ExtractReservedSection(string pPath, Xsf2ExeStruct pXsf2ExeStruct)
+        {
+            string outputFile = null;
 
+            using (FileStream fs = File.OpenRead(pPath))
+            {
+                Type dataType = FormatUtil.getObjectType(fs);
+
+                Xsf vgmData = new Xsf();
+                vgmData.Initialize(fs, pPath);
+
+                if (vgmData.ReservedSectionLength > 0)
+                {
+                    outputFile = String.Format("{0}.reserved.bin",
+                        (pXsf2ExeStruct.IncludeExtension ? Path.GetFileName(pPath) : Path.GetFileNameWithoutExtension(pPath)));
+                    outputFile = Path.Combine(Path.GetDirectoryName(pPath), outputFile);
+                    
+                    ParseFile.ExtractChunkToFile(fs, Xsf.RESERVED_SECTION_OFFSET, 
+                        (int)vgmData.ReservedSectionLength, outputFile);
+
+                } // if (vgmData.CompressedProgramLength > 0)
+            } // using (FileStream fs = File.OpenRead(pPath))       
+
+            return outputFile;        
+        }
     }
 }

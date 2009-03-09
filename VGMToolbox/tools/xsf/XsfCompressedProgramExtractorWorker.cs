@@ -19,8 +19,10 @@ namespace VGMToolbox.tools.xsf
         {
             public string[] pPaths;
             public int totalFiles;
+            
             public bool includeExtension;
             public bool stripGsfHeader;
+            public bool extractReservedSection;
         }
 
         public XsfCompressedProgramExtractorWorker()
@@ -66,7 +68,6 @@ namespace VGMToolbox.tools.xsf
             return;
         }
 
-
         private void extractCompressedProgramsFromDirectory(string pPath, 
             XsfCompressedProgramExtractorStruct pXsfCompressedProgramExtractorStruct, DoWorkEventArgs e)
         {
@@ -109,10 +110,17 @@ namespace VGMToolbox.tools.xsf
          
             try
             {
+                // Extract Compressed Data
                 XsfUtil.Xsf2ExeStruct xsf2ExeStruct = new XsfUtil.Xsf2ExeStruct();
                 xsf2ExeStruct.IncludeExtension = pXsfCompressedProgramExtractorStruct.includeExtension;
                 xsf2ExeStruct.StripGsfHeader = pXsfCompressedProgramExtractorStruct.stripGsfHeader;
-                XsfUtil.Xsf2Exe(pPath, xsf2ExeStruct);
+                XsfUtil.ExtractCompressedDataSection(pPath, xsf2ExeStruct);
+
+                // Extract Reserved Section
+                if (pXsfCompressedProgramExtractorStruct.extractReservedSection)
+                {
+                    XsfUtil.ExtractReservedSection(pPath, xsf2ExeStruct);
+                }
             }
             catch (Exception ex)
             {
