@@ -172,16 +172,10 @@ namespace VGMToolbox.format
 
             double ret = 0;
 
-            int[] chantype =
-            {
-              0, 0, 0, 0, 0, 0, 0, 0,         // 0x00 through 0x70
-              1, 2, 2, 2, 1, 1, 2, 0          // 0x80 through 0xf0
-            };
-
             if (pSequenceNumber <= this.midiChunk.maxSeqCount &&
                 this.midiChunk.subSeqOffsetAddr[pSequenceNumber] != EMPTY_MIDI_OFFSET)
             {
-                long tempo = this.getTempoForSequenceNumber(pStream, pSequenceNumber);
+                uint tempo = this.getTempoForSequenceNumber(pStream, pSequenceNumber);
                 long eofOffset = this.getEndOfTrackForSequenceNumber(pStream, pSequenceNumber);
                 Int32 midiBlockOffset = MIDI_CHUNK_OFFSET + this.midiChunk.subSeqOffsetAddr[pSequenceNumber];
 
@@ -191,145 +185,8 @@ namespace VGMToolbox.format
 
                 if (dataChunkHeader.sequenceOffsetRelativeToChunk == 6) // uncompressed
                 {
-                    pStream.Position = (long)(midiBlockOffset + dataChunkHeader.sequenceOffsetRelativeToChunk);
-
-                    int currentByte;
-                    int currentByte1;
-                    long currentOffset = 0;
-                    int status = 0;
-                    int metaCommandByte;
-                    int metaCommandLengthByte;
-                    int dataByte1;
-                    int dataByte2;
-                    UInt64 currentTicks;
-                    UInt64 totalTicks = 0;
-
-                    bool thisMayBeAZeroVelocityNoteOn;
-                    bool running = false;
-                    bool emptyTimeFollows = false;
-                    int needed;
-
-                    while (pStream.Position < eofOffset)
-                    {
-                        // get time
-                        if (!emptyTimeFollows)
-                        {
-                            currentByte = pStream.ReadByte();
-                            currentOffset = pStream.Position - 1;
-
-                            if ((currentByte & 0x80) != 0)
-                            {
-                                currentTicks = (ulong)(currentByte & 0x7F);
-
-                                do
-                                {
-                                    currentByte = pStream.ReadByte();
-                                    currentOffset = pStream.Position - 1;
-
-                                    currentTicks = (currentTicks << 7) + (ulong)(currentByte & 0x7F);
-                                } while ((currentByte & 0x80) != 0);
-                            }
-                            else
-                            {
-                                currentTicks = (ulong)currentByte;
-                            }
-
-                            totalTicks += (ulong)currentTicks;
-                        }
-
-                        // get command
-                        currentByte = pStream.ReadByte();
-                        currentOffset = pStream.Position - 1;
-
-                        if ((currentByte & 0x80) == 0)
-                        {
-                            if (status == 0)
-                            {
-                                throw new Exception("Unexpected Running Status");
-                            }
-                            else
-                            {
-                                running = true;
-                                needed = chantype[(status >> 4) & 0xF];
-                            }
-                        }
-                        else
-                        {
-                            status = currentByte;
-                            running = false;
-                            needed = chantype[(status >> 4) & 0xF];
-                        }
-
-                        if (needed != 0)
-                        {
-                            if (running)
-                            {
-                                dataByte1 = currentByte;
-                            }
-                            else
-                            {
-                                dataByte1 = pStream.ReadByte();
-                                currentOffset = pStream.Position - 1;
-                            }
-
-                            if (needed > 1)
-                            {
-                                dataByte2 = pStream.ReadByte();
-                                currentOffset = pStream.Position - 1;
-
-                                if ((dataByte2 & 0x80) != 0)
-                                {
-                                    emptyTimeFollows = true;
-
-                                    if ((dataByte2 & 0x8F) == dataByte2) // need to check that command byte is 0x90 also
-                                    {
-                                        thisMayBeAZeroVelocityNoteOn = true;
-                                    }
-                                }
-                                else
-                                {
-                                    emptyTimeFollows = false;
-                                }
-                            }
-                            else
-                            {
-                                if ((dataByte1 & 0x80) != 0)
-                                {
-                                    emptyTimeFollows = true;
-                                }
-                                else
-                                {
-                                    emptyTimeFollows = false;
-                                }
-                            }
-
-                            currentOffset = pStream.Position - 1;
-                            continue;
-                        }
-
-                        switch (currentByte)
-                        {
-                            case 0xFF:
-                                // need to skip relevant bytes
-                                metaCommandByte = pStream.ReadByte();
-                                currentOffset = pStream.Position - 1;
-
-                                // check for tempo switch here
-                                if (metaCommandByte == 0x51)
-                                {
-                                    // tempo switch
-                                }
-
-                                metaCommandLengthByte = pStream.ReadByte();
-                                pStream.Position += (long)metaCommandLengthByte;
-                                currentOffset = pStream.Position;
-
-                                break;
-                        }
-                    }
-
-                    ulong x = (totalTicks * (ulong)tempo) / dataChunkHeader.resolution;
-                    ret = (x * Math.Pow(10, -6));
+                    ret = getTimeInSecondsForChunk(pStream, (long)(midiBlockOffset + dataChunkHeader.sequenceOffsetRelativeToChunk), 
+                        eofOffset, tempo, dataChunkHeader.resolution);
                 }
                 else
                 {
@@ -340,60 +197,221 @@ namespace VGMToolbox.format
             return ret;
         }
 
-        
-        
-        
-        
-        
-        
-        private int getByteCountForCommand(Stream pStream, int pCommand, long pCommandOffset)
+        private static double getTimeInSecondsForChunk(Stream pStream, long pStartOffset, long pEndOffset, uint pTempo, 
+            ushort pResolution)
         {
-            int ret = 0;
-            int noteOnCheck;
-            int commandId = pCommand & 0xF0;
+            long incomingStreamPosition = pStream.Position;
 
-            switch (commandId)
-            { 
-                case 0x80: // note off
-                case 0xC0: // program change
-                case 0xD0: // channel aftertouch
-                    ret = 2;
-                    break;
-                case 0xA0: // key aftertouch
-                case 0xB0: // control change
-                case 0xE0: // pitch wheel change
-                    ret = 3;
-                    break;
-                case 0xF0:
-                    ret = ParseFile.parseSimpleOffset(pStream, pCommandOffset + 2, 1)[0] + 3;
-                    break;
-                case 0x90: // note on (needs work)
-                    ret = 3;
+            int[] chantype =
+            {
+              0, 0, 0, 0, 0, 0, 0, 0,         // 0x00 through 0x70
+              1, 2, 2, 2, 1, 1, 2, 0          // 0x80 through 0xf0
+            };
+            
+            int currentByte;
+            long currentOffset = 0;
+            long iterationOffset = 0;
+            long commandOffset = 0;
+            int dataByte1;
+            int dataByte2;
 
-                    noteOnCheck = ParseFile.parseSimpleOffset(pStream, pCommandOffset + 2, 1)[0];
-                    if ((noteOnCheck & 0xF0) == 0x80)
+            int status = 0;
+            int needed;
+            uint tempo = pTempo;
+
+            int metaCommandByte;
+            int metaCommandLengthByte;
+
+            bool running = false;
+            bool emptyTimeFollows = false;
+            bool thisMayBeAZeroVelocityNoteOn;
+            
+            bool loopFound = false;
+            bool loopBeginFound = false;
+            bool loopEndFound = false;
+            int loopId;
+            long loopEndPosition;
+            int loopIterationsRequired;
+            double loopTime;
+
+            UInt64 currentTicks;
+            UInt64 totalTicks = 0;
+
+            double currentTime;
+            double totalTime = 0;
+
+            byte[] tempoValBytes;
+            double ret;
+
+            pStream.Position = pStartOffset;
+
+            while (pStream.Position < pEndOffset)
+            {
+                iterationOffset = pStream.Position;
+                
+                // get time
+                if (!emptyTimeFollows)
+                {
+                    currentByte = pStream.ReadByte();
+                    currentOffset = pStream.Position - 1;
+
+                    if ((currentByte & 0x80) != 0)
                     {
-                        ret = 2;
+                        currentTicks = (ulong)(currentByte & 0x7F);
+
+                        do
+                        {
+                            currentByte = pStream.ReadByte();
+                            currentOffset = pStream.Position - 1;
+
+                            currentTicks = (currentTicks << 7) + (ulong)(currentByte & 0x7F);
+                        } while ((currentByte & 0x80) != 0);
+                    }
+                    else
+                    {
+                        currentTicks = (ulong)currentByte;
                     }
 
-                    break;
-            }
+                    currentTime = currentTicks != 0? (double)((currentTicks * tempo) / pResolution) : 0;
+                    totalTime += currentTime;
 
+                    totalTicks += (ulong)currentTicks;
+                }
+
+                // get command
+                currentByte = pStream.ReadByte();
+                currentOffset = pStream.Position - 1;
+
+                if ((currentByte & 0x80) == 0)
+                {
+                    if (status == 0)
+                    {
+                        throw new Exception("Unexpected Running Status");
+                    }
+                    else
+                    {
+                        running = true;
+                        needed = chantype[(status >> 4) & 0xF];
+                    }
+                }
+                else
+                {
+                    status = currentByte;
+                    running = false;
+                    needed = chantype[(status >> 4) & 0xF];
+                    commandOffset = currentOffset; 
+                }
+                
+                if (needed != 0)
+                {                    
+                    if (running)
+                    {
+                        dataByte1 = currentByte;
+                    }
+                    else
+                    {                        
+                        dataByte1 = pStream.ReadByte();
+                        currentOffset = pStream.Position - 1;
+                    }
+
+                    if (needed > 1)
+                    {
+                        dataByte2 = pStream.ReadByte();
+                        currentOffset = pStream.Position - 1;
+
+                        if ((dataByte2 & 0x80) != 0)
+                        {
+                            emptyTimeFollows = true;
+
+                            if ((dataByte2 & 0x8F) == dataByte2) // need to check that command byte is 0x90 also
+                            {
+                                thisMayBeAZeroVelocityNoteOn = true;
+                            }
+                        }
+                        else
+                        {
+                            emptyTimeFollows = false;
+                        }
+
+                        if (loopBeginFound && status == 0xB0 && dataByte1 == 0x06)
+                        {
+                            loopId = dataByte2;
+                        }
+
+                        if (currentByte == 0xB0 && dataByte1 == 0x63 && dataByte2 == 0x00)
+                        {
+                            loopBeginFound = true; // use stack here? once loop found, pop 
+                                                   // add time and push back on stack until loop end found.  
+                                                   // then pop, multiply by loop number, and add to total time.
+                                                   // seems like it should handle nested loops.
+                            loopFound = true;
+                        }
+                        else
+                        {
+                            loopBeginFound = false;
+                        }
+                        
+                        if (currentByte == 0xB0 && dataByte1 == 0x63 && dataByte2 == 0x01)
+                        {
+                            loopEndFound = true;
+                        }
+                    
+                    }
+                    else
+                    {
+                        if ((dataByte1 & 0x80) != 0)
+                        {
+                            emptyTimeFollows = true;
+                        }
+                        else
+                        {
+                            emptyTimeFollows = false;
+                        }
+                    }                    
+
+                    currentOffset = pStream.Position - 1;
+                    continue;
+                }
+
+                switch (currentByte)
+                {
+                    case 0xFF:
+                        // need to skip relevant bytes
+                        metaCommandByte = pStream.ReadByte();
+                        currentOffset = pStream.Position - 1;
+
+                        // check for tempo switch here
+                        if (metaCommandByte == 0x51)
+                        {
+                            metaCommandLengthByte = pStream.ReadByte();
+                            
+                            // tempo switch
+                            tempoValBytes = new byte[4];
+                            Array.Copy(ParseFile.parseSimpleOffset(pStream, pStream.Position, metaCommandLengthByte), 0, tempoValBytes, 1, 3);
+                            Array.Reverse(tempoValBytes); // flip order to LE for use with BitConverter
+                            tempo = BitConverter.ToUInt32(tempoValBytes, 0);
+                        }
+                        else
+                        {
+                            metaCommandLengthByte = pStream.ReadByte();
+                        }
+
+                        pStream.Position += (long)metaCommandLengthByte;
+                        currentOffset = pStream.Position;
+
+                        break;
+                }
+            
+            
+            
+            } // while (pStream.Position < pEndOffset)
+
+            ret = ((totalTime) * Math.Pow(10, -6));
+
+            // return stream to incoming position
+            pStream.Position = incomingStreamPosition;
             return ret;
-        }
 
-        private UInt32 getDeltaTime(Stream pStream, long pStartOffset, long pEndOffset)
-        {
-            UInt32 ret = 0;
-            int deltaLength = (int)(pEndOffset - pStartOffset);
-            byte[] deltaBytes = ParseFile.parseSimpleOffset(pStream, pStartOffset, deltaLength);
-            byte[] timeBytes = new byte[4];
-
-            Array.Copy(deltaBytes, 0, timeBytes, (timeBytes.Length - deltaLength), deltaLength);
-            Array.Reverse(timeBytes); // convert to little endian
-            ret = BitConverter.ToUInt32(timeBytes, 0);
-
-            return ret;
         }
     }
 }
