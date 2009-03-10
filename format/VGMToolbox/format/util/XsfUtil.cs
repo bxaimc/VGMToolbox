@@ -78,6 +78,7 @@ namespace VGMToolbox.format.util
             return outputFile;
         }
 
+
         public static string ExtractReservedSection(string pPath, Xsf2ExeStruct pXsf2ExeStruct)
         {
             string outputFile = null;
