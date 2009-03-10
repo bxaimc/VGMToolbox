@@ -230,9 +230,9 @@ namespace VGMToolbox.format
             bool loopBeginFound = false;
             bool loopEndFound = false;
             int loopId;
-            long loopEndPosition;
-            int loopIterationsRequired;
             double loopTime;
+            int loopTimeMultiplier;
+            Stack<double> loopTimeStack = new Stack<double>();
 
             UInt64 currentTicks;
             UInt64 totalTicks = 0;
@@ -273,8 +273,18 @@ namespace VGMToolbox.format
                     }
 
                     currentTime = currentTicks != 0? (double)((currentTicks * tempo) / pResolution) : 0;
-                    totalTime += currentTime;
 
+                    if (loopTimeStack.Count > 0)
+                    {
+                        loopTime = loopTimeStack.Pop();
+                        loopTime += currentTime;
+                        loopTimeStack.Push(loopTime);
+                    }
+                    else
+                    {
+                        totalTime += currentTime;
+                    }
+                    
                     totalTicks += (ulong)currentTicks;
                 }
 
@@ -338,22 +348,34 @@ namespace VGMToolbox.format
                             loopId = dataByte2;
                         }
 
-                        if (currentByte == 0xB0 && dataByte1 == 0x63 && dataByte2 == 0x00)
-                        {
-                            loopBeginFound = true; // use stack here? once loop found, pop 
-                                                   // add time and push back on stack until loop end found.  
-                                                   // then pop, multiply by loop number, and add to total time.
-                                                   // seems like it should handle nested loops.
-                            loopFound = true;
-                        }
-                        else
-                        {
-                            loopBeginFound = false;
+                        if ((currentByte == 0xB0 || status == 0xB0) && 
+                             dataByte1 == 0x63 &&
+                            (dataByte2 == 0x00 || dataByte2 == 0x80))
+                        { 
+                            loopTimeStack.Push(0);                            
                         }
                         
-                        if (currentByte == 0xB0 && dataByte1 == 0x63 && dataByte2 == 0x01)
+                        if ((currentByte == 0xB0 || status == 0xB0) && 
+                             dataByte1 == 0x63 &&
+                            (dataByte2 == 0x01 || dataByte2 == 0x81))
                         {
                             loopEndFound = true;
+                        }
+
+                        if (loopEndFound && (currentByte == 0xB0 || status == 0xB0) && dataByte1 == 0x26)
+                        {
+                            loopTimeMultiplier = dataByte2;
+
+                            if (loopTimeMultiplier == 0)
+                            {
+                                loopTimeMultiplier = 2;
+                                loopFound = true;
+                            }
+                            
+                            loopTime = loopTimeStack.Pop();
+                            loopTime = (loopTime * loopTimeMultiplier);
+                            totalTime += loopTime;
+                            loopEndFound = false;
                         }
                     
                     }
@@ -407,6 +429,15 @@ namespace VGMToolbox.format
             } // while (pStream.Position < pEndOffset)
 
             ret = ((totalTime) * Math.Pow(10, -6));
+
+            if (loopFound)
+            {
+                ret += 10; // looping
+            }
+            else
+            {
+                ret += 1;  // non-looping
+            }
 
             // return stream to incoming position
             pStream.Position = incomingStreamPosition;

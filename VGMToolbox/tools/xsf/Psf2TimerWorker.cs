@@ -98,7 +98,7 @@ namespace VGMToolbox.tools.xsf
 
                         time = ps2SequenceData.getTimeInSecondsForSequenceNumber(fs, i);
                         this.progressStruct.Clear();
-                        this.progressStruct.genericMessage = String.Format("  Time in Seconds (without loops) for track {0}: {1}", i.ToString(), time.ToString()) + Environment.NewLine;
+                        this.progressStruct.genericMessage = String.Format("  Time in Seconds (including fade) for track {0}: {1}", i.ToString(), time.ToString()) + Environment.NewLine;
                         ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
                     }
                 }
