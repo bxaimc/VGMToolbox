@@ -59,6 +59,12 @@ namespace VGMToolbox.format
             public UInt16 resolution;
         }
 
+        public struct Ps2SqTimingStruct
+        {
+            public double TimeInSeconds;
+            public int FadeInSeconds;
+        }
+
         public Ps2SequenceData(Stream pStream)
         { 
             this.versionChunk = parseVersionChunk(pStream);
@@ -158,7 +164,7 @@ namespace VGMToolbox.format
             return ret;
         }
 
-        public double getTimeInSecondsForSequenceNumber(Stream pStream, int pSequenceNumber)
+        public Ps2SqTimingStruct getTimeInSecondsForSequenceNumber(Stream pStream, int pSequenceNumber)
         {
             // useful references
             //http://www.dogsbodynet.com/fileformats/midi.html
@@ -170,7 +176,7 @@ namespace VGMToolbox.format
             // http://www.skytopia.com/project/articles/midi.html
             // http://opensource.jdkoftinoff.com/jdks/svn/trunk/libjdkmidi/trunk/src/
 
-            double ret = 0;
+            Ps2SqTimingStruct ret = new Ps2SqTimingStruct();
 
             if (pSequenceNumber <= this.midiChunk.maxSeqCount &&
                 this.midiChunk.subSeqOffsetAddr[pSequenceNumber] != EMPTY_MIDI_OFFSET)
@@ -197,7 +203,7 @@ namespace VGMToolbox.format
             return ret;
         }
 
-        private static double getTimeInSecondsForChunk(Stream pStream, long pStartOffset, long pEndOffset, uint pTempo, 
+        private static Ps2SqTimingStruct getTimeInSecondsForChunk(Stream pStream, long pStartOffset, long pEndOffset, uint pTempo, 
             ushort pResolution)
         {
             long incomingStreamPosition = pStream.Position;
@@ -241,7 +247,7 @@ namespace VGMToolbox.format
             double totalTime = 0;
 
             byte[] tempoValBytes;
-            double ret;
+            Ps2SqTimingStruct ret = new Ps2SqTimingStruct();
 
             pStream.Position = pStartOffset;
 
@@ -428,15 +434,15 @@ namespace VGMToolbox.format
             
             } // while (pStream.Position < pEndOffset)
 
-            ret = ((totalTime) * Math.Pow(10, -6));
+            ret.TimeInSeconds = ((totalTime) * Math.Pow(10, -6));
 
             if (loopFound)
             {
-                ret += 10; // looping
+                ret.FadeInSeconds = 10; // looping
             }
             else
             {
-                ret += 1;  // non-looping
+                ret.FadeInSeconds = 1;  // non-looping
             }
 
             // return stream to incoming position

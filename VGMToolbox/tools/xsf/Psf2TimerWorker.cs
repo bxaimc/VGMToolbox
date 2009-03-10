@@ -66,7 +66,10 @@ namespace VGMToolbox.tools.xsf
         {
             UInt32 tempo;
             UInt32 endOfTrack;
-            double time;
+            Ps2SequenceData.Ps2SqTimingStruct time;
+
+            int minutes;
+            double seconds;
 
             // Report Progress
             int progress = (++fileCount * 100) / maxFiles;
@@ -86,6 +89,7 @@ namespace VGMToolbox.tools.xsf
 
                     for (int i = 0; i <= ps2SequenceData.GetMaxSequenceCount(); i++)
                     {
+                        /*
                         tempo = ps2SequenceData.getTempoForSequenceNumber(fs, i);                        
                         this.progressStruct.Clear();
                         this.progressStruct.genericMessage = String.Format("  Tempo for track {0}: {1} microseconds/quarter note", i.ToString(), tempo.ToString()) + Environment.NewLine;
@@ -95,10 +99,15 @@ namespace VGMToolbox.tools.xsf
                         this.progressStruct.Clear();
                         this.progressStruct.genericMessage = String.Format("  End of Track Offset for track {0}: 0x{1}", i.ToString(), endOfTrack.ToString("X8")) + Environment.NewLine;
                         ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
-
+                        */
                         time = ps2SequenceData.getTimeInSecondsForSequenceNumber(fs, i);
+
+                        minutes = (int)(time.TimeInSeconds / 60d);
+                        seconds = (time.TimeInSeconds - (minutes * 60));
+                        seconds = Math.Ceiling(seconds);
+
                         this.progressStruct.Clear();
-                        this.progressStruct.genericMessage = String.Format("  Time in Seconds (including fade) for track {0}: {1}", i.ToString(), time.ToString()) + Environment.NewLine;
+                        this.progressStruct.genericMessage = String.Format("  Time, Fade for track {0}: {1}:{2}, {3}", i.ToString(), minutes.ToString(), seconds.ToString().PadLeft(2, '0'), time.FadeInSeconds.ToString().PadLeft(2, '0')) + Environment.NewLine;
                         ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
                     }
                 }
