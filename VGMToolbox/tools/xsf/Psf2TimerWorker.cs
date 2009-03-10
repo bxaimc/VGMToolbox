@@ -106,6 +106,12 @@ namespace VGMToolbox.tools.xsf
                         seconds = (time.TimeInSeconds - (minutes * 60));
                         seconds = Math.Ceiling(seconds);
 
+                        if (seconds > 59)
+                        {
+                            minutes++;
+                            seconds -= 60;
+                        }
+
                         this.progressStruct.Clear();
                         this.progressStruct.genericMessage = String.Format("  Time, Fade for track {0}: {1}:{2}, {3}", i.ToString(), minutes.ToString(), seconds.ToString().PadLeft(2, '0'), time.FadeInSeconds.ToString().PadLeft(2, '0')) + Environment.NewLine;
                         ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);

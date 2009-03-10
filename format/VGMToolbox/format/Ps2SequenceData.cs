@@ -239,6 +239,8 @@ namespace VGMToolbox.format
             double loopTime;
             int loopTimeMultiplier;
             Stack<double> loopTimeStack = new Stack<double>();
+            ulong loopTicks;
+            Stack<ulong> loopTickStack = new Stack<ulong>();
 
             UInt64 currentTicks;
             UInt64 totalTicks = 0;
@@ -278,20 +280,23 @@ namespace VGMToolbox.format
                         currentTicks = (ulong)currentByte;
                     }
 
-                    currentTime = currentTicks != 0? (double)((currentTicks * tempo) / pResolution) : 0;
+                    currentTime = currentTicks != 0? (double)((currentTicks * (ulong) tempo) / (ulong) pResolution) : 0;
 
                     if (loopTimeStack.Count > 0)
                     {
                         loopTime = loopTimeStack.Pop();
                         loopTime += currentTime;
                         loopTimeStack.Push(loopTime);
+
+                        loopTicks = loopTickStack.Pop();
+                        loopTicks += currentTicks;
+                        loopTickStack.Push(loopTicks);
                     }
                     else
                     {
                         totalTime += currentTime;
-                    }
-                    
-                    totalTicks += (ulong)currentTicks;
+                        totalTicks += (ulong)currentTicks;
+                    }                                        
                 }
 
                 // get command
@@ -358,7 +363,8 @@ namespace VGMToolbox.format
                              dataByte1 == 0x63 &&
                             (dataByte2 == 0x00 || dataByte2 == 0x80))
                         { 
-                            loopTimeStack.Push(0);                            
+                            loopTimeStack.Push(0);
+                            loopTickStack.Push(0);
                         }
                         
                         if ((currentByte == 0xB0 || status == 0xB0) && 
@@ -381,6 +387,11 @@ namespace VGMToolbox.format
                             loopTime = loopTimeStack.Pop();
                             loopTime = (loopTime * loopTimeMultiplier);
                             totalTime += loopTime;
+
+                            loopTicks = loopTickStack.Pop();
+                            loopTicks = (loopTicks * (ulong) loopTimeMultiplier);
+                            totalTicks += loopTicks;
+                            
                             loopEndFound = false;
                         }
                     
@@ -430,8 +441,7 @@ namespace VGMToolbox.format
                         break;
                 }
             
-            
-            
+                        
             } // while (pStream.Position < pEndOffset)
 
             ret.TimeInSeconds = ((totalTime) * Math.Pow(10, -6));
