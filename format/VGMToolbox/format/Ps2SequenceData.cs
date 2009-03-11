@@ -244,6 +244,9 @@ namespace VGMToolbox.format
             ulong loopTicks;
             Stack<ulong> loopTickStack = new Stack<ulong>();
 
+            int loopsOpened = 0;
+            int loopsClosed = 0;
+
             UInt64 currentTicks;
             UInt64 totalTicks = 0;
 
@@ -374,6 +377,7 @@ namespace VGMToolbox.format
                         { 
                             loopTimeStack.Push(0);
                             loopTickStack.Push(0);
+                            loopsOpened++;
                         }
                         
                         // if ((currentByte == 0xB0 || status == 0xB0) && 
@@ -382,6 +386,7 @@ namespace VGMToolbox.format
                             (dataByte2 == 0x01 || dataByte2 == 0x81))
                         {
                             loopEndFound = true;
+                            loopsClosed++;
                         }
 
                         if (loopEndFound &&
@@ -389,6 +394,9 @@ namespace VGMToolbox.format
                             dataByte1 == 0x26)
                         {
                             loopTimeMultiplier = dataByte2;
+
+                            // filter out high bytes, just indicator if next delta tick is zero
+                            loopTimeMultiplier = loopTimeMultiplier & 0x0F; 
 
                             if (loopTimeMultiplier == 0)
                             {
@@ -405,8 +413,7 @@ namespace VGMToolbox.format
                             totalTicks += loopTicks;
                             
                             loopEndFound = false;
-                        }
-                    
+                        }                    
                     }
                     else
                     {
@@ -456,6 +463,14 @@ namespace VGMToolbox.format
                         
             } // while (pStream.Position < pEndOffset)
 
+            // Not sure how to handle, but for now count each unclosed loop once.            
+            while (loopTimeStack.Count > 0)
+            {
+                totalTime += loopTimeStack.Pop();
+                // throw new Exception(String.Format("Unclosed loop found, {0} Opened, {1} Closed.", 
+                //    loopsOpened.ToString(), loopsClosed.ToString()));
+            }
+            
             ret.TimeInSeconds = ((totalTime) * Math.Pow(10, -6));
 
             if (loopFound)

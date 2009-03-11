@@ -265,7 +265,7 @@ namespace VGMToolbox.tools.xsf
                                 */
 
                                 this.progressStruct.Clear();
-                                progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message;
+                                progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message + Environment.NewLine;
                                 ReportProgress(progress, progressStruct);
                             }
                         } // if (psf2File.getFormat().Equals(Xsf.FORMAT_NAME_PSF2) && (!psf2File.IsFileLibrary()))
