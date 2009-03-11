@@ -18,6 +18,12 @@ namespace VGMToolbox.format.util
             public bool StripGsfHeader;        
         }
 
+        public struct TimePsf2Struct
+        {
+            public bool IncludeExtension;
+            public bool StripGsfHeader;
+        }
+
         public static string ExtractCompressedDataSection(string pPath, Xsf2ExeStruct pXsf2ExeStruct)
         {
             string outputFile = null;
@@ -78,7 +84,6 @@ namespace VGMToolbox.format.util
             return outputFile;
         }
 
-
         public static string ExtractReservedSection(string pPath, Xsf2ExeStruct pXsf2ExeStruct)
         {
             string outputFile = null;
@@ -103,6 +108,45 @@ namespace VGMToolbox.format.util
             } // using (FileStream fs = File.OpenRead(pPath))       
 
             return outputFile;        
+        }
+
+        public static Ps2SequenceData.Ps2SqTimingStruct GetTimeForPsf2File(string pSqPath, int pSequenceId)
+        {
+            Ps2SequenceData.Ps2SqTimingStruct time = new Ps2SequenceData.Ps2SqTimingStruct();
+            int minutes;
+            double seconds;
+
+            try
+            {
+                using (FileStream fs = File.Open(pSqPath, FileMode.Open, FileAccess.Read))
+                {                    
+                    Ps2SequenceData ps2SequenceData = new Ps2SequenceData(fs);
+
+                    time = ps2SequenceData.getTimeInSecondsForSequenceNumber(fs, pSequenceId);
+
+                    /*
+                    minutes = (int)(time.TimeInSeconds / 60d);
+                    seconds = (time.TimeInSeconds - (minutes * 60));
+                    seconds = Math.Ceiling(seconds);
+
+                    if (seconds > 59)
+                    {
+                        minutes++;
+                        seconds -= 60;
+                    }
+                    */
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+
+            }
+
+            return time;
         }
     }
 }

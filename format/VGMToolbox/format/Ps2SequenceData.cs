@@ -223,7 +223,8 @@ namespace VGMToolbox.format
 
             int status = 0;
             int needed;
-            uint tempo = pTempo;
+            // uint tempo = pTempo;
+            uint tempo = 0;
 
             int metaCommandByte;
             int metaCommandLengthByte;
@@ -280,6 +281,11 @@ namespace VGMToolbox.format
                         currentTicks = (ulong)currentByte;
                     }
 
+                    if ((tempo == 0) && (currentTicks != 0))
+                    {
+                        throw new Exception("Tempo not set and current ticks not equal zero");
+                    }
+                    
                     currentTime = currentTicks != 0? (double)((currentTicks * (ulong) tempo) / (ulong) pResolution) : 0;
 
                     if (loopTimeStack.Count > 0)
