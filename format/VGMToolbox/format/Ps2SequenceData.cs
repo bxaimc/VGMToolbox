@@ -238,6 +238,7 @@ namespace VGMToolbox.format
             bool loopEndFound = false;
             int loopId;
             double loopTime;
+            double finalLoopTime;
             int loopTimeMultiplier;
             Stack<double> loopTimeStack = new Stack<double>();
             ulong loopTicks;
@@ -350,7 +351,8 @@ namespace VGMToolbox.format
                         {
                             emptyTimeFollows = true;
 
-                            if ((dataByte2 & 0x8F) == dataByte2) // need to check that command byte is 0x90 also
+                            if ((dataByte2 & 0x8F) == dataByte2 &&
+                                (((currentByte & 0x9F) == currentByte) || ((status & 0x9F) == status))) // need to check that command byte is 0x90 also
                             {
                                 thisMayBeAZeroVelocityNoteOn = true;
                             }
@@ -365,7 +367,8 @@ namespace VGMToolbox.format
                             loopId = dataByte2;
                         }
 
-                        if ((currentByte == 0xB0 || status == 0xB0) && 
+                        // if ((currentByte == 0xB0 || status == 0xB0) && 
+                        if ((((currentByte & 0xBF) == currentByte) || ((status & 0xBF) == status)) && 
                              dataByte1 == 0x63 &&
                             (dataByte2 == 0x00 || dataByte2 == 0x80))
                         { 
@@ -373,14 +376,17 @@ namespace VGMToolbox.format
                             loopTickStack.Push(0);
                         }
                         
-                        if ((currentByte == 0xB0 || status == 0xB0) && 
+                        // if ((currentByte == 0xB0 || status == 0xB0) && 
+                        if ((((currentByte & 0xBF) == currentByte) || ((status & 0xBF) == status)) && 
                              dataByte1 == 0x63 &&
                             (dataByte2 == 0x01 || dataByte2 == 0x81))
                         {
                             loopEndFound = true;
                         }
 
-                        if (loopEndFound && (currentByte == 0xB0 || status == 0xB0) && dataByte1 == 0x26)
+                        if (loopEndFound &&
+                           (((currentByte & 0xBF) == currentByte) || ((status & 0xBF) == status)) && 
+                            dataByte1 == 0x26)
                         {
                             loopTimeMultiplier = dataByte2;
 
