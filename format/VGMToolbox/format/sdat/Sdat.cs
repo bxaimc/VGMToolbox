@@ -130,6 +130,9 @@ namespace VGMToolbox.format.sdat
         public SdatFatSection FatSection { get { return fatSection; } }
         public SdatFileSection FileSection { get { return fileSection; } }
 
+        // Optimization Arrays
+        bool[] fileIdChecklist;
+
         // METHODS        
         public void Initialize(Stream pStream, string pFilePath)
         { 
@@ -410,9 +413,14 @@ namespace VGMToolbox.format.sdat
 
         public void OptimizeForZlib(int pStartSequence, int pEndSequence)
         {
+            fileIdChecklist = new bool[BitConverter.ToUInt32(this.fatSection.FatHeaderNumberOfFiles, 0)];
+            
             this.ZeroOutStrms();
+            this.ZeroOutSequences(pStartSequence, pEndSequence);
             this.ZeroOutWavArcs(pStartSequence, pEndSequence);
             this.ZeroOutBanks(pStartSequence, pEndSequence);
+
+            this.zeroOutFilesById();
         }
 
         private void ZeroOutStrms()
@@ -431,12 +439,62 @@ namespace VGMToolbox.format.sdat
             }
         }
 
+        private void ZeroOutSequences(int pStartSequence, int pEndSequence)
+        {
+            UInt16 bankId;
+            bool checkSequences = false;
+            bool[] sseqIsUsed = new bool[infoSection.SdatInfoSseqs.Length];
+
+            SdatInfoSection.SdatInfoSseq sseqInfo;
+            int fileId;
+
+            if ((pStartSequence != NO_SEQUENCE_RESTRICTION) && (pEndSequence != NO_SEQUENCE_RESTRICTION))
+            {
+                checkSequences = true;
+            }
+
+            int i = 0;
+            foreach (SdatInfoSection.SdatInfoSseq s in infoSection.SdatInfoSseqs)
+            {
+                if ((s.fileId != null) &&
+                    ((!checkSequences) ||
+                    ((checkSequences) && (i >= pStartSequence) && (i <= pEndSequence))))
+                {
+                    sseqIsUsed[i] = true;
+                }
+
+                i++;
+            }
+
+            for (i = 0; i < sseqIsUsed.Length; i++)
+            {
+                if (sseqIsUsed[i])
+                {
+                    sseqInfo = infoSection.SdatInfoSseqs[i];
+
+                    if (sseqInfo.fileId != null)
+                    {
+                        fileId = BitConverter.ToInt16(sseqInfo.fileId, 0);
+                        this.fileIdChecklist[fileId] = true;
+                    }
+                }
+
+                //if (!bankIsUsed[i])
+                //{
+                //    this.ZeroOutBank((ushort)i);
+                //}
+            }
+        }
+
         private void ZeroOutWavArcs(int pStartSequence, int pEndSequence)
         {
             UInt16 bankId;
             SdatInfoSection.SdatInfoBank bankInfo;
             bool checkSequences = false;
             bool[] waveArcIsUsed = new bool[infoSection.SdatInfoWaveArcs.Length];
+
+            SdatInfoSection.SdatInfoWaveArc waveArcInfo;
+            int fileId;
 
             if ((pStartSequence != NO_SEQUENCE_RESTRICTION) && (pEndSequence != NO_SEQUENCE_RESTRICTION))
             {
@@ -468,10 +526,21 @@ namespace VGMToolbox.format.sdat
 
             for (i = 0; i < waveArcIsUsed.Length; i++)
             {
-                if (!waveArcIsUsed[i])
+                if (waveArcIsUsed[i])
                 {
-                    this.ZeroOutWaveArc((ushort) i);
-                }
+                    waveArcInfo = infoSection.SdatInfoWaveArcs[i];
+
+                    if (waveArcInfo.fileId != null)
+                    {
+                        fileId = BitConverter.ToInt16(waveArcInfo.fileId, 0);
+                        this.fileIdChecklist[fileId] = true;
+                    }
+                }                
+                
+                //if (!waveArcIsUsed[i])
+                //{
+                //    this.ZeroOutWaveArc((ushort) i);
+                //}
             }
         }
         private void ZeroOutWaveArc(UInt16 pWaveArcId)
@@ -496,6 +565,9 @@ namespace VGMToolbox.format.sdat
             bool checkSequences = false;
             bool[] bankIsUsed = new bool[infoSection.SdatInfoBanks.Length];
 
+            SdatInfoSection.SdatInfoBank bankInfo;
+            int fileId;
+
             if ((pStartSequence != NO_SEQUENCE_RESTRICTION) && (pEndSequence != NO_SEQUENCE_RESTRICTION))
             {
                 checkSequences = true;
@@ -517,10 +589,21 @@ namespace VGMToolbox.format.sdat
 
             for (i = 0; i < bankIsUsed.Length; i++)
             {
-                if (!bankIsUsed[i])
+                if (bankIsUsed[i])
                 {
-                    this.ZeroOutBank((ushort)i);
-                }
+                    bankInfo = infoSection.SdatInfoBanks[i];
+
+                    if (bankInfo.fileId != null)
+                    {
+                        fileId = BitConverter.ToInt16(bankInfo.fileId, 0);
+                        this.fileIdChecklist[fileId] = true;
+                    }
+                }                
+                
+                //if (!bankIsUsed[i])
+                //{
+                //    this.ZeroOutBank((ushort)i);
+                //}
             }
         }
         private void ZeroOutBank(UInt16 pBankId)
@@ -536,6 +619,23 @@ namespace VGMToolbox.format.sdat
                 int fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
 
                 FileUtil.ZeroOutFileChunk(this.filePath, fileOffset, fileSize);
+            }
+        }
+
+        private void zeroOutFilesById()
+        {
+            int fileOffset;
+            int fileSize;
+
+            for (int i = 0; i < this.fileIdChecklist.Length; i++)
+            {
+                if (!this.fileIdChecklist[i])
+                {
+                    fileOffset = BitConverter.ToInt32(fatSection.SdatFatRecs[i].nOffset, 0);
+                    fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[i].nSize, 0);
+
+                    FileUtil.ZeroOutFileChunk(this.filePath, fileOffset, fileSize);
+                }
             }
         }
 
