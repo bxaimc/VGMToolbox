@@ -373,12 +373,7 @@ namespace VGMToolbox.format
                             emptyTimeFollows = false;
                         }
 
-                        //if (loopBeginFound && status == 0xB0 && dataByte1 == 0x06)
-                        //{
-                        //    loopId = dataByte2;
-                        //}
-
-                        // if ((currentByte == 0xB0 || status == 0xB0) && 
+                        // check for loop start
                         if ((((currentByte & 0xBF) == currentByte) || ((status & 0xBF) == status)) && 
                              dataByte1 == 0x63 &&
                             (dataByte2 == 0x00 || dataByte2 == 0x80))
@@ -388,7 +383,7 @@ namespace VGMToolbox.format
                             loopsOpened++;                            
                         }
                         
-                        // if ((currentByte == 0xB0 || status == 0xB0) && 
+                        // check for loop end
                         if ((((currentByte & 0xBF) == currentByte) || ((status & 0xBF) == status)) && 
                              dataByte1 == 0x63 &&
                             (dataByte2 == 0x01 || dataByte2 == 0x81))
@@ -397,13 +392,14 @@ namespace VGMToolbox.format
                             loopsClosed++;
                         }
 
+                        // check for loop count
                         if (loopEndFound &&
                            (((currentByte & 0xBF) == currentByte) || ((status & 0xBF) == status)) && 
                             dataByte1 == 0x26)
                         {
                             loopTimeMultiplier = dataByte2;
 
-                            // filter out high bytes, just indicator if next delta tick is zero
+                            // filter out high bytes, they are just indicator if next delta tick is zero
                             loopTimeMultiplier = loopTimeMultiplier & 0x0F; 
 
                             if (loopTimeMultiplier == 0)
@@ -412,6 +408,7 @@ namespace VGMToolbox.format
                                 loopFound = true;
                             }
                             
+                            // add loop time
                             loopTime = loopTimeStack.Pop();
                             loopTime = (loopTime * loopTimeMultiplier);
                             totalTime += loopTime;
@@ -425,6 +422,7 @@ namespace VGMToolbox.format
                     }
                     else
                     {
+                        // if high bit is 1, next delta tick is zero and byte will be skipped
                         if ((dataByte1 & 0x80) != 0)
                         {
                             emptyTimeFollows = true;
@@ -462,6 +460,7 @@ namespace VGMToolbox.format
                             metaCommandLengthByte = pStream.ReadByte();
                         }
 
+                        // skip data bytes, they have already been grabbed above
                         pStream.Position += (long)metaCommandLengthByte;
                         currentOffset = pStream.Position;
 
@@ -470,15 +469,16 @@ namespace VGMToolbox.format
             
                         
             } // while (pStream.Position < pEndOffset)
+            
 
-            // Not sure how to handle, but for now count each unclosed loop twice, since it should be the outermost loop.            
-DONE:
+DONE:       // Marker used for skipping delta ticks at the end of a file.
+
+            // Not sure how to handle, but for now count each unclosed loop twice, 
+            //   since it should be the outermost loop.            
             while (loopTimeStack.Count > 0)
             {
                 totalTime += loopTimeStack.Pop() * 2d;
                 loopFound = true;
-                // throw new Exception(String.Format("Unclosed loop found, {0} Opened, {1} Closed.", 
-                //    loopsOpened.ToString(), loopsClosed.ToString()));
             }
             
             ret.TimeInSeconds = ((totalTime) * Math.Pow(10, -6));
