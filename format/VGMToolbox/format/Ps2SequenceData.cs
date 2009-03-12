@@ -377,7 +377,7 @@ namespace VGMToolbox.format
                         { 
                             loopTimeStack.Push(0);
                             loopTickStack.Push(0);
-                            loopsOpened++;
+                            loopsOpened++;                            
                         }
                         
                         // if ((currentByte == 0xB0 || status == 0xB0) && 
@@ -411,7 +411,7 @@ namespace VGMToolbox.format
                             loopTicks = loopTickStack.Pop();
                             loopTicks = (loopTicks * (ulong) loopTimeMultiplier);
                             totalTicks += loopTicks;
-                            
+
                             loopEndFound = false;
                         }                    
                     }
@@ -463,10 +463,11 @@ namespace VGMToolbox.format
                         
             } // while (pStream.Position < pEndOffset)
 
-            // Not sure how to handle, but for now count each unclosed loop once.            
+            // Not sure how to handle, but for now count each unclosed loop twice, since it should be the outermost loop.            
             while (loopTimeStack.Count > 0)
             {
-                totalTime += loopTimeStack.Pop();
+                totalTime += loopTimeStack.Pop() * 2d;
+                loopFound = true;
                 // throw new Exception(String.Format("Unclosed loop found, {0} Opened, {1} Closed.", 
                 //    loopsOpened.ToString(), loopsClosed.ToString()));
             }

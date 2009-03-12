@@ -123,18 +123,6 @@ namespace VGMToolbox.format.util
                     Ps2SequenceData ps2SequenceData = new Ps2SequenceData(fs);
 
                     time = ps2SequenceData.getTimeInSecondsForSequenceNumber(fs, pSequenceId);
-
-                    /*
-                    minutes = (int)(time.TimeInSeconds / 60d);
-                    seconds = (time.TimeInSeconds - (minutes * 60));
-                    seconds = Math.Ceiling(seconds);
-
-                    if (seconds > 59)
-                    {
-                        minutes++;
-                        seconds -= 60;
-                    }
-                    */
                 }
             }
             catch (Exception ex)

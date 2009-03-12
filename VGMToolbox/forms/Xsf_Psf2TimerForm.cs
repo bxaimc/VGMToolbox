@@ -17,8 +17,8 @@ namespace VGMToolbox.forms
         public Xsf_Psf2TimerForm(TreeNode pTreeNode)
             : base(pTreeNode) 
         {
-            this.lblTitle.Text = "PSF2 SQ Info";
-            this.tbOutput.Text = "Non-Functional: Currently WIP.";
+            this.lblTitle.Text = "PSF2 Timer";
+            this.tbOutput.Text = "Drag and Drop PSF2s onto the box above.  A timing script will be output in each PSF2's directory.";
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
@@ -31,13 +31,13 @@ namespace VGMToolbox.forms
         {
             if (e.Cancelled)
             {
-                toolStripStatusLabel1.Text = "SQ Info...Cancelled";
+                toolStripStatusLabel1.Text = "Time PSF2s...Cancelled";
                 tbOutput.Text += "Operation cancelled.";
             }
             else
             {
                 lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = "SQ Info...Complete";
+                toolStripStatusLabel1.Text = "Time PSF2s...Complete";
             }
 
             // update node color
@@ -63,7 +63,7 @@ namespace VGMToolbox.forms
         {
             base.initializeProcessing();
 
-            toolStripStatusLabel1.Text = "SQ Info...Begin";
+            toolStripStatusLabel1.Text = "Time PSF2s...Begin";
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 

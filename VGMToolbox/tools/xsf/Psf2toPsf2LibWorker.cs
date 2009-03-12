@@ -234,17 +234,17 @@ namespace VGMToolbox.tools.xsf
 
                 if (fileName.Equals(Path.GetFileName(psf2IniStruct.BdFileName))) 
                 {
-                    psf2IniStruct.BdFileName = this.getFileNameForChecksum(f, BD_HASH_KEY) + fileExtension;
+                    psf2IniStruct.BdFileName = this.getFileNameForChecksum(f, BD_HASH_KEY) + Psf2.FILE_EXTENSION_BD;
                     fileDestinationPath = Path.Combine(pDestinationDirectory, psf2IniStruct.BdFileName);
                 }
                 else if (fileName.Equals(Path.GetFileName(psf2IniStruct.HdFileName))) 
                 {
-                    psf2IniStruct.HdFileName = this.getFileNameForChecksum(f, HD_HASH_KEY) + fileExtension;
+                    psf2IniStruct.HdFileName = this.getFileNameForChecksum(f, HD_HASH_KEY) + Psf2.FILE_EXTENSION_HD;
                     fileDestinationPath = Path.Combine(pDestinationDirectory, psf2IniStruct.HdFileName);
                 }
                 else if (fileName.Equals(Path.GetFileName(psf2IniStruct.SqFileName))) 
                 {
-                    psf2IniStruct.SqFileName = this.getFileNameForChecksum(f, SQ_HASH_KEY) + fileExtension;
+                    psf2IniStruct.SqFileName = this.getFileNameForChecksum(f, SQ_HASH_KEY) + Psf2.FILE_EXTENSION_SQ;
                     fileDestinationPath = Path.Combine(pDestinationDirectory, psf2IniStruct.SqFileName);
                 }
                 else if (fileExtension != ".INI")

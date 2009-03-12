@@ -15,6 +15,9 @@ namespace VGMToolbox.format
         public const string SQ_FILE = "SQ.IRX";
         private Psf2DirectoryEntry[] directoryEntries;
 
+        public const string FILE_EXTENSION_BD = ".bd";
+        public const string FILE_EXTENSION_HD = ".hd";
+        public const string FILE_EXTENSION_SQ = ".sq";
 
         public struct Psf2IniSqIrxStruct
         {
