@@ -304,8 +304,16 @@ namespace VGMToolbox.format
                     }
                     else
                     {
-                        totalTime += currentTime;
-                        totalTicks += (ulong)currentTicks;
+                        if (pStream.Position != pEndOffset) // file should not end with a time
+                        {
+                            totalTime += currentTime;
+                            totalTicks += (ulong)currentTicks;
+                        }
+                        else
+                        {
+                            goto DONE;
+                        }
+
                     }                                        
                 }
 
@@ -365,10 +373,10 @@ namespace VGMToolbox.format
                             emptyTimeFollows = false;
                         }
 
-                        if (loopBeginFound && status == 0xB0 && dataByte1 == 0x06)
-                        {
-                            loopId = dataByte2;
-                        }
+                        //if (loopBeginFound && status == 0xB0 && dataByte1 == 0x06)
+                        //{
+                        //    loopId = dataByte2;
+                        //}
 
                         // if ((currentByte == 0xB0 || status == 0xB0) && 
                         if ((((currentByte & 0xBF) == currentByte) || ((status & 0xBF) == status)) && 
@@ -464,6 +472,7 @@ namespace VGMToolbox.format
             } // while (pStream.Position < pEndOffset)
 
             // Not sure how to handle, but for now count each unclosed loop twice, since it should be the outermost loop.            
+DONE:
             while (loopTimeStack.Count > 0)
             {
                 totalTime += loopTimeStack.Pop() * 2d;
