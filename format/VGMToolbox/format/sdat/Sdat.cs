@@ -376,7 +376,7 @@ namespace VGMToolbox.format.sdat
                     }
                     else
                     {
-                        fileName = String.Format("STRM{0}.sseq", fileId.ToString("X4"));
+                        fileName = String.Format("STRM{0}.strm", fileId.ToString("X4"));
                     }
 
                     string outputDirectory = Path.Combine(pOutputPath, "strm");

@@ -63,6 +63,7 @@ namespace VGMToolbox.format
         {
             public double TimeInSeconds;
             public int FadeInSeconds;
+            public string Warnings;
         }
 
         public Ps2SequenceData(Stream pStream)
@@ -223,7 +224,6 @@ namespace VGMToolbox.format
 
             int status = 0;
             int needed;
-            // uint tempo = pTempo;
             uint tempo = 0;
 
             int metaCommandByte;
@@ -252,9 +252,11 @@ namespace VGMToolbox.format
 
             double currentTime;
             double totalTime = 0;
+            double timeSinceLastLoopEnd = 0; // used for extra Loop End tag hack
 
             byte[] tempoValBytes;
             Ps2SqTimingStruct ret = new Ps2SqTimingStruct();
+            ret.Warnings = String.Empty;
 
             pStream.Position = pStartOffset;
 
@@ -304,10 +306,12 @@ namespace VGMToolbox.format
                     }
                     else
                     {
-                        if (pStream.Position != pEndOffset) // file should not end with a time
+                        if (pStream.Position != pEndOffset) // time at the end of the file is ignored
                         {
-                            totalTime += currentTime;
+                            totalTime += currentTime;                            
                             totalTicks += (ulong)currentTicks;
+
+                            timeSinceLastLoopEnd += currentTime;
                         }
                         else
                         {
@@ -397,26 +401,35 @@ namespace VGMToolbox.format
                            (((currentByte & 0xBF) == currentByte) || ((status & 0xBF) == status)) && 
                             dataByte1 == 0x26)
                         {
-                            loopTimeMultiplier = dataByte2;
-
-                            // filter out high bytes, they are just indicator if next delta tick is zero
-                            loopTimeMultiplier = loopTimeMultiplier & 0x0F; 
-
-                            if (loopTimeMultiplier == 0)
+                            if (loopTimeStack.Count > 0) // check for unmatched close tag (Bombermanland 3)
                             {
-                                loopTimeMultiplier = 2;
-                                loopFound = true;
+                                loopTimeMultiplier = dataByte2;
+
+                                // filter out high bytes, they are just indicator if next delta tick is zero
+                                loopTimeMultiplier = loopTimeMultiplier & 0x0F;
+
+                                if (loopTimeMultiplier == 0)
+                                {
+                                    loopTimeMultiplier = 2;
+                                    loopFound = true;
+                                }
+
+                                // add loop time
+                                loopTime = loopTimeStack.Pop();
+                                loopTime = (loopTime * loopTimeMultiplier);
+                                totalTime += loopTime;
+
+                                loopTicks = loopTickStack.Pop();
+                                loopTicks = (loopTicks * (ulong)loopTimeMultiplier);
+                                totalTicks += loopTicks;
+
+                                timeSinceLastLoopEnd = 0;
+                            }
+                            else
+                            {                                
+                                ret.Warnings += "Unmatched Loop End tag(s) found." + Environment.NewLine;
                             }
                             
-                            // add loop time
-                            loopTime = loopTimeStack.Pop();
-                            loopTime = (loopTime * loopTimeMultiplier);
-                            totalTime += loopTime;
-
-                            loopTicks = loopTickStack.Pop();
-                            loopTicks = (loopTicks * (ulong) loopTimeMultiplier);
-                            totalTicks += loopTicks;
-
                             loopEndFound = false;
                         }                    
                     }
@@ -475,10 +488,20 @@ DONE:       // Marker used for skipping delta ticks at the end of a file.
 
             // Not sure how to handle, but for now count each unclosed loop twice, 
             //   since it should be the outermost loop.            
-            while (loopTimeStack.Count > 0)
+            if (loopTimeStack.Count > 0)
             {
-                totalTime += loopTimeStack.Pop() * 2d;
-                loopFound = true;
+                ret.Warnings += "Unmatched Loop Start tag(s) found." + Environment.NewLine;
+
+                while (loopTimeStack.Count > 0)
+                {
+                    totalTime += loopTimeStack.Pop() * 2d;
+                    loopFound = true;
+                }
+            }
+
+            if (loopsClosed > loopsOpened)
+            {
+                totalTime -= timeSinceLastLoopEnd;
             }
             
             ret.TimeInSeconds = ((totalTime) * Math.Pow(10, -6));

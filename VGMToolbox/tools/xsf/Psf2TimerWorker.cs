@@ -252,6 +252,14 @@ namespace VGMToolbox.tools.xsf
                                         sw.Write(batchFile.ToString());
                                     }
 
+                                    // report warnings
+                                    if (!String.IsNullOrEmpty(psf2Time.Warnings))
+                                    {
+                                        this.progressStruct.Clear();
+                                        progressStruct.genericMessage = String.Format("{0}{1}  WARNINGS{2}    {3}", pPath, Environment.NewLine, Environment.NewLine, psf2Time.Warnings);
+                                        ReportProgress(progress, progressStruct);
+                                    }
+
                                 }
                             }
                             catch (Exception ex)
@@ -316,7 +324,10 @@ namespace VGMToolbox.tools.xsf
             // delete lib folders
             foreach (string k in extractedLibHash.Keys)
             {
-                Directory.Delete(extractedLibHash[k], true);
+                if (Directory.Exists(extractedLibHash[k]))
+                {
+                    Directory.Delete(extractedLibHash[k], true);
+                }
             }
         }        
     }
