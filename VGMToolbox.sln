@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dbutil", "dbutil\dbutil.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdatopt", "sdatopt\sdatopt.csproj", "{396F6881-244B-4C06-8D44-11D17CFBF06B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdatfind", "sdatfind\sdatfind.csproj", "{A04E3A96-42E5-4A3D-8BF6-13D8D667EB22}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{396F6881-244B-4C06-8D44-11D17CFBF06B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{396F6881-244B-4C06-8D44-11D17CFBF06B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{396F6881-244B-4C06-8D44-11D17CFBF06B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A04E3A96-42E5-4A3D-8BF6-13D8D667EB22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A04E3A96-42E5-4A3D-8BF6-13D8D667EB22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A04E3A96-42E5-4A3D-8BF6-13D8D667EB22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A04E3A96-42E5-4A3D-8BF6-13D8D667EB22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
