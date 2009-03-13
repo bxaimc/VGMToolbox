@@ -294,6 +294,11 @@ namespace VGMToolbox.format
                     
                     currentTime = currentTicks != 0? (double)((currentTicks * (ulong) tempo) / (ulong) pResolution) : 0;
 
+                    //if (currentTime > 10000000) // debug code used to find strange values
+                    //{
+                    //    int x2 = 1;
+                    //}
+
                     if (loopTimeStack.Count > 0)
                     {
                         loopTime = loopTimeStack.Pop();
@@ -324,6 +329,12 @@ namespace VGMToolbox.format
                 // get command
                 currentByte = pStream.ReadByte();
                 currentOffset = pStream.Position - 1;
+
+                //if (currentOffset > 0x19B5) // code to quickly get to a position for debugging
+                //{
+                //    int x = 1;
+                //}
+
 
                 if ((currentByte & 0x80) == 0)
                 {
@@ -435,7 +446,7 @@ namespace VGMToolbox.format
                     }
                     else
                     {
-                        // if high bit is 1, next delta tick is zero and byte will be skipped
+                        // if high bit of last data byte is 1, next delta tick is zero and byte will be skipped
                         if ((dataByte1 & 0x80) != 0)
                         {
                             emptyTimeFollows = true;
@@ -465,8 +476,10 @@ namespace VGMToolbox.format
                             // tempo switch
                             tempoValBytes = new byte[4];
                             Array.Copy(ParseFile.parseSimpleOffset(pStream, pStream.Position, metaCommandLengthByte), 0, tempoValBytes, 1, 3);
+                            
                             Array.Reverse(tempoValBytes); // flip order to LE for use with BitConverter
                             tempo = BitConverter.ToUInt32(tempoValBytes, 0);
+
                         }
                         else
                         {
@@ -476,6 +489,9 @@ namespace VGMToolbox.format
                         // skip data bytes, they have already been grabbed above
                         pStream.Position += (long)metaCommandLengthByte;
                         currentOffset = pStream.Position;
+
+                        // time should follow, since these data bytes can be over 0x80 anyhow
+                        emptyTimeFollows = false;
 
                         break;
                 }
