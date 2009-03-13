@@ -147,24 +147,21 @@ namespace VGMToolbox.tools.xsf
                                 // check for libs
                                 libPaths = psf2File.GetLibPathArray();
 
-                                if ((libPaths == null) || (libPaths.Length == 0)) // PSF2
-                                {
-                                    // copy the SQ file out (should only be one)
-                                    sqFiles = Directory.GetFiles(outputDir, psf2IniStruct.SqFileName, SearchOption.AllDirectories);
+                                // copy the SQ file out (should only be one)
+                                sqFiles = Directory.GetFiles(outputDir, psf2IniStruct.SqFileName, SearchOption.AllDirectories);
 
-                                    if (sqFiles.Length > 0)
+                                if (sqFiles.Length > 0)
+                                {
+                                    if (!String.IsNullOrEmpty(psf2IniStruct.SequenceNumber))
                                     {
-                                        if (!String.IsNullOrEmpty(psf2IniStruct.SequenceNumber))
-                                        {
-                                            sequenceNumber = int.Parse(psf2IniStruct.SequenceNumber);
-                                            outputSqFileName = String.Format("{0}_n={1}.SQ", outputDir, psf2IniStruct.SequenceNumber);
-                                        }
-                                        else
-                                        {
-                                            outputSqFileName = String.Format("{0}.SQ", outputDir);                                        
-                                        }
-                                        File.Copy(sqFiles[0], outputSqFileName, true);
+                                        sequenceNumber = int.Parse(psf2IniStruct.SequenceNumber);
+                                        outputSqFileName = String.Format("{0}_n={1}.SQ", outputDir, psf2IniStruct.SequenceNumber);
                                     }
+                                    else
+                                    {
+                                        outputSqFileName = String.Format("{0}.SQ", outputDir);                                        
+                                    }
+                                    File.Copy(sqFiles[0], outputSqFileName, true);
                                 }
                                 else // miniPSF2
                                 {                                    

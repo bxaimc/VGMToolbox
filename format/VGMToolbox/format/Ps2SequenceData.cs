@@ -22,6 +22,8 @@ namespace VGMToolbox.format
         private SequChunkStruct headerChunk;
         private MidiChunkStruct midiChunk;
 
+        private Dictionary<int, int> dataBytesPerCommand;
+
         public struct VersionChunkStruct
         {
             public UInt32 magicBytes;
@@ -71,6 +73,15 @@ namespace VGMToolbox.format
             this.versionChunk = parseVersionChunk(pStream);
             this.headerChunk = parseHeaderChunk(pStream);
             this.midiChunk = parseMidiChunk(pStream);
+
+            dataBytesPerCommand = new Dictionary<int, int>();
+            dataBytesPerCommand.Add(0x80, 1);
+            dataBytesPerCommand.Add(0x90, 2);
+            dataBytesPerCommand.Add(0xA0, 2);
+            dataBytesPerCommand.Add(0xB0, 2);
+            dataBytesPerCommand.Add(0xC0, 1);
+            dataBytesPerCommand.Add(0xD0, 1);
+            dataBytesPerCommand.Add(0xE0, 2);
         }
         
         public static VersionChunkStruct parseVersionChunk(Stream pStream)
@@ -167,16 +178,6 @@ namespace VGMToolbox.format
 
         public Ps2SqTimingStruct getTimeInSecondsForSequenceNumber(Stream pStream, int pSequenceNumber)
         {
-            // useful references
-            //http://www.dogsbodynet.com/fileformats/midi.html
-            //http://faydoc.tripod.com/formats/mid.htm
-            //http://cnx.org/content/m15052/latest/
-            //http://jedi.ks.uiuc.edu/~johns/links/music/midifile.html
-            //http://www.sonicspot.com/guide/midifiles.html
-            //http://www.ccarh.org/courses/253/assignment/midifile/
-            // http://www.skytopia.com/project/articles/midi.html
-            // http://opensource.jdkoftinoff.com/jdks/svn/trunk/libjdkmidi/trunk/src/
-
             Ps2SqTimingStruct ret = new Ps2SqTimingStruct();
 
             if (pSequenceNumber <= this.midiChunk.maxSeqCount &&
@@ -204,16 +205,10 @@ namespace VGMToolbox.format
             return ret;
         }
 
-        private static Ps2SqTimingStruct getTimeInSecondsForChunk(Stream pStream, long pStartOffset, long pEndOffset, uint pTempo, 
+        private Ps2SqTimingStruct getTimeInSecondsForChunk(Stream pStream, long pStartOffset, long pEndOffset, uint pTempo, 
             ushort pResolution)
         {
             long incomingStreamPosition = pStream.Position;
-
-            int[] chantype =
-            {
-              0, 0, 0, 0, 0, 0, 0, 0,         // 0x00 through 0x70
-              1, 2, 2, 2, 1, 1, 2, 0          // 0x80 through 0xf0
-            };
             
             int currentByte;
             long currentOffset = 0;
@@ -222,8 +217,8 @@ namespace VGMToolbox.format
             int dataByte1;
             int dataByte2;
 
-            int status = 0;
-            int needed;
+            int runningCommand = 0;
+            int dataByteCount;
             uint tempo = 0;
 
             int metaCommandByte;
@@ -231,14 +226,11 @@ namespace VGMToolbox.format
 
             bool running = false;
             bool emptyTimeFollows = false;
-            bool thisMayBeAZeroVelocityNoteOn;
             
             bool loopFound = false;
-            bool loopBeginFound = false;
             bool loopEndFound = false;
-            int loopId;
             double loopTime;
-            double finalLoopTime;
+
             int loopTimeMultiplier;
             Stack<double> loopTimeStack = new Stack<double>();
             ulong loopTicks;
@@ -270,6 +262,7 @@ namespace VGMToolbox.format
                     currentByte = pStream.ReadByte();
                     currentOffset = pStream.Position - 1;
 
+                    // build 7-bit num from bytes (variable length string)
                     if ((currentByte & 0x80) != 0)
                     {
                         currentTicks = (ulong)(currentByte & 0x7F);
@@ -282,7 +275,7 @@ namespace VGMToolbox.format
                             currentTicks = (currentTicks << 7) + (ulong)(currentByte & 0x7F);
                         } while ((currentByte & 0x80) != 0);
                     }
-                    else
+                    else // only one byte, no need for conversion
                     {
                         currentTicks = (ulong)currentByte;
                     }
@@ -336,52 +329,48 @@ namespace VGMToolbox.format
                 //}
 
 
-                if ((currentByte & 0x80) == 0)
+                if (currentByte != 0xFF) // process normal commands
                 {
-                    if (status == 0)
+                    if ((currentByte & 0x80) == 0) // data byte, we should be running
                     {
-                        throw new Exception("Unexpected Running Status");
+                        if (runningCommand == 0)
+                        {
+                            throw new Exception(String.Format("Empty running command at 0x{0}", currentOffset.ToString("X2")));
+                        }
+                        else
+                        {
+                            running = true;
+                        }
                     }
-                    else
+                    else // new command
                     {
-                        running = true;
-                        needed = chantype[(status >> 4) & 0xF];
+                        runningCommand = currentByte;
+                        running = false;
+                        
+                        commandOffset = currentOffset;
                     }
-                }
-                else
-                {
-                    status = currentByte;
-                    running = false;
-                    needed = chantype[(status >> 4) & 0xF];
-                    commandOffset = currentOffset; 
-                }
-                
-                if (needed != 0)
-                {                    
+
+                    dataByteCount = this.dataBytesPerCommand[runningCommand & 0xF0];
+                    
                     if (running)
                     {
                         dataByte1 = currentByte;
                     }
                     else
-                    {                        
+                    {
                         dataByte1 = pStream.ReadByte();
                         currentOffset = pStream.Position - 1;
                     }
 
-                    if (needed > 1)
+                    if (dataByteCount == 2)
                     {
                         dataByte2 = pStream.ReadByte();
                         currentOffset = pStream.Position - 1;
 
+                        // if high bit of last data byte is 1, next delta tick is zero and byte will be skipped
                         if ((dataByte2 & 0x80) != 0)
                         {
                             emptyTimeFollows = true;
-
-                            if ((dataByte2 & 0x8F) == dataByte2 &&
-                                (((currentByte & 0x9F) == currentByte) || ((status & 0x9F) == status))) // need to check that command byte is 0x90 also
-                            {
-                                thisMayBeAZeroVelocityNoteOn = true;
-                            }
                         }
                         else
                         {
@@ -389,17 +378,17 @@ namespace VGMToolbox.format
                         }
 
                         // check for loop start
-                        if ((((currentByte & 0xBF) == currentByte) || ((status & 0xBF) == status)) && 
+                        if ((((currentByte & 0xBF) == currentByte) || ((runningCommand & 0xBF) == runningCommand)) &&
                              dataByte1 == 0x63 &&
                             (dataByte2 == 0x00 || dataByte2 == 0x80))
-                        { 
+                        {
                             loopTimeStack.Push(0);
                             loopTickStack.Push(0);
-                            loopsOpened++;                            
+                            loopsOpened++;
                         }
-                        
+
                         // check for loop end
-                        if ((((currentByte & 0xBF) == currentByte) || ((status & 0xBF) == status)) && 
+                        if ((((currentByte & 0xBF) == currentByte) || ((runningCommand & 0xBF) == runningCommand)) &&
                              dataByte1 == 0x63 &&
                             (dataByte2 == 0x01 || dataByte2 == 0x81))
                         {
@@ -409,10 +398,10 @@ namespace VGMToolbox.format
 
                         // check for loop count
                         if (loopEndFound &&
-                           (((currentByte & 0xBF) == currentByte) || ((status & 0xBF) == status)) && 
+                           (((currentByte & 0xBF) == currentByte) || ((runningCommand & 0xBF) == runningCommand)) &&
                             dataByte1 == 0x26)
                         {
-                            if (loopTimeStack.Count > 0) // check for unmatched close tag (Bombermanland 3)
+                            if (loopTimeStack.Count > 0) // check for unmatched close tag
                             {
                                 loopTimeMultiplier = dataByte2;
 
@@ -437,12 +426,12 @@ namespace VGMToolbox.format
                                 timeSinceLastLoopEnd = 0;
                             }
                             else
-                            {                                
+                            {
                                 ret.Warnings += "Unmatched Loop End tag(s) found." + Environment.NewLine;
                             }
-                            
+
                             loopEndFound = false;
-                        }                    
+                        }
                     }
                     else
                     {
@@ -455,47 +444,37 @@ namespace VGMToolbox.format
                         {
                             emptyTimeFollows = false;
                         }
-                    }                    
+                    }
 
                     currentOffset = pStream.Position - 1;
-                    continue;
                 }
-
-                switch (currentByte)
+                else // meta event (only tempo is relevant for timing)
                 {
-                    case 0xFF:
-                        // need to skip relevant bytes
-                        metaCommandByte = pStream.ReadByte();
-                        currentOffset = pStream.Position - 1;
+                    // get meta command bytes
+                    metaCommandByte = pStream.ReadByte();
+                    currentOffset = pStream.Position - 1;
 
-                        // check for tempo switch here
-                        if (metaCommandByte == 0x51)
-                        {
-                            metaCommandLengthByte = pStream.ReadByte();
-                            
-                            // tempo switch
-                            tempoValBytes = new byte[4];
-                            Array.Copy(ParseFile.parseSimpleOffset(pStream, pStream.Position, metaCommandLengthByte), 0, tempoValBytes, 1, 3);
-                            
-                            Array.Reverse(tempoValBytes); // flip order to LE for use with BitConverter
-                            tempo = BitConverter.ToUInt32(tempoValBytes, 0);
+                    // get length bytes                   
+                    metaCommandLengthByte = pStream.ReadByte();
 
-                        }
-                        else
-                        {
-                            metaCommandLengthByte = pStream.ReadByte();
-                        }
+                    // check for tempo switch here
+                    if (metaCommandByte == 0x51)
+                    {
+                        // tempo switch
+                        tempoValBytes = new byte[4];
+                        Array.Copy(ParseFile.parseSimpleOffset(pStream, pStream.Position, metaCommandLengthByte), 0, tempoValBytes, 1, 3);
 
-                        // skip data bytes, they have already been grabbed above
-                        pStream.Position += (long)metaCommandLengthByte;
-                        currentOffset = pStream.Position;
+                        Array.Reverse(tempoValBytes); // flip order to LE for use with BitConverter
+                        tempo = BitConverter.ToUInt32(tempoValBytes, 0);
+                    }
 
-                        // time should follow, since these data bytes can be over 0x80 anyhow
-                        emptyTimeFollows = false;
+                    // skip data bytes, they have already been grabbed above if needed
+                    pStream.Position += (long)metaCommandLengthByte;
+                    currentOffset = pStream.Position;
 
-                        break;
+                    // time should follow, since these data bytes can be over 0x80 anyhow
+                    emptyTimeFollows = false;
                 }
-            
                         
             } // while (pStream.Position < pEndOffset)
             

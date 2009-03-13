@@ -113,8 +113,6 @@ namespace VGMToolbox.format.util
         public static Ps2SequenceData.Ps2SqTimingStruct GetTimeForPsf2File(string pSqPath, int pSequenceId)
         {
             Ps2SequenceData.Ps2SqTimingStruct time = new Ps2SequenceData.Ps2SqTimingStruct();
-            int minutes;
-            double seconds;
 
             try
             {
