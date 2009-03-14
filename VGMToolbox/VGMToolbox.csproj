@@ -425,11 +425,9 @@
     <Compile Include="tools\nds\SdatFinderWorker.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tools\NezPlug.cs" />
     <Compile Include="tools\nsf\NsfeM3uBuilderWorker.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tools\nsf\NsfTools.cs" />
     <Compile Include="tools\TreeBuilderWorker.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -566,7 +564,7 @@
     <Content Include="readme.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\bolo2.gif" />
+    <EmbeddedResource Include="Resources\bolo2.gif" />
     <Content Include="rips\dir.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

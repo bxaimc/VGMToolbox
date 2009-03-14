@@ -28,6 +28,7 @@ namespace sdatopt
                 Console.WriteLine("       sdatopt.exe filename ALL");
                 Console.WriteLine("       sdatopt.exe filename PREP");
                 Console.WriteLine("       sdatopt.exe filename MAP smap_file");
+                Console.WriteLine("       sdatopt.exe filename MAP");
                 Console.WriteLine();
                 Console.WriteLine("filename: .sdat or .2sflib containing SDAT to optimize");
                 Console.WriteLine("start_sequence: starting sequence number to keep");
@@ -35,6 +36,7 @@ namespace sdatopt
                 Console.WriteLine("ALL: use this if you wish to keep all sequences");
                 Console.WriteLine("PREP: use this to output an SMAP to use for sequence selection.  Delete the entire line of sequences you do not want to include.");
                 Console.WriteLine("MAP smap_file: uses smap_file from PREP to select sequences to keep.");
+                Console.WriteLine("MAP: looks for an smap file based on the sdat name select sequences to keep.  Must be in proper format.");
             }
             else
             {
@@ -68,7 +70,14 @@ namespace sdatopt
 
                 if (args[1].Trim().ToUpper().Equals("MAP"))
                 {
-                    smapFileName = Path.GetFullPath(args[2]); 
+                    if (args.Length < 3)
+                    {
+                        smapFileName = Path.ChangeExtension(filename, Smap.FILE_EXTENSION);
+                    }
+                    else
+                    {
+                        smapFileName = Path.GetFullPath(args[2]);
+                    }
                     
                     if (!File.Exists(smapFileName))
                     {

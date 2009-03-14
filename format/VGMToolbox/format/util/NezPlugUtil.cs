@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace VGMToolbox.tools
+namespace VGMToolbox.format.util
 {
-    class NezPlug
+    public class NezPlugUtil
     {
         public const string FORMAT_NSF = "NSF";
         public const string FORMAT_GBS = "GBS";
-        
+
         public static string BuildPlaylistEntry(string pFileType, string pFileName, string pSongNumber,
             string pTitle, string pTime, string pLoop, string pFade, string pLoopCount)
         {
@@ -26,6 +26,5 @@ namespace VGMToolbox.tools
 
             return sb.ToString();
         }    
-    
     }
 }

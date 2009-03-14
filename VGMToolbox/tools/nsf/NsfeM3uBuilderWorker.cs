@@ -100,80 +100,10 @@ namespace VGMToolbox.tools.nsf
           
             try
             {
-                FileStream fs = File.OpenRead(pPath);
-                Type dataType = FormatUtil.getObjectType(fs);
-                System.Text.Encoding enc = System.Text.Encoding.ASCII;
-
-                if (dataType != null && dataType.Name.Equals("Nsfe"))
-                {
-                    StreamWriter sw;
-                    string filename = Path.GetFileName(pPath);
-                    string trackItem = String.Empty;
-
-                    Nsfe nsfeData = new Nsfe();
-                    fs.Seek(0, SeekOrigin.Begin);
-                    nsfeData.Initialize(fs, pPath);
-
-                    string outputFile = Path.GetDirectoryName(pPath) + Path.DirectorySeparatorChar +
-                        Path.GetFileNameWithoutExtension(pPath) + ".m3u";
-                    sw = File.CreateText(outputFile);
-
-                    string[] playlist = nsfeData.Playlist.Split(',');
-
-                    sw.WriteLine("#######################################################");
-                    sw.WriteLine("#");
-                    sw.WriteLine("# Game: " + nsfeData.SongName);
-                    sw.WriteLine("# Artist: " + nsfeData.SongArtist);
-                    sw.WriteLine("# Copyright: " + nsfeData.SongCopyright);
-                    sw.WriteLine("# Ripper: " + nsfeData.NsfRipper);
-                    sw.WriteLine("#");
-                    sw.WriteLine("#######################################################");
-                    sw.WriteLine();
-
-                    // Build by playlist if it exists            
-                    if (!String.IsNullOrEmpty(nsfeData.Playlist))
-                    {
-                        int fileIndex = 1;
-                        int index;
-                        foreach (string s in nsfeData.Playlist.Split(','))
-                        {
-                            index = int.Parse(s.Trim());
-                            trackItem = buildTrackItem(index, nsfeData, pPath);
-                            sw.WriteLine(trackItem);
-
-                            if (pOnePlaylistPerFile)
-                            {
-                                buildSingleFileM3u(pPath, nsfeData, trackItem, fileIndex, index);
-                            }
-                            
-                            fileIndex++;
-                        }
-                    }
-                    // Use default order if playlist does not exist
-                    else
-                    {
-                        // !!! CHANGE TO START FROM nsfeData.StartingSong???????
-                        for (int i = 0; i < nsfeData.TotalSongs[0]; i++)
-                        {
-                            trackItem = buildTrackItem(i, nsfeData, pPath);
-                            sw.WriteLine(trackItem);
-
-                            if (pOnePlaylistPerFile)
-                            {
-                                buildSingleFileM3u(pPath, nsfeData, trackItem, i, i);
-                            }
-                        }
-                    }
-
-                    sw.Close();
-                    sw.Dispose();
-
-                    NsfTools.NsfeToNsf(nsfeData, pPath);
-                }
-
-                fs.Close();
-                fs.Dispose();
-                
+                NsfUtil.NsfM3uBuilderStruct nsfM3uBuilderStruct = new NsfUtil.NsfM3uBuilderStruct();
+                nsfM3uBuilderStruct.OnePlaylistPerFile = pOnePlaylistPerFile;
+                nsfM3uBuilderStruct.Path = pPath;
+                NsfUtil.BuildM3uForFile(nsfM3uBuilderStruct);                
             }
             catch (Exception ex)
             {
@@ -182,101 +112,7 @@ namespace VGMToolbox.tools.nsf
                 ReportProgress(progress, this.progressStruct);
             }            
         }
-
-        private string buildTrackItem(int pIndex, Nsfe pNsfeData, string pPath)
-        {
-            int tempTime;
-            int timeMinutes = 0;
-            int timeSeconds = 0;
-            string timeTotal = String.Empty;
-            int fadeMinutes = 0;
-            int fadeSeconds = 0;
-            string fadeTotal = String.Empty;
-            string title;
-            string entry;
-
-            title = ParseTitle(pNsfeData, pIndex);
-
-            if (pNsfeData.Times != null)
-            {
-                tempTime = pNsfeData.Times[pIndex];
-
-                if (tempTime >= 0)
-                {
-                    timeMinutes = tempTime / 60000;
-                    timeSeconds = ((tempTime - (timeMinutes * 60000)) % 60000) / 1000;
-                    timeTotal = timeMinutes + ":" + timeSeconds.ToString("d2");
-                }
-            }
-
-            if (pNsfeData.Fades != null)
-            {
-                tempTime = pNsfeData.Fades[pIndex];
-
-                if (tempTime >= 0)
-                {
-                    fadeMinutes = tempTime / 60000;
-                    fadeSeconds = ((tempTime - (fadeMinutes * 60000)) % 60000) / 1000;
-                    fadeTotal = fadeMinutes + ":" + fadeSeconds.ToString("d2");
-                }
-            }
-
-            entry = NezPlug.BuildPlaylistEntry(NezPlug.FORMAT_NSF,
-                Path.GetFileNameWithoutExtension(pPath) + ".nsf",
-                (pIndex + 1).ToString(),
-                title.Trim(),
-                timeTotal,
-                String.Empty,
-                fadeTotal,
-                String.Empty);
-            return entry;
-        }
-
-        private string ParseTitle(Nsfe pNsfeData, int pIndex)
-        {
-            string title;
-
-            if ((pNsfeData.TrackLabels.Length > pIndex) && (!String.IsNullOrEmpty(pNsfeData.TrackLabels[pIndex])))
-            {
-                title = pNsfeData.TrackLabels[pIndex];
-            }
-            else
-            {
-                title = "Track " + pIndex;
-            }
-            return title;
-        }
-
-        private void buildSingleFileM3u(string pPath, Nsfe pNsfeData, string pTrackData, int pIndex, int pTrackIndex)
-        {
-            string outputFileName = Path.GetFileNameWithoutExtension(pPath) + " - " + pIndex.ToString().PadLeft(2, '0') +
-                " - " + ParseTitle(pNsfeData, pTrackIndex) + ".m3u";
-            
-            foreach (char c in Path.GetInvalidFileNameChars())
-            {
-                outputFileName = outputFileName.Replace(c, '_');
-            }
-            
-            string outputPath = Path.GetDirectoryName(pPath);
-
-            StreamWriter singleSW = File.CreateText(outputPath + Path.DirectorySeparatorChar + outputFileName);
-            
-            singleSW.WriteLine("#######################################################");
-            singleSW.WriteLine("#");
-            singleSW.WriteLine("# Game: " + pNsfeData.SongName);
-            singleSW.WriteLine("# Artist: " + pNsfeData.SongArtist);
-            singleSW.WriteLine("# Copyright: " + pNsfeData.SongCopyright);
-            singleSW.WriteLine("# Ripper: " + pNsfeData.NsfRipper);
-            singleSW.WriteLine("# Song: " + ParseTitle(pNsfeData, pIndex));
-            singleSW.WriteLine("#");
-            singleSW.WriteLine("#######################################################");
-            singleSW.WriteLine();
-            singleSW.WriteLine(pTrackData);
-            
-            singleSW.Close();
-            singleSW.Dispose();
-        }
-
+               
         protected override void OnDoWork(DoWorkEventArgs e)
         {
             NsfeM3uBuilderStruct nsfeM3uBuilderStruct = (NsfeM3uBuilderStruct)e.Argument;

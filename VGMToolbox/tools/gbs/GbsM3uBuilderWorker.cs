@@ -103,50 +103,10 @@ namespace VGMToolbox.tools.gbs
           
             try
             {
-                FileStream fs = File.OpenRead(pPath);
-                Type dataType = FormatUtil.getObjectType(fs);
-                System.Text.Encoding enc = System.Text.Encoding.ASCII;
-
-                if (dataType != null && dataType.Name.Equals("Gbs"))
-                {
-                    StreamWriter sw;
-                    string filename = Path.GetFileName(pPath);
-                    string trackItem = String.Empty;
-
-                    Gbs gbsData = new Gbs();
-                    fs.Seek(0, SeekOrigin.Begin);
-                    gbsData.Initialize(fs, pPath);
-
-                    string outputFile = Path.GetDirectoryName(pPath) + Path.DirectorySeparatorChar + 
-                        Path.GetFileNameWithoutExtension(pPath) + ".m3u";
-                    sw = File.CreateText(outputFile);
-
-                    sw.WriteLine("#######################################################");
-                    sw.WriteLine("#");
-                    sw.WriteLine("# Game: " + enc.GetString(FileUtil.ReplaceNullByteWithSpace(gbsData.SongName)).Trim());
-                    sw.WriteLine("# Artist: " + enc.GetString(FileUtil.ReplaceNullByteWithSpace(gbsData.SongArtist)).Trim());
-                    sw.WriteLine("# Copyright: " + enc.GetString(FileUtil.ReplaceNullByteWithSpace(gbsData.SongCopyright)).Trim());
-                    sw.WriteLine("#");
-                    sw.WriteLine("#######################################################");
-                    sw.WriteLine();
-
-                    for (int i = gbsData.StartingSong[0] - 1; i < gbsData.TotalSongs[0]; i++)
-                    {
-                        trackItem = buildTrackItem(i, gbsData, pPath);
-                        sw.WriteLine(trackItem);
-
-                        if (pOnePlaylistPerFile)
-                        {
-                            buildSingleFileM3u(pPath, gbsData, trackItem, i);
-                        }
-                    }
-
-                    sw.Close();
-                    sw.Dispose();
-                }
-
-                fs.Close();
-                fs.Dispose();
+                GbsUtil.GbsM3uBuilderStruct gbsM3uBuilderStruct = new GbsUtil.GbsM3uBuilderStruct();
+                gbsM3uBuilderStruct.OnePlaylistPerFile = pOnePlaylistPerFile;
+                gbsM3uBuilderStruct.Path = pPath;
+                GbsUtil.BuildM3uForFile(gbsM3uBuilderStruct);
             }
             catch (Exception ex)
             {
@@ -155,59 +115,7 @@ namespace VGMToolbox.tools.gbs
                 ReportProgress(progress, this.progressStruct);
             }            
         }
-
-        private string buildTrackItem(int pIndex, Gbs pGbsData, string pPath)
-        {
-            System.Text.Encoding enc = System.Text.Encoding.ASCII;
-            string title = enc.GetString(FileUtil.ReplaceNullByteWithSpace(pGbsData.SongArtist)).Trim() + " - " +
-                    enc.GetString(FileUtil.ReplaceNullByteWithSpace(pGbsData.SongName)).Trim() + " - " +
-                    "Track " + pIndex.ToString().PadLeft(2, '0'); ;
-
-            string entry = NezPlug.BuildPlaylistEntry(NezPlug.FORMAT_GBS,
-                Path.GetFileName(pPath),
-                (pIndex).ToString(),
-                title,
-                String.Empty,
-                String.Empty,
-                String.Empty,
-                String.Empty);
-            return entry;
-        }
-
-        private string CreateTitle(int pIndex)
-        {
-            return "Track " + pIndex.ToString().PadLeft(2, '0');
-        }
-        
-        private void buildSingleFileM3u(string pPath, Gbs pGbsData, string pTrackData, int pIndex)
-        {
-            System.Text.Encoding enc = System.Text.Encoding.ASCII;
-            string outputFileName = Path.GetFileNameWithoutExtension(pPath) + " - " + pIndex.ToString().PadLeft(2, '0') +
-                " - " + CreateTitle(pIndex) + ".m3u";
-
-            foreach (char c in Path.GetInvalidFileNameChars())
-            {
-                outputFileName = outputFileName.Replace(c, '_');
-            }
-
-            string outputPath = Path.GetDirectoryName(pPath);
-
-            StreamWriter singleSW = File.CreateText(outputPath + Path.DirectorySeparatorChar + outputFileName);
-
-            singleSW.WriteLine("#######################################################");
-            singleSW.WriteLine("#");
-            singleSW.WriteLine("# Game: " + enc.GetString(FileUtil.ReplaceNullByteWithSpace(pGbsData.SongName)).Trim());
-            singleSW.WriteLine("# Artist: " + enc.GetString(FileUtil.ReplaceNullByteWithSpace(pGbsData.SongArtist)).Trim());
-            singleSW.WriteLine("# Copyright: " + enc.GetString(FileUtil.ReplaceNullByteWithSpace(pGbsData.SongCopyright)).Trim());
-            singleSW.WriteLine("#");
-            singleSW.WriteLine("#######################################################");
-            singleSW.WriteLine();
-            singleSW.WriteLine(pTrackData);
-
-            singleSW.Close();
-            singleSW.Dispose();
-        }
-
+                
         protected override void OnDoWork(DoWorkEventArgs e)
         {
             GbsM3uBuilderStruct gbsM3uBuilderStruct = (GbsM3uBuilderStruct)e.Argument;
