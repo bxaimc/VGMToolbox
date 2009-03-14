@@ -19,9 +19,6 @@ namespace VGMToolbox.forms
         {
             this.lblTitle.Text = "SDAT Optimizer";
             this.tbOutput.Text = "Optimize SDATs for zlib compression." + Environment.NewLine;
-            this.tbOutput.Text += "     Stage 1: Prepare STRMs (Functional - Minor Testing)" + Environment.NewLine;
-            this.tbOutput.Text += "     Stage 2: Prepare SWAVs (Functional - Minor Testing)" + Environment.NewLine;
-            this.tbOutput.Text += "     Stage 3: Prepare SBNKs (Functional - Minor Testing)" + Environment.NewLine;
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
