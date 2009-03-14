@@ -423,6 +423,18 @@ namespace VGMToolbox.format.sdat
             this.zeroOutFilesById();
         }
 
+        public void OptimizeForZlib(ArrayList pSeqeuncesAllowed)
+        {
+            fileIdChecklist = new bool[BitConverter.ToUInt32(this.fatSection.FatHeaderNumberOfFiles, 0)];
+
+            this.ZeroOutStrms();
+            this.ZeroOutSequences(pSeqeuncesAllowed);
+            this.ZeroOutWavArcs(pSeqeuncesAllowed);
+            this.ZeroOutBanks(pSeqeuncesAllowed);
+
+            this.zeroOutFilesById();
+        }
+
         private void ZeroOutStrms()
         {            
             foreach (SdatInfoSection.SdatInfoStrm s in infoSection.SdatInfoStrms)
@@ -536,26 +548,6 @@ namespace VGMToolbox.format.sdat
                         this.fileIdChecklist[fileId] = true;
                     }
                 }                
-                
-                //if (!waveArcIsUsed[i])
-                //{
-                //    this.ZeroOutWaveArc((ushort) i);
-                //}
-            }
-        }
-        private void ZeroOutWaveArc(UInt16 pWaveArcId)
-        {
-            SdatInfoSection.SdatInfoWaveArc waveArcInfo = new SdatInfoSection.SdatInfoWaveArc();
-            waveArcInfo = infoSection.SdatInfoWaveArcs[pWaveArcId];
-
-            if (waveArcInfo.fileId != null)
-            {
-                // get file information
-                int fileId = BitConverter.ToInt16(waveArcInfo.fileId, 0);
-                int fileOffset = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
-                int fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
-
-                FileUtil.ZeroOutFileChunk(this.filePath, fileOffset, fileSize);
             }
         }
 
@@ -606,21 +598,6 @@ namespace VGMToolbox.format.sdat
                 //}
             }
         }
-        private void ZeroOutBank(UInt16 pBankId)
-        {
-            SdatInfoSection.SdatInfoBank bankInfo = new SdatInfoSection.SdatInfoBank();
-            bankInfo = infoSection.SdatInfoBanks[pBankId];
-
-            if (bankInfo.fileId != null)
-            {
-                // get file information
-                int fileId = BitConverter.ToInt16(bankInfo.fileId, 0);
-                int fileOffset = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
-                int fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
-
-                FileUtil.ZeroOutFileChunk(this.filePath, fileOffset, fileSize);
-            }
-        }
 
         private void zeroOutFilesById()
         {
@@ -635,6 +612,124 @@ namespace VGMToolbox.format.sdat
                     fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[i].nSize, 0);
 
                     FileUtil.ZeroOutFileChunk(this.filePath, fileOffset, fileSize);
+                }
+            }
+        }
+
+        private void ZeroOutSequences(ArrayList pSeqeuncesAllowed)
+        {
+            bool[] sseqIsUsed = new bool[infoSection.SdatInfoSseqs.Length];
+
+            SdatInfoSection.SdatInfoSseq sseqInfo;
+            int fileId;
+
+            int i = 0;
+            foreach (SdatInfoSection.SdatInfoSseq s in infoSection.SdatInfoSseqs)
+            {
+                if ((s.fileId != null) && pSeqeuncesAllowed.Contains(i))
+                {
+                    sseqIsUsed[i] = true;
+                }
+
+                i++;
+            }
+
+            for (i = 0; i < sseqIsUsed.Length; i++)
+            {
+                if (sseqIsUsed[i])
+                {
+                    sseqInfo = infoSection.SdatInfoSseqs[i];
+
+                    if (sseqInfo.fileId != null)
+                    {
+                        fileId = BitConverter.ToInt16(sseqInfo.fileId, 0);
+                        this.fileIdChecklist[fileId] = true;
+                    }
+                }
+
+                //if (!bankIsUsed[i])
+                //{
+                //    this.ZeroOutBank((ushort)i);
+                //}
+            }
+        }
+
+        private void ZeroOutWavArcs(ArrayList pSeqeuncesAllowed)
+        {
+            UInt16 bankId;
+            SdatInfoSection.SdatInfoBank bankInfo;
+            bool[] waveArcIsUsed = new bool[infoSection.SdatInfoWaveArcs.Length];
+
+            SdatInfoSection.SdatInfoWaveArc waveArcInfo;
+            int fileId;
+
+            int i = 0;
+            int j;
+            foreach (SdatInfoSection.SdatInfoSseq s in infoSection.SdatInfoSseqs)
+            {
+                if ((s.fileId != null) && pSeqeuncesAllowed.Contains(i))
+                {
+                    bankId = BitConverter.ToUInt16(s.bnk, 0);
+                    bankInfo = infoSection.SdatInfoBanks[bankId];
+
+                    for (j = 0; j < 4; j++)
+                    {
+                        if (!ParseFile.CompareSegment(bankInfo.wa[j], 0, EMPTY_WAVEARC))
+                        {
+                            waveArcIsUsed[BitConverter.ToUInt16(bankInfo.wa[j], 0)] = true;
+                        }
+                    }
+                }
+
+                i++;
+            }
+
+            for (i = 0; i < waveArcIsUsed.Length; i++)
+            {
+                if (waveArcIsUsed[i])
+                {
+                    waveArcInfo = infoSection.SdatInfoWaveArcs[i];
+
+                    if (waveArcInfo.fileId != null)
+                    {
+                        fileId = BitConverter.ToInt16(waveArcInfo.fileId, 0);
+                        this.fileIdChecklist[fileId] = true;
+                    }
+                }
+            }
+        }
+
+        private void ZeroOutBanks(ArrayList pSeqeuncesAllowed)
+        {
+            UInt16 bankId;
+            bool[] bankIsUsed = new bool[infoSection.SdatInfoBanks.Length];
+
+            SdatInfoSection.SdatInfoBank bankInfo;
+            int fileId;
+
+            int i = 0;
+            foreach (SdatInfoSection.SdatInfoSseq s in infoSection.SdatInfoSseqs)
+            {
+                if ((s.fileId != null) && pSeqeuncesAllowed.Contains(i))
+                {
+                    bankId = BitConverter.ToUInt16(s.bnk, 0);
+                    bankIsUsed[bankId] = true;
+                }
+
+                i++;
+            }
+
+            for (i = 0; i < bankIsUsed.Length; i++)
+            {
+                if (bankIsUsed[i])
+                {
+                    bankInfo = infoSection.SdatInfoBanks[i];
+
+                    if (bankInfo.fileId != null)
+                    {
+                        fileId = BitConverter.ToInt16(bankInfo.fileId, 0);
+                        this.fileIdChecklist[fileId] = true;
+                    }
                 }
             }
         }
@@ -658,9 +753,15 @@ namespace VGMToolbox.format.sdat
             buildSmapFat(pOutputPath, pFilePrefix);
         }
 
+        public void BuildSmapPrep(string pOutputPath, string pFilePrefix)
+        {
+            checkOutputDirectory(pOutputPath);
+            buildSmapSeqPrep(pOutputPath, pFilePrefix);
+        }
+
         private void buildSmapSeq(string pOutputPath, string pFilePrefix)
-        {            
-            string smapFileName = pFilePrefix + ".smap";
+        {
+            string smapFileName = pFilePrefix + Smap.FILE_EXTENSION;
             string fileName;
             int fileId;
 
@@ -721,6 +822,65 @@ namespace VGMToolbox.format.sdat
                 i++;
             }
         
+            sw.Close();
+            sw.Dispose();
+        }
+
+        private void buildSmapSeqPrep(string pOutputPath, string pFilePrefix)
+        {
+            string smapFileName = pFilePrefix + Smap.FILE_EXTENSION;
+            string fileName;
+            int fileId;
+
+            StreamWriter sw = File.CreateText(Path.Combine(pOutputPath, smapFileName));
+
+            sw.WriteLine(@"# SEQ:");
+            sw.WriteLine(@"#     label                     number fileID bnk vol cpr ppr ply      hsize       size name");
+
+            int i = 0;
+            string lineOut = String.Empty;
+            foreach (SdatInfoSection.SdatInfoSseq s in infoSection.SdatInfoSseqs)
+            {
+                lineOut = i.ToString().PadRight(4);
+
+                if (s.fileId != null)
+                {
+                    fileId = BitConverter.ToInt16(s.fileId, 0);
+
+                    // get filename, if exists                                
+                    if ((symbSection != null) && (i < symbSection.SymbSeqFileNames.Length) &&
+                        (!String.IsNullOrEmpty(symbSection.SymbSeqFileNames[i])))
+                    {
+                        fileName = symbSection.SymbSeqFileNames[i] + ".sseq";
+                    }
+                    else
+                    {
+                        fileName = String.Format("SSEQ{0}.sseq", fileId.ToString("X4"));
+                    }
+
+                    lineOut += "  " + Path.GetFileNameWithoutExtension(fileName).PadRight(26).Substring(0, 26);
+                    lineOut += i.ToString().PadLeft(6);
+                    lineOut += BitConverter.ToInt16(s.fileId, 0).ToString().PadLeft(7);
+                    lineOut += BitConverter.ToInt16(s.bnk, 0).ToString().PadLeft(4);
+                    lineOut += s.vol[0].ToString().PadLeft(4);
+                    lineOut += s.cpr[0].ToString().PadLeft(4);
+                    lineOut += s.ppr[0].ToString().PadLeft(4);
+                    lineOut += s.ply[0].ToString().PadLeft(4);
+
+                    lineOut += " ".PadLeft(11); // hsize?
+                    lineOut += BitConverter.ToInt32(fatSection.SdatFatRecs[BitConverter.ToInt16(s.fileId, 0)].nSize, 0).ToString().PadLeft(11);
+                    lineOut += @" \Seq\" + fileName;
+                }
+                else
+                {
+                    lineOut = i.ToString().PadLeft(34);
+                }
+
+                sw.WriteLine(lineOut);
+
+                i++;
+            }
+
             sw.Close();
             sw.Dispose();
         }

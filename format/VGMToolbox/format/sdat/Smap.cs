@@ -10,7 +10,8 @@ namespace VGMToolbox.format.sdat
     public class Smap
     {
         public const int EMPTY_FILE_ID = -1;
-        
+        public const string FILE_EXTENSION = ".smap";
+
         private const string SEQ_HEADER = "# SEQ:";
 
         public struct SmapSeqStruct

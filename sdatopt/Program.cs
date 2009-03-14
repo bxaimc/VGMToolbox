@@ -26,11 +26,15 @@ namespace sdatopt
             {
                 Console.WriteLine("usage: sdatopt.exe filename start_sequence end_sequence");
                 Console.WriteLine("       sdatopt.exe filename ALL");
+                Console.WriteLine("       sdatopt.exe filename PREP");
+                Console.WriteLine("       sdatopt.exe filename MAP smap_file");
                 Console.WriteLine();
                 Console.WriteLine("filename: .sdat or .2sflib containing SDAT to optimize");
                 Console.WriteLine("start_sequence: starting sequence number to keep");
                 Console.WriteLine("end_sequence: endinging sequence number to keep");
                 Console.WriteLine("ALL: use this if you wish to keep all sequences");
+                Console.WriteLine("PREP: use this to output an SMAP to use for sequence selection.  Delete the entire line of sequences you do not want to include.");
+                Console.WriteLine("MAP smap_file: uses smap_file from PREP to select sequences to keep.");
             }
             else
             {
@@ -54,11 +58,23 @@ namespace sdatopt
                 ArrayList cleanupList = new ArrayList();
 
                 string filename = Path.GetFullPath(args[0]);
+                string smapFileName = null; 
 
                 if (!File.Exists(filename))
                 {
                     Console.WriteLine("Cannot find SDAT: {0}", filename);
                     return;
+                }
+
+                if (args[1].Trim().ToUpper().Equals("MAP"))
+                {
+                    smapFileName = Path.GetFullPath(args[2]); 
+                    
+                    if (!File.Exists(smapFileName))
+                    {
+                        Console.WriteLine("Cannot find SMAP: {0}", smapFileName);
+                        return;
+                    }
                 }
 
                 sdatDirectory = Path.GetDirectoryName(filename);
@@ -163,70 +179,89 @@ namespace sdatopt
 
                     if (sdat != null)
                     {
-                        if (!args[1].Trim().ToUpper().Equals("ALL"))
-                        {                                                        
-                            if (!String.IsNullOrEmpty(args[1]))
-                            {
-                                startSequence = (int)VGMToolbox.util.Encoding.GetIntFromString(args[1]);
-                            }
-
-                            if (!String.IsNullOrEmpty(args[2]))
-                            {
-                                endSequence = (int)VGMToolbox.util.Encoding.GetIntFromString(args[2]);
-                            }
+                        if (args[1].Trim().ToUpper().Equals("PREP"))
+                        {
+                            sdat.BuildSmapPrep(Path.GetDirectoryName(filename), Path.GetFileNameWithoutExtension(filename));
                         }
+                        else if (args[1].Trim().ToUpper().Equals("MAP"))
+                        {
+                            ArrayList allowedSequences = buildSequenceList(smapFileName);
 
-                        Console.WriteLine("Optimizing SDAT.");
-                        sdat.OptimizeForZlib(startSequence, endSequence);
+                            Console.WriteLine("Optimizing SDAT.");
+                            sdat.OptimizeForZlib(allowedSequences);
+
+                        }
+                        else
+                        {
+                            if (!args[1].Trim().ToUpper().Equals("ALL"))
+                            {
+                                if (!String.IsNullOrEmpty(args[1]))
+                                {
+                                    startSequence = (int)VGMToolbox.util.Encoding.GetIntFromString(args[1]);
+                                }
+
+                                if (!String.IsNullOrEmpty(args[2]))
+                                {
+                                    endSequence = (int)VGMToolbox.util.Encoding.GetIntFromString(args[2]);
+                                }
+                            }
+
+                            Console.WriteLine("Optimizing SDAT.");
+                            sdat.OptimizeForZlib(startSequence, endSequence);
+                        }
                     }
 
                     if (is2sfSource)
                     {
-                        // replace SDAT section
-                        Console.WriteLine("Inserting SDAT back into Decompressed Compressed Data Section.");
-                        long sdatOffset;
-                        using (FileStream dcFs = File.Open(decompressedDataPath, FileMode.Open, FileAccess.ReadWrite))
+                        if (!args[1].Trim().ToUpper().Equals("PREP"))
                         {
-                            sdatOffset = ParseFile.GetNextOffset(dcFs, 0, Sdat.ASCII_SIGNATURE);
+                            // replace SDAT section
+                            Console.WriteLine("Inserting SDAT back into Decompressed Compressed Data Section.");
+                            long sdatOffset;
+                            using (FileStream dcFs = File.Open(decompressedDataPath, FileMode.Open, FileAccess.ReadWrite))
+                            {
+                                sdatOffset = ParseFile.GetNextOffset(dcFs, 0, Sdat.ASCII_SIGNATURE);
+                            }
+
+                            FileInfo fi = new FileInfo(extractedSdats[0]);
+                            FileUtil.ReplaceFileChunk(extractedSdats[0], 0, fi.Length, decompressedDataPath, sdatOffset);
+
+                            // rebuild 2sf
+                            Console.WriteLine("Rebuilding 2sf File: Copying bin2psf.exe to working dir.");
+                            string bin2PsfDestinationPath = Path.Combine(Path.GetDirectoryName(decompressedDataPath), Path.GetFileName(BIN2PSF_SOURCE_PATH));
+                            File.Copy(BIN2PSF_SOURCE_PATH, bin2PsfDestinationPath, true);
+
+                            Console.WriteLine("Rebuilding 2sf File: Executing bin2psf.exe.");
+                            StringBuilder bin2PsfArguments = new StringBuilder();
+                            bin2PsfArguments.AppendFormat(" {0} 36 \"{1}\"", Path.GetExtension(filename).Substring(1), Path.GetFileName(decompressedDataPath));
+                            Process bin2PsfProcess = new Process();
+                            bin2PsfProcess.StartInfo = new ProcessStartInfo(bin2PsfDestinationPath, bin2PsfArguments.ToString());
+                            bin2PsfProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(decompressedDataPath);
+                            bin2PsfProcess.StartInfo.UseShellExecute = false;
+                            bin2PsfProcess.StartInfo.CreateNoWindow = true;
+                            bin2PsfProcess.Start();
+                            bin2PsfProcess.WaitForExit();
+
+                            Console.WriteLine("Rebuilding 2sf File: Deleting bin2psf.exe.");
+                            File.Delete(bin2PsfDestinationPath);
+
+                            Console.WriteLine("Cleaning up intermediate files.");
+                            File.Copy(Path.ChangeExtension(decompressedDataPath, Path.GetExtension(filename)), sdatOptimizingPath, true);
+                            File.Delete(Path.ChangeExtension(decompressedDataPath, Path.GetExtension(filename)));
                         }
-
-                        FileInfo fi = new FileInfo(extractedSdats[0]);
-                        FileUtil.ReplaceFileChunk(extractedSdats[0], 0, fi.Length, decompressedDataPath, sdatOffset);
-
-                        // rebuild 2sf
-                        Console.WriteLine("Rebuilding 2sf File: Copying bin2psf.exe to working dir.");
-                        string bin2PsfDestinationPath = Path.Combine(Path.GetDirectoryName(decompressedDataPath), Path.GetFileName(BIN2PSF_SOURCE_PATH));
-                        File.Copy(BIN2PSF_SOURCE_PATH, bin2PsfDestinationPath, true);
-
-                        Console.WriteLine("Rebuilding 2sf File: Executing bin2psf.exe.");
-                        StringBuilder bin2PsfArguments = new StringBuilder();
-                        bin2PsfArguments.AppendFormat(" {0} 36 \"{1}\"", Path.GetExtension(filename).Substring(1), Path.GetFileName(decompressedDataPath));
-                        Process bin2PsfProcess = new Process();
-                        bin2PsfProcess.StartInfo = new ProcessStartInfo(bin2PsfDestinationPath, bin2PsfArguments.ToString());
-                        bin2PsfProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(decompressedDataPath);
-                        bin2PsfProcess.StartInfo.UseShellExecute = false;
-                        bin2PsfProcess.StartInfo.CreateNoWindow = true;
-                        bin2PsfProcess.Start();
-                        bin2PsfProcess.WaitForExit();
-
-                        Console.WriteLine("Rebuilding 2sf File: Deleting bin2psf.exe.");
-                        File.Delete(bin2PsfDestinationPath);
-
-                        Console.WriteLine("Cleaning up intermediate files.");
-                        File.Copy(Path.ChangeExtension(decompressedDataPath, Path.GetExtension(filename)), sdatOptimizingPath, true);
-                        File.Delete(Path.ChangeExtension(decompressedDataPath, Path.GetExtension(filename)));
+                        
                         File.Delete(decompressedDataPath);
                         Directory.Delete(extractedToFolder, true);
                     }
 
-                                      
-                    Console.WriteLine("Copying to OPTIMIZED file.");                    
-                    File.Copy(sdatOptimizingPath, sdatCompletedPath, true);
+                    if (!args[1].Trim().ToUpper().Equals("PREP"))
+                    {
+                        Console.WriteLine("Copying to OPTIMIZED file.");
+                        File.Copy(sdatOptimizingPath, sdatCompletedPath, true);
+                    }
 
                     Console.WriteLine("Deleting OPTIMIZING file.");
                     File.Delete(sdatOptimizingPath);
-
-
 
                     Console.WriteLine("Optimization Complete.");
                 }
@@ -235,6 +270,32 @@ namespace sdatopt
                     Console.WriteLine(String.Format("ERROR: {0}", ex.Message));
                 }
             }
+        }
+
+        static ArrayList buildSequenceList(string pSmapPath)
+        {
+            ArrayList sequences = new ArrayList();
+            string seqIndex;
+
+            using (StreamReader sr = File.OpenText(pSmapPath))
+            {
+                string lineIn = String.Empty;
+
+                // skip first two lines
+                lineIn = sr.ReadLine();
+                lineIn = sr.ReadLine();
+
+                while ((lineIn = sr.ReadLine()) != null)
+                {
+                    if (!String.IsNullOrEmpty(lineIn.Trim()))
+                    {
+                        seqIndex = lineIn.Split(' ')[0].Trim();
+                        sequences.Add(int.Parse(seqIndex));
+                    }                    
+                }
+            }
+
+            return sequences;
         }
     }
 }
