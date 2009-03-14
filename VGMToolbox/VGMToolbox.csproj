@@ -58,7 +58,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="auditing\AuditingUtil.cs" />
-    <Compile Include="auditing\datafile.cs" />
     <Compile Include="auditing\DatafileCheckerWorker.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -413,11 +412,9 @@
     <Compile Include="tools\gbs\GbsM3uBuilderWorker.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tools\hoot\HootGameList.cs" />
     <Compile Include="tools\hoot\HootXmlBuilderWorker.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tools\hoot\HootCsv.cs" />
     <Compile Include="tools\MdxUtil.cs" />
     <Compile Include="tools\nds\SdatExtractorWorker.cs">
       <SubType>Component</SubType>

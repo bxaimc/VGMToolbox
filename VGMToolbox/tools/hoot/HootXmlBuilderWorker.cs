@@ -104,7 +104,7 @@ namespace VGMToolbox.tools.hoot
             this.progressStruct.filename = pPath;
             ReportProgress(progress, this.progressStruct);
           
-            VGMToolbox.tools.hoot.game hootGame = null;
+            VGMToolbox.format.hoot.game hootGame = null;
 
             try
             {
@@ -118,7 +118,7 @@ namespace VGMToolbox.tools.hoot
 
                     if (!String.IsNullOrEmpty(vgmData.GetHootDriver()))
                     {
-                        hootGame = new VGMToolbox.tools.hoot.game();
+                        hootGame = new VGMToolbox.format.hoot.game();
 
                         string setName = "GAME NAME";
                         if (!String.IsNullOrEmpty(vgmData.GetSongName()))
@@ -128,30 +128,30 @@ namespace VGMToolbox.tools.hoot
                         hootGame.name = String.Format("[{0}] {1} ({2})",
                             vgmData.GetHootDriverAlias(), setName, "JP PLACE HOLDER");
 
-                        hootGame.driver = new VGMToolbox.tools.hoot.driver();
+                        hootGame.driver = new VGMToolbox.format.hoot.driver();
                         hootGame.driver.type = vgmData.GetHootDriverType();
                         hootGame.driver.Value = vgmData.GetHootDriver();
 
-                        hootGame.driveralias = new VGMToolbox.tools.hoot.driveralias();
+                        hootGame.driveralias = new VGMToolbox.format.hoot.driveralias();
                         hootGame.driveralias.type = vgmData.GetHootDriverAlias();
                         hootGame.driveralias.Value = "COMPANY";
 
-                        hootGame.romlist = new VGMToolbox.tools.hoot.romlist();
+                        hootGame.romlist = new VGMToolbox.format.hoot.romlist();
                         hootGame.romlist.archive = "INSERT ARCHIVE NAME HERE";
-                        hootGame.romlist.rom = new VGMToolbox.tools.hoot.rom[1];
-                        hootGame.romlist.rom[0] = new VGMToolbox.tools.hoot.rom();
+                        hootGame.romlist.rom = new VGMToolbox.format.hoot.rom[1];
+                        hootGame.romlist.rom[0] = new VGMToolbox.format.hoot.rom();
                         hootGame.romlist.rom[0].type = "code";
                         hootGame.romlist.rom[0].Value = Path.GetFileName(pPath);
 
-                        hootGame.titlelist = new VGMToolbox.tools.hoot.title[vgmData.GetTotalSongs()];
+                        hootGame.titlelist = new VGMToolbox.format.hoot.title[vgmData.GetTotalSongs()];
                         int j = 0;
                         int totalSongs = vgmData.GetTotalSongs();
-                        VGMToolbox.tools.hoot.title hootTitle;
+                        VGMToolbox.format.hoot.title hootTitle;
 
                         // for (int i = vgmData.GetStartingSong(); i < (vgmData.GetStartingSong() + vgmData.GetTotalSongs()); i++)
                         for (int i = 0; i < totalSongs; i++)
                         {
-                            hootTitle = new VGMToolbox.tools.hoot.title();
+                            hootTitle = new VGMToolbox.format.hoot.title();
                             hootTitle.code = "0x" + i.ToString("X2");
                             hootTitle.Value = "BGM #" + i.ToString("X2");
 
@@ -180,7 +180,7 @@ namespace VGMToolbox.tools.hoot
             maxFiles = hootXmlBuilderStruct.totalFiles;
             
             this.buildXmlFiles(hootXmlBuilderStruct, e);
-            VGMToolbox.tools.hoot.game[] hootGames = (VGMToolbox.tools.hoot.game[])hootGamesArrayList.ToArray(typeof(VGMToolbox.tools.hoot.game));
+            VGMToolbox.format.hoot.game[] hootGames = (VGMToolbox.format.hoot.game[])hootGamesArrayList.ToArray(typeof(VGMToolbox.format.hoot.game));
             
             if (hootGames.Length > 0)
             {
@@ -204,7 +204,7 @@ namespace VGMToolbox.tools.hoot
 
                 if (hootXmlBuilderStruct.splitOutput)
                 {
-                    foreach (VGMToolbox.tools.hoot.game g in hootGames)
+                    foreach (VGMToolbox.format.hoot.game g in hootGames)
                     {
                         outputPath = Path.GetDirectoryName(Application.ExecutablePath) + Path.DirectorySeparatorChar + "hoot" +
                             Path.DirectorySeparatorChar + g.romlist.rom[0].Value + ".xml";

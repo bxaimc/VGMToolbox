@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 
 using VGMToolbox.auditing;
+using VGMToolbox.format.auditing;
 
 namespace VGMToolbox.forms
 {

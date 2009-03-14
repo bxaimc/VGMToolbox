@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 
 using VGMToolbox.auditing;
+using VGMToolbox.format.auditing;
 
 namespace VGMToolbox.forms
 {
@@ -70,7 +71,7 @@ namespace VGMToolbox.forms
                     tbDatCreator_Email.Text, tbDatCreator_Homepage.Text, tbDatCreator_Name.Text,
                     tbDatCreator_Url.Text, tbDatCreator_Version.Text);
 
-                dataFile.game = (VGMToolbox.auditing.game[])e.Result;
+                dataFile.game = (VGMToolbox.format.auditing.game[])e.Result;
 
                 XmlSerializer serializer = new XmlSerializer(dataFile.GetType());
 

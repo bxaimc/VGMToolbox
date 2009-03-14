@@ -9,6 +9,8 @@ using System.Xml.Serialization;
 using ICSharpCode.SharpZipLib.Zip.Compression;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 
+using VGMToolbox.format.auditing;
+
 namespace VGMToolbox.auditing
 {
     class AuditingUtil

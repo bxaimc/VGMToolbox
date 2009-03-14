@@ -7,6 +7,7 @@ using System.IO;
 using ICSharpCode.SharpZipLib.Checksums;
 
 using VGMToolbox.format;
+using VGMToolbox.format.auditing;
 using VGMToolbox.format.util;
 using VGMToolbox.util;
 

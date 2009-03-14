@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using System.Xml.Serialization;
 
+using VGMToolbox.format.auditing;
 using VGMToolbox.util;
 
 namespace VGMToolbox.auditing

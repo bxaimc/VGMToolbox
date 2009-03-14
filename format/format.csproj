@@ -41,6 +41,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VGMToolbox\format\auditing\Datafile.cs" />
+    <Compile Include="VGMToolbox\format\hoot\HootCsv.cs" />
+    <Compile Include="VGMToolbox\format\hoot\HootGameList.cs" />
     <Compile Include="VGMToolbox\format\util\FormatUtil.cs" />
     <Compile Include="VGMToolbox\format\Gbr.cs" />
     <Compile Include="VGMToolbox\format\Gbs.cs" />

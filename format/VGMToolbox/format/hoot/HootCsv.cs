@@ -5,9 +5,9 @@ using System.IO;
 using System.Text;
 using System.Xml.Serialization;
 
-using VGMToolbox.auditing;
+using VGMToolbox.format.auditing;
 
-namespace VGMToolbox.tools.hoot
+namespace VGMToolbox.format.hoot
 {
     public class HootCsvEntry
     {
@@ -172,7 +172,7 @@ namespace VGMToolbox.tools.hoot
             Hashtable csvHashtable = getCsvHashTable(hootCsvFile);
             
             // Add Data to DAT File
-            foreach (VGMToolbox.auditing.game g in dataFile.game)
+            foreach (VGMToolbox.format.auditing.game g in dataFile.game)
             {
                 if (csvHashtable.ContainsKey(g.name))
                 { 
