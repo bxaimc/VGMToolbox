@@ -4,11 +4,15 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
+using Un4seen.Bass;
+using Un4seen.Bass.AddOn.Midi;
+
 using VGMToolbox.format.sdat;
 
 namespace _2sftimer
 {
     class Program
+
     {
         public const string SSEQ2MID_TXT = "sseq2mid_output.txt";
         public const string PSFPOINT_BATCH_TXT = "psfpoint_batch.bat";
@@ -17,10 +21,6 @@ namespace _2sftimer
         public const string SSEQ2MID_TXT_END_OF_TRACK = "End of Track";
 
         public const string EMPTY_FILE_DIRECTORY = "Empty_Files";
-
-        [DllImport("WinMM.dll")]
-        private static extern long mciSendString(string strCommand,
-            StringBuilder strReturn, int iReturnLength, IntPtr hwndCallback);
 
         static void Main(string[] args)
         {
@@ -103,6 +103,13 @@ namespace _2sftimer
 
             int totalSequences = smap.SseqSection.Length;
             int i = 1;
+
+            // Initialize Bass            
+            if (smap.SseqSection.Length > 0)
+            {
+                Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero, null);
+            }
+
             foreach (Smap.SmapSeqStruct s in smap.SseqSection)
             {
                 Console.Write("\r" + String.Format("Processing [{0}/{1}]",
@@ -208,7 +215,7 @@ namespace _2sftimer
             return isSuccess;
         }
 
-        private static bool buildFileTimingBatch(string pMini2sfPath, 
+        private static bool buildFileTimingBatch(string pMini2sfPath,
             string p2sfFilePath, string pSseqFilePath)
         {
             bool isSuccess = false;
@@ -217,14 +224,13 @@ namespace _2sftimer
             StreamWriter sw;
 
             StringBuilder strReturn = new StringBuilder(128);
-            int tempTime;
             int minutes;
             int seconds;
-            string command;
-            long err;
+
+            int midiStream;
 
             string _2sfFileName = Path.GetFileName(p2sfFilePath);
-            
+
             string psfpointBatchFilePath = Path.Combine(Path.Combine(pMini2sfPath, "text"), PSFPOINT_BATCH_TXT);
 
             if (!File.Exists(psfpointBatchFilePath))
@@ -242,21 +248,31 @@ namespace _2sftimer
 
                 if (File.Exists(midiFilePath))
                 {
-                    command = string.Format("open \"{0}\" type sequencer alias MidiFile", midiFilePath);
-                    err = mciSendString(command, strReturn, 128, IntPtr.Zero);
+                    // Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero, null);
+                    midiStream = BassMidi.BASS_MIDI_StreamCreateFile(midiFilePath, 0L, 0L, BASSFlag.BASS_DEFAULT, 0);
 
-                    command = string.Format("set MidiFile time format milliseconds");
-                    err = mciSendString(command, strReturn, 128, IntPtr.Zero);
+                    if (midiStream != 0)
+                    {
+                        // play the channel
+                        long length = Bass.BASS_ChannelGetLength(midiStream);
+                        double tlength = Bass.BASS_ChannelBytes2Seconds(midiStream, length);
+                        minutes = (int)(tlength / 60);
+                        seconds = (int)(tlength - (minutes * 60));
 
-                    command = string.Format("status MidiFile length");
-                    err = mciSendString(command, strReturn, 128, IntPtr.Zero);
+                        if (seconds > 59)
+                        {
+                            minutes++;
+                            seconds -= 60;
+                        }
+                    }
+                    else
+                    {
+                        // error
+                        Console.Write(Environment.NewLine);
+                        Console.WriteLine("Stream error: {0}", Bass.BASS_ErrorGetCode());
+                        return false;
+                    }
 
-                    tempTime = Int32.Parse(strReturn.ToString());
-                    minutes = tempTime / 60000;
-                    seconds = ((tempTime - (minutes * 60000)) % 60000) / 1000;
-
-                    command = string.Format("close MidiFile");
-                    err = mciSendString(command, strReturn, 128, IntPtr.Zero);
 
                     // Do Fade
                     if (isLoopingTrack(pMini2sfPath, Path.GetFileName(pSseqFilePath)))
@@ -294,7 +310,7 @@ namespace _2sftimer
             {
                 Console.WriteLine(String.Format("Error timing {0}: {1}", p2sfFilePath, e.Message));
             }
-            finally 
+            finally
             {
                 sw.Close();
                 sw.Dispose();
