@@ -871,10 +871,6 @@ namespace VGMToolbox.format.sdat
                     lineOut += BitConverter.ToInt32(fatSection.SdatFatRecs[BitConverter.ToInt16(s.fileId, 0)].nSize, 0).ToString().PadLeft(11);
                     lineOut += @" \Seq\" + fileName;
                 }
-                else
-                {
-                    lineOut = i.ToString().PadLeft(34);
-                }
 
                 sw.WriteLine(lineOut);
 
