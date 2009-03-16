@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A04E3A96-42E5-4A3D-8BF6-13D8D667EB22}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -47,6 +47,9 @@
       <Name>vgmtutil</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -55,4 +58,11 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>if not exist ".\lib" mkdir lib
+move format.dll ".\lib\format.dll"
+move vgmtutil.dll ".\lib\vgmtutil.dll"
+move ICSharpCode.SharpZipLib.dll ".\lib\ICSharpCode.SharpZipLib.dll"
+del *.pdb</PostBuildEvent>
+  </PropertyGroup>
 </Project>

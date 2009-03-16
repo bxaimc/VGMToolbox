@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{32BAA74C-D53A-4911-8A75-4590A95B0EB4}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -43,6 +43,9 @@
       <Name>format</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -51,4 +54,11 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>if not exist ".\lib" mkdir lib
+move format.dll ".\lib\format.dll"
+move vgmtutil.dll ".\lib\vgmtutil.dll"
+move ICSharpCode.SharpZipLib.dll ".\lib\ICSharpCode.SharpZipLib.dll"
+del *.pdb</PostBuildEvent>
+  </PropertyGroup>
 </Project>
