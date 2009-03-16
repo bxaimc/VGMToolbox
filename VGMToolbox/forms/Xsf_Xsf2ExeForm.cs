@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Configuration;
 using System.IO;
 using System.Windows.Forms;
 
@@ -14,19 +15,33 @@ namespace VGMToolbox.forms
         public Xsf_Xsf2ExeForm(TreeNode pTreeNode) : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = "xSF to EXE";
+            this.lblTitle.Text = 
+                ConfigurationSettings.AppSettings["Form_Xsf2Exe_Title"];
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();            
             
             InitializeComponent();
+
+            this.grpXsfPsf2Exe_Source.Text =
+                ConfigurationSettings.AppSettings["Form_Xsf2Exe_GroupSourceFiles"];
+            this.lblDragNDrop.Text =
+                ConfigurationSettings.AppSettings["Form_Xsf2Exe_LblDragNDrop"];
+            this.grpOptions.Text =
+                ConfigurationSettings.AppSettings["Form_Xsf2Exe_GroupOptions"];
+            this.cbExtractReservedSection.Text =
+                ConfigurationSettings.AppSettings["Form_Xsf2Exe_CheckBoxExtractReservedSection"];
+            this.cbXsfPsf2Exe_IncludeOrigExt.Text =
+                ConfigurationSettings.AppSettings["Form_Xsf2Exe_CheckBoxIncludeOriginalExtension"];
+            this.cbXsfPsf2Exe_StripGsfHeader.Text =
+                ConfigurationSettings.AppSettings["Form_Xsf2Exe_CheckBoxStripGsfHeader"];
         }
 
         private void tbXsfPsf2Exe_Source_DragDrop(object sender, DragEventArgs e)
         {
             base.initializeProcessing();
 
-            toolStripStatusLabel1.Text = "PSF2EXE...Begin";
+            toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_Xsf2Exe_MessageBegin"];
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
@@ -63,13 +78,13 @@ namespace VGMToolbox.forms
         {
             if (e.Cancelled)
             {
-                toolStripStatusLabel1.Text = "PSF2EXE...Cancelled";
-                tbOutput.Text += "Operation cancelled.";
+                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_Xsf2Exe_MessageCancel"];
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
             }
             else
             {
                 lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = "PSF2EXE...Complete";
+                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_Xsf2Exe_MessageComplete"];
             }
 
             // update node color
@@ -80,7 +95,7 @@ namespace VGMToolbox.forms
         {
             if (xsfCompressedProgramExtractor != null && xsfCompressedProgramExtractor.IsBusy)
             {
-                tbOutput.Text += "CANCEL PENDING...";
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
                 xsfCompressedProgramExtractor.CancelAsync();
                 this.errorFound = true;
             }

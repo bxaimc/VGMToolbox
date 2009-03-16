@@ -29,67 +29,67 @@
         private void InitializeComponent()
         {
             this.grpXsfPsf2Exe_Source = new System.Windows.Forms.GroupBox();
-            this.label12 = new System.Windows.Forms.Label();
+            this.lblDragNDrop = new System.Windows.Forms.Label();
             this.tbXsfPsf2Exe_Source = new System.Windows.Forms.TextBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.grpOptions = new System.Windows.Forms.GroupBox();
+            this.cbExtractReservedSection = new System.Windows.Forms.CheckBox();
             this.cbXsfPsf2Exe_StripGsfHeader = new System.Windows.Forms.CheckBox();
             this.cbXsfPsf2Exe_IncludeOrigExt = new System.Windows.Forms.CheckBox();
-            this.cbExtractReservedSection = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
             this.grpXsfPsf2Exe_Source.SuspendLayout();
-            this.groupBox4.SuspendLayout();
+            this.grpOptions.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 438);
-            this.pnlLabels.Size = new System.Drawing.Size(868, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 415);
+            this.pnlLabels.Size = new System.Drawing.Size(716, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(868, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(716, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 361);
-            this.tbOutput.Size = new System.Drawing.Size(868, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 338);
+            this.tbOutput.Size = new System.Drawing.Size(716, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 341);
-            this.pnlButtons.Size = new System.Drawing.Size(868, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 318);
+            this.pnlButtons.Size = new System.Drawing.Size(716, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(808, 0);
+            this.btnCancel.Location = new System.Drawing.Point(656, 0);
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(748, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(596, 0);
             // 
             // grpXsfPsf2Exe_Source
             // 
-            this.grpXsfPsf2Exe_Source.Controls.Add(this.label12);
+            this.grpXsfPsf2Exe_Source.Controls.Add(this.lblDragNDrop);
             this.grpXsfPsf2Exe_Source.Controls.Add(this.tbXsfPsf2Exe_Source);
             this.grpXsfPsf2Exe_Source.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpXsfPsf2Exe_Source.Location = new System.Drawing.Point(0, 23);
             this.grpXsfPsf2Exe_Source.Name = "grpXsfPsf2Exe_Source";
-            this.grpXsfPsf2Exe_Source.Size = new System.Drawing.Size(868, 61);
+            this.grpXsfPsf2Exe_Source.Size = new System.Drawing.Size(716, 61);
             this.grpXsfPsf2Exe_Source.TabIndex = 5;
             this.grpXsfPsf2Exe_Source.TabStop = false;
             this.grpXsfPsf2Exe_Source.Text = "Source";
             // 
-            // label12
+            // lblDragNDrop
             // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(6, 42);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(171, 13);
-            this.label12.TabIndex = 2;
-            this.label12.Text = "Drag and Drop folders or files here.";
+            this.lblDragNDrop.AutoSize = true;
+            this.lblDragNDrop.Location = new System.Drawing.Point(6, 42);
+            this.lblDragNDrop.Name = "lblDragNDrop";
+            this.lblDragNDrop.Size = new System.Drawing.Size(171, 13);
+            this.lblDragNDrop.TabIndex = 2;
+            this.lblDragNDrop.Text = "Drag and Drop folders or files here.";
             // 
             // tbXsfPsf2Exe_Source
             // 
@@ -101,18 +101,28 @@
             this.tbXsfPsf2Exe_Source.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbXsfPsf2Exe_Source_DragDrop);
             this.tbXsfPsf2Exe_Source.DragEnter += new System.Windows.Forms.DragEventHandler(this.doDragEnter);
             // 
-            // groupBox4
+            // grpOptions
             // 
-            this.groupBox4.Controls.Add(this.cbExtractReservedSection);
-            this.groupBox4.Controls.Add(this.cbXsfPsf2Exe_StripGsfHeader);
-            this.groupBox4.Controls.Add(this.cbXsfPsf2Exe_IncludeOrigExt);
-            this.groupBox4.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox4.Location = new System.Drawing.Point(0, 84);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(868, 87);
-            this.groupBox4.TabIndex = 6;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Options";
+            this.grpOptions.Controls.Add(this.cbExtractReservedSection);
+            this.grpOptions.Controls.Add(this.cbXsfPsf2Exe_StripGsfHeader);
+            this.grpOptions.Controls.Add(this.cbXsfPsf2Exe_IncludeOrigExt);
+            this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpOptions.Location = new System.Drawing.Point(0, 84);
+            this.grpOptions.Name = "grpOptions";
+            this.grpOptions.Size = new System.Drawing.Size(716, 87);
+            this.grpOptions.TabIndex = 6;
+            this.grpOptions.TabStop = false;
+            this.grpOptions.Text = "Options";
+            // 
+            // cbExtractReservedSection
+            // 
+            this.cbExtractReservedSection.AutoSize = true;
+            this.cbExtractReservedSection.Location = new System.Drawing.Point(6, 18);
+            this.cbExtractReservedSection.Name = "cbExtractReservedSection";
+            this.cbExtractReservedSection.Size = new System.Drawing.Size(188, 17);
+            this.cbExtractReservedSection.TabIndex = 2;
+            this.cbExtractReservedSection.Text = "Also Extract the Reserved Section";
+            this.cbExtractReservedSection.UseVisualStyleBackColor = true;
             // 
             // cbXsfPsf2Exe_StripGsfHeader
             // 
@@ -134,22 +144,12 @@
             this.cbXsfPsf2Exe_IncludeOrigExt.Text = "Include original file extension in output name";
             this.cbXsfPsf2Exe_IncludeOrigExt.UseVisualStyleBackColor = true;
             // 
-            // cbExtractReservedSection
-            // 
-            this.cbExtractReservedSection.AutoSize = true;
-            this.cbExtractReservedSection.Location = new System.Drawing.Point(6, 18);
-            this.cbExtractReservedSection.Name = "cbExtractReservedSection";
-            this.cbExtractReservedSection.Size = new System.Drawing.Size(188, 17);
-            this.cbExtractReservedSection.TabIndex = 2;
-            this.cbExtractReservedSection.Text = "Also Extract the Reserved Section";
-            this.cbExtractReservedSection.UseVisualStyleBackColor = true;
-            // 
             // Xsf_Xsf2ExeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(868, 479);
-            this.Controls.Add(this.groupBox4);
+            this.ClientSize = new System.Drawing.Size(716, 456);
+            this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpXsfPsf2Exe_Source);
             this.Name = "Xsf_Xsf2ExeForm";
             this.Text = "Xsf_Xsf2ExeForm";
@@ -158,7 +158,7 @@
             this.Controls.SetChildIndex(this.pnlTitle, 0);
             this.Controls.SetChildIndex(this.pnlButtons, 0);
             this.Controls.SetChildIndex(this.grpXsfPsf2Exe_Source, 0);
-            this.Controls.SetChildIndex(this.groupBox4, 0);
+            this.Controls.SetChildIndex(this.grpOptions, 0);
             this.pnlLabels.ResumeLayout(false);
             this.pnlLabels.PerformLayout();
             this.pnlTitle.ResumeLayout(false);
@@ -167,8 +167,8 @@
             this.pnlButtons.PerformLayout();
             this.grpXsfPsf2Exe_Source.ResumeLayout(false);
             this.grpXsfPsf2Exe_Source.PerformLayout();
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
+            this.grpOptions.ResumeLayout(false);
+            this.grpOptions.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -177,9 +177,9 @@
         #endregion
 
         private System.Windows.Forms.GroupBox grpXsfPsf2Exe_Source;
-        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label lblDragNDrop;
         private System.Windows.Forms.TextBox tbXsfPsf2Exe_Source;
-        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.GroupBox grpOptions;
         private System.Windows.Forms.CheckBox cbXsfPsf2Exe_StripGsfHeader;
         private System.Windows.Forms.CheckBox cbXsfPsf2Exe_IncludeOrigExt;
         private System.Windows.Forms.CheckBox cbExtractReservedSection;

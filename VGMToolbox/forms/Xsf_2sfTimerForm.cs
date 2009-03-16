@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
+using System.Configuration;
 using System.Windows.Forms;
 
 using VGMToolbox.tools.xsf;
@@ -18,21 +15,34 @@ namespace VGMToolbox.forms
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = "2SF Timer";
-            this.btnDoTask.Text = "Time 2SFs";
-            this.tbOutput.Text = "File Prefix is the first part of the file name for every file in the " +
-                "2SF set for the input SDAT.  For example, given the inputs 'foo-0001.mini2sf', " +
-                "'foo-0002.mini2sf'... the file prefix would be 'foo'.";
+            this.lblTitle.Text = 
+                ConfigurationSettings.AppSettings["Form_2sfTimer_Title"];
+            this.btnDoTask.Text = 
+                ConfigurationSettings.AppSettings["Form_2sfTimer_DoTaskButton"];
+            this.tbOutput.Text = 
+                ConfigurationSettings.AppSettings["Form_2sfTimer_IntroText"];
 
             InitializeComponent();
 
-
+            this.grpSourcePaths.Text =
+                ConfigurationSettings.AppSettings["Form_2sfTimer_GroupSourcePaths"];
+            this.lblPathTo2sfFiles.Text =
+                ConfigurationSettings.AppSettings["Form_2sfTimer_LblPathTo2sfFiles"];
+            this.lblPathToSdat.Text =
+                ConfigurationSettings.AppSettings["Form_2sfTimer_LblPathToSdat"];
+            this.lblFilePrefix.Text =
+                ConfigurationSettings.AppSettings["Form_2sfTimer_LblFilePrefix"];
+            this.grpOptions.Text =
+                ConfigurationSettings.AppSettings["Form_2sfTimer_GroupOptions"];
+            this.cbOneLoop.Text =
+                ConfigurationSettings.AppSettings["Form_2sfTimer_CheckboxSingleLoop"];
         }
 
         private void btnDoTask_Click(object sender, EventArgs e)
         {
             base.initializeProcessing();
-            toolStripStatusLabel1.Text = "Time 2SFs...Begin";
+            toolStripStatusLabel1.Text = 
+                ConfigurationSettings.AppSettings["Form_2sfTimer_MessageBegin"];
 
             Time2sfWorker.Time2sfStruct t2Struct = new Time2sfWorker.Time2sfStruct();
             t2Struct.pathTo2sf = tbPathTo2sfs.Text;
@@ -51,12 +61,15 @@ namespace VGMToolbox.forms
         {
             if (e.Cancelled)
             {
-                toolStripStatusLabel1.Text = "Time 2SFs...Cancelled";
-                tbOutput.Text += "Operation cancelled.";
+                toolStripStatusLabel1.Text = 
+                    ConfigurationSettings.AppSettings["Form_2sfTimer_MessageCancel"];
+                tbOutput.Text +=
+                    ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
             }
             else
             {
-                toolStripStatusLabel1.Text = "Time 2SFs...Complete";
+                toolStripStatusLabel1.Text = 
+                    ConfigurationSettings.AppSettings["Form_2sfTimer_MessageComplete"];
             }
 
             // update node color
@@ -67,7 +80,8 @@ namespace VGMToolbox.forms
         {
             if (time2sfWorker != null && time2sfWorker.IsBusy)
             {
-                tbOutput.Text += "CANCEL PENDING...";
+                tbOutput.Text += 
+                    ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
                 time2sfWorker.CancelAsync();
                 this.errorFound = true;
             }

@@ -28,66 +28,66 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label9 = new System.Windows.Forms.Label();
+            this.grpSourceFiles = new System.Windows.Forms.GroupBox();
+            this.lblDragNDrop = new System.Windows.Forms.Label();
             this.tbNSF_nsfe2m3uSource = new System.Windows.Forms.TextBox();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.grpOptions = new System.Windows.Forms.GroupBox();
             this.cbNSFE_OneM3uPerTrack = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            this.groupBox5.SuspendLayout();
+            this.grpSourceFiles.SuspendLayout();
+            this.grpOptions.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 396);
-            this.pnlLabels.Size = new System.Drawing.Size(756, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 486);
+            this.pnlLabels.Size = new System.Drawing.Size(716, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(756, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(716, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 319);
-            this.tbOutput.Size = new System.Drawing.Size(756, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 409);
+            this.tbOutput.Size = new System.Drawing.Size(716, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 299);
-            this.pnlButtons.Size = new System.Drawing.Size(756, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 389);
+            this.pnlButtons.Size = new System.Drawing.Size(716, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(696, 0);
+            this.btnCancel.Location = new System.Drawing.Point(656, 0);
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(636, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(596, 0);
             // 
-            // groupBox2
+            // grpSourceFiles
             // 
-            this.groupBox2.Controls.Add(this.label9);
-            this.groupBox2.Controls.Add(this.tbNSF_nsfe2m3uSource);
-            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox2.Location = new System.Drawing.Point(0, 23);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(756, 61);
-            this.groupBox2.TabIndex = 5;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Files";
+            this.grpSourceFiles.Controls.Add(this.lblDragNDrop);
+            this.grpSourceFiles.Controls.Add(this.tbNSF_nsfe2m3uSource);
+            this.grpSourceFiles.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpSourceFiles.Location = new System.Drawing.Point(0, 23);
+            this.grpSourceFiles.Name = "grpSourceFiles";
+            this.grpSourceFiles.Size = new System.Drawing.Size(716, 61);
+            this.grpSourceFiles.TabIndex = 5;
+            this.grpSourceFiles.TabStop = false;
+            this.grpSourceFiles.Text = "Files";
             // 
-            // label9
+            // lblDragNDrop
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(6, 42);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(171, 13);
-            this.label9.TabIndex = 5;
-            this.label9.Text = "Drag and Drop folders or files here.";
+            this.lblDragNDrop.AutoSize = true;
+            this.lblDragNDrop.Location = new System.Drawing.Point(6, 42);
+            this.lblDragNDrop.Name = "lblDragNDrop";
+            this.lblDragNDrop.Size = new System.Drawing.Size(171, 13);
+            this.lblDragNDrop.TabIndex = 5;
+            this.lblDragNDrop.Text = "Drag and Drop folders or files here.";
             // 
             // tbNSF_nsfe2m3uSource
             // 
@@ -99,16 +99,16 @@
             this.tbNSF_nsfe2m3uSource.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbNSF_nsfe2m3uSource_DragDrop);
             this.tbNSF_nsfe2m3uSource.DragEnter += new System.Windows.Forms.DragEventHandler(this.doDragEnter);
             // 
-            // groupBox5
+            // grpOptions
             // 
-            this.groupBox5.Controls.Add(this.cbNSFE_OneM3uPerTrack);
-            this.groupBox5.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox5.Location = new System.Drawing.Point(0, 84);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(756, 61);
-            this.groupBox5.TabIndex = 7;
-            this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "Options";
+            this.grpOptions.Controls.Add(this.cbNSFE_OneM3uPerTrack);
+            this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpOptions.Location = new System.Drawing.Point(0, 84);
+            this.grpOptions.Name = "grpOptions";
+            this.grpOptions.Size = new System.Drawing.Size(716, 41);
+            this.grpOptions.TabIndex = 7;
+            this.grpOptions.TabStop = false;
+            this.grpOptions.Text = "Options";
             // 
             // cbNSFE_OneM3uPerTrack
             // 
@@ -124,26 +124,27 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(756, 437);
-            this.Controls.Add(this.groupBox5);
-            this.Controls.Add(this.groupBox2);
+            this.ClientSize = new System.Drawing.Size(716, 527);
+            this.Controls.Add(this.grpOptions);
+            this.Controls.Add(this.grpSourceFiles);
             this.Name = "Nsf_Nsfe2NsfM3uForm";
             this.Text = "Nsf_Nsfe2NsfM3uForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);
             this.Controls.SetChildIndex(this.pnlButtons, 0);
-            this.Controls.SetChildIndex(this.groupBox2, 0);
-            this.Controls.SetChildIndex(this.groupBox5, 0);
+            this.Controls.SetChildIndex(this.grpSourceFiles, 0);
+            this.Controls.SetChildIndex(this.grpOptions, 0);
             this.pnlLabels.ResumeLayout(false);
             this.pnlLabels.PerformLayout();
             this.pnlTitle.ResumeLayout(false);
             this.pnlTitle.PerformLayout();
             this.pnlButtons.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
-            this.groupBox5.ResumeLayout(false);
-            this.groupBox5.PerformLayout();
+            this.pnlButtons.PerformLayout();
+            this.grpSourceFiles.ResumeLayout(false);
+            this.grpSourceFiles.PerformLayout();
+            this.grpOptions.ResumeLayout(false);
+            this.grpOptions.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -151,10 +152,10 @@
 
         #endregion
 
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.GroupBox grpSourceFiles;
+        private System.Windows.Forms.Label lblDragNDrop;
         private System.Windows.Forms.TextBox tbNSF_nsfe2m3uSource;
-        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.GroupBox grpOptions;
         private System.Windows.Forms.CheckBox cbNSFE_OneM3uPerTrack;
     }
 }

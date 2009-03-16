@@ -19,6 +19,9 @@ namespace VGMToolbox.forms
             
             InitializeComponent();
 
+            this.Text =
+                ConfigurationSettings.AppSettings["Form_EmbeddedTags_WindowTitle"];
+
             this.grpTags.Text =
                 ConfigurationSettings.AppSettings["Form_EmbeddedTags_GroupTags"];
             this.lblName.Text =

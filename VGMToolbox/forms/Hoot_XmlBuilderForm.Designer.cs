@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.gbHootXML_Source = new System.Windows.Forms.GroupBox();
-            this.label10 = new System.Windows.Forms.Label();
+            this.lblDragNDrop = new System.Windows.Forms.Label();
             this.tbHootXML_Path = new System.Windows.Forms.TextBox();
             this.gbHootXML_Options = new System.Windows.Forms.GroupBox();
             this.cbHootXML_SplitOutput = new System.Windows.Forms.CheckBox();
@@ -43,52 +43,52 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 635);
-            this.pnlLabels.Size = new System.Drawing.Size(756, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 486);
+            this.pnlLabels.Size = new System.Drawing.Size(716, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(756, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(716, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 558);
-            this.tbOutput.Size = new System.Drawing.Size(756, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 409);
+            this.tbOutput.Size = new System.Drawing.Size(716, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 538);
-            this.pnlButtons.Size = new System.Drawing.Size(756, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 389);
+            this.pnlButtons.Size = new System.Drawing.Size(716, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(696, 0);
+            this.btnCancel.Location = new System.Drawing.Point(656, 0);
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(636, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(596, 0);
             // 
             // gbHootXML_Source
             // 
-            this.gbHootXML_Source.Controls.Add(this.label10);
+            this.gbHootXML_Source.Controls.Add(this.lblDragNDrop);
             this.gbHootXML_Source.Controls.Add(this.tbHootXML_Path);
             this.gbHootXML_Source.Dock = System.Windows.Forms.DockStyle.Top;
             this.gbHootXML_Source.Location = new System.Drawing.Point(0, 23);
             this.gbHootXML_Source.Name = "gbHootXML_Source";
-            this.gbHootXML_Source.Size = new System.Drawing.Size(756, 61);
+            this.gbHootXML_Source.Size = new System.Drawing.Size(716, 61);
             this.gbHootXML_Source.TabIndex = 5;
             this.gbHootXML_Source.TabStop = false;
             this.gbHootXML_Source.Text = "Source";
             // 
-            // label10
+            // lblDragNDrop
             // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(6, 42);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(171, 13);
-            this.label10.TabIndex = 2;
-            this.label10.Text = "Drag and Drop folders or files here.";
+            this.lblDragNDrop.AutoSize = true;
+            this.lblDragNDrop.Location = new System.Drawing.Point(6, 42);
+            this.lblDragNDrop.Name = "lblDragNDrop";
+            this.lblDragNDrop.Size = new System.Drawing.Size(171, 13);
+            this.lblDragNDrop.TabIndex = 2;
+            this.lblDragNDrop.Text = "Drag and Drop folders or files here.";
             // 
             // tbHootXML_Path
             // 
@@ -107,7 +107,7 @@
             this.gbHootXML_Options.Dock = System.Windows.Forms.DockStyle.Top;
             this.gbHootXML_Options.Location = new System.Drawing.Point(0, 84);
             this.gbHootXML_Options.Name = "gbHootXML_Options";
-            this.gbHootXML_Options.Size = new System.Drawing.Size(756, 61);
+            this.gbHootXML_Options.Size = new System.Drawing.Size(716, 61);
             this.gbHootXML_Options.TabIndex = 6;
             this.gbHootXML_Options.TabStop = false;
             this.gbHootXML_Options.Text = "Options";
@@ -136,7 +136,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(756, 676);
+            this.ClientSize = new System.Drawing.Size(716, 527);
             this.Controls.Add(this.gbHootXML_Options);
             this.Controls.Add(this.gbHootXML_Source);
             this.Name = "Hoot_XmlBuilderForm";
@@ -152,6 +152,7 @@
             this.pnlTitle.ResumeLayout(false);
             this.pnlTitle.PerformLayout();
             this.pnlButtons.ResumeLayout(false);
+            this.pnlButtons.PerformLayout();
             this.gbHootXML_Source.ResumeLayout(false);
             this.gbHootXML_Source.PerformLayout();
             this.gbHootXML_Options.ResumeLayout(false);
@@ -164,7 +165,7 @@
         #endregion
 
         private System.Windows.Forms.GroupBox gbHootXML_Source;
-        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label lblDragNDrop;
         private System.Windows.Forms.TextBox tbHootXML_Path;
         private System.Windows.Forms.GroupBox gbHootXML_Options;
         private System.Windows.Forms.CheckBox cbHootXML_SplitOutput;

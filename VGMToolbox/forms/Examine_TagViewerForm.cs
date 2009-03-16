@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Text;
@@ -15,35 +16,30 @@ namespace VGMToolbox.forms
     {
         TreeBuilderWorker treeBuilder;
         
-        public Examine_TagViewerForm() : base() 
-        {
-            // set title
-            this.lblTitle.Text = "Tag/Info Viewer";
-            this.btnDoTask.Text = "Expand All";
-
-            this.tbOutput.Text = "Drag Files or Folders onto the box above to View Information." + System.Environment.NewLine;
-            this.tbOutput.Text += "Right Click on filenames to update the tags (GBS/NSF/MDX/PSID only)." + System.Environment.NewLine;
-
-            InitializeComponent();
-        }
-
         public Examine_TagViewerForm(TreeNode pTreeNode) : base(pTreeNode) 
         {
-            // set title
-            this.lblTitle.Text = "Tag/Info Viewer";
-            this.btnDoTask.Text = "Expand All";
+            this.lblTitle.Text =
+                ConfigurationSettings.AppSettings["Form_ExamineTags_Title"];
+            this.btnDoTask.Text =
+                ConfigurationSettings.AppSettings["Form_ExamineTags_DoTaskButton"];
 
-            this.tbOutput.Text = "Drag Files or Folders onto the box above to View Information." + System.Environment.NewLine;
-            this.tbOutput.Text += "Right Click on filenames to update the tags (GBS/NSF/MDX/PSID only)." + System.Environment.NewLine;
-            
+            this.tbOutput.Text =
+                ConfigurationSettings.AppSettings["Form_ExamineTags_IntroText1"] + System.Environment.NewLine;
+            this.tbOutput.Text +=
+                ConfigurationSettings.AppSettings["Form_ExamineTags_IntroText2"] + System.Environment.NewLine;
+
             InitializeComponent();
+
+            this.cbCheckForLibs.Text =
+                ConfigurationSettings.AppSettings["Form_ExamineTags_CheckBoxCheckForLibs"];
         }
 
         private void tbXsfSource_DragDrop(object sender, DragEventArgs e)
         {
             base.initializeProcessing();
-            
-            toolStripStatusLabel1.Text = "Examination...Begin";
+
+            toolStripStatusLabel1.Text = 
+                ConfigurationSettings.AppSettings["Form_ExamineTags_MessageBegin"];
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
@@ -65,13 +61,16 @@ namespace VGMToolbox.forms
         {
             if (e.Cancelled)
             {
-                toolStripStatusLabel1.Text = "Examination...Cancelled";
-                tbOutput.Text += "Operation cancelled.";
+                toolStripStatusLabel1.Text =
+                    ConfigurationSettings.AppSettings["Form_ExamineTags_MessageCancel"];
+                tbOutput.Text +=
+                    ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
             }
             else
             {
                 lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = "Examination...Complete";
+                toolStripStatusLabel1.Text = 
+                    ConfigurationSettings.AppSettings["Form_ExamineTags_MessageComplete"]; 
             }
             // update node color
             setNodeAsComplete();
@@ -81,7 +80,8 @@ namespace VGMToolbox.forms
         {
             if (treeBuilder != null && treeBuilder.IsBusy)
             {
-                tbOutput.Text += "CANCEL PENDING...";
+                tbOutput.Text += 
+                    ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
                 treeBuilder.CancelAsync();
                 this.errorFound = true;
             }

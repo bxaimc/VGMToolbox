@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Configuration;
 using System.IO;
 using System.Windows.Forms;
 
@@ -14,19 +15,32 @@ namespace VGMToolbox.forms
         public Hoot_XmlBuilderForm(TreeNode pTreeNode) : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = "Hoot XML Builder";
+            this.lblTitle.Text = 
+                ConfigurationSettings.AppSettings["Form_HootXmlBuilder_Title"];
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
 
             InitializeComponent();
+
+            this.gbHootXML_Source.Text =
+                ConfigurationSettings.AppSettings["Form_HootXmlBuilder_GroupSource"];
+            this.lblDragNDrop.Text =
+                ConfigurationSettings.AppSettings["Form_HootXmlBuilder_LblDragNDrop"];
+            this.gbHootXML_Options.Text =
+                ConfigurationSettings.AppSettings["Form_HootXmlBuilder_GroupOptions"];
+            this.cbHootXML_CombineOutput.Text =
+                ConfigurationSettings.AppSettings["Form_HootXmlBuilder_CheckBoxCombineOutput"];
+            this.cbHootXML_SplitOutput.Text =
+                ConfigurationSettings.AppSettings["Form_HootXmlBuilder_CheckBoxSplitOutput"];
         }
 
         private void tbHootXML_Path_DragDrop(object sender, DragEventArgs e)
         {
             base.initializeProcessing();
 
-            toolStripStatusLabel1.Text = "Hoot XML Generation...Begin";
+            toolStripStatusLabel1.Text =
+                ConfigurationSettings.AppSettings["Form_HootXmlBuilder_MessageBegin"]; 
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
@@ -61,13 +75,16 @@ namespace VGMToolbox.forms
         {
             if (e.Cancelled)
             {
-                toolStripStatusLabel1.Text = "Hoot XML Generation...Cancelled";
-                tbOutput.Text += "Operation cancelled.";
+                toolStripStatusLabel1.Text = 
+                    ConfigurationSettings.AppSettings["Form_HootXmlBuilder_MessageCancel"];
+                tbOutput.Text +=
+                    ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"]; 
             }
             else
             {
                 lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = "Hoot XML Generation...Complete";
+                toolStripStatusLabel1.Text = 
+                    ConfigurationSettings.AppSettings["Form_HootXmlBuilder_MessageComplete"]; 
             }
 
             // update node color
@@ -78,7 +95,8 @@ namespace VGMToolbox.forms
         {
             if (hootXmlBuilder != null && hootXmlBuilder.IsBusy)
             {
-                tbOutput.Text += "CANCEL PENDING...";
+                tbOutput.Text += 
+                    ConfigurationSettings.AppSettings["Form_Global_CancelPending"]; 
                 hootXmlBuilder.CancelAsync();
                 this.errorFound = true;
             }

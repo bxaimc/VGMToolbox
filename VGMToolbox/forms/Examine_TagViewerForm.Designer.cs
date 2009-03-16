@@ -65,7 +65,7 @@
             this.cbCheckForLibs.Location = new System.Drawing.Point(0, 0);
             this.cbCheckForLibs.Name = "cbCheckForLibs";
             this.cbCheckForLibs.Padding = new System.Windows.Forms.Padding(5);
-            this.cbCheckForLibs.Size = new System.Drawing.Size(868, 27);
+            this.cbCheckForLibs.Size = new System.Drawing.Size(716, 27);
             this.cbCheckForLibs.TabIndex = 1;
             this.cbCheckForLibs.Text = "Check for Missing Library Files ";
             this.cbCheckForLibs.UseVisualStyleBackColor = true;
@@ -74,7 +74,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(868, 376);
+            this.ClientSize = new System.Drawing.Size(716, 527);
             this.Name = "Examine_TagViewerForm";
             this.Text = "Examine_TagViewerForm";
             this.splitContainer1.Panel1.ResumeLayout(false);

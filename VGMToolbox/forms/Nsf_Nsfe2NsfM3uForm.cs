@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Configuration;
 using System.IO;
 using System.Windows.Forms;
 
@@ -14,19 +15,30 @@ namespace VGMToolbox.forms
         public Nsf_Nsfe2NsfM3uForm(TreeNode pTreeNode) : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = "NSFE to NSF + .m3u";
+            this.lblTitle.Text = 
+                ConfigurationSettings.AppSettings["Form_Nsfe2M3u_Title"];
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
             
             InitializeComponent();
+
+            this.grpSourceFiles.Text =
+                ConfigurationSettings.AppSettings["Form_Nsfe2M3u_GroupSourceFiles"];
+            this.lblDragNDrop.Text =
+                ConfigurationSettings.AppSettings["Form_Nsfe2M3u_LblDragNDrop"];
+            this.grpOptions.Text =
+                ConfigurationSettings.AppSettings["Form_Nsfe2M3u_GroupOptions"];
+            this.cbNSFE_OneM3uPerTrack.Text =
+                ConfigurationSettings.AppSettings["Form_Nsfe2M3u_CheckBoxOneM3uPerTrack"];
         }
 
         private void tbNSF_nsfe2m3uSource_DragDrop(object sender, DragEventArgs e)
         {
             base.initializeProcessing();
 
-            toolStripStatusLabel1.Text = "NSFE to .M3U Conversion...Begin";
+            toolStripStatusLabel1.Text =
+                ConfigurationSettings.AppSettings["Form_Nsfe2M3u_MessageBegin"]; 
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
@@ -60,13 +72,16 @@ namespace VGMToolbox.forms
         {
             if (e.Cancelled)
             {
-                toolStripStatusLabel1.Text = "NSFE to .M3U Conversion...Cancelled";
-                tbOutput.Text += "Operation cancelled.";
+                toolStripStatusLabel1.Text = 
+                    ConfigurationSettings.AppSettings["Form_Nsfe2M3u_MessageCancel"];
+                tbOutput.Text +=
+                    ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
             }
             else
             {
                 lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = "NSFE to .M3U Conversion...Complete";
+                toolStripStatusLabel1.Text = 
+                    ConfigurationSettings.AppSettings["Form_Nsfe2M3u_MessageComplete"];
             }
 
             // update node color
@@ -77,7 +92,8 @@ namespace VGMToolbox.forms
         {
             if (nsfeM3uBuilder != null && nsfeM3uBuilder.IsBusy)
             {
-                tbOutput.Text += "CANCEL PENDING...";
+                tbOutput.Text += 
+                    ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
                 nsfeM3uBuilder.CancelAsync();
                 this.errorFound = true;
             }

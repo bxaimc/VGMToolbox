@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Configuration;
 using System.IO;
 using System.Windows.Forms;
 
@@ -14,19 +15,30 @@ namespace VGMToolbox.forms
         public Gbs_GbsToM3uForm(TreeNode pTreeNode): base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = "GBS .m3u Builder";
+            this.lblTitle.Text = 
+                ConfigurationSettings.AppSettings["Form_GbsM3u_Title"];
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
             
             InitializeComponent();
+
+            this.grpSource.Text =
+                ConfigurationSettings.AppSettings["Form_GbsM3u_GroupSourceFiles"];
+            this.lblDragNDrop.Text =
+                ConfigurationSettings.AppSettings["Form_GbsM3u_LblDragNDrop"];
+            this.grpOptions.Text =
+                ConfigurationSettings.AppSettings["Form_GbsM3u_GroupOptions"];
+            this.cbGBS_OneM3uPerTrack.Text =
+                ConfigurationSettings.AppSettings["Form_GbsM3u_CheckBoxOneM3uPerTrack"];
         }
 
         private void tbGBS_gbsm3uSource_DragDrop(object sender, DragEventArgs e)
         {
             base.initializeProcessing();
 
-            toolStripStatusLabel1.Text = "GBS .M3U Creation...Begin";
+            toolStripStatusLabel1.Text =
+                ConfigurationSettings.AppSettings["Form_GbsM3u_MessageBegin"];
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
@@ -60,13 +72,13 @@ namespace VGMToolbox.forms
         {
             if (e.Cancelled)
             {
-                toolStripStatusLabel1.Text = "GBS .M3U Creation...Cancelled";
-                tbOutput.Text += "Operation cancelled.";
+                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_GbsM3u_MessageCancel"];
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
             }
             else
             {
                 lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = "GBS .M3U Creation...Complete";
+                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_GbsM3u_MessageComplete"];
             }
 
             // update node color
@@ -77,7 +89,7 @@ namespace VGMToolbox.forms
         {
             if (gbsM3uBuilder != null && gbsM3uBuilder.IsBusy)
             {
-                tbOutput.Text += "CANCEL PENDING...";
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
                 gbsM3uBuilder.CancelAsync();
                 this.errorFound = true;
             }
