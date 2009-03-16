@@ -70,7 +70,7 @@ namespace VGMToolbox.forms
         }
 
         private void treeViewTools_MouseUp(object sender, MouseEventArgs e)
-        {            
+        {
             if (e.Button == MouseButtons.Right)
             {
                 // Point where the mouse is clicked.

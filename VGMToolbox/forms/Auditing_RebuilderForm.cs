@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Configuration;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml.Serialization;
@@ -17,10 +18,32 @@ namespace VGMToolbox.forms
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = "File Rebuilder";
-            this.btnDoTask.Text = "Rebuild";
-
+            this.lblTitle.Text = 
+                ConfigurationSettings.AppSettings["Form_AuditRebuilder_Title"];
+            this.btnDoTask.Text = 
+                ConfigurationSettings.AppSettings["Form_AuditRebuilder_DoTaskButton"];
+            this.tbOutput.Text =
+                ConfigurationSettings.AppSettings["Form_AuditRebuilder_IntroText"];
             InitializeComponent();
+
+            grpRebuilder_Directories.Text =
+                ConfigurationSettings.AppSettings["Form_AuditRebuilder_GroupDirectories"];
+            lblRebuilder_SourceDir.Text =
+                ConfigurationSettings.AppSettings["Form_AuditRebuilder_LblSourceDir"];
+            lblRebuilder_DestinationDir.Text =
+                ConfigurationSettings.AppSettings["Form_AuditRebuilder_LblDestinationDir"];
+            grpRebuilder_Datafile.Text =
+                ConfigurationSettings.AppSettings["Form_AuditRebuilder_GroupDatafile"];
+            grpRebuilder_Options.Text =
+                ConfigurationSettings.AppSettings["Form_AuditRebuilder_GroupOptions"];
+            cbRebuilder_RemoveSource.Text =
+                ConfigurationSettings.AppSettings["Form_AuditRebuilder_CheckBoxRemoveSource"];
+            cbRebuilder_Overwrite.Text =
+                ConfigurationSettings.AppSettings["Form_AuditRebuilder_CheckBoxOverwrite"];
+            cbRebuilder_ScanOnly.Text =
+                ConfigurationSettings.AppSettings["Form_AuditRebuilder_CheckBoxScanOnly"];
+            cbRebuilder_CompressOutput.Text =
+                ConfigurationSettings.AppSettings["Form_AuditRebuilder_CheckBoxCompressOutput"];
         }
 
         private void btnRebuilder_Rebuild_Click(object sender, EventArgs e)
@@ -29,7 +52,8 @@ namespace VGMToolbox.forms
 
             if (checkRebuilderInputs())
             {
-                toolStripStatusLabel1.Text = "Rebuilding...";
+                toolStripStatusLabel1.Text = 
+                    ConfigurationSettings.AppSettings["Form_AuditRebuilder_MessageBegin"];
 
                 datafile dataFile = new datafile();
                 XmlSerializer serializer = new XmlSerializer(typeof(datafile));
@@ -67,13 +91,16 @@ namespace VGMToolbox.forms
         {
             if (e.Cancelled)
             {
-                toolStripStatusLabel1.Text = "Rebuilding...Cancelled";
-                tbOutput.Text += "Operation cancelled.";
+                toolStripStatusLabel1.Text = 
+                    ConfigurationSettings.AppSettings["Form_AuditRebuilder_MessageCancel"];
+                tbOutput.Text += 
+                    ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
             }
             else
             {
                 lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = "Rebuilding...Complete";
+                toolStripStatusLabel1.Text =
+                    ConfigurationSettings.AppSettings["Form_AuditRebuilder_MessageComplete"];
             }
 
             // update node color
@@ -84,7 +111,7 @@ namespace VGMToolbox.forms
         {
             if (rebuilder != null && rebuilder.IsBusy)
             {
-                tbOutput.Text += "CANCEL PENDING...";
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
                 rebuilder.CancelAsync();
                 this.errorFound = true;
             }
@@ -109,17 +136,17 @@ namespace VGMToolbox.forms
         {
             bool ret = true;
 
-            if (checkTextBox(tbRebuilder_SourceDir.Text, "Source Directory") &&
-                checkTextBox(tbRebuilder_DestinationDir.Text, "Destination Directory") &&
-                checkTextBox(tbRebuilder_Datafile.Text, "Datafile Path") &&
-                checkFolderExists(tbRebuilder_SourceDir.Text, "Source Directory") &&
-                checkFolderExists(tbRebuilder_DestinationDir.Text, "Destination Directory") &&
-                checkFileExists(tbRebuilder_Datafile.Text, "Datafile Path"))
+            if (checkTextBox(tbRebuilder_SourceDir.Text, lblRebuilder_SourceDir.Text) &&
+                checkTextBox(tbRebuilder_DestinationDir.Text, lblRebuilder_DestinationDir.Text) &&
+                checkTextBox(tbRebuilder_Datafile.Text, grpRebuilder_Datafile.Text) &&
+                checkFolderExists(tbRebuilder_SourceDir.Text, lblRebuilder_SourceDir.Text) &&
+                checkFolderExists(tbRebuilder_DestinationDir.Text, lblRebuilder_DestinationDir.Text) &&
+                checkFileExists(tbRebuilder_Datafile.Text, grpRebuilder_Datafile.Text))
             {
 
                 if (tbRebuilder_SourceDir.Text.Trim().Equals(tbRebuilder_DestinationDir.Text.Trim()))
                 {
-                    MessageBox.Show("Source directory cannot be the same as the Destination directory");
+                    MessageBox.Show(ConfigurationSettings.AppSettings["Form_AuditRebuilder_ErrorSourceDestSame"]);
                     ret = false;
                 }
             }

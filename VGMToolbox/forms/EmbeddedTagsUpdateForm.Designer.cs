@@ -34,11 +34,11 @@
             this.tbCopyright = new System.Windows.Forms.TextBox();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnUpdate = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox1.SuspendLayout();
+            this.lblName = new System.Windows.Forms.Label();
+            this.lblArtist = new System.Windows.Forms.Label();
+            this.lblCopyright = new System.Windows.Forms.Label();
+            this.grpTags = new System.Windows.Forms.GroupBox();
+            this.grpTags.SuspendLayout();
             this.SuspendLayout();
             // 
             // tbName
@@ -85,63 +85,63 @@
             this.btnUpdate.UseVisualStyleBackColor = true;
             this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
             // 
-            // label1
+            // lblName
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 16);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "Name";
+            this.lblName.AutoSize = true;
+            this.lblName.Location = new System.Drawing.Point(9, 16);
+            this.lblName.Name = "lblName";
+            this.lblName.Size = new System.Drawing.Size(35, 13);
+            this.lblName.TabIndex = 5;
+            this.lblName.Text = "Name";
             // 
-            // label2
+            // lblArtist
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 42);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(30, 13);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "Artist";
+            this.lblArtist.AutoSize = true;
+            this.lblArtist.Location = new System.Drawing.Point(9, 42);
+            this.lblArtist.Name = "lblArtist";
+            this.lblArtist.Size = new System.Drawing.Size(30, 13);
+            this.lblArtist.TabIndex = 6;
+            this.lblArtist.Text = "Artist";
             // 
-            // label3
+            // lblCopyright
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(9, 68);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(51, 13);
-            this.label3.TabIndex = 7;
-            this.label3.Text = "Copyright";
+            this.lblCopyright.AutoSize = true;
+            this.lblCopyright.Location = new System.Drawing.Point(9, 68);
+            this.lblCopyright.Name = "lblCopyright";
+            this.lblCopyright.Size = new System.Drawing.Size(51, 13);
+            this.lblCopyright.TabIndex = 7;
+            this.lblCopyright.Text = "Copyright";
             // 
-            // groupBox1
+            // grpTags
             // 
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.tbName);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.tbArtist);
-            this.groupBox1.Controls.Add(this.tbCopyright);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox1.Location = new System.Drawing.Point(0, 0);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(283, 94);
-            this.groupBox1.TabIndex = 8;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Tags";
+            this.grpTags.Controls.Add(this.lblName);
+            this.grpTags.Controls.Add(this.lblCopyright);
+            this.grpTags.Controls.Add(this.tbName);
+            this.grpTags.Controls.Add(this.lblArtist);
+            this.grpTags.Controls.Add(this.tbArtist);
+            this.grpTags.Controls.Add(this.tbCopyright);
+            this.grpTags.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpTags.Location = new System.Drawing.Point(0, 0);
+            this.grpTags.Name = "grpTags";
+            this.grpTags.Size = new System.Drawing.Size(283, 94);
+            this.grpTags.TabIndex = 8;
+            this.grpTags.TabStop = false;
+            this.grpTags.Text = "Tags";
             // 
             // EmbeddedTagsUpdateForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(283, 132);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.grpTags);
             this.Controls.Add(this.btnUpdate);
             this.Controls.Add(this.btnCancel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "EmbeddedTagsUpdateForm";
             this.Text = "Update Tags";
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.grpTags.ResumeLayout(false);
+            this.grpTags.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -153,9 +153,9 @@
         private System.Windows.Forms.TextBox tbCopyright;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnUpdate;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Label lblName;
+        private System.Windows.Forms.Label lblArtist;
+        private System.Windows.Forms.Label lblCopyright;
+        private System.Windows.Forms.GroupBox grpTags;
     }
 }

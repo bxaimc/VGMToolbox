@@ -53,31 +53,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 430);
-            this.pnlLabels.Size = new System.Drawing.Size(756, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 486);
+            this.pnlLabels.Size = new System.Drawing.Size(868, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(756, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(868, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 353);
-            this.tbOutput.Size = new System.Drawing.Size(756, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 409);
+            this.tbOutput.Size = new System.Drawing.Size(868, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 333);
-            this.pnlButtons.Size = new System.Drawing.Size(756, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 389);
+            this.pnlButtons.Size = new System.Drawing.Size(868, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(696, 0);
+            this.btnCancel.Location = new System.Drawing.Point(808, 0);
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(636, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(748, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnRebuilder_Rebuild_Click);
             // 
             // grpRebuilder_Directories
@@ -91,7 +91,7 @@
             this.grpRebuilder_Directories.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpRebuilder_Directories.Location = new System.Drawing.Point(0, 23);
             this.grpRebuilder_Directories.Name = "grpRebuilder_Directories";
-            this.grpRebuilder_Directories.Size = new System.Drawing.Size(756, 95);
+            this.grpRebuilder_Directories.Size = new System.Drawing.Size(868, 95);
             this.grpRebuilder_Directories.TabIndex = 5;
             this.grpRebuilder_Directories.TabStop = false;
             this.grpRebuilder_Directories.Text = "Directories";
@@ -155,7 +155,7 @@
             this.grpRebuilder_Datafile.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpRebuilder_Datafile.Location = new System.Drawing.Point(0, 118);
             this.grpRebuilder_Datafile.Name = "grpRebuilder_Datafile";
-            this.grpRebuilder_Datafile.Size = new System.Drawing.Size(756, 45);
+            this.grpRebuilder_Datafile.Size = new System.Drawing.Size(868, 45);
             this.grpRebuilder_Datafile.TabIndex = 6;
             this.grpRebuilder_Datafile.TabStop = false;
             this.grpRebuilder_Datafile.Text = "Datafile";
@@ -186,7 +186,7 @@
             this.grpRebuilder_Options.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpRebuilder_Options.Location = new System.Drawing.Point(0, 163);
             this.grpRebuilder_Options.Name = "grpRebuilder_Options";
-            this.grpRebuilder_Options.Size = new System.Drawing.Size(756, 79);
+            this.grpRebuilder_Options.Size = new System.Drawing.Size(868, 79);
             this.grpRebuilder_Options.TabIndex = 5;
             this.grpRebuilder_Options.TabStop = false;
             this.grpRebuilder_Options.Text = "Options";
@@ -239,7 +239,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(756, 471);
+            this.ClientSize = new System.Drawing.Size(868, 527);
             this.Controls.Add(this.grpRebuilder_Options);
             this.Controls.Add(this.grpRebuilder_Datafile);
             this.Controls.Add(this.grpRebuilder_Directories);
@@ -257,6 +257,7 @@
             this.pnlTitle.ResumeLayout(false);
             this.pnlTitle.PerformLayout();
             this.pnlButtons.ResumeLayout(false);
+            this.pnlButtons.PerformLayout();
             this.grpRebuilder_Directories.ResumeLayout(false);
             this.grpRebuilder_Directories.PerformLayout();
             this.grpRebuilder_Datafile.ResumeLayout(false);

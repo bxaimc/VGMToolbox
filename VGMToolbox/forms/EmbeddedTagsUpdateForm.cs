@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
+using System.Configuration;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
 
 using VGMToolbox.format;
@@ -22,6 +18,19 @@ namespace VGMToolbox.forms
             nodeTagInfo = pNts;
             
             InitializeComponent();
+
+            this.grpTags.Text =
+                ConfigurationSettings.AppSettings["Form_EmbeddedTags_GroupTags"];
+            this.lblName.Text =
+                ConfigurationSettings.AppSettings["Form_EmbeddedTags_LblName"];
+            this.lblArtist.Text =
+                ConfigurationSettings.AppSettings["Form_EmbeddedTags_LblArtist"];
+            this.lblCopyright.Text =
+                ConfigurationSettings.AppSettings["Form_EmbeddedTags_LblCopyright"];
+            this.btnUpdate.Text =
+                ConfigurationSettings.AppSettings["Form_EmbeddedTags_BtnUpdate"];
+            this.btnCancel.Text =
+                ConfigurationSettings.AppSettings["Form_EmbeddedTags_BtnCancel"];
 
             loadCurrentTagInformation();
         }
@@ -53,7 +62,12 @@ namespace VGMToolbox.forms
             this.vgmData.UpdateArtist(this.tbArtist.Text);
             this.vgmData.UpdateCopyright(this.tbCopyright.Text);
 
-            MessageBox.Show(String.Format("Tags for \"{0}\" have been updated.  Changes will not be displayed in the tree until you add the files again.", Path.GetFileName(this.vgmData.FilePath)));
+            // MessageBox.Show(String.Format("Tags for \"{0}\" have been updated.  Changes will not be displayed in the tree until you add the files again.", Path.GetFileName(this.vgmData.FilePath)));
+            MessageBox.Show(String.Format(ConfigurationSettings.AppSettings["Form_EmbeddedTags_MessageUpdateComplete"], 
+                Path.GetFileName(this.vgmData.FilePath)));
+
+            
+            
             this.Close();
             this.Dispose();
         }
