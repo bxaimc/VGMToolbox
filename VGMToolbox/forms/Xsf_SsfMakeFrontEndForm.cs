@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
+using System.Configuration;
 using System.Windows.Forms;
 
 using VGMToolbox.tools.xsf;
@@ -18,20 +15,50 @@ namespace VGMToolbox.forms
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = "ssfmake Front End (note: Python must be installed and in your PATH.)";
-            this.btnDoTask.Text = "Build SSFs";
-            this.tbOutput.Text += "- ssfmake.py, ssfinfo.py, seqext.py, and tonext.py are all written by kingshriek (snesmusic.org/hoot/kingshriek/ssf/)." + Environment.NewLine;
-            this.tbOutput.Text += "- Please name data collections as SEQ/BIN/EXB." + Environment.NewLine;
-            this.tbOutput.Text += "- DSP map checking not yet implemented." + Environment.NewLine;
-            this.tbOutput.Text += "- Auto searching works best (only?) when all files are within a single archive." + Environment.NewLine;
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_SsfMakeFE_Title"];
+            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_SsfMakeFE_DoTaskButton"];
+            this.tbOutput.Text += ConfigurationSettings.AppSettings["Form_SsfMakeFE_IntroText1"] + Environment.NewLine;
+            this.tbOutput.Text += ConfigurationSettings.AppSettings["Form_SsfMakeFE_IntroText2"] + Environment.NewLine;
+            this.tbOutput.Text += ConfigurationSettings.AppSettings["Form_SsfMakeFE_IntroText3"] + Environment.NewLine;
+            this.tbOutput.Text += ConfigurationSettings.AppSettings["Form_SsfMakeFE_IntroText4"] + Environment.NewLine;
 
             InitializeComponent();
+
+            this.groupFiles.Text =
+                ConfigurationSettings.AppSettings["Form_SsfMakeFE_GroupFiles"];
+            this.lblDriver.Text =
+                ConfigurationSettings.AppSettings["Form_SsfMakeFE_LblDriver"];
+            this.lblSourcePath.Text =
+                ConfigurationSettings.AppSettings["Form_SsfMakeFE_LblSourcePath"];
+            this.lblOutputFolder.Text =
+                ConfigurationSettings.AppSettings["Form_SsfMakeFE_LblOutputFolder"];
+            this.lblSingleDspFile.Text =
+                ConfigurationSettings.AppSettings["Form_SsfMakeFE_LblSingleDspFile"];
+            this.grpSettings.Text =
+                ConfigurationSettings.AppSettings["Form_SsfMakeFE_GroupSettings"];
+            this.lblSequenceBank.Text =
+                ConfigurationSettings.AppSettings["Form_SsfMakeFE_LblSequenceBank"];
+            this.lblSequenceTrack.Text =
+                ConfigurationSettings.AppSettings["Form_SsfMakeFE_LblSequenceTrack"];
+            this.lblVolume.Text =
+                ConfigurationSettings.AppSettings["Form_SsfMakeFE_LblVolume"];
+            this.lblMixerBank.Text =
+                ConfigurationSettings.AppSettings["Form_SsfMakeFE_LblMixerBank"];
+            this.lblMixerNumber.Text =
+                ConfigurationSettings.AppSettings["Form_SsfMakeFE_LblMixerNumber"];
+            this.lblEffect.Text =
+                ConfigurationSettings.AppSettings["Form_SsfMakeFE_LblEffect"];
+            this.cbMatchSeqBank.Text =
+                ConfigurationSettings.AppSettings["Form_SsfMakeFE_CheckBoxMatchSeqBank"];
+            this.cbSeekData.Text =
+                ConfigurationSettings.AppSettings["Form_SsfMakeFE_CheckBoxSeekData"];
+
         }
 
         private void btnExecute_Click(object sender, EventArgs e)
         {
             base.initializeProcessing();
-            toolStripStatusLabel1.Text = "Build SSFs...Begin";
+            toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SsfMakeFE_MessageBegin"];
 
             SsfMakeWorker.SsfMakeStruct smStruct = new SsfMakeWorker.SsfMakeStruct();
             smStruct.sequenceBank = tbSequenceBank.Text;
@@ -60,12 +87,12 @@ namespace VGMToolbox.forms
         {
             if (e.Cancelled)
             {
-                toolStripStatusLabel1.Text = "Build SSFs...Cancelled";
-                tbOutput.Text += "Operation cancelled.";
+                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SsfMakeFE_MessageCancel"];
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
             }
             else
             {
-                toolStripStatusLabel1.Text = "Build SSFs...Complete";
+                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SsfMakeFE_MessageComplete"];
             }
 
             // update node color
@@ -76,7 +103,7 @@ namespace VGMToolbox.forms
         {
             if (ssfMakeWorker != null && ssfMakeWorker.IsBusy)
             {
-                tbOutput.Text += "CANCEL PENDING...";
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
                 ssfMakeWorker.CancelAsync();
                 this.errorFound = true;
             }

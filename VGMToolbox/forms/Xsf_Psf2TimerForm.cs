@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Text;
@@ -17,13 +18,18 @@ namespace VGMToolbox.forms
         public Xsf_Psf2TimerForm(TreeNode pTreeNode)
             : base(pTreeNode) 
         {
-            this.lblTitle.Text = "PSF2 Timer";
-            this.tbOutput.Text = "Drag and Drop PSF2s onto the box above.  A timing script will be output in each PSF2's directory.";
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_Psf2Timer_Title"];
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_Psf2Timer_IntroText"];
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
             
             InitializeComponent();
+
+            this.gbSource.Text =
+                ConfigurationSettings.AppSettings["Form_Psf2Timer_GroupSource"];
+            this.lblDragNDrop.Text =
+                ConfigurationSettings.AppSettings["Form_Psf2Timer_LblDragNDrop"];
         }
 
         private void Psf2TimerWorker_WorkComplete(object sender,
@@ -31,13 +37,13 @@ namespace VGMToolbox.forms
         {
             if (e.Cancelled)
             {
-                toolStripStatusLabel1.Text = "Time PSF2s...Cancelled";
-                tbOutput.Text += "Operation cancelled.";
+                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_Psf2Timer_MessageCancel"];
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
             }
             else
             {
                 lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = "Time PSF2s...Complete";
+                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_Psf2Timer_MessageComplete"];
             }
 
             // update node color
@@ -48,7 +54,7 @@ namespace VGMToolbox.forms
         {
             if (psf2TimerWorker != null && psf2TimerWorker.IsBusy)
             {
-                tbOutput.Text += "CANCEL PENDING...";
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
                 psf2TimerWorker.CancelAsync();
                 this.errorFound = true;
             }
@@ -63,7 +69,7 @@ namespace VGMToolbox.forms
         {
             base.initializeProcessing();
 
-            toolStripStatusLabel1.Text = "Time PSF2s...Begin";
+            toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_Psf2Timer_MessageBegin"];
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 

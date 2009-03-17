@@ -31,30 +31,30 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.cbSeekData = new System.Windows.Forms.CheckBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.grpSettings = new System.Windows.Forms.GroupBox();
             this.cbMatchSeqBank = new System.Windows.Forms.CheckBox();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
+            this.lblEffect = new System.Windows.Forms.Label();
+            this.lblMixerNumber = new System.Windows.Forms.Label();
+            this.lblMixerBank = new System.Windows.Forms.Label();
+            this.lblVolume = new System.Windows.Forms.Label();
+            this.lblSequenceTrack = new System.Windows.Forms.Label();
+            this.lblSequenceBank = new System.Windows.Forms.Label();
             this.tbEffect = new System.Windows.Forms.TextBox();
             this.tbMixerNumber = new System.Windows.Forms.TextBox();
             this.tbMixerBank = new System.Windows.Forms.TextBox();
             this.tbVolume = new System.Windows.Forms.TextBox();
             this.tbSequenceTrack = new System.Windows.Forms.TextBox();
             this.tbSequenceBank = new System.Windows.Forms.TextBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupFiles = new System.Windows.Forms.GroupBox();
             this.btnBrowseDsp = new System.Windows.Forms.Button();
-            this.label4 = new System.Windows.Forms.Label();
+            this.lblSingleDspFile = new System.Windows.Forms.Label();
             this.tbDspFile = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
+            this.lblOutputFolder = new System.Windows.Forms.Label();
             this.tbOutputFolder = new System.Windows.Forms.TextBox();
             this.btnBrowseSource = new System.Windows.Forms.Button();
             this.btnBrowseDriver = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblSourcePath = new System.Windows.Forms.Label();
+            this.lblDriver = new System.Windows.Forms.Label();
             this.tbSourcePath = new System.Windows.Forms.TextBox();
             this.tbDriver = new System.Windows.Forms.TextBox();
             this.pnlLabels.SuspendLayout();
@@ -62,49 +62,49 @@
             this.pnlButtons.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.grpSettings.SuspendLayout();
+            this.groupFiles.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 725);
-            this.pnlLabels.Size = new System.Drawing.Size(1314, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 415);
+            this.pnlLabels.Size = new System.Drawing.Size(1006, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(1314, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(1006, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 648);
-            this.tbOutput.Size = new System.Drawing.Size(1314, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 338);
+            this.tbOutput.Size = new System.Drawing.Size(1006, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 628);
-            this.pnlButtons.Size = new System.Drawing.Size(1314, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 318);
+            this.pnlButtons.Size = new System.Drawing.Size(1006, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(1254, 0);
+            this.btnCancel.Location = new System.Drawing.Point(946, 0);
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(1194, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(886, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnExecute_Click);
             // 
             // panel1
             // 
             this.panel1.AutoScroll = true;
             this.panel1.Controls.Add(this.groupBox3);
-            this.panel1.Controls.Add(this.groupBox2);
-            this.panel1.Controls.Add(this.groupBox1);
+            this.panel1.Controls.Add(this.grpSettings);
+            this.panel1.Controls.Add(this.groupFiles);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 23);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1314, 605);
+            this.panel1.Size = new System.Drawing.Size(1006, 295);
             this.panel1.TabIndex = 5;
             // 
             // groupBox3
@@ -113,7 +113,7 @@
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox3.Location = new System.Drawing.Point(0, 222);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(1314, 81);
+            this.groupBox3.Size = new System.Drawing.Size(989, 81);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Options";
@@ -130,28 +130,28 @@
                 "containing SEQ/TONE\r\n data.";
             this.cbSeekData.UseVisualStyleBackColor = true;
             // 
-            // groupBox2
+            // grpSettings
             // 
-            this.groupBox2.Controls.Add(this.cbMatchSeqBank);
-            this.groupBox2.Controls.Add(this.label10);
-            this.groupBox2.Controls.Add(this.label9);
-            this.groupBox2.Controls.Add(this.label8);
-            this.groupBox2.Controls.Add(this.label7);
-            this.groupBox2.Controls.Add(this.label6);
-            this.groupBox2.Controls.Add(this.label5);
-            this.groupBox2.Controls.Add(this.tbEffect);
-            this.groupBox2.Controls.Add(this.tbMixerNumber);
-            this.groupBox2.Controls.Add(this.tbMixerBank);
-            this.groupBox2.Controls.Add(this.tbVolume);
-            this.groupBox2.Controls.Add(this.tbSequenceTrack);
-            this.groupBox2.Controls.Add(this.tbSequenceBank);
-            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox2.Location = new System.Drawing.Point(0, 124);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(1314, 98);
-            this.groupBox2.TabIndex = 1;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Settings";
+            this.grpSettings.Controls.Add(this.cbMatchSeqBank);
+            this.grpSettings.Controls.Add(this.lblEffect);
+            this.grpSettings.Controls.Add(this.lblMixerNumber);
+            this.grpSettings.Controls.Add(this.lblMixerBank);
+            this.grpSettings.Controls.Add(this.lblVolume);
+            this.grpSettings.Controls.Add(this.lblSequenceTrack);
+            this.grpSettings.Controls.Add(this.lblSequenceBank);
+            this.grpSettings.Controls.Add(this.tbEffect);
+            this.grpSettings.Controls.Add(this.tbMixerNumber);
+            this.grpSettings.Controls.Add(this.tbMixerBank);
+            this.grpSettings.Controls.Add(this.tbVolume);
+            this.grpSettings.Controls.Add(this.tbSequenceTrack);
+            this.grpSettings.Controls.Add(this.tbSequenceBank);
+            this.grpSettings.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpSettings.Location = new System.Drawing.Point(0, 124);
+            this.grpSettings.Name = "grpSettings";
+            this.grpSettings.Size = new System.Drawing.Size(989, 98);
+            this.grpSettings.TabIndex = 1;
+            this.grpSettings.TabStop = false;
+            this.grpSettings.Text = "Settings";
             // 
             // cbMatchSeqBank
             // 
@@ -166,59 +166,59 @@
             this.cbMatchSeqBank.UseVisualStyleBackColor = true;
             this.cbMatchSeqBank.CheckedChanged += new System.EventHandler(this.cbMatchSeqBank_CheckedChanged);
             // 
-            // label10
+            // lblEffect
             // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(168, 74);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(35, 13);
-            this.label10.TabIndex = 11;
-            this.label10.Text = "Effect";
+            this.lblEffect.AutoSize = true;
+            this.lblEffect.Location = new System.Drawing.Point(168, 74);
+            this.lblEffect.Name = "lblEffect";
+            this.lblEffect.Size = new System.Drawing.Size(35, 13);
+            this.lblEffect.TabIndex = 11;
+            this.lblEffect.Text = "Effect";
             // 
-            // label9
+            // lblMixerNumber
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(168, 48);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(72, 13);
-            this.label9.TabIndex = 10;
-            this.label9.Text = "Mixer Number";
+            this.lblMixerNumber.AutoSize = true;
+            this.lblMixerNumber.Location = new System.Drawing.Point(168, 48);
+            this.lblMixerNumber.Name = "lblMixerNumber";
+            this.lblMixerNumber.Size = new System.Drawing.Size(72, 13);
+            this.lblMixerNumber.TabIndex = 10;
+            this.lblMixerNumber.Text = "Mixer Number";
             // 
-            // label8
+            // lblMixerBank
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(168, 22);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(60, 13);
-            this.label8.TabIndex = 9;
-            this.label8.Text = "Mixer Bank";
+            this.lblMixerBank.AutoSize = true;
+            this.lblMixerBank.Location = new System.Drawing.Point(168, 22);
+            this.lblMixerBank.Name = "lblMixerBank";
+            this.lblMixerBank.Size = new System.Drawing.Size(60, 13);
+            this.lblMixerBank.TabIndex = 9;
+            this.lblMixerBank.Text = "Mixer Bank";
             // 
-            // label7
+            // lblVolume
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(6, 74);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(42, 13);
-            this.label7.TabIndex = 8;
-            this.label7.Text = "Volume";
+            this.lblVolume.AutoSize = true;
+            this.lblVolume.Location = new System.Drawing.Point(6, 74);
+            this.lblVolume.Name = "lblVolume";
+            this.lblVolume.Size = new System.Drawing.Size(42, 13);
+            this.lblVolume.TabIndex = 8;
+            this.lblVolume.Text = "Volume";
             // 
-            // label6
+            // lblSequenceTrack
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 48);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(87, 13);
-            this.label6.TabIndex = 7;
-            this.label6.Text = "Sequence Track";
+            this.lblSequenceTrack.AutoSize = true;
+            this.lblSequenceTrack.Location = new System.Drawing.Point(6, 48);
+            this.lblSequenceTrack.Name = "lblSequenceTrack";
+            this.lblSequenceTrack.Size = new System.Drawing.Size(87, 13);
+            this.lblSequenceTrack.TabIndex = 7;
+            this.lblSequenceTrack.Text = "Sequence Track";
             // 
-            // label5
+            // lblSequenceBank
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 22);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(84, 13);
-            this.label5.TabIndex = 6;
-            this.label5.Text = "Sequence Bank";
+            this.lblSequenceBank.AutoSize = true;
+            this.lblSequenceBank.Location = new System.Drawing.Point(6, 22);
+            this.lblSequenceBank.Name = "lblSequenceBank";
+            this.lblSequenceBank.Size = new System.Drawing.Size(84, 13);
+            this.lblSequenceBank.TabIndex = 6;
+            this.lblSequenceBank.Text = "Sequence Bank";
             // 
             // tbEffect
             // 
@@ -270,26 +270,26 @@
             this.tbSequenceBank.Text = "0x00";
             this.tbSequenceBank.TextChanged += new System.EventHandler(this.tbSequenceBank_TextChanged);
             // 
-            // groupBox1
+            // groupFiles
             // 
-            this.groupBox1.Controls.Add(this.btnBrowseDsp);
-            this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Controls.Add(this.tbDspFile);
-            this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.tbOutputFolder);
-            this.groupBox1.Controls.Add(this.btnBrowseSource);
-            this.groupBox1.Controls.Add(this.btnBrowseDriver);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.tbSourcePath);
-            this.groupBox1.Controls.Add(this.tbDriver);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox1.Location = new System.Drawing.Point(0, 0);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1314, 124);
-            this.groupBox1.TabIndex = 0;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Files";
+            this.groupFiles.Controls.Add(this.btnBrowseDsp);
+            this.groupFiles.Controls.Add(this.lblSingleDspFile);
+            this.groupFiles.Controls.Add(this.tbDspFile);
+            this.groupFiles.Controls.Add(this.lblOutputFolder);
+            this.groupFiles.Controls.Add(this.tbOutputFolder);
+            this.groupFiles.Controls.Add(this.btnBrowseSource);
+            this.groupFiles.Controls.Add(this.btnBrowseDriver);
+            this.groupFiles.Controls.Add(this.lblSourcePath);
+            this.groupFiles.Controls.Add(this.lblDriver);
+            this.groupFiles.Controls.Add(this.tbSourcePath);
+            this.groupFiles.Controls.Add(this.tbDriver);
+            this.groupFiles.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupFiles.Location = new System.Drawing.Point(0, 0);
+            this.groupFiles.Name = "groupFiles";
+            this.groupFiles.Size = new System.Drawing.Size(989, 124);
+            this.groupFiles.TabIndex = 0;
+            this.groupFiles.TabStop = false;
+            this.groupFiles.Text = "Files";
             // 
             // btnBrowseDsp
             // 
@@ -301,14 +301,14 @@
             this.btnBrowseDsp.UseVisualStyleBackColor = true;
             this.btnBrowseDsp.Click += new System.EventHandler(this.btnBrowseDsp_Click);
             // 
-            // label4
+            // lblSingleDspFile
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 100);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(128, 13);
-            this.label4.TabIndex = 11;
-            this.label4.Text = "Single DSP File (Optional)";
+            this.lblSingleDspFile.AutoSize = true;
+            this.lblSingleDspFile.Location = new System.Drawing.Point(6, 100);
+            this.lblSingleDspFile.Name = "lblSingleDspFile";
+            this.lblSingleDspFile.Size = new System.Drawing.Size(128, 13);
+            this.lblSingleDspFile.TabIndex = 11;
+            this.lblSingleDspFile.Text = "Single DSP File (Optional)";
             // 
             // tbDspFile
             // 
@@ -317,14 +317,14 @@
             this.tbDspFile.Size = new System.Drawing.Size(247, 20);
             this.tbDspFile.TabIndex = 10;
             // 
-            // label3
+            // lblOutputFolder
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 74);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(71, 13);
-            this.label3.TabIndex = 9;
-            this.label3.Text = "Output Folder";
+            this.lblOutputFolder.AutoSize = true;
+            this.lblOutputFolder.Location = new System.Drawing.Point(6, 74);
+            this.lblOutputFolder.Name = "lblOutputFolder";
+            this.lblOutputFolder.Size = new System.Drawing.Size(71, 13);
+            this.lblOutputFolder.TabIndex = 9;
+            this.lblOutputFolder.Text = "Output Folder";
             // 
             // tbOutputFolder
             // 
@@ -354,23 +354,23 @@
             this.btnBrowseDriver.UseVisualStyleBackColor = true;
             this.btnBrowseDriver.Click += new System.EventHandler(this.btnBrowseDriver_Click);
             // 
-            // label2
+            // lblSourcePath
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 49);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(66, 13);
-            this.label2.TabIndex = 5;
-            this.label2.Text = "Source Path";
+            this.lblSourcePath.AutoSize = true;
+            this.lblSourcePath.Location = new System.Drawing.Point(6, 49);
+            this.lblSourcePath.Name = "lblSourcePath";
+            this.lblSourcePath.Size = new System.Drawing.Size(66, 13);
+            this.lblSourcePath.TabIndex = 5;
+            this.lblSourcePath.Text = "Source Path";
             // 
-            // label1
+            // lblDriver
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 23);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "Driver";
+            this.lblDriver.AutoSize = true;
+            this.lblDriver.Location = new System.Drawing.Point(6, 23);
+            this.lblDriver.Name = "lblDriver";
+            this.lblDriver.Size = new System.Drawing.Size(35, 13);
+            this.lblDriver.TabIndex = 4;
+            this.lblDriver.Text = "Driver";
             // 
             // tbSourcePath
             // 
@@ -390,7 +390,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1314, 766);
+            this.ClientSize = new System.Drawing.Size(1006, 456);
             this.Controls.Add(this.panel1);
             this.Name = "Xsf_SsfMakeFrontEndForm";
             this.Text = "Xsf_SsfMakeFrontEndForm";
@@ -408,10 +408,10 @@
             this.panel1.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.grpSettings.ResumeLayout(false);
+            this.grpSettings.PerformLayout();
+            this.groupFiles.ResumeLayout(false);
+            this.groupFiles.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -420,32 +420,32 @@
         #endregion
 
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupFiles;
         private System.Windows.Forms.TextBox tbSourcePath;
         private System.Windows.Forms.TextBox tbDriver;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label lblSourcePath;
+        private System.Windows.Forms.Label lblDriver;
+        private System.Windows.Forms.GroupBox grpSettings;
         private System.Windows.Forms.TextBox tbSequenceBank;
         private System.Windows.Forms.TextBox tbSequenceTrack;
         private System.Windows.Forms.TextBox tbVolume;
         private System.Windows.Forms.TextBox tbMixerBank;
         private System.Windows.Forms.TextBox tbEffect;
         private System.Windows.Forms.TextBox tbMixerNumber;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label lblVolume;
+        private System.Windows.Forms.Label lblSequenceTrack;
+        private System.Windows.Forms.Label lblSequenceBank;
+        private System.Windows.Forms.Label lblMixerNumber;
+        private System.Windows.Forms.Label lblMixerBank;
+        private System.Windows.Forms.Label lblEffect;
         private System.Windows.Forms.CheckBox cbMatchSeqBank;
         private System.Windows.Forms.Button btnBrowseSource;
         private System.Windows.Forms.Button btnBrowseDriver;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.CheckBox cbSeekData;
         private System.Windows.Forms.TextBox tbOutputFolder;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblOutputFolder;
+        private System.Windows.Forms.Label lblSingleDspFile;
         private System.Windows.Forms.TextBox tbDspFile;
         private System.Windows.Forms.Button btnBrowseDsp;
 
