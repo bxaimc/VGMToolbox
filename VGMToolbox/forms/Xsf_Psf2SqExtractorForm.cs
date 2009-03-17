@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
+using System.Configuration;
 using System.Windows.Forms;
 
 using VGMToolbox.tools.xsf;
@@ -18,13 +15,17 @@ namespace VGMToolbox.forms
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = "PSF2 SQ Extractor";          
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_Psf2SqExtractor_Title"];          
             this.btnDoTask.Hide();
 
             InitializeComponent();
 
-            this.tbOutput.Text = "Extract only the SQ files from CSL PSF2s and rename" +
-                " them with the same name as the source.  Useful when timing tracks.";
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_Psf2SqExtractor_IntroText"];
+
+            this.grpSource.Text =
+                ConfigurationSettings.AppSettings["Form_Psf2SqExtractor_GroupSource"];
+            this.lblDragNDrop.Text =
+                ConfigurationSettings.AppSettings["Form_Psf2SqExtractor_LblDragNDrop"];
         }
 
         private void Psf2SqExtractorWorker_WorkComplete(object sender,
@@ -32,13 +33,13 @@ namespace VGMToolbox.forms
         {
             if (e.Cancelled)
             {
-                toolStripStatusLabel1.Text = "SQ Extraction...Cancelled";
-                tbOutput.Text += "Operation cancelled.";
+                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_Psf2SqExtractor_MessageCancel"];
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
             }
             else
             {
                 lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = "SQ Extraction...Complete";
+                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_Psf2SqExtractor_MessageComplete"];
             }
 
             // update node color
@@ -49,7 +50,7 @@ namespace VGMToolbox.forms
         {
             if (psf2SqExtractorWorker != null && psf2SqExtractorWorker.IsBusy)
             {
-                tbOutput.Text += "CANCEL PENDING...";
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
                 psf2SqExtractorWorker.CancelAsync();
                 this.errorFound = true;
             }
@@ -64,7 +65,7 @@ namespace VGMToolbox.forms
         {
             base.initializeProcessing();
 
-            toolStripStatusLabel1.Text = "SQ Extraction...Begin";
+            toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_Psf2SqExtractor_MessageBegin"];
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 

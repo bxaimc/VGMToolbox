@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Configuration;
 using System.Windows.Forms;
 
 using VGMToolbox.tools.xsf;
@@ -14,20 +15,44 @@ namespace VGMToolbox.forms
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = "mkpsf2 Front End";
-            this.btnDoTask.Text = "Build PSF2s";
-            
-            this.tbOutput.Text = "Source Directory: Path to BD/HD/SQ files." + Environment.NewLine;
-            this.tbOutput.Text += "Modules Directory: Path to IRX files." + Environment.NewLine + Environment.NewLine;
-            this.tbOutput.Text += "Notes: Be sure matching BD/HD/SQ files have the same file name.";
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_MkPsf2FE_Title"];
+            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_MkPsf2FE_DoTaskButton"];
+
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_MkPsf2FE_IntroText1"] + Environment.NewLine;
+            this.tbOutput.Text += ConfigurationSettings.AppSettings["Form_MkPsf2FE_IntroText2"] + Environment.NewLine + Environment.NewLine;
+            this.tbOutput.Text += ConfigurationSettings.AppSettings["Form_MkPsf2FE_IntroText3"];
 
             InitializeComponent();
+
+            this.grpDirectory.Text =
+                ConfigurationSettings.AppSettings["Form_MkPsf2FE_GroupDirectory"];
+            this.lblSourceDirectory.Text =
+                ConfigurationSettings.AppSettings["Form_MkPsf2FE_LblSourceDirectory"];
+            this.lblModulesDirectory.Text =
+                ConfigurationSettings.AppSettings["Form_MkPsf2FE_LblModulesDirectory"];
+            this.lblOutputFolder.Text =
+                ConfigurationSettings.AppSettings["Form_MkPsf2FE_LblOutputFolder"];
+            this.grpOptions.Text =
+                ConfigurationSettings.AppSettings["Form_MkPsf2FE_GroupOptions"];
+            this.lblReverb.Text =
+                ConfigurationSettings.AppSettings["Form_MkPsf2FE_LblReverb"];
+            this.lblDepth.Text =
+                ConfigurationSettings.AppSettings["Form_MkPsf2FE_LblDepth"];
+            this.lblVolume.Text =
+                ConfigurationSettings.AppSettings["Form_MkPsf2FE_LblVolume"];
+            this.lblTempo.Text =
+                ConfigurationSettings.AppSettings["Form_MkPsf2FE_LblTempo"];
+            this.lblTickInterval.Text =
+                ConfigurationSettings.AppSettings["Form_MkPsf2FE_LblTickInterval"];
+            this.lblAuthor.Text =
+                ConfigurationSettings.AppSettings["Form_MkPsf2FE_LblAuthor"];
+
         }
 
         private void btnExecute_Click(object sender, EventArgs e)
         {
             base.initializeProcessing();
-            toolStripStatusLabel1.Text = "Build PSF2s...Begin";
+            toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_MkPsf2FE_MessageBegin"];
 
             MkPsf2Worker.MkPsf2Struct mkStruct = new MkPsf2Worker.MkPsf2Struct();
             mkStruct.sourcePath = tbSourceDirectory.Text;
@@ -51,12 +76,12 @@ namespace VGMToolbox.forms
         {
             if (e.Cancelled)
             {
-                toolStripStatusLabel1.Text = "Build PSF2s...Cancelled";
-                tbOutput.Text += "Operation cancelled.";
+                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_MkPsf2FE_MessageCancel"];
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
             }
             else
             {
-                toolStripStatusLabel1.Text = "Build PSF2s...Complete";
+                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_MkPsf2FE_MessageComplete"];
             }
 
             // update node color
@@ -67,7 +92,7 @@ namespace VGMToolbox.forms
         {
             if (mkPsf2Worker != null && mkPsf2Worker.IsBusy)
             {
-                tbOutput.Text += "CANCEL PENDING...";
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
                 mkPsf2Worker.CancelAsync();
                 this.errorFound = true;
             }

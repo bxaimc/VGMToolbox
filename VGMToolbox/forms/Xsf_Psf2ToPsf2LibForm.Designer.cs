@@ -29,50 +29,50 @@
         private void InitializeComponent()
         {
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.grpSource = new System.Windows.Forms.GroupBox();
             this.btnSourceDirBrowse = new System.Windows.Forms.Button();
             this.tbSourceDirectory = new System.Windows.Forms.TextBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.grpOptions = new System.Windows.Forms.GroupBox();
             this.tbFilePrefix = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblOutputFilePrefix = new System.Windows.Forms.Label();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
+            this.grpSource.SuspendLayout();
+            this.grpOptions.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 408);
-            this.pnlLabels.Size = new System.Drawing.Size(743, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 415);
+            this.pnlLabels.Size = new System.Drawing.Size(846, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(743, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(846, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 331);
-            this.tbOutput.Size = new System.Drawing.Size(743, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 338);
+            this.tbOutput.Size = new System.Drawing.Size(846, 77);
             // 
             // pnlButtons
             // 
             this.pnlButtons.Controls.Add(this.checkBox1);
-            this.pnlButtons.Location = new System.Drawing.Point(0, 311);
-            this.pnlButtons.Size = new System.Drawing.Size(743, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 318);
+            this.pnlButtons.Size = new System.Drawing.Size(846, 20);
             this.pnlButtons.Controls.SetChildIndex(this.checkBox1, 0);
             this.pnlButtons.Controls.SetChildIndex(this.btnCancel, 0);
             this.pnlButtons.Controls.SetChildIndex(this.btnDoTask, 0);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(683, 0);
+            this.btnCancel.Location = new System.Drawing.Point(786, 0);
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(623, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(726, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // checkBox1
@@ -85,17 +85,17 @@
             this.checkBox1.Text = "checkBox1";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
-            // groupBox1
+            // grpSource
             // 
-            this.groupBox1.Controls.Add(this.btnSourceDirBrowse);
-            this.groupBox1.Controls.Add(this.tbSourceDirectory);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox1.Location = new System.Drawing.Point(0, 23);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(743, 51);
-            this.groupBox1.TabIndex = 5;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Source Directory";
+            this.grpSource.Controls.Add(this.btnSourceDirBrowse);
+            this.grpSource.Controls.Add(this.tbSourceDirectory);
+            this.grpSource.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpSource.Location = new System.Drawing.Point(0, 23);
+            this.grpSource.Name = "grpSource";
+            this.grpSource.Size = new System.Drawing.Size(846, 51);
+            this.grpSource.TabIndex = 5;
+            this.grpSource.TabStop = false;
+            this.grpSource.Text = "Source Directory";
             // 
             // btnSourceDirBrowse
             // 
@@ -114,17 +114,17 @@
             this.tbSourceDirectory.Size = new System.Drawing.Size(233, 20);
             this.tbSourceDirectory.TabIndex = 0;
             // 
-            // groupBox2
+            // grpOptions
             // 
-            this.groupBox2.Controls.Add(this.tbFilePrefix);
-            this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox2.Location = new System.Drawing.Point(0, 74);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(743, 54);
-            this.groupBox2.TabIndex = 6;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Options";
+            this.grpOptions.Controls.Add(this.tbFilePrefix);
+            this.grpOptions.Controls.Add(this.lblOutputFilePrefix);
+            this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpOptions.Location = new System.Drawing.Point(0, 74);
+            this.grpOptions.Name = "grpOptions";
+            this.grpOptions.Size = new System.Drawing.Size(846, 54);
+            this.grpOptions.TabIndex = 6;
+            this.grpOptions.TabStop = false;
+            this.grpOptions.Text = "Options";
             // 
             // tbFilePrefix
             // 
@@ -133,40 +133,40 @@
             this.tbFilePrefix.Size = new System.Drawing.Size(143, 20);
             this.tbFilePrefix.TabIndex = 1;
             // 
-            // label1
+            // lblOutputFilePrefix
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 25);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(84, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Ouput File Prefix";
+            this.lblOutputFilePrefix.AutoSize = true;
+            this.lblOutputFilePrefix.Location = new System.Drawing.Point(6, 25);
+            this.lblOutputFilePrefix.Name = "lblOutputFilePrefix";
+            this.lblOutputFilePrefix.Size = new System.Drawing.Size(84, 13);
+            this.lblOutputFilePrefix.TabIndex = 0;
+            this.lblOutputFilePrefix.Text = "Ouput File Prefix";
             // 
             // Xsf_Psf2ToPsf2LibForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(743, 449);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
+            this.ClientSize = new System.Drawing.Size(846, 456);
+            this.Controls.Add(this.grpOptions);
+            this.Controls.Add(this.grpSource);
             this.Name = "Xsf_Psf2ToPsf2LibForm";
             this.Text = "Xsf_Psf2ToPsf2Lib";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);
             this.Controls.SetChildIndex(this.pnlButtons, 0);
-            this.Controls.SetChildIndex(this.groupBox1, 0);
-            this.Controls.SetChildIndex(this.groupBox2, 0);
+            this.Controls.SetChildIndex(this.grpSource, 0);
+            this.Controls.SetChildIndex(this.grpOptions, 0);
             this.pnlLabels.ResumeLayout(false);
             this.pnlLabels.PerformLayout();
             this.pnlTitle.ResumeLayout(false);
             this.pnlTitle.PerformLayout();
             this.pnlButtons.ResumeLayout(false);
             this.pnlButtons.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
+            this.grpSource.ResumeLayout(false);
+            this.grpSource.PerformLayout();
+            this.grpOptions.ResumeLayout(false);
+            this.grpOptions.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -175,11 +175,11 @@
         #endregion
 
         private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox grpSource;
         private System.Windows.Forms.TextBox tbSourceDirectory;
         private System.Windows.Forms.Button btnSourceDirBrowse;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox grpOptions;
         private System.Windows.Forms.TextBox tbFilePrefix;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblOutputFilePrefix;
     }
 }

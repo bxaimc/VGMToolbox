@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
+using System.Configuration;
 using System.Windows.Forms;
 
 using VGMToolbox.tools.xsf;
@@ -18,17 +15,22 @@ namespace VGMToolbox.forms
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = "unpkpsf2 Front End";
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_Title"];
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_IntroText"];
             this.btnDoTask.Hide();
 
             InitializeComponent();
+
+            this.grpSource.Text = ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_GroupSource"];
+            this.lblDragNDrop.Text = ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_LblDragNDrop"];
+            this.lblAuthor.Text = ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_LblAuthor"];
         }
 
         private void tbPsf2Source_DragDrop(object sender, DragEventArgs e)
         {
             base.initializeProcessing();
 
-            toolStripStatusLabel1.Text = "PSF2 Unpacking...Begin";
+            toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_MessageBegin"];
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
@@ -46,13 +48,13 @@ namespace VGMToolbox.forms
         {
             if (e.Cancelled)
             {
-                toolStripStatusLabel1.Text = "PSF2 Unpacking...Cancelled";
-                tbOutput.Text += "Operation cancelled.";
+                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_MessageCancel"];
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
             }
             else
             {
                 lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = "PSF2 Unpacking...Complete";
+                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_MessageComplete"];
             }
 
             // update node color
@@ -63,7 +65,7 @@ namespace VGMToolbox.forms
         {
             if (unpkPsf2Worker != null && unpkPsf2Worker.IsBusy)
             {
-                tbOutput.Text += "CANCEL PENDING...";
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
                 unpkPsf2Worker.CancelAsync();
                 this.errorFound = true;
             }

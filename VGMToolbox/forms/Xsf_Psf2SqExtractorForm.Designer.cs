@@ -28,63 +28,63 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.grpSource = new System.Windows.Forms.GroupBox();
+            this.lblDragNDrop = new System.Windows.Forms.Label();
             this.tbPsf2Source = new System.Windows.Forms.TextBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.grpSource.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 447);
-            this.pnlLabels.Size = new System.Drawing.Size(979, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 415);
+            this.pnlLabels.Size = new System.Drawing.Size(846, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(979, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(846, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 370);
-            this.tbOutput.Size = new System.Drawing.Size(979, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 338);
+            this.tbOutput.Size = new System.Drawing.Size(846, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 350);
-            this.pnlButtons.Size = new System.Drawing.Size(979, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 318);
+            this.pnlButtons.Size = new System.Drawing.Size(846, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(919, 0);
+            this.btnCancel.Location = new System.Drawing.Point(786, 0);
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(859, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(726, 0);
             // 
-            // groupBox1
+            // grpSource
             // 
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.tbPsf2Source);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox1.Location = new System.Drawing.Point(0, 23);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(979, 59);
-            this.groupBox1.TabIndex = 6;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Source Files/Folders";
+            this.grpSource.Controls.Add(this.lblDragNDrop);
+            this.grpSource.Controls.Add(this.tbPsf2Source);
+            this.grpSource.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpSource.Location = new System.Drawing.Point(0, 23);
+            this.grpSource.Name = "grpSource";
+            this.grpSource.Size = new System.Drawing.Size(846, 59);
+            this.grpSource.TabIndex = 6;
+            this.grpSource.TabStop = false;
+            this.grpSource.Text = "Source Files/Folders";
             // 
-            // label1
+            // lblDragNDrop
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 42);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(164, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Drag PSF2s to Extract From Here";
+            this.lblDragNDrop.AutoSize = true;
+            this.lblDragNDrop.Location = new System.Drawing.Point(6, 42);
+            this.lblDragNDrop.Name = "lblDragNDrop";
+            this.lblDragNDrop.Size = new System.Drawing.Size(164, 13);
+            this.lblDragNDrop.TabIndex = 1;
+            this.lblDragNDrop.Text = "Drag PSF2s to Extract From Here";
             // 
             // tbPsf2Source
             // 
@@ -100,23 +100,23 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(979, 488);
-            this.Controls.Add(this.groupBox1);
+            this.ClientSize = new System.Drawing.Size(846, 456);
+            this.Controls.Add(this.grpSource);
             this.Name = "Xsf_Psf2SqExtractorForm";
             this.Text = "Xsf_Psf2SqExtractorForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);
             this.Controls.SetChildIndex(this.pnlButtons, 0);
-            this.Controls.SetChildIndex(this.groupBox1, 0);
+            this.Controls.SetChildIndex(this.grpSource, 0);
             this.pnlLabels.ResumeLayout(false);
             this.pnlLabels.PerformLayout();
             this.pnlTitle.ResumeLayout(false);
             this.pnlTitle.PerformLayout();
             this.pnlButtons.ResumeLayout(false);
             this.pnlButtons.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.grpSource.ResumeLayout(false);
+            this.grpSource.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -124,8 +124,8 @@
 
         #endregion
 
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.GroupBox grpSource;
+        private System.Windows.Forms.Label lblDragNDrop;
         private System.Windows.Forms.TextBox tbPsf2Source;
 
     }

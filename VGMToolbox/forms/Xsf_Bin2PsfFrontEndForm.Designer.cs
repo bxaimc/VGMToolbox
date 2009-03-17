@@ -28,81 +28,109 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.grpSource = new System.Windows.Forms.GroupBox();
+            this.cbMinipsf = new System.Windows.Forms.CheckBox();
+            this.lblPsfLibName = new System.Windows.Forms.Label();
+            this.tbPsflibName = new System.Windows.Forms.TextBox();
             this.tbOutputFolderName = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
+            this.lblOutputFolder = new System.Windows.Forms.Label();
             this.btnExeBrowse = new System.Windows.Forms.Button();
             this.btnSourceDirectoryBrowse = new System.Windows.Forms.Button();
-            this.label5 = new System.Windows.Forms.Label();
+            this.lblSourceFiles = new System.Windows.Forms.Label();
             this.tbSourceFilesPath = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblDriverPath = new System.Windows.Forms.Label();
             this.tbExePath = new System.Windows.Forms.TextBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label4 = new System.Windows.Forms.Label();
+            this.grpOptions = new System.Windows.Forms.GroupBox();
+            this.lblVbOffset = new System.Windows.Forms.Label();
             this.tbVbOffset = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
+            this.lblVhOffset = new System.Windows.Forms.Label();
             this.tbVhOffset = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.lblSeqOffset = new System.Windows.Forms.Label();
             this.tbSeqOffset = new System.Windows.Forms.TextBox();
-            this.tbPsflibName = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.cbMinipsf = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
+            this.grpSource.SuspendLayout();
+            this.grpOptions.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 391);
-            this.pnlLabels.Size = new System.Drawing.Size(936, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 415);
+            this.pnlLabels.Size = new System.Drawing.Size(715, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(936, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(715, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 314);
-            this.tbOutput.Size = new System.Drawing.Size(936, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 338);
+            this.tbOutput.Size = new System.Drawing.Size(715, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 294);
-            this.pnlButtons.Size = new System.Drawing.Size(936, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 318);
+            this.pnlButtons.Size = new System.Drawing.Size(715, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(876, 0);
+            this.btnCancel.Location = new System.Drawing.Point(655, 0);
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(816, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(595, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
-            // groupBox1
+            // grpSource
             // 
-            this.groupBox1.Controls.Add(this.cbMinipsf);
-            this.groupBox1.Controls.Add(this.label7);
-            this.groupBox1.Controls.Add(this.tbPsflibName);
-            this.groupBox1.Controls.Add(this.tbOutputFolderName);
-            this.groupBox1.Controls.Add(this.label6);
-            this.groupBox1.Controls.Add(this.btnExeBrowse);
-            this.groupBox1.Controls.Add(this.btnSourceDirectoryBrowse);
-            this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Controls.Add(this.tbSourceFilesPath);
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.tbExePath);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox1.Location = new System.Drawing.Point(0, 23);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(936, 132);
-            this.groupBox1.TabIndex = 5;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Source";
+            this.grpSource.Controls.Add(this.cbMinipsf);
+            this.grpSource.Controls.Add(this.lblPsfLibName);
+            this.grpSource.Controls.Add(this.tbPsflibName);
+            this.grpSource.Controls.Add(this.tbOutputFolderName);
+            this.grpSource.Controls.Add(this.lblOutputFolder);
+            this.grpSource.Controls.Add(this.btnExeBrowse);
+            this.grpSource.Controls.Add(this.btnSourceDirectoryBrowse);
+            this.grpSource.Controls.Add(this.lblSourceFiles);
+            this.grpSource.Controls.Add(this.tbSourceFilesPath);
+            this.grpSource.Controls.Add(this.lblDriverPath);
+            this.grpSource.Controls.Add(this.tbExePath);
+            this.grpSource.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpSource.Location = new System.Drawing.Point(0, 23);
+            this.grpSource.Name = "grpSource";
+            this.grpSource.Size = new System.Drawing.Size(715, 132);
+            this.grpSource.TabIndex = 5;
+            this.grpSource.TabStop = false;
+            this.grpSource.Text = "Source";
+            // 
+            // cbMinipsf
+            // 
+            this.cbMinipsf.AutoSize = true;
+            this.cbMinipsf.Location = new System.Drawing.Point(310, 98);
+            this.cbMinipsf.Name = "cbMinipsf";
+            this.cbMinipsf.Size = new System.Drawing.Size(101, 17);
+            this.cbMinipsf.TabIndex = 18;
+            this.cbMinipsf.Text = "Output .minipsfs";
+            this.cbMinipsf.UseVisualStyleBackColor = true;
+            this.cbMinipsf.CheckedChanged += new System.EventHandler(this.cbMinipsf_CheckedChanged);
+            // 
+            // lblPsfLibName
+            // 
+            this.lblPsfLibName.AutoSize = true;
+            this.lblPsfLibName.Location = new System.Drawing.Point(6, 99);
+            this.lblPsfLibName.Name = "lblPsfLibName";
+            this.lblPsfLibName.Size = new System.Drawing.Size(72, 13);
+            this.lblPsfLibName.TabIndex = 17;
+            this.lblPsfLibName.Text = "PSFLib Name";
+            // 
+            // tbPsflibName
+            // 
+            this.tbPsflibName.Location = new System.Drawing.Point(86, 96);
+            this.tbPsflibName.Name = "tbPsflibName";
+            this.tbPsflibName.ReadOnly = true;
+            this.tbPsflibName.Size = new System.Drawing.Size(218, 20);
+            this.tbPsflibName.TabIndex = 16;
             // 
             // tbOutputFolderName
             // 
@@ -111,14 +139,14 @@
             this.tbOutputFolderName.Size = new System.Drawing.Size(218, 20);
             this.tbOutputFolderName.TabIndex = 15;
             // 
-            // label6
+            // lblOutputFolder
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(3, 73);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(71, 13);
-            this.label6.TabIndex = 14;
-            this.label6.Text = "Output Folder";
+            this.lblOutputFolder.AutoSize = true;
+            this.lblOutputFolder.Location = new System.Drawing.Point(3, 73);
+            this.lblOutputFolder.Name = "lblOutputFolder";
+            this.lblOutputFolder.Size = new System.Drawing.Size(71, 13);
+            this.lblOutputFolder.TabIndex = 14;
+            this.lblOutputFolder.Text = "Output Folder";
             // 
             // btnExeBrowse
             // 
@@ -140,14 +168,14 @@
             this.btnSourceDirectoryBrowse.UseVisualStyleBackColor = true;
             this.btnSourceDirectoryBrowse.Click += new System.EventHandler(this.btnSourceDirectoryBrowse_Click);
             // 
-            // label5
+            // lblSourceFiles
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(3, 48);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(65, 13);
-            this.label5.TabIndex = 3;
-            this.label5.Text = "Source Files";
+            this.lblSourceFiles.AutoSize = true;
+            this.lblSourceFiles.Location = new System.Drawing.Point(3, 48);
+            this.lblSourceFiles.Name = "lblSourceFiles";
+            this.lblSourceFiles.Size = new System.Drawing.Size(65, 13);
+            this.lblSourceFiles.TabIndex = 3;
+            this.lblSourceFiles.Text = "Source Files";
             // 
             // tbSourceFilesPath
             // 
@@ -156,14 +184,14 @@
             this.tbSourceFilesPath.Size = new System.Drawing.Size(218, 20);
             this.tbSourceFilesPath.TabIndex = 2;
             // 
-            // label1
+            // lblDriverPath
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 22);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(60, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Driver Path";
+            this.lblDriverPath.AutoSize = true;
+            this.lblDriverPath.Location = new System.Drawing.Point(3, 22);
+            this.lblDriverPath.Name = "lblDriverPath";
+            this.lblDriverPath.Size = new System.Drawing.Size(60, 13);
+            this.lblDriverPath.TabIndex = 1;
+            this.lblDriverPath.Text = "Driver Path";
             // 
             // tbExePath
             // 
@@ -173,30 +201,30 @@
             this.tbExePath.Size = new System.Drawing.Size(218, 20);
             this.tbExePath.TabIndex = 0;
             // 
-            // groupBox2
+            // grpOptions
             // 
-            this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Controls.Add(this.tbVbOffset);
-            this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Controls.Add(this.tbVhOffset);
-            this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Controls.Add(this.tbSeqOffset);
-            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox2.Location = new System.Drawing.Point(0, 155);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(936, 100);
-            this.groupBox2.TabIndex = 6;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Options";
+            this.grpOptions.Controls.Add(this.lblVbOffset);
+            this.grpOptions.Controls.Add(this.tbVbOffset);
+            this.grpOptions.Controls.Add(this.lblVhOffset);
+            this.grpOptions.Controls.Add(this.tbVhOffset);
+            this.grpOptions.Controls.Add(this.lblSeqOffset);
+            this.grpOptions.Controls.Add(this.tbSeqOffset);
+            this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpOptions.Location = new System.Drawing.Point(0, 155);
+            this.grpOptions.Name = "grpOptions";
+            this.grpOptions.Size = new System.Drawing.Size(715, 100);
+            this.grpOptions.TabIndex = 6;
+            this.grpOptions.TabStop = false;
+            this.grpOptions.Text = "Options";
             // 
-            // label4
+            // lblVbOffset
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 75);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(52, 13);
-            this.label4.TabIndex = 5;
-            this.label4.Text = "VB Offset";
+            this.lblVbOffset.AutoSize = true;
+            this.lblVbOffset.Location = new System.Drawing.Point(3, 75);
+            this.lblVbOffset.Name = "lblVbOffset";
+            this.lblVbOffset.Size = new System.Drawing.Size(52, 13);
+            this.lblVbOffset.TabIndex = 5;
+            this.lblVbOffset.Text = "VB Offset";
             // 
             // tbVbOffset
             // 
@@ -205,14 +233,14 @@
             this.tbVbOffset.Size = new System.Drawing.Size(218, 20);
             this.tbVbOffset.TabIndex = 4;
             // 
-            // label3
+            // lblVhOffset
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 48);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(53, 13);
-            this.label3.TabIndex = 3;
-            this.label3.Text = "VH Offset";
+            this.lblVhOffset.AutoSize = true;
+            this.lblVhOffset.Location = new System.Drawing.Point(3, 48);
+            this.lblVhOffset.Name = "lblVhOffset";
+            this.lblVhOffset.Size = new System.Drawing.Size(53, 13);
+            this.lblVhOffset.TabIndex = 3;
+            this.lblVhOffset.Text = "VH Offset";
             // 
             // tbVhOffset
             // 
@@ -221,14 +249,14 @@
             this.tbVhOffset.Size = new System.Drawing.Size(218, 20);
             this.tbVhOffset.TabIndex = 2;
             // 
-            // label2
+            // lblSeqOffset
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 22);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(60, 13);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "SEQ Offset";
+            this.lblSeqOffset.AutoSize = true;
+            this.lblSeqOffset.Location = new System.Drawing.Point(3, 22);
+            this.lblSeqOffset.Name = "lblSeqOffset";
+            this.lblSeqOffset.Size = new System.Drawing.Size(60, 13);
+            this.lblSeqOffset.TabIndex = 1;
+            this.lblSeqOffset.Text = "SEQ Offset";
             // 
             // tbSeqOffset
             // 
@@ -237,59 +265,31 @@
             this.tbSeqOffset.Size = new System.Drawing.Size(218, 20);
             this.tbSeqOffset.TabIndex = 0;
             // 
-            // tbPsflibName
-            // 
-            this.tbPsflibName.Location = new System.Drawing.Point(86, 96);
-            this.tbPsflibName.Name = "tbPsflibName";
-            this.tbPsflibName.ReadOnly = true;
-            this.tbPsflibName.Size = new System.Drawing.Size(218, 20);
-            this.tbPsflibName.TabIndex = 16;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(6, 99);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(72, 13);
-            this.label7.TabIndex = 17;
-            this.label7.Text = "PSFLib Name";
-            // 
-            // cbMinipsf
-            // 
-            this.cbMinipsf.AutoSize = true;
-            this.cbMinipsf.Location = new System.Drawing.Point(310, 98);
-            this.cbMinipsf.Name = "cbMinipsf";
-            this.cbMinipsf.Size = new System.Drawing.Size(101, 17);
-            this.cbMinipsf.TabIndex = 18;
-            this.cbMinipsf.Text = "Output .minipsfs";
-            this.cbMinipsf.UseVisualStyleBackColor = true;
-            this.cbMinipsf.CheckedChanged += new System.EventHandler(this.cbMinipsf_CheckedChanged);
-            // 
             // Xsf_Bin2PsfFrontEndForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(936, 432);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
+            this.ClientSize = new System.Drawing.Size(715, 456);
+            this.Controls.Add(this.grpOptions);
+            this.Controls.Add(this.grpSource);
             this.Name = "Xsf_Bin2PsfFrontEndForm";
             this.Text = "Xsf_Bin2PsfFrontEndForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);
             this.Controls.SetChildIndex(this.pnlButtons, 0);
-            this.Controls.SetChildIndex(this.groupBox1, 0);
-            this.Controls.SetChildIndex(this.groupBox2, 0);
+            this.Controls.SetChildIndex(this.grpSource, 0);
+            this.Controls.SetChildIndex(this.grpOptions, 0);
             this.pnlLabels.ResumeLayout(false);
             this.pnlLabels.PerformLayout();
             this.pnlTitle.ResumeLayout(false);
             this.pnlTitle.PerformLayout();
             this.pnlButtons.ResumeLayout(false);
             this.pnlButtons.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
+            this.grpSource.ResumeLayout(false);
+            this.grpSource.PerformLayout();
+            this.grpOptions.ResumeLayout(false);
+            this.grpOptions.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -297,24 +297,24 @@
 
         #endregion
 
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox grpSource;
         private System.Windows.Forms.TextBox tbExePath;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox grpOptions;
         private System.Windows.Forms.TextBox tbSeqOffset;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblSeqOffset;
+        private System.Windows.Forms.Label lblVbOffset;
         private System.Windows.Forms.TextBox tbVbOffset;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblVhOffset;
         private System.Windows.Forms.TextBox tbVhOffset;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label lblDriverPath;
+        private System.Windows.Forms.Label lblSourceFiles;
         private System.Windows.Forms.TextBox tbSourceFilesPath;
         private System.Windows.Forms.Button btnExeBrowse;
         private System.Windows.Forms.Button btnSourceDirectoryBrowse;
         private System.Windows.Forms.TextBox tbOutputFolderName;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label lblOutputFolder;
         private System.Windows.Forms.CheckBox cbMinipsf;
-        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label lblPsfLibName;
         private System.Windows.Forms.TextBox tbPsflibName;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Text;
@@ -17,20 +18,34 @@ namespace VGMToolbox.forms
         public Xsf_2sfSdatOptimizerForm(TreeNode pTreeNode)
             : base(pTreeNode)
         {
-            this.lblTitle.Text = "SDAT Optimizer";
-            this.tbOutput.Text = "Optimize SDATs for zlib compression." + Environment.NewLine;
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_SdatOptimizer_Title"];
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_SdatOptimizer_IntroText"] + Environment.NewLine;
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
 
             InitializeComponent();
+
+            this.grpSource.Text =
+                ConfigurationSettings.AppSettings["Form_SdatOptimizer_GroupSource"];
+            this.lblDragNDrop.Text =
+                ConfigurationSettings.AppSettings["Form_SdatOptimizer_LblDragNDrop"];
+            this.grpOptions.Text =
+                ConfigurationSettings.AppSettings["Form_SdatOptimizer_GroupOptions"];
+            this.lblStartingSequence.Text =
+                ConfigurationSettings.AppSettings["Form_SdatOptimizer_LblStartingSequence"];
+            this.lblEndingSequence.Text =
+                ConfigurationSettings.AppSettings["Form_SdatOptimizer_LblEndingSequence"];
+            this.cbIncludeAllSseq.Text =
+                ConfigurationSettings.AppSettings["Form_SdatOptimizer_CheckBoxIncludeAllSequences"];
         }
 
         private void tbSourceSdat_DragDrop(object sender, DragEventArgs e)
         {
             base.initializeProcessing();
 
-            toolStripStatusLabel1.Text = "SDAT Optimization...Begin";
+            toolStripStatusLabel1.Text = 
+                ConfigurationSettings.AppSettings["Form_SdatOptimizer_MessageBegin"];
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
@@ -54,13 +69,15 @@ namespace VGMToolbox.forms
         {
             if (e.Cancelled)
             {
-                toolStripStatusLabel1.Text = "SDAT Optimization...Cancelled";
-                tbOutput.Text += "Operation cancelled.";
+                toolStripStatusLabel1.Text =
+                    ConfigurationSettings.AppSettings["Form_SdatOptimizer_MessageCancel"];
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
             }
             else
             {
                 lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = "SDAT Optimization...Complete";
+                toolStripStatusLabel1.Text = 
+                    ConfigurationSettings.AppSettings["Form_SdatOptimizer_MessageComplete"];
             }
 
             // update node color
@@ -71,7 +88,7 @@ namespace VGMToolbox.forms
         {
             if (sdatOptimizerWorker != null && sdatOptimizerWorker.IsBusy)
             {
-                tbOutput.Text += "CANCEL PENDING...";
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
                 sdatOptimizerWorker.CancelAsync();
                 this.errorFound = true;
             }

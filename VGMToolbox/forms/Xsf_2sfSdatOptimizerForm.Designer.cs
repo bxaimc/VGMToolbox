@@ -28,61 +28,61 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupBox10 = new System.Windows.Forms.GroupBox();
+            this.grpSource = new System.Windows.Forms.GroupBox();
             this.tbSourceSdat = new System.Windows.Forms.TextBox();
-            this.label17 = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lblDragNDrop = new System.Windows.Forms.Label();
+            this.grpOptions = new System.Windows.Forms.GroupBox();
             this.cbIncludeAllSseq = new System.Windows.Forms.CheckBox();
             this.tbEndSequence = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.lblEndingSequence = new System.Windows.Forms.Label();
             this.tbStartSequence = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblStartingSequence = new System.Windows.Forms.Label();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
-            this.groupBox10.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.grpSource.SuspendLayout();
+            this.grpOptions.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 487);
-            this.pnlLabels.Size = new System.Drawing.Size(868, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 415);
+            this.pnlLabels.Size = new System.Drawing.Size(716, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(868, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(716, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 410);
-            this.tbOutput.Size = new System.Drawing.Size(868, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 338);
+            this.tbOutput.Size = new System.Drawing.Size(716, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 390);
-            this.pnlButtons.Size = new System.Drawing.Size(868, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 318);
+            this.pnlButtons.Size = new System.Drawing.Size(716, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(808, 0);
+            this.btnCancel.Location = new System.Drawing.Point(656, 0);
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(748, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(596, 0);
             // 
-            // groupBox10
+            // grpSource
             // 
-            this.groupBox10.Controls.Add(this.tbSourceSdat);
-            this.groupBox10.Controls.Add(this.label17);
-            this.groupBox10.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox10.Location = new System.Drawing.Point(0, 23);
-            this.groupBox10.Name = "groupBox10";
-            this.groupBox10.Size = new System.Drawing.Size(868, 59);
-            this.groupBox10.TabIndex = 7;
-            this.groupBox10.TabStop = false;
-            this.groupBox10.Text = "Source SDAT";
+            this.grpSource.Controls.Add(this.tbSourceSdat);
+            this.grpSource.Controls.Add(this.lblDragNDrop);
+            this.grpSource.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpSource.Location = new System.Drawing.Point(0, 23);
+            this.grpSource.Name = "grpSource";
+            this.grpSource.Size = new System.Drawing.Size(716, 59);
+            this.grpSource.TabIndex = 7;
+            this.grpSource.TabStop = false;
+            this.grpSource.Text = "Source SDAT";
             // 
             // tbSourceSdat
             // 
@@ -94,29 +94,29 @@
             this.tbSourceSdat.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbSourceSdat_DragDrop);
             this.tbSourceSdat.DragEnter += new System.Windows.Forms.DragEventHandler(this.doDragEnter);
             // 
-            // label17
+            // lblDragNDrop
             // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(6, 42);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(153, 13);
-            this.label17.TabIndex = 1;
-            this.label17.Text = "Drag SDAT(s) to optimize here.";
+            this.lblDragNDrop.AutoSize = true;
+            this.lblDragNDrop.Location = new System.Drawing.Point(6, 42);
+            this.lblDragNDrop.Name = "lblDragNDrop";
+            this.lblDragNDrop.Size = new System.Drawing.Size(153, 13);
+            this.lblDragNDrop.TabIndex = 1;
+            this.lblDragNDrop.Text = "Drag SDAT(s) to optimize here.";
             // 
-            // groupBox1
+            // grpOptions
             // 
-            this.groupBox1.Controls.Add(this.cbIncludeAllSseq);
-            this.groupBox1.Controls.Add(this.tbEndSequence);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.tbStartSequence);
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox1.Location = new System.Drawing.Point(0, 82);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(868, 63);
-            this.groupBox1.TabIndex = 8;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Options";
+            this.grpOptions.Controls.Add(this.cbIncludeAllSseq);
+            this.grpOptions.Controls.Add(this.tbEndSequence);
+            this.grpOptions.Controls.Add(this.lblEndingSequence);
+            this.grpOptions.Controls.Add(this.tbStartSequence);
+            this.grpOptions.Controls.Add(this.lblStartingSequence);
+            this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpOptions.Location = new System.Drawing.Point(0, 82);
+            this.grpOptions.Name = "grpOptions";
+            this.grpOptions.Size = new System.Drawing.Size(716, 63);
+            this.grpOptions.TabIndex = 8;
+            this.grpOptions.TabStop = false;
+            this.grpOptions.Text = "Options";
             // 
             // cbIncludeAllSseq
             // 
@@ -139,14 +139,14 @@
             this.tbEndSequence.Size = new System.Drawing.Size(52, 20);
             this.tbEndSequence.TabIndex = 3;
             // 
-            // label2
+            // lblEndingSequence
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 40);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(92, 13);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Ending Sequence";
+            this.lblEndingSequence.AutoSize = true;
+            this.lblEndingSequence.Location = new System.Drawing.Point(6, 40);
+            this.lblEndingSequence.Name = "lblEndingSequence";
+            this.lblEndingSequence.Size = new System.Drawing.Size(92, 13);
+            this.lblEndingSequence.TabIndex = 2;
+            this.lblEndingSequence.Text = "Ending Sequence";
             // 
             // tbStartSequence
             // 
@@ -156,40 +156,40 @@
             this.tbStartSequence.Size = new System.Drawing.Size(52, 20);
             this.tbStartSequence.TabIndex = 1;
             // 
-            // label1
+            // lblStartingSequence
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 16);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(95, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Starting Sequence";
+            this.lblStartingSequence.AutoSize = true;
+            this.lblStartingSequence.Location = new System.Drawing.Point(6, 16);
+            this.lblStartingSequence.Name = "lblStartingSequence";
+            this.lblStartingSequence.Size = new System.Drawing.Size(95, 13);
+            this.lblStartingSequence.TabIndex = 0;
+            this.lblStartingSequence.Text = "Starting Sequence";
             // 
             // Xsf_2sfSdatOptimizerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(868, 528);
-            this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.groupBox10);
+            this.ClientSize = new System.Drawing.Size(716, 456);
+            this.Controls.Add(this.grpOptions);
+            this.Controls.Add(this.grpSource);
             this.Name = "Xsf_2sfSdatOptimizerForm";
             this.Text = "Xsf_2sfSdatOptimizer";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);
             this.Controls.SetChildIndex(this.pnlButtons, 0);
-            this.Controls.SetChildIndex(this.groupBox10, 0);
-            this.Controls.SetChildIndex(this.groupBox1, 0);
+            this.Controls.SetChildIndex(this.grpSource, 0);
+            this.Controls.SetChildIndex(this.grpOptions, 0);
             this.pnlLabels.ResumeLayout(false);
             this.pnlLabels.PerformLayout();
             this.pnlTitle.ResumeLayout(false);
             this.pnlTitle.PerformLayout();
             this.pnlButtons.ResumeLayout(false);
             this.pnlButtons.PerformLayout();
-            this.groupBox10.ResumeLayout(false);
-            this.groupBox10.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.grpSource.ResumeLayout(false);
+            this.grpSource.PerformLayout();
+            this.grpOptions.ResumeLayout(false);
+            this.grpOptions.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -197,13 +197,13 @@
 
         #endregion
 
-        private System.Windows.Forms.GroupBox groupBox10;
-        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.GroupBox grpSource;
+        private System.Windows.Forms.Label lblDragNDrop;
         private System.Windows.Forms.TextBox tbSourceSdat;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.GroupBox grpOptions;
+        private System.Windows.Forms.Label lblStartingSequence;
         private System.Windows.Forms.TextBox tbEndSequence;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblEndingSequence;
         private System.Windows.Forms.TextBox tbStartSequence;
         private System.Windows.Forms.CheckBox cbIncludeAllSseq;
     }

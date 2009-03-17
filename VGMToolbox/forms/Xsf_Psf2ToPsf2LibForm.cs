@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Text;
@@ -17,13 +18,21 @@ namespace VGMToolbox.forms
         public Xsf_Psf2ToPsf2LibForm(TreeNode pTreeNode)
             : base(pTreeNode)
         {
-            this.lblTitle.Text = "PSF2 to PSF2LIB (Library Builder)";
-            this.btnDoTask.Text = "Combine PSF2s";
-            this.tbOutput.Text = "Files must all use the same modules." + Environment.NewLine;
-            this.tbOutput.Text += "This works for standard CSL rips only." + Environment.NewLine;
-            this.tbOutput.Text += "Files will be output in the 'rips\\psf2s' subfolder underneath VGMToolbox." + Environment.NewLine;
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_Title"];
+            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_DoTaskButton"];
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_IntroText1"] + Environment.NewLine;
+            this.tbOutput.Text += ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_IntroText2"] + Environment.NewLine;
+            this.tbOutput.Text += ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_IntroText3"] + Environment.NewLine;
 
             InitializeComponent();
+
+            this.grpSource.Text =
+                ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_GroupSource"];
+            this.grpOptions.Text =
+                ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_GroupOptions"];
+            this.lblOutputFilePrefix.Text =
+                ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_LblOutputFilePrefix"];
+
         }
 
         private void Psf2toPsf2LibWorker_WorkComplete(object sender,
@@ -31,13 +40,13 @@ namespace VGMToolbox.forms
         {
             if (e.Cancelled)
             {
-                toolStripStatusLabel1.Text = "Combine PSF2s...Cancelled";
-                tbOutput.Text += "Operation cancelled.";
+                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_MessageCancel"];
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
             }
             else
             {
                 lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = "Combine PSF2s...Complete";
+                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_MessageComplete"];
             }
 
             // update node color
@@ -48,7 +57,7 @@ namespace VGMToolbox.forms
         {
             if (psf2toPsf2LibWorker != null && psf2toPsf2LibWorker.IsBusy)
             {
-                tbOutput.Text += "CANCEL PENDING...";
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
                 psf2toPsf2LibWorker.CancelAsync();
                 this.errorFound = true;
             }
@@ -58,7 +67,7 @@ namespace VGMToolbox.forms
         {
             base.initializeProcessing();
 
-            toolStripStatusLabel1.Text = "Combine PSF2s...Begin";
+            toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_MessageBegin"];
 
             Psf2toPsf2LibWorker.Psf2ToPsf2LibStruct psf2Struct = new Psf2toPsf2LibWorker.Psf2ToPsf2LibStruct();
             psf2Struct.sourcePath = tbSourceDirectory.Text;
