@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Midi;
@@ -67,14 +68,14 @@ namespace _2sftimer
             // delete old .bat file
             string psfpointBatchFilePath = Path.Combine(Path.Combine(pathTo2sf, "text"), PSFPOINT_BATCH_TXT);
 
+            Console.WriteLine();
+            
             if (File.Exists(psfpointBatchFilePath))
             {
                 Console.WriteLine("Deleting Old Batch File");
                 File.Delete(psfpointBatchFilePath);
             }
-            
-            Console.WriteLine();
-
+                        
             // Extract SDAT
             Console.WriteLine("Extracting SDAT");
 
@@ -107,7 +108,10 @@ namespace _2sftimer
             // Initialize Bass            
             if (smap.SseqSection.Length > 0)
             {
+                Console.WriteLine("Going to sleep for 5 seconds to avoid the freeware billboard...");
                 Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero, null);
+                Thread.Sleep(5000);
+                Console.WriteLine("Ok, back to work...");
             }
 
             foreach (Smap.SmapSeqStruct s in smap.SseqSection)
