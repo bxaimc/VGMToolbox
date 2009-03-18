@@ -146,6 +146,21 @@ namespace VGMToolbox.format.util
         {
             string outputPath = null;
 
+            long previousOffset = 0;
+            long offsetLocation = -1;
+            long seqEndLocation = -1;
+
+            using (FileStream fs = File.Open(pPath, FileMode.Open, FileAccess.Read))
+            {
+                while ((offsetLocation = ParseFile.GetNextOffset(fs, previousOffset, PsxSequence.ASCII_SIGNATURE)) > -1)
+                {
+                    // can modify to use spec values
+                    seqEndLocation = ParseFile.GetNextOffset(fs, offsetLocation, PsxSequence.END_SEQUENCE);
+
+                    previousOffset = seqEndLocation + PsxSequence.ASCII_SIGNATURE.Length;
+                }
+            }
+
             return outputPath;
         }
     }
