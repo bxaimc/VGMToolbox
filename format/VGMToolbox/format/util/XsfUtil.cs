@@ -110,6 +110,7 @@ namespace VGMToolbox.format.util
             return outputFile;        
         }
 
+        // PSF2
         public static Ps2SequenceData.Ps2SqTimingStruct GetTimeForPsf2File(string pSqPath, int pSequenceId)
         {
             Ps2SequenceData.Ps2SqTimingStruct time = new Ps2SequenceData.Ps2SqTimingStruct();
@@ -133,6 +134,19 @@ namespace VGMToolbox.format.util
             }
 
             return time;
+        }
+
+        // PSF
+        public static bool IsPsxSepFile(string pPath)
+        {
+            return false;        
+        }
+        
+        public static string ExtractPsxSequences(string pPath)
+        {
+            string outputPath = null;
+
+            return outputPath;
         }
     }
 }
