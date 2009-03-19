@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Text;
@@ -18,20 +19,29 @@ namespace VGMToolbox.forms
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = "seqext.py/tonext.py Front End  (note: Python must be installed and in your PATH.)";
-            this.tbOutput.Text = "Extract SEQ/TON data from files for SSF creation.";
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_SeqextTonextFE_Title"];
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_SeqextTonextFE_IntroText"];
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
 
             InitializeComponent();
+
+            this.grpSource.Text =
+                ConfigurationSettings.AppSettings["Form_SeqextTonextFE_GroupSource"];
+            this.lblDragNDrop.Text =
+                ConfigurationSettings.AppSettings["Form_SeqextTonextFE_LblDragNDrop"];
+            this.cbExtractToSubfolder.Text =
+                ConfigurationSettings.AppSettings["Form_SeqextTonextFE_CheckBoxExtractToSubfolder"];
+            this.lblAuthor.Text =
+                ConfigurationSettings.AppSettings["Form_SeqextTonextFE_LblAuthor"];
         }
 
         private void tbSsfSqTonExtSource_DragDrop(object sender, DragEventArgs e)
         {
             base.initializeProcessing();
 
-            toolStripStatusLabel1.Text = "SEQ/TON Extraction...Begin";
+            toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SeqextTonextFE_MessageBegin"];
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
@@ -50,13 +60,13 @@ namespace VGMToolbox.forms
         {
             if (e.Cancelled)
             {
-                toolStripStatusLabel1.Text = "SEQ/TON Extraction...Cancelled";
-                tbOutput.Text += "Operation cancelled.";
+                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SeqextTonextFE_MessageCancel"];
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
             }
             else
             {
                 lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = "SEQ/TON Extraction...Complete";
+                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SeqextTonextFE_MessageComplete"];
             }
 
             // update node color
@@ -67,7 +77,7 @@ namespace VGMToolbox.forms
         {
             if (ssfSeqTonExtractorWorker != null && ssfSeqTonExtractorWorker.IsBusy)
             {
-                tbOutput.Text += "CANCEL PENDING...";
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
                 ssfSeqTonExtractorWorker.CancelAsync();
                 this.errorFound = true;
             }

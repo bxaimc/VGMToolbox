@@ -28,55 +28,55 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label17 = new System.Windows.Forms.Label();
+            this.lblDragNDrop = new System.Windows.Forms.Label();
             this.tbSsfSqTonExtSource = new System.Windows.Forms.TextBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.grpSource = new System.Windows.Forms.GroupBox();
+            this.lblAuthor = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.cbExtractToSubfolder = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.grpSource.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 384);
-            this.pnlLabels.Size = new System.Drawing.Size(868, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 422);
+            this.pnlLabels.Size = new System.Drawing.Size(874, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(868, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(874, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 307);
-            this.tbOutput.Size = new System.Drawing.Size(868, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 345);
+            this.tbOutput.Size = new System.Drawing.Size(874, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 287);
-            this.pnlButtons.Size = new System.Drawing.Size(868, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 325);
+            this.pnlButtons.Size = new System.Drawing.Size(874, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(808, 0);
+            this.btnCancel.Location = new System.Drawing.Point(814, 0);
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(748, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(754, 0);
             // 
-            // label17
+            // lblDragNDrop
             // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(6, 42);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(129, 13);
-            this.label17.TabIndex = 6;
-            this.label17.Text = "Drag file(s) to check here.";
+            this.lblDragNDrop.AutoSize = true;
+            this.lblDragNDrop.Location = new System.Drawing.Point(6, 42);
+            this.lblDragNDrop.Name = "lblDragNDrop";
+            this.lblDragNDrop.Size = new System.Drawing.Size(129, 13);
+            this.lblDragNDrop.TabIndex = 6;
+            this.lblDragNDrop.Text = "Drag file(s) to check here.";
             // 
             // tbSsfSqTonExtSource
             // 
@@ -88,26 +88,26 @@
             this.tbSsfSqTonExtSource.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbSsfSqTonExtSource_DragDrop);
             this.tbSsfSqTonExtSource.DragEnter += new System.Windows.Forms.DragEventHandler(this.doDragEnter);
             // 
-            // groupBox1
+            // grpSource
             // 
-            this.groupBox1.Controls.Add(this.tbSsfSqTonExtSource);
-            this.groupBox1.Controls.Add(this.label17);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox1.Location = new System.Drawing.Point(0, 23);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(868, 63);
-            this.groupBox1.TabIndex = 7;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Source Files";
+            this.grpSource.Controls.Add(this.tbSsfSqTonExtSource);
+            this.grpSource.Controls.Add(this.lblDragNDrop);
+            this.grpSource.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpSource.Location = new System.Drawing.Point(0, 23);
+            this.grpSource.Name = "grpSource";
+            this.grpSource.Size = new System.Drawing.Size(874, 63);
+            this.grpSource.TabIndex = 7;
+            this.grpSource.TabStop = false;
+            this.grpSource.Text = "Source Files";
             // 
-            // label1
+            // lblAuthor
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 129);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(417, 13);
-            this.label1.TabIndex = 8;
-            this.label1.Text = "seqext.py and tonext.py are written by kingshriek (snesmusic.org/hoot/kingshriek/" +
+            this.lblAuthor.AutoSize = true;
+            this.lblAuthor.Location = new System.Drawing.Point(3, 129);
+            this.lblAuthor.Name = "lblAuthor";
+            this.lblAuthor.Size = new System.Drawing.Size(417, 13);
+            this.lblAuthor.TabIndex = 8;
+            this.lblAuthor.Text = "seqext.py and tonext.py are written by kingshriek (snesmusic.org/hoot/kingshriek/" +
                 "ssf/).";
             // 
             // groupBox2
@@ -116,7 +116,7 @@
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox2.Location = new System.Drawing.Point(0, 86);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(868, 40);
+            this.groupBox2.Size = new System.Drawing.Size(874, 40);
             this.groupBox2.TabIndex = 9;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Options";
@@ -135,18 +135,18 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(868, 425);
+            this.ClientSize = new System.Drawing.Size(874, 463);
             this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.lblAuthor);
+            this.Controls.Add(this.grpSource);
             this.Name = "Xsf_SsfSeqTonExtForm";
             this.Text = "Xsf_SsfSeqTonExtForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);
             this.Controls.SetChildIndex(this.pnlButtons, 0);
-            this.Controls.SetChildIndex(this.groupBox1, 0);
-            this.Controls.SetChildIndex(this.label1, 0);
+            this.Controls.SetChildIndex(this.grpSource, 0);
+            this.Controls.SetChildIndex(this.lblAuthor, 0);
             this.Controls.SetChildIndex(this.groupBox2, 0);
             this.pnlLabels.ResumeLayout(false);
             this.pnlLabels.PerformLayout();
@@ -154,8 +154,8 @@
             this.pnlTitle.PerformLayout();
             this.pnlButtons.ResumeLayout(false);
             this.pnlButtons.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.grpSource.ResumeLayout(false);
+            this.grpSource.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
@@ -165,10 +165,10 @@
 
         #endregion
 
-        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label lblDragNDrop;
         private System.Windows.Forms.TextBox tbSsfSqTonExtSource;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.GroupBox grpSource;
+        private System.Windows.Forms.Label lblAuthor;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.CheckBox cbExtractToSubfolder;
     }
