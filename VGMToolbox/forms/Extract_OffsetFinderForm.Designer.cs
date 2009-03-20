@@ -28,89 +28,89 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.grpFiles = new System.Windows.Forms.GroupBox();
+            this.lblDragNDrop = new System.Windows.Forms.Label();
             this.tbSourcePaths = new System.Windows.Forms.TextBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.grpCriteria = new System.Windows.Forms.GroupBox();
             this.cbSearchAsHex = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.tbSearchString = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.cbDoCut = new System.Windows.Forms.CheckBox();
-            this.label11 = new System.Windows.Forms.Label();
+            this.lblOutputExtension = new System.Windows.Forms.Label();
             this.tbOutputExtension = new System.Windows.Forms.TextBox();
             this.gbCutSizeOptions = new System.Windows.Forms.GroupBox();
             this.cbOffsetSize = new System.Windows.Forms.ComboBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
+            this.lblByteOrder = new System.Windows.Forms.Label();
+            this.lblStoredIn = new System.Windows.Forms.Label();
             this.cbByteOrder = new System.Windows.Forms.ComboBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.lblInBytes = new System.Windows.Forms.Label();
+            this.lblInBytes2 = new System.Windows.Forms.Label();
+            this.lblFromStart = new System.Windows.Forms.Label();
+            this.lblHasSize = new System.Windows.Forms.Label();
             this.tbStaticCutsize = new System.Windows.Forms.TextBox();
             this.tbCutSizeOffset = new System.Windows.Forms.TextBox();
             this.rbOffsetBasedCutSize = new System.Windows.Forms.RadioButton();
             this.rbStaticCutSize = new System.Windows.Forms.RadioButton();
-            this.label3 = new System.Windows.Forms.Label();
+            this.lblStringAtOffset = new System.Windows.Forms.Label();
             this.tbSearchStringOffset = new System.Windows.Forms.TextBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
+            this.grpFiles.SuspendLayout();
+            this.grpCriteria.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.gbCutSizeOptions.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 512);
-            this.pnlLabels.Size = new System.Drawing.Size(763, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 422);
+            this.pnlLabels.Size = new System.Drawing.Size(874, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(763, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(874, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 435);
-            this.tbOutput.Size = new System.Drawing.Size(763, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 345);
+            this.tbOutput.Size = new System.Drawing.Size(874, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 415);
-            this.pnlButtons.Size = new System.Drawing.Size(763, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 325);
+            this.pnlButtons.Size = new System.Drawing.Size(874, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(703, 0);
+            this.btnCancel.Location = new System.Drawing.Point(814, 0);
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(643, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(754, 0);
             // 
-            // groupBox1
+            // grpFiles
             // 
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.tbSourcePaths);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox1.Location = new System.Drawing.Point(0, 23);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(763, 61);
-            this.groupBox1.TabIndex = 5;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Files to Search";
+            this.grpFiles.Controls.Add(this.lblDragNDrop);
+            this.grpFiles.Controls.Add(this.tbSourcePaths);
+            this.grpFiles.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpFiles.Location = new System.Drawing.Point(0, 23);
+            this.grpFiles.Name = "grpFiles";
+            this.grpFiles.Size = new System.Drawing.Size(874, 61);
+            this.grpFiles.TabIndex = 5;
+            this.grpFiles.TabStop = false;
+            this.grpFiles.Text = "Files to Search";
             // 
-            // label1
+            // lblDragNDrop
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 42);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(172, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Drag and Drop files to search here.";
+            this.lblDragNDrop.AutoSize = true;
+            this.lblDragNDrop.Location = new System.Drawing.Point(3, 42);
+            this.lblDragNDrop.Name = "lblDragNDrop";
+            this.lblDragNDrop.Size = new System.Drawing.Size(172, 13);
+            this.lblDragNDrop.TabIndex = 1;
+            this.lblDragNDrop.Text = "Drag and Drop files to search here.";
             // 
             // tbSourcePaths
             // 
@@ -122,18 +122,18 @@
             this.tbSourcePaths.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbSourcePaths_DragDrop);
             this.tbSourcePaths.DragEnter += new System.Windows.Forms.DragEventHandler(this.doDragEnter);
             // 
-            // groupBox2
+            // grpCriteria
             // 
-            this.groupBox2.Controls.Add(this.cbSearchAsHex);
-            this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Controls.Add(this.tbSearchString);
-            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox2.Location = new System.Drawing.Point(0, 84);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(763, 45);
-            this.groupBox2.TabIndex = 6;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Criteria";
+            this.grpCriteria.Controls.Add(this.cbSearchAsHex);
+            this.grpCriteria.Controls.Add(this.label2);
+            this.grpCriteria.Controls.Add(this.tbSearchString);
+            this.grpCriteria.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpCriteria.Location = new System.Drawing.Point(0, 84);
+            this.grpCriteria.Name = "grpCriteria";
+            this.grpCriteria.Size = new System.Drawing.Size(874, 45);
+            this.grpCriteria.TabIndex = 6;
+            this.grpCriteria.TabStop = false;
+            this.grpCriteria.Text = "Criteria";
             // 
             // cbSearchAsHex
             // 
@@ -164,15 +164,15 @@
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.cbDoCut);
-            this.groupBox3.Controls.Add(this.label11);
+            this.groupBox3.Controls.Add(this.lblOutputExtension);
             this.groupBox3.Controls.Add(this.tbOutputExtension);
             this.groupBox3.Controls.Add(this.gbCutSizeOptions);
-            this.groupBox3.Controls.Add(this.label3);
+            this.groupBox3.Controls.Add(this.lblStringAtOffset);
             this.groupBox3.Controls.Add(this.tbSearchStringOffset);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox3.Location = new System.Drawing.Point(0, 129);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(763, 182);
+            this.groupBox3.Size = new System.Drawing.Size(874, 182);
             this.groupBox3.TabIndex = 7;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Cut Options (all values are relative to the location of the file to be cut)";
@@ -188,14 +188,14 @@
             this.cbDoCut.UseVisualStyleBackColor = true;
             this.cbDoCut.CheckedChanged += new System.EventHandler(this.cbDoCut_CheckedChanged);
             // 
-            // label11
+            // lblOutputExtension
             // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(234, 43);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(107, 13);
-            this.label11.TabIndex = 14;
-            this.label11.Text = "Output File Extension";
+            this.lblOutputExtension.AutoSize = true;
+            this.lblOutputExtension.Location = new System.Drawing.Point(234, 43);
+            this.lblOutputExtension.Name = "lblOutputExtension";
+            this.lblOutputExtension.Size = new System.Drawing.Size(107, 13);
+            this.lblOutputExtension.TabIndex = 14;
+            this.lblOutputExtension.Text = "Output File Extension";
             // 
             // tbOutputExtension
             // 
@@ -207,13 +207,13 @@
             // gbCutSizeOptions
             // 
             this.gbCutSizeOptions.Controls.Add(this.cbOffsetSize);
-            this.gbCutSizeOptions.Controls.Add(this.label9);
-            this.gbCutSizeOptions.Controls.Add(this.label8);
+            this.gbCutSizeOptions.Controls.Add(this.lblByteOrder);
+            this.gbCutSizeOptions.Controls.Add(this.lblStoredIn);
             this.gbCutSizeOptions.Controls.Add(this.cbByteOrder);
-            this.gbCutSizeOptions.Controls.Add(this.label7);
-            this.gbCutSizeOptions.Controls.Add(this.label6);
-            this.gbCutSizeOptions.Controls.Add(this.label5);
-            this.gbCutSizeOptions.Controls.Add(this.label4);
+            this.gbCutSizeOptions.Controls.Add(this.lblInBytes);
+            this.gbCutSizeOptions.Controls.Add(this.lblInBytes2);
+            this.gbCutSizeOptions.Controls.Add(this.lblFromStart);
+            this.gbCutSizeOptions.Controls.Add(this.lblHasSize);
             this.gbCutSizeOptions.Controls.Add(this.tbStaticCutsize);
             this.gbCutSizeOptions.Controls.Add(this.tbCutSizeOffset);
             this.gbCutSizeOptions.Controls.Add(this.rbOffsetBasedCutSize);
@@ -235,23 +235,23 @@
             this.cbOffsetSize.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cbOffsetSize_KeyPress);
             this.cbOffsetSize.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cbOffsetSize_KeyDown);
             // 
-            // label9
+            // lblByteOrder
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(244, 89);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(57, 13);
-            this.label9.TabIndex = 11;
-            this.label9.Text = "byte order.";
+            this.lblByteOrder.AutoSize = true;
+            this.lblByteOrder.Location = new System.Drawing.Point(244, 89);
+            this.lblByteOrder.Name = "lblByteOrder";
+            this.lblByteOrder.Size = new System.Drawing.Size(57, 13);
+            this.lblByteOrder.TabIndex = 11;
+            this.lblByteOrder.Text = "byte order.";
             // 
-            // label8
+            // lblStoredIn
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(64, 89);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(68, 13);
-            this.label8.TabIndex = 10;
-            this.label8.Text = "and stored in";
+            this.lblStoredIn.AutoSize = true;
+            this.lblStoredIn.Location = new System.Drawing.Point(64, 89);
+            this.lblStoredIn.Name = "lblStoredIn";
+            this.lblStoredIn.Size = new System.Drawing.Size(68, 13);
+            this.lblStoredIn.TabIndex = 10;
+            this.lblStoredIn.Text = "and stored in";
             // 
             // cbByteOrder
             // 
@@ -261,41 +261,41 @@
             this.cbByteOrder.Size = new System.Drawing.Size(100, 21);
             this.cbByteOrder.TabIndex = 9;
             // 
-            // label7
+            // lblInBytes
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(244, 21);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(46, 13);
-            this.label7.TabIndex = 8;
-            this.label7.Text = "in bytes.";
+            this.lblInBytes.AutoSize = true;
+            this.lblInBytes.Location = new System.Drawing.Point(244, 21);
+            this.lblInBytes.Name = "lblInBytes";
+            this.lblInBytes.Size = new System.Drawing.Size(46, 13);
+            this.lblInBytes.TabIndex = 8;
+            this.lblInBytes.Text = "in bytes.";
             // 
-            // label6
+            // lblInBytes2
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(244, 66);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(46, 13);
-            this.label6.TabIndex = 7;
-            this.label6.Text = "in bytes.";
+            this.lblInBytes2.AutoSize = true;
+            this.lblInBytes2.Location = new System.Drawing.Point(244, 66);
+            this.lblInBytes2.Name = "lblInBytes2";
+            this.lblInBytes2.Size = new System.Drawing.Size(46, 13);
+            this.lblInBytes2.TabIndex = 7;
+            this.lblInBytes2.Text = "in bytes.";
             // 
-            // label5
+            // lblFromStart
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(244, 44);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(147, 13);
-            this.label5.TabIndex = 6;
-            this.label5.Text = "from the start of the file to cut.";
+            this.lblFromStart.AutoSize = true;
+            this.lblFromStart.Location = new System.Drawing.Point(244, 44);
+            this.lblFromStart.Name = "lblFromStart";
+            this.lblFromStart.Size = new System.Drawing.Size(147, 13);
+            this.lblFromStart.TabIndex = 6;
+            this.lblFromStart.Text = "from the start of the file to cut.";
             // 
-            // label4
+            // lblHasSize
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(66, 66);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(66, 13);
-            this.label4.TabIndex = 5;
-            this.label4.Text = "and has size";
+            this.lblHasSize.AutoSize = true;
+            this.lblHasSize.Location = new System.Drawing.Point(66, 66);
+            this.lblHasSize.Name = "lblHasSize";
+            this.lblHasSize.Size = new System.Drawing.Size(66, 13);
+            this.lblHasSize.TabIndex = 5;
+            this.lblHasSize.Text = "and has size";
             // 
             // tbStaticCutsize
             // 
@@ -335,14 +335,14 @@
             this.rbStaticCutSize.UseVisualStyleBackColor = true;
             this.rbStaticCutSize.CheckedChanged += new System.EventHandler(this.rbStaticCutSize_CheckedChanged);
             // 
-            // label3
+            // lblStringAtOffset
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 43);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(124, 13);
-            this.label3.TabIndex = 1;
-            this.label3.Text = "Search String is at Offset";
+            this.lblStringAtOffset.AutoSize = true;
+            this.lblStringAtOffset.Location = new System.Drawing.Point(6, 43);
+            this.lblStringAtOffset.Name = "lblStringAtOffset";
+            this.lblStringAtOffset.Size = new System.Drawing.Size(124, 13);
+            this.lblStringAtOffset.TabIndex = 1;
+            this.lblStringAtOffset.Text = "Search String is at Offset";
             // 
             // tbSearchStringOffset
             // 
@@ -356,18 +356,18 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(763, 553);
+            this.ClientSize = new System.Drawing.Size(874, 463);
             this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.grpCriteria);
+            this.Controls.Add(this.grpFiles);
             this.Name = "Extract_OffsetFinderForm";
             this.Text = "Extract_OffsetFinderForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);
             this.Controls.SetChildIndex(this.pnlButtons, 0);
-            this.Controls.SetChildIndex(this.groupBox1, 0);
-            this.Controls.SetChildIndex(this.groupBox2, 0);
+            this.Controls.SetChildIndex(this.grpFiles, 0);
+            this.Controls.SetChildIndex(this.grpCriteria, 0);
             this.Controls.SetChildIndex(this.groupBox3, 0);
             this.pnlLabels.ResumeLayout(false);
             this.pnlLabels.PerformLayout();
@@ -375,10 +375,10 @@
             this.pnlTitle.PerformLayout();
             this.pnlButtons.ResumeLayout(false);
             this.pnlButtons.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
+            this.grpFiles.ResumeLayout(false);
+            this.grpFiles.PerformLayout();
+            this.grpCriteria.ResumeLayout(false);
+            this.grpCriteria.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.gbCutSizeOptions.ResumeLayout(false);
@@ -390,29 +390,29 @@
 
         #endregion
 
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox grpFiles;
         private System.Windows.Forms.TextBox tbSourcePaths;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label lblDragNDrop;
+        private System.Windows.Forms.GroupBox grpCriteria;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox tbSearchString;
         private System.Windows.Forms.CheckBox cbSearchAsHex;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.TextBox tbSearchStringOffset;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblStringAtOffset;
         private System.Windows.Forms.GroupBox gbCutSizeOptions;
         private System.Windows.Forms.RadioButton rbOffsetBasedCutSize;
         private System.Windows.Forms.RadioButton rbStaticCutSize;
         private System.Windows.Forms.TextBox tbStaticCutsize;
         private System.Windows.Forms.TextBox tbCutSizeOffset;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label lblHasSize;
+        private System.Windows.Forms.Label lblByteOrder;
+        private System.Windows.Forms.Label lblStoredIn;
         private System.Windows.Forms.ComboBox cbByteOrder;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label lblInBytes;
+        private System.Windows.Forms.Label lblInBytes2;
+        private System.Windows.Forms.Label lblFromStart;
+        private System.Windows.Forms.Label lblOutputExtension;
         private System.Windows.Forms.TextBox tbOutputExtension;
         private System.Windows.Forms.ComboBox cbOffsetSize;
         private System.Windows.Forms.CheckBox cbDoCut;

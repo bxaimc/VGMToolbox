@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Text;
@@ -18,13 +19,18 @@ namespace VGMToolbox.forms
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = "Nintendo DS SDAT Finder";
-            this.tbOutput.Text = "Find and Extract SDATs from files.";
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_SdatFinder_Title"];
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_SdatFinder_IntroText"];
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
 
             InitializeComponent();
+
+            this.grpSource.Text =
+                ConfigurationSettings.AppSettings["Form_SdatFinder_GroupSource"];
+            this.lblDragNDrop.Text =
+                ConfigurationSettings.AppSettings["Form_SdatFinder_LblDragNDrop"];
         }
 
         private void SdatFinderWorker_WorkComplete(object sender,
@@ -32,13 +38,13 @@ namespace VGMToolbox.forms
         {
             if (e.Cancelled)
             {
-                toolStripStatusLabel1.Text = "Searching for SDATs...Cancelled";
-                tbOutput.Text += "Operation cancelled.";
+                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SdatFinder_MessageCancel"];
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
             }
             else
             {
                 lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = "Searching for SDATs...Complete";
+                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SdatFinder_MessageComplete"];
             }
 
             // update node color
@@ -49,7 +55,7 @@ namespace VGMToolbox.forms
         {
             if (sdatFinderWorker != null && sdatFinderWorker.IsBusy)
             {
-                tbOutput.Text += "CANCEL PENDING...";
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
                 sdatFinderWorker.CancelAsync();
                 this.errorFound = true;
             }
@@ -64,7 +70,7 @@ namespace VGMToolbox.forms
         {
             base.initializeProcessing();
 
-            toolStripStatusLabel1.Text = "Searching for SDATs...Begin";
+            toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SdatFinder_MessageBegin"];
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 

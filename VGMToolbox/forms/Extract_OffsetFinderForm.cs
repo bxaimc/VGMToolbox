@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
+using System.Configuration;
 using System.Windows.Forms;
 
 using VGMToolbox.tools.extract;
@@ -19,16 +16,48 @@ namespace VGMToolbox.forms
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = "Simple Cutter/Offset Finder";
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_SimpleCutter_Title"];
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
 
-            this.tbOutput.Text = "Search for offsets, or search for offsets and cut based on input criteria." + Environment.NewLine;
-            this.tbOutput.Text += "- Use \"Search String is at Offset\" for file types that have their Magic Bytes at a nonzero offset (i.e. SSF Driver) " + Environment.NewLine;
-            this.tbOutput.Text += "- Use \"Cut Size is at Offset\" for file types that store their length in the header." + Environment.NewLine;
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_SimpleCutter_IntroText1"] + Environment.NewLine;
+            this.tbOutput.Text += ConfigurationSettings.AppSettings["Form_SimpleCutter_IntroText2"] + Environment.NewLine;
+            this.tbOutput.Text += ConfigurationSettings.AppSettings["Form_SimpleCutter_IntroText3"] + Environment.NewLine;
 
             InitializeComponent();
+
+            this.grpFiles.Text =
+                ConfigurationSettings.AppSettings["Form_SimpleCutter_GroupFiles"];
+            this.lblDragNDrop.Text =
+                ConfigurationSettings.AppSettings["Form_SimpleCutter_LblDragNDrop"];
+            this.grpCriteria.Text =
+                ConfigurationSettings.AppSettings["Form_SimpleCutter_GroupCriteria"];
+            this.cbDoCut.Text =
+                ConfigurationSettings.AppSettings["Form_SimpleCutter_CheckBoxDoCut"];
+            this.lblStringAtOffset.Text =
+                ConfigurationSettings.AppSettings["Form_SimpleCutter_LblStringAtOffset"];
+            this.lblOutputExtension.Text =
+                ConfigurationSettings.AppSettings["Form_SimpleCutter_LblOutputExtension"];
+            this.gbCutSizeOptions.Text =
+                ConfigurationSettings.AppSettings["Form_SimpleCutter_GroupCutSizeOptions"];
+            this.rbStaticCutSize.Text =
+                ConfigurationSettings.AppSettings["Form_SimpleCutter_RadioStaticCutSize"];
+            this.rbOffsetBasedCutSize.Text =
+                ConfigurationSettings.AppSettings["Form_SimpleCutter_RadioOffsetBasedCutSize"];
+            this.lblHasSize.Text =
+                ConfigurationSettings.AppSettings["Form_SimpleCutter_LblHasSize"];
+            this.lblStoredIn.Text =
+                ConfigurationSettings.AppSettings["Form_SimpleCutter_LblStoredIn"];
+            this.lblInBytes.Text =
+                ConfigurationSettings.AppSettings["Form_SimpleCutter_LblInBytes"];
+            this.lblFromStart.Text =
+                ConfigurationSettings.AppSettings["Form_SimpleCutter_LblFromStart"];
+            this.lblInBytes2.Text =
+                ConfigurationSettings.AppSettings["Form_SimpleCutter_LblInBytes2"];
+            this.lblByteOrder.Text =
+                ConfigurationSettings.AppSettings["Form_SimpleCutter_LblByteOrder"];
+
 
             this.createEndianList();
             this.createOffsetSizeList();
@@ -40,13 +69,13 @@ namespace VGMToolbox.forms
         {
             if (e.Cancelled)
             {
-                toolStripStatusLabel1.Text = "Searching for Strings...Cancelled";
-                tbOutput.Text += "Operation cancelled.";
+                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SimpleCutter_MessageCancel"];
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
             }
             else
             {
                 lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = "Searching for Strings...Complete";
+                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SimpleCutter_MessageComplete"];
             }
 
             // update node color
@@ -62,7 +91,7 @@ namespace VGMToolbox.forms
         {
             if (offsetFinderWorker != null && offsetFinderWorker.IsBusy)
             {
-                tbOutput.Text += "CANCEL PENDING...";
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
                 offsetFinderWorker.CancelAsync();
                 this.errorFound = true;
             }
@@ -74,7 +103,7 @@ namespace VGMToolbox.forms
 
             if (validateInputs())
             {
-                toolStripStatusLabel1.Text = "Searching for Strings...Begin";
+                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SimpleCutter_MessageBegin"];
 
                 string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
@@ -221,14 +250,14 @@ namespace VGMToolbox.forms
                 cbByteOrder.Show();
 
                 gbCutSizeOptions.Show();
-                label3.Show();
-                label4.Show();
-                label5.Show();
-                label6.Show();
-                label7.Show();
-                label8.Show();
-                label9.Show();
-                label11.Show();
+                lblStringAtOffset.Show();
+                lblHasSize.Show();
+                lblFromStart.Show();
+                lblInBytes2.Show();
+                lblInBytes.Show();
+                lblStoredIn.Show();
+                lblByteOrder.Show();
+                lblOutputExtension.Show();
             }
             else
             {
@@ -259,14 +288,14 @@ namespace VGMToolbox.forms
                 cbByteOrder.Hide();
 
                 gbCutSizeOptions.Hide();
-                label3.Hide();
-                label4.Hide();
-                label5.Hide();
-                label6.Hide();
-                label7.Hide();
-                label8.Hide();
-                label9.Hide();
-                label11.Hide();
+                lblStringAtOffset.Hide();
+                lblHasSize.Hide();
+                lblFromStart.Hide();
+                lblInBytes2.Hide();
+                lblInBytes.Hide();
+                lblStoredIn.Hide();
+                lblByteOrder.Hide();
+                lblOutputExtension.Hide();
             }        
         }
     }

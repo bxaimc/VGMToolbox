@@ -28,62 +28,62 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupBox10 = new System.Windows.Forms.GroupBox();
-            this.label17 = new System.Windows.Forms.Label();
+            this.groupSource = new System.Windows.Forms.GroupBox();
+            this.lblDragNDrop = new System.Windows.Forms.Label();
             this.tbNDS_SdatExtractor_Source = new System.Windows.Forms.TextBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
-            this.groupBox10.SuspendLayout();
+            this.groupSource.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 487);
-            this.pnlLabels.Size = new System.Drawing.Size(868, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 422);
+            this.pnlLabels.Size = new System.Drawing.Size(874, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(868, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(874, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 410);
-            this.tbOutput.Size = new System.Drawing.Size(868, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 345);
+            this.tbOutput.Size = new System.Drawing.Size(874, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 390);
-            this.pnlButtons.Size = new System.Drawing.Size(868, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 325);
+            this.pnlButtons.Size = new System.Drawing.Size(874, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(808, 0);
+            this.btnCancel.Location = new System.Drawing.Point(814, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(748, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(754, 0);
             // 
-            // groupBox10
+            // groupSource
             // 
-            this.groupBox10.Controls.Add(this.label17);
-            this.groupBox10.Controls.Add(this.tbNDS_SdatExtractor_Source);
-            this.groupBox10.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox10.Location = new System.Drawing.Point(0, 23);
-            this.groupBox10.Name = "groupBox10";
-            this.groupBox10.Size = new System.Drawing.Size(868, 59);
-            this.groupBox10.TabIndex = 6;
-            this.groupBox10.TabStop = false;
-            this.groupBox10.Text = "Source SDAT";
+            this.groupSource.Controls.Add(this.lblDragNDrop);
+            this.groupSource.Controls.Add(this.tbNDS_SdatExtractor_Source);
+            this.groupSource.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupSource.Location = new System.Drawing.Point(0, 23);
+            this.groupSource.Name = "groupSource";
+            this.groupSource.Size = new System.Drawing.Size(874, 59);
+            this.groupSource.TabIndex = 6;
+            this.groupSource.TabStop = false;
+            this.groupSource.Text = "Source SDAT";
             // 
-            // label17
+            // lblDragNDrop
             // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(6, 42);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(147, 13);
-            this.label17.TabIndex = 1;
-            this.label17.Text = "Drag SDAT(s) to extract here.";
+            this.lblDragNDrop.AutoSize = true;
+            this.lblDragNDrop.Location = new System.Drawing.Point(6, 42);
+            this.lblDragNDrop.Name = "lblDragNDrop";
+            this.lblDragNDrop.Size = new System.Drawing.Size(147, 13);
+            this.lblDragNDrop.TabIndex = 1;
+            this.lblDragNDrop.Text = "Drag SDAT(s) to extract here.";
             // 
             // tbNDS_SdatExtractor_Source
             // 
@@ -99,13 +99,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(868, 528);
-            this.Controls.Add(this.groupBox10);
+            this.ClientSize = new System.Drawing.Size(874, 463);
+            this.Controls.Add(this.groupSource);
             this.Name = "Xsf_SdatExtractorForm";
             this.Text = "Xsf_SdatExtractorForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);
-            this.Controls.SetChildIndex(this.groupBox10, 0);
+            this.Controls.SetChildIndex(this.groupSource, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlButtons, 0);
             this.pnlLabels.ResumeLayout(false);
@@ -114,8 +114,8 @@
             this.pnlTitle.PerformLayout();
             this.pnlButtons.ResumeLayout(false);
             this.pnlButtons.PerformLayout();
-            this.groupBox10.ResumeLayout(false);
-            this.groupBox10.PerformLayout();
+            this.groupSource.ResumeLayout(false);
+            this.groupSource.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -123,8 +123,8 @@
 
         #endregion
 
-        private System.Windows.Forms.GroupBox groupBox10;
-        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.GroupBox groupSource;
+        private System.Windows.Forms.Label lblDragNDrop;
         private System.Windows.Forms.TextBox tbNDS_SdatExtractor_Source;
     }
 }

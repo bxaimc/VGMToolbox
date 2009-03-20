@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Configuration;
 using System.IO;
 using System.Windows.Forms;
 
@@ -14,20 +15,25 @@ namespace VGMToolbox.forms
         public Xsf_SdatExtractorForm(TreeNode pTreeNode): base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = "Nintendo DS SDAT Extractor";
-            this.tbOutput.Text = "Extract SSEQ and STRM from SDATs";
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_SdatExtractor_Title"];
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_SdatExtractor_IntroText"];
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
 
             InitializeComponent();
+
+            this.groupSource.Text =
+                ConfigurationSettings.AppSettings["Form_SdatExtractor_GroupSource"];
+            this.lblDragNDrop.Text =
+                ConfigurationSettings.AppSettings["Form_SdatExtractor_LblDragNDrop"];
         }
 
         private void tbNDS_SdatExtractor_Source_DragDrop(object sender, DragEventArgs e)
         {
             base.initializeProcessing();
-            
-            toolStripStatusLabel1.Text = "SDAT Extraction...Begin";
+
+            toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SdatExtractor_MessageBegin"];
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
@@ -60,13 +66,13 @@ namespace VGMToolbox.forms
         {
             if (e.Cancelled)
             {
-                toolStripStatusLabel1.Text = "SDAT Extraction...Cancelled";
-                tbOutput.Text += "Operation cancelled.";
+                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SdatExtractor_MessageCancel"];
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
             }
             else
             {
                 lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = "SDAT Extraction...Complete";                
+                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SdatExtractor_MessageComplete"];                
             }
 
             // update node color
@@ -77,7 +83,7 @@ namespace VGMToolbox.forms
         {
             if (sdatExtractorWorker != null && sdatExtractorWorker.IsBusy)
             {
-                tbOutput.Text += "CANCEL PENDING...";
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
                 sdatExtractorWorker.CancelAsync();
                 this.errorFound = true;
             }
