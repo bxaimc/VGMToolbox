@@ -71,6 +71,7 @@
     <Compile Include="VGMToolbox\format\util\GbsUtil.cs" />
     <Compile Include="VGMToolbox\format\util\NezPlugUtil.cs" />
     <Compile Include="VGMToolbox\format\util\NsfUtil.cs" />
+    <Compile Include="VGMToolbox\format\util\SdatUtil.cs" />
     <Compile Include="VGMToolbox\format\util\XsfUtil.cs" />
     <Compile Include="VGMToolbox\format\Vgm.cs" />
     <Compile Include="VGMToolbox\format\Wsr.cs" />

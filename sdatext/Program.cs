@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 
+using VGMToolbox.format.util;
 using VGMToolbox.format.sdat;
 
 namespace sdatext
@@ -11,7 +12,6 @@ namespace sdatext
         static void Main(string[] args)
         {
             string filePath;
-            string fileName;
 
             if (args.Length < 1)
             { 
@@ -33,36 +33,15 @@ namespace sdatext
             // open file and extract the sdat
             Console.WriteLine("Extracting SDAT.");
             
-            FileStream fs = null;
-            fileName = Path.GetFileNameWithoutExtension(filePath);
-            string outputPath = Path.Combine(Path.GetDirectoryName(filePath), fileName);
-
             try
             {
-                fs = File.OpenRead(filePath);
-                Sdat sdat = new Sdat();
-
-                sdat.Initialize(fs, filePath);
-                sdat.BuildSmap(outputPath, fileName);
-                sdat.ExtractSseqs(fs, outputPath);
-                sdat.ExtractStrms(fs, outputPath);
-
-
-                fs.Close();
-                fs.Dispose();                           
+                string outputDir = SdatUtil.ExtractSdat(filePath);
+                Console.WriteLine(String.Format("Done!  SDAT extracted to: {0}", outputDir));
             }
             catch (Exception _e)
             {
                 Console.WriteLine(_e.Message);
-
-                if (fs != null)
-                {
-                    fs.Close();
-                    fs.Dispose();
-                }
-            }
-
-            Console.WriteLine("Done!");
+            }            
         }
 
         private static void usage()

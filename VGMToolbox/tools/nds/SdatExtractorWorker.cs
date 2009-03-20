@@ -104,33 +104,7 @@ namespace VGMToolbox.tools.nds
          
             try
             {
-                FileStream fs = File.OpenRead(pPath);
-                Type dataType = FormatUtil.getObjectType(fs);
-
-                if (dataType != null && dataType.Name.Equals("Sdat"))
-                {
-                    string fileName = Path.GetFileNameWithoutExtension(pPath);
-                    string destinationPath =
-                        Path.Combine(Path.GetDirectoryName(pPath), fileName);
-
-                    Sdat sdat = new Sdat();
-
-                    try
-                    {
-                        sdat.Initialize(fs, pPath);
-                        sdat.ExtractSseqs(fs, destinationPath);
-                        sdat.ExtractStrms(fs, destinationPath);
-                        sdat.BuildSmap(destinationPath, fileName);
-                    }
-                    catch (Exception ex)
-                    {
-                        this.progressStruct.Clear();
-                        this.progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message;
-                        ReportProgress(progress, this.progressStruct);                        
-                    }
-                }
-                fs.Close();
-                fs.Dispose();        
+                string outputDir = SdatUtil.ExtractSdat(pPath);
             }
             catch (Exception ex)
             {
