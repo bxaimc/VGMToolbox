@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
 
-using VGMToolbox.format;
 using VGMToolbox.format.util;
 using VGMToolbox.util;
 
@@ -16,9 +12,6 @@ namespace VGMToolbox.tools.xsf
     {
         private int fileCount = 0;
         private int maxFiles = 0;
-
-        private readonly string PROGRAM_PATH =
-            Path.Combine(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "psf2"), "unpkpsf2.exe");
 
         public struct UnpkPsf2Struct
         {
@@ -67,9 +60,7 @@ namespace VGMToolbox.tools.xsf
         }
 
         private void unpackPsf2FromFile(string pPath, DoWorkEventArgs e)
-        {
-            Process unpkPsf2Process = null;
-            
+        {            
             // Report Progress
             int progress = (++fileCount * 100) / maxFiles;
             Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
@@ -79,54 +70,10 @@ namespace VGMToolbox.tools.xsf
 
             try
             {
-                using (FileStream fs = File.OpenRead(pPath))
-                {
-                    Type dataType = FormatUtil.getObjectType(fs);
+                string stdOutput = null;
+                string stdError = null;
 
-                    if (dataType != null && dataType.Name.Equals("Xsf"))
-                    {
-                        Psf2 psf2File = new Psf2();
-                        psf2File.Initialize(fs, pPath);
-
-                        if (psf2File.getFormat().Equals(Psf2.FORMAT_NAME_PSF2))
-                        {
-
-                            string filePath = Path.GetFullPath(pPath);
-                            string outputDir = Path.Combine(Path.GetDirectoryName(filePath), 
-                                Path.GetFileNameWithoutExtension(filePath));
-                            
-                            try
-                            {                                                                
-                                // call unpkpsf2.exe
-                                string arguments = String.Format(" \"{0}\" \"{1}\"", filePath, outputDir);
-                                unpkPsf2Process = new Process();
-                                unpkPsf2Process.StartInfo = new ProcessStartInfo(PROGRAM_PATH, arguments);
-                                unpkPsf2Process.StartInfo.UseShellExecute = false;
-                                unpkPsf2Process.StartInfo.CreateNoWindow = true;
-                                bool isSuccess = unpkPsf2Process.Start();
-                                unpkPsf2Process.WaitForExit();
-                                unpkPsf2Process.Close();
-                                unpkPsf2Process.Dispose();
-                                
-                                // fs.Close();
-                                // psf2File.Unpack(outputDir);
-                            }
-                            catch (Exception ex)
-                            {
-                                if ((unpkPsf2Process != null) && (!unpkPsf2Process.HasExited))
-                                {
-                                    unpkPsf2Process.Close();
-                                    unpkPsf2Process.Dispose();
-                                }
-                                
-                                vProgressStruct = new Constants.ProgressStruct();
-                                vProgressStruct.newNode = null;
-                                vProgressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message;
-                                ReportProgress(progress, vProgressStruct);
-                            }
-                        }
-                    }
-                }
+                string unpackedDir = XsfUtil.UnpackPsf2(pPath, ref stdOutput, ref stdError);                
             }
             catch (Exception ex)
             {

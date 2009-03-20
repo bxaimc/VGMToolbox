@@ -497,9 +497,6 @@
     <Content Include="external\psf2\mkpsf2.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="external\psf2\unpkpsf2.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="external\ssf\seqext.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

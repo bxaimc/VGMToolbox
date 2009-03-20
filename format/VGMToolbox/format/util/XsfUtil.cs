@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Text;
 
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
@@ -12,6 +14,9 @@ namespace VGMToolbox.format.util
 {
     public class XsfUtil
     {
+        static readonly string UNPKPSF2_SOURCE_PATH =
+            Path.Combine(Path.Combine(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "external"), "psf2"), "unpkpsf2.exe");
+        
         public struct Xsf2ExeStruct
         {
             public bool IncludeExtension;
@@ -134,6 +139,52 @@ namespace VGMToolbox.format.util
             }
 
             return time;
+        }
+
+        public static string UnpackPsf2(string pPath, ref string pStandardOutput, ref string pStandardError)
+        {
+            string filePath;
+            string outputDir = null;
+            
+            Process unpkPsf2Process = null;
+
+            using (FileStream fs = File.OpenRead(pPath))
+            {
+                Type dataType = FormatUtil.getObjectType(fs);
+
+                if (dataType != null && dataType.Name.Equals("Xsf"))
+                {
+                    Psf2 psf2File = new Psf2();
+                    psf2File.Initialize(fs, pPath);
+
+                    if (psf2File.getFormat().Equals(Psf2.FORMAT_NAME_PSF2))
+                    {
+                        filePath = Path.GetFullPath(pPath);
+                        outputDir = Path.Combine(Path.GetDirectoryName(filePath),
+                            Path.GetFileNameWithoutExtension(filePath));
+
+                        // call unpkpsf2.exe
+                        string arguments = String.Format(" \"{0}\" \"{1}\"", filePath, outputDir);
+                        unpkPsf2Process = new Process();
+                        unpkPsf2Process.StartInfo = new ProcessStartInfo(UNPKPSF2_SOURCE_PATH, arguments);
+                        unpkPsf2Process.StartInfo.UseShellExecute = false;
+                        unpkPsf2Process.StartInfo.CreateNoWindow = true;
+
+                        unpkPsf2Process.StartInfo.RedirectStandardError = true;
+                        unpkPsf2Process.StartInfo.RedirectStandardOutput = true;
+
+                        bool isSuccess = unpkPsf2Process.Start();
+                        pStandardOutput = unpkPsf2Process.StandardOutput.ReadToEnd();
+                        pStandardError = unpkPsf2Process.StandardError.ReadToEnd();
+                        
+                        unpkPsf2Process.WaitForExit();                                                
+                        unpkPsf2Process.Close();
+                        unpkPsf2Process.Dispose();
+                    }
+                }
+            }
+
+            return outputDir;
         }
 
         // PSF
