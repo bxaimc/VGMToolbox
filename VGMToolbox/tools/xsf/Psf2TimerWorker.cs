@@ -19,9 +19,6 @@ namespace VGMToolbox.tools.xsf
         Dictionary<string, string> extractedLibHash;
         Constants.ProgressStruct progressStruct;
 
-
-        private readonly string UNPKPSF2_PROGRAM_PATH =
-            Path.Combine(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "psf2"), "unpkpsf2.exe");
         private const string BATCH_FILE_NAME = "!timing_batch.bat";
 
         public struct Psf2TimerStruct
@@ -74,21 +71,20 @@ namespace VGMToolbox.tools.xsf
 
         private void timePsf2FromFile(string pPath, DoWorkEventArgs e)
         {
-            Process unpkPsf2Process = null;
             string outputSqFileName = null;
             string[] libPaths;            
             string[] sqFiles;
             string[] iniFiles;
             Psf2.Psf2IniSqIrxStruct psf2IniStruct;
             
-            string arguments;
-            bool isSuccess;
-
             string filePath;
             string fileDir;
             string fileName;
             string outputDir;
             string libOutputDir;
+
+            string unpkOutput = null;
+            string unpkError = null;
 
             Ps2SequenceData.Ps2SqTimingStruct psf2Time;
             int minutes;
@@ -124,17 +120,8 @@ namespace VGMToolbox.tools.xsf
                             outputDir = Path.Combine(fileDir, fileName);
                             
                             try
-                            {                                                                
-                                // call unpkpsf2.exe
-                                arguments = String.Format(" \"{0}\" \"{1}\"", filePath, outputDir);
-                                unpkPsf2Process = new Process();
-                                unpkPsf2Process.StartInfo = new ProcessStartInfo(UNPKPSF2_PROGRAM_PATH, arguments);
-                                unpkPsf2Process.StartInfo.UseShellExecute = false;
-                                unpkPsf2Process.StartInfo.CreateNoWindow = true;
-                                isSuccess = unpkPsf2Process.Start();
-                                unpkPsf2Process.WaitForExit();
-                                unpkPsf2Process.Close();
-                                unpkPsf2Process.Dispose();
+                            {
+                                outputDir = XsfUtil.UnpackPsf2(filePath, ref unpkOutput, ref unpkError);
 
                                 // parse ini
                                 iniFiles = Directory.GetFiles(outputDir, "PSF2.INI", SearchOption.AllDirectories);
@@ -174,17 +161,7 @@ namespace VGMToolbox.tools.xsf
 
                                         if (!extractedLibHash.ContainsKey(libPath))
                                         {
-                                            // call unpkpsf2.exe
-                                            arguments = String.Format(" \"{0}\" \"{1}\"", libPath, libOutputDir);
-                                            unpkPsf2Process = new Process();
-                                            unpkPsf2Process.StartInfo = new ProcessStartInfo(UNPKPSF2_PROGRAM_PATH, arguments);
-                                            unpkPsf2Process.StartInfo.UseShellExecute = false;
-                                            unpkPsf2Process.StartInfo.CreateNoWindow = true;
-                                            isSuccess = unpkPsf2Process.Start();
-                                            unpkPsf2Process.WaitForExit();
-                                            unpkPsf2Process.Close();
-                                            unpkPsf2Process.Dispose();
-
+                                            libOutputDir = XsfUtil.UnpackPsf2(libPath, ref unpkOutput, ref unpkError);                                                                                        
                                             extractedLibHash.Add(libPath, libOutputDir);
                                         }
 
@@ -261,14 +238,6 @@ namespace VGMToolbox.tools.xsf
                             }
                             catch (Exception ex)
                             {
-                                /*
-                                if ((unpkPsf2Process != null) && (!unpkPsf2Process.HasExited))
-                                {
-                                    unpkPsf2Process.Close();
-                                    unpkPsf2Process.Dispose();
-                                }
-                                */
-
                                 this.progressStruct.Clear();
                                 progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message + Environment.NewLine;
                                 ReportProgress(progress, progressStruct);

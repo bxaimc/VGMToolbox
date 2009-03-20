@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
-using System.Text;
-using System.Windows.Forms;
 
 using VGMToolbox.format;
 using VGMToolbox.format.util;
@@ -19,10 +15,6 @@ namespace VGMToolbox.tools.xsf
         private int maxFiles = 0;
         Dictionary<string, string> extractedLibHash;
         Constants.ProgressStruct progressStruct;
-
-
-        private readonly string PROGRAM_PATH =
-            Path.Combine(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "psf2"), "unpkpsf2.exe");
 
         public struct Psf2SqExtractorStruct
         {
@@ -74,21 +66,20 @@ namespace VGMToolbox.tools.xsf
 
         private void extractSqFromFile(string pPath, DoWorkEventArgs e)
         {
-            Process unpkPsf2Process = null;
             string outputSqFileName;
             string[] libPaths;            
             string[] sqFiles;
             string[] iniFiles;
             Psf2.Psf2IniSqIrxStruct psf2IniStruct;
             
-            string arguments;
-            bool isSuccess;
-
             string filePath;
             string fileDir;
             string fileName;
             string outputDir;
             string libOutputDir;
+
+            string unpkOutput = null;
+            string unpkError = null;
 
             // Report Progress
             int progress = (++fileCount * 100) / maxFiles;
@@ -116,18 +107,9 @@ namespace VGMToolbox.tools.xsf
                             outputDir = Path.Combine(fileDir, fileName);
                             
                             try
-                            {                                                                
-                                // call unpkpsf2.exe
-                                arguments = String.Format(" \"{0}\" \"{1}\"", filePath, outputDir);
-                                unpkPsf2Process = new Process();
-                                unpkPsf2Process.StartInfo = new ProcessStartInfo(PROGRAM_PATH, arguments);
-                                unpkPsf2Process.StartInfo.UseShellExecute = false;
-                                unpkPsf2Process.StartInfo.CreateNoWindow = true;
-                                isSuccess = unpkPsf2Process.Start();
-                                unpkPsf2Process.WaitForExit();
-                                unpkPsf2Process.Close();
-                                unpkPsf2Process.Dispose();
-
+                            {
+                                outputDir = XsfUtil.UnpackPsf2(filePath, ref unpkOutput, ref unpkError);
+                                
                                 // parse ini
                                 iniFiles = Directory.GetFiles(outputDir, "PSF2.INI", SearchOption.AllDirectories);
                                 using (FileStream iniFs = File.Open(iniFiles[0], FileMode.Open, FileAccess.Read))
@@ -168,17 +150,7 @@ namespace VGMToolbox.tools.xsf
 
                                         if (!extractedLibHash.ContainsKey(libPath))
                                         {
-                                            // call unpkpsf2.exe
-                                            arguments = String.Format(" \"{0}\" \"{1}\"", libPath, libOutputDir);
-                                            unpkPsf2Process = new Process();
-                                            unpkPsf2Process.StartInfo = new ProcessStartInfo(PROGRAM_PATH, arguments);
-                                            unpkPsf2Process.StartInfo.UseShellExecute = false;
-                                            unpkPsf2Process.StartInfo.CreateNoWindow = true;
-                                            isSuccess = unpkPsf2Process.Start();
-                                            unpkPsf2Process.WaitForExit();
-                                            unpkPsf2Process.Close();
-                                            unpkPsf2Process.Dispose();
-
+                                            libOutputDir = XsfUtil.UnpackPsf2(libPath, ref unpkOutput, ref unpkError);                                           
                                             extractedLibHash.Add(libPath, libOutputDir);
                                         }
 
@@ -210,12 +182,6 @@ namespace VGMToolbox.tools.xsf
                             }
                             catch (Exception ex)
                             {
-                                if ((unpkPsf2Process != null) && (!unpkPsf2Process.HasExited))
-                                {
-                                    unpkPsf2Process.Close();
-                                    unpkPsf2Process.Dispose();
-                                }
-
                                 this.progressStruct.Clear();
                                 progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message;
                                 ReportProgress(progress, progressStruct);
