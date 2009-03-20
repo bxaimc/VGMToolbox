@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Text;
 
-using VGMToolbox.auditing;
-using VGMToolbox.format;
-using VGMToolbox.format.sdat;
 using VGMToolbox.format.util;
 using VGMToolbox.util;
 

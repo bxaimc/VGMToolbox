@@ -1,9 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 
 using VGMToolbox.format.util;
-using VGMToolbox.format.sdat;
 
 namespace sdatext
 {

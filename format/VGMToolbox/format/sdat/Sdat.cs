@@ -453,7 +453,6 @@ namespace VGMToolbox.format.sdat
 
         private void ZeroOutSequences(int pStartSequence, int pEndSequence)
         {
-            UInt16 bankId;
             bool checkSequences = false;
             bool[] sseqIsUsed = new bool[infoSection.SdatInfoSseqs.Length];
 
