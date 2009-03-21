@@ -31,8 +31,14 @@ namespace VGMToolbox.format.util
                         
                         Sdat sdat = new Sdat();
                         sdat.Initialize(fs, fullPath);
+
+                        sdat.ExtractBanks(fs, outputPath);
                         sdat.ExtractSseqs(fs, outputPath);
+                        sdat.ExtractSeqArc(fs, outputPath);
                         sdat.ExtractStrms(fs, outputPath);
+                        sdat.ExtractWaveArcs(fs, outputPath);
+                        
+                        
                         sdat.BuildSmap(outputPath, filePrefix);
                     }
                 }                                

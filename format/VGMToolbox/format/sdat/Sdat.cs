@@ -297,7 +297,6 @@ namespace VGMToolbox.format.sdat
 
         public void ExtractSseqs(Stream pStream, string pOutputPath)
         {
-            BinaryWriter bw;
             string fileName = String.Empty;
 
             int i = 0;
@@ -321,32 +320,15 @@ namespace VGMToolbox.format.sdat
                         fileName = String.Format("SSEQ{0}.sseq", fileId.ToString("X4"));
                     }
 
-                    string outputDirectory = Path.Combine(pOutputPath, "seq");
+                    string outputDirectory = Path.Combine(pOutputPath, "Seq");
                     if (!Directory.Exists(outputDirectory))
                     {
                         Directory.CreateDirectory(outputDirectory);
                     }
                     fileName = Path.Combine(outputDirectory, fileName);
 
-                    int read = 0;
-                    int totalRead = 0;
-                    int maxRead;
-                    byte[] data = new byte[4096];
+                    ParseFile.ExtractChunkToFile(pStream, fileOffset, fileSize, fileName);
 
-                    pStream.Seek(fileOffset, SeekOrigin.Begin);
-                    maxRead = fileSize < data.Length ? fileSize : data.Length;
-
-                    bw = new BinaryWriter(File.Create(fileName));
-
-                    while ((maxRead > 0) && (read = pStream.Read(data, 0, maxRead)) > 0)
-                    {
-                        bw.Write(data, 0, read);
-
-                        totalRead += read;
-                        maxRead = (fileSize - totalRead) < data.Length ? (fileSize - totalRead) : data.Length;
-                    }
-
-                    bw.Close();
                 } // if (s.fileId != null)
                 
                 i++;
@@ -354,7 +336,6 @@ namespace VGMToolbox.format.sdat
         }
         public void ExtractStrms(Stream pStream, string pOutputPath)
         {
-            BinaryWriter bw;
             string fileName = String.Empty;
 
             int i = 0;
@@ -379,32 +360,131 @@ namespace VGMToolbox.format.sdat
                         fileName = String.Format("STRM{0}.strm", fileId.ToString("X4"));
                     }
 
-                    string outputDirectory = Path.Combine(pOutputPath, "strm");
+                    string outputDirectory = Path.Combine(pOutputPath, "Strm");
                     if (!Directory.Exists(outputDirectory))
                     {
                         Directory.CreateDirectory(outputDirectory);
                     }
                     fileName = Path.Combine(outputDirectory, fileName);
 
-                    int read = 0;
-                    int totalRead = 0;
-                    int maxRead;
-                    byte[] data = new byte[4096];
+                    ParseFile.ExtractChunkToFile(pStream, fileOffset, fileSize, fileName);
+                }
 
-                    pStream.Seek(fileOffset, SeekOrigin.Begin);
-                    maxRead = fileSize < data.Length ? fileSize : data.Length;
+                i++;
+            }
+        }
+        public void ExtractSeqArc(Stream pStream, string pOutputPath)
+        {
+            string fileName = String.Empty;
 
-                    bw = new BinaryWriter(File.Create(fileName));
+            int i = 0;
+            foreach (SdatInfoSection.SdatInfoSeqArc s in infoSection.SdatInfoSeqArcs)
+            {
 
-                    while ((maxRead > 0) && (read = pStream.Read(data, 0, maxRead)) > 0)
+                if (s.fileId != null)
+                {
+                    // get file information
+                    int fileId = BitConverter.ToInt16(s.fileId, 0);
+                    int fileOffset = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
+                    int fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
+
+                    // get filename, if exists                                
+                    if ((symbSection != null) && (i < symbSection.SymbSeqArcFileNames.Length) &&
+                        (!String.IsNullOrEmpty(symbSection.SymbSeqArcFileNames[i])))
                     {
-                        bw.Write(data, 0, read);
-
-                        totalRead += read;
-                        maxRead = (fileSize - totalRead) < data.Length ? (fileSize - totalRead) : data.Length;
+                        fileName = symbSection.SymbSeqArcFileNames[i] + ".ssar";
+                    }
+                    else
+                    {
+                        fileName = String.Format("SSAR{0}.ssar", fileId.ToString("X4"));
                     }
 
-                    bw.Close();
+                    string outputDirectory = Path.Combine(pOutputPath, "SeqArc");
+                    if (!Directory.Exists(outputDirectory))
+                    {
+                        Directory.CreateDirectory(outputDirectory);
+                    }
+                    fileName = Path.Combine(outputDirectory, fileName);
+
+                    ParseFile.ExtractChunkToFile(pStream, fileOffset, fileSize, fileName);
+                }
+
+                i++;
+            }
+        }
+        public void ExtractBanks(Stream pStream, string pOutputPath)
+        {
+            string fileName = String.Empty;
+
+            int i = 0;
+            foreach (SdatInfoSection.SdatInfoBank s in infoSection.SdatInfoBanks)
+            {
+
+                if (s.fileId != null)
+                {
+                    // get file information
+                    int fileId = BitConverter.ToInt16(s.fileId, 0);
+                    int fileOffset = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
+                    int fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
+
+                    // get filename, if exists                                
+                    if ((symbSection != null) && (i < symbSection.SymbBankFileNames.Length) &&
+                        (!String.IsNullOrEmpty(symbSection.SymbBankFileNames[i])))
+                    {
+                        fileName = symbSection.SymbBankFileNames[i] + ".sbnk";
+                    }
+                    else
+                    {
+                        fileName = String.Format("SBNK{0}.sbnk", fileId.ToString("X4"));
+                    }
+
+                    string outputDirectory = Path.Combine(pOutputPath, "Bank");
+                    if (!Directory.Exists(outputDirectory))
+                    {
+                        Directory.CreateDirectory(outputDirectory);
+                    }
+                    fileName = Path.Combine(outputDirectory, fileName);
+
+                    ParseFile.ExtractChunkToFile(pStream, fileOffset, fileSize, fileName);
+                }
+
+                i++;
+            }
+        }
+        public void ExtractWaveArcs(Stream pStream, string pOutputPath)
+        {
+            string fileName = String.Empty;
+
+            int i = 0;
+            foreach (SdatInfoSection.SdatInfoWaveArc s in infoSection.SdatInfoWaveArcs)
+            {
+
+                if (s.fileId != null)
+                {
+                    // get file information
+                    int fileId = BitConverter.ToInt16(s.fileId, 0);
+                    int fileOffset = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
+                    int fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
+
+                    // get filename, if exists                                
+                    if ((symbSection != null) && (i < symbSection.SymbWaveArcFileNames.Length) &&
+                        (!String.IsNullOrEmpty(symbSection.SymbWaveArcFileNames[i])))
+                    {
+                        fileName = symbSection.SymbWaveArcFileNames[i] + ".swar";
+                    }
+                    else
+                    {
+                        fileName = String.Format("SWAR{0}.swar", fileId.ToString("X4"));
+                    }
+
+                    string outputDirectory = Path.Combine(pOutputPath, "WaveArc");
+                    if (!Directory.Exists(outputDirectory))
+                    {
+                        Directory.CreateDirectory(outputDirectory);
+                    }
+                    fileName = Path.Combine(outputDirectory, fileName);
+
+                    ParseFile.ExtractChunkToFile(pStream, fileOffset, fileSize, fileName);
                 }
 
                 i++;
