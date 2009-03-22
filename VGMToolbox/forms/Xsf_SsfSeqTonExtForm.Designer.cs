@@ -43,31 +43,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 422);
-            this.pnlLabels.Size = new System.Drawing.Size(874, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 512);
+            this.pnlLabels.Size = new System.Drawing.Size(846, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(874, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(846, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 345);
-            this.tbOutput.Size = new System.Drawing.Size(874, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 435);
+            this.tbOutput.Size = new System.Drawing.Size(846, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 325);
-            this.pnlButtons.Size = new System.Drawing.Size(874, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 415);
+            this.pnlButtons.Size = new System.Drawing.Size(846, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(814, 0);
+            this.btnCancel.Location = new System.Drawing.Point(786, 0);
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(754, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(726, 0);
             // 
             // lblDragNDrop
             // 
@@ -95,7 +95,7 @@
             this.grpSource.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSource.Location = new System.Drawing.Point(0, 23);
             this.grpSource.Name = "grpSource";
-            this.grpSource.Size = new System.Drawing.Size(874, 63);
+            this.grpSource.Size = new System.Drawing.Size(846, 63);
             this.grpSource.TabIndex = 7;
             this.grpSource.TabStop = false;
             this.grpSource.Text = "Source Files";
@@ -116,7 +116,7 @@
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox2.Location = new System.Drawing.Point(0, 86);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(874, 40);
+            this.groupBox2.Size = new System.Drawing.Size(846, 40);
             this.groupBox2.TabIndex = 9;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Options";
@@ -135,7 +135,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(874, 463);
+            this.ClientSize = new System.Drawing.Size(846, 553);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.lblAuthor);
             this.Controls.Add(this.grpSource);

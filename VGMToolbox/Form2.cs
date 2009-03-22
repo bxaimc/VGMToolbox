@@ -517,13 +517,27 @@ namespace VGMToolbox
             TreeNode ext_OffsetFinderNode =
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_OffsetFinderNode"]);
 
-            // Add SDAT Extractor Form
+            // Add Offset Finder Form
             Extract_OffsetFinderForm extract_OffsetFinderForm = new Extract_OffsetFinderForm(ext_OffsetFinderNode);
             this.splitContainer1.Panel2.Controls.Add(extract_OffsetFinderForm);
 
             // Set Tag for displaying the Form
             nodeTag.formClass = extract_OffsetFinderForm.GetType().Name;
             ext_OffsetFinderNode.Tag = nodeTag;
+
+
+            // CD-XA Extractor
+            TreeNode ext_ExtractCdxaNode =
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_ExtractCdxaNode"]);
+
+            // Add Cdxa Extractor Form
+            Extract_ExtractCdxaForm extract_ExtractCdxaForm = new Extract_ExtractCdxaForm(ext_ExtractCdxaNode);
+            this.splitContainer1.Panel2.Controls.Add(extract_ExtractCdxaForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.formClass = extract_ExtractCdxaForm.GetType().Name;
+            ext_ExtractCdxaNode.Tag = nodeTag;
+
 
             ///////
             // NDS
@@ -573,13 +587,14 @@ namespace VGMToolbox
             ext_PcNode.Tag = nodeTag;
 
             ext_GenericNode.Nodes.Add(ext_OffsetFinderNode);
+            ext_GenericNode.Nodes.Add(ext_ExtractCdxaNode);
             ext_RootNode.Nodes.Add(ext_GenericNode);
             
             ext_NdsNode.Nodes.Add(ext_SdatExtractorNode);
             ext_NdsNode.Nodes.Add(ext_SdatFinderNode);            
             ext_RootNode.Nodes.Add(ext_NdsNode);
             
-            ext_RootNode.Nodes.Add(ext_PcNode);
+            // ext_RootNode.Nodes.Add(ext_PcNode);
 
             return ext_RootNode;
         }
