@@ -420,7 +420,23 @@ namespace VGMToolbox
             // Set Tag for displaying the Form
             nodeTag.formClass = xsf_Bin2PsfFrontEndForm.GetType().Name;
             xsf_Bin2PsfFENode.Tag = nodeTag;
-                        
+             
+            //////////////////////
+            // PSF SEQ Extractor
+            //////////////////////
+            TreeNode xsf_SeqExtractNode =
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SeqExtractorNode"]);
+
+            // Add Form
+            Xsf_PsxSeqExtractForm xsf_PsxSeqExtractForm =
+                new Xsf_PsxSeqExtractForm(xsf_SeqExtractNode);
+            this.splitContainer1.Panel2.Controls.Add(xsf_PsxSeqExtractForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.formClass = xsf_PsxSeqExtractForm.GetType().Name;
+            xsf_SeqExtractNode.Tag = nodeTag;
+
+
             // SSFMAKE
 
             TreeNode xsf_SsfMakeFENode = 
@@ -473,7 +489,8 @@ namespace VGMToolbox
 
             psf_RootNode.NodeFont = this.treeviewBoldFont;
             psf_RootNode.Tag = nodeTag;
-            psf_RootNode.Nodes.Add(xsf_Bin2PsfFENode);                        
+            psf_RootNode.Nodes.Add(xsf_Bin2PsfFENode);
+            psf_RootNode.Nodes.Add(xsf_SeqExtractNode);
             xsf_RootNode.Nodes.Add(psf_RootNode);
 
             psf2_RootNode.NodeFont = this.treeviewBoldFont;

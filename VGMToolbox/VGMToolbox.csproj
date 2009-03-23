@@ -219,6 +219,12 @@
     <Compile Include="forms\Xsf_Psf2ToPsf2LibForm.Designer.cs">
       <DependentUpon>Xsf_Psf2ToPsf2LibForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\Xsf_PsxSeqExtractForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\Xsf_PsxSeqExtractForm.Designer.cs">
+      <DependentUpon>Xsf_PsxSeqExtractForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\Xsf_SdatExtractorForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -452,6 +458,9 @@
     <Compile Include="tools\xsf\Psf2toPsf2LibWorker.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\xsf\PsxSeqExtractWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\xsf\Rip2sfWorker.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -568,6 +577,10 @@
     </Content>
     <EmbeddedResource Include="forms\Extract_ExtractCdxaForm.resx">
       <DependentUpon>Extract_ExtractCdxaForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\Xsf_PsxSeqExtractForm.resx">
+      <DependentUpon>Xsf_PsxSeqExtractForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\bolo2.gif" />

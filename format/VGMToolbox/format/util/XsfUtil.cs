@@ -230,14 +230,29 @@ namespace VGMToolbox.format.util
             long offsetLocation = -1;
             long seqEndLocation = -1;
 
+            int i = 0;
+
             using (FileStream fs = File.Open(pPath, FileMode.Open, FileAccess.Read))
             {
+                outputPath = Path.Combine(Path.GetDirectoryName(pPath), Path.GetFileNameWithoutExtension(pPath));
+
+                if (!Directory.Exists(outputPath))
+                {
+                    Directory.CreateDirectory(outputPath);
+                }
+
                 while ((offsetLocation = ParseFile.GetNextOffset(fs, previousOffset, PsxSequence.ASCII_SIGNATURE)) > -1)
                 {
-                    // can modify to use spec values
+                    // need to add SEP support
                     seqEndLocation = ParseFile.GetNextOffset(fs, offsetLocation, PsxSequence.END_SEQUENCE);
+                    seqEndLocation += PsxSequence.END_SEQUENCE.Length;  // add length to include the end bytes
 
-                    previousOffset = seqEndLocation + PsxSequence.ASCII_SIGNATURE.Length;
+                    // extract SEQ                    
+                    ParseFile.ExtractChunkToFile(fs, offsetLocation, (int)(seqEndLocation - offsetLocation), 
+                        Path.Combine(outputPath, (i.ToString("X8") + PsxSequence.FILE_EXTENSION)));
+
+                    previousOffset = seqEndLocation + PsxSequence.END_SEQUENCE.Length;
+                    i++;
                 }
             }
 

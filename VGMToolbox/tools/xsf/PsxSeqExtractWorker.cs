@@ -1,24 +1,23 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
-using System.Windows.Forms;
 
 using VGMToolbox.format.util;
 using VGMToolbox.util;
 
 namespace VGMToolbox.tools.xsf
 {
-    class UnpkPsf2Worker : BackgroundWorker
+    public partial class PsxSeqExtractWorker : BackgroundWorker
     {
         private int fileCount = 0;
         private int maxFiles = 0;
 
-        public struct UnpkPsf2Struct
+        public struct PsxSeqExtractStruct
         {
             public string[] sourcePaths;
         }
 
-        public UnpkPsf2Worker()
+        public PsxSeqExtractWorker()
         {
             fileCount = 0;
             maxFiles = 0;
@@ -27,17 +26,17 @@ namespace VGMToolbox.tools.xsf
             WorkerSupportsCancellation = true;
         }
 
-        private void unpackPsf2s(UnpkPsf2Struct pUnpkPsf2Struct, DoWorkEventArgs e)
+        private void extractSeqs(PsxSeqExtractStruct pPsxSeqExtractStruct, DoWorkEventArgs e)
         {
-            maxFiles = FileUtil.GetFileCount(pUnpkPsf2Struct.sourcePaths);
+            maxFiles = FileUtil.GetFileCount(pPsxSeqExtractStruct.sourcePaths);
 
-            foreach (string path in pUnpkPsf2Struct.sourcePaths)
+            foreach (string path in pPsxSeqExtractStruct.sourcePaths)
             {
                 if (File.Exists(path))
                 {
                     if (!CancellationPending)
                     {
-                        this.unpackPsf2FromFile(path, e);
+                        this.extractSeqsFromFile(path, e);
                     }
                     else
                     {
@@ -47,7 +46,7 @@ namespace VGMToolbox.tools.xsf
                 }
                 else if (Directory.Exists(path))
                 {
-                    this.unpackPsf2FromDirectory(path, e);
+                    this.extractSeqsFromDirectory(path, e);
 
                     if (CancellationPending)
                     {
@@ -59,7 +58,7 @@ namespace VGMToolbox.tools.xsf
             return;
         }
 
-        private void unpackPsf2FromFile(string pPath, DoWorkEventArgs e)
+        private void extractSeqsFromFile(string pPath, DoWorkEventArgs e)
         {            
             // Report Progress
             int progress = (++fileCount * 100) / maxFiles;
@@ -69,11 +68,8 @@ namespace VGMToolbox.tools.xsf
             ReportProgress(progress, vProgressStruct);
 
             try
-            {                
-                string stdOutput = null;
-                string stdError = null;
-
-                string unpackedDir = XsfUtil.UnpackPsf2(pPath, ref stdOutput, ref stdError);                
+            {
+                XsfUtil.ExtractPsxSequences(pPath);
             }
             catch (Exception ex)
             {
@@ -84,13 +80,13 @@ namespace VGMToolbox.tools.xsf
             }
         }    
 
-        private void unpackPsf2FromDirectory(string pPath, DoWorkEventArgs e)
+        private void extractSeqsFromDirectory(string pPath, DoWorkEventArgs e)
         {
             foreach (string d in Directory.GetDirectories(pPath))
             {
                 if (!CancellationPending)
                 {
-                    this.unpackPsf2FromDirectory(d, e);
+                    this.extractSeqsFromDirectory(d, e);
                 }
                 else
                 {
@@ -102,7 +98,7 @@ namespace VGMToolbox.tools.xsf
             {
                 if (!CancellationPending)
                 {
-                    this.unpackPsf2FromFile(f, e);
+                    this.extractSeqsFromFile(f, e);
                 }
                 else
                 {
@@ -114,9 +110,9 @@ namespace VGMToolbox.tools.xsf
 
         protected override void OnDoWork(DoWorkEventArgs e)
         {
-            UnpkPsf2Struct unpkPsf2Struct = (UnpkPsf2Struct)e.Argument;
+            PsxSeqExtractStruct psxSeqExtractStruct = (PsxSeqExtractStruct)e.Argument;
 
-            this.unpackPsf2s(unpkPsf2Struct, e);
-        }
+            this.extractSeqs(psxSeqExtractStruct, e);
+        }        
     }
 }
