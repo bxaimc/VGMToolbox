@@ -21,16 +21,16 @@ namespace VGMToolbox.format
 
         private const int READ_CHUNK_SIZE = 71680;
 
-        private const ushort VERSION_2SF = 0x24;
-        private const ushort VERSION_DSF = 0x12;
-        private const ushort VERSION_GSF = 0x22;
-        private const ushort VERSION_MDSF = 0x13;
-        private const ushort VERSION_PSF1 = 0x01;
-        private const ushort VERSION_PSF2 = 0x02;
-        private const ushort VERSION_QSF = 0x41;
-        private const ushort VERSION_SNSF = 0x23;
-        private const ushort VERSION_SSF = 0x11;
-        private const ushort VERSION_USF = 0x21;
+        public const ushort VERSION_2SF = 0x24;
+        public const ushort VERSION_DSF = 0x12;
+        public const ushort VERSION_GSF = 0x22;
+        public const ushort VERSION_MDSF = 0x13;
+        public const ushort VERSION_PSF1 = 0x01;
+        public const ushort VERSION_PSF2 = 0x02;
+        public const ushort VERSION_QSF = 0x41;
+        public const ushort VERSION_SNSF = 0x23;
+        public const ushort VERSION_SSF = 0x11;
+        public const ushort VERSION_USF = 0x21;
 
         public const string FORMAT_NAME_PSF2 = "PSF2";
         public const string FORMAT_NAME_2SF = "2SF";

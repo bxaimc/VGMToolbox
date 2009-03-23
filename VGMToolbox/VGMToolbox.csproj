@@ -500,9 +500,6 @@
     <Content Include="credits.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="external\bin2psf.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="external\psf2\mkpsf2.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

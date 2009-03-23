@@ -16,6 +16,8 @@ namespace VGMToolbox.format.util
     {
         static readonly string UNPKPSF2_SOURCE_PATH =
             Path.Combine(Path.Combine(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "external"), "psf2"), "unpkpsf2.exe");
+        static readonly string BIN2PSF_SOURCE_PATH =
+            Path.Combine(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "external"), "bin2psf.exe");
         
         public struct Xsf2ExeStruct
         {
@@ -113,6 +115,33 @@ namespace VGMToolbox.format.util
             } // using (FileStream fs = File.OpenRead(pPath))       
 
             return outputFile;        
+        }
+
+        public static void Bin2Psf(string pExtension, int pVersionByte, string pPath, 
+            ref string pStandardOutput, ref string pStandardError)
+        {
+            Process bin2PsfProcess = null;
+            string filePath = Path.GetFullPath(pPath);
+
+            // call bin2psf.exe
+            string arguments = String.Format(" \"{0}\" {1} \"{2}\"", pExtension, pVersionByte.ToString(), filePath);
+            bin2PsfProcess = new Process();
+            bin2PsfProcess.StartInfo = new ProcessStartInfo(BIN2PSF_SOURCE_PATH, arguments);
+            bin2PsfProcess.StartInfo.UseShellExecute = false;
+            bin2PsfProcess.StartInfo.CreateNoWindow = true;
+
+            bin2PsfProcess.StartInfo.RedirectStandardError = true;
+            bin2PsfProcess.StartInfo.RedirectStandardOutput = true;
+
+            bool isSuccess = bin2PsfProcess.Start();
+            pStandardOutput = bin2PsfProcess.StandardOutput.ReadToEnd();
+            pStandardError = bin2PsfProcess.StandardError.ReadToEnd();
+
+            bin2PsfProcess.WaitForExit();
+            bin2PsfProcess.Close();
+            bin2PsfProcess.Dispose();
+
+            // return outputDir;        
         }
 
         // PSF2

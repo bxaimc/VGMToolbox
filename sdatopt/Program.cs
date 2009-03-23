@@ -16,9 +16,6 @@ namespace sdatopt
     class Program
     {
         private static readonly string APPLICATION_PATH = Assembly.GetExecutingAssembly().Location;
-        private static readonly string BIN2PSF_SOURCE_PATH =
-            Path.Combine(Path.Combine(Path.GetDirectoryName(APPLICATION_PATH), "helper"), "bin2psf.exe");
-
         
         static void Main(string[] args)
         {
@@ -236,24 +233,14 @@ namespace sdatopt
                             FileUtil.ReplaceFileChunk(extractedSdats[0], 0, fi.Length, decompressedDataPath, sdatOffset);
 
                             // rebuild 2sf
-                            Console.WriteLine("Rebuilding 2sf File: Copying bin2psf.exe to working dir.");
-                            string bin2PsfDestinationPath = Path.Combine(Path.GetDirectoryName(decompressedDataPath), Path.GetFileName(BIN2PSF_SOURCE_PATH));
-                            File.Copy(BIN2PSF_SOURCE_PATH, bin2PsfDestinationPath, true);
+                            Console.WriteLine("Rebuilding 2sf File.");
 
-                            Console.WriteLine("Rebuilding 2sf File: Executing bin2psf.exe.");
-                            StringBuilder bin2PsfArguments = new StringBuilder();
-                            bin2PsfArguments.AppendFormat(" {0} 36 \"{1}\"", Path.GetExtension(filename).Substring(1), Path.GetFileName(decompressedDataPath));
-                            Process bin2PsfProcess = new Process();
-                            bin2PsfProcess.StartInfo = new ProcessStartInfo(bin2PsfDestinationPath, bin2PsfArguments.ToString());
-                            bin2PsfProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(decompressedDataPath);
-                            bin2PsfProcess.StartInfo.UseShellExecute = false;
-                            bin2PsfProcess.StartInfo.CreateNoWindow = true;
-                            bin2PsfProcess.Start();
-                            bin2PsfProcess.WaitForExit();
-
-                            Console.WriteLine("Rebuilding 2sf File: Deleting bin2psf.exe.");
-                            File.Delete(bin2PsfDestinationPath);
-
+                            string bin2PsfStdOut = String.Empty;
+                            string bin2PsfStdErr = String.Empty;
+                            
+                            XsfUtil.Bin2Psf(Path.GetExtension(filename).Substring(1), (int)Xsf.VERSION_2SF,
+                                decompressedDataPath, ref bin2PsfStdOut, ref bin2PsfStdErr);
+                            
                             Console.WriteLine("Cleaning up intermediate files.");
                             File.Copy(Path.ChangeExtension(decompressedDataPath, Path.GetExtension(filename)), sdatOptimizingPath, true);
                             File.Delete(Path.ChangeExtension(decompressedDataPath, Path.GetExtension(filename)));

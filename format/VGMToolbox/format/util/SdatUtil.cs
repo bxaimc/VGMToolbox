@@ -137,23 +137,27 @@ namespace VGMToolbox.format.util
             }
 
             for (int i = 0; i < pSwar.SampleOffsets.Length; i++)
-            {            
-                Swav.SwavInfo swavInfo = Swav.GetSwavInfo(pStream, pSwar.SampleOffsets[i]);
-                UInt32 fileSize = swavInfo.NonLoopLength * 4;
-
-                outputFileName = Path.Combine(pOutputPath, i.ToString("X2") + Swav.FILE_EXTENSION);
-
-                using (BinaryWriter bw = new BinaryWriter(File.Open(outputFileName, FileMode.Create, FileAccess.Write)))
+            {
+                if (pSwar.SampleOffsets[i] > 0)
                 {
-                    bw.Write(Swav.ASCII_SIGNATURE);
-                    bw.Write(BitConverter.GetBytes(fileSize + 0x10 + 0x08 + Swav.SWAV_INFO_SIZE));
-                    bw.Write(BitConverter.GetBytes((UInt16)0x10));
-                    bw.Write(BitConverter.GetBytes((UInt16)0x01));
+                    Swav.SwavInfo swavInfo = Swav.GetSwavInfo(pStream, pSwar.SampleOffsets[i]);
+                    UInt32 fileSize = swavInfo.NonLoopLength * 4;
 
-                    bw.Write(Swav.DATA_SIGNATURE);
-                    bw.Write(BitConverter.GetBytes(fileSize + 0x08 + Swav.SWAV_INFO_SIZE));
-                    bw.Write(ParseFile.parseSimpleOffset(pStream, pSwar.SampleOffsets[i], (int) Swav.SWAV_INFO_SIZE));
-                    bw.Write(ParseFile.parseSimpleOffset(pStream, pSwar.SampleOffsets[i] + Swav.SWAV_INFO_SIZE, (int) fileSize));
+                    outputFileName = Path.Combine(pOutputPath, i.ToString("X2") + Swav.FILE_EXTENSION);
+
+                    using (BinaryWriter bw = new BinaryWriter(File.Open(outputFileName, FileMode.Create, FileAccess.Write)))
+                    {
+                        bw.Write(Swav.ASCII_SIGNATURE);
+                        bw.Write(BitConverter.GetBytes(fileSize + 0x10 + 0x08 + Swav.SWAV_INFO_SIZE));
+                        bw.Write(BitConverter.GetBytes((UInt16)0x10));
+                        bw.Write(BitConverter.GetBytes((UInt16)0x01));
+
+                        bw.Write(Swav.DATA_SIGNATURE);
+                        bw.Write(BitConverter.GetBytes(fileSize + 0x08 + Swav.SWAV_INFO_SIZE));
+                        bw.Write(ParseFile.parseSimpleOffset(pStream, pSwar.SampleOffsets[i], (int)Swav.SWAV_INFO_SIZE));
+                        bw.Write(ParseFile.parseSimpleOffset(pStream, pSwar.SampleOffsets[i] + Swav.SWAV_INFO_SIZE, (int)fileSize));
+                    }
+
                 }
             }
         }
