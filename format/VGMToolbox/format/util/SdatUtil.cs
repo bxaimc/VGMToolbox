@@ -13,6 +13,7 @@ namespace VGMToolbox.format.util
         {
             string fullPath = Path.GetFullPath(pSdatPath);
             string outputPath = null;
+            string waveArcOutputPath;
 
             if (!File.Exists(fullPath))
             {
@@ -20,6 +21,9 @@ namespace VGMToolbox.format.util
             }
             else
             {
+                Swar swar = new Swar();
+                string swavOutputPath;
+
                 using (FileStream fs = File.OpenRead(fullPath))
                 {
                     Type dataType = FormatUtil.getObjectType(fs);
@@ -36,9 +40,26 @@ namespace VGMToolbox.format.util
                         sdat.ExtractSseqs(fs, outputPath);
                         sdat.ExtractSeqArc(fs, outputPath);
                         sdat.ExtractStrms(fs, outputPath);
-                        sdat.ExtractWaveArcs(fs, outputPath);
+                        waveArcOutputPath = sdat.ExtractWaveArcs(fs, outputPath);
                         
-                        
+                        // extract SWAVs
+                        foreach (string f in Directory.GetFiles(waveArcOutputPath, "*" + Swar.FILE_EXTENSION))
+                        {                            
+                            using (FileStream swarFs = File.Open(f, FileMode.Open, FileAccess.Read))
+                            {
+                                dataType = FormatUtil.getObjectType(swarFs);
+
+                                if (dataType != null && dataType.Name.Equals("Swar"))
+                                {
+                                    swavOutputPath = Path.Combine(waveArcOutputPath, Path.GetFileNameWithoutExtension(f));
+                                    swar.Initialize(swarFs, f);
+
+                                    ExtractAndWriteSwavFromSwar(swarFs, swar, swavOutputPath);
+                                }
+                            }
+                        }
+
+
                         sdat.BuildSmap(outputPath, filePrefix);
                     }
                 }                                
@@ -100,6 +121,40 @@ namespace VGMToolbox.format.util
             else
             {
                 return null;
+            }
+        }
+
+        public static void ExtractAndWriteSwavFromSwar(Stream pStream, Swar pSwar, string pOutputPath)
+        {
+            string outputFileName;
+
+            if (pSwar.SampleOffsets.Length > 0)
+            {
+                if (!Directory.Exists(pOutputPath))
+                {
+                    Directory.CreateDirectory(pOutputPath);
+                }
+            }
+
+            for (int i = 0; i < pSwar.SampleOffsets.Length; i++)
+            {            
+                Swav.SwavInfo swavInfo = Swav.GetSwavInfo(pStream, pSwar.SampleOffsets[i]);
+                UInt32 fileSize = swavInfo.NonLoopLength * 4;
+
+                outputFileName = Path.Combine(pOutputPath, i.ToString("X2") + Swav.FILE_EXTENSION);
+
+                using (BinaryWriter bw = new BinaryWriter(File.Open(outputFileName, FileMode.Create, FileAccess.Write)))
+                {
+                    bw.Write(Swav.ASCII_SIGNATURE);
+                    bw.Write(BitConverter.GetBytes(fileSize + 0x10 + 0x08 + Swav.SWAV_INFO_SIZE));
+                    bw.Write(BitConverter.GetBytes((UInt16)0x10));
+                    bw.Write(BitConverter.GetBytes((UInt16)0x01));
+
+                    bw.Write(Swav.DATA_SIGNATURE);
+                    bw.Write(BitConverter.GetBytes(fileSize + 0x08 + Swav.SWAV_INFO_SIZE));
+                    bw.Write(ParseFile.parseSimpleOffset(pStream, pSwar.SampleOffsets[i], (int) Swav.SWAV_INFO_SIZE));
+                    bw.Write(ParseFile.parseSimpleOffset(pStream, pSwar.SampleOffsets[i] + Swav.SWAV_INFO_SIZE, (int) fileSize));
+                }
             }
         }
     }

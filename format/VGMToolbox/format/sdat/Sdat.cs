@@ -295,9 +295,10 @@ namespace VGMToolbox.format.sdat
             #endregion
         }
 
-        public void ExtractSseqs(Stream pStream, string pOutputPath)
+        public string ExtractSseqs(Stream pStream, string pOutputPath)
         {
             string fileName = String.Empty;
+            string outputDirectory = null;
 
             int i = 0;
             foreach (SdatInfoSection.SdatInfoSseq s in infoSection.SdatInfoSseqs)
@@ -320,7 +321,7 @@ namespace VGMToolbox.format.sdat
                         fileName = String.Format("SSEQ{0}.sseq", fileId.ToString("X4"));
                     }
 
-                    string outputDirectory = Path.Combine(pOutputPath, "Seq");
+                    outputDirectory = Path.Combine(pOutputPath, "Seq");
                     if (!Directory.Exists(outputDirectory))
                     {
                         Directory.CreateDirectory(outputDirectory);
@@ -333,10 +334,13 @@ namespace VGMToolbox.format.sdat
                 
                 i++;
             }
+
+            return outputDirectory;
         }
-        public void ExtractStrms(Stream pStream, string pOutputPath)
+        public string ExtractStrms(Stream pStream, string pOutputPath)
         {
             string fileName = String.Empty;
+            string outputDirectory = null;
 
             int i = 0;
             foreach (SdatInfoSection.SdatInfoStrm s in infoSection.SdatInfoStrms)
@@ -360,7 +364,7 @@ namespace VGMToolbox.format.sdat
                         fileName = String.Format("STRM{0}.strm", fileId.ToString("X4"));
                     }
 
-                    string outputDirectory = Path.Combine(pOutputPath, "Strm");
+                    outputDirectory = Path.Combine(pOutputPath, "Strm");
                     if (!Directory.Exists(outputDirectory))
                     {
                         Directory.CreateDirectory(outputDirectory);
@@ -372,10 +376,13 @@ namespace VGMToolbox.format.sdat
 
                 i++;
             }
+
+            return outputDirectory;
         }
-        public void ExtractSeqArc(Stream pStream, string pOutputPath)
+        public string ExtractSeqArc(Stream pStream, string pOutputPath)
         {
             string fileName = String.Empty;
+            string outputDirectory = null;
 
             int i = 0;
             foreach (SdatInfoSection.SdatInfoSeqArc s in infoSection.SdatInfoSeqArcs)
@@ -399,7 +406,7 @@ namespace VGMToolbox.format.sdat
                         fileName = String.Format("SSAR{0}.ssar", fileId.ToString("X4"));
                     }
 
-                    string outputDirectory = Path.Combine(pOutputPath, "SeqArc");
+                    outputDirectory = Path.Combine(pOutputPath, "SeqArc");
                     if (!Directory.Exists(outputDirectory))
                     {
                         Directory.CreateDirectory(outputDirectory);
@@ -411,10 +418,13 @@ namespace VGMToolbox.format.sdat
 
                 i++;
             }
+
+            return outputDirectory;
         }
-        public void ExtractBanks(Stream pStream, string pOutputPath)
+        public string ExtractBanks(Stream pStream, string pOutputPath)
         {
             string fileName = String.Empty;
+            string outputDirectory = null;
 
             int i = 0;
             foreach (SdatInfoSection.SdatInfoBank s in infoSection.SdatInfoBanks)
@@ -438,7 +448,7 @@ namespace VGMToolbox.format.sdat
                         fileName = String.Format("SBNK{0}.sbnk", fileId.ToString("X4"));
                     }
 
-                    string outputDirectory = Path.Combine(pOutputPath, "Bank");
+                    outputDirectory = Path.Combine(pOutputPath, "Bank");
                     if (!Directory.Exists(outputDirectory))
                     {
                         Directory.CreateDirectory(outputDirectory);
@@ -450,10 +460,13 @@ namespace VGMToolbox.format.sdat
 
                 i++;
             }
+
+            return outputDirectory;
         }
-        public void ExtractWaveArcs(Stream pStream, string pOutputPath)
+        public string ExtractWaveArcs(Stream pStream, string pOutputPath)
         {
             string fileName = String.Empty;
+            string outputDirectory = null;
 
             int i = 0;
             foreach (SdatInfoSection.SdatInfoWaveArc s in infoSection.SdatInfoWaveArcs)
@@ -477,7 +490,7 @@ namespace VGMToolbox.format.sdat
                         fileName = String.Format("SWAR{0}.swar", fileId.ToString("X4"));
                     }
 
-                    string outputDirectory = Path.Combine(pOutputPath, "WaveArc");
+                    outputDirectory = Path.Combine(pOutputPath, "WaveArc");
                     if (!Directory.Exists(outputDirectory))
                     {
                         Directory.CreateDirectory(outputDirectory);
@@ -489,6 +502,8 @@ namespace VGMToolbox.format.sdat
 
                 i++;
             }
+
+            return outputDirectory;
         }
 
         public void OptimizeForZlib(int pStartSequence, int pEndSequence)
