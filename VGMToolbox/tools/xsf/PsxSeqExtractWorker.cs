@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.Text;
 
 using VGMToolbox.format;
 using VGMToolbox.format.util;
@@ -10,8 +11,11 @@ namespace VGMToolbox.tools.xsf
 {
     public partial class PsxSeqExtractWorker : BackgroundWorker
     {
+        private const string BATCH_FILE_NAME = "!timing_batch.bat";
+        
         private int fileCount = 0;
         private int maxFiles = 0;
+        Constants.ProgressStruct progressStruct;
 
         public struct PsxSeqExtractStruct
         {
@@ -22,7 +26,8 @@ namespace VGMToolbox.tools.xsf
         {
             fileCount = 0;
             maxFiles = 0;
-            
+            progressStruct = new Constants.ProgressStruct();
+
             WorkerReportsProgress = true;
             WorkerSupportsCancellation = true;
         }
@@ -60,30 +65,78 @@ namespace VGMToolbox.tools.xsf
         }
 
         private void extractSeqsFromFile(string pPath, DoWorkEventArgs e)
-        {            
+        {
+            int minutes;
+            double seconds;
+
+            StringBuilder batchFile = new StringBuilder();
+            string batchFilePath;
+
+
             // Report Progress
             int progress = (++fileCount * 100) / maxFiles;
-            Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
-            vProgressStruct.newNode = null;
-            vProgressStruct.filename = pPath;
-            ReportProgress(progress, vProgressStruct);
+            progressStruct.Clear();
+            progressStruct.filename = pPath;
+            ReportProgress(progress, progressStruct);
 
             try
-            {
-                // TESTING!
-                using (FileStream fs = File.OpenRead(pPath))
+            {                
+                string extractedSq = XsfUtil.ExtractPsxSequences(pPath);
+
+                if (!String.IsNullOrEmpty(extractedSq))
                 {
-                    PsxSequence psxSeq = new PsxSequence(fs);
+                    PsxSequence psxSeq = null;
+                    
+                    using (FileStream fs = File.OpenRead(extractedSq))
+                    {
+                        psxSeq = new PsxSequence(fs);
+                    }
+
+                    if (psxSeq != null)
+                    {
+                        // Add line to batch file.
+                        minutes = (int)(psxSeq.TimingInfo.TimeInSeconds / 60d);
+                        seconds = psxSeq.TimingInfo.TimeInSeconds - (minutes * 60);
+                        seconds = Math.Ceiling(seconds);
+
+                        if (seconds > 59)
+                        {
+                            minutes++;
+                            seconds -= 60;
+                        }
+
+                        batchFile.AppendFormat("psfpoint.exe -length=\"{0}:{1}\" -fade=\"{2}\" \"{3}\"",
+                            minutes.ToString(), seconds.ToString().PadLeft(2, '0'),
+                            psxSeq.TimingInfo.FadeInSeconds.ToString(), Path.GetFileName(pPath));
+                        batchFile.Append(Environment.NewLine);
+
+                        batchFilePath = Path.Combine(Path.GetDirectoryName(pPath), BATCH_FILE_NAME);
+
+                        if (!File.Exists(batchFilePath))
+                        {
+                            using (FileStream cfs = File.Create(batchFilePath)) { };
+                        }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(batchFilePath, FileMode.Append, FileAccess.Write)))
+                        {
+                            sw.Write(batchFile.ToString());
+                        }
+
+                        // report warnings
+                        if (!String.IsNullOrEmpty(psxSeq.TimingInfo.Warnings))
+                        {
+                            this.progressStruct.Clear();
+                            progressStruct.genericMessage = String.Format("{0}{1}  WARNINGS{2}    {3}", pPath, Environment.NewLine, Environment.NewLine, psxSeq.TimingInfo.Warnings);
+                            ReportProgress(progress, progressStruct);
+                        }
+                    }
                 }
-                
-                XsfUtil.ExtractPsxSequences(pPath);
             }
             catch (Exception ex)
             {
-                vProgressStruct = new Constants.ProgressStruct();
-                vProgressStruct.newNode = null;
-                vProgressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message;
-                ReportProgress(progress, vProgressStruct);
+                this.progressStruct.Clear();
+                this.progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message;
+                ReportProgress(progress, this.progressStruct);
             }
         }    
 

@@ -33,6 +33,8 @@ namespace VGMToolbox.format
         PsxSqTimingStruct timingInfo;
         private Dictionary<int, int> dataBytesPerCommand;
 
+        public PsxSqTimingStruct TimingInfo { get { return timingInfo; } }
+
         public PsxSequence(Stream pStream)
         {
             sqHeader = parseSqHeader(pStream);
@@ -45,6 +47,7 @@ namespace VGMToolbox.format
             dataBytesPerCommand.Add(0xC0, 1);
             dataBytesPerCommand.Add(0xD0, 1);
             dataBytesPerCommand.Add(0xE0, 2);
+            dataBytesPerCommand.Add(0xF0, 2);
 
             timingInfo = getTimingInfo(pStream);
         }
@@ -97,6 +100,8 @@ namespace VGMToolbox.format
             int dataByte1;
             int dataByte2;
 
+            int deltaTimeByteCount;
+
             int runningCommand = 0;
             int dataByteCount;
             uint tempo = this.sqHeader.InitialTempo;
@@ -136,15 +141,22 @@ namespace VGMToolbox.format
                 currentByte = pStream.ReadByte();
                 currentOffset = pStream.Position - 1;
 
-                // build 7-bit num from bytes (variable length string)
+                // build 7-bit num from bytes (variable length string)                
                 if ((currentByte & 0x80) != 0)
                 {
+                    deltaTimeByteCount = 1;
                     currentTicks = (ulong)(currentByte & 0x7F);
 
                     do
                     {
                         currentByte = pStream.ReadByte();
                         currentOffset = pStream.Position - 1;
+                        deltaTimeByteCount++;
+
+                        if (deltaTimeByteCount > 4)
+                        {
+                            int x4 = 1;
+                        }
 
                         currentTicks = (currentTicks << 7) + (ulong)(currentByte & 0x7F);
                     } while ((currentByte & 0x80) != 0);
@@ -161,10 +173,10 @@ namespace VGMToolbox.format
 
                 currentTime = currentTicks != 0 ? (double)((currentTicks * (ulong)tempo) / (ulong)this.sqHeader.Resolution) : 0;
 
-                //if (currentTime > 10000000) // debug code used to find strange values
-                //{
-                //    int x2 = 1;
-                //}
+                if (currentTime > 10000000) // debug code used to find strange values
+                {
+                    int x2 = 1;
+                }
 
                 if (loopTimeStack.Count > 0)
                 {
@@ -196,9 +208,14 @@ namespace VGMToolbox.format
                 currentByte = pStream.ReadByte();
                 currentOffset = pStream.Position - 1;
 
-                //if (currentOffset > 0x19B5) // code to quickly get to a position for debugging
+                if (currentOffset > 0x14E0) // code to quickly get to a position for debugging
+                {
+                    int x = 1;
+                }
+
+                //if ((currentTime != 0) && (currentTime != 38461) && (currentTime != 192307))
                 //{
-                //    int x = 1;
+                //    int x3 = 1;
                 //}
 
 
@@ -223,8 +240,9 @@ namespace VGMToolbox.format
                         commandOffset = currentOffset;
                     }
 
-                    dataByteCount = this.dataBytesPerCommand[runningCommand & 0xF0];
 
+                    dataByteCount = this.dataBytesPerCommand[runningCommand & 0xF0];
+                    
                     if (running)
                     {
                         dataByte1 = currentByte;
@@ -305,22 +323,26 @@ namespace VGMToolbox.format
                     metaCommandByte = pStream.ReadByte();
                     currentOffset = pStream.Position - 1;
 
-                    // get length bytes                   
-                    metaCommandLengthByte = pStream.ReadByte();
-
                     // check for tempo switch here
                     if (metaCommandByte == 0x51)
                     {
                         // tempo switch
                         tempoValBytes = new byte[4];
-                        Array.Copy(ParseFile.parseSimpleOffset(pStream, pStream.Position, metaCommandLengthByte), 0, tempoValBytes, 1, 3);
+                        Array.Copy(ParseFile.parseSimpleOffset(pStream, pStream.Position, 3), 0, tempoValBytes, 1, 3);
 
                         Array.Reverse(tempoValBytes); // flip order to LE for use with BitConverter
                         tempo = BitConverter.ToUInt32(tempoValBytes, 0);
-                    }
 
-                    // skip data bytes, they have already been grabbed above if needed
-                    pStream.Position += (long)metaCommandLengthByte;
+                        pStream.Position += 3;
+                    }
+                    else
+                    {
+                        // get length bytes                   
+                        metaCommandLengthByte = pStream.ReadByte();
+                        
+                        // skip data bytes, they have already been grabbed above if needed
+                        pStream.Position += (long)metaCommandLengthByte;
+                    }
                     currentOffset = pStream.Position;
 
                 }
