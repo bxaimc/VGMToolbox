@@ -82,6 +82,7 @@ namespace VGMToolbox.format
             dataBytesPerCommand.Add(0xC0, 1);
             dataBytesPerCommand.Add(0xD0, 1);
             dataBytesPerCommand.Add(0xE0, 2);
+            dataBytesPerCommand.Add(0xF0, 0);
         }
         
         public static VersionChunkStruct parseVersionChunk(Stream pStream)
@@ -329,8 +330,8 @@ namespace VGMToolbox.format
                 //}
 
 
-                if (currentByte != 0xFF) // process normal commands
-                {
+                //if (currentByte != 0xFF) // process normal commands
+                //{
                     if ((currentByte & 0x80) == 0) // data byte, we should be running
                     {
                         if (runningCommand == 0)
@@ -351,130 +352,167 @@ namespace VGMToolbox.format
                     }
 
                     dataByteCount = this.dataBytesPerCommand[runningCommand & 0xF0];
-                    
-                    if (running)
-                    {
-                        dataByte1 = currentByte;
-                    }
-                    else
-                    {
-                        dataByte1 = pStream.ReadByte();
-                        currentOffset = pStream.Position - 1;
-                    }
 
-                    if (dataByteCount == 2)
+                    if (dataByteCount == 0) // 0xFF
                     {
-                        dataByte2 = pStream.ReadByte();
-                        currentOffset = pStream.Position - 1;
-
-                        // if high bit of last data byte is 1, next delta tick is zero and byte will be skipped
-                        if ((dataByte2 & 0x80) != 0)
+                        // get meta command bytes
+                        if (!running)
                         {
-                            emptyTimeFollows = true;
+                            metaCommandByte = pStream.ReadByte();
+                            currentOffset = pStream.Position - 1;
                         }
                         else
                         {
-                            emptyTimeFollows = false;
+                            metaCommandByte = currentByte;
                         }
 
-                        // check for loop start
-                        if ((((currentByte & 0xBF) == currentByte) || ((runningCommand & 0xBF) == runningCommand)) &&
-                             dataByte1 == 0x63 &&
-                            (dataByte2 == 0x00 || dataByte2 == 0x80))
+                        // get length bytes                   
+                        metaCommandLengthByte = pStream.ReadByte();
+
+                        // check for tempo switch here
+                        if (metaCommandByte == 0x51)
                         {
-                            loopTimeStack.Push(0);
-                            loopTickStack.Push(0);
-                            loopsOpened++;
+                            // tempo switch
+                            tempoValBytes = new byte[4];
+                            Array.Copy(ParseFile.parseSimpleOffset(pStream, pStream.Position, metaCommandLengthByte), 0, tempoValBytes, 1, 3);
+
+                            Array.Reverse(tempoValBytes); // flip order to LE for use with BitConverter
+                            tempo = BitConverter.ToUInt32(tempoValBytes, 0);
                         }
 
-                        // check for loop end
-                        if ((((currentByte & 0xBF) == currentByte) || ((runningCommand & 0xBF) == runningCommand)) &&
-                             dataByte1 == 0x63 &&
-                            (dataByte2 == 0x01 || dataByte2 == 0x81))
+                        // skip data bytes, they have already been grabbed above if needed
+                        pStream.Position += (long)metaCommandLengthByte;
+                        currentOffset = pStream.Position;
+
+                        // time should follow, since these data bytes can be over 0x80 anyhow
+                        emptyTimeFollows = false;
+                    }
+                    else
+                    {
+                        if (running)
                         {
-                            loopEndFound = true;
-                            loopsClosed++;
+                            dataByte1 = currentByte;
+                        }
+                        else
+                        {
+                            dataByte1 = pStream.ReadByte();
+                            currentOffset = pStream.Position - 1;
                         }
 
-                        // check for loop count
-                        if (loopEndFound &&
-                           (((currentByte & 0xBF) == currentByte) || ((runningCommand & 0xBF) == runningCommand)) &&
-                            dataByte1 == 0x26)
+                        if (dataByteCount == 2)
                         {
-                            if (loopTimeStack.Count > 0) // check for unmatched close tag
+                            dataByte2 = pStream.ReadByte();
+                            currentOffset = pStream.Position - 1;
+
+                            // if high bit of last data byte is 1, next delta tick is zero and byte will be skipped
+                            if ((dataByte2 & 0x80) != 0)
                             {
-                                loopTimeMultiplier = dataByte2;
-
-                                // filter out high bytes, they are just indicator if next delta tick is zero
-                                loopTimeMultiplier = loopTimeMultiplier & 0x0F;
-
-                                if (loopTimeMultiplier == 0)
-                                {
-                                    loopTimeMultiplier = 2;
-                                    loopFound = true;
-                                }
-
-                                // add loop time
-                                loopTime = loopTimeStack.Pop();
-                                loopTime = (loopTime * loopTimeMultiplier);
-                                totalTime += loopTime;
-
-                                loopTicks = loopTickStack.Pop();
-                                loopTicks = (loopTicks * (ulong)loopTimeMultiplier);
-                                totalTicks += loopTicks;
-
-                                timeSinceLastLoopEnd = 0;
+                                emptyTimeFollows = true;
                             }
                             else
                             {
-                                ret.Warnings += "Unmatched Loop End tag(s) found." + Environment.NewLine;
+                                emptyTimeFollows = false;
                             }
 
-                            loopEndFound = false;
-                        }
-                    }
-                    else
-                    {
-                        // if high bit of last data byte is 1, next delta tick is zero and byte will be skipped
-                        if ((dataByte1 & 0x80) != 0)
-                        {
-                            emptyTimeFollows = true;
+                            // check for loop start
+                            if ((((currentByte & 0xBF) == currentByte) || ((runningCommand & 0xBF) == runningCommand)) &&
+                                 dataByte1 == 0x63 &&
+                                (dataByte2 == 0x00 || dataByte2 == 0x80))
+                            {
+                                loopTimeStack.Push(0);
+                                loopTickStack.Push(0);
+                                loopsOpened++;
+                            }
+
+                            // check for loop end
+                            if ((((currentByte & 0xBF) == currentByte) || ((runningCommand & 0xBF) == runningCommand)) &&
+                                 dataByte1 == 0x63 &&
+                                (dataByte2 == 0x01 || dataByte2 == 0x81))
+                            {
+                                loopEndFound = true;
+                                loopsClosed++;
+                            }
+
+                            // check for loop count
+                            if (loopEndFound &&
+                               (((currentByte & 0xBF) == currentByte) || ((runningCommand & 0xBF) == runningCommand)) &&
+                                dataByte1 == 0x26)
+                            {
+                                if (loopTimeStack.Count > 0) // check for unmatched close tag
+                                {
+                                    loopTimeMultiplier = dataByte2;
+
+                                    // filter out high bytes, they are just indicator if next delta tick is zero
+                                    loopTimeMultiplier = loopTimeMultiplier & 0x0F;
+
+                                    if (loopTimeMultiplier == 0)
+                                    {
+                                        loopTimeMultiplier = 2;
+                                        loopFound = true;
+                                    }
+
+                                    // add loop time
+                                    loopTime = loopTimeStack.Pop();
+                                    loopTime = (loopTime * loopTimeMultiplier);
+                                    totalTime += loopTime;
+
+                                    loopTicks = loopTickStack.Pop();
+                                    loopTicks = (loopTicks * (ulong)loopTimeMultiplier);
+                                    totalTicks += loopTicks;
+
+                                    timeSinceLastLoopEnd = 0;
+                                }
+                                else
+                                {
+                                    ret.Warnings += "Unmatched Loop End tag(s) found." + Environment.NewLine;
+                                }
+
+                                loopEndFound = false;
+                            }
                         }
                         else
                         {
-                            emptyTimeFollows = false;
+                            // if high bit of last data byte is 1, next delta tick is zero and byte will be skipped
+                            if ((dataByte1 & 0x80) != 0)
+                            {
+                                emptyTimeFollows = true;
+                            }
+                            else
+                            {
+                                emptyTimeFollows = false;
+                            }
                         }
+
+                        currentOffset = pStream.Position - 1;
                     }
+                //}
+                //else // meta event (only tempo is relevant for timing)
+                //{
+                //    // get meta command bytes
+                //    metaCommandByte = pStream.ReadByte();
+                //    currentOffset = pStream.Position - 1;
 
-                    currentOffset = pStream.Position - 1;
-                }
-                else // meta event (only tempo is relevant for timing)
-                {
-                    // get meta command bytes
-                    metaCommandByte = pStream.ReadByte();
-                    currentOffset = pStream.Position - 1;
+                //    // get length bytes                   
+                //    metaCommandLengthByte = pStream.ReadByte();
 
-                    // get length bytes                   
-                    metaCommandLengthByte = pStream.ReadByte();
+                //    // check for tempo switch here
+                //    if (metaCommandByte == 0x51)
+                //    {
+                //        // tempo switch
+                //        tempoValBytes = new byte[4];
+                //        Array.Copy(ParseFile.parseSimpleOffset(pStream, pStream.Position, metaCommandLengthByte), 0, tempoValBytes, 1, 3);
 
-                    // check for tempo switch here
-                    if (metaCommandByte == 0x51)
-                    {
-                        // tempo switch
-                        tempoValBytes = new byte[4];
-                        Array.Copy(ParseFile.parseSimpleOffset(pStream, pStream.Position, metaCommandLengthByte), 0, tempoValBytes, 1, 3);
+                //        Array.Reverse(tempoValBytes); // flip order to LE for use with BitConverter
+                //        tempo = BitConverter.ToUInt32(tempoValBytes, 0);
+                //    }
 
-                        Array.Reverse(tempoValBytes); // flip order to LE for use with BitConverter
-                        tempo = BitConverter.ToUInt32(tempoValBytes, 0);
-                    }
+                //    // skip data bytes, they have already been grabbed above if needed
+                //    pStream.Position += (long)metaCommandLengthByte;
+                //    currentOffset = pStream.Position;
 
-                    // skip data bytes, they have already been grabbed above if needed
-                    pStream.Position += (long)metaCommandLengthByte;
-                    currentOffset = pStream.Position;
-
-                    // time should follow, since these data bytes can be over 0x80 anyhow
-                    emptyTimeFollows = false;
-                }
+                //    // time should follow, since these data bytes can be over 0x80 anyhow
+                //    emptyTimeFollows = false;
+                //}
                         
             } // while (pStream.Position < pEndOffset)
             
