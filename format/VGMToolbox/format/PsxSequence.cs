@@ -110,7 +110,7 @@ namespace VGMToolbox.format
             bool loopEndFound = false;
             double loopTime;
 
-            int loopTimeMultiplier;
+            int loopTimeMultiplier = 1;
             Stack<double> loopTimeStack = new Stack<double>();
             ulong loopTicks;
             Stack<ulong> loopTickStack = new Stack<ulong>();
@@ -244,7 +244,7 @@ namespace VGMToolbox.format
                         // check for loop start
                         if ((((currentByte & 0xBF) == currentByte) || ((runningCommand & 0xBF) == runningCommand)) &&
                              dataByte1 == 0x63 && dataByte2 == 0x14)
-                        {
+                        {                            
                             loopTimeStack.Push(0);
                             loopTickStack.Push(0);
                             loopsOpened++;
@@ -258,19 +258,18 @@ namespace VGMToolbox.format
                             loopsClosed++;
                         }
 
-                        // check for loop count
-                        if (loopEndFound &&
-                           (((currentByte & 0xBF) == currentByte) || ((runningCommand & 0xBF) == runningCommand)) &&
-                            dataByte1 == 0x26)
+                        if ((((currentByte & 0xBF) == currentByte) || ((runningCommand & 0xBF) == runningCommand)) &&
+                            dataByte1 == 0x06)
                         {
-                            if (loopTimeStack.Count > 0) // check for unmatched close tag
-                            {
-                                loopTimeMultiplier = dataByte2;
+                            loopTimeMultiplier = dataByte2;                            
+                        }
 
-                                // filter out high bytes, they are just indicator if next delta tick is zero
-                                loopTimeMultiplier = loopTimeMultiplier & 0x0F;
-
-                                if (loopTimeMultiplier == 0)
+                        // check for loop count
+                        if (loopEndFound)
+                        {
+                            //if (loopTimeStack.Count > 0) // check for unmatched close tag
+                            //{
+                                if (loopTimeMultiplier == 127)
                                 {
                                     loopTimeMultiplier = 2;
                                     loopFound = true;
@@ -286,11 +285,13 @@ namespace VGMToolbox.format
                                 totalTicks += loopTicks;
 
                                 timeSinceLastLoopEnd = 0;
-                            }
-                            else
-                            {
-                                ret.Warnings += "Unmatched Loop End tag(s) found." + Environment.NewLine;
-                            }
+
+                                loopEndFound = false;
+                            //}
+                            //else
+                            //{
+                            //    ret.Warnings += "Unmatched Loop End tag(s) found." + Environment.NewLine;
+                            //}
 
                             loopEndFound = false;
                         } 
