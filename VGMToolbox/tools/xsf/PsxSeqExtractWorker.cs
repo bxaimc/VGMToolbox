@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.IO;
 
+using VGMToolbox.format;
 using VGMToolbox.format.util;
 using VGMToolbox.util;
 
@@ -69,6 +70,12 @@ namespace VGMToolbox.tools.xsf
 
             try
             {
+                // TESTING!
+                using (FileStream fs = File.OpenRead(pPath))
+                {
+                    PsxSequence psxSeq = new PsxSequence(fs);
+                }
+                
                 XsfUtil.ExtractPsxSequences(pPath);
             }
             catch (Exception ex)
