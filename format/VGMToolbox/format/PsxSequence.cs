@@ -47,7 +47,7 @@ namespace VGMToolbox.format
             dataBytesPerCommand.Add(0xC0, 1);
             dataBytesPerCommand.Add(0xD0, 1);
             dataBytesPerCommand.Add(0xE0, 2);
-            dataBytesPerCommand.Add(0xF0, 2);
+            dataBytesPerCommand.Add(0xF0, 0);
 
             timingInfo = getTimingInfo(pStream);
         }
@@ -208,7 +208,7 @@ namespace VGMToolbox.format
                 currentByte = pStream.ReadByte();
                 currentOffset = pStream.Position - 1;
 
-                if (currentOffset > 0x14E0) // code to quickly get to a position for debugging
+                if (currentOffset > 0x1FCF) // code to quickly get to a position for debugging
                 {
                     int x = 1;
                 }
@@ -219,110 +219,39 @@ namespace VGMToolbox.format
                 //}
 
 
-                if (currentByte != 0xFF) // process normal commands
+                if ((currentByte & 0x80) == 0) // data byte, we should be running
                 {
-                    if ((currentByte & 0x80) == 0) // data byte, we should be running
+                    if (runningCommand == 0)
                     {
-                        if (runningCommand == 0)
-                        {
-                            throw new Exception(String.Format("Empty running command at 0x{0}", currentOffset.ToString("X2")));
-                        }
-                        else
-                        {
-                            running = true;
-                        }
-                    }
-                    else // new command
-                    {
-                        runningCommand = currentByte;
-                        running = false;
-
-                        commandOffset = currentOffset;
-                    }
-
-
-                    dataByteCount = this.dataBytesPerCommand[runningCommand & 0xF0];
-                    
-                    if (running)
-                    {
-                        dataByte1 = currentByte;
+                        throw new Exception(String.Format("Empty running command at 0x{0}", currentOffset.ToString("X2")));
                     }
                     else
                     {
-                        dataByte1 = pStream.ReadByte();
-                        currentOffset = pStream.Position - 1;
+                        running = true;
                     }
-
-                    if (dataByteCount == 2)
-                    {
-                        dataByte2 = pStream.ReadByte();
-                        currentOffset = pStream.Position - 1;
-
-                        
-                        // check for loop start
-                        if ((((currentByte & 0xBF) == currentByte) || ((runningCommand & 0xBF) == runningCommand)) &&
-                             dataByte1 == 0x63 && dataByte2 == 0x14)
-                        {                            
-                            loopTimeStack.Push(0);
-                            loopTickStack.Push(0);
-                            loopsOpened++;
-                        }
-
-                        // check for loop end
-                        if ((((currentByte & 0xBF) == currentByte) || ((runningCommand & 0xBF) == runningCommand)) &&
-                             dataByte1 == 0x63 && dataByte2 == 0x1E)
-                        {
-                            loopEndFound = true;
-                            loopsClosed++;
-                        }
-
-                        if ((((currentByte & 0xBF) == currentByte) || ((runningCommand & 0xBF) == runningCommand)) &&
-                            dataByte1 == 0x06)
-                        {
-                            loopTimeMultiplier = dataByte2;                            
-                        }
-
-                        // check for loop count
-                        if (loopEndFound)
-                        {
-                            //if (loopTimeStack.Count > 0) // check for unmatched close tag
-                            //{
-                                if (loopTimeMultiplier == 127)
-                                {
-                                    loopTimeMultiplier = 2;
-                                    loopFound = true;
-                                }
-
-                                // add loop time
-                                loopTime = loopTimeStack.Pop();
-                                loopTime = (loopTime * loopTimeMultiplier);
-                                totalTime += loopTime;
-
-                                loopTicks = loopTickStack.Pop();
-                                loopTicks = (loopTicks * (ulong)loopTimeMultiplier);
-                                totalTicks += loopTicks;
-
-                                timeSinceLastLoopEnd = 0;
-
-                                loopEndFound = false;
-                            //}
-                            //else
-                            //{
-                            //    ret.Warnings += "Unmatched Loop End tag(s) found." + Environment.NewLine;
-                            //}
-
-                            loopEndFound = false;
-                        } 
-                    }
-
-                    currentOffset = pStream.Position - 1;
                 }
-                else // meta event (only tempo is relevant for timing)
+                else // new command
+                {
+                    runningCommand = currentByte;
+                    running = false;
+
+                    commandOffset = currentOffset;
+                }
+
+                dataByteCount = this.dataBytesPerCommand[runningCommand & 0xF0];
+
+                if (dataByteCount == 0)
                 {
                     // get meta command bytes
-                    metaCommandByte = pStream.ReadByte();
-                    currentOffset = pStream.Position - 1;
-
+                    if (!running)
+                    {
+                        metaCommandByte = pStream.ReadByte();
+                        currentOffset = pStream.Position - 1;
+                    }
+                    else
+                    {
+                        metaCommandByte = currentByte;
+                    }
                     // check for tempo switch here
                     if (metaCommandByte == 0x51)
                     {
@@ -339,13 +268,118 @@ namespace VGMToolbox.format
                     {
                         // get length bytes                   
                         metaCommandLengthByte = pStream.ReadByte();
-                        
+
                         // skip data bytes, they have already been grabbed above if needed
                         pStream.Position += (long)metaCommandLengthByte;
                     }
                     currentOffset = pStream.Position;
 
                 }
+                else
+                {
+                    if (running)
+                    {
+                        dataByte1 = currentByte;
+                    }
+                    else
+                    {
+                        dataByte1 = pStream.ReadByte();
+                        currentOffset = pStream.Position - 1;
+                    }
+
+                    if (dataByteCount == 2)
+                    {
+                        dataByte2 = pStream.ReadByte();
+                        currentOffset = pStream.Position - 1;
+
+
+                        // check for loop start
+                        if ((((currentByte & 0xBF) == currentByte) || ((runningCommand & 0xBF) == runningCommand)) &&
+                             dataByte1 == 0x63 && dataByte2 == 0x14)
+                        {
+                            loopTimeStack.Push(0);
+                            loopTickStack.Push(0);
+                            loopsOpened++;
+                        }
+
+                        // check for loop end
+                        if ((((currentByte & 0xBF) == currentByte) || ((runningCommand & 0xBF) == runningCommand)) &&
+                             dataByte1 == 0x63 && dataByte2 == 0x1E)
+                        {
+                            loopEndFound = true;
+                            loopsClosed++;
+                        }
+
+                        if ((((currentByte & 0xBF) == currentByte) || ((runningCommand & 0xBF) == runningCommand)) &&
+                            dataByte1 == 0x06)
+                        {
+                            loopTimeMultiplier = dataByte2;
+                        }
+
+                        // check for loop count
+                        if (loopEndFound)
+                        {
+                            //if (loopTimeStack.Count > 0) // check for unmatched close tag
+                            //{
+                            if (loopTimeMultiplier == 127)
+                            {
+                                loopTimeMultiplier = 2;
+                                loopFound = true;
+                            }
+
+                            // add loop time
+                            loopTime = loopTimeStack.Pop();
+                            loopTime = (loopTime * loopTimeMultiplier);
+                            totalTime += loopTime;
+
+                            loopTicks = loopTickStack.Pop();
+                            loopTicks = (loopTicks * (ulong)loopTimeMultiplier);
+                            totalTicks += loopTicks;
+
+                            timeSinceLastLoopEnd = 0;
+
+                            loopEndFound = false;
+                            //}
+                            //else
+                            //{
+                            //    ret.Warnings += "Unmatched Loop End tag(s) found." + Environment.NewLine;
+                            //}
+
+                            loopEndFound = false;
+                        }
+                    }
+
+                    currentOffset = pStream.Position - 1;
+                }
+                //else // meta event (only tempo is relevant for timing)
+                //{
+                //    // get meta command bytes
+                //    metaCommandByte = pStream.ReadByte();
+                //    currentOffset = pStream.Position - 1;
+
+                //    // check for tempo switch here
+                //    if (metaCommandByte == 0x51)
+                //    {
+                //        // tempo switch
+                //        tempoValBytes = new byte[4];
+                //        Array.Copy(ParseFile.parseSimpleOffset(pStream, pStream.Position, 3), 0, tempoValBytes, 1, 3);
+
+                //        Array.Reverse(tempoValBytes); // flip order to LE for use with BitConverter
+                //        tempo = BitConverter.ToUInt32(tempoValBytes, 0);
+
+                //        pStream.Position += 3;
+                //    }
+                //    else
+                //    {
+                //        // get length bytes                   
+                //        metaCommandLengthByte = pStream.ReadByte();
+                        
+                //        // skip data bytes, they have already been grabbed above if needed
+                //        pStream.Position += (long)metaCommandLengthByte;
+                //    }
+                //    currentOffset = pStream.Position;
+
+                //}
 
             } // while (pStream.Position < pEndOffset)
 
