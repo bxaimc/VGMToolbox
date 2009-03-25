@@ -21,6 +21,8 @@ namespace VGMToolbox.tools.xsf
         {
             public string[] sourcePaths;
             public bool force2Loops;
+            public bool forceSepType;
+            public bool forceSeqType;
         }
 
         public PsxSeqExtractWorker()
@@ -94,6 +96,8 @@ namespace VGMToolbox.tools.xsf
                         PsxSequence.PsxSqInitStruct initStruct = new PsxSequence.PsxSqInitStruct();
                         initStruct.force2Loops = pPsxSeqExtractStruct.force2Loops;
                         initStruct.forceOppositeFormatType = false;
+                        initStruct.forceSepType = pPsxSeqExtractStruct.forceSepType;
+                        initStruct.forceSeqType = pPsxSeqExtractStruct.forceSeqType;
 
                         try
                         {

@@ -11,6 +11,7 @@ namespace VGMToolbox.format
     {
         public static readonly byte[] ASCII_SIGNATURE = new byte[] {0x70, 0x51, 0x45, 0x53 }; //pQES
         public static readonly byte[] END_SEQUENCE = new byte[] { 0xFF, 0x2F, 0x00 };
+        public static readonly byte[] END_SEQUENCE_TYPE2 = new byte[] { 0xFF, 0x00, 0x00 };
         public const string FILE_EXTENSION = ".seq";
 
         public struct PsxSqTimingStruct
@@ -33,12 +34,16 @@ namespace VGMToolbox.format
         {
             public bool force2Loops;
             public bool forceOppositeFormatType;
+            public bool forceSepType;
+            public bool forceSeqType;
         }
 
         private SqHeaderStruct sqHeader;
         private PsxSqTimingStruct timingInfo;
         private bool force2Loops;
         private bool forceOppositeFormatType;
+        private bool forceSepType;
+        private bool forceSeqType;
         private Dictionary<int, int> dataBytesPerCommand;
 
         public PsxSqTimingStruct TimingInfo { get { return timingInfo; } }
@@ -49,6 +54,8 @@ namespace VGMToolbox.format
 
             this.force2Loops = pPsxSqInitStruct.force2Loops;
             this.forceOppositeFormatType = pPsxSqInitStruct.forceOppositeFormatType;
+            this.forceSepType = pPsxSqInitStruct.forceSepType;
+            this.forceSeqType = pPsxSqInitStruct.forceSeqType;
 
             this.dataBytesPerCommand = new Dictionary<int, int>();
             this.dataBytesPerCommand.Add(0x80, 2);
@@ -143,9 +150,13 @@ namespace VGMToolbox.format
 
             byte[] tempoValBytes;
 
-            switch (this.sqHeader.Version)
+            #region Start Offset
+
+            if (!this.forceSepType && !this.forceSeqType)
             {
-                case 0:
+
+                if ((this.sqHeader.Version == 0) || (this.sqHeader.Version > 1))
+                {
                     if (!this.forceOppositeFormatType)
                     {
                         pStream.Position = 19;
@@ -154,8 +165,9 @@ namespace VGMToolbox.format
                     {
                         pStream.Position = 15;
                     }
-                    break;
-                case 1:
+                }
+                else
+                {
                     if (!this.forceOppositeFormatType)
                     {
                         pStream.Position = 15;
@@ -164,15 +176,27 @@ namespace VGMToolbox.format
                     {
                         pStream.Position = 19;
                     }
-                    break;
+                }
             }
-
-
+            else
+            {
+                if (this.forceSepType)
+                {
+                    pStream.Position = 19;
+                }
+                else if (this.forceSeqType)
+                {
+                    pStream.Position = 15;
+                }
+            }
+                        
             if (this.forceOppositeFormatType)
             {
                 ret.Warnings += "Failed as internal version type, trying to force opposite version.  Please verify after completion." + Environment.NewLine;
             }
-            
+
+            #endregion
+
             while (pStream.Position < pStream.Length)
             {
                 iterationOffset = pStream.Position;
@@ -190,12 +214,12 @@ namespace VGMToolbox.format
                     {
                         currentByte = pStream.ReadByte();
                         currentOffset = pStream.Position - 1;
-                        deltaTimeByteCount++;
-
-                        if (deltaTimeByteCount > 4)
-                        {
-                            int x4 = 1;
-                        }
+                        
+                        //deltaTimeByteCount++;
+                        //if (deltaTimeByteCount > 4)
+                        //{
+                        //    int x4 = 1;
+                        //}
 
                         currentTicks = (currentTicks << 7) + (ulong)(currentByte & 0x7F);
                     } while ((currentByte & 0x80) != 0);
@@ -247,7 +271,7 @@ namespace VGMToolbox.format
                 currentByte = pStream.ReadByte();
                 currentOffset = pStream.Position - 1;
 
-                if (currentOffset > 0x1FCF) // code to quickly get to a position for debugging
+                if (currentOffset > 0x450) // code to quickly get to a position for debugging
                 {
                     int x = 1;
                 }

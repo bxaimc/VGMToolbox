@@ -32,6 +32,9 @@
             this.lblDragNDrop = new System.Windows.Forms.Label();
             this.tbSource = new System.Windows.Forms.TextBox();
             this.grpOptions = new System.Windows.Forms.GroupBox();
+            this.rbForceSeqType = new System.Windows.Forms.RadioButton();
+            this.rbForceSepType = new System.Windows.Forms.RadioButton();
+            this.cbForceType = new System.Windows.Forms.CheckBox();
             this.cbForce2Loops = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
@@ -42,31 +45,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 512);
-            this.pnlLabels.Size = new System.Drawing.Size(846, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 354);
+            this.pnlLabels.Size = new System.Drawing.Size(776, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(846, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(776, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 435);
-            this.tbOutput.Size = new System.Drawing.Size(846, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 277);
+            this.tbOutput.Size = new System.Drawing.Size(776, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 415);
-            this.pnlButtons.Size = new System.Drawing.Size(846, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 257);
+            this.pnlButtons.Size = new System.Drawing.Size(776, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(786, 0);
+            this.btnCancel.Location = new System.Drawing.Point(716, 0);
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(726, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(656, 0);
             // 
             // grpSource
             // 
@@ -75,7 +78,7 @@
             this.grpSource.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSource.Location = new System.Drawing.Point(0, 23);
             this.grpSource.Name = "grpSource";
-            this.grpSource.Size = new System.Drawing.Size(846, 63);
+            this.grpSource.Size = new System.Drawing.Size(776, 63);
             this.grpSource.TabIndex = 5;
             this.grpSource.TabStop = false;
             this.grpSource.Text = "Source Files";
@@ -101,14 +104,52 @@
             // 
             // grpOptions
             // 
+            this.grpOptions.Controls.Add(this.rbForceSeqType);
+            this.grpOptions.Controls.Add(this.rbForceSepType);
+            this.grpOptions.Controls.Add(this.cbForceType);
             this.grpOptions.Controls.Add(this.cbForce2Loops);
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpOptions.Location = new System.Drawing.Point(0, 86);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(846, 42);
+            this.grpOptions.Size = new System.Drawing.Size(776, 115);
             this.grpOptions.TabIndex = 6;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
+            // 
+            // rbForceSeqType
+            // 
+            this.rbForceSeqType.AutoSize = true;
+            this.rbForceSeqType.Enabled = false;
+            this.rbForceSeqType.Location = new System.Drawing.Point(28, 87);
+            this.rbForceSeqType.Name = "rbForceSeqType";
+            this.rbForceSeqType.Size = new System.Drawing.Size(74, 17);
+            this.rbForceSeqType.TabIndex = 3;
+            this.rbForceSeqType.TabStop = true;
+            this.rbForceSeqType.Text = "SEQ Type";
+            this.rbForceSeqType.UseVisualStyleBackColor = true;
+            // 
+            // rbForceSepType
+            // 
+            this.rbForceSepType.AutoSize = true;
+            this.rbForceSepType.Enabled = false;
+            this.rbForceSepType.Location = new System.Drawing.Point(28, 64);
+            this.rbForceSepType.Name = "rbForceSepType";
+            this.rbForceSepType.Size = new System.Drawing.Size(73, 17);
+            this.rbForceSepType.TabIndex = 2;
+            this.rbForceSepType.TabStop = true;
+            this.rbForceSepType.Text = "SEP Type";
+            this.rbForceSepType.UseVisualStyleBackColor = true;
+            // 
+            // cbForceType
+            // 
+            this.cbForceType.AutoSize = true;
+            this.cbForceType.Location = new System.Drawing.Point(6, 42);
+            this.cbForceType.Name = "cbForceType";
+            this.cbForceType.Size = new System.Drawing.Size(111, 17);
+            this.cbForceType.TabIndex = 1;
+            this.cbForceType.Text = "Force source type";
+            this.cbForceType.UseVisualStyleBackColor = true;
+            this.cbForceType.CheckedChanged += new System.EventHandler(this.cbForceType_CheckedChanged);
             // 
             // cbForce2Loops
             // 
@@ -125,7 +166,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(846, 553);
+            this.ClientSize = new System.Drawing.Size(776, 395);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpSource);
             this.Name = "Xsf_PsxSeqExtractForm";
@@ -158,5 +199,8 @@
         private System.Windows.Forms.TextBox tbSource;
         private System.Windows.Forms.GroupBox grpOptions;
         private System.Windows.Forms.CheckBox cbForce2Loops;
+        private System.Windows.Forms.CheckBox cbForceType;
+        private System.Windows.Forms.RadioButton rbForceSeqType;
+        private System.Windows.Forms.RadioButton rbForceSepType;
     }
 }

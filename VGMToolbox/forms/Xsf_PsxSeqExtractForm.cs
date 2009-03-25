@@ -29,6 +29,12 @@ namespace VGMToolbox.forms
                 ConfigurationSettings.AppSettings["Form_SeqExtractor_GroupOptions"];
             this.cbForce2Loops.Text =
                 ConfigurationSettings.AppSettings["Form_SeqExtractor_CheckBoxForce2Loops"];
+            this.cbForceType.Text =
+                ConfigurationSettings.AppSettings["Form_SeqExtractor_CheckBoxForceType"];
+            this.rbForceSepType.Text =
+                ConfigurationSettings.AppSettings["Form_SeqExtractor_RadioForceSepType"];
+            this.rbForceSeqType.Text =
+                ConfigurationSettings.AppSettings["Form_SeqExtractor_RadioForceSeqType"];
         }
 
         private void PsxSeqExtractWorker_WorkComplete(object sender,
@@ -75,11 +81,30 @@ namespace VGMToolbox.forms
             PsxSeqExtractWorker.PsxSeqExtractStruct psxStruct = new PsxSeqExtractWorker.PsxSeqExtractStruct();
             psxStruct.sourcePaths = s;
             psxStruct.force2Loops = cbForce2Loops.Checked;
+            psxStruct.forceSepType = rbForceSepType.Checked;
+            psxStruct.forceSeqType = rbForceSeqType.Checked;
 
             psxSeqExtractWorker = new PsxSeqExtractWorker();
             psxSeqExtractWorker.ProgressChanged += backgroundWorker_ReportProgress;
             psxSeqExtractWorker.RunWorkerCompleted += PsxSeqExtractWorker_WorkComplete;
             psxSeqExtractWorker.RunWorkerAsync(psxStruct);
+        }
+
+        private void cbForceType_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.cbForceType.Checked)
+            {
+                this.rbForceSepType.Enabled = true;
+                this.rbForceSeqType.Enabled = true;
+            }
+            else
+            {
+                this.rbForceSepType.Enabled = false;
+                this.rbForceSeqType.Enabled = false;
+
+                this.rbForceSepType.Checked = false;
+                this.rbForceSeqType.Checked = false;
+            }
         }
     }
 }

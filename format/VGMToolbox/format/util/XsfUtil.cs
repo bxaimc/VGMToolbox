@@ -231,6 +231,7 @@ namespace VGMToolbox.format.util
             long previousOffset = 0;
             long offsetLocation = -1;
             long seqEndLocation = -1;
+            long seqEndLocationType2 = -1;
 
             int i = 0;
 
@@ -274,17 +275,40 @@ namespace VGMToolbox.format.util
                 {
                     // need to add SEP support
                     seqEndLocation = ParseFile.GetNextOffset(fs, offsetLocation, PsxSequence.END_SEQUENCE);
-                    seqEndLocation += PsxSequence.END_SEQUENCE.Length;  // add length to include the end bytes
+                    seqEndLocationType2 = ParseFile.GetNextOffset(fs, offsetLocation, PsxSequence.END_SEQUENCE_TYPE2);
 
-                    // extract SEQ                    
-                    //ParseFile.ExtractChunkToFile(fs, offsetLocation, (int)(seqEndLocation - offsetLocation), 
-                    //    Path.Combine(outputPath, (i.ToString("X8") + PsxSequence.FILE_EXTENSION)));
-                    ParseFile.ExtractChunkToFile(fs, offsetLocation, (int)(seqEndLocation - offsetLocation),
-                        outputPath);
+                    if  (((seqEndLocation == -1) && (seqEndLocationType2 > -1)) ||
+                        ((seqEndLocationType2 != -1) && (seqEndLocationType2 < seqEndLocation))) // SEP Type
+                    {
+                        seqEndLocation = seqEndLocationType2 + PsxSequence.END_SEQUENCE_TYPE2.Length;
+                    }
+
+                    if (seqEndLocation > -1)
+                    {
+                        seqEndLocation += PsxSequence.END_SEQUENCE.Length;  // add length to include the end bytes
+
+                        // extract SEQ                    
+                        //ParseFile.ExtractChunkToFile(fs, offsetLocation, (int)(seqEndLocation - offsetLocation), 
+                        //    Path.Combine(outputPath, (i.ToString("X8") + PsxSequence.FILE_EXTENSION)));
+                        ParseFile.ExtractChunkToFile(fs, offsetLocation, (int)(seqEndLocation - offsetLocation),
+                            outputPath);
 
 
-                    previousOffset = seqEndLocation + PsxSequence.END_SEQUENCE.Length;
-                    i++;
+                        previousOffset = seqEndLocation + PsxSequence.END_SEQUENCE.Length;
+                        i++;
+                    }
+                    else
+                    {
+                        fs.Close();
+                        fs.Dispose();
+                        
+                        if (!String.IsNullOrEmpty(decompressedDataSection))
+                        {
+                            File.Delete(decompressedDataSection);
+                        }
+                        
+                        throw new PsxSeqFormatException("SEQ begin found, but terminator bytes were not found.");
+                    }
                 }
             }
 
