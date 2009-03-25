@@ -20,6 +20,7 @@ namespace VGMToolbox.tools.xsf
         public struct PsxSeqExtractStruct
         {
             public string[] sourcePaths;
+            public bool force2Loops;
         }
 
         public PsxSeqExtractWorker()
@@ -42,7 +43,7 @@ namespace VGMToolbox.tools.xsf
                 {
                     if (!CancellationPending)
                     {
-                        this.extractSeqsFromFile(path, e);
+                        this.extractSeqsFromFile(path, pPsxSeqExtractStruct, e);
                     }
                     else
                     {
@@ -52,7 +53,7 @@ namespace VGMToolbox.tools.xsf
                 }
                 else if (Directory.Exists(path))
                 {
-                    this.extractSeqsFromDirectory(path, e);
+                    this.extractSeqsFromDirectory(path, pPsxSeqExtractStruct, e);
 
                     if (CancellationPending)
                     {
@@ -64,7 +65,8 @@ namespace VGMToolbox.tools.xsf
             return;
         }
 
-        private void extractSeqsFromFile(string pPath, DoWorkEventArgs e)
+        private void extractSeqsFromFile(string pPath, PsxSeqExtractStruct pPsxSeqExtractStruct, 
+            DoWorkEventArgs e)
         {
             int minutes;
             double seconds;
@@ -89,7 +91,20 @@ namespace VGMToolbox.tools.xsf
                     
                     using (FileStream fs = File.OpenRead(extractedSq))
                     {
-                        psxSeq = new PsxSequence(fs);
+                        PsxSequence.PsxSqInitStruct initStruct = new PsxSequence.PsxSqInitStruct();
+                        initStruct.force2Loops = pPsxSeqExtractStruct.force2Loops;
+                        initStruct.forceOppositeFormatType = false;
+
+                        try
+                        {
+                            psxSeq = new PsxSequence(fs, initStruct);
+                        }
+                        catch (PsxSeqFormatException seqEx)
+                        {
+                            // sometimes the version number is wrong, (Devil Summoner 1-50b.minipsf)
+                            initStruct.forceOppositeFormatType = true;
+                            psxSeq = new PsxSequence(fs, initStruct);
+                        }
                     }
 
                     if (psxSeq != null)
@@ -135,18 +150,19 @@ namespace VGMToolbox.tools.xsf
             catch (Exception ex)
             {
                 this.progressStruct.Clear();
-                this.progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message;
+                this.progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message + Environment.NewLine;
                 ReportProgress(progress, this.progressStruct);
             }
-        }    
+        }
 
-        private void extractSeqsFromDirectory(string pPath, DoWorkEventArgs e)
+        private void extractSeqsFromDirectory(string pPath, PsxSeqExtractStruct pPsxSeqExtractStruct,
+            DoWorkEventArgs e)
         {
             foreach (string d in Directory.GetDirectories(pPath))
             {
                 if (!CancellationPending)
                 {
-                    this.extractSeqsFromDirectory(d, e);
+                    this.extractSeqsFromDirectory(d, pPsxSeqExtractStruct, e);
                 }
                 else
                 {
@@ -158,7 +174,7 @@ namespace VGMToolbox.tools.xsf
             {
                 if (!CancellationPending)
                 {
-                    this.extractSeqsFromFile(f, e);
+                    this.extractSeqsFromFile(f, pPsxSeqExtractStruct, e);
                 }
                 else
                 {

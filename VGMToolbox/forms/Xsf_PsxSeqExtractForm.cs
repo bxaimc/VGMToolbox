@@ -24,7 +24,11 @@ namespace VGMToolbox.forms
             this.grpSource.Text =
                 ConfigurationSettings.AppSettings["Form_SeqExtractor_GroupSource"];
             this.lblDragNDrop.Text =
-                ConfigurationSettings.AppSettings["Form_SeqExtractor_LblDragNDrop"];
+                ConfigurationSettings.AppSettings["Form_SeqExtractor_LblDragNDrop"];            
+            this.grpOptions.Text =
+                ConfigurationSettings.AppSettings["Form_SeqExtractor_GroupOptions"];
+            this.cbForce2Loops.Text =
+                ConfigurationSettings.AppSettings["Form_SeqExtractor_CheckBoxForce2Loops"];
         }
 
         private void PsxSeqExtractWorker_WorkComplete(object sender,
@@ -70,6 +74,7 @@ namespace VGMToolbox.forms
 
             PsxSeqExtractWorker.PsxSeqExtractStruct psxStruct = new PsxSeqExtractWorker.PsxSeqExtractStruct();
             psxStruct.sourcePaths = s;
+            psxStruct.force2Loops = cbForce2Loops.Checked;
 
             psxSeqExtractWorker = new PsxSeqExtractWorker();
             psxSeqExtractWorker.ProgressChanged += backgroundWorker_ReportProgress;

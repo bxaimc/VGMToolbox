@@ -415,7 +415,7 @@ namespace VGMToolbox.format
                             }
 
                             // check for loop start
-                            if ((((currentByte & 0xBF) == currentByte) || ((runningCommand & 0xBF) == runningCommand)) &&
+                            if ((((currentByte & 0xB0) == 0xB0) || ((runningCommand & 0xB0) == 0xB0)) &&
                                  dataByte1 == 0x63 &&
                                 (dataByte2 == 0x00 || dataByte2 == 0x80))
                             {
@@ -425,7 +425,7 @@ namespace VGMToolbox.format
                             }
 
                             // check for loop end
-                            if ((((currentByte & 0xBF) == currentByte) || ((runningCommand & 0xBF) == runningCommand)) &&
+                            if ((((currentByte & 0xB0) == 0xB0) || ((runningCommand & 0xB0) == 0xB0)) &&
                                  dataByte1 == 0x63 &&
                                 (dataByte2 == 0x01 || dataByte2 == 0x81))
                             {
@@ -435,7 +435,7 @@ namespace VGMToolbox.format
 
                             // check for loop count
                             if (loopEndFound &&
-                               (((currentByte & 0xBF) == currentByte) || ((runningCommand & 0xBF) == runningCommand)) &&
+                               (((currentByte & 0xB0) == 0xB0) || ((runningCommand & 0xB0) == 0xB0)) &&
                                 dataByte1 == 0x26)
                             {
                                 if (loopTimeStack.Count > 0) // check for unmatched close tag

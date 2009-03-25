@@ -29,25 +29,36 @@ namespace VGMToolbox.format
             public UInt16 unknown;
         }
 
-        SqHeaderStruct sqHeader;
-        PsxSqTimingStruct timingInfo;
+        public struct PsxSqInitStruct
+        {
+            public bool force2Loops;
+            public bool forceOppositeFormatType;
+        }
+
+        private SqHeaderStruct sqHeader;
+        private PsxSqTimingStruct timingInfo;
+        private bool force2Loops;
+        private bool forceOppositeFormatType;
         private Dictionary<int, int> dataBytesPerCommand;
 
         public PsxSqTimingStruct TimingInfo { get { return timingInfo; } }
 
-        public PsxSequence(Stream pStream)
+        public PsxSequence(Stream pStream, PsxSqInitStruct pPsxSqInitStruct)
         {
-            sqHeader = parseSqHeader(pStream);
+            this.sqHeader = parseSqHeader(pStream);
 
-            dataBytesPerCommand = new Dictionary<int, int>();
-            dataBytesPerCommand.Add(0x80, 2);
-            dataBytesPerCommand.Add(0x90, 2);
-            dataBytesPerCommand.Add(0xA0, 2);
-            dataBytesPerCommand.Add(0xB0, 2);
-            dataBytesPerCommand.Add(0xC0, 1);
-            dataBytesPerCommand.Add(0xD0, 1);
-            dataBytesPerCommand.Add(0xE0, 2);
-            dataBytesPerCommand.Add(0xF0, 0);
+            this.force2Loops = pPsxSqInitStruct.force2Loops;
+            this.forceOppositeFormatType = pPsxSqInitStruct.forceOppositeFormatType;
+
+            this.dataBytesPerCommand = new Dictionary<int, int>();
+            this.dataBytesPerCommand.Add(0x80, 2);
+            this.dataBytesPerCommand.Add(0x90, 2);
+            this.dataBytesPerCommand.Add(0xA0, 2);
+            this.dataBytesPerCommand.Add(0xB0, 2);
+            this.dataBytesPerCommand.Add(0xC0, 1);
+            this.dataBytesPerCommand.Add(0xD0, 1);
+            this.dataBytesPerCommand.Add(0xE0, 2);
+            this.dataBytesPerCommand.Add(0xF0, 0);
 
             timingInfo = getTimingInfo(pStream);
         }
@@ -132,8 +143,36 @@ namespace VGMToolbox.format
 
             byte[] tempoValBytes;
 
-            pStream.Position = 15; // skip header
+            switch (this.sqHeader.Version)
+            {
+                case 0:
+                    if (!this.forceOppositeFormatType)
+                    {
+                        pStream.Position = 19;
+                    }
+                    else
+                    {
+                        pStream.Position = 15;
+                    }
+                    break;
+                case 1:
+                    if (!this.forceOppositeFormatType)
+                    {
+                        pStream.Position = 15;
+                    }
+                    else
+                    {
+                        pStream.Position = 19;
+                    }
+                    break;
+            }
 
+
+            if (this.forceOppositeFormatType)
+            {
+                ret.Warnings += "Failed as internal version type, trying to force opposite version.  Please verify after completion." + Environment.NewLine;
+            }
+            
             while (pStream.Position < pStream.Length)
             {
                 iterationOffset = pStream.Position;
@@ -223,7 +262,7 @@ namespace VGMToolbox.format
                 {
                     if (runningCommand == 0)
                     {
-                        throw new Exception(String.Format("Empty running command at 0x{0}", currentOffset.ToString("X2")));
+                        throw new PsxSeqFormatException(String.Format("Empty running command at 0x{0}", currentOffset.ToString("X2")));
                     }
                     else
                     {
@@ -294,7 +333,7 @@ namespace VGMToolbox.format
 
 
                         // check for loop start
-                        if ((((currentByte & 0xBF) == currentByte) || ((runningCommand & 0xBF) == runningCommand)) &&
+                        if ((((currentByte & 0xB0) == 0xB0) || ((runningCommand & 0xB0) == 0xB0)) &&
                              dataByte1 == 0x63 && dataByte2 == 0x14)
                         {
                             loopTimeStack.Push(0);
@@ -303,14 +342,14 @@ namespace VGMToolbox.format
                         }
 
                         // check for loop end
-                        if ((((currentByte & 0xBF) == currentByte) || ((runningCommand & 0xBF) == runningCommand)) &&
+                        if ((((currentByte & 0xB0) == 0xB0) || ((runningCommand & 0xB0) == 0xB0)) &&
                              dataByte1 == 0x63 && dataByte2 == 0x1E)
                         {
                             loopEndFound = true;
                             loopsClosed++;
                         }
 
-                        if ((((currentByte & 0xBF) == currentByte) || ((runningCommand & 0xBF) == runningCommand)) &&
+                        if ((((currentByte & 0xB0) == 0xB0) || ((runningCommand & 0xB0) == 0xB0)) &&
                             dataByte1 == 0x06)
                         {
                             loopTimeMultiplier = dataByte2;
@@ -319,9 +358,12 @@ namespace VGMToolbox.format
                         // check for loop count
                         if (loopEndFound)
                         {
-                            //if (loopTimeStack.Count > 0) // check for unmatched close tag
-                            //{
-                            if (loopTimeMultiplier == 127)
+                            if (this.force2Loops)
+                            {
+                                loopTimeMultiplier = 2;
+                                loopFound = true;
+                            }
+                            else if (loopTimeMultiplier == 127)
                             {
                                 loopTimeMultiplier = 2;
                                 loopFound = true;
@@ -339,47 +381,11 @@ namespace VGMToolbox.format
                             timeSinceLastLoopEnd = 0;
 
                             loopEndFound = false;
-                            //}
-                            //else
-                            //{
-                            //    ret.Warnings += "Unmatched Loop End tag(s) found." + Environment.NewLine;
-                            //}
-
-                            loopEndFound = false;
                         }
                     }
 
                     currentOffset = pStream.Position - 1;
                 }
-                //else // meta event (only tempo is relevant for timing)
-                //{
-                //    // get meta command bytes
-                //    metaCommandByte = pStream.ReadByte();
-                //    currentOffset = pStream.Position - 1;
-
-                //    // check for tempo switch here
-                //    if (metaCommandByte == 0x51)
-                //    {
-                //        // tempo switch
-                //        tempoValBytes = new byte[4];
-                //        Array.Copy(ParseFile.parseSimpleOffset(pStream, pStream.Position, 3), 0, tempoValBytes, 1, 3);
-
-                //        Array.Reverse(tempoValBytes); // flip order to LE for use with BitConverter
-                //        tempo = BitConverter.ToUInt32(tempoValBytes, 0);
-
-                //        pStream.Position += 3;
-                //    }
-                //    else
-                //    {
-                //        // get length bytes                   
-                //        metaCommandLengthByte = pStream.ReadByte();
-                        
-                //        // skip data bytes, they have already been grabbed above if needed
-                //        pStream.Position += (long)metaCommandLengthByte;
-                //    }
-                //    currentOffset = pStream.Position;
-
-                //}
 
             } // while (pStream.Position < pEndOffset)
 
@@ -419,5 +425,11 @@ DONE:       // Marker used for skipping delta ticks at the end of a file.
             pStream.Position = incomingStreamPosition;
             return ret;        
         }
+    }
+
+    public class PsxSeqFormatException : Exception
+    {
+        public PsxSeqFormatException(string pMessage)
+            : base(pMessage) { }
     }
 }
