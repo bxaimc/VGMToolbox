@@ -14,6 +14,8 @@ namespace VGMToolbox.format.util
 {
     public class XsfUtil
     {
+        public const int INVALID_DATA = -1;
+        
         static readonly string UNPKPSF2_SOURCE_PATH =
             Path.Combine(Path.Combine(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "external"), "psf2"), "unpkpsf2.exe");
         static readonly string BIN2PSF_SOURCE_PATH =
@@ -30,90 +32,94 @@ namespace VGMToolbox.format.util
             public bool IncludeExtension;
             public bool StripGsfHeader;
         }
-
+        
         public static string ExtractCompressedDataSection(string pPath, Xsf2ExeStruct pXsf2ExeStruct)
         {
             string outputFile = null;
-            
-            using (FileStream fs = File.OpenRead(pPath))
+            string formatString = GetXsfFormatString(pPath);
+
+            if (!String.IsNullOrEmpty(formatString))
             {
-                Type dataType = FormatUtil.getObjectType(fs);
 
-                Xsf vgmData = new Xsf();
-                vgmData.Initialize(fs, pPath);
-
-                if (vgmData.CompressedProgramLength > 0)
+                using (FileStream fs = File.OpenRead(pPath))
                 {
-                    BinaryWriter bw;
-                    outputFile = Path.GetDirectoryName(pPath) + Path.DirectorySeparatorChar;
-                    outputFile += (pXsf2ExeStruct.IncludeExtension ? Path.GetFileName(pPath) : Path.GetFileNameWithoutExtension(pPath)) + ".data.bin";
+                    Xsf vgmData = new Xsf();
+                    vgmData.Initialize(fs, pPath);
 
-
-                    bw = new BinaryWriter(File.Create(outputFile));
-
-                    InflaterInputStream inflater;
-                    int read;
-                    byte[] data = new byte[4096];
-
-                    fs.Seek((long)(Xsf.RESERVED_SECTION_OFFSET + vgmData.ReservedSectionLength), SeekOrigin.Begin);
-                    inflater = new InflaterInputStream(fs);
-
-                    while ((read = inflater.Read(data, 0, data.Length)) > 0)
+                    if (vgmData.CompressedProgramLength > 0)
                     {
-                        bw.Write(data, 0, read);
-                    }
+                        BinaryWriter bw;
+                        outputFile = Path.GetDirectoryName(pPath) + Path.DirectorySeparatorChar;
+                        outputFile += (pXsf2ExeStruct.IncludeExtension ? Path.GetFileName(pPath) : Path.GetFileNameWithoutExtension(pPath)) + ".data.bin";
 
-                    bw.Close();
-                    inflater.Close();
-                    inflater.Dispose();
 
-                    // strip GSF header
-                    if (pXsf2ExeStruct.StripGsfHeader)
-                    {
-                        string strippedOutputFileName = outputFile + ".strip";
+                        bw = new BinaryWriter(File.Create(outputFile));
 
-                        using (FileStream gsfStream = File.OpenRead(outputFile))
+                        InflaterInputStream inflater;
+                        int read;
+                        byte[] data = new byte[4096];
+
+                        fs.Seek((long)(Xsf.RESERVED_SECTION_OFFSET + vgmData.ReservedSectionLength), SeekOrigin.Begin);
+                        inflater = new InflaterInputStream(fs);
+
+                        while ((read = inflater.Read(data, 0, data.Length)) > 0)
                         {
-                            long fileOffset = 0x0C;
-                            int fileLength = (int)(gsfStream.Length - fileOffset) + 1;
-
-                            ParseFile.ExtractChunkToFile(gsfStream, fileOffset, fileLength,
-                                strippedOutputFileName);
+                            bw.Write(data, 0, read);
                         }
 
-                        File.Copy(strippedOutputFileName, outputFile, true);
-                        File.Delete(strippedOutputFileName);
-                    }
+                        bw.Close();
+                        inflater.Close();
+                        inflater.Dispose();
 
-                } // if (vgmData.CompressedProgramLength > 0)
-            } // using (FileStream fs = File.OpenRead(pPath))       
+                        // strip GSF header
+                        if (pXsf2ExeStruct.StripGsfHeader)
+                        {
+                            string strippedOutputFileName = outputFile + ".strip";
 
+                            using (FileStream gsfStream = File.OpenRead(outputFile))
+                            {
+                                long fileOffset = 0x0C;
+                                int fileLength = (int)(gsfStream.Length - fileOffset) + 1;
+
+                                ParseFile.ExtractChunkToFile(gsfStream, fileOffset, fileLength,
+                                    strippedOutputFileName);
+                            }
+
+                            File.Copy(strippedOutputFileName, outputFile, true);
+                            File.Delete(strippedOutputFileName);
+                        }
+
+                    } // if (vgmData.CompressedProgramLength > 0)
+                } // using (FileStream fs = File.OpenRead(pPath))       
+            }
             return outputFile;
         }
 
         public static string ExtractReservedSection(string pPath, Xsf2ExeStruct pXsf2ExeStruct)
         {
             string outputFile = null;
+            string formatString = GetXsfFormatString(pPath);
 
-            using (FileStream fs = File.OpenRead(pPath))
+            if (!String.IsNullOrEmpty(formatString))
             {
-                Type dataType = FormatUtil.getObjectType(fs);
-
-                Xsf vgmData = new Xsf();
-                vgmData.Initialize(fs, pPath);
-
-                if (vgmData.ReservedSectionLength > 0)
+                using (FileStream fs = File.OpenRead(pPath))
                 {
-                    outputFile = String.Format("{0}.reserved.bin",
-                        (pXsf2ExeStruct.IncludeExtension ? Path.GetFileName(pPath) : Path.GetFileNameWithoutExtension(pPath)));
-                    outputFile = Path.Combine(Path.GetDirectoryName(pPath), outputFile);
-                    
-                    ParseFile.ExtractChunkToFile(fs, Xsf.RESERVED_SECTION_OFFSET, 
-                        (int)vgmData.ReservedSectionLength, outputFile);
+                    Xsf vgmData = new Xsf();
+                    vgmData.Initialize(fs, pPath);
 
-                } // if (vgmData.CompressedProgramLength > 0)
-            } // using (FileStream fs = File.OpenRead(pPath))       
+                    if (vgmData.ReservedSectionLength > 0)
+                    {
+                        outputFile = String.Format("{0}.reserved.bin",
+                            (pXsf2ExeStruct.IncludeExtension ? Path.GetFileName(pPath) : Path.GetFileNameWithoutExtension(pPath)));
+                        outputFile = Path.Combine(Path.GetDirectoryName(pPath), outputFile);
 
+                        ParseFile.ExtractChunkToFile(fs, Xsf.RESERVED_SECTION_OFFSET,
+                            (int)vgmData.ReservedSectionLength, outputFile);
+
+                    } // if (vgmData.CompressedProgramLength > 0)
+                } // using (FileStream fs = File.OpenRead(pPath))       
+            }
+            
             return outputFile;        
         }
 
@@ -142,6 +148,26 @@ namespace VGMToolbox.format.util
             bin2PsfProcess.Dispose();
 
             // return outputDir;        
+        }
+
+        public static string GetXsfFormatString(string pPath)
+        {
+            string ret = null;
+
+            using (FileStream typeFs = File.Open(pPath, FileMode.Open, FileAccess.Read))
+            {
+                Type dataType = FormatUtil.getObjectType(typeFs);
+
+                if (dataType != null && dataType.Name.Equals("Xsf"))
+                {
+                    Xsf xsfFile = new Xsf();
+                    xsfFile.Initialize(typeFs, pPath);
+
+                    ret = xsfFile.getFormat();
+                }
+            }
+            
+            return ret;
         }
 
         // PSF2
@@ -177,42 +203,36 @@ namespace VGMToolbox.format.util
             
             Process unpkPsf2Process = null;
 
-            using (FileStream fs = File.OpenRead(pPath))
+            string formatString = GetXsfFormatString(pPath);
+
+            if (!String.IsNullOrEmpty(formatString) && formatString.Equals(Xsf.FORMAT_NAME_PSF2))
             {
-                Type dataType = FormatUtil.getObjectType(fs);
-
-                if (dataType != null && dataType.Name.Equals("Xsf"))
+                using (FileStream fs = File.OpenRead(pPath))
                 {
-                    Psf2 psf2File = new Psf2();
-                    psf2File.Initialize(fs, pPath);
 
-                    if (psf2File.getFormat().Equals(Psf2.FORMAT_NAME_PSF2))
-                    {
-                        filePath = Path.GetFullPath(pPath);
-                        outputDir = Path.Combine(Path.GetDirectoryName(filePath),
-                            Path.GetFileNameWithoutExtension(filePath));
+                    filePath = Path.GetFullPath(pPath);
+                    outputDir = Path.Combine(Path.GetDirectoryName(filePath),
+                        Path.GetFileNameWithoutExtension(filePath));
 
-                        // call unpkpsf2.exe
-                        string arguments = String.Format(" \"{0}\" \"{1}\"", filePath, outputDir);
-                        unpkPsf2Process = new Process();
-                        unpkPsf2Process.StartInfo = new ProcessStartInfo(UNPKPSF2_SOURCE_PATH, arguments);
-                        unpkPsf2Process.StartInfo.UseShellExecute = false;
-                        unpkPsf2Process.StartInfo.CreateNoWindow = true;
+                    // call unpkpsf2.exe
+                    string arguments = String.Format(" \"{0}\" \"{1}\"", filePath, outputDir);
+                    unpkPsf2Process = new Process();
+                    unpkPsf2Process.StartInfo = new ProcessStartInfo(UNPKPSF2_SOURCE_PATH, arguments);
+                    unpkPsf2Process.StartInfo.UseShellExecute = false;
+                    unpkPsf2Process.StartInfo.CreateNoWindow = true;
 
-                        unpkPsf2Process.StartInfo.RedirectStandardError = true;
-                        unpkPsf2Process.StartInfo.RedirectStandardOutput = true;
+                    unpkPsf2Process.StartInfo.RedirectStandardError = true;
+                    unpkPsf2Process.StartInfo.RedirectStandardOutput = true;
 
-                        bool isSuccess = unpkPsf2Process.Start();
-                        pStandardOutput = unpkPsf2Process.StandardOutput.ReadToEnd();
-                        pStandardError = unpkPsf2Process.StandardError.ReadToEnd();
-                        
-                        unpkPsf2Process.WaitForExit();                                                
-                        unpkPsf2Process.Close();
-                        unpkPsf2Process.Dispose();
-                    }
+                    bool isSuccess = unpkPsf2Process.Start();
+                    pStandardOutput = unpkPsf2Process.StandardOutput.ReadToEnd();
+                    pStandardError = unpkPsf2Process.StandardError.ReadToEnd();
+
+                    unpkPsf2Process.WaitForExit();
+                    unpkPsf2Process.Close();
+                    unpkPsf2Process.Dispose();
                 }
             }
-
             return outputDir;
         }
 
@@ -261,6 +281,7 @@ namespace VGMToolbox.format.util
                     fileToExtractFrom = pPath;
                 }
             }
+
             using (FileStream fs = File.Open(fileToExtractFrom, FileMode.Open, FileAccess.Read))
             {
                 // outputPath = Path.Combine(Path.GetDirectoryName(pPath), Path.GetFileNameWithoutExtension(pPath));
@@ -320,5 +341,36 @@ namespace VGMToolbox.format.util
             return outputPath;
         }
 
+        // 2SF
+        public static int GetSongNumberForMini2sf(string pPath)
+        {
+            int ret = INVALID_DATA;
+            
+            string formatString = GetXsfFormatString(pPath);
+            Xsf2ExeStruct xsf2ExeStruct;
+            string decompressedDataSectionPath;
+
+            if (!String.IsNullOrEmpty(formatString) && formatString.Equals(Xsf.FORMAT_NAME_2SF))
+            {
+                // extract data section
+                xsf2ExeStruct = new Xsf2ExeStruct();
+                xsf2ExeStruct.IncludeExtension = true;
+                xsf2ExeStruct.StripGsfHeader = false;
+                decompressedDataSectionPath = ExtractCompressedDataSection(pPath, xsf2ExeStruct);
+
+                if (!String.IsNullOrEmpty(decompressedDataSectionPath))
+                {
+                    using (FileStream fs = File.OpenRead(decompressedDataSectionPath))
+                    {
+                        if (fs.Length == 0x0A) // make sure it is a mini2sf
+                        {
+                            ret = (int)BitConverter.ToUInt16(ParseFile.parseSimpleOffset(fs, 8, 2), 0);
+                        }
+                    }
+                }
+            }
+
+            return ret;
+        }
     }
 }
