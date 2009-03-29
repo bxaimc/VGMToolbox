@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
+using VGMToolbox.format.util;
 using VGMToolbox.util;
 
 namespace VGMToolbox.tools.xsf
@@ -237,7 +238,17 @@ namespace VGMToolbox.tools.xsf
         protected override void OnDoWork(DoWorkEventArgs e)
         {
             SsfSeqTonExtractorStruct ssfSeqTonExtractorStruct = (SsfSeqTonExtractorStruct)e.Argument;
-            this.extractSsfSeqTon(ssfSeqTonExtractorStruct, e);
+
+            if (XsfUtil.IsPythonPresentInPath())
+            {
+                this.extractSsfSeqTon(ssfSeqTonExtractorStruct, e);
+            }
+            else
+            {
+                this.progressStruct.Clear();
+                this.progressStruct.errorMessage = "ERROR: A directory containing the Python Interpreter (python.exe) cannot be found in your PATH environment variable.";
+                ReportProgress(0, this.progressStruct);
+            }
         }         
     
     }

@@ -32,6 +32,27 @@ namespace VGMToolbox.format.util
             public bool IncludeExtension;
             public bool StripGsfHeader;
         }
+
+        public static bool IsPythonPresentInPath()
+        {
+            bool ret = false;
+            
+            string pathVariable = Environment.GetEnvironmentVariable("PATH");
+            string[] paths = pathVariable.Split(new char[] { ';' });
+
+            foreach (string p in paths)
+            {
+                string[] files = Directory.GetFiles(p, "python.exe");
+
+                if (files.Length > 0)
+                {
+                    ret = true;
+                    break;
+                }
+            }
+
+            return ret;
+        }
         
         public static string ExtractCompressedDataSection(string pPath, Xsf2ExeStruct pXsf2ExeStruct)
         {
@@ -236,12 +257,7 @@ namespace VGMToolbox.format.util
             return outputDir;
         }
 
-        // PSF
-        public static bool IsPsxSepFile(string pPath)
-        {
-            return false;        
-        }
-        
+        // PSF        
         public static string ExtractPsxSequences(string pPath)
         {
             string outputPath = null;
@@ -284,17 +300,16 @@ namespace VGMToolbox.format.util
 
             using (FileStream fs = File.Open(fileToExtractFrom, FileMode.Open, FileAccess.Read))
             {
-                // outputPath = Path.Combine(Path.GetDirectoryName(pPath), Path.GetFileNameWithoutExtension(pPath));
                 outputPath = Path.Combine(Path.GetDirectoryName(pPath), Path.ChangeExtension(pPath, PsxSequence.FILE_EXTENSION));
 
-                //if (!Directory.Exists(outputPath))
-                //{
-                //    Directory.CreateDirectory(outputPath);                
-                //}
+                if (outputPath.Equals(fileToExtractFrom))
+                {
+                    outputPath = Path.Combine(Path.GetDirectoryName(pPath), 
+                        (Path.GetFileNameWithoutExtension(pPath) + "extract" + PsxSequence.FILE_EXTENSION));
+                }
 
                 while ((offsetLocation = ParseFile.GetNextOffset(fs, previousOffset, PsxSequence.ASCII_SIGNATURE)) > -1)
                 {
-                    // need to add SEP support
                     seqEndLocation = ParseFile.GetNextOffset(fs, offsetLocation, PsxSequence.END_SEQUENCE);
                     seqEndLocationType2 = ParseFile.GetNextOffset(fs, offsetLocation, PsxSequence.END_SEQUENCE_TYPE2);
 
@@ -309,8 +324,6 @@ namespace VGMToolbox.format.util
                         seqEndLocation += PsxSequence.END_SEQUENCE.Length;  // add length to include the end bytes
 
                         // extract SEQ                    
-                        //ParseFile.ExtractChunkToFile(fs, offsetLocation, (int)(seqEndLocation - offsetLocation), 
-                        //    Path.Combine(outputPath, (i.ToString("X8") + PsxSequence.FILE_EXTENSION)));
                         ParseFile.ExtractChunkToFile(fs, offsetLocation, (int)(seqEndLocation - offsetLocation),
                             outputPath);
 

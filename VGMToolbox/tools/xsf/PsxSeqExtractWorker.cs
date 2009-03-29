@@ -149,6 +149,8 @@ namespace VGMToolbox.tools.xsf
                             ReportProgress(progress, progressStruct);
                         }
                     }
+
+                    File.Delete(extractedSq);
                 }
             }
             catch (Exception ex)
