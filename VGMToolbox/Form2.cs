@@ -16,6 +16,8 @@ namespace VGMToolbox
         {
             InitializeComponent();
 
+            this.Text = ConfigurationSettings.AppSettings["VersionString"];
+
             // add empty form
             ZZZ_NotYetImplemented zzz_NotYetImplemented = new ZZZ_NotYetImplemented();
             this.splitContainer1.Panel2.Controls.Add(zzz_NotYetImplemented);

@@ -345,7 +345,10 @@ namespace VGMToolbox.format
                         metaCommandLengthByte = pStream.ReadByte();
 
                         // skip data bytes, they have already been grabbed above if needed
-                        pStream.Position += (long)metaCommandLengthByte;
+                        if (metaCommandLengthByte > 0)
+                        {
+                            pStream.Position += (long)metaCommandLengthByte;
+                        }
                     }
                     currentOffset = pStream.Position;
 
@@ -406,15 +409,18 @@ namespace VGMToolbox.format
                             }
 
                             // add loop time
-                            loopTime = loopTimeStack.Pop();
-                            loopTime = (loopTime * loopTimeMultiplier);
-                            totalTime += loopTime;
+                            if (loopTimeStack.Count > 0)
+                            {
+                                loopTime = loopTimeStack.Pop();
+                                loopTime = (loopTime * loopTimeMultiplier);
+                                totalTime += loopTime;
 
-                            loopTicks = loopTickStack.Pop();
-                            loopTicks = (loopTicks * (ulong)loopTimeMultiplier);
-                            totalTicks += loopTicks;
+                                loopTicks = loopTickStack.Pop();
+                                loopTicks = (loopTicks * (ulong)loopTimeMultiplier);
+                                totalTicks += loopTicks;
 
-                            timeSinceLastLoopEnd = 0;
+                                timeSinceLastLoopEnd = 0;
+                            }
 
                             loopEndFound = false;
                             // emptyTimeNext = true;
@@ -444,6 +450,7 @@ DONE:       // Marker used for skipping delta ticks at the end of a file.
 
             if (loopsClosed > loopsOpened)
             {
+                ret.Warnings += "Unmatched Loop End tag(s) found." + Environment.NewLine;
                 totalTime -= timeSinceLastLoopEnd;
             }
 
