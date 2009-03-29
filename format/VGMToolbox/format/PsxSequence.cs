@@ -11,7 +11,10 @@ namespace VGMToolbox.format
     {
         public static readonly byte[] ASCII_SIGNATURE = new byte[] {0x70, 0x51, 0x45, 0x53 }; //pQES
         public static readonly byte[] END_SEQUENCE = new byte[] { 0xFF, 0x2F, 0x00 };
-        public static readonly byte[] END_SEQUENCE_TYPE2 = new byte[] { 0xFF, 0x00, 0x00 };
+        public static readonly byte[] END_SEQUENCE_TYPE2 = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                                                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        public static readonly byte[] END_SEQUENCE_TYPE3 = new byte[] { 0xFF, 0x00, 0x00 };
+                
         public const string FILE_EXTENSION = ".seq";
 
         public struct PsxSqTimingStruct
@@ -131,7 +134,9 @@ namespace VGMToolbox.format
 
             bool loopFound = false;
             bool loopEndFound = false;
+            bool emptyTimeNext = false;
             double loopTime;
+
 
             int loopTimeMultiplier = 1;
             Stack<double> loopTimeStack = new Stack<double>();
@@ -201,80 +206,87 @@ namespace VGMToolbox.format
             {
                 iterationOffset = pStream.Position;
 
-                currentByte = pStream.ReadByte();
-                currentOffset = pStream.Position - 1;
-
-                // build 7-bit num from bytes (variable length string)                
-                if ((currentByte & 0x80) != 0)
+                if (!emptyTimeNext)
                 {
-                    deltaTimeByteCount = 1;
-                    currentTicks = (ulong)(currentByte & 0x7F);
+                    currentByte = pStream.ReadByte();
+                    currentOffset = pStream.Position - 1;
 
-                    do
+                    // build 7-bit num from bytes (variable length string)                
+                    if ((currentByte & 0x80) != 0)
                     {
-                        currentByte = pStream.ReadByte();
-                        currentOffset = pStream.Position - 1;
-                        
-                        //deltaTimeByteCount++;
-                        //if (deltaTimeByteCount > 4)
-                        //{
-                        //    int x4 = 1;
-                        //}
+                        deltaTimeByteCount = 1;
+                        currentTicks = (ulong)(currentByte & 0x7F);
 
-                        currentTicks = (currentTicks << 7) + (ulong)(currentByte & 0x7F);
-                    } while ((currentByte & 0x80) != 0);
-                }
-                else // only one byte, no need for conversion
-                {
-                    currentTicks = (ulong)currentByte;
-                }
+                        do
+                        {
+                            currentByte = pStream.ReadByte();
+                            currentOffset = pStream.Position - 1;
 
-                if ((tempo == 0) && (currentTicks != 0))
-                {
-                    throw new Exception("Tempo not set and current ticks not equal zero");
-                }
+                            //deltaTimeByteCount++;
+                            //if (deltaTimeByteCount > 4)
+                            //{
+                            //    int x4 = 1;
+                            //}
 
-                currentTime = currentTicks != 0 ? (double)((currentTicks * (ulong)tempo) / (ulong)this.sqHeader.Resolution) : 0;
-
-                if (currentTime > 10000000) // debug code used to find strange values
-                {
-                    int x2 = 1;
-                }
-
-                if (loopTimeStack.Count > 0)
-                {
-                    loopTime = loopTimeStack.Pop();
-                    loopTime += currentTime;
-                    loopTimeStack.Push(loopTime);
-
-                    loopTicks = loopTickStack.Pop();
-                    loopTicks += currentTicks;
-                    loopTickStack.Push(loopTicks);
-                }
-                else
-                {
-                    if (pStream.Position != pStream.Length) // time at the end of the file is ignored
+                            currentTicks = (currentTicks << 7) + (ulong)(currentByte & 0x7F);
+                        } while ((currentByte & 0x80) != 0);
+                    }
+                    else // only one byte, no need for conversion
                     {
-                        totalTime += currentTime;
-                        totalTicks += (ulong)currentTicks;
+                        currentTicks = (ulong)currentByte;
+                    }
 
-                        timeSinceLastLoopEnd += currentTime;
+                    if ((tempo == 0) && (currentTicks != 0))
+                    {
+                        throw new Exception("Tempo not set and current ticks not equal zero");
+                    }
+
+                    currentTime = currentTicks != 0 ? (double)((currentTicks * (ulong)tempo) / (ulong)this.sqHeader.Resolution) : 0;
+
+                    if (currentTime > 10000000) // debug code used to find strange values
+                    {
+                        int x2 = 1;
+                    }
+
+                    if (loopTimeStack.Count > 0)
+                    {
+                        loopTime = loopTimeStack.Pop();
+                        loopTime += currentTime;
+                        loopTimeStack.Push(loopTime);
+
+                        loopTicks = loopTickStack.Pop();
+                        loopTicks += currentTicks;
+                        loopTickStack.Push(loopTicks);
                     }
                     else
                     {
-                        goto DONE;
+                        if (pStream.Position != pStream.Length) // time at the end of the file is ignored
+                        {
+                            totalTime += currentTime;
+                            totalTicks += (ulong)currentTicks;
+
+                            timeSinceLastLoopEnd += currentTime;
+                        }
+                        else
+                        {
+                            goto DONE;
+                        }
+
                     }
-
                 }
-
+                else
+                {
+                    emptyTimeNext = false; // reset
+                }
+                
                 // get command
                 currentByte = pStream.ReadByte();
                 currentOffset = pStream.Position - 1;
 
-                if (currentOffset > 0x450) // code to quickly get to a position for debugging
-                {
-                    int x = 1;
-                }
+                //if (currentOffset > 0x492C) // code to quickly get to a position for debugging
+                //{
+                //    int x = 1;
+                //}
 
                 //if ((currentTime != 0) && (currentTime != 38461) && (currentTime != 192307))
                 //{
@@ -405,6 +417,7 @@ namespace VGMToolbox.format
                             timeSinceLastLoopEnd = 0;
 
                             loopEndFound = false;
+                            // emptyTimeNext = true;
                         }
                     }
 

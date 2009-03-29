@@ -57,7 +57,14 @@ namespace VGMToolbox.forms
                 ConfigurationSettings.AppSettings["Form_SimpleCutter_LblInBytes2"];
             this.lblByteOrder.Text =
                 ConfigurationSettings.AppSettings["Form_SimpleCutter_LblByteOrder"];
-
+            this.rbUseTerminator.Text =
+                ConfigurationSettings.AppSettings["Form_SimpleCutter_RadioUseTerminator"];
+            this.cbTreatTerminatorAsHex.Text =
+                ConfigurationSettings.AppSettings["Form_SimpleCutter_CheckBoxTreatTerminatorAsHex"];
+            this.cbIncludeTerminatorInLength.Text =
+                ConfigurationSettings.AppSettings["Form_SimpleCutter_CheckBoxIncludeTerminatorInLength"];
+            this.cbAddExtraBytes.Text =
+                ConfigurationSettings.AppSettings["Form_SimpleCutter_CheckBoxExtracCutSizeBytes"];
 
             this.createEndianList();
             this.createOffsetSizeList();
@@ -128,9 +135,21 @@ namespace VGMToolbox.forms
                             (cbByteOrder.Text.Equals(OffsetFinderWorker.LITTLE_ENDIAN));
 
                     }
+                    else if (this.rbUseTerminator.Checked)
+                    { 
+                        ofStruct.useTerminatorForCutsize = true;
+                        ofStruct.terminatorString = this.tbTerminatorString.Text;
+                        ofStruct.treatTerminatorStringAsHex = this.cbTreatTerminatorAsHex.Checked;
+                        ofStruct.includeTerminatorLength = this.cbIncludeTerminatorInLength.Checked;
+                    }
                     else
                     {
                         ofStruct.cutSize = this.tbStaticCutsize.Text;
+                    }
+
+                    if (cbAddExtraBytes.Checked)
+                    {
+                        ofStruct.extraCutSizeBytes = tbExtraCutSizeBytes.Text;
                     }
                 }
 
@@ -141,7 +160,7 @@ namespace VGMToolbox.forms
             }
         }
 
-        private void rbStaticCutSize_CheckedChanged(object sender, EventArgs e)
+        private void doRadioCheckedChanged(object sender, EventArgs e)
         {
             if (rbStaticCutSize.Checked)
             {
@@ -149,13 +168,29 @@ namespace VGMToolbox.forms
                 tbCutSizeOffset.ReadOnly = true;
                 cbOffsetSize.Enabled = false;
                 cbByteOrder.Enabled = false;
+                tbTerminatorString.ReadOnly = true;
+                cbTreatTerminatorAsHex.Enabled = false;
+                cbIncludeTerminatorInLength.Enabled = false;
             }
-            else
+            else if (rbOffsetBasedCutSize.Checked)
             {
                 tbStaticCutsize.ReadOnly = true;
                 tbCutSizeOffset.ReadOnly = false;
                 cbOffsetSize.Enabled = true;
                 cbByteOrder.Enabled = true;
+                tbTerminatorString.ReadOnly = true;
+                cbTreatTerminatorAsHex.Enabled = false;
+                cbIncludeTerminatorInLength.Enabled = false;
+            }
+            else
+            {
+                tbStaticCutsize.ReadOnly = true;
+                tbCutSizeOffset.ReadOnly = true;
+                cbOffsetSize.Enabled = false;
+                cbByteOrder.Enabled = false;
+                tbTerminatorString.ReadOnly = false;
+                cbTreatTerminatorAsHex.Enabled = true;
+                cbIncludeTerminatorInLength.Enabled = true;
             }
         }
 
@@ -204,11 +239,15 @@ namespace VGMToolbox.forms
                 {
                     ret = ret && base.checkTextBox(this.tbStaticCutsize.Text, "Static Cut Size");
                 }
-                else
+                else if (rbOffsetBasedCutSize.Checked)
                 {
                     ret = ret && base.checkTextBox(this.tbCutSizeOffset.Text, "Cut Size Offset");
-                    ret = ret && base.checkTextBox((string) this.cbOffsetSize.Text, "Offset Size");
-                    ret = ret && base.checkTextBox((string) this.cbByteOrder.Text, "Byte Order");                                    
+                    ret = ret && base.checkTextBox((string)this.cbOffsetSize.Text, "Offset Size");
+                    ret = ret && base.checkTextBox((string)this.cbByteOrder.Text, "Byte Order");
+                }
+                else
+                {
+                    ret = ret && base.checkTextBox(this.tbTerminatorString.Text, "Terminator String");
                 }
             }
 
@@ -258,6 +297,14 @@ namespace VGMToolbox.forms
                 lblStoredIn.Show();
                 lblByteOrder.Show();
                 lblOutputExtension.Show();
+                
+                this.rbUseTerminator.Show();
+                this.tbTerminatorString.Show();
+                this.cbTreatTerminatorAsHex.Show();
+                this.cbIncludeTerminatorInLength.Show();
+
+                this.cbAddExtraBytes.Show();
+                this.tbExtraCutSizeBytes.Show();
             }
             else
             {
@@ -296,7 +343,27 @@ namespace VGMToolbox.forms
                 lblStoredIn.Hide();
                 lblByteOrder.Hide();
                 lblOutputExtension.Hide();
+
+                this.rbUseTerminator.Hide();
+                this.tbTerminatorString.Hide();
+                this.cbTreatTerminatorAsHex.Hide();
+                this.cbIncludeTerminatorInLength.Hide();
+
+                this.cbAddExtraBytes.Hide();
+                this.tbExtraCutSizeBytes.Hide();
             }        
+        }
+
+        private void cbAddExtraBytes_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbAddExtraBytes.Checked)
+            {
+                tbExtraCutSizeBytes.ReadOnly = false;
+            }
+            else
+            {
+                tbExtraCutSizeBytes.ReadOnly = true;
+            }
         }
     }
 }

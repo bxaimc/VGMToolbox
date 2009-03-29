@@ -31,6 +31,13 @@ namespace VGMToolbox.tools.extract
             public bool isCutSizeAnOffset;
             public string outputFileExtension;
             public bool isLittleEndian;
+
+            public bool useTerminatorForCutsize;
+            public string terminatorString;
+            public bool treatTerminatorStringAsHex;
+            public bool includeTerminatorLength;
+
+            public string extraCutSizeBytes;
         }
 
         public OffsetFinderWorker()
@@ -129,6 +136,11 @@ namespace VGMToolbox.tools.extract
                 findOffsetStruct.isCutSizeAnOffset = pOffsetFinderStruct.isCutSizeAnOffset;
                 findOffsetStruct.outputFileExtension = pOffsetFinderStruct.outputFileExtension;
                 findOffsetStruct.isLittleEndian = pOffsetFinderStruct.isLittleEndian;
+                findOffsetStruct.useTerminatorForCutsize = pOffsetFinderStruct.useTerminatorForCutsize;
+                findOffsetStruct.terminatorString = pOffsetFinderStruct.terminatorString;
+                findOffsetStruct.treatTerminatorStringAsHex = pOffsetFinderStruct.treatTerminatorStringAsHex;
+                findOffsetStruct.includeTerminatorLength = pOffsetFinderStruct.includeTerminatorLength;
+                findOffsetStruct.extraCutSizeBytes = pOffsetFinderStruct.extraCutSizeBytes;
 
                 string output = String.Empty;
                 ParseFile.FindOffsetAndCutFile(pPath, findOffsetStruct, ref output);

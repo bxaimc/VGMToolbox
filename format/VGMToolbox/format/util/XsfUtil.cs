@@ -268,6 +268,7 @@ namespace VGMToolbox.format.util
             long offsetLocation = -1;
             long seqEndLocation = -1;
             long seqEndLocationType2 = -1;
+            long seqEndLocationType3 = -1;
 
             int i = 0;
 
@@ -312,12 +313,19 @@ namespace VGMToolbox.format.util
                 {
                     seqEndLocation = ParseFile.GetNextOffset(fs, offsetLocation, PsxSequence.END_SEQUENCE);
                     seqEndLocationType2 = ParseFile.GetNextOffset(fs, offsetLocation, PsxSequence.END_SEQUENCE_TYPE2);
+                    seqEndLocationType3 = ParseFile.GetNextOffset(fs, offsetLocation, PsxSequence.END_SEQUENCE_TYPE2);
 
                     if  (((seqEndLocation == -1) && (seqEndLocationType2 > -1)) ||
                         ((seqEndLocationType2 != -1) && (seqEndLocationType2 < seqEndLocation))) // SEP Type
                     {
                         seqEndLocation = seqEndLocationType2 + PsxSequence.END_SEQUENCE_TYPE2.Length;
                     }
+                    else if (((seqEndLocation == -1) && (seqEndLocationType3 > -1)) ||
+                        ((seqEndLocationType3 != -1) && (seqEndLocationType3 < seqEndLocation))) // SEP Type
+                    {
+                        seqEndLocation = seqEndLocationType3 + PsxSequence.END_SEQUENCE_TYPE3.Length;
+                    }
+
 
                     if (seqEndLocation > -1)
                     {

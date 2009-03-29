@@ -146,6 +146,12 @@ namespace sdatopt
                                     findOffsetStruct.outputFileExtension = ".sdat";
                                     findOffsetStruct.isLittleEndian = true;
 
+                                    findOffsetStruct.useTerminatorForCutsize = false;
+                                    findOffsetStruct.terminatorString = null;
+                                    findOffsetStruct.treatTerminatorStringAsHex = false;
+                                    findOffsetStruct.includeTerminatorLength = false;
+                                    findOffsetStruct.extraCutSizeBytes = null;
+
                                     string output = String.Empty;
                                     extractedToFolder = ParseFile.FindOffsetAndCutFile(decompressedDataPath, findOffsetStruct, ref output);
 
