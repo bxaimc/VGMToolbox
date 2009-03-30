@@ -46,7 +46,7 @@ namespace VGMToolbox.forms
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
             SsfSeqTonExtractorWorker.SsfSeqTonExtractorStruct stexStruct = new SsfSeqTonExtractorWorker.SsfSeqTonExtractorStruct();
-            stexStruct.sourcePaths = s;
+            stexStruct.SourcePaths = s;
             stexStruct.extractToSubFolder = cbExtractToSubfolder.Checked;
 
             ssfSeqTonExtractorWorker = new SsfSeqTonExtractorWorker();

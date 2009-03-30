@@ -29,19 +29,12 @@ namespace VGMToolbox.tools.xsf
         }
 
         public PsxSeqExtractWorker()
-        {
-            fileCount = 0;
-            maxFiles = 0;
-            progressStruct = new Constants.ProgressStruct();
+            : base() {}
 
-            WorkerReportsProgress = true;
-            WorkerSupportsCancellation = true;
-        }
-
-        protected override void doTaskForFile(string pPath, IVgmtWorkerStruct pTaskStruct, 
+        protected override void doTaskForFile(string pPath, IVgmtWorkerStruct pPsxSeqExtractStruct, 
             DoWorkEventArgs e)
         {
-            PsxSeqExtractStruct psxSeqExtractStruct = (PsxSeqExtractStruct)pTaskStruct;
+            PsxSeqExtractStruct psxSeqExtractStruct = (PsxSeqExtractStruct)pPsxSeqExtractStruct;
             
             int minutes;
             double seconds;
@@ -67,7 +60,7 @@ namespace VGMToolbox.tools.xsf
                     {
                         psxSeq = new PsxSequence(fs, initStruct);
                     }
-                    catch (PsxSeqFormatException seqEx)
+                    catch (PsxSeqFormatException)
                     {
                         // sometimes the version number is wrong, (Devil Summoner 1-50b.minipsf)
                         initStruct.forceOppositeFormatType = true;

@@ -829,24 +829,9 @@ namespace VGMToolbox
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-            int totalFileCount = 0;
-
-            foreach (string path in s)
-            {
-                if (File.Exists(path))
-                {
-                    totalFileCount++;
-                }
-                else if (Directory.Exists(path))
-                {
-                    totalFileCount += Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
-                }
-            }
-
             NsfeM3uBuilderWorker.NsfeM3uBuilderStruct nsfeStruct = new NsfeM3uBuilderWorker.NsfeM3uBuilderStruct();
-            nsfeStruct.pPaths = s;
-            nsfeStruct.totalFiles = totalFileCount;
-            nsfeStruct.onePlaylistPerFile = cbNSFE_OneM3uPerTrack.Checked;
+            nsfeStruct.SourcePaths = s;
+            nsfeStruct.OnePlaylistPerFile = cbNSFE_OneM3uPerTrack.Checked;
 
             nsfeM3uBuilder = new NsfeM3uBuilderWorker();
             nsfeM3uBuilder.ProgressChanged += backgroundWorker_ReportProgress;
@@ -899,23 +884,8 @@ namespace VGMToolbox
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-            int totalFileCount = 0;
-
-            foreach (string path in s)
-            {
-                if (File.Exists(path))
-                {
-                    totalFileCount++;
-                }
-                else if (Directory.Exists(path))
-                {
-                    totalFileCount += Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
-                }
-            }
-
-            GbsM3uBuilderWorker.GbsM3uBuilderStruct gbStruct = new GbsM3uBuilderWorker.GbsM3uBuilderStruct();
-            gbStruct.pPaths = s;
-            gbStruct.totalFiles = totalFileCount;
+            GbsM3uBuilderWorker.GbsM3uWorkerStruct gbStruct = new GbsM3uBuilderWorker.GbsM3uWorkerStruct();
+            gbStruct.SourcePaths = s;
             gbStruct.onePlaylistPerFile = cbGBS_OneM3uPerTrack.Checked;
 
             gbsM3uBuilder = new GbsM3uBuilderWorker();
@@ -984,23 +954,8 @@ namespace VGMToolbox
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-            int totalFileCount = 0;
-
-            foreach (string path in s)
-            {
-                if (File.Exists(path))
-                {
-                    totalFileCount++;
-                }
-                else if (Directory.Exists(path))
-                {
-                    totalFileCount += Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
-                }
-            }
-
             HootXmlBuilderWorker.HootXmlBuilderStruct xbStruct = new HootXmlBuilderWorker.HootXmlBuilderStruct();
-            xbStruct.pPaths = s;
-            xbStruct.totalFiles = totalFileCount;
+            xbStruct.SourcePaths = s;
             xbStruct.combineOutput = cbHootXML_CombineOutput.Checked;
             xbStruct.splitOutput = cbHootXML_SplitOutput.Checked;
 
@@ -1040,24 +995,9 @@ namespace VGMToolbox
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-            int totalFileCount = 0;
-
-            foreach (string path in s)
-            {
-                if (File.Exists(path))
-                {
-                    totalFileCount++;
-                }
-                else if (Directory.Exists(path))
-                {
-                    totalFileCount += Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
-                }
-            }
-
             XsfCompressedProgramExtractorWorker.XsfCompressedProgramExtractorStruct xcpeStruct = 
                 new XsfCompressedProgramExtractorWorker.XsfCompressedProgramExtractorStruct();
-            xcpeStruct.pPaths = s;
-            xcpeStruct.totalFiles = totalFileCount;
+            xcpeStruct.SourcePaths = s;
             xcpeStruct.includeExtension = cbXsfPsf2Exe_IncludeOrigExt.Checked;
             xcpeStruct.stripGsfHeader = cbXsfPsf2Exe_StripGsfHeader.Checked;
 
@@ -1199,23 +1139,8 @@ namespace VGMToolbox
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-            int totalFileCount = 0;
-
-            foreach (string path in s)
-            {
-                if (File.Exists(path))
-                {
-                    totalFileCount++;
-                }
-                else if (Directory.Exists(path))
-                {
-                    totalFileCount += Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
-                }
-            }
-
             SdatExtractorWorker.SdatExtractorStruct sdexStruct = new SdatExtractorWorker.SdatExtractorStruct();
-            sdexStruct.pPaths = s;
-            sdexStruct.totalFiles = totalFileCount;
+            sdexStruct.SourcePaths = s;
 
             sdatExtractorWorker = new SdatExtractorWorker();
             sdatExtractorWorker.ProgressChanged += backgroundWorker_ReportProgress;

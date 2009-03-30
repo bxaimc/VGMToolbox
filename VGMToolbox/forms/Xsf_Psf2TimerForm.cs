@@ -74,7 +74,7 @@ namespace VGMToolbox.forms
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
             Psf2TimerWorker.Psf2TimerStruct timeStruct = new Psf2TimerWorker.Psf2TimerStruct();
-            timeStruct.sourcePaths = s;
+            timeStruct.SourcePaths = s;
 
             psf2TimerWorker = new Psf2TimerWorker();
             psf2TimerWorker.ProgressChanged += backgroundWorker_ReportProgress;

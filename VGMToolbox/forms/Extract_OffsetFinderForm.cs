@@ -115,7 +115,7 @@ namespace VGMToolbox.forms
                 string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
                 OffsetFinderWorker.OffsetFinderStruct ofStruct = new OffsetFinderWorker.OffsetFinderStruct();
-                ofStruct.sourcePaths = s;
+                ofStruct.SourcePaths = s;
                 ofStruct.searchString = tbSearchString.Text;
                 ofStruct.treatSearchStringAsHex = cbSearchAsHex.Checked;
 

@@ -668,6 +668,7 @@
     <PostBuildEvent>if not exist ".\lib" mkdir lib
 move format.dll ".\lib\format.dll"
 move vgmtutil.dll ".\lib\vgmtutil.dll"
+move vgmtplugin.dll ".\lib\vgmtplugin.dll"
 move dbutil.dll ".\lib\dbutil.dll"
 move ICSharpCode.SharpZipLib.dll ".\lib\ICSharpCode.SharpZipLib.dll"
 move ICSharpCode.SharpZipLib.dll.COPYING.txt ".\lib\ICSharpCode.SharpZipLib.dll.COPYING.txt"

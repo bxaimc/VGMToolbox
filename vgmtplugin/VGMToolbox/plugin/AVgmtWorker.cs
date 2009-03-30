@@ -15,7 +15,7 @@ namespace VGMToolbox.plugin
         protected int progress = 0;
         protected Constants.ProgressStruct progressStruct;
 
-        public AVgmtWorker()
+        protected AVgmtWorker()
         {
             this.fileCount = 0;
             this.maxFiles = 0;
@@ -51,7 +51,11 @@ namespace VGMToolbox.plugin
                         {
                             this.progressStruct.Clear();
                             this.progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", path) + ex.Message + Environment.NewLine;
-                            ReportProgress(this.progress, this.progressStruct);                        
+                            ReportProgress(this.progress, this.progressStruct);
+                        }
+                        finally
+                        {
+                            this.doFinally();
                         }
                     }
                     else
@@ -110,6 +114,10 @@ namespace VGMToolbox.plugin
                         this.progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", f) + ex.Message + Environment.NewLine;
                         ReportProgress(progress, this.progressStruct);
                     }
+                    finally
+                    {
+                        this.doFinally();
+                    }
                 }
                 else
                 {
@@ -124,6 +132,7 @@ namespace VGMToolbox.plugin
         {
             this.doTask((IVgmtWorkerStruct)e.Argument, e);
         }
+        protected virtual void doFinally() { }
 
         // abstract methods
         protected abstract void doTaskForFile(string pPath, IVgmtWorkerStruct pTaskStruct, DoWorkEventArgs e);

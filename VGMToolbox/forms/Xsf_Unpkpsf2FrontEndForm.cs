@@ -35,7 +35,7 @@ namespace VGMToolbox.forms
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
             UnpkPsf2Worker.UnpkPsf2Struct unpkStruct = new UnpkPsf2Worker.UnpkPsf2Struct();
-            unpkStruct.sourcePaths = s;
+            unpkStruct.SourcePaths = s;
 
             unpkPsf2Worker = new UnpkPsf2Worker();
             unpkPsf2Worker.ProgressChanged += backgroundWorker_ReportProgress;

@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
 
 using VGMToolbox.format.util;
+using VGMToolbox.plugin;
 using VGMToolbox.util;
 
 namespace VGMToolbox.tools.xsf
 {
-    class SsfSeqTonExtractorWorker : BackgroundWorker
+    class SsfSeqTonExtractorWorker : AVgmtWorker
     {
         private static readonly string SSFTOOL_FOLDER_PATH =
             Path.GetFullPath(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "ssf"));
@@ -20,64 +19,28 @@ namespace VGMToolbox.tools.xsf
         private static readonly string WORKING_FOLDER_SEEK =
             Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "working_ssf_seqtonext"));
 
-        private int fileCount = 0;
-        private int maxFiles = 0;
-        Constants.ProgressStruct progressStruct;
-
-
         private readonly string PROGRAM_PATH =
             Path.Combine(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "psf2"), "unpkpsf2.exe");
 
-        public struct SsfSeqTonExtractorStruct
+        public struct SsfSeqTonExtractorStruct : IVgmtWorkerStruct
         {
-            public string[] sourcePaths;
             public bool extractToSubFolder;
-        }
 
-        public SsfSeqTonExtractorWorker()
-        {
-            fileCount = 0;
-            maxFiles = 0;
-            progressStruct = new Constants.ProgressStruct();
-
-            WorkerReportsProgress = true;
-            WorkerSupportsCancellation = true;
-        }
-
-        private void extractSsfSeqTon(SsfSeqTonExtractorStruct pSsfSeqTonExtractorStruct, DoWorkEventArgs e)
-        {
-            maxFiles = FileUtil.GetFileCount(pSsfSeqTonExtractorStruct.sourcePaths);
-
-            foreach (string path in pSsfSeqTonExtractorStruct.sourcePaths)
+            private string[] sourcePaths;
+            public string[] SourcePaths
             {
-                if (File.Exists(path))
-                {
-                    if (!CancellationPending)
-                    {
-                        this.extractSsfSeqTonFromFile(path, pSsfSeqTonExtractorStruct, e);
-                    }
-                    else
-                    {
-                        e.Cancel = true;
-                        return;
-                    }
-                }
-                else if (Directory.Exists(path))
-                {
-                    this.extractSsfSeqTonFromDirectory(path, pSsfSeqTonExtractorStruct, e);
-
-                    if (CancellationPending)
-                    {
-                        e.Cancel = true;
-                        return;
-                    }
-                }
-            }            
-            return;
+                get { return sourcePaths; }
+                set { sourcePaths = value; }
+            }
         }
 
-        private void extractSsfSeqTonFromFile(string pPath, SsfSeqTonExtractorStruct pSsfSeqTonExtractorStruct, DoWorkEventArgs e)
+        public SsfSeqTonExtractorWorker() : base() { }
+
+        protected override void doTaskForFile(string pPath, IVgmtWorkerStruct pSsfSeqTonExtractorStruct, 
+            DoWorkEventArgs e)
         {
+            SsfSeqTonExtractorStruct ssfSeqTonExtractorStruct = (SsfSeqTonExtractorStruct)pSsfSeqTonExtractorStruct;
+            
             string destinationPath;
             string outputFolder;
             string[] extractedFiles;
@@ -85,12 +48,6 @@ namespace VGMToolbox.tools.xsf
             bool isSuccess;
             string seekOutput;
             Process extractionProcess = null;
-
-            // Report Progress
-            int progress = (++fileCount * 100) / maxFiles;
-            progressStruct.Clear();
-            progressStruct.filename = pPath;
-            ReportProgress(progress, progressStruct);
 
             try
             {
@@ -158,7 +115,7 @@ namespace VGMToolbox.tools.xsf
                 File.Delete(tonextScriptPath);
 
                 // copy any output to output folder
-                if (pSsfSeqTonExtractorStruct.extractToSubFolder)
+                if (ssfSeqTonExtractorStruct.extractToSubFolder)
                 {
                     outputFolder = Path.Combine(Path.GetDirectoryName(pPath), Path.GetFileNameWithoutExtension(pPath));
                 }
@@ -189,9 +146,7 @@ namespace VGMToolbox.tools.xsf
             }
             catch (Exception ex)
             {
-                this.progressStruct.Clear();
-                progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message;
-                ReportProgress(progress, progressStruct);
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -207,41 +162,11 @@ namespace VGMToolbox.tools.xsf
             }
         }    
 
-        private void extractSsfSeqTonFromDirectory(string pPath, SsfSeqTonExtractorStruct pSsfSeqTonExtractorStruct, DoWorkEventArgs e)
-        {
-            foreach (string d in Directory.GetDirectories(pPath))
-            {
-                if (!CancellationPending)
-                {
-                    this.extractSsfSeqTonFromDirectory(d, pSsfSeqTonExtractorStruct, e);
-                }
-                else
-                {
-                    e.Cancel = true;
-                    break;
-                }
-            }
-            foreach (string f in Directory.GetFiles(pPath))
-            {
-                if (!CancellationPending)
-                {
-                    this.extractSsfSeqTonFromFile(f, pSsfSeqTonExtractorStruct, e);
-                }
-                else
-                {
-                    e.Cancel = true;
-                    break;
-                }
-            }
-        }
-
         protected override void OnDoWork(DoWorkEventArgs e)
         {
-            SsfSeqTonExtractorStruct ssfSeqTonExtractorStruct = (SsfSeqTonExtractorStruct)e.Argument;
-
             if (XsfUtil.IsPythonPresentInPath())
             {
-                this.extractSsfSeqTon(ssfSeqTonExtractorStruct, e);
+                base.OnDoWork(e);
             }
             else
             {

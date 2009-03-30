@@ -42,23 +42,8 @@ namespace VGMToolbox.forms
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-            int totalFileCount = 0;
-
-            foreach (string path in s)
-            {
-                if (File.Exists(path))
-                {
-                    totalFileCount++;
-                }
-                else if (Directory.Exists(path))
-                {
-                    totalFileCount += Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
-                }
-            }
-
-            GbsM3uBuilderWorker.GbsM3uBuilderStruct gbStruct = new GbsM3uBuilderWorker.GbsM3uBuilderStruct();
-            gbStruct.pPaths = s;
-            gbStruct.totalFiles = totalFileCount;
+            GbsM3uBuilderWorker.GbsM3uWorkerStruct gbStruct = new GbsM3uBuilderWorker.GbsM3uWorkerStruct();
+            gbStruct.SourcePaths = s;
             gbStruct.onePlaylistPerFile = cbGBS_OneM3uPerTrack.Checked;
 
             gbsM3uBuilder = new GbsM3uBuilderWorker();

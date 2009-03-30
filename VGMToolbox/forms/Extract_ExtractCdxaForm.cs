@@ -44,7 +44,7 @@ namespace VGMToolbox.forms
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
             ExtractCdxaWorker.ExtractCdxaStruct extStruct = new ExtractCdxaWorker.ExtractCdxaStruct();
-            extStruct.sourcePaths = s;
+            extStruct.SourcePaths = s;
             extStruct.AddRiffHeader = cbAddRiffHeader.Checked;
             extStruct.PatchByte0x11 = cbPatchByte0x11.Checked;
 

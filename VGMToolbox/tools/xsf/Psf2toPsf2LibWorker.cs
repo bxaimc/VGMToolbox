@@ -339,6 +339,11 @@ namespace VGMToolbox.tools.xsf
             string outputFileSource = Path.Combine(PSF2LIB_WORKING_FOLDER, pOutputFileName);
             string outputFileDestination = Path.Combine(PSF2_WORKING_FOLDER, pOutputFileName);
 
+            if (!Directory.Exists(Path.GetDirectoryName(mkpsf2Destination)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(mkpsf2Destination));
+            }
+            
             if (!File.Exists(mkpsf2Destination))
             {
                 File.Copy(MKPSF2_SOURCE_PATH, mkpsf2Destination, true);

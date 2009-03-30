@@ -42,24 +42,9 @@ namespace VGMToolbox.forms
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-            int totalFileCount = 0;
-
-            foreach (string path in s)
-            {
-                if (File.Exists(path))
-                {
-                    totalFileCount++;
-                }
-                else if (Directory.Exists(path))
-                {
-                    totalFileCount += Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
-                }
-            }
-
             NsfeM3uBuilderWorker.NsfeM3uBuilderStruct nsfeStruct = new NsfeM3uBuilderWorker.NsfeM3uBuilderStruct();
-            nsfeStruct.pPaths = s;
-            nsfeStruct.totalFiles = totalFileCount;
-            nsfeStruct.onePlaylistPerFile = cbNSFE_OneM3uPerTrack.Checked;
+            nsfeStruct.SourcePaths = s;
+            nsfeStruct.OnePlaylistPerFile = cbNSFE_OneM3uPerTrack.Checked;
 
             nsfeM3uBuilder = new NsfeM3uBuilderWorker();
             nsfeM3uBuilder.ProgressChanged += backgroundWorker_ReportProgress;

@@ -2,108 +2,40 @@
 using System.Collections;
 using System.ComponentModel;
 using System.IO;
-using System.Xml.Serialization;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 using VGMToolbox.format;
 using VGMToolbox.format.util;
-using VGMToolbox.util;
+using VGMToolbox.plugin;
 
 namespace VGMToolbox.tools.hoot
 {
-    class HootXmlBuilderWorker : BackgroundWorker
+    class HootXmlBuilderWorker : AVgmtWorker
     {
-        private int fileCount = 0;
-        private int maxFiles = 0;
         private ArrayList hootGamesArrayList = new ArrayList();
-        private Constants.ProgressStruct progressStruct;
 
-        public struct HootXmlBuilderStruct
+        public struct HootXmlBuilderStruct : IVgmtWorkerStruct
         {
-            public string[] pPaths;
-            public int totalFiles;
             public bool combineOutput;
             public bool splitOutput;
+
+            private string[] sourcePaths;
+            public string[] SourcePaths
+            {
+                get { return sourcePaths; }
+                set { sourcePaths = value; }
+            }
         }
 
-        public HootXmlBuilderWorker()
+        public HootXmlBuilderWorker() : 
+            base()
         {
-            fileCount = 0;
-            maxFiles = 0;
             hootGamesArrayList = new ArrayList();
-            progressStruct = new Constants.ProgressStruct();
-            
-            WorkerReportsProgress = true;
-            WorkerSupportsCancellation = true;
         }
 
-        private void buildXmlFiles(HootXmlBuilderStruct pHootXmlBuilderStruct, DoWorkEventArgs e)
-        {            
-            foreach (string path in pHootXmlBuilderStruct.pPaths)
-            {                
-                if (File.Exists(path))
-                {
-                    if (!CancellationPending)
-                    {
-                        this.buildFileHootGame(path, e);
-                    }
-                    else 
-                    {
-                        e.Cancel = true;
-                        return;
-                    }
-                }
-                else if (Directory.Exists(path))
-                {
-                    this.buildDirectoryHootGame(path, e);
-
-                    if (CancellationPending)
-                    {
-                        e.Cancel = true;
-                        return;                        
-                    }
-                }                               
-            }
-
-            return;
-        }
-
-        private void buildDirectoryHootGame(string pPath, DoWorkEventArgs e)
-        {
-            foreach (string d in Directory.GetDirectories(pPath))
-            {
-                if (!CancellationPending)
-                {
-                    this.buildDirectoryHootGame(d, e);
-                }
-                else
-                {
-                    e.Cancel = true;
-                    break;
-                }
-            }
-            foreach (string f in Directory.GetFiles(pPath))
-            {
-                if (!CancellationPending)
-                {
-                    this.buildFileHootGame(f, e);
-                }
-                else
-                {
-                    e.Cancel = true;
-                    break;
-                }
-            }                
-        }
-
-        private void buildFileHootGame(string pPath, DoWorkEventArgs e)
-        {
-            // Report Progress
-            int progress = (++fileCount * 100) / maxFiles;
-            this.progressStruct.Clear();
-            this.progressStruct.filename = pPath;
-            ReportProgress(progress, this.progressStruct);
-          
+        protected override void doTaskForFile(string pPath, IVgmtWorkerStruct pHootXmlBuilderStruct, DoWorkEventArgs e)
+        {          
             VGMToolbox.format.hoot.game hootGame = null;
 
             try
@@ -175,12 +107,12 @@ namespace VGMToolbox.tools.hoot
         }    
 
         protected override void OnDoWork(DoWorkEventArgs e)
-        {
-            HootXmlBuilderStruct hootXmlBuilderStruct = (HootXmlBuilderStruct)e.Argument;
-            maxFiles = hootXmlBuilderStruct.totalFiles;
+        {            
+            base.OnDoWork(e);
             
-            this.buildXmlFiles(hootXmlBuilderStruct, e);
-            VGMToolbox.format.hoot.game[] hootGames = (VGMToolbox.format.hoot.game[])hootGamesArrayList.ToArray(typeof(VGMToolbox.format.hoot.game));
+            HootXmlBuilderStruct hootXmlBuilderStruct = (HootXmlBuilderStruct)e.Argument;
+            VGMToolbox.format.hoot.game[] hootGames = 
+                (VGMToolbox.format.hoot.game[])this.hootGamesArrayList.ToArray(typeof(VGMToolbox.format.hoot.game));
             
             if (hootGames.Length > 0)
             {
@@ -214,8 +146,7 @@ namespace VGMToolbox.tools.hoot
                         serializer.Serialize(textWriter, g, namespaceSerializer);
                         textWriter.Close();
                         textWriter.Dispose();
-                    }
-                
+                    }                
                 }
             }
         }        

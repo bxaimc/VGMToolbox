@@ -42,12 +42,15 @@ namespace VGMToolbox.format.util
 
             foreach (string p in paths)
             {
-                string[] files = Directory.GetFiles(p, "python.exe");
-
-                if (files.Length > 0)
+                if (Directory.Exists(p))
                 {
-                    ret = true;
-                    break;
+                    string[] files = Directory.GetFiles(p, "python.exe");
+
+                    if (files.Length > 0)
+                    {
+                        ret = true;
+                        break;
+                    }
                 }
             }
 

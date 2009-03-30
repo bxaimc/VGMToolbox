@@ -70,7 +70,7 @@ namespace VGMToolbox.forms
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
             Psf2SqExtractorWorker.Psf2SqExtractorStruct sqExtStruct = new Psf2SqExtractorWorker.Psf2SqExtractorStruct();
-            sqExtStruct.sourcePaths = s;
+            sqExtStruct.SourcePaths = s;
 
             psf2SqExtractorWorker = new Psf2SqExtractorWorker();
             psf2SqExtractorWorker.ProgressChanged += backgroundWorker_ReportProgress;

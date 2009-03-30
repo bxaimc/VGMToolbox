@@ -1,26 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
-using System.Text;
-using System.Windows.Forms;
 
+using VGMToolbox.plugin;
 using VGMToolbox.util;
 
 namespace VGMToolbox.tools.extract
 {
-    class OffsetFinderWorker : BackgroundWorker
+    class OffsetFinderWorker : AVgmtWorker
     {
         public const string LITTLE_ENDIAN = "Little Endian";
         public const string BIG_ENDIAN = "Big Endian";
         
-        private int fileCount = 0;
-        private int maxFiles = 0;
-        private Constants.ProgressStruct progressStruct;
-
-        public struct OffsetFinderStruct
+        public struct OffsetFinderStruct : IVgmtWorkerStruct
         {
-            public string[] sourcePaths;
             public string searchString;
             public bool treatSearchStringAsHex;
 
@@ -38,123 +30,46 @@ namespace VGMToolbox.tools.extract
             public bool includeTerminatorLength;
 
             public string extraCutSizeBytes;
+
+            private string[] sourcePaths;
+            public string[] SourcePaths
+            {
+                get { return sourcePaths; }
+                set { sourcePaths = value; }
+            }
         }
 
-        public OffsetFinderWorker()
-        {
-            fileCount = 0;
-            maxFiles = 0;
-            progressStruct = new Constants.ProgressStruct();
-            
-            WorkerReportsProgress = true;
-            WorkerSupportsCancellation = true;
-        }
+        public OffsetFinderWorker() : 
+            base() {}
         
-        private void findOffsets(OffsetFinderStruct pOffsetFinderStruct, 
+        protected override void doTaskForFile(string pPath, IVgmtWorkerStruct pOffsetFinderStruct,
             DoWorkEventArgs e)
         {
-            this.maxFiles = FileUtil.GetFileCount(pOffsetFinderStruct.sourcePaths);
+            OffsetFinderStruct offsetFinderStruct = (OffsetFinderStruct) pOffsetFinderStruct;
+            
+            ParseFile.FindOffsetStruct findOffsetStruct;
+            findOffsetStruct.searchString = offsetFinderStruct.searchString;
+            findOffsetStruct.treatSearchStringAsHex = offsetFinderStruct.treatSearchStringAsHex;
 
-            foreach (string path in pOffsetFinderStruct.sourcePaths)
-            {                
-                if (File.Exists(path))
-                {
-                    if (!CancellationPending)
-                    {
-                        this.findOffsetsInFile(path, pOffsetFinderStruct, e);
-                    }
-                    else 
-                    {
-                        e.Cancel = true;
-                        return;
-                    }
-                }
-                else if (Directory.Exists(path))
-                {
-                    this.findOffsetsInDirectory(path, pOffsetFinderStruct, e);
+            findOffsetStruct.cutFile = offsetFinderStruct.cutFile;
+            findOffsetStruct.searchStringOffset = offsetFinderStruct.searchStringOffset;
+            findOffsetStruct.cutSize = offsetFinderStruct.cutSize;
+            findOffsetStruct.cutSizeOffsetSize = offsetFinderStruct.cutSizeOffsetSize;
+            findOffsetStruct.isCutSizeAnOffset = offsetFinderStruct.isCutSizeAnOffset;
+            findOffsetStruct.outputFileExtension = offsetFinderStruct.outputFileExtension;
+            findOffsetStruct.isLittleEndian = offsetFinderStruct.isLittleEndian;
+            findOffsetStruct.useTerminatorForCutsize = offsetFinderStruct.useTerminatorForCutsize;
+            findOffsetStruct.terminatorString = offsetFinderStruct.terminatorString;
+            findOffsetStruct.treatTerminatorStringAsHex = offsetFinderStruct.treatTerminatorStringAsHex;
+            findOffsetStruct.includeTerminatorLength = offsetFinderStruct.includeTerminatorLength;
+            findOffsetStruct.extraCutSizeBytes = offsetFinderStruct.extraCutSizeBytes;
 
-                    if (CancellationPending)
-                    {
-                        e.Cancel = true;
-                        return;                        
-                    }
-                }                               
-            }
+            string output = String.Empty;
+            ParseFile.FindOffsetAndCutFile(pPath, findOffsetStruct, ref output);
 
-            return;
-        }
-
-        private void findOffsetsInDirectory(string pPath, OffsetFinderStruct pOffsetFinderStruct, 
-            DoWorkEventArgs e)
-        {
-            foreach (string d in Directory.GetDirectories(pPath))
-            {
-                if (!CancellationPending)
-                {
-                    this.findOffsetsInDirectory(d, pOffsetFinderStruct, e);
-                }
-                else
-                {
-                    e.Cancel = true;
-                    break;
-                }
-            }
-            foreach (string f in Directory.GetFiles(pPath))
-            {
-                if (!CancellationPending)
-                {
-                    this.findOffsetsInFile(f, pOffsetFinderStruct, e);
-                }
-                else
-                {
-                    e.Cancel = true;
-                    break;
-                }
-            }                
-        }
-
-        private void findOffsetsInFile(string pPath, OffsetFinderStruct pOffsetFinderStruct,
-            DoWorkEventArgs e)
-        {
-
-            // Report Progress
-            int progress = (++fileCount * 100) / maxFiles;
             this.progressStruct.Clear();
-            this.progressStruct.filename = pPath;
-            ReportProgress(progress, this.progressStruct);
-
-            try
-            {
-                ParseFile.FindOffsetStruct findOffsetStruct;
-                findOffsetStruct.searchString = pOffsetFinderStruct.searchString;
-                findOffsetStruct.treatSearchStringAsHex = pOffsetFinderStruct.treatSearchStringAsHex;
-
-                findOffsetStruct.cutFile = pOffsetFinderStruct.cutFile;
-                findOffsetStruct.searchStringOffset = pOffsetFinderStruct.searchStringOffset;
-                findOffsetStruct.cutSize = pOffsetFinderStruct.cutSize;
-                findOffsetStruct.cutSizeOffsetSize = pOffsetFinderStruct.cutSizeOffsetSize;
-                findOffsetStruct.isCutSizeAnOffset = pOffsetFinderStruct.isCutSizeAnOffset;
-                findOffsetStruct.outputFileExtension = pOffsetFinderStruct.outputFileExtension;
-                findOffsetStruct.isLittleEndian = pOffsetFinderStruct.isLittleEndian;
-                findOffsetStruct.useTerminatorForCutsize = pOffsetFinderStruct.useTerminatorForCutsize;
-                findOffsetStruct.terminatorString = pOffsetFinderStruct.terminatorString;
-                findOffsetStruct.treatTerminatorStringAsHex = pOffsetFinderStruct.treatTerminatorStringAsHex;
-                findOffsetStruct.includeTerminatorLength = pOffsetFinderStruct.includeTerminatorLength;
-                findOffsetStruct.extraCutSizeBytes = pOffsetFinderStruct.extraCutSizeBytes;
-
-                string output = String.Empty;
-                ParseFile.FindOffsetAndCutFile(pPath, findOffsetStruct, ref output);
-
-                this.progressStruct.Clear();
-                this.progressStruct.genericMessage = output;
-                ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
-            }
-            catch (Exception ex)
-            {
-                this.progressStruct.Clear();
-                this.progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message;
-                ReportProgress(progress, this.progressStruct);
-            }            
+            this.progressStruct.genericMessage = output;
+            ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);            
         }    
 
         protected override void OnDoWork(DoWorkEventArgs e)
@@ -167,7 +82,7 @@ namespace VGMToolbox.tools.extract
                 offsetFinderStruct.outputFileExtension = "." + offsetFinderStruct.outputFileExtension;
             }
 
-            this.findOffsets(offsetFinderStruct, e);
+            base.OnDoWork(e);
         }    
     }
 }

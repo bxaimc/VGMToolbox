@@ -37,23 +37,8 @@ namespace VGMToolbox.forms
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-            int totalFileCount = 0;
-
-            foreach (string path in s)
-            {
-                if (File.Exists(path))
-                {
-                    totalFileCount++;
-                }
-                else if (Directory.Exists(path))
-                {
-                    totalFileCount += Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
-                }
-            }
-
             SdatExtractorWorker.SdatExtractorStruct sdexStruct = new SdatExtractorWorker.SdatExtractorStruct();
-            sdexStruct.pPaths = s;
-            sdexStruct.totalFiles = totalFileCount;
+            sdexStruct.SourcePaths = s;
 
             sdatExtractorWorker = new SdatExtractorWorker();
             sdatExtractorWorker.ProgressChanged += backgroundWorker_ReportProgress;

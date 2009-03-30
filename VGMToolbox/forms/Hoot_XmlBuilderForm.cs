@@ -44,23 +44,8 @@ namespace VGMToolbox.forms
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-            int totalFileCount = 0;
-
-            foreach (string path in s)
-            {
-                if (File.Exists(path))
-                {
-                    totalFileCount++;
-                }
-                else if (Directory.Exists(path))
-                {
-                    totalFileCount += Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
-                }
-            }
-
             HootXmlBuilderWorker.HootXmlBuilderStruct xbStruct = new HootXmlBuilderWorker.HootXmlBuilderStruct();
-            xbStruct.pPaths = s;
-            xbStruct.totalFiles = totalFileCount;
+            xbStruct.SourcePaths = s;
             xbStruct.combineOutput = cbHootXML_CombineOutput.Checked;
             xbStruct.splitOutput = cbHootXML_SplitOutput.Checked;
 

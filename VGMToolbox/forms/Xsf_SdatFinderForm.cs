@@ -75,7 +75,7 @@ namespace VGMToolbox.forms
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
             SdatFinderWorker.SdatFinderStruct sfStruct = new SdatFinderWorker.SdatFinderStruct();
-            sfStruct.sourcePaths = s;
+            sfStruct.SourcePaths = s;
 
             sdatFinderWorker = new SdatFinderWorker();
             sdatFinderWorker.ProgressChanged += backgroundWorker_ReportProgress;

@@ -45,24 +45,9 @@ namespace VGMToolbox.forms
 
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-            int totalFileCount = 0;
-
-            foreach (string path in s)
-            {
-                if (File.Exists(path))
-                {
-                    totalFileCount++;
-                }
-                else if (Directory.Exists(path))
-                {
-                    totalFileCount += Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
-                }
-            }
-
             XsfCompressedProgramExtractorWorker.XsfCompressedProgramExtractorStruct xcpeStruct =
                 new XsfCompressedProgramExtractorWorker.XsfCompressedProgramExtractorStruct();
-            xcpeStruct.pPaths = s;
-            xcpeStruct.totalFiles = totalFileCount;
+            xcpeStruct.SourcePaths = s;
             xcpeStruct.includeExtension = cbXsfPsf2Exe_IncludeOrigExt.Checked;
             xcpeStruct.stripGsfHeader = cbXsfPsf2Exe_StripGsfHeader.Checked;
             xcpeStruct.extractReservedSection = cbExtractReservedSection.Checked;

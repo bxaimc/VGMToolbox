@@ -50,7 +50,7 @@ namespace VGMToolbox.forms
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
             SdatOptimizerWorker.SdatOptimizerStruct soptStruct = new SdatOptimizerWorker.SdatOptimizerStruct();
-            soptStruct.sourcePaths = s;
+            soptStruct.SourcePaths = s;
 
             if (!cbIncludeAllSseq.Checked)
             {
