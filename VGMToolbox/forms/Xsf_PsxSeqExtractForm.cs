@@ -79,7 +79,7 @@ namespace VGMToolbox.forms
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
             PsxSeqExtractWorker.PsxSeqExtractStruct psxStruct = new PsxSeqExtractWorker.PsxSeqExtractStruct();
-            psxStruct.sourcePaths = s;
+            psxStruct.SourcePaths = s;
             psxStruct.force2Loops = cbForce2Loops.Checked;
             psxStruct.forceSepType = rbForceSepType.Checked;
             psxStruct.forceSeqType = rbForceSeqType.Checked;

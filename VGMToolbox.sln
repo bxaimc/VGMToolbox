@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdatopt", "sdatopt\sdatopt.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdatfind", "sdatfind\sdatfind.csproj", "{A04E3A96-42E5-4A3D-8BF6-13D8D667EB22}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vgmtplugin", "vgmtplugin\vgmtplugin.csproj", "{EE513748-B90B-4F70-8281-A91110BC06BD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{A04E3A96-42E5-4A3D-8BF6-13D8D667EB22}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A04E3A96-42E5-4A3D-8BF6-13D8D667EB22}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A04E3A96-42E5-4A3D-8BF6-13D8D667EB22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE513748-B90B-4F70-8281-A91110BC06BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE513748-B90B-4F70-8281-A91110BC06BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE513748-B90B-4F70-8281-A91110BC06BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE513748-B90B-4F70-8281-A91110BC06BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -647,6 +647,10 @@
       <Project>{3951D6E5-61BE-4D7C-A464-F44D98E9CE83}</Project>
       <Name>format</Name>
     </ProjectReference>
+    <ProjectReference Include="..\vgmtplugin\vgmtplugin.csproj">
+      <Project>{EE513748-B90B-4F70-8281-A91110BC06BD}</Project>
+      <Name>vgmtplugin</Name>
+    </ProjectReference>
     <ProjectReference Include="..\vgmtutil\vgmtutil.csproj">
       <Project>{3CE76EEC-D3BC-4AB4-8C54-D2EAFFDADA47}</Project>
       <Name>vgmtutil</Name>
