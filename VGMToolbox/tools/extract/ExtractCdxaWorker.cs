@@ -23,7 +23,7 @@ namespace VGMToolbox.tools.extract
         public ExtractCdxaWorker():
             base() { }
 
-        protected override void doTaskForFile(string pPath, IVgmtWorkerStruct pExtractCdxaStruct, DoWorkEventArgs e)
+        protected override void DoTaskForFile(string pPath, IVgmtWorkerStruct pExtractCdxaStruct, DoWorkEventArgs e)
         {
             ExtractCdxaStruct extractCdxaStruct = (ExtractCdxaStruct) pExtractCdxaStruct;
             

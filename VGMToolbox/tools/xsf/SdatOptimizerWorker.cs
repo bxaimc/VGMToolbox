@@ -25,7 +25,7 @@ namespace VGMToolbox.tools.xsf
 
         public SdatOptimizerWorker() : base() { }
 
-        protected override void doTaskForFile(string pPath, IVgmtWorkerStruct pSdatOptimizerStruct, 
+        protected override void DoTaskForFile(string pPath, IVgmtWorkerStruct pSdatOptimizerStruct, 
             DoWorkEventArgs e)
         {
             SdatOptimizerStruct sdatOptimizerStruct = (SdatOptimizerStruct)pSdatOptimizerStruct;

@@ -34,7 +34,7 @@ namespace VGMToolbox.tools.hoot
             hootGamesArrayList = new ArrayList();
         }
 
-        protected override void doTaskForFile(string pPath, IVgmtWorkerStruct pHootXmlBuilderStruct, DoWorkEventArgs e)
+        protected override void DoTaskForFile(string pPath, IVgmtWorkerStruct pHootXmlBuilderStruct, DoWorkEventArgs e)
         {          
             VGMToolbox.format.hoot.game hootGame = null;
 
@@ -102,7 +102,7 @@ namespace VGMToolbox.tools.hoot
             {
                 this.progressStruct.Clear();
                 this.progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message;
-                ReportProgress(progress, this.progressStruct);
+                ReportProgress(this.Progress, this.progressStruct);
             }            
         }    
 

@@ -21,7 +21,7 @@ namespace VGMToolbox.tools.nsf
 
         public NsfeM3uBuilderWorker() : base() { }
 
-        protected override void doTaskForFile(string pPath, IVgmtWorkerStruct pNsfeM3uBuilderStruct, 
+        protected override void DoTaskForFile(string pPath, IVgmtWorkerStruct pNsfeM3uBuilderStruct, 
             DoWorkEventArgs e)
         {
             NsfeM3uBuilderStruct nsfeM3uBuilderStruct = (NsfeM3uBuilderStruct)pNsfeM3uBuilderStruct;

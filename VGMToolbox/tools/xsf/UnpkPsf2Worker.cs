@@ -23,7 +23,7 @@ namespace VGMToolbox.tools.xsf
 
         public UnpkPsf2Worker() : base() { }
 
-        protected override void doTaskForFile(string pPath, IVgmtWorkerStruct pUnpkPsf2Struct, 
+        protected override void DoTaskForFile(string pPath, IVgmtWorkerStruct pUnpkPsf2Struct, 
             DoWorkEventArgs e)
         {                         
             string stdOutput = null;

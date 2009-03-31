@@ -42,7 +42,7 @@ namespace VGMToolbox.tools.extract
         public OffsetFinderWorker() : 
             base() {}
         
-        protected override void doTaskForFile(string pPath, IVgmtWorkerStruct pOffsetFinderStruct,
+        protected override void DoTaskForFile(string pPath, IVgmtWorkerStruct pOffsetFinderStruct,
             DoWorkEventArgs e)
         {
             OffsetFinderStruct offsetFinderStruct = (OffsetFinderStruct) pOffsetFinderStruct;

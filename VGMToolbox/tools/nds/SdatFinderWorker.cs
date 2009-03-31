@@ -19,7 +19,7 @@ namespace VGMToolbox.tools.nds
 
         public SdatFinderWorker(): base() { }
 
-        protected override void doTaskForFile(string pPath, IVgmtWorkerStruct pSdatFinderStruct, 
+        protected override void DoTaskForFile(string pPath, IVgmtWorkerStruct pSdatFinderStruct, 
             DoWorkEventArgs e)
         {
             string[] outputPaths = SdatUtil.ExtractSdatsFromFile(pPath, null);                           

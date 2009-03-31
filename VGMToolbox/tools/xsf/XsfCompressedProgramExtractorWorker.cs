@@ -24,7 +24,7 @@ namespace VGMToolbox.tools.xsf
 
         public XsfCompressedProgramExtractorWorker() : base() { }
 
-        protected override void doTaskForFile(string pPath,
+        protected override void DoTaskForFile(string pPath,
             IVgmtWorkerStruct pXsfCompressedProgramExtractorStruct, DoWorkEventArgs e)
         {
             XsfCompressedProgramExtractorStruct xsfCompressedProgramExtractorStruct =

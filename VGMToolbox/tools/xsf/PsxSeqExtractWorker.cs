@@ -31,7 +31,7 @@ namespace VGMToolbox.tools.xsf
         public PsxSeqExtractWorker()
             : base() {}
 
-        protected override void doTaskForFile(string pPath, IVgmtWorkerStruct pPsxSeqExtractStruct, 
+        protected override void DoTaskForFile(string pPath, IVgmtWorkerStruct pPsxSeqExtractStruct, 
             DoWorkEventArgs e)
         {
             PsxSeqExtractStruct psxSeqExtractStruct = (PsxSeqExtractStruct)pPsxSeqExtractStruct;
@@ -103,7 +103,7 @@ namespace VGMToolbox.tools.xsf
                     {
                         this.progressStruct.Clear();
                         progressStruct.genericMessage = String.Format("{0}{1}  WARNINGS{2}    {3}", pPath, Environment.NewLine, Environment.NewLine, psxSeq.TimingInfo.Warnings);
-                        ReportProgress(this.progress, progressStruct);
+                        ReportProgress(this.Progress, progressStruct);
                     }
                 }
 

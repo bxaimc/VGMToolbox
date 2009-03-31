@@ -36,7 +36,7 @@ namespace VGMToolbox.tools.xsf
 
         public SsfSeqTonExtractorWorker() : base() { }
 
-        protected override void doTaskForFile(string pPath, IVgmtWorkerStruct pSsfSeqTonExtractorStruct, 
+        protected override void DoTaskForFile(string pPath, IVgmtWorkerStruct pSsfSeqTonExtractorStruct, 
             DoWorkEventArgs e)
         {
             SsfSeqTonExtractorStruct ssfSeqTonExtractorStruct = (SsfSeqTonExtractorStruct)pSsfSeqTonExtractorStruct;

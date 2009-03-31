@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -10,22 +11,25 @@ namespace VGMToolbox.plugin
 {
     public abstract class AVgmtWorker : BackgroundWorker
     {
-        protected int fileCount = 0;
-        protected int maxFiles = 0;
-        protected int progress = 0;
+        private int fileCount;
+        private int maxFiles;
+        private int progress;
         protected Constants.ProgressStruct progressStruct;
+
+        protected int Progress
+        {
+            get { return progress; }
+            set { progress = value; }
+        }
 
         protected AVgmtWorker()
         {
-            this.fileCount = 0;
-            this.maxFiles = 0;
             this.progressStruct = new Constants.ProgressStruct();
-
             this.WorkerReportsProgress = true;
             this.WorkerSupportsCancellation = true;
         }
 
-        protected void doTask(IVgmtWorkerStruct pTaskStruct, DoWorkEventArgs e)
+        protected void DoTask(IVgmtWorkerStruct pTaskStruct, DoWorkEventArgs e)
         {
             this.maxFiles = FileUtil.GetFileCount(pTaskStruct.SourcePaths);
 
@@ -45,17 +49,18 @@ namespace VGMToolbox.plugin
                         // perform task
                         try
                         {
-                            this.doTaskForFile(path, pTaskStruct, e);
+                            this.DoTaskForFile(path, pTaskStruct, e);
                         }
                         catch (Exception ex)
                         {
                             this.progressStruct.Clear();
-                            this.progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", path) + ex.Message + Environment.NewLine;
+                            this.progressStruct.errorMessage = 
+                                String.Format(CultureInfo.CurrentCulture,"Error processing <{0}>.  Error received: ", path) + ex.Message + Environment.NewLine;
                             ReportProgress(this.progress, this.progressStruct);
                         }
                         finally
                         {
-                            this.doFinally();
+                            this.DoFinally();
                         }
                     }
                     else
@@ -66,7 +71,7 @@ namespace VGMToolbox.plugin
                 }
                 else if (Directory.Exists(path))
                 {
-                    this.doTaskForDirectory(path, pTaskStruct, e);
+                    this.DoTaskForDirectory(path, pTaskStruct, e);
 
                     if (CancellationPending)
                     {
@@ -78,14 +83,14 @@ namespace VGMToolbox.plugin
             return;
         }
 
-        protected void doTaskForDirectory(string pPath, IVgmtWorkerStruct pTaskStruct,
+        protected void DoTaskForDirectory(string pPath, IVgmtWorkerStruct pTaskStruct,
             DoWorkEventArgs e)
         {            
             foreach (string d in Directory.GetDirectories(pPath))
             {
                 if (!CancellationPending)
                 {
-                    this.doTaskForDirectory(d, pTaskStruct, e);
+                    this.DoTaskForDirectory(d, pTaskStruct, e);
                 }
                 else
                 {
@@ -106,17 +111,18 @@ namespace VGMToolbox.plugin
                     // perform task
                     try
                     {
-                        this.doTaskForFile(f, pTaskStruct, e);
+                        this.DoTaskForFile(f, pTaskStruct, e);
                     }
                     catch (Exception ex)
                     {
                         this.progressStruct.Clear();
-                        this.progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", f) + ex.Message + Environment.NewLine;
+                        this.progressStruct.errorMessage = 
+                            String.Format(CultureInfo.CurrentCulture, "Error processing <{0}>.  Error received: ", f) + ex.Message + Environment.NewLine;
                         ReportProgress(progress, this.progressStruct);
                     }
                     finally
                     {
-                        this.doFinally();
+                        this.DoFinally();
                     }
                 }
                 else
@@ -130,11 +136,11 @@ namespace VGMToolbox.plugin
         // this can be overridden in implementing classes that have more to do
         protected override void OnDoWork(DoWorkEventArgs e)
         {
-            this.doTask((IVgmtWorkerStruct)e.Argument, e);
+            this.DoTask((IVgmtWorkerStruct)e.Argument, e);
         }
-        protected virtual void doFinally() { }
+        protected virtual void DoFinally() { }
 
         // abstract methods
-        protected abstract void doTaskForFile(string pPath, IVgmtWorkerStruct pTaskStruct, DoWorkEventArgs e);
+        protected abstract void DoTaskForFile(string pPath, IVgmtWorkerStruct pTaskStruct, DoWorkEventArgs e);
     }
 }

@@ -222,7 +222,7 @@ namespace VGMToolbox.format
                             currentByte = pStream.ReadByte();
                             currentOffset = pStream.Position - 1;
 
-                            //deltaTimeByteCount++;
+                            deltaTimeByteCount++;
                             //if (deltaTimeByteCount > 4)
                             //{
                             //    int x4 = 1;
@@ -283,10 +283,10 @@ namespace VGMToolbox.format
                 currentByte = pStream.ReadByte();
                 currentOffset = pStream.Position - 1;
 
-                //if (currentOffset > 0x492C) // code to quickly get to a position for debugging
-                //{
-                //    int x = 1;
-                //}
+                if (currentOffset > 0x1580) // code to quickly get to a position for debugging
+                {
+                    int x = 1;
+                }
 
                 //if ((currentTime != 0) && (currentTime != 38461) && (currentTime != 192307))
                 //{

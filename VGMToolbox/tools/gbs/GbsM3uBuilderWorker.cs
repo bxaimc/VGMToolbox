@@ -22,7 +22,7 @@ namespace VGMToolbox.tools.gbs
         public GbsM3uBuilderWorker() :
             base() { }
 
-        protected override void doTaskForFile(string pPath, IVgmtWorkerStruct pGbsM3uWorkerStruct, DoWorkEventArgs e)
+        protected override void DoTaskForFile(string pPath, IVgmtWorkerStruct pGbsM3uWorkerStruct, DoWorkEventArgs e)
         {
             GbsM3uWorkerStruct gbsM3uWorkerStruct = (GbsM3uWorkerStruct)pGbsM3uWorkerStruct;
                       

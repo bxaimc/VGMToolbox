@@ -29,7 +29,7 @@ namespace VGMToolbox.tools.xsf
             extractedLibHash = new Dictionary<string, string>();
         }
 
-        protected override void doTaskForFile(string pPath, IVgmtWorkerStruct pPsf2SqExtractorStruct, 
+        protected override void DoTaskForFile(string pPath, IVgmtWorkerStruct pPsf2SqExtractorStruct, 
             DoWorkEventArgs e)
         {
             string outputSqFileName;

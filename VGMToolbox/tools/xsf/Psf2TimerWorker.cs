@@ -32,7 +32,7 @@ namespace VGMToolbox.tools.xsf
             extractedLibHash = new Dictionary<string, string>();
         }
 
-        protected override void doTaskForFile(string pPath, IVgmtWorkerStruct pPsf2TimerStruct, 
+        protected override void DoTaskForFile(string pPath, IVgmtWorkerStruct pPsf2TimerStruct, 
             DoWorkEventArgs e)
         {
             string outputSqFileName = null;
@@ -182,7 +182,7 @@ namespace VGMToolbox.tools.xsf
                     {
                         this.progressStruct.Clear();
                         progressStruct.genericMessage = String.Format("{0}{1}  WARNINGS{2}    {3}", pPath, Environment.NewLine, Environment.NewLine, psf2Time.Warnings);
-                        ReportProgress(progress, progressStruct);
+                        ReportProgress(this.Progress, progressStruct);
                     }
                 }
             } // if (psf2File.getFormat().Equals(Xsf.FORMAT_NAME_PSF2) && (!psf2File.IsFileLibrary()))

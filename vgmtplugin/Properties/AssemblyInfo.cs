@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("vgmtplugin")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("CDPR")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("vgmtplugin")]
-[assembly: AssemblyCopyright("Copyright © CDPR 2009")]
+[assembly: AssemblyCopyright("Copyright ©  2009")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

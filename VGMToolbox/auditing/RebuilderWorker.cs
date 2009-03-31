@@ -36,10 +36,7 @@ namespace VGMToolbox.auditing
 
         public RebuilderWorker()
         {
-            fileCount = 0;
-            maxFiles = 0;
             progressStruct = new Constants.ProgressStruct();
-
             WorkerReportsProgress = true;
             WorkerSupportsCancellation = true;
         }
@@ -68,7 +65,7 @@ namespace VGMToolbox.auditing
         }
 
         private void moveFile(string pDestination, ArrayList pDestinationFiles, FileStream pSourceFile,
-            string pSourceName, bool pOverwriteExisting, AuditingUtil pAuditingUtil, bool pCompressOutput,
+            string pSourceName, bool pOverwriteExisting, bool pCompressOutput,
             bool hasMultipleExtensions)
         {
             int readSize = 0;
@@ -293,7 +290,7 @@ namespace VGMToolbox.auditing
                     if (!pRebuildSetsStruct.ScanOnly)
                     {
                         this.moveFile(pRebuildSetsStruct.pDestinationDir, pDestinationFiles, fs, pFilePath, pRebuildSetsStruct.pOverwriteExisting,
-                            pAuditingUtil, pRebuildSetsStruct.pCompressOutput, hasMultipleExtensions);
+                            pRebuildSetsStruct.pCompressOutput, hasMultipleExtensions);
                     }
                     pAuditingUtil.AddChecksumToCache(crc32Value);
                 }
