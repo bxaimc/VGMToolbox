@@ -5,7 +5,7 @@ using VGMToolbox.plugin;
 
 namespace VGMToolbox.tools.xsf
 {
-    class XsfCompressedProgramExtractorWorker : AVgmtWorker
+    class XsfCompressedProgramExtractorWorker : AVgmtDragAndDropWorker
     {
 
         public struct XsfCompressedProgramExtractorStruct : IVgmtWorkerStruct

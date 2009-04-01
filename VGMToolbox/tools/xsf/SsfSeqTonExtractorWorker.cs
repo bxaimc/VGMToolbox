@@ -10,7 +10,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.tools.xsf
 {
-    class SsfSeqTonExtractorWorker : AVgmtWorker
+    class SsfSeqTonExtractorWorker : AVgmtDragAndDropWorker
     {
         private static readonly string SSFTOOL_FOLDER_PATH =
             Path.GetFullPath(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "ssf"));
@@ -83,7 +83,7 @@ namespace VGMToolbox.tools.xsf
                 extractionProcess.Close();
 
                 this.progressStruct.Clear();
-                this.progressStruct.genericMessage = String.Format("[SEQEXT - {0}]", Path.GetFileName(pPath)) +
+                this.progressStruct.GenericMessage = String.Format("[SEQEXT - {0}]", Path.GetFileName(pPath)) +
                     Environment.NewLine + seekOutput;
                 this.ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
 
@@ -105,7 +105,7 @@ namespace VGMToolbox.tools.xsf
                 extractionProcess.Dispose();
 
                 this.progressStruct.Clear();
-                this.progressStruct.genericMessage = String.Format("[TONEXT - {0}]", Path.GetFileName(pPath)) +
+                this.progressStruct.GenericMessage = String.Format("[TONEXT - {0}]", Path.GetFileName(pPath)) +
                     Environment.NewLine + seekOutput + Environment.NewLine;
                 this.ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
 
@@ -171,7 +171,7 @@ namespace VGMToolbox.tools.xsf
             else
             {
                 this.progressStruct.Clear();
-                this.progressStruct.errorMessage = "ERROR: A directory containing the Python Interpreter (python.exe) cannot be found in your PATH environment variable.";
+                this.progressStruct.ErrorMessage = "ERROR: A directory containing the Python Interpreter (python.exe) cannot be found in your PATH environment variable.";
                 ReportProgress(0, this.progressStruct);
             }
         }         

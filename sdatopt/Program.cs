@@ -135,25 +135,25 @@ namespace sdatopt
                                     // extract SDAT
                                     Console.WriteLine("Extracting SDAT from Decompressed Compressed Data Section.");
 
-                                    ParseFile.FindOffsetStruct findOffsetStruct;
-                                    findOffsetStruct.searchString = Sdat.ASCII_SIGNATURE_STRING;
-                                    findOffsetStruct.treatSearchStringAsHex = true;
-                                    findOffsetStruct.cutFile = true;
-                                    findOffsetStruct.searchStringOffset = "0";
-                                    findOffsetStruct.cutSize = "8";
-                                    findOffsetStruct.cutSizeOffsetSize = "4";
-                                    findOffsetStruct.isCutSizeAnOffset = true;
-                                    findOffsetStruct.outputFileExtension = ".sdat";
-                                    findOffsetStruct.isLittleEndian = true;
+                                    VGMToolbox.util.FindOffsetStruct findOffsetStruct = new VGMToolbox.util.FindOffsetStruct();
+                                    findOffsetStruct.SearchString = Sdat.ASCII_SIGNATURE_STRING;
+                                    findOffsetStruct.TreatSearchStringAsHex = true;
+                                    findOffsetStruct.CutFile = true;
+                                    findOffsetStruct.SearchStringOffset = "0";
+                                    findOffsetStruct.CutSize = "8";
+                                    findOffsetStruct.CutSizeOffsetSize = "4";
+                                    findOffsetStruct.IsCutSizeAnOffset = true;
+                                    findOffsetStruct.OutputFileExtension = ".sdat";
+                                    findOffsetStruct.IsLittleEndian = true;
 
-                                    findOffsetStruct.useTerminatorForCutsize = false;
-                                    findOffsetStruct.terminatorString = null;
-                                    findOffsetStruct.treatTerminatorStringAsHex = false;
-                                    findOffsetStruct.includeTerminatorLength = false;
-                                    findOffsetStruct.extraCutSizeBytes = null;
+                                    findOffsetStruct.UseTerminatorForCutsize = false;
+                                    findOffsetStruct.TerminatorString = null;
+                                    findOffsetStruct.TreatTerminatorStringAsHex = false;
+                                    findOffsetStruct.IncludeTerminatorLength = false;
+                                    findOffsetStruct.ExtraCutSizeBytes = null;
 
-                                    string output = String.Empty;
-                                    extractedToFolder = ParseFile.FindOffsetAndCutFile(decompressedDataPath, findOffsetStruct, ref output);
+                                    string output;
+                                    extractedToFolder = ParseFile.FindOffsetAndCutFile(decompressedDataPath, findOffsetStruct, out output);
 
                                     // create SDAT object                                                                        
                                     Console.WriteLine("Building Internal SDAT.");

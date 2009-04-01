@@ -34,7 +34,7 @@ namespace VGMToolbox.tools.xsf
 
         private int fileCount = 0;
         private int maxFiles = 0;
-        private Constants.ProgressStruct progressStruct;
+        private VGMToolbox.util.ProgressStruct progressStruct;
 
         public struct Time2sfStruct
         {
@@ -68,9 +68,9 @@ namespace VGMToolbox.tools.xsf
                 {
                     haveDirectoryError = true;
 
-                    this.progressStruct = new Constants.ProgressStruct();
-                    this.progressStruct.newNode = null;
-                    this.progressStruct.errorMessage = String.Format("ERROR: Path <{0}> not found.",
+                    this.progressStruct = new VGMToolbox.util.ProgressStruct();
+                    this.progressStruct.NewNode = null;
+                    this.progressStruct.ErrorMessage = String.Format("ERROR: Path <{0}> not found.",
                         pTime2sfStruct.pathTo2sf) + Environment.NewLine;
                     ReportProgress(0, this.progressStruct);
                 }
@@ -79,9 +79,9 @@ namespace VGMToolbox.tools.xsf
                 {
                     haveDirectoryError = true;
 
-                    this.progressStruct = new Constants.ProgressStruct();
-                    this.progressStruct.newNode = null;
-                    this.progressStruct.errorMessage = String.Format("ERROR: Path <{0}> not found.",
+                    this.progressStruct = new VGMToolbox.util.ProgressStruct();
+                    this.progressStruct.NewNode = null;
+                    this.progressStruct.ErrorMessage = String.Format("ERROR: Path <{0}> not found.",
                         pTime2sfStruct.pathToSdat) + Environment.NewLine;
                     ReportProgress(0, this.progressStruct);
                 }
@@ -145,9 +145,9 @@ namespace VGMToolbox.tools.xsf
 
                             // report progress
                             progress = (++this.fileCount * 100) / this.maxFiles;
-                            this.progressStruct = new Constants.ProgressStruct();
-                            this.progressStruct.newNode = null;
-                            this.progressStruct.filename = rippedFilePath;
+                            this.progressStruct = new VGMToolbox.util.ProgressStruct();
+                            this.progressStruct.NewNode = null;
+                            this.progressStruct.Filename = rippedFilePath;
                             ReportProgress(progress, this.progressStruct);
 
                             if (s.fileID == Smap.EMPTY_FILE_ID)

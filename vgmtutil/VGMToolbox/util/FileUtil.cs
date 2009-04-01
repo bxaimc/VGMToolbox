@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
 namespace VGMToolbox.util
 {
-    public class FileUtil
+    public sealed class FileUtil
     {
+        private FileUtil() { }
+
         /// <summary>
         /// Reads data into a complete array, throwing an EndOfStreamException
         /// if the stream runs out of data first, or if an IOException
@@ -30,7 +33,7 @@ namespace VGMToolbox.util
                 int read = stream.Read(data, offset, remaining);
                 if (read <= 0)
                     throw new EndOfStreamException
-                        (String.Format("End of stream reached with {0} bytes left to read", remaining));
+                        (String.Format(CultureInfo.CurrentCulture, "End of stream reached with {0} bytes left to read", remaining));
                 remaining -= read;
                 offset += read;
             }

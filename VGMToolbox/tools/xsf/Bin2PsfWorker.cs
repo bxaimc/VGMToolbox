@@ -27,7 +27,7 @@ namespace VGMToolbox.tools.xsf
 
         private int fileCount = 0;
         private int maxFiles = 0;
-        Constants.ProgressStruct progressStruct;
+        VGMToolbox.util.ProgressStruct progressStruct;
 
         public struct Bin2PsfStruct
         {
@@ -46,7 +46,7 @@ namespace VGMToolbox.tools.xsf
         {
             fileCount = 0;
             maxFiles = 0;
-            progressStruct = new Constants.ProgressStruct();
+            progressStruct = new VGMToolbox.util.ProgressStruct();
 
             WorkerReportsProgress = true;
             WorkerSupportsCancellation = true;
@@ -84,7 +84,7 @@ namespace VGMToolbox.tools.xsf
             if (!Directory.Exists(pSourceDirectory))
             {
                 this.progressStruct.Clear();
-                this.progressStruct.errorMessage = String.Format("ERROR: Directory {0} not found.", pSourceDirectory);
+                this.progressStruct.ErrorMessage = String.Format("ERROR: Directory {0} not found.", pSourceDirectory);
                 ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
             }
             else
@@ -138,7 +138,7 @@ namespace VGMToolbox.tools.xsf
             catch (Exception ex)
             {
                 this.progressStruct.Clear();
-                this.progressStruct.errorMessage = ex.Message;
+                this.progressStruct.ErrorMessage = ex.Message;
                 ReportProgress(0, this.progressStruct);
 
                 return;
@@ -163,7 +163,7 @@ namespace VGMToolbox.tools.xsf
                     // report progress
                     progress = (++this.fileCount * 100) / maxFiles;
                     this.progressStruct.Clear();
-                    this.progressStruct.filename = f;
+                    this.progressStruct.Filename = f;
                     ReportProgress(progress, this.progressStruct);
 
                     try
@@ -253,7 +253,7 @@ namespace VGMToolbox.tools.xsf
                                     }
                                 }
                                 this.progressStruct.Clear();
-                                this.progressStruct.genericMessage = String.Format("{0}.{1} created.", filePrefix, outputExtension) +
+                                this.progressStruct.GenericMessage = String.Format("{0}.{1} created.", filePrefix, outputExtension) +
                                     Environment.NewLine;
                                 ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
 
@@ -273,7 +273,7 @@ namespace VGMToolbox.tools.xsf
                         else
                         {
                             this.progressStruct.Clear();
-                            this.progressStruct.genericMessage = String.Format("WARNING: {0}.SEQ has ZERO length.  Skipping...", filePrefix) +
+                            this.progressStruct.GenericMessage = String.Format("WARNING: {0}.SEQ has ZERO length.  Skipping...", filePrefix) +
                                 Environment.NewLine;
                             ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
                         }
@@ -281,8 +281,8 @@ namespace VGMToolbox.tools.xsf
                     catch (Exception ex2)
                     {
                         this.progressStruct.Clear();
-                        this.progressStruct.filename = f;
-                        this.progressStruct.errorMessage = ex2.Message;
+                        this.progressStruct.Filename = f;
+                        this.progressStruct.ErrorMessage = ex2.Message;
                         ReportProgress(progress, this.progressStruct);
                     }
                 }
@@ -301,7 +301,7 @@ namespace VGMToolbox.tools.xsf
             catch (Exception ex3)
             {
                 this.progressStruct.Clear();
-                this.progressStruct.errorMessage = ex3.Message;
+                this.progressStruct.ErrorMessage = ex3.Message;
                 ReportProgress(100, this.progressStruct);
             }
         }

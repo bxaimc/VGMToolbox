@@ -4,11 +4,13 @@ using System.Text;
 
 namespace VGMToolbox.util
 {
-    public class Encoding
+    public sealed class Encoding
     {
         public const int CODEPAGE_JP = 932;
         public const int CODEPAGE_US = 1251;
-        
+
+        private Encoding() { }
+
         public static string getEncodedText(byte[] pBytes, int codePage)
         {
             return System.Text.Encoding.GetEncoding(codePage).GetString(pBytes);
@@ -27,7 +29,7 @@ namespace VGMToolbox.util
         {
             long ret;
 
-            if (pStringNumber.StartsWith("0x"))
+            if (pStringNumber.StartsWith("0x", StringComparison.CurrentCultureIgnoreCase))
             {
                 pStringNumber = pStringNumber.Substring(2);
                 ret = long.Parse(pStringNumber, System.Globalization.NumberStyles.HexNumber, null);

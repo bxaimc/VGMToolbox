@@ -20,7 +20,7 @@ namespace VGMToolbox.auditing
         private ArrayList tempDirsForDeletion = new ArrayList();
         private int fileCount = 0;
         private int maxFiles = 0;
-        private Constants.ProgressStruct progressStruct;
+        private VGMToolbox.util.ProgressStruct progressStruct;
 
         public struct RebuildSetsStruct
         { 
@@ -36,7 +36,7 @@ namespace VGMToolbox.auditing
 
         public RebuilderWorker()
         {
-            progressStruct = new Constants.ProgressStruct();
+            progressStruct = new VGMToolbox.util.ProgressStruct();
             WorkerReportsProgress = true;
             WorkerSupportsCancellation = true;
         }
@@ -158,8 +158,8 @@ namespace VGMToolbox.auditing
             catch (Exception exception)
             {
                 this.progressStruct.Clear();
-                this.progressStruct.filename = pSourceName;
-                this.progressStruct.errorMessage = "Error processing <" + pSourceName + "> " + exception.Message;
+                this.progressStruct.Filename = pSourceName;
+                this.progressStruct.ErrorMessage = "Error processing <" + pSourceName + "> " + exception.Message;
                 ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
 
             }
@@ -240,8 +240,8 @@ namespace VGMToolbox.auditing
                     catch (EndOfStreamException e)
                     {
                         this.progressStruct.Clear();
-                        this.progressStruct.filename = pFilePath;
-                        this.progressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
+                        this.progressStruct.Filename = pFilePath;
+                        this.progressStruct.ErrorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
                         ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
 
                         crc32Generator.Reset();
@@ -252,8 +252,8 @@ namespace VGMToolbox.auditing
                     catch (System.OutOfMemoryException e)
                     {
                         this.progressStruct.Clear();
-                        this.progressStruct.filename = pFilePath;
-                        this.progressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
+                        this.progressStruct.Filename = pFilePath;
+                        this.progressStruct.ErrorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
                         ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
 
                         crc32Generator.Reset();
@@ -264,8 +264,8 @@ namespace VGMToolbox.auditing
                     catch (IOException e)
                     {
                         this.progressStruct.Clear();
-                        this.progressStruct.filename = pFilePath;
-                        this.progressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
+                        this.progressStruct.Filename = pFilePath;
+                        this.progressStruct.ErrorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
                         ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
 
                         crc32Generator.Reset();
@@ -355,7 +355,7 @@ namespace VGMToolbox.auditing
                             
                             progress = (++fileCount * 100) / maxFiles;
                             this.progressStruct.Clear();
-                            this.progressStruct.filename = f;
+                            this.progressStruct.Filename = f;
                             ReportProgress(progress, this.progressStruct);
                         }
                         else
@@ -388,14 +388,14 @@ namespace VGMToolbox.auditing
                                     
                                     progress = (++fileCount * 100) / maxFiles;
                                     this.progressStruct.Clear();
-                                    this.progressStruct.filename = f;
+                                    this.progressStruct.Filename = f;
                                     ReportProgress(progress, this.progressStruct);
                                 }
                                 catch (Exception ex)
                                 {
                                     this.progressStruct.Clear();
-                                    this.progressStruct.filename = f;
-                                    this.progressStruct.errorMessage = "[" + f + "] " + ex.Message;
+                                    this.progressStruct.Filename = f;
+                                    this.progressStruct.ErrorMessage = "[" + f + "] " + ex.Message;
                                     ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
                                 }
                             }
@@ -443,8 +443,8 @@ namespace VGMToolbox.auditing
             catch (Exception exception2)
             {
                 this.progressStruct.Clear();
-                this.progressStruct.filename = null;
-                this.progressStruct.errorMessage = exception2.Message;
+                this.progressStruct.Filename = null;
+                this.progressStruct.ErrorMessage = exception2.Message;
                 ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
             }
         }

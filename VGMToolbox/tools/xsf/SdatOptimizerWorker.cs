@@ -8,7 +8,7 @@ using VGMToolbox.plugin;
 
 namespace VGMToolbox.tools.xsf
 {
-    class SdatOptimizerWorker : AVgmtWorker
+    class SdatOptimizerWorker : AVgmtDragAndDropWorker
     {
         public struct SdatOptimizerStruct : IVgmtWorkerStruct
         {

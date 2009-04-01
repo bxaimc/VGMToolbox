@@ -47,9 +47,6 @@
     <Compile Include="VGMToolbox\util\Encoding.cs" />
     <Compile Include="VGMToolbox\util\FileUtil.cs" />
     <Compile Include="VGMToolbox\util\IDeepCopy.cs" />
-    <Compile Include="VGMToolbox\util\IniFile.cs" />
-    <Compile Include="VGMToolbox\util\ObjectPooling\ByteArray.cs" />
-    <Compile Include="VGMToolbox\util\ObjectPooling\ObjectPooler.cs" />
     <Compile Include="VGMToolbox\util\ParseFile.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

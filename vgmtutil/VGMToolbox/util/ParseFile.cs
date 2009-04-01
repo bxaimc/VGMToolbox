@@ -1,35 +1,14 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
-using VGMToolbox.util.ObjectPooling;
-
-
 namespace VGMToolbox.util
-{
-    public class ParseFile
+{        
+    public sealed class ParseFile
     {
-        public struct FindOffsetStruct
-        {
-            public string searchString;
-            public bool treatSearchStringAsHex;
-
-            public bool cutFile;
-            public string searchStringOffset;
-            public string cutSize;
-            public string cutSizeOffsetSize;
-            public bool isCutSizeAnOffset;
-            public string outputFileExtension;
-            public bool isLittleEndian;
-
-            public bool useTerminatorForCutsize;
-            public string terminatorString;
-            public bool treatTerminatorStringAsHex;
-            public bool includeTerminatorLength;
-
-            public string extraCutSizeBytes;
-        }
-        
+        private ParseFile() { }
+                
         public static byte[] parseSimpleOffset(byte[] pBytes, int pOffset, int pLength)
         {
             byte[] ret = new byte[pLength];
@@ -70,15 +49,6 @@ namespace VGMToolbox.util
             pFileStream.Position = currentStreamPosition;
 
             return ret;
-        }
-
-        public static void parseSimpleOffset(Stream pFileStream, int pOffset, int pLength, ref ByteArray pOutputBuffer)
-        {
-            long currentStreamPosition = pFileStream.Position;
-            pFileStream.Seek((long)pOffset, SeekOrigin.Begin);
-            BinaryReader br = new BinaryReader(pFileStream);           
-            br.Read(pOutputBuffer.ByArray, 0, (int) pLength);
-            pFileStream.Position = currentStreamPosition;
         }
 
         public static int getSegmentLength(byte[] pBytes, int pOffset, byte[] pTerminator)
@@ -280,13 +250,13 @@ namespace VGMToolbox.util
             // and format each one as a hexadecimal string.
             for (int i = 0; i < pBytes.Length; i++)
             {
-                sBuilder.Append(pBytes[i].ToString("X2"));
+                sBuilder.Append(pBytes[i].ToString("X2", CultureInfo.InvariantCulture));
             }
 
             return sBuilder.ToString();
         }
 
-        public static string FindOffsetAndCutFile(string pPath, FindOffsetStruct pFindOffsetStruct, ref string pMessages)
+        public static string FindOffsetAndCutFile(string pPath, FindOffsetStruct pFindOffsetStruct, out string pMessages)
         {
             int i;
             int j = 0;
@@ -312,37 +282,37 @@ namespace VGMToolbox.util
             StringBuilder ret = new StringBuilder();
 
             // create search bytes
-            if (pFindOffsetStruct.treatSearchStringAsHex)
+            if (pFindOffsetStruct.TreatSearchStringAsHex)
             {
-                searchBytes = new byte[pFindOffsetStruct.searchString.Length / 2];
+                searchBytes = new byte[pFindOffsetStruct.SearchString.Length / 2];
 
                 // convert the search string to bytes
-                for (i = 0; i < pFindOffsetStruct.searchString.Length; i += 2)
+                for (i = 0; i < pFindOffsetStruct.SearchString.Length; i += 2)
                 {
-                    searchBytes[j] = BitConverter.GetBytes(Int16.Parse(pFindOffsetStruct.searchString.Substring(i, 2), System.Globalization.NumberStyles.AllowHexSpecifier))[0];
+                    searchBytes[j] = BitConverter.GetBytes(Int16.Parse(pFindOffsetStruct.SearchString.Substring(i, 2), System.Globalization.NumberStyles.AllowHexSpecifier, CultureInfo.CurrentCulture))[0];
                     j++;
                 }
             }
             else
             {
-                searchBytes = enc.GetBytes(pFindOffsetStruct.searchString);
+                searchBytes = enc.GetBytes(pFindOffsetStruct.SearchString);
             }
 
             // create terminator bytes
-            if (pFindOffsetStruct.treatTerminatorStringAsHex)
+            if (pFindOffsetStruct.TreatTerminatorStringAsHex)
             {
-                terminatorBytes = new byte[pFindOffsetStruct.terminatorString.Length / 2];
+                terminatorBytes = new byte[pFindOffsetStruct.TerminatorString.Length / 2];
 
                 // convert the search string to bytes
-                for (i = 0; i < pFindOffsetStruct.searchString.Length; i += 2)
+                for (i = 0; i < pFindOffsetStruct.SearchString.Length; i += 2)
                 {
-                    terminatorBytes[j] = BitConverter.GetBytes(Int16.Parse(pFindOffsetStruct.terminatorString.Substring(i, 2), System.Globalization.NumberStyles.AllowHexSpecifier))[0];
+                    terminatorBytes[j] = BitConverter.GetBytes(Int16.Parse(pFindOffsetStruct.TerminatorString.Substring(i, 2), System.Globalization.NumberStyles.AllowHexSpecifier, CultureInfo.CurrentCulture))[0];
                     j++;
                 }
             }
-            else if (!String.IsNullOrEmpty(pFindOffsetStruct.terminatorString))
+            else if (!String.IsNullOrEmpty(pFindOffsetStruct.TerminatorString))
             {
-                terminatorBytes = enc.GetBytes(pFindOffsetStruct.terminatorString);
+                terminatorBytes = enc.GetBytes(pFindOffsetStruct.TerminatorString);
             }
             
             FileInfo fi = new FileInfo(pPath);
@@ -358,21 +328,21 @@ namespace VGMToolbox.util
 
                 while ((offset = ParseFile.GetNextOffset(fs, previousOffset, searchBytes)) != -1)
                 {
-                    if (pFindOffsetStruct.cutFile)
+                    if (pFindOffsetStruct.CutFile)
                     {
                         skipCut = false;
 
-                        cutStart = offset - VGMToolbox.util.Encoding.GetIntFromString(pFindOffsetStruct.searchStringOffset);
+                        cutStart = offset - VGMToolbox.util.Encoding.GetIntFromString(pFindOffsetStruct.SearchStringOffset);
 
-                        if (pFindOffsetStruct.isCutSizeAnOffset)
+                        if (pFindOffsetStruct.IsCutSizeAnOffset)
                         {
-                            cutSizeOffset = cutStart + VGMToolbox.util.Encoding.GetIntFromString(pFindOffsetStruct.cutSize);
+                            cutSizeOffset = cutStart + VGMToolbox.util.Encoding.GetIntFromString(pFindOffsetStruct.CutSize);
                             previousPosition = fs.Position;
                             cutSizeBytes = ParseFile.parseSimpleOffset(fs, cutSizeOffset,
-                                (int)VGMToolbox.util.Encoding.GetIntFromString(pFindOffsetStruct.cutSizeOffsetSize));
+                                (int)VGMToolbox.util.Encoding.GetIntFromString(pFindOffsetStruct.CutSizeOffsetSize));
                             fs.Position = previousPosition;
 
-                            if (!pFindOffsetStruct.isLittleEndian)
+                            if (!pFindOffsetStruct.IsLittleEndian)
                             {
                                 Array.Reverse(cutSizeBytes);
                             }
@@ -393,13 +363,13 @@ namespace VGMToolbox.util
                                     break;
                             }
                         }
-                        else if (pFindOffsetStruct.useTerminatorForCutsize)
+                        else if (pFindOffsetStruct.UseTerminatorForCutsize)
                         {
                             if (cutStart >= 0)
                             {
                                 cutSize = GetNextOffset(fs, offset, terminatorBytes) - cutStart;
 
-                                if (pFindOffsetStruct.includeTerminatorLength)
+                                if (pFindOffsetStruct.IncludeTerminatorLength)
                                 {
                                     cutSize += terminatorBytes.Length;
                                 }
@@ -411,31 +381,31 @@ namespace VGMToolbox.util
                         }
                         else
                         {
-                            cutSize = VGMToolbox.util.Encoding.GetIntFromString(pFindOffsetStruct.cutSize);
+                            cutSize = VGMToolbox.util.Encoding.GetIntFromString(pFindOffsetStruct.CutSize);
                         }
 
-                        outputFile = String.Format("{0}_{1}{2}", Path.GetFileNameWithoutExtension(pPath), chunkCount.ToString("X8"), pFindOffsetStruct.outputFileExtension);
+                        outputFile = String.Format(CultureInfo.InvariantCulture, "{0}_{1}{2}", Path.GetFileNameWithoutExtension(pPath), chunkCount.ToString("X8", CultureInfo.InvariantCulture), pFindOffsetStruct.OutputFileExtension);
 
                         if (cutStart < 0)
                         {
-                            ret.AppendFormat("  Warning: For string found at: 0x{0}, cut begin is less than 0 ({1})...Skipping",
-                                offset.ToString("X8"), cutStart.ToString("X8"));
+                            ret.AppendFormat(CultureInfo.CurrentCulture, "  Warning: For string found at: 0x{0}, cut begin is less than 0 ({1})...Skipping",
+                                offset.ToString("X8", CultureInfo.InvariantCulture), cutStart.ToString("X8", CultureInfo.InvariantCulture));
                             ret.Append(Environment.NewLine);
 
                             skipCut = true;
                         }
                         else if (cutSize < 1)
                         {
-                            ret.AppendFormat("  Warning: For string found at: 0x{0}, cut size is less than 1 ({1})...Skipping",
-                                offset.ToString("X8"), cutSize.ToString("X8"));
+                            ret.AppendFormat(CultureInfo.CurrentCulture, "  Warning: For string found at: 0x{0}, cut size is less than 1 ({1})...Skipping",
+                                offset.ToString("X8", CultureInfo.InvariantCulture), cutSize.ToString("X8", CultureInfo.InvariantCulture));
                             ret.Append(Environment.NewLine);
 
                             skipCut = true;
                         }
                         else if ((cutStart + cutSize) > fi.Length)
                         {
-                            ret.AppendFormat("  Warning: For string found at: 0x{0}, total file end will go past the end of the file ({1})",
-                                offset.ToString("X8"), (cutStart + cutSize).ToString("X8"));
+                            ret.AppendFormat(CultureInfo.CurrentCulture, "  Warning: For string found at: 0x{0}, total file end will go past the end of the file ({1})",
+                                offset.ToString("X8", CultureInfo.InvariantCulture), (cutStart + cutSize).ToString("X8", CultureInfo.InvariantCulture));
                             ret.Append(Environment.NewLine);
                         }
 
@@ -445,15 +415,15 @@ namespace VGMToolbox.util
                         }
                         else
                         {
-                            if (!String.IsNullOrEmpty(pFindOffsetStruct.extraCutSizeBytes))
+                            if (!String.IsNullOrEmpty(pFindOffsetStruct.ExtraCutSizeBytes))
                             {
-                                cutSize += (long)VGMToolbox.util.Encoding.GetIntFromString(pFindOffsetStruct.extraCutSizeBytes);
+                                cutSize += (long)VGMToolbox.util.Encoding.GetIntFromString(pFindOffsetStruct.ExtraCutSizeBytes);
                             }                            
                             
                             ParseFile.ExtractChunkToFile(fs, cutStart, (int)cutSize, Path.Combine(outputFolder, outputFile));
                             
-                            ret.AppendFormat("  Extracted [{3}] begining at 0x{0}, for string found at: 0x{1}, with size 0x{2}",
-                                cutStart.ToString("X8"), offset.ToString("X8"), cutSize.ToString("X8"), outputFile);
+                            ret.AppendFormat(CultureInfo.CurrentCulture, "  Extracted [{3}] begining at 0x{0}, for string found at: 0x{1}, with size 0x{2}",
+                                cutStart.ToString("X8", CultureInfo.InvariantCulture), offset.ToString("X8", CultureInfo.InvariantCulture), cutSize.ToString("X8", CultureInfo.InvariantCulture), outputFile);
                             ret.Append(Environment.NewLine);
 
                             previousOffset = cutStart + cutSize;
@@ -463,7 +433,7 @@ namespace VGMToolbox.util
                     else
                     {
                         // just append the offset
-                        ret.AppendFormat("  String found at: 0x{0}", offset.ToString("X8"));
+                        ret.AppendFormat(CultureInfo.CurrentCulture, "  String found at: 0x{0}", offset.ToString("X8", CultureInfo.InvariantCulture));
                         ret.Append(Environment.NewLine);
 
                         previousOffset = offset + searchBytes.Length;

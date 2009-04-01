@@ -10,7 +10,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.tools.xsf
 {
-    public partial class PsxSeqExtractWorker : AVgmtWorker
+    public partial class PsxSeqExtractWorker : AVgmtDragAndDropWorker
     {
         private const string BATCH_FILE_NAME = "!timing_batch.bat";
         
@@ -102,7 +102,7 @@ namespace VGMToolbox.tools.xsf
                     if (!String.IsNullOrEmpty(psxSeq.TimingInfo.Warnings))
                     {
                         this.progressStruct.Clear();
-                        progressStruct.genericMessage = String.Format("{0}{1}  WARNINGS{2}    {3}", pPath, Environment.NewLine, Environment.NewLine, psxSeq.TimingInfo.Warnings);
+                        progressStruct.GenericMessage = String.Format("{0}{1}  WARNINGS{2}    {3}", pPath, Environment.NewLine, Environment.NewLine, psxSeq.TimingInfo.Warnings);
                         ReportProgress(this.Progress, progressStruct);
                     }
                 }

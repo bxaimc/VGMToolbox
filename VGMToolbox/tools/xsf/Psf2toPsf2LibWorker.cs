@@ -44,7 +44,7 @@ namespace VGMToolbox.tools.xsf
         private const string HD_HASH_KEY = "HD";
         private const string SQ_HASH_KEY = "SQ";
 
-        Constants.ProgressStruct progressStruct;
+        VGMToolbox.util.ProgressStruct progressStruct;
         private int fileCount;
         private int maxFiles;
         private Dictionary<string, Dictionary<string, string>> fileNameHash;
@@ -75,10 +75,10 @@ namespace VGMToolbox.tools.xsf
             
             if (!Directory.Exists(pPsf2ToPsf2LibStruct.sourcePath))
             {
-                this.progressStruct = new Constants.ProgressStruct();
-                this.progressStruct.newNode = null;
-                this.progressStruct.filename = null;
-                this.progressStruct.errorMessage =
+                this.progressStruct = new VGMToolbox.util.ProgressStruct();
+                this.progressStruct.NewNode = null;
+                this.progressStruct.Filename = null;
+                this.progressStruct.ErrorMessage =
                     String.Format("ERROR: Directory <{0}> Not Found.", pPsf2ToPsf2LibStruct.sourcePath);
                 ReportProgress(0, this.progressStruct);
             }
@@ -96,9 +96,9 @@ namespace VGMToolbox.tools.xsf
                 {
                     // report progress
                     int progress = (++this.fileCount * 100) / maxFiles;
-                    this.progressStruct = new Constants.ProgressStruct();
-                    this.progressStruct.newNode = null;
-                    this.progressStruct.filename = f;
+                    this.progressStruct = new VGMToolbox.util.ProgressStruct();
+                    this.progressStruct.NewNode = null;
+                    this.progressStruct.Filename = f;
                     ReportProgress(progress, this.progressStruct);                    
                                         
                     using (FileStream fs = File.OpenRead(f))
@@ -192,9 +192,9 @@ namespace VGMToolbox.tools.xsf
                 }
 
                 progress = (fileCount * 100) / maxFiles;
-                this.progressStruct = new Constants.ProgressStruct();
-                this.progressStruct.newNode = null;
-                this.progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pSourcePath) + ex.Message;
+                this.progressStruct = new VGMToolbox.util.ProgressStruct();
+                this.progressStruct.NewNode = null;
+                this.progressStruct.ErrorMessage = String.Format("Error processing <{0}>.  Error received: ", pSourcePath) + ex.Message;
                 ReportProgress(progress, this.progressStruct);
             }
 
@@ -263,9 +263,9 @@ namespace VGMToolbox.tools.xsf
                         isSuccess = false;
 
                         int progress = (fileCount * 100) / maxFiles;
-                        this.progressStruct = new Constants.ProgressStruct();
-                        this.progressStruct.newNode = null;
-                        this.progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", f) + _e.Message;
+                        this.progressStruct = new VGMToolbox.util.ProgressStruct();
+                        this.progressStruct.NewNode = null;
+                        this.progressStruct.ErrorMessage = String.Format("Error processing <{0}>.  Error received: ", f) + _e.Message;
                         ReportProgress(progress, this.progressStruct);
 
                         break;
@@ -321,9 +321,9 @@ namespace VGMToolbox.tools.xsf
                 }
 
                 int progress = (fileCount * 100) / maxFiles;
-                this.progressStruct = new Constants.ProgressStruct();
-                this.progressStruct.newNode = null;
-                this.progressStruct.errorMessage = String.Format("Error creating <{0}.minipsf2>.  Error received: ", outputFilePrefix) + ex.Message;
+                this.progressStruct = new VGMToolbox.util.ProgressStruct();
+                this.progressStruct.NewNode = null;
+                this.progressStruct.ErrorMessage = String.Format("Error creating <{0}.minipsf2>.  Error received: ", outputFilePrefix) + ex.Message;
                 ReportProgress(progress, this.progressStruct);            
             }
             
@@ -379,9 +379,9 @@ namespace VGMToolbox.tools.xsf
                 }
 
                 int progress = (fileCount * 100) / maxFiles;
-                this.progressStruct = new Constants.ProgressStruct();
-                this.progressStruct.newNode = null;
-                this.progressStruct.errorMessage = 
+                this.progressStruct = new VGMToolbox.util.ProgressStruct();
+                this.progressStruct.NewNode = null;
+                this.progressStruct.ErrorMessage = 
                     String.Format("Error creating <{0}>.  Error received: ", pOutputFileName) + ex.Message +
                     Environment.NewLine;
                 ReportProgress(progress, this.progressStruct);                        
@@ -420,9 +420,9 @@ namespace VGMToolbox.tools.xsf
                 isSuccess = false;
                 
                 int progress = (fileCount * 100) / maxFiles;
-                this.progressStruct = new Constants.ProgressStruct();
-                this.progressStruct.newNode = null;
-                this.progressStruct.errorMessage = String.Format("Error adding batch file info for <{0}>.  Error received: ", pFileName) + ex.Message;
+                this.progressStruct = new VGMToolbox.util.ProgressStruct();
+                this.progressStruct.NewNode = null;
+                this.progressStruct.ErrorMessage = String.Format("Error adding batch file info for <{0}>.  Error received: ", pFileName) + ex.Message;
                 ReportProgress(progress, this.progressStruct);                
             }
 
@@ -456,9 +456,9 @@ namespace VGMToolbox.tools.xsf
             catch (Exception ex)
             {
                 int progress = (fileCount * 100) / maxFiles;
-                this.progressStruct = new Constants.ProgressStruct();
-                this.progressStruct.newNode = null;
-                this.progressStruct.errorMessage = 
+                this.progressStruct = new VGMToolbox.util.ProgressStruct();
+                this.progressStruct.NewNode = null;
+                this.progressStruct.ErrorMessage = 
                     "Error executing batch script.  Error received: " + ex.Message +
                     Environment.NewLine;
                 ReportProgress(progress, this.progressStruct);
@@ -493,9 +493,9 @@ namespace VGMToolbox.tools.xsf
             catch (Exception ex)
             {
                 int progress = (fileCount * 100) / maxFiles;
-                this.progressStruct = new Constants.ProgressStruct();
-                this.progressStruct.newNode = null;
-                this.progressStruct.errorMessage = "Error cleaning up.  Error received: " + ex.Message;
+                this.progressStruct = new VGMToolbox.util.ProgressStruct();
+                this.progressStruct.NewNode = null;
+                this.progressStruct.ErrorMessage = "Error cleaning up.  Error received: " + ex.Message;
                 ReportProgress(progress, this.progressStruct);            
             }
         }

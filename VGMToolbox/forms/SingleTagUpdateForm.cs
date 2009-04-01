@@ -9,10 +9,10 @@ namespace VGMToolbox.forms
 {
     public partial class SingleTagUpdateForm : Form
     {
-        Constants.NodeTagStruct nodeTagInfo;
+        VGMToolbox.util.NodeTagStruct nodeTagInfo;
         ISingleTagFormat vgmData;
         
-        public SingleTagUpdateForm(Constants.NodeTagStruct pNts)
+        public SingleTagUpdateForm(VGMToolbox.util.NodeTagStruct pNts)
         {
             nodeTagInfo = pNts;
             
@@ -24,11 +24,11 @@ namespace VGMToolbox.forms
         private void loadCurrentTagInformation()
         {
             using (FileStream fs =
-                File.Open(this.nodeTagInfo.filePath, FileMode.Open, FileAccess.Read))
+                File.Open(this.nodeTagInfo.FilePath, FileMode.Open, FileAccess.Read))
             {
                 this.vgmData =
-                    (ISingleTagFormat)Activator.CreateInstance(Type.GetType(this.nodeTagInfo.objectType));
-                this.vgmData.Initialize(fs, this.nodeTagInfo.filePath);
+                    (ISingleTagFormat)Activator.CreateInstance(Type.GetType(this.nodeTagInfo.ObjectType));
+                this.vgmData.Initialize(fs, this.nodeTagInfo.FilePath);
 
                 this.tbTag.Text = this.vgmData.GetTagAsText();
             }

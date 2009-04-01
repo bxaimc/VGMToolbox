@@ -63,14 +63,14 @@ namespace mkpsf2fe
 
             if ((e.ProgressPercentage == Constants.PROGRESS_MSG_ONLY) && e.UserState != null)
             {
-                Constants.ProgressStruct vProgressStruct = (Constants.ProgressStruct)e.UserState;
-                tbOutput.Text += vProgressStruct.genericMessage;
+                VGMToolbox.util.ProgressStruct vProgressStruct = (VGMToolbox.util.ProgressStruct)e.UserState;
+                tbOutput.Text += vProgressStruct.GenericMessage;
             }
             else if (e.UserState != null)
             {
-                Constants.ProgressStruct vProgressStruct = (Constants.ProgressStruct)e.UserState;
+                VGMToolbox.util.ProgressStruct vProgressStruct = (VGMToolbox.util.ProgressStruct)e.UserState;
 
-                tbOutput.Text += vProgressStruct.errorMessage == null ? String.Empty : vProgressStruct.errorMessage;
+                tbOutput.Text += vProgressStruct.ErrorMessage == null ? String.Empty : vProgressStruct.ErrorMessage;
             }
         }
 

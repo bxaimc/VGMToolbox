@@ -39,23 +39,23 @@ namespace VGMToolbox.forms
 
             if ((e.ProgressPercentage == Constants.PROGRESS_MSG_ONLY) && e.UserState != null)
             {
-                Constants.ProgressStruct vProgressStruct = (Constants.ProgressStruct)e.UserState;
-                tbOutput.Text += vProgressStruct.genericMessage;
+                VGMToolbox.util.ProgressStruct vProgressStruct = (VGMToolbox.util.ProgressStruct)e.UserState;
+                tbOutput.Text += vProgressStruct.GenericMessage;
             }
             else if (e.UserState != null)
             {
-                Constants.ProgressStruct vProgressStruct = (Constants.ProgressStruct)e.UserState;
+                VGMToolbox.util.ProgressStruct vProgressStruct = (VGMToolbox.util.ProgressStruct)e.UserState;
 
-                if (vProgressStruct.newNode != null)
+                if (vProgressStruct.NewNode != null)
                 {
-                    treeViewTools.Nodes.Add(vProgressStruct.newNode);
+                    treeViewTools.Nodes.Add(vProgressStruct.NewNode);
                 }
 
-                lblProgressLabel.Text = vProgressStruct.filename == null ? String.Empty : vProgressStruct.filename;
+                lblProgressLabel.Text = vProgressStruct.Filename == null ? String.Empty : vProgressStruct.Filename;
 
-                if (!String.IsNullOrEmpty(vProgressStruct.errorMessage))
+                if (!String.IsNullOrEmpty(vProgressStruct.ErrorMessage))
                 {
-                    tbOutput.Text += vProgressStruct.errorMessage;
+                    tbOutput.Text += vProgressStruct.ErrorMessage;
                     errorFound = true;
                 } 
             }
@@ -81,12 +81,12 @@ namespace VGMToolbox.forms
                 this.oldNode = treeViewTools.SelectedNode;
                 treeViewTools.SelectedNode = node;
 
-                if (node != null && node.Tag is Constants.NodeTagStruct)
+                if (node != null && node.Tag is VGMToolbox.util.NodeTagStruct)
                 {
-                    Constants.NodeTagStruct nts = (Constants.NodeTagStruct)node.Tag;
+                    VGMToolbox.util.NodeTagStruct nts = (VGMToolbox.util.NodeTagStruct)node.Tag;
 
-                    if (typeof(IEmbeddedTagsFormat).IsAssignableFrom(Type.GetType(nts.objectType)) ||
-                        typeof(ISingleTagFormat).IsAssignableFrom(Type.GetType(nts.objectType)))
+                    if (typeof(IEmbeddedTagsFormat).IsAssignableFrom(Type.GetType(nts.ObjectType)) ||
+                        typeof(ISingleTagFormat).IsAssignableFrom(Type.GetType(nts.ObjectType)))
                     {
                         contextMenuStrip1.Show(treeViewTools, p);
                     }
@@ -96,16 +96,16 @@ namespace VGMToolbox.forms
 
         private void filePathToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (this.selectedNode != null && this.selectedNode.Tag is Constants.NodeTagStruct)
+            if (this.selectedNode != null && this.selectedNode.Tag is VGMToolbox.util.NodeTagStruct)
             {
-                Constants.NodeTagStruct nts = (Constants.NodeTagStruct) this.selectedNode.Tag;
+                VGMToolbox.util.NodeTagStruct nts = (VGMToolbox.util.NodeTagStruct) this.selectedNode.Tag;
 
-                if (typeof(IEmbeddedTagsFormat).IsAssignableFrom(Type.GetType(nts.objectType)))
+                if (typeof(IEmbeddedTagsFormat).IsAssignableFrom(Type.GetType(nts.ObjectType)))
                 {
                     EmbeddedTagsUpdateForm etuForm = new EmbeddedTagsUpdateForm(nts);
                     etuForm.Show();
                 }
-                else if (typeof(ISingleTagFormat).IsAssignableFrom(Type.GetType(nts.objectType)))
+                else if (typeof(ISingleTagFormat).IsAssignableFrom(Type.GetType(nts.ObjectType)))
                 {
                     SingleTagUpdateForm stuForm = new SingleTagUpdateForm(nts);
                     stuForm.Show();

@@ -220,11 +220,14 @@ namespace VGMToolbox.format.util
             return time;
         }
 
-        public static string UnpackPsf2(string pPath, ref string pStandardOutput, ref string pStandardError)
+        public static string UnpackPsf2(string pPath, out string pStandardOutput, out string pStandardError)
         {
             string filePath;
             string outputDir = null;
-            
+
+            pStandardOutput = null;
+            pStandardError = null;
+
             Process unpkPsf2Process = null;
 
             string formatString = GetXsfFormatString(pPath);

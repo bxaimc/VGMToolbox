@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Security.Cryptography;
 
@@ -6,9 +7,11 @@ using ICSharpCode.SharpZipLib.Checksums;
 
 namespace VGMToolbox.util
 {
-    public class ChecksumUtil
+    public sealed class ChecksumUtil
     {
-        public static string GetCrc32OfFullFile(FileStream pFileStream)
+        private ChecksumUtil() { }
+
+        public static string GetCrc32OfFullFile(Stream pFileStream)
         {
             Crc32 crc32Generator = new Crc32();
 
@@ -24,10 +27,10 @@ namespace VGMToolbox.util
                 crc32Generator.Update(data, 0, read);
             }
 
-            return crc32Generator.Value.ToString("X8");
+            return crc32Generator.Value.ToString("X8", CultureInfo.InvariantCulture);
         }
 
-        public static string GetMd5OfFullFile(FileStream pFileStream)
+        public static string GetMd5OfFullFile(Stream pFileStream)
         {
             MD5CryptoServiceProvider md5Hash = new MD5CryptoServiceProvider();
 
@@ -36,7 +39,7 @@ namespace VGMToolbox.util
             return ParseFile.ByteArrayToString(md5Hash.Hash);
         }
 
-        public static string GetSha1OfFullFile(FileStream pFileStream)
+        public static string GetSha1OfFullFile(Stream pFileStream)
         {
             SHA1CryptoServiceProvider sha1Hash = new SHA1CryptoServiceProvider();
 
@@ -68,7 +71,7 @@ namespace VGMToolbox.util
 
                 if (read <= 0)
                     throw new EndOfStreamException
-                        (String.Format("End of stream reached with {0} bytes left to read", remaining));
+                        (String.Format(CultureInfo.CurrentCulture, "End of stream reached with {0} bytes left to read", remaining));
 
                 pCrc32.Update(data, 0, read);
                 remaining -= read;
@@ -99,7 +102,7 @@ namespace VGMToolbox.util
 
                 if (read <= 0)
                     throw new EndOfStreamException
-                        (String.Format("End of stream reached with {0} bytes left to read", remaining));
+                        (String.Format(CultureInfo.CurrentCulture, "End of stream reached with {0} bytes left to read", remaining));
 
                 pCrc32.Update(data, 0, read);
                 pMd5CryptoStream.Write(data, 0, read);

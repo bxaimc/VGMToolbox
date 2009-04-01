@@ -48,8 +48,6 @@ namespace VGMToolbox
             //Thread.Sleep(1000);
             //th.Abort();
             //Thread.Sleep(1000);            
-
-            this.loadLanguages();
         }
 
         private void btnMdxBrowse_Click(object sender, EventArgs e)
@@ -556,69 +554,7 @@ namespace VGMToolbox
         }
 
         # endregion
-
-        #region INI File
-
-        private void loadLanguages()
-        {
-            string iniPath = "languages.ini";
-
-            if (File.Exists(iniPath))
-            {
-                IniFile iniFile = new IniFile(".\\languages.ini");
-
-                // Datafile Creator
-                grpDatCreator_Header.Text = getGuiIniLabel(iniFile, grpDatCreator_Header.Text, "DATAFILE_BUILDER", "HEADER_GROUP_TAG");
-                lblDatCreator_HeaderName.Text = getGuiIniLabel(iniFile, lblDatCreator_HeaderName.Text, "DATAFILE_BUILDER", "HEADER_NAME_TAG");
-                lblDatCreator_HeaderDescription.Text = getGuiIniLabel(iniFile, lblDatCreator_HeaderDescription.Text, "DATAFILE_BUILDER", "HEADER_DESCRIPTION_TAG");
-                lblDatCreator_HeaderVersion.Text = getGuiIniLabel(iniFile, lblDatCreator_HeaderVersion.Text, "DATAFILE_BUILDER", "HEADER_VERSION_TAG");
-                lblDatCreator_HeaderAuthor.Text = getGuiIniLabel(iniFile, lblDatCreator_HeaderAuthor.Text, "DATAFILE_BUILDER", "HEADER_AUTHOR_TAG");
-                lblDatCreator_HeaderComment.Text = getGuiIniLabel(iniFile, lblDatCreator_HeaderComment.Text, "DATAFILE_BUILDER", "HEADER_COMMENT_TAG");
-                lblDatCreator_HeaderCategory.Text = getGuiIniLabel(iniFile, lblDatCreator_HeaderCategory.Text, "DATAFILE_BUILDER", "HEADER_CATEGORY_TAG");
-                lblDatCreator_HeaderDate.Text = getGuiIniLabel(iniFile, lblDatCreator_HeaderDate.Text, "DATAFILE_BUILDER", "HEADER_DATE_TAG");
-                lblDatCreator_HeaderEmail.Text = getGuiIniLabel(iniFile, lblDatCreator_HeaderEmail.Text, "DATAFILE_BUILDER", "HEADER_EMAIL_TAG");
-                lblDatCreator_HeaderHomepage.Text = getGuiIniLabel(iniFile, lblDatCreator_HeaderHomepage.Text, "DATAFILE_BUILDER", "HEADER_HOMEPAGE_TAG");
-                lblDatCreator_HeaderUrl.Text = getGuiIniLabel(iniFile, lblDatCreator_HeaderUrl.Text, "DATAFILE_BUILDER", "HEADER_URL_TAG");
-                grpDatCreator_Options.Text = getGuiIniLabel(iniFile, grpDatCreator_Options.Text, "DATAFILE_BUILDER", "OPTIONS_GROUP_TAG");
-                lblDatCreator_SourceFolder.Text = getGuiIniLabel(iniFile, lblDatCreator_SourceFolder.Text, "DATAFILE_BUILDER", "SOURCE_FOLDER_LABEL");
-                lblDatCreator_DestinationFolder.Text = getGuiIniLabel(iniFile, lblDatCreator_DestinationFolder.Text, "DATAFILE_BUILDER", "DESTINATION_FOLDER_LABEL");
-                btnDatCreator_BuildDat.Text = getGuiIniLabel(iniFile, btnDatCreator_BuildDat.Text, "DATAFILE_BUILDER", "BUILD_BUTTON");
-                btnDatCreator_Cancel.Text = getGuiIniLabel(iniFile, btnDatCreator_Cancel.Text, "DATAFILE_BUILDER", "CANCEL_BUTTON");
-
-                // Rebuilder Text
-                grpRebuilder_Directories.Text = getGuiIniLabel(iniFile, grpRebuilder_Directories.Text, "REBUILDER", "DIRECTORY_GROUP_TAG");
-                lblRebuilder_SourceDir.Text = getGuiIniLabel(iniFile, lblRebuilder_SourceDir.Text, "REBUILDER", "SOURCE_DIR_TAG");
-                lblRebuilder_DestinationDir.Text = getGuiIniLabel(iniFile, lblRebuilder_DestinationDir.Text, "REBUILDER", "DESTINATION_DIR_TAG");
-                grpRebuilder_Datafile.Text = getGuiIniLabel(iniFile, grpRebuilder_Datafile.Text, "REBUILDER", "DATAFILE_GROUP_TAG");
-                grpRebuilder_Options.Text = getGuiIniLabel(iniFile, grpRebuilder_Options.Text, "REBUILDER", "OPTIONS_GROUP_TAG");
-                cbRebuilder_RemoveSource.Text = getGuiIniLabel(iniFile, cbRebuilder_RemoveSource.Text, "REBUILDER", "CHECKBOX_REMOVE_REBUILT");
-                cbRebuilder_Overwrite.Text = getGuiIniLabel(iniFile, cbRebuilder_Overwrite.Text, "REBUILDER", "CHECKBOX_OVERWRITE");
-                cbRebuilder_CompressOutput.Text = getGuiIniLabel(iniFile, cbRebuilder_CompressOutput.Text, "REBUILDER", "CHECKBOX_COMPRESS_OUTPUT");
-                cbRebuilder_ScanOnly.Text = getGuiIniLabel(iniFile, cbRebuilder_ScanOnly.Text, "REBUILDER", "CHECKBOX_SCAN_ONLY");
-                btnRebuilder_Rebuild.Text = getGuiIniLabel(iniFile, btnRebuilder_Rebuild.Text, "REBUILDER", "REBUILD_BUTTON");
-                btnRebuilder_Cancel.Text = getGuiIniLabel(iniFile, btnRebuilder_Cancel.Text, "REBUILDER", "CANCEL_BUTTON");
-
-                // EXAMINE - MDX
-                grpExamineMdx_PdxDiscovery.Text = getGuiIniLabel(iniFile, grpExamineMdx_PdxDiscovery.Text, "EXAMINE_MDX", "PDX_DISCOVERY_GROUP");
-                cbMdxCheckPdxExist.Text = getGuiIniLabel(iniFile, cbMdxCheckPdxExist.Text, "EXAMINE_MDX", "PDX_EXIST_CHECKBOX");
-                btnMdxFindPdx.Text = getGuiIniLabel(iniFile, btnMdxFindPdx.Text, "EXAMINE_MDX", "FIND_MDX_BUTTON");
-
-                // EXAMINE - XSF
-                grpExamineMdx_XsfExplorer.Text = getGuiIniLabel(iniFile, grpExamineMdx_XsfExplorer.Text, "EXAMINE_XSF", "XSF_EXPLORER_GROUP");
-                lblExamineXsf_SourceDirectory.Text = getGuiIniLabel(iniFile, lblExamineXsf_SourceDirectory.Text, "EXAMINE_XSF", "XSF_SOURCE_DIRECTORY");
-                btnXsfGetInfo.Text = getGuiIniLabel(iniFile, lblExamineXsf_SourceDirectory.Text, "EXAMINE_XSF", "XSF_INFO_BUTTON");
-            }
-        }
-
-        // Set to INI value or keep internal default
-        private string getGuiIniLabel(IniFile pIniFile, string pLabelText, string pSection, string pKey)
-        {
-            return pIniFile.IniReadValue(pSection, pKey).Trim().Length > 0 ?
-                pIniFile.IniReadValue(pSection, pKey) : pLabelText;
-        }
-
-        # endregion
-        
+                
         #region BACKGROUND WORKER
         private void backgroundWorker_ReportProgress(object sender, ProgressChangedEventArgs e)
         {
@@ -631,21 +567,21 @@ namespace VGMToolbox
 
             if ((e.ProgressPercentage == Constants.PROGRESS_MSG_ONLY) && e.UserState != null)
             {
-                Constants.ProgressStruct vProgressStruct = (Constants.ProgressStruct)e.UserState;
-                tbOutput.Text += vProgressStruct.genericMessage;
+                VGMToolbox.util.ProgressStruct vProgressStruct = (VGMToolbox.util.ProgressStruct)e.UserState;
+                tbOutput.Text += vProgressStruct.GenericMessage;
             }            
             else if (e.UserState != null)
             {
-                Constants.ProgressStruct vProgressStruct = (Constants.ProgressStruct)e.UserState;
+                VGMToolbox.util.ProgressStruct vProgressStruct = (VGMToolbox.util.ProgressStruct)e.UserState;
 
-                if (vProgressStruct.newNode != null)
+                if (vProgressStruct.NewNode != null)
                 {
-                    treeViewTools.Nodes.Add(vProgressStruct.newNode);
+                    treeViewTools.Nodes.Add(vProgressStruct.NewNode);
                 }
                 
                 
-                lblProgressLabel.Text = vProgressStruct.filename == null ? String.Empty : vProgressStruct.filename;
-                tbOutput.Text += vProgressStruct.errorMessage == null ? String.Empty : vProgressStruct.errorMessage;
+                lblProgressLabel.Text = vProgressStruct.Filename == null ? String.Empty : vProgressStruct.Filename;
+                tbOutput.Text += vProgressStruct.ErrorMessage == null ? String.Empty : vProgressStruct.ErrorMessage;
             }
 
             this.showElapsedTime();

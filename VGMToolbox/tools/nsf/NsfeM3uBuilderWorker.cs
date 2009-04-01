@@ -5,7 +5,7 @@ using VGMToolbox.plugin;
 
 namespace VGMToolbox.tools.nsf
 {
-    class NsfeM3uBuilderWorker : AVgmtWorker
+    class NsfeM3uBuilderWorker : AVgmtDragAndDropWorker
     {
         public struct NsfeM3uBuilderStruct : IVgmtWorkerStruct
         {

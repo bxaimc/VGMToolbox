@@ -10,10 +10,10 @@ namespace VGMToolbox.forms
 {
     public partial class EmbeddedTagsUpdateForm : Form
     {
-        Constants.NodeTagStruct nodeTagInfo;
+        VGMToolbox.util.NodeTagStruct nodeTagInfo;
         IEmbeddedTagsFormat vgmData;
 
-        public EmbeddedTagsUpdateForm(Constants.NodeTagStruct pNts)
+        public EmbeddedTagsUpdateForm(VGMToolbox.util.NodeTagStruct pNts)
         {
             nodeTagInfo = pNts;
             
@@ -41,11 +41,11 @@ namespace VGMToolbox.forms
         private void loadCurrentTagInformation()
         {
             using (FileStream fs = 
-                File.Open(this.nodeTagInfo.filePath, FileMode.Open, FileAccess.Read))
+                File.Open(this.nodeTagInfo.FilePath, FileMode.Open, FileAccess.Read))
             {
                 this.vgmData =
-                    (IEmbeddedTagsFormat)Activator.CreateInstance(Type.GetType(this.nodeTagInfo.objectType));
-                this.vgmData.Initialize(fs, this.nodeTagInfo.filePath);
+                    (IEmbeddedTagsFormat)Activator.CreateInstance(Type.GetType(this.nodeTagInfo.ObjectType));
+                this.vgmData.Initialize(fs, this.nodeTagInfo.FilePath);
 
                 this.tbName.Text = this.vgmData.GetSongNameAsText();
                 this.tbArtist.Text = this.vgmData.GetArtistAsText();

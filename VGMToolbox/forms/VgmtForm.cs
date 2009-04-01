@@ -144,7 +144,7 @@ namespace VGMToolbox.forms
 
         protected virtual void backgroundWorker_ReportProgress(object sender, ProgressChangedEventArgs e)
         {
-            Constants.ProgressStruct vProgressStruct = (Constants.ProgressStruct)e.UserState;
+            VGMToolbox.util.ProgressStruct vProgressStruct = (VGMToolbox.util.ProgressStruct)e.UserState;
             
             if (e.ProgressPercentage != Constants.IGNORE_PROGRESS &&
                 e.ProgressPercentage != Constants.PROGRESS_MSG_ONLY)
@@ -152,23 +152,23 @@ namespace VGMToolbox.forms
                 this.toolStripProgressBar.Value = e.ProgressPercentage;                
                 this.Text = "VGMToolbox [" + e.ProgressPercentage + "%]";
 
-                if (!String.IsNullOrEmpty(vProgressStruct.genericMessage))
+                if (!String.IsNullOrEmpty(vProgressStruct.GenericMessage))
                 {
-                    this.tbOutput.Text += vProgressStruct.genericMessage;
+                    this.tbOutput.Text += vProgressStruct.GenericMessage;
                 }
             }
 
             if ((e.ProgressPercentage == Constants.PROGRESS_MSG_ONLY) && e.UserState != null)
             {
-                tbOutput.Text += vProgressStruct.genericMessage;
+                tbOutput.Text += vProgressStruct.GenericMessage;
             }
             else if (e.UserState != null)
             {                
-                lblProgressLabel.Text = vProgressStruct.filename == null ? String.Empty : vProgressStruct.filename;
+                lblProgressLabel.Text = vProgressStruct.Filename == null ? String.Empty : vProgressStruct.Filename;
 
-                if (!String.IsNullOrEmpty(vProgressStruct.errorMessage))
+                if (!String.IsNullOrEmpty(vProgressStruct.ErrorMessage))
                 {
-                    tbOutput.Text += vProgressStruct.errorMessage;
+                    tbOutput.Text += vProgressStruct.ErrorMessage;
                     errorFound = true;
                 }                
             }

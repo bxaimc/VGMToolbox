@@ -10,7 +10,7 @@ using VGMToolbox.plugin;
 
 namespace VGMToolbox.tools.xsf
 {
-    class Psf2TimerWorker : AVgmtWorker
+    class Psf2TimerWorker : AVgmtDragAndDropWorker
     {
         Dictionary<string, string> extractedLibHash;
 
@@ -47,8 +47,8 @@ namespace VGMToolbox.tools.xsf
             string outputDir;
             string libOutputDir;
 
-            string unpkOutput = null;
-            string unpkError = null;
+            string unpkOutput;
+            string unpkError;
 
             Ps2SequenceData.Ps2SqTimingStruct psf2Time;
             int minutes;
@@ -66,7 +66,7 @@ namespace VGMToolbox.tools.xsf
                 fileDir = Path.GetDirectoryName(filePath);
                 fileName = Path.GetFileNameWithoutExtension(filePath);
                             
-                outputDir = XsfUtil.UnpackPsf2(filePath, ref unpkOutput, ref unpkError);
+                outputDir = XsfUtil.UnpackPsf2(filePath, out unpkOutput, out unpkError);
 
                 // parse ini
                 iniFiles = Directory.GetFiles(outputDir, "PSF2.INI", SearchOption.AllDirectories);
@@ -112,7 +112,7 @@ namespace VGMToolbox.tools.xsf
 
                         if (!extractedLibHash.ContainsKey(libPath))
                         {
-                            libOutputDir = XsfUtil.UnpackPsf2(libPath, ref unpkOutput, ref unpkError);                                                                                        
+                            libOutputDir = XsfUtil.UnpackPsf2(libPath, out unpkOutput, out unpkError);                                                                                        
                             extractedLibHash.Add(libPath, libOutputDir);
                         }
 
@@ -181,7 +181,7 @@ namespace VGMToolbox.tools.xsf
                     if (!String.IsNullOrEmpty(psf2Time.Warnings))
                     {
                         this.progressStruct.Clear();
-                        progressStruct.genericMessage = String.Format("{0}{1}  WARNINGS{2}    {3}", pPath, Environment.NewLine, Environment.NewLine, psf2Time.Warnings);
+                        progressStruct.GenericMessage = String.Format("{0}{1}  WARNINGS{2}    {3}", pPath, Environment.NewLine, Environment.NewLine, psf2Time.Warnings);
                         ReportProgress(this.Progress, progressStruct);
                     }
                 }

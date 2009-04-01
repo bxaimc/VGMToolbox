@@ -9,7 +9,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.tools.xsf
 {
-    class UnpkPsf2Worker : AVgmtWorker
+    class UnpkPsf2Worker : AVgmtDragAndDropWorker
     {
         public struct UnpkPsf2Struct : IVgmtWorkerStruct
         {
@@ -26,10 +26,10 @@ namespace VGMToolbox.tools.xsf
         protected override void DoTaskForFile(string pPath, IVgmtWorkerStruct pUnpkPsf2Struct, 
             DoWorkEventArgs e)
         {                         
-            string stdOutput = null;
-            string stdError = null;
+            string stdOutput;
+            string stdError;
 
-            string unpackedDir = XsfUtil.UnpackPsf2(pPath, ref stdOutput, ref stdError);                
+            string unpackedDir = XsfUtil.UnpackPsf2(pPath, out stdOutput, out stdError);                
         }            
     }
 }

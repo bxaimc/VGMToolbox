@@ -11,7 +11,7 @@ using VGMToolbox.plugin;
 
 namespace VGMToolbox.tools.hoot
 {
-    class HootXmlBuilderWorker : AVgmtWorker
+    class HootXmlBuilderWorker : AVgmtDragAndDropWorker
     {
         private ArrayList hootGamesArrayList = new ArrayList();
 
@@ -101,7 +101,7 @@ namespace VGMToolbox.tools.hoot
             catch (Exception ex)
             {
                 this.progressStruct.Clear();
-                this.progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message;
+                this.progressStruct.ErrorMessage = String.Format("Error processing <{0}>.  Error received: ", pPath) + ex.Message;
                 ReportProgress(this.Progress, this.progressStruct);
             }            
         }    

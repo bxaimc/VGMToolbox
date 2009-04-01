@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Text;
 
 using VGMToolbox.util;
-using VGMToolbox.util.ObjectPooling;
 
 namespace VGMToolbox.format.sdat
 {

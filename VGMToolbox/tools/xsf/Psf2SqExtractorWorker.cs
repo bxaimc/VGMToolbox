@@ -9,7 +9,7 @@ using VGMToolbox.plugin;
 
 namespace VGMToolbox.tools.xsf
 {
-    class Psf2SqExtractorWorker : AVgmtWorker
+    class Psf2SqExtractorWorker : AVgmtDragAndDropWorker
     {
         Dictionary<string, string> extractedLibHash;
 
@@ -44,8 +44,8 @@ namespace VGMToolbox.tools.xsf
             string outputDir;
             string libOutputDir;
             
-            string unpkOutput = null;
-            string unpkError = null;
+            string unpkOutput;
+            string unpkError;
 
             string formatString = XsfUtil.GetXsfFormatString(pPath);
 
@@ -55,7 +55,7 @@ namespace VGMToolbox.tools.xsf
                 fileDir = Path.GetDirectoryName(filePath);
                 fileName = Path.GetFileNameWithoutExtension(filePath);
                 
-                outputDir = XsfUtil.UnpackPsf2(filePath, ref unpkOutput, ref unpkError);
+                outputDir = XsfUtil.UnpackPsf2(filePath, out unpkOutput, out unpkError);
                 
                 // parse ini
                 iniFiles = Directory.GetFiles(outputDir, "PSF2.INI", SearchOption.AllDirectories);
@@ -102,7 +102,7 @@ namespace VGMToolbox.tools.xsf
 
                         if (!extractedLibHash.ContainsKey(libPath))
                         {
-                            libOutputDir = XsfUtil.UnpackPsf2(libPath, ref unpkOutput, ref unpkError);                                           
+                            libOutputDir = XsfUtil.UnpackPsf2(libPath, out unpkOutput, out unpkError);                                           
                             extractedLibHash.Add(libPath, libOutputDir);
                         }
 

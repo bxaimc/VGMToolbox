@@ -15,7 +15,7 @@ namespace VGMToolbox.auditing
     {
         private int totalItems;
         private int maxItems;
-        Constants.ProgressStruct progressStruct;
+        VGMToolbox.util.ProgressStruct progressStruct;
 
         public struct DatafileCheckerStruct
         {            
@@ -66,12 +66,12 @@ namespace VGMToolbox.auditing
             ArrayList keys = new ArrayList(pAuditingUtil.ChecksumHash.Keys);
             int progress;
             
-            this.progressStruct = new Constants.ProgressStruct();
+            this.progressStruct = new VGMToolbox.util.ProgressStruct();
 
             foreach (string k in keys)
             {
                 progress = (++totalItems * 100) / maxItems;
-                this.progressStruct.filename = k;
+                this.progressStruct.Filename = k;
                 ReportProgress(progress, this.progressStruct);
                 
                 ArrayList gameList = (ArrayList)pAuditingUtil.ChecksumHash[k];

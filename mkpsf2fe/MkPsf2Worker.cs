@@ -72,13 +72,13 @@ namespace mkpsf2fe
             int i = 0;
             string[] ret = null;
 
-            Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
+            VGMToolbox.util.ProgressStruct vProgressStruct = new VGMToolbox.util.ProgressStruct();
 
             if (!Directory.Exists(pSourceDirectory))
             {
-                vProgressStruct = new Constants.ProgressStruct();
-                vProgressStruct.newNode = null;
-                vProgressStruct.errorMessage = String.Format("ERROR: Directory {0} not found.", pSourceDirectory);
+                vProgressStruct = new VGMToolbox.util.ProgressStruct();
+                vProgressStruct.NewNode = null;
+                vProgressStruct.ErrorMessage = String.Format("ERROR: Directory {0} not found.", pSourceDirectory);
                 ReportProgress(Constants.PROGRESS_MSG_ONLY, vProgressStruct);
             }
             else
@@ -104,7 +104,7 @@ namespace mkpsf2fe
             DoWorkEventArgs e)
         {
             Process makePsf2Process;
-            Constants.ProgressStruct vProgressStruct = new Constants.ProgressStruct();
+            VGMToolbox.util.ProgressStruct vProgressStruct = new VGMToolbox.util.ProgressStruct();
 
             string makePsf2SourcePath = Path.Combine(PROGRAMS_FOLDER, "mkpsf2.exe");
             string makePsf2DestinationPath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "mkpsf2.exe");
@@ -127,10 +127,10 @@ namespace mkpsf2fe
             }
             catch (Exception ex)
             {
-                vProgressStruct = new Constants.ProgressStruct();
-                vProgressStruct.newNode = null;
-                vProgressStruct.filename = null;
-                vProgressStruct.errorMessage = ex.Message;
+                vProgressStruct = new VGMToolbox.util.ProgressStruct();
+                vProgressStruct.NewNode = null;
+                vProgressStruct.Filename = null;
+                vProgressStruct.ErrorMessage = ex.Message;
                 ReportProgress(0, vProgressStruct);
 
                 return;
@@ -144,9 +144,9 @@ namespace mkpsf2fe
                     
                     // report progress
                     int progress = (++this.fileCount * 100) / maxFiles;
-                    vProgressStruct = new Constants.ProgressStruct();
-                    vProgressStruct.newNode = null;
-                    vProgressStruct.filename = f;
+                    vProgressStruct = new VGMToolbox.util.ProgressStruct();
+                    vProgressStruct.NewNode = null;
+                    vProgressStruct.Filename = f;
                     ReportProgress(progress, vProgressStruct);
 
                     try
@@ -213,9 +213,9 @@ namespace mkpsf2fe
 
                         if (isSuccess)
                         {
-                            vProgressStruct = new Constants.ProgressStruct();
-                            vProgressStruct.newNode = null;
-                            vProgressStruct.genericMessage = String.Format("{0}.psf2 created.", filePrefix) +
+                            vProgressStruct = new VGMToolbox.util.ProgressStruct();
+                            vProgressStruct.NewNode = null;
+                            vProgressStruct.GenericMessage = String.Format("{0}.psf2 created.", filePrefix) +
                                 Environment.NewLine;
                             ReportProgress(Constants.PROGRESS_MSG_ONLY, vProgressStruct);
 
@@ -229,10 +229,10 @@ namespace mkpsf2fe
                     }
                     catch (Exception ex2)
                     {
-                        vProgressStruct = new Constants.ProgressStruct();
-                        vProgressStruct.newNode = null;
-                        vProgressStruct.filename = f;
-                        vProgressStruct.errorMessage = ex2.Message;
+                        vProgressStruct = new VGMToolbox.util.ProgressStruct();
+                        vProgressStruct.NewNode = null;
+                        vProgressStruct.Filename = f;
+                        vProgressStruct.ErrorMessage = ex2.Message;
                         ReportProgress(progress, vProgressStruct);
                     }
                 }
@@ -251,10 +251,10 @@ namespace mkpsf2fe
             }
             catch (Exception ex3)
             {
-                vProgressStruct = new Constants.ProgressStruct();
-                vProgressStruct.newNode = null;
-                vProgressStruct.filename = null;
-                vProgressStruct.errorMessage = ex3.Message;
+                vProgressStruct = new VGMToolbox.util.ProgressStruct();
+                vProgressStruct.NewNode = null;
+                vProgressStruct.Filename = null;
+                vProgressStruct.ErrorMessage = ex3.Message;
                 ReportProgress(100, vProgressStruct);
             }
         }

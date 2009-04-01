@@ -18,7 +18,7 @@ namespace VGMToolbox.tools
         
         private int fileCount = 0;
         private int maxFiles = 0;
-        private Constants.ProgressStruct progressStruct;
+        private VGMToolbox.util.ProgressStruct progressStruct;
 
         public struct TreeBuilderStruct
         {
@@ -31,7 +31,7 @@ namespace VGMToolbox.tools
         {
             fileCount = 0;
             maxFiles = 0;
-            progressStruct = new Constants.ProgressStruct();
+            progressStruct = new VGMToolbox.util.ProgressStruct();
 
             WorkerReportsProgress = true;
             WorkerSupportsCancellation = true;
@@ -87,7 +87,7 @@ namespace VGMToolbox.tools
                 
                 // Add node, but ignore progress
                 this.progressStruct.Clear();
-                this.progressStruct.newNode = (TreeNode)t.Clone();
+                this.progressStruct.NewNode = (TreeNode)t.Clone();
                 ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);                
             }
 
@@ -145,11 +145,11 @@ namespace VGMToolbox.tools
         {
             int progress = (++fileCount * 100) / maxFiles;
             this.progressStruct.Clear();
-            this.progressStruct.filename = pFileName;
+            this.progressStruct.Filename = pFileName;
             ReportProgress(progress, this.progressStruct);
 
             TreeNode ret = new TreeNode(Path.GetFileName(pFileName));            
-            Constants.NodeTagStruct nodeTag = new Constants.NodeTagStruct();
+            VGMToolbox.util.NodeTagStruct nodeTag = new VGMToolbox.util.NodeTagStruct();
             TreeNode tagNode;
 
             using (FileStream fs = File.OpenRead(pFileName))
@@ -192,18 +192,18 @@ namespace VGMToolbox.tools
                         pOutputFileStream.WriteLine(Environment.NewLine);
 
                         // add classname to nodeTag
-                        nodeTag.objectType = dataType.AssemblyQualifiedName;
+                        nodeTag.ObjectType = dataType.AssemblyQualifiedName;
                     }
                 }
                 catch (Exception ex)
                 {
                     this.progressStruct.Clear();
-                    this.progressStruct.errorMessage = String.Format("Error processing <{0}>.  Error received: ", pFileName) + ex.Message;
+                    this.progressStruct.ErrorMessage = String.Format("Error processing <{0}>.  Error received: ", pFileName) + ex.Message;
                     ReportProgress(progress, this.progressStruct);
                 }
             } // using (FileStream fs = File.OpenRead(pFileName))
 
-            nodeTag.filePath = pFileName;
+            nodeTag.FilePath = pFileName;
             ret.Tag = nodeTag;
 
             return ret;

@@ -9,12 +9,12 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.plugin
 {
-    public abstract class AVgmtWorker : BackgroundWorker
+    public abstract class AVgmtDragAndDropWorker : BackgroundWorker
     {
         private int fileCount;
         private int maxFiles;
         private int progress;
-        protected Constants.ProgressStruct progressStruct;
+        protected VGMToolbox.util.ProgressStruct progressStruct;
 
         protected int Progress
         {
@@ -22,9 +22,9 @@ namespace VGMToolbox.plugin
             set { progress = value; }
         }
 
-        protected AVgmtWorker()
+        protected AVgmtDragAndDropWorker()
         {
-            this.progressStruct = new Constants.ProgressStruct();
+            this.progressStruct = new VGMToolbox.util.ProgressStruct();
             this.WorkerReportsProgress = true;
             this.WorkerSupportsCancellation = true;
         }
@@ -42,7 +42,7 @@ namespace VGMToolbox.plugin
                         // Report Progress
                         this.progress = (++fileCount * 100) / maxFiles;
                         this.progressStruct.Clear();
-                        this.progressStruct.filename = path;
+                        this.progressStruct.Filename = path;
                         ReportProgress(progress, progressStruct);
                         
                         
@@ -54,7 +54,7 @@ namespace VGMToolbox.plugin
                         catch (Exception ex)
                         {
                             this.progressStruct.Clear();
-                            this.progressStruct.errorMessage = 
+                            this.progressStruct.ErrorMessage = 
                                 String.Format(CultureInfo.CurrentCulture,"Error processing <{0}>.  Error received: ", path) + ex.Message + Environment.NewLine;
                             ReportProgress(this.progress, this.progressStruct);
                         }
@@ -105,7 +105,7 @@ namespace VGMToolbox.plugin
                     // Report Progress
                     this.progress = (++fileCount * 100) / maxFiles;
                     this.progressStruct.Clear();
-                    this.progressStruct.filename = f;
+                    this.progressStruct.Filename = f;
                     ReportProgress(this.progress, progressStruct);
                     
                     // perform task
@@ -116,7 +116,7 @@ namespace VGMToolbox.plugin
                     catch (Exception ex)
                     {
                         this.progressStruct.Clear();
-                        this.progressStruct.errorMessage = 
+                        this.progressStruct.ErrorMessage = 
                             String.Format(CultureInfo.CurrentCulture, "Error processing <{0}>.  Error received: ", f) + ex.Message + Environment.NewLine;
                         ReportProgress(progress, this.progressStruct);
                     }

@@ -18,7 +18,7 @@ namespace VGMToolbox.auditing
         private string dir;
         private ArrayList romList;
         private int fileCount = 0;
-        Constants.ProgressStruct progressStruct;
+        VGMToolbox.util.ProgressStruct progressStruct;
 
         public struct GetGameParamsStruct
         { 
@@ -30,7 +30,7 @@ namespace VGMToolbox.auditing
         public DatafileCreatorWorker()
         {
             fileCount = 0;
-            progressStruct = new Constants.ProgressStruct();
+            progressStruct = new VGMToolbox.util.ProgressStruct();
 
             WorkerReportsProgress = true;
             WorkerSupportsCancellation = true;
@@ -94,8 +94,8 @@ namespace VGMToolbox.auditing
                 catch (EndOfStreamException _es)
                 {
                     this.progressStruct.Clear();
-                    this.progressStruct.filename = pFileName;
-                    this.progressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFileName, formatType.Name, _es.Message) + Environment.NewLine;
+                    this.progressStruct.Filename = pFileName;
+                    this.progressStruct.ErrorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFileName, formatType.Name, _es.Message) + Environment.NewLine;
                     ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
 
                     crc32Generator.Reset();
@@ -106,8 +106,8 @@ namespace VGMToolbox.auditing
                 catch (System.OutOfMemoryException _es)
                 {
                     this.progressStruct.Clear();
-                    this.progressStruct.filename = pFileName;
-                    this.progressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFileName, formatType.Name, _es.Message) + Environment.NewLine;
+                    this.progressStruct.Filename = pFileName;
+                    this.progressStruct.ErrorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFileName, formatType.Name, _es.Message) + Environment.NewLine;
                     ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
 
 
@@ -119,8 +119,8 @@ namespace VGMToolbox.auditing
                 catch (IOException _es)
                 {
                     this.progressStruct.Clear();
-                    this.progressStruct.filename = pFileName;
-                    this.progressStruct.errorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFileName, formatType.Name, _es.Message) + Environment.NewLine;
+                    this.progressStruct.Filename = pFileName;
+                    this.progressStruct.ErrorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFileName, formatType.Name, _es.Message) + Environment.NewLine;
                     ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
 
                     crc32Generator.Reset();
@@ -205,7 +205,7 @@ namespace VGMToolbox.auditing
                             {
                                 progress = (++fileCount * 100) / pGetGameParamsStruct.totalFiles;
                                 this.progressStruct.Clear();
-                                this.progressStruct.filename = f;
+                                this.progressStruct.Filename = f;
                                 ReportProgress(progress, this.progressStruct);
 
                                 try
@@ -220,8 +220,8 @@ namespace VGMToolbox.auditing
                                 catch (Exception _ex)
                                 {
                                     this.progressStruct.Clear();
-                                    this.progressStruct.filename = f;
-                                    this.progressStruct.errorMessage = "Error processing <" + f + "> (" + _ex.Message + ")" + "...Skipped" + Environment.NewLine;
+                                    this.progressStruct.Filename = f;
+                                    this.progressStruct.ErrorMessage = "Error processing <" + f + "> (" + _ex.Message + ")" + "...Skipped" + Environment.NewLine;
                                     ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
                                 }
                             }
@@ -261,8 +261,8 @@ namespace VGMToolbox.auditing
             catch (Exception e1)
             {
                 this.progressStruct.Clear();
-                this.progressStruct.filename = null;
-                this.progressStruct.errorMessage = e1.Message;
+                this.progressStruct.Filename = null;
+                this.progressStruct.ErrorMessage = e1.Message;
                 ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
             }
             return gameArray;            
