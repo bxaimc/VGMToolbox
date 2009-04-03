@@ -7,14 +7,13 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
+using VGMToolbox.plugin;
 using VGMToolbox.tools.xsf;
 
 namespace VGMToolbox.forms
 {
-    public partial class Xsf_SsfSeqTonExtForm : VgmtForm
+    public partial class Xsf_SsfSeqTonExtForm : AVgmtForm
     {
-        SsfSeqTonExtractorWorker ssfSeqTonExtractorWorker;
-
         public Xsf_SsfSeqTonExtForm(TreeNode pTreeNode)
             : base(pTreeNode)
         {
@@ -39,53 +38,34 @@ namespace VGMToolbox.forms
 
         private void tbSsfSqTonExtSource_DragDrop(object sender, DragEventArgs e)
         {
-            base.initializeProcessing();
-
-            toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SeqextTonextFE_MessageBegin"];
-
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
             SsfSeqTonExtractorWorker.SsfSeqTonExtractorStruct stexStruct = new SsfSeqTonExtractorWorker.SsfSeqTonExtractorStruct();
             stexStruct.SourcePaths = s;
             stexStruct.extractToSubFolder = cbExtractToSubfolder.Checked;
 
-            ssfSeqTonExtractorWorker = new SsfSeqTonExtractorWorker();
-            ssfSeqTonExtractorWorker.ProgressChanged += backgroundWorker_ReportProgress;
-            ssfSeqTonExtractorWorker.RunWorkerCompleted += SsfSeqTonExtractorWorker_WorkComplete;
-            ssfSeqTonExtractorWorker.RunWorkerAsync(stexStruct);
+            base.backgroundWorker_Execute(stexStruct);
         }
-
-        private void SsfSeqTonExtractorWorker_WorkComplete(object sender,
-             RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled)
-            {
-                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SeqextTonextFE_MessageCancel"];
-                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
-            }
-            else
-            {
-                lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SeqextTonextFE_MessageComplete"];
-            }
-
-            // update node color
-            setNodeAsComplete();
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            if (ssfSeqTonExtractorWorker != null && ssfSeqTonExtractorWorker.IsBusy)
-            {
-                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
-                ssfSeqTonExtractorWorker.CancelAsync();
-                this.errorFound = true;
-            }
-        }
-
         protected override void doDragEnter(object sender, DragEventArgs e)
         {
             base.doDragEnter(sender, e);
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new SsfSeqTonExtractorWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SeqextTonextFE_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SeqextTonextFE_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SeqextTonextFE_MessageBegin"];
         }
     }
 }

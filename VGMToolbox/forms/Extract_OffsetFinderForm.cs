@@ -3,15 +3,13 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Windows.Forms;
 
+using VGMToolbox.plugin;
 using VGMToolbox.tools.extract;
 
 namespace VGMToolbox.forms
 {
-    public partial class Extract_OffsetFinderForm : VgmtForm
-    {
-        
-        OffsetFinderWorker offsetFinderWorker;
-        
+    public partial class Extract_OffsetFinderForm : AVgmtForm
+    {               
         public Extract_OffsetFinderForm(TreeNode pTreeNode)
             : base(pTreeNode)
         {
@@ -71,47 +69,10 @@ namespace VGMToolbox.forms
             this.resetCutSection();
         }
 
-        private void OffsetFinderWorker_WorkComplete(object sender,
-            RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled)
-            {
-                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SimpleCutter_MessageCancel"];
-                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
-            }
-            else
-            {
-                lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SimpleCutter_MessageComplete"];
-            }
-
-            // update node color
-            setNodeAsComplete();
-        }
-
-        protected override void doDragEnter(object sender, DragEventArgs e)
-        {
-            base.doDragEnter(sender, e);
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            if (offsetFinderWorker != null && offsetFinderWorker.IsBusy)
-            {
-                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
-                offsetFinderWorker.CancelAsync();
-                this.errorFound = true;
-            }
-        }
-
         private void tbSourcePaths_DragDrop(object sender, DragEventArgs e)
         {
-            base.initializeProcessing();
-
             if (validateInputs())
             {
-                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SimpleCutter_MessageBegin"];
-
                 string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
                 OffsetFinderWorker.OffsetFinderStruct ofStruct = new OffsetFinderWorker.OffsetFinderStruct();
@@ -136,7 +97,7 @@ namespace VGMToolbox.forms
 
                     }
                     else if (this.rbUseTerminator.Checked)
-                    { 
+                    {
                         ofStruct.useTerminatorForCutsize = true;
                         ofStruct.terminatorString = this.tbTerminatorString.Text;
                         ofStruct.treatTerminatorStringAsHex = this.cbTreatTerminatorAsHex.Checked;
@@ -153,13 +114,13 @@ namespace VGMToolbox.forms
                     }
                 }
 
-                offsetFinderWorker = new OffsetFinderWorker();
-                offsetFinderWorker.ProgressChanged += backgroundWorker_ReportProgress;
-                offsetFinderWorker.RunWorkerCompleted += OffsetFinderWorker_WorkComplete;
-                offsetFinderWorker.RunWorkerAsync(ofStruct);
+                base.backgroundWorker_Execute(ofStruct);
             }
         }
-
+        protected override void doDragEnter(object sender, DragEventArgs e)
+        {
+            base.doDragEnter(sender, e);
+        }        
         private void doRadioCheckedChanged(object sender, EventArgs e)
         {
             if (rbStaticCutSize.Checked)
@@ -199,7 +160,6 @@ namespace VGMToolbox.forms
             cbByteOrder.Items.Add(OffsetFinderWorker.BIG_ENDIAN);
             cbByteOrder.Items.Add(OffsetFinderWorker.LITTLE_ENDIAN);
         }
-
         private void createOffsetSizeList()
         {
             cbOffsetSize.Items.Add("1");
@@ -211,17 +171,14 @@ namespace VGMToolbox.forms
         {
             e.Handled = true;
         }
-
         private void cbByteOrder_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = true;
         }
-
         private void cbOffsetSize_KeyDown(object sender, KeyEventArgs e)
         {
             e.Handled = true;
         }
-
         private void cbOffsetSize_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = true;
@@ -253,12 +210,10 @@ namespace VGMToolbox.forms
 
             return ret;
         }
-
         private void cbDoCut_CheckedChanged(object sender, EventArgs e)
         {
             this.resetCutSection();
         }
-
         private void resetCutSection()
         {
             if (cbDoCut.Checked)
@@ -353,7 +308,6 @@ namespace VGMToolbox.forms
                 this.tbExtraCutSizeBytes.Hide();
             }        
         }
-
         private void cbAddExtraBytes_CheckedChanged(object sender, EventArgs e)
         {
             if (cbAddExtraBytes.Checked)
@@ -364,6 +318,23 @@ namespace VGMToolbox.forms
             {
                 tbExtraCutSizeBytes.ReadOnly = true;
             }
+        }
+        
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new OffsetFinderWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SimpleCutter_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SimpleCutter_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SimpleCutter_MessageBegin"];
         }
     }
 }

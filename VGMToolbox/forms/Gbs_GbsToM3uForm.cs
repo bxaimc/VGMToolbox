@@ -4,14 +4,13 @@ using System.Configuration;
 using System.IO;
 using System.Windows.Forms;
 
+using VGMToolbox.plugin;
 using VGMToolbox.tools.gbs;
 
 namespace VGMToolbox.forms
 {
-    public partial class Gbs_GbsToM3uForm : VgmtForm
-    {
-        GbsM3uBuilderWorker gbsM3uBuilder;
-        
+    public partial class Gbs_GbsToM3uForm : AVgmtForm
+    {        
         public Gbs_GbsToM3uForm(TreeNode pTreeNode): base(pTreeNode)
         {
             // set title
@@ -35,54 +34,34 @@ namespace VGMToolbox.forms
 
         private void tbGBS_gbsm3uSource_DragDrop(object sender, DragEventArgs e)
         {
-            base.initializeProcessing();
-
-            toolStripStatusLabel1.Text =
-                ConfigurationSettings.AppSettings["Form_GbsM3u_MessageBegin"];
-
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
             GbsM3uBuilderWorker.GbsM3uWorkerStruct gbStruct = new GbsM3uBuilderWorker.GbsM3uWorkerStruct();
             gbStruct.SourcePaths = s;
             gbStruct.onePlaylistPerFile = cbGBS_OneM3uPerTrack.Checked;
 
-            gbsM3uBuilder = new GbsM3uBuilderWorker();
-            gbsM3uBuilder.ProgressChanged += backgroundWorker_ReportProgress;
-            gbsM3uBuilder.RunWorkerCompleted += GbsM3uBuilderWorker_WorkComplete;
-            gbsM3uBuilder.RunWorkerAsync(gbStruct);
-        }
-        
-        private void GbsM3uBuilderWorker_WorkComplete(object sender,
-                     RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled)
-            {
-                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_GbsM3u_MessageCancel"];
-                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
-            }
-            else
-            {
-                lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_GbsM3u_MessageComplete"];
-            }
-
-            // update node color
-            setNodeAsComplete();
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            if (gbsM3uBuilder != null && gbsM3uBuilder.IsBusy)
-            {
-                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
-                gbsM3uBuilder.CancelAsync();
-                this.errorFound = true;
-            }
-        }
-
+            base.backgroundWorker_Execute(gbStruct);
+        }        
         protected override void doDragEnter(object sender, DragEventArgs e)
         {
             base.doDragEnter(sender, e);
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new GbsM3uBuilderWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_GbsM3u_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_GbsM3u_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_GbsM3u_MessageBegin"];
         }
     }
 }

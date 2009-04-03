@@ -7,11 +7,12 @@ using System.Text;
 using System.Windows.Forms;
 
 using VGMToolbox.format.util;
+using VGMToolbox.plugin;
 using VGMToolbox.util;
 
 namespace VGMToolbox.tools.xsf
 {
-    class SsfMakeWorker : BackgroundWorker
+    class SsfMakeWorker : BackgroundWorker, IVgmtBackgroundWorker
     {
         private static readonly string SSFTOOL_FOLDER_PATH =
             Path.GetFullPath(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "ssf"));

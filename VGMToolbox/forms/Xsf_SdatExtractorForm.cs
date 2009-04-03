@@ -4,14 +4,13 @@ using System.Configuration;
 using System.IO;
 using System.Windows.Forms;
 
+using VGMToolbox.plugin;
 using VGMToolbox.tools.nds;
 
 namespace VGMToolbox.forms
 {
-    public partial class Xsf_SdatExtractorForm : VgmtForm
+    public partial class Xsf_SdatExtractorForm : AVgmtForm
     {
-        SdatExtractorWorker sdatExtractorWorker;
-
         public Xsf_SdatExtractorForm(TreeNode pTreeNode): base(pTreeNode)
         {
             // set title
@@ -31,52 +30,33 @@ namespace VGMToolbox.forms
 
         private void tbNDS_SdatExtractor_Source_DragDrop(object sender, DragEventArgs e)
         {
-            base.initializeProcessing();
-
-            toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SdatExtractor_MessageBegin"];
-
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
             SdatExtractorWorker.SdatExtractorStruct sdexStruct = new SdatExtractorWorker.SdatExtractorStruct();
             sdexStruct.SourcePaths = s;
 
-            sdatExtractorWorker = new SdatExtractorWorker();
-            sdatExtractorWorker.ProgressChanged += backgroundWorker_ReportProgress;
-            sdatExtractorWorker.RunWorkerCompleted += SdatExtractorWorker_WorkComplete;
-            sdatExtractorWorker.RunWorkerAsync(sdexStruct);
+            base.backgroundWorker_Execute(sdexStruct);
         }
-
-        private void SdatExtractorWorker_WorkComplete(object sender,
-                     RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled)
-            {
-                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SdatExtractor_MessageCancel"];
-                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
-            }
-            else
-            {
-                lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SdatExtractor_MessageComplete"];                
-            }
-
-            // update node color
-            setNodeAsComplete();
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            if (sdatExtractorWorker != null && sdatExtractorWorker.IsBusy)
-            {
-                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
-                sdatExtractorWorker.CancelAsync();
-                this.errorFound = true;
-            }
-        }
-
         protected override void doDragEnter(object sender, DragEventArgs e)
         {
             base.doDragEnter(sender, e);
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new SdatExtractorWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SdatExtractor_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SdatExtractor_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SdatExtractor_MessageBegin"];
         }
     }
 }

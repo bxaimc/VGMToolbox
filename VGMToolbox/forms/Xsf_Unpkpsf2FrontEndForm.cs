@@ -3,14 +3,13 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Windows.Forms;
 
+using VGMToolbox.plugin;
 using VGMToolbox.tools.xsf;
 
 namespace VGMToolbox.forms
 {
-    public partial class Xsf_Unpkpsf2FrontEndForm : VgmtForm
-    {
-        UnpkPsf2Worker unpkPsf2Worker;
-        
+    public partial class Xsf_Unpkpsf2FrontEndForm : AVgmtForm
+    {        
         public Xsf_Unpkpsf2FrontEndForm(TreeNode pTreeNode)
             : base(pTreeNode)
         {
@@ -28,52 +27,33 @@ namespace VGMToolbox.forms
 
         private void tbPsf2Source_DragDrop(object sender, DragEventArgs e)
         {
-            base.initializeProcessing();
-
-            toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_MessageBegin"];
-
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
             UnpkPsf2Worker.UnpkPsf2Struct unpkStruct = new UnpkPsf2Worker.UnpkPsf2Struct();
             unpkStruct.SourcePaths = s;
 
-            unpkPsf2Worker = new UnpkPsf2Worker();
-            unpkPsf2Worker.ProgressChanged += backgroundWorker_ReportProgress;
-            unpkPsf2Worker.RunWorkerCompleted += Unpkpsf2Worker_WorkComplete;
-            unpkPsf2Worker.RunWorkerAsync(unpkStruct);
+            base.backgroundWorker_Execute(unpkStruct);
         }
-
-        private void Unpkpsf2Worker_WorkComplete(object sender,
-             RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled)
-            {
-                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_MessageCancel"];
-                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
-            }
-            else
-            {
-                lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_MessageComplete"];
-            }
-
-            // update node color
-            setNodeAsComplete();
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            if (unpkPsf2Worker != null && unpkPsf2Worker.IsBusy)
-            {
-                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
-                unpkPsf2Worker.CancelAsync();
-                this.errorFound = true;
-            }
-        }
-
         protected override void doDragEnter(object sender, DragEventArgs e)
         {
             base.doDragEnter(sender, e);
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new UnpkPsf2Worker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_MessageBegin"];
         }
     }
 }

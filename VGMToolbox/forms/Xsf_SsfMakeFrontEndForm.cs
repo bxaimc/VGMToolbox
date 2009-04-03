@@ -3,14 +3,13 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Windows.Forms;
 
+using VGMToolbox.plugin;
 using VGMToolbox.tools.xsf;
 
 namespace VGMToolbox.forms
 {
-    public partial class Xsf_SsfMakeFrontEndForm : VgmtForm
-    {
-        SsfMakeWorker ssfMakeWorker;
-        
+    public partial class Xsf_SsfMakeFrontEndForm : AVgmtForm
+    {        
         public Xsf_SsfMakeFrontEndForm(TreeNode pTreeNode)
             : base(pTreeNode)
         {
@@ -57,9 +56,6 @@ namespace VGMToolbox.forms
 
         private void btnExecute_Click(object sender, EventArgs e)
         {
-            base.initializeProcessing();
-            toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SsfMakeFE_MessageBegin"];
-
             SsfMakeWorker.SsfMakeStruct smStruct = new SsfMakeWorker.SsfMakeStruct();
             smStruct.sequenceBank = tbSequenceBank.Text;
             smStruct.sequenceTrack = tbSequenceTrack.Text;
@@ -76,37 +72,7 @@ namespace VGMToolbox.forms
             smStruct.outputFolder = tbOutputFolder.Text;
             smStruct.findData = cbSeekData.Checked;
 
-            ssfMakeWorker = new SsfMakeWorker();
-            ssfMakeWorker.ProgressChanged += backgroundWorker_ReportProgress;
-            ssfMakeWorker.RunWorkerCompleted += SsfMakeWorker_WorkComplete;
-            ssfMakeWorker.RunWorkerAsync(smStruct);
-        }
-
-        private void SsfMakeWorker_WorkComplete(object sender,
-            RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled)
-            {
-                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SsfMakeFE_MessageCancel"];
-                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
-            }
-            else
-            {
-                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SsfMakeFE_MessageComplete"];
-            }
-
-            // update node color
-            setNodeAsComplete();
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            if (ssfMakeWorker != null && ssfMakeWorker.IsBusy)
-            {
-                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
-                ssfMakeWorker.CancelAsync();
-                this.errorFound = true;
-            }
+            base.backgroundWorker_Execute(smStruct);
         }
 
         private void tbSequenceBank_TextChanged(object sender, EventArgs e)
@@ -116,7 +82,6 @@ namespace VGMToolbox.forms
                 tbMixerBank.Text = tbSequenceBank.Text;
             }
         }
-
         private void cbMatchSeqBank_CheckedChanged(object sender, EventArgs e)
         {            
             if (cbMatchSeqBank.Checked)
@@ -126,20 +91,34 @@ namespace VGMToolbox.forms
 
             tbMixerBank.ReadOnly = cbMatchSeqBank.Checked;
         }
-
         private void btnBrowseDriver_Click(object sender, EventArgs e)
         {
             tbDriver.Text = base.browseForFile(sender, e);
         }
-
         private void btnBrowseSource_Click(object sender, EventArgs e)
         {
             tbSourcePath.Text = base.browseForFolder(sender, e);
         }
-
         private void btnBrowseDsp_Click(object sender, EventArgs e)
         {
             tbDspFile.Text = base.browseForFile(sender, e);
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new SsfMakeWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SsfMakeFE_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SsfMakeFE_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SsfMakeFE_MessageBegin"];
         }
     }
 }

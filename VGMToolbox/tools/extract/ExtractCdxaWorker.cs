@@ -5,7 +5,7 @@ using VGMToolbox.plugin;
 
 namespace VGMToolbox.tools.extract
 {
-    class ExtractCdxaWorker : AVgmtDragAndDropWorker
+    class ExtractCdxaWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
         public struct ExtractCdxaStruct : IVgmtWorkerStruct
         {

@@ -7,11 +7,12 @@ using System.Windows.Forms;
 
 using VGMToolbox.format;
 using VGMToolbox.format.util;
+using VGMToolbox.plugin;
 using VGMToolbox.util;
 
 namespace VGMToolbox.tools
 {
-    class TreeBuilderWorker : BackgroundWorker
+    class TreeBuilderWorker : BackgroundWorker, IVgmtBackgroundWorker
     {
         public static readonly string EXAMINE_OUTPUT_PATH =
             Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "examine"), "examine.txt");

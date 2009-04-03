@@ -12,11 +12,12 @@ using ICSharpCode.SharpZipLib.Checksums;
 
 using VGMToolbox.format;
 using VGMToolbox.format.util;
+using VGMToolbox.plugin;
 using VGMToolbox.util;
 
 namespace VGMToolbox.tools.xsf
 {
-    class Psf2toPsf2LibWorker : BackgroundWorker
+    class Psf2toPsf2LibWorker : BackgroundWorker, IVgmtBackgroundWorker
     {
         private static readonly string PSF2_PROGRAMS_FOLDER =
             Path.GetFullPath(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "psf2"));

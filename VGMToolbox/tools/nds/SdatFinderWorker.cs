@@ -5,7 +5,7 @@ using VGMToolbox.plugin;
 
 namespace VGMToolbox.tools.nds
 {
-    class SdatFinderWorker : AVgmtDragAndDropWorker
+    class SdatFinderWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
         public struct SdatFinderStruct : IVgmtWorkerStruct
         {

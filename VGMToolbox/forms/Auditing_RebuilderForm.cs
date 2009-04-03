@@ -1,19 +1,16 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Configuration;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml.Serialization;
-
 using VGMToolbox.auditing;
 using VGMToolbox.format.auditing;
+using VGMToolbox.plugin;
 
 namespace VGMToolbox.forms
 {
-    public partial class Auditing_RebuilderForm : VgmtForm
-    {
-        RebuilderWorker rebuilder;
-        
+    public partial class Auditing_RebuilderForm : AVgmtForm
+    {        
         public Auditing_RebuilderForm(TreeNode pTreeNode)
             : base(pTreeNode)
         {
@@ -48,13 +45,8 @@ namespace VGMToolbox.forms
 
         private void btnRebuilder_Rebuild_Click(object sender, EventArgs e)
         {
-            base.initializeProcessing();
-
             if (checkRebuilderInputs())
             {
-                toolStripStatusLabel1.Text = 
-                    ConfigurationSettings.AppSettings["Form_AuditRebuilder_MessageBegin"];
-
                 datafile dataFile = new datafile();
                 XmlSerializer serializer = new XmlSerializer(typeof(datafile));
                 TextReader textReader = new StreamReader(tbRebuilder_Datafile.Text);
@@ -73,11 +65,8 @@ namespace VGMToolbox.forms
                 try
                 {
                     vRebuildSetsStruct.totalFiles = Directory.GetFiles(tbRebuilder_SourceDir.Text, "*.*", SearchOption.AllDirectories).Length;
-
-                    rebuilder = new RebuilderWorker();
-                    rebuilder.ProgressChanged += backgroundWorker_ReportProgress;
-                    rebuilder.RunWorkerCompleted += rebuilderWorker_WorkComplete;
-                    rebuilder.RunWorkerAsync(vRebuildSetsStruct);
+                    
+                    base.backgroundWorker_Execute(vRebuildSetsStruct);
                 }
                 catch (Exception exception2)
                 {
@@ -86,47 +75,14 @@ namespace VGMToolbox.forms
             }
         }
 
-        private void rebuilderWorker_WorkComplete(object sender,
-                             RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled)
-            {
-                toolStripStatusLabel1.Text = 
-                    ConfigurationSettings.AppSettings["Form_AuditRebuilder_MessageCancel"];
-                tbOutput.Text += 
-                    ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
-            }
-            else
-            {
-                lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text =
-                    ConfigurationSettings.AppSettings["Form_AuditRebuilder_MessageComplete"];
-            }
-
-            // update node color
-            setNodeAsComplete();
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            if (rebuilder != null && rebuilder.IsBusy)
-            {
-                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
-                rebuilder.CancelAsync();
-                this.errorFound = true;
-            }
-        }
-
         private void btnRebuilder_BrowseSourceDir_Click(object sender, EventArgs e)
         {
             tbRebuilder_SourceDir.Text = base.browseForFolder(sender, e);
         }
-
         private void btnRebuilder_BrowseDestinationDir_Click(object sender, EventArgs e)
         {
             tbRebuilder_DestinationDir.Text = base.browseForFolder(sender, e);
         }
-
         private void btnRebuilder_BrowseDatafile_Click(object sender, EventArgs e)
         {
             tbRebuilder_Datafile.Text = base.browseForFile(sender, e);
@@ -157,7 +113,6 @@ namespace VGMToolbox.forms
 
             return ret;
         }
-
         private void cbRebuilder_CompressOutput_CheckedChanged(object sender, EventArgs e)
         {
             if (cbRebuilder_CompressOutput.Checked)
@@ -166,7 +121,6 @@ namespace VGMToolbox.forms
                 cbRebuilder_ScanOnly.Checked = false;
             }
         }
-
         private void cbRebuilder_Overwrite_CheckedChanged(object sender, EventArgs e)
         {
             if (cbRebuilder_Overwrite.Checked)
@@ -175,7 +129,6 @@ namespace VGMToolbox.forms
                 cbRebuilder_ScanOnly.Checked = false;
             }
         }
-
         private void cbRebuilder_RemoveSource_CheckedChanged(object sender, EventArgs e)
         {
             if (cbRebuilder_RemoveSource.Checked)
@@ -183,7 +136,6 @@ namespace VGMToolbox.forms
                 cbRebuilder_ScanOnly.Checked = false;
             }
         }
-
         private void cbRebuilder_ScanOnly_CheckedChanged(object sender, EventArgs e)
         {
             if (cbRebuilder_ScanOnly.Checked)
@@ -192,6 +144,23 @@ namespace VGMToolbox.forms
                 cbRebuilder_Overwrite.Checked = false;
                 cbRebuilder_CompressOutput.Checked = false;
             }
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new RebuilderWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_AuditRebuilder_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_AuditRebuilder_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_AuditRebuilder_MessageBegin"];
         }
     }
 }

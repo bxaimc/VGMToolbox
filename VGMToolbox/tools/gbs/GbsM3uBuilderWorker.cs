@@ -5,7 +5,7 @@ using VGMToolbox.plugin;
 
 namespace VGMToolbox.tools.gbs
 {
-    class GbsM3uBuilderWorker : AVgmtDragAndDropWorker
+    class GbsM3uBuilderWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
         public struct GbsM3uWorkerStruct : IVgmtWorkerStruct
         {

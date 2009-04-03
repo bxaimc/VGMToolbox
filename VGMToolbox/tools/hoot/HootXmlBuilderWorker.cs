@@ -11,7 +11,7 @@ using VGMToolbox.plugin;
 
 namespace VGMToolbox.tools.hoot
 {
-    class HootXmlBuilderWorker : AVgmtDragAndDropWorker
+    class HootXmlBuilderWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
         private ArrayList hootGamesArrayList = new ArrayList();
 

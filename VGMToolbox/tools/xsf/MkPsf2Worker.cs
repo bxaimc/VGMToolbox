@@ -7,11 +7,12 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
+using VGMToolbox.plugin;
 using VGMToolbox.util;
 
 namespace VGMToolbox.tools.xsf
 {
-    class MkPsf2Worker : BackgroundWorker
+    class MkPsf2Worker : BackgroundWorker, IVgmtBackgroundWorker
     {
         private const int NO_SEQ_NUM_FOUND = -1;
 

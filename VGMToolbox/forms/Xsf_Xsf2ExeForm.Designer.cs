@@ -44,31 +44,30 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 415);
-            this.pnlLabels.Size = new System.Drawing.Size(716, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 390);
+            this.pnlLabels.Size = new System.Drawing.Size(1000, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(716, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(1000, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 338);
-            this.tbOutput.Size = new System.Drawing.Size(716, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 313);
+            this.tbOutput.Size = new System.Drawing.Size(1000, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 318);
-            this.pnlButtons.Size = new System.Drawing.Size(716, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 293);
+            this.pnlButtons.Size = new System.Drawing.Size(1000, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(656, 0);
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            this.btnCancel.Location = new System.Drawing.Point(940, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(596, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(880, 0);
             // 
             // grpXsfPsf2Exe_Source
             // 
@@ -77,7 +76,7 @@
             this.grpXsfPsf2Exe_Source.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpXsfPsf2Exe_Source.Location = new System.Drawing.Point(0, 23);
             this.grpXsfPsf2Exe_Source.Name = "grpXsfPsf2Exe_Source";
-            this.grpXsfPsf2Exe_Source.Size = new System.Drawing.Size(716, 61);
+            this.grpXsfPsf2Exe_Source.Size = new System.Drawing.Size(1000, 61);
             this.grpXsfPsf2Exe_Source.TabIndex = 5;
             this.grpXsfPsf2Exe_Source.TabStop = false;
             this.grpXsfPsf2Exe_Source.Text = "Source";
@@ -109,7 +108,7 @@
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpOptions.Location = new System.Drawing.Point(0, 84);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(716, 87);
+            this.grpOptions.Size = new System.Drawing.Size(1000, 87);
             this.grpOptions.TabIndex = 6;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
@@ -148,7 +147,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(716, 456);
+            this.ClientSize = new System.Drawing.Size(1000, 431);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpXsfPsf2Exe_Source);
             this.Name = "Xsf_Xsf2ExeForm";

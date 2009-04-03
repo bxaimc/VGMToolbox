@@ -3,14 +3,13 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Windows.Forms;
 
+using VGMToolbox.plugin;
 using VGMToolbox.tools.xsf;
 
 namespace VGMToolbox.forms
 {
-    public partial class Xsf_2sfTimerForm : VgmtForm
-    {
-        Time2sfWorker time2sfWorker;
-        
+    public partial class Xsf_2sfTimerForm : AVgmtForm
+    {        
         public Xsf_2sfTimerForm(TreeNode pTreeNode)
             : base(pTreeNode)
         {
@@ -40,61 +39,39 @@ namespace VGMToolbox.forms
 
         private void btnDoTask_Click(object sender, EventArgs e)
         {
-            base.initializeProcessing();
-            toolStripStatusLabel1.Text = 
-                ConfigurationSettings.AppSettings["Form_2sfTimer_MessageBegin"];
-
             Time2sfWorker.Time2sfStruct t2Struct = new Time2sfWorker.Time2sfStruct();
             t2Struct.pathTo2sf = tbPathTo2sfs.Text;
             t2Struct.pathToSdat = tbSdatPath.Text;
             t2Struct.filePrefix = tbFilePrefix.Text;
             t2Struct.doSingleLoop = cbOneLoop.Checked;
 
-            time2sfWorker = new Time2sfWorker();
-            time2sfWorker.ProgressChanged += backgroundWorker_ReportProgress;
-            time2sfWorker.RunWorkerCompleted += Time2sfWorker_WorkComplete;
-            time2sfWorker.RunWorkerAsync(t2Struct);
+            base.backgroundWorker_Execute(t2Struct);
         } 
         
-        private void Time2sfWorker_WorkComplete(object sender,
-            RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled)
-            {
-                toolStripStatusLabel1.Text = 
-                    ConfigurationSettings.AppSettings["Form_2sfTimer_MessageCancel"];
-                tbOutput.Text +=
-                    ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
-            }
-            else
-            {
-                toolStripStatusLabel1.Text = 
-                    ConfigurationSettings.AppSettings["Form_2sfTimer_MessageComplete"];
-            }
-
-            // update node color
-            setNodeAsComplete();
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            if (time2sfWorker != null && time2sfWorker.IsBusy)
-            {
-                tbOutput.Text += 
-                    ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
-                time2sfWorker.CancelAsync();
-                this.errorFound = true;
-            }
-        }
-
         private void btn2sfBrowse_Click(object sender, EventArgs e)
         {
             tbPathTo2sfs.Text = base.browseForFolder(sender, e);
         }
-
         private void btnSdatBrowse_Click(object sender, EventArgs e)
         {
             tbSdatPath.Text = base.browseForFile(sender, e);
-        }       
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new Time2sfWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_2sfTimer_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_2sfTimer_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_2sfTimer_MessageBegin"];
+        }
     }
 }

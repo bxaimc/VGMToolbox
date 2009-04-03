@@ -10,7 +10,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.tools.xsf
 {
-    class SsfSeqTonExtractorWorker : AVgmtDragAndDropWorker
+    class SsfSeqTonExtractorWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
         private static readonly string SSFTOOL_FOLDER_PATH =
             Path.GetFullPath(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "ssf"));

@@ -3,14 +3,13 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Windows.Forms;
 
+using VGMToolbox.plugin;
 using VGMToolbox.tools.xsf;
 
 namespace VGMToolbox.forms
 {
-    public partial class Xsf_Mkpsf2FrontEndForm : VgmtForm
-    {
-        MkPsf2Worker mkPsf2Worker;
-        
+    public partial class Xsf_Mkpsf2FrontEndForm : AVgmtForm
+    {        
         public Xsf_Mkpsf2FrontEndForm(TreeNode pTreeNode)
             : base(pTreeNode)
         {
@@ -51,9 +50,6 @@ namespace VGMToolbox.forms
 
         private void btnExecute_Click(object sender, EventArgs e)
         {
-            base.initializeProcessing();
-            toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_MkPsf2FE_MessageBegin"];
-
             MkPsf2Worker.MkPsf2Struct mkStruct = new MkPsf2Worker.MkPsf2Struct();
             mkStruct.sourcePath = tbSourceDirectory.Text;
             mkStruct.modulePath = tbModulesDirectory.Text;
@@ -65,47 +61,33 @@ namespace VGMToolbox.forms
             mkStruct.tickInterval = tbTickInterval.Text;
             mkStruct.volume = tbVolume.Text;
 
-            mkPsf2Worker = new MkPsf2Worker();
-            mkPsf2Worker.ProgressChanged += backgroundWorker_ReportProgress;
-            mkPsf2Worker.RunWorkerCompleted += MkPsf2Worker_WorkComplete;
-            mkPsf2Worker.RunWorkerAsync(mkStruct);
-        }
-
-        private void MkPsf2Worker_WorkComplete(object sender,
-            RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled)
-            {
-                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_MkPsf2FE_MessageCancel"];
-                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
-            }
-            else
-            {
-                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_MkPsf2FE_MessageComplete"];
-            }
-
-            // update node color
-            setNodeAsComplete();
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            if (mkPsf2Worker != null && mkPsf2Worker.IsBusy)
-            {
-                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
-                mkPsf2Worker.CancelAsync();
-                this.errorFound = true;
-            }
+            base.backgroundWorker_Execute(mkStruct);
         }
 
         private void btnSourceDirectoryBrowse_Click(object sender, EventArgs e)
         {
             tbSourceDirectory.Text = base.browseForFolder(sender, e);
         }
-
         private void btnModulesDirectoryBrowse_Click(object sender, EventArgs e)
         {
             tbModulesDirectory.Text = base.browseForFolder(sender, e);
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new MkPsf2Worker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_MkPsf2FE_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_MkPsf2FE_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_MkPsf2FE_MessageBegin"];
         }
     }
 }

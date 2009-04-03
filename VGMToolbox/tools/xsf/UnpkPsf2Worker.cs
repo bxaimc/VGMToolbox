@@ -9,7 +9,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.tools.xsf
 {
-    class UnpkPsf2Worker : AVgmtDragAndDropWorker
+    class UnpkPsf2Worker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
         public struct UnpkPsf2Struct : IVgmtWorkerStruct
         {

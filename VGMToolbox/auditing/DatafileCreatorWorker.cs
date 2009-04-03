@@ -9,11 +9,12 @@ using ICSharpCode.SharpZipLib.Checksums;
 using VGMToolbox.format;
 using VGMToolbox.format.auditing;
 using VGMToolbox.format.util;
+using VGMToolbox.plugin;
 using VGMToolbox.util;
 
 namespace VGMToolbox.auditing
 {
-    class DatafileCreatorWorker : BackgroundWorker
+    class DatafileCreatorWorker : BackgroundWorker, IVgmtBackgroundWorker
     {
         private string dir;
         private ArrayList romList;

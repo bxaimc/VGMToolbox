@@ -7,11 +7,12 @@ using System.Text;
 using System.Xml.Serialization;
 
 using VGMToolbox.format.auditing;
+using VGMToolbox.plugin;
 using VGMToolbox.util;
 
 namespace VGMToolbox.auditing
 {
-    class DatafileCheckerWorker : BackgroundWorker
+    class DatafileCheckerWorker : BackgroundWorker, IVgmtBackgroundWorker
     {
         private int totalItems;
         private int maxItems;

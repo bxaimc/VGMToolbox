@@ -9,7 +9,7 @@ using VGMToolbox.plugin;
 
 namespace VGMToolbox.tools.xsf
 {
-    class Psf2SqExtractorWorker : AVgmtDragAndDropWorker
+    class Psf2SqExtractorWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
         Dictionary<string, string> extractedLibHash;
 

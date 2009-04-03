@@ -10,7 +10,7 @@ using VGMToolbox.plugin;
 
 namespace VGMToolbox.tools.xsf
 {
-    class Psf2TimerWorker : AVgmtDragAndDropWorker
+    class Psf2TimerWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
         Dictionary<string, string> extractedLibHash;
 

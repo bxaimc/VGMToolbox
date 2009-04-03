@@ -6,7 +6,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.tools.extract
 {
-    class OffsetFinderWorker : AVgmtDragAndDropWorker
+    class OffsetFinderWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
         public const string LITTLE_ENDIAN = "Little Endian";
         public const string BIG_ENDIAN = "Big Endian";

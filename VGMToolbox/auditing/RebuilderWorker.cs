@@ -9,11 +9,12 @@ using ICSharpCode.SharpZipLib.Zip;
 using VGMToolbox.format;
 using VGMToolbox.format.auditing;
 using VGMToolbox.format.util;
+using VGMToolbox.plugin;
 using VGMToolbox.util;
 
 namespace VGMToolbox.auditing
 {
-    class RebuilderWorker : BackgroundWorker
+    class RebuilderWorker : BackgroundWorker, IVgmtBackgroundWorker
     {
         private const string CACHE_DB_FILENAME = "_cache.db";
         private ArrayList libFilesForDeletion = new ArrayList();

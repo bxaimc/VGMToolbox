@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Configuration;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
+using VGMToolbox.plugin;
 using VGMToolbox.tools.xsf;
 
 namespace VGMToolbox.forms
 {
-    public partial class Xsf_2sfSdatOptimizerForm : VgmtForm
+    public partial class Xsf_2sfSdatOptimizerForm : AVgmtForm
     {
-        SdatOptimizerWorker sdatOptimizerWorker;
-
         public Xsf_2sfSdatOptimizerForm(TreeNode pTreeNode)
             : base(pTreeNode)
         {
@@ -42,11 +36,6 @@ namespace VGMToolbox.forms
 
         private void tbSourceSdat_DragDrop(object sender, DragEventArgs e)
         {
-            base.initializeProcessing();
-
-            toolStripStatusLabel1.Text = 
-                ConfigurationSettings.AppSettings["Form_SdatOptimizer_MessageBegin"];
-
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
             SdatOptimizerWorker.SdatOptimizerStruct soptStruct = new SdatOptimizerWorker.SdatOptimizerStruct();
@@ -58,47 +47,13 @@ namespace VGMToolbox.forms
                 soptStruct.endSequence = tbEndSequence.Text;
             }
 
-            sdatOptimizerWorker = new SdatOptimizerWorker();
-            sdatOptimizerWorker.ProgressChanged += backgroundWorker_ReportProgress;
-            sdatOptimizerWorker.RunWorkerCompleted += SdatOptimizerWorker_WorkComplete;
-            sdatOptimizerWorker.RunWorkerAsync(soptStruct);
-        }
-
-        private void SdatOptimizerWorker_WorkComplete(object sender,
-            RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled)
-            {
-                toolStripStatusLabel1.Text =
-                    ConfigurationSettings.AppSettings["Form_SdatOptimizer_MessageCancel"];
-                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
-            }
-            else
-            {
-                lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = 
-                    ConfigurationSettings.AppSettings["Form_SdatOptimizer_MessageComplete"];
-            }
-
-            // update node color
-            setNodeAsComplete();
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            if (sdatOptimizerWorker != null && sdatOptimizerWorker.IsBusy)
-            {
-                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
-                sdatOptimizerWorker.CancelAsync();
-                this.errorFound = true;
-            }
+            base.backgroundWorker_Execute(soptStruct);
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
         {
             base.doDragEnter(sender, e);
         }
-
         private void cbIncludeAllSseq_CheckedChanged(object sender, EventArgs e)
         {
             if (cbIncludeAllSseq.Checked)
@@ -111,6 +66,23 @@ namespace VGMToolbox.forms
                 tbStartSequence.ReadOnly = false;
                 tbEndSequence.ReadOnly = false;            
             }
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new SdatOptimizerWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SdatOptimizer_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SdatOptimizer_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SdatOptimizer_MessageBegin"];
         }
     }
 }

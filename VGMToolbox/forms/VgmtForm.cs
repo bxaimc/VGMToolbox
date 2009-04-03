@@ -1,10 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
+using VGMToolbox.plugin;
 using VGMToolbox.util;
 
 namespace VGMToolbox.forms
@@ -13,11 +15,14 @@ namespace VGMToolbox.forms
     {
         protected DateTime elapsedTimeStart;
         protected DateTime elapsedTimeEnd;
-        protected TimeSpan elapsedTime;
-        
+        protected TimeSpan elapsedTime;        
         protected TreeNode menuTreeNode;
-
         protected bool errorFound;
+
+        protected IVgmtBackgroundWorker backgroundWorker;
+        protected string beginMessage;
+        protected string cancelMessage;
+        protected string completeMessage;
 
         public VgmtForm()
         {
@@ -46,26 +51,6 @@ namespace VGMToolbox.forms
             // reset colors to indicate a fresh status
             pTreeNode.BackColor = Color.White;
             pTreeNode.ForeColor = Color.Black;
-        }
-
-        protected virtual void doDragEnter(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
-                e.Effect = DragDropEffects.All;
-            else
-                e.Effect = DragDropEffects.None;        
-        }
-
-        protected virtual void initializeProcessing()
-        {
-            errorFound = false;
-            
-            this.tbOutput.Clear();
-
-            setNodeAsWorking();
-
-            this.elapsedTimeStart = DateTime.Now;
-            this.showElapsedTime();
         }
 
         protected void setNodeAsWorking()
@@ -214,6 +199,90 @@ namespace VGMToolbox.forms
 
             File.Move(tempFileName, Path.ChangeExtension(tempFileName, ".txt"));
             Process.Start(Path.ChangeExtension(tempFileName, ".txt"));
+        }
+
+        protected virtual void doDragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
+                e.Effect = DragDropEffects.All;
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        protected virtual void initializeProcessing()
+        {
+            errorFound = false;
+
+            this.backgroundWorker = getBackgroundWorker();
+            this.cancelMessage = getCancelMessage();
+            this.completeMessage = getCompleteMessage();
+            this.beginMessage = getBeginMessage();
+
+            this.toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_Xsf2Exe_MessageBegin"];
+            this.tbOutput.Clear();
+
+            setNodeAsWorking();
+
+            this.elapsedTimeStart = DateTime.Now;
+            this.showElapsedTime();
+        }
+        protected virtual void backgroundWorker_WorkComplete(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled)
+            {
+                toolStripStatusLabel1.Text = this.cancelMessage;
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
+            }
+            else
+            {
+                lblProgressLabel.Text = String.Empty;
+                toolStripStatusLabel1.Text = this.completeMessage;
+            }
+
+            // update node color
+            this.setNodeAsComplete();
+        }
+        protected virtual void backgroundWorker_Cancel(object sender, EventArgs e)
+        {
+            if (backgroundWorker != null && backgroundWorker.IsBusy)
+            {
+                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
+                backgroundWorker.CancelAsync();
+                this.errorFound = true;
+            }
+        }
+        protected void backgroundWorker_Execute(object argument)
+        {
+            try
+            {
+                initializeProcessing();
+                backgroundWorker.ProgressChanged += backgroundWorker_ReportProgress;
+                backgroundWorker.RunWorkerCompleted += backgroundWorker_WorkComplete;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error preparing background worker: " + ex.Message);
+            }
+
+            backgroundWorker.RunWorkerAsync(argument);
+        }
+
+        // to be abstract
+        protected virtual IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            throw new NotImplementedException();
+        }
+        protected virtual string getCancelMessage()
+        {
+            throw new NotImplementedException();
+        }
+        protected virtual string getCompleteMessage()
+        {
+            throw new NotImplementedException();
+        }
+        protected virtual string getBeginMessage()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -9,7 +9,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.plugin
 {
-    public abstract class AVgmtDragAndDropWorker : BackgroundWorker
+    public abstract class AVgmtDragAndDropWorker : BackgroundWorker, IVgmtBackgroundWorker
     {
         private int fileCount;
         private int maxFiles;

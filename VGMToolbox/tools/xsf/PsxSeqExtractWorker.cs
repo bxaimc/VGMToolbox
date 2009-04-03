@@ -10,7 +10,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.tools.xsf
 {
-    public partial class PsxSeqExtractWorker : AVgmtDragAndDropWorker
+    public partial class PsxSeqExtractWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
         private const string BATCH_FILE_NAME = "!timing_batch.bat";
         

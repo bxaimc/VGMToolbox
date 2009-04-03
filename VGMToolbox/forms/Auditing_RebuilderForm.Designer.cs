@@ -73,7 +73,6 @@
             // btnCancel
             // 
             this.btnCancel.Location = new System.Drawing.Point(808, 0);
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDoTask
             // 

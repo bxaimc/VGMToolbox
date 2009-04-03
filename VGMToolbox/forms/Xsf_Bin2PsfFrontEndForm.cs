@@ -3,14 +3,13 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Windows.Forms;
 
+using VGMToolbox.plugin;
 using VGMToolbox.tools.xsf;
 
 namespace VGMToolbox.forms
 {
-    public partial class Xsf_Bin2PsfFrontEndForm : VgmtForm
+    public partial class Xsf_Bin2PsfFrontEndForm : AVgmtForm
     {
-        Bin2PsfWorker bin2PsfWorker;
-
         public Xsf_Bin2PsfFrontEndForm(TreeNode pTreeNode)
             : base(pTreeNode)
         {
@@ -43,55 +42,8 @@ namespace VGMToolbox.forms
                 ConfigurationSettings.AppSettings["Form_Bin2PsfFE_LblVbOffset"];
         }
 
-        private void Bin2PsfWorker_WorkComplete(object sender,
-            RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled)
-            {
-                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_Bin2PsfFE_MessageCancel"];
-                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
-            }
-            else
-            {
-                lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_Bin2PsfFE_MessageComplete"];
-            }
-
-            // update node color
-            setNodeAsComplete();
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            if (bin2PsfWorker != null && bin2PsfWorker.IsBusy)
-            {
-                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
-                bin2PsfWorker.CancelAsync();
-                this.errorFound = true;
-            }
-        }
-
-        protected override void doDragEnter(object sender, DragEventArgs e)
-        {
-            base.doDragEnter(sender, e);
-        }
-
-        private void btnExeBrowse_Click(object sender, EventArgs e)
-        {
-            tbExePath.Text = base.browseForFile(sender, e);
-        }
-
-        private void btnSourceDirectoryBrowse_Click(object sender, EventArgs e)
-        {
-            tbSourceFilesPath.Text = base.browseForFolder(sender, e);
-        }
-
         private void btnDoTask_Click(object sender, EventArgs e)
         {
-            base.initializeProcessing();
-
-            toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_Bin2PsfFE_MessageBegin"];
-
             Bin2PsfWorker.Bin2PsfStruct bpStruct = new Bin2PsfWorker.Bin2PsfStruct();
             bpStruct.sourcePath = tbSourceFilesPath.Text;
             bpStruct.seqOffset = tbSeqOffset.Text;
@@ -99,16 +51,24 @@ namespace VGMToolbox.forms
             bpStruct.vhOffset = tbVhOffset.Text;
             bpStruct.exePath = tbExePath.Text;
             bpStruct.outputFolder = tbOutputFolderName.Text;
-
             bpStruct.makeMiniPsfs = cbMinipsf.Checked;
             bpStruct.psflibName = tbPsflibName.Text;
 
-            bin2PsfWorker = new Bin2PsfWorker();
-            bin2PsfWorker.ProgressChanged += backgroundWorker_ReportProgress;
-            bin2PsfWorker.RunWorkerCompleted += Bin2PsfWorker_WorkComplete;
-            bin2PsfWorker.RunWorkerAsync(bpStruct);
+            base.backgroundWorker_Execute(bpStruct);
         }
 
+        protected override void doDragEnter(object sender, DragEventArgs e)
+        {
+            base.doDragEnter(sender, e);
+        }
+        private void btnExeBrowse_Click(object sender, EventArgs e)
+        {
+            tbExePath.Text = base.browseForFile(sender, e);
+        }
+        private void btnSourceDirectoryBrowse_Click(object sender, EventArgs e)
+        {
+            tbSourceFilesPath.Text = base.browseForFolder(sender, e);
+        }
         private void cbMinipsf_CheckedChanged(object sender, EventArgs e)
         {
             if (cbMinipsf.Checked)
@@ -120,6 +80,23 @@ namespace VGMToolbox.forms
                 tbPsflibName.ReadOnly = true;
                 tbPsflibName.Clear();
             }
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new Bin2PsfWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_Bin2PsfFE_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_Bin2PsfFE_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_Bin2PsfFE_MessageBegin"];
         }
     }
 }

@@ -4,14 +4,13 @@ using System.Configuration;
 using System.IO;
 using System.Windows.Forms;
 
+using VGMToolbox.plugin;
 using VGMToolbox.tools.hoot;
 
 namespace VGMToolbox.forms
 {
-    public partial class Hoot_XmlBuilderForm : VgmtForm
-    {
-        HootXmlBuilderWorker hootXmlBuilder;
-        
+    public partial class Hoot_XmlBuilderForm : AVgmtForm
+    {        
         public Hoot_XmlBuilderForm(TreeNode pTreeNode) : base(pTreeNode)
         {
             // set title
@@ -37,11 +36,6 @@ namespace VGMToolbox.forms
 
         private void tbHootXML_Path_DragDrop(object sender, DragEventArgs e)
         {
-            base.initializeProcessing();
-
-            toolStripStatusLabel1.Text =
-                ConfigurationSettings.AppSettings["Form_HootXmlBuilder_MessageBegin"]; 
-
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
             HootXmlBuilderWorker.HootXmlBuilderStruct xbStruct = new HootXmlBuilderWorker.HootXmlBuilderStruct();
@@ -49,47 +43,28 @@ namespace VGMToolbox.forms
             xbStruct.combineOutput = cbHootXML_CombineOutput.Checked;
             xbStruct.splitOutput = cbHootXML_SplitOutput.Checked;
 
-            hootXmlBuilder = new HootXmlBuilderWorker();
-            hootXmlBuilder.ProgressChanged += backgroundWorker_ReportProgress;
-            hootXmlBuilder.RunWorkerCompleted += HootXmlBuilderWorker_WorkComplete;
-            hootXmlBuilder.RunWorkerAsync(xbStruct);
+            base.backgroundWorker_Execute(xbStruct);
         }
-
-        private void HootXmlBuilderWorker_WorkComplete(object sender,
-                     RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled)
-            {
-                toolStripStatusLabel1.Text = 
-                    ConfigurationSettings.AppSettings["Form_HootXmlBuilder_MessageCancel"];
-                tbOutput.Text +=
-                    ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"]; 
-            }
-            else
-            {
-                lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = 
-                    ConfigurationSettings.AppSettings["Form_HootXmlBuilder_MessageComplete"]; 
-            }
-
-            // update node color
-            setNodeAsComplete();
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            if (hootXmlBuilder != null && hootXmlBuilder.IsBusy)
-            {
-                tbOutput.Text += 
-                    ConfigurationSettings.AppSettings["Form_Global_CancelPending"]; 
-                hootXmlBuilder.CancelAsync();
-                this.errorFound = true;
-            }
-        }
-
         protected override void doDragEnter(object sender, DragEventArgs e)
         {
             base.doDragEnter(sender, e);
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new HootXmlBuilderWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_HootXmlBuilder_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_HootXmlBuilder_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_HootXmlBuilder_MessageBegin"];
         }
     }
 }

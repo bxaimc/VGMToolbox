@@ -8,11 +8,12 @@ using System.Text;
 using System.Windows.Forms;
 
 using VGMToolbox.format;
+using VGMToolbox.plugin;
 using VGMToolbox.util;
 
 namespace VGMToolbox.tools.xsf
 {
-    class Bin2PsfWorker : BackgroundWorker
+    class Bin2PsfWorker : BackgroundWorker, IVgmtBackgroundWorker
     {
         private const uint MIN_TEXT_SECTION_OFFSET = 0x80010000;
         private const uint PC_OFFSET_CORRECTION = 0x800;

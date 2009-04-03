@@ -42,6 +42,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VGMToolbox\plugin\IVgmtBackgroundWorker.cs" />
     <Compile Include="VGMToolbox\plugin\IVgmtWorkerStruct.cs" />
     <Compile Include="VGMToolbox\plugin\AVgmtForm.cs">
       <SubType>Form</SubType>

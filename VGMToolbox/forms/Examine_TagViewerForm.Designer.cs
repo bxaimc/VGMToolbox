@@ -50,10 +50,6 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.cbCheckForLibs);
             // 
-            // btnCancel
-            // 
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
             // btnDoTask
             // 
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);

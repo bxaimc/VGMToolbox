@@ -8,11 +8,12 @@ using System.Text;
 using System.Windows.Forms;
 
 using VGMToolbox.format.sdat;
+using VGMToolbox.plugin;
 using VGMToolbox.util;
 
 namespace VGMToolbox.tools.xsf
 {
-    class Time2sfWorker : BackgroundWorker
+    class Time2sfWorker : BackgroundWorker, IVgmtBackgroundWorker
     {
         private static readonly string SSEQ2MID_SOURCE_PATH =
             Path.Combine(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "2sf"), "sseq2mid.exe");

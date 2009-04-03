@@ -3,14 +3,13 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Windows.Forms;
 
+using VGMToolbox.plugin;
 using VGMToolbox.tools.xsf;
 
 namespace VGMToolbox.forms
 {
-    public partial class Xsf_PsxSeqExtractForm : VgmtForm
-    {
-        PsxSeqExtractWorker psxSeqExtractWorker;
-        
+    public partial class Xsf_PsxSeqExtractForm : AVgmtForm
+    {        
         public Xsf_PsxSeqExtractForm(TreeNode pTreeNode)
             : base(pTreeNode)
         {
@@ -37,45 +36,12 @@ namespace VGMToolbox.forms
                 ConfigurationSettings.AppSettings["Form_SeqExtractor_RadioForceSeqType"];
         }
 
-        private void PsxSeqExtractWorker_WorkComplete(object sender,
-            RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled)
-            {
-                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SeqExtractor_MessageCancel"];
-                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
-            }
-            else
-            {
-                lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SeqExtractor_MessageComplete"];
-            }
-
-            // update node color
-            setNodeAsComplete();
-        }
-
-        private void btnCancel_Click(object sender, System.EventArgs e)
-        {
-            if (psxSeqExtractWorker != null && psxSeqExtractWorker.IsBusy)
-            {
-                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
-                psxSeqExtractWorker.CancelAsync();
-                this.errorFound = true;
-            }
-        }
-
         protected override void doDragEnter(object sender, DragEventArgs e)
         {
             base.doDragEnter(sender, e);
         }
-
         private void tbSource_DragDrop(object sender, DragEventArgs e)
         {
-            base.initializeProcessing();
-
-            toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_SeqExtractor_MessageBegin"];
-
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
             PsxSeqExtractWorker.PsxSeqExtractStruct psxStruct = new PsxSeqExtractWorker.PsxSeqExtractStruct();
@@ -84,12 +50,9 @@ namespace VGMToolbox.forms
             psxStruct.forceSepType = rbForceSepType.Checked;
             psxStruct.forceSeqType = rbForceSeqType.Checked;
 
-            psxSeqExtractWorker = new PsxSeqExtractWorker();
-            psxSeqExtractWorker.ProgressChanged += backgroundWorker_ReportProgress;
-            psxSeqExtractWorker.RunWorkerCompleted += PsxSeqExtractWorker_WorkComplete;
-            psxSeqExtractWorker.RunWorkerAsync(psxStruct);
+            base.backgroundWorker_Execute(psxStruct);
         }
-
+        
         private void cbForceType_CheckedChanged(object sender, EventArgs e)
         {
             if (this.cbForceType.Checked)
@@ -105,6 +68,23 @@ namespace VGMToolbox.forms
                 this.rbForceSepType.Checked = false;
                 this.rbForceSeqType.Checked = false;
             }
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new PsxSeqExtractWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SeqExtractor_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SeqExtractor_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SeqExtractor_MessageBegin"];
         }
     }
 }

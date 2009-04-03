@@ -4,14 +4,13 @@ using System.Configuration;
 using System.IO;
 using System.Windows.Forms;
 
+using VGMToolbox.plugin;
 using VGMToolbox.tools.xsf;
 
 namespace VGMToolbox.forms
 {
-    public partial class Xsf_Xsf2ExeForm : VgmtForm
-    {
-        XsfCompressedProgramExtractorWorker xsfCompressedProgramExtractor;
-        
+    public partial class Xsf_Xsf2ExeForm : AVgmtForm
+    {        
         public Xsf_Xsf2ExeForm(TreeNode pTreeNode) : base(pTreeNode)
         {
             // set title
@@ -38,11 +37,7 @@ namespace VGMToolbox.forms
         }
 
         private void tbXsfPsf2Exe_Source_DragDrop(object sender, DragEventArgs e)
-        {
-            base.initializeProcessing();
-
-            toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_Xsf2Exe_MessageBegin"];
-
+        {            
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
             XsfCompressedProgramExtractorWorker.XsfCompressedProgramExtractorStruct xcpeStruct =
@@ -52,43 +47,29 @@ namespace VGMToolbox.forms
             xcpeStruct.stripGsfHeader = cbXsfPsf2Exe_StripGsfHeader.Checked;
             xcpeStruct.extractReservedSection = cbExtractReservedSection.Checked;
 
-            xsfCompressedProgramExtractor = new XsfCompressedProgramExtractorWorker();
-            xsfCompressedProgramExtractor.ProgressChanged += backgroundWorker_ReportProgress;
-            xsfCompressedProgramExtractor.RunWorkerCompleted += XsfCompressedProgramExtractorWorker_WorkComplete;
-            xsfCompressedProgramExtractor.RunWorkerAsync(xcpeStruct);
+            base.backgroundWorker_Execute(xcpeStruct);
         }
-
-        private void XsfCompressedProgramExtractorWorker_WorkComplete(object sender,
-                     RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled)
-            {
-                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_Xsf2Exe_MessageCancel"];
-                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
-            }
-            else
-            {
-                lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_Xsf2Exe_MessageComplete"];
-            }
-
-            // update node color
-            setNodeAsComplete();
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            if (xsfCompressedProgramExtractor != null && xsfCompressedProgramExtractor.IsBusy)
-            {
-                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
-                xsfCompressedProgramExtractor.CancelAsync();
-                this.errorFound = true;
-            }
-        }
-
+        
         protected override void doDragEnter(object sender, DragEventArgs e)
         {
             base.doDragEnter(sender, e);
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new XsfCompressedProgramExtractorWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_Xsf2Exe_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_Xsf2Exe_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_Xsf2Exe_MessageBegin"];
         }
     }
 }

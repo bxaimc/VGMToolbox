@@ -4,14 +4,13 @@ using System.Configuration;
 using System.IO;
 using System.Windows.Forms;
 
+using VGMToolbox.plugin;
 using VGMToolbox.tools.nsf;
 
 namespace VGMToolbox.forms
 {
-    public partial class Nsf_Nsfe2NsfM3uForm : VgmtForm
-    {
-        NsfeM3uBuilderWorker nsfeM3uBuilder;
-        
+    public partial class Nsf_Nsfe2NsfM3uForm : AVgmtForm
+    {        
         public Nsf_Nsfe2NsfM3uForm(TreeNode pTreeNode) : base(pTreeNode)
         {
             // set title
@@ -35,58 +34,34 @@ namespace VGMToolbox.forms
 
         private void tbNSF_nsfe2m3uSource_DragDrop(object sender, DragEventArgs e)
         {
-            base.initializeProcessing();
-
-            toolStripStatusLabel1.Text =
-                ConfigurationSettings.AppSettings["Form_Nsfe2M3u_MessageBegin"]; 
-
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
             NsfeM3uBuilderWorker.NsfeM3uBuilderStruct nsfeStruct = new NsfeM3uBuilderWorker.NsfeM3uBuilderStruct();
             nsfeStruct.SourcePaths = s;
             nsfeStruct.OnePlaylistPerFile = cbNSFE_OneM3uPerTrack.Checked;
 
-            nsfeM3uBuilder = new NsfeM3uBuilderWorker();
-            nsfeM3uBuilder.ProgressChanged += backgroundWorker_ReportProgress;
-            nsfeM3uBuilder.RunWorkerCompleted += NsfeM3uBuilderWorker_WorkComplete;
-            nsfeM3uBuilder.RunWorkerAsync(nsfeStruct);
+            base.backgroundWorker_Execute(nsfeStruct);
         }
-
-        private void NsfeM3uBuilderWorker_WorkComplete(object sender,
-                     RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled)
-            {
-                toolStripStatusLabel1.Text = 
-                    ConfigurationSettings.AppSettings["Form_Nsfe2M3u_MessageCancel"];
-                tbOutput.Text +=
-                    ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
-            }
-            else
-            {
-                lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = 
-                    ConfigurationSettings.AppSettings["Form_Nsfe2M3u_MessageComplete"];
-            }
-
-            // update node color
-            setNodeAsComplete();
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            if (nsfeM3uBuilder != null && nsfeM3uBuilder.IsBusy)
-            {
-                tbOutput.Text += 
-                    ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
-                nsfeM3uBuilder.CancelAsync();
-                this.errorFound = true;
-            }
-        }
-
         protected override void doDragEnter(object sender, DragEventArgs e)
         {
             base.doDragEnter(sender, e);
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new NsfeM3uBuilderWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_Nsfe2M3u_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_Nsfe2M3u_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_Nsfe2M3u_MessageBegin"];
         }
     }
 }
