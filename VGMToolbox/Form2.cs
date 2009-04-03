@@ -92,6 +92,9 @@ namespace VGMToolbox
             // add Tools node to Root
             rootNode.Nodes.Add(tools_RootNode);
 
+            TreeNode plugins_RootNode = buildPluginTreeNode();
+            rootNode.Nodes.Add(plugins_RootNode);
+
             // add Root node to tree
             tvMenuTree.Nodes.Add(rootNode);
             // tvMenuTree.ExpandAll();
@@ -616,6 +619,16 @@ namespace VGMToolbox
             // ext_RootNode.Nodes.Add(ext_PcNode);
 
             return ext_RootNode;
+        }
+
+        private TreeNode buildPluginTreeNode()
+        {
+            VGMToolbox.util.NodeTagStruct nodeTag = new VGMToolbox.util.NodeTagStruct();
+
+            TreeNode plugin_RootNode = new TreeNode("Plugins");
+            plugin_RootNode.NodeFont = this.treeviewBoldFont;
+
+            return plugin_RootNode;
         }
 
         private void tvMenuTree_doClick(object sender, TreeNodeMouseClickEventArgs e)
