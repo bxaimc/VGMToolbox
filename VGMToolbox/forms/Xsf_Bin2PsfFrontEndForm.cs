@@ -38,7 +38,7 @@ namespace VGMToolbox.forms
                 ConfigurationSettings.AppSettings["Form_Bin2PsfFE_LblSeqOffset"];
             this.lblVhOffset.Text =
                 ConfigurationSettings.AppSettings["Form_Bin2PsfFE_LblVhOffset"];
-            this.lblSeqOffset.Text =
+            this.lblVbOffset.Text =
                 ConfigurationSettings.AppSettings["Form_Bin2PsfFE_LblVbOffset"];
         }
 
