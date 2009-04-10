@@ -141,7 +141,7 @@ namespace VGMToolbox.format.util
                 if (pSwar.SampleOffsets[i] > 0)
                 {
                     Swav.SwavInfo swavInfo = Swav.GetSwavInfo(pStream, pSwar.SampleOffsets[i]);
-                    UInt32 fileSize = swavInfo.NonLoopLength * 4;
+                    UInt32 fileSize = (swavInfo.LoopOffset + swavInfo.NonLoopLength) * 4;
 
                     outputFileName = Path.Combine(pOutputPath, i.ToString("X2") + Swav.FILE_EXTENSION);
 
