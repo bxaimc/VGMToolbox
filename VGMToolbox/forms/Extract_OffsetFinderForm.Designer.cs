@@ -31,6 +31,7 @@
             this.grpFiles = new System.Windows.Forms.GroupBox();
             this.lblDragNDrop = new System.Windows.Forms.Label();
             this.tbSourcePaths = new System.Windows.Forms.TextBox();
+            this.comboPresets = new System.Windows.Forms.ComboBox();
             this.grpCriteria = new System.Windows.Forms.GroupBox();
             this.cbSearchAsHex = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -71,39 +72,40 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 512);
-            this.pnlLabels.Size = new System.Drawing.Size(738, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 486);
+            this.pnlLabels.Size = new System.Drawing.Size(840, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(738, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(840, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 435);
-            this.tbOutput.Size = new System.Drawing.Size(738, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 409);
+            this.tbOutput.Size = new System.Drawing.Size(840, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 415);
-            this.pnlButtons.Size = new System.Drawing.Size(738, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 389);
+            this.pnlButtons.Size = new System.Drawing.Size(840, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(678, 0);
+            this.btnCancel.Location = new System.Drawing.Point(780, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(618, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(720, 0);
             // 
             // grpFiles
             // 
             this.grpFiles.Controls.Add(this.lblDragNDrop);
             this.grpFiles.Controls.Add(this.tbSourcePaths);
+            this.grpFiles.Controls.Add(this.comboPresets);
             this.grpFiles.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFiles.Location = new System.Drawing.Point(0, 23);
             this.grpFiles.Name = "grpFiles";
-            this.grpFiles.Size = new System.Drawing.Size(738, 61);
+            this.grpFiles.Size = new System.Drawing.Size(840, 61);
             this.grpFiles.TabIndex = 5;
             this.grpFiles.TabStop = false;
             this.grpFiles.Text = "Files to Search";
@@ -127,6 +129,16 @@
             this.tbSourcePaths.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbSourcePaths_DragDrop);
             this.tbSourcePaths.DragEnter += new System.Windows.Forms.DragEventHandler(this.doDragEnter);
             // 
+            // comboPresets
+            // 
+            this.comboPresets.FormattingEnabled = true;
+            this.comboPresets.Location = new System.Drawing.Point(318, 19);
+            this.comboPresets.Name = "comboPresets";
+            this.comboPresets.Size = new System.Drawing.Size(161, 21);
+            this.comboPresets.TabIndex = 2;
+            this.comboPresets.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.comboPresets_KeyPress);
+            this.comboPresets.KeyDown += new System.Windows.Forms.KeyEventHandler(this.comboPresets_KeyDown);
+            // 
             // grpCriteria
             // 
             this.grpCriteria.Controls.Add(this.cbSearchAsHex);
@@ -135,7 +147,7 @@
             this.grpCriteria.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpCriteria.Location = new System.Drawing.Point(0, 84);
             this.grpCriteria.Name = "grpCriteria";
-            this.grpCriteria.Size = new System.Drawing.Size(738, 45);
+            this.grpCriteria.Size = new System.Drawing.Size(840, 45);
             this.grpCriteria.TabIndex = 6;
             this.grpCriteria.TabStop = false;
             this.grpCriteria.Text = "Criteria";
@@ -177,7 +189,7 @@
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox3.Location = new System.Drawing.Point(0, 129);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(738, 256);
+            this.groupBox3.Size = new System.Drawing.Size(840, 256);
             this.groupBox3.TabIndex = 7;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Cut Options (all values are relative to the location of the file to be cut)";
@@ -425,7 +437,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(738, 553);
+            this.ClientSize = new System.Drawing.Size(840, 527);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.grpCriteria);
             this.Controls.Add(this.grpFiles);
@@ -491,5 +503,6 @@
         private System.Windows.Forms.CheckBox cbIncludeTerminatorInLength;
         private System.Windows.Forms.CheckBox cbAddExtraBytes;
         private System.Windows.Forms.TextBox tbExtraCutSizeBytes;
+        private System.Windows.Forms.ComboBox comboPresets;
     }
 }

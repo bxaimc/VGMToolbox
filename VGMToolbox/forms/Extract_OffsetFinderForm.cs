@@ -1,15 +1,20 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Configuration;
+using System.IO;
 using System.Windows.Forms;
 
+using VGMToolbox.dbutil;
 using VGMToolbox.plugin;
 using VGMToolbox.tools.extract;
 
 namespace VGMToolbox.forms
 {
-    public partial class Extract_OffsetFinderForm : AVgmtForm
-    {               
+    public partial class Extract_OffsetFinderForm : VgmtForm
+    {
+        private static readonly string DB_PATH =
+            Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "db"), "collection.s3db");        
+        
         public Extract_OffsetFinderForm(TreeNode pTreeNode)
             : base(pTreeNode)
         {
@@ -67,6 +72,8 @@ namespace VGMToolbox.forms
             this.createEndianList();
             this.createOffsetSizeList();
             this.resetCutSection();
+
+            this.loadPresetsComboBox();
         }
 
         private void tbSourcePaths_DragDrop(object sender, DragEventArgs e)
@@ -335,6 +342,23 @@ namespace VGMToolbox.forms
         protected override string getBeginMessage()
         {
             return ConfigurationSettings.AppSettings["Form_SimpleCutter_MessageBegin"];
+        }
+
+        private void loadPresetsComboBox()
+        {
+            this.comboPresets.Items.Add(String.Empty);
+
+            this.comboPresets.DataSource = SqlLiteUtil.GetSimpleDataTable(DB_PATH, "OffsetFinder");
+            this.comboPresets.DisplayMember = "OffsetFinderFormatName";
+            this.comboPresets.ValueMember = "OffsetFinderId";
+        }
+        private void comboPresets_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
+        private void comboPresets_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
         }
     }
 }
