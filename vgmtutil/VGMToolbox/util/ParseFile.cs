@@ -299,12 +299,13 @@ namespace VGMToolbox.util
             }
 
             // create terminator bytes
+            j = 0;
             if (pFindOffsetStruct.TreatTerminatorStringAsHex)
             {
                 terminatorBytes = new byte[pFindOffsetStruct.TerminatorString.Length / 2];
 
                 // convert the search string to bytes
-                for (i = 0; i < pFindOffsetStruct.SearchString.Length; i += 2)
+                for (i = 0; i < pFindOffsetStruct.TerminatorString.Length; i += 2)
                 {
                     terminatorBytes[j] = BitConverter.GetBytes(Int16.Parse(pFindOffsetStruct.TerminatorString.Substring(i, 2), System.Globalization.NumberStyles.AllowHexSpecifier, CultureInfo.CurrentCulture))[0];
                     j++;
@@ -367,7 +368,7 @@ namespace VGMToolbox.util
                         {
                             if (cutStart >= 0)
                             {
-                                cutSize = GetNextOffset(fs, offset, terminatorBytes) - cutStart;
+                                cutSize = GetNextOffset(fs, offset + 1, terminatorBytes) - cutStart;
 
                                 if (pFindOffsetStruct.IncludeTerminatorLength)
                                 {
