@@ -22,7 +22,7 @@ namespace VGMToolbox.forms
 
         private void loadSystemList()
         {
-            this.comboBox1.DataSource = SqlLiteUtil.GetSimpleDataTable(DB_PATH, "SYSTEMS");
+            this.comboBox1.DataSource = SqlLiteUtil.GetSimpleDataTable(DB_PATH, "SYSTEMS", "SystemName");
             this.comboBox1.DisplayMember = "SystemName";
             this.comboBox1.ValueMember = "SystemId";
         }

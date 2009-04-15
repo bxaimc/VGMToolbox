@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Configuration;
+using System.Data;
 using System.IO;
 using System.Windows.Forms;
 
@@ -348,10 +349,47 @@ namespace VGMToolbox.forms
         {
             this.comboPresets.Items.Add(String.Empty);
 
-            this.comboPresets.DataSource = SqlLiteUtil.GetSimpleDataTable(DB_PATH, "OffsetFinder");
+            this.comboPresets.DataSource = SqlLiteUtil.GetSimpleDataTable(DB_PATH, "OffsetFinder", "OffsetFinderFormatName");
             this.comboPresets.DisplayMember = "OffsetFinderFormatName";
             this.comboPresets.ValueMember = "OffsetFinderId";
         }
+        private void loadSelectedItem()
+        {
+            string warningString;
+            DataRowView drv = (DataRowView)this.comboPresets.SelectedItem;
+            DataTable dt = SqlLiteUtil.GetSimpleDataItem(DB_PATH, "OffsetFinder", "OffsetFinderId", drv["OffsetFinderId"].ToString());
+            DataRow dr = dt.Rows[0];
+
+            this.tbSearchString.Text = dr["SearchString"].ToString();
+            this.cbSearchAsHex.Checked = Convert.ToBoolean(dr["TreatSearchStringAsHex"]);
+            
+            this.tbSearchStringOffset.Text = dr["SearchStringOffset"].ToString();
+            this.tbOutputExtension.Text = dr["OuputFileExtension"].ToString();
+
+            this.rbStaticCutSize.Checked = Convert.ToBoolean(dr["UseStaticCutsize"]);
+            this.tbStaticCutsize.Text = dr["StaticCutSize"].ToString();
+
+            this.rbOffsetBasedCutSize.Checked = Convert.ToBoolean(dr["UseCutSizeAtOffset"]);
+            this.tbCutSizeOffset.Text = dr["CutSizeAtOffset"].ToString();
+            this.cbOffsetSize.SelectedItem = dr["CutSizeOffsetSize"];
+            this.cbByteOrder.SelectedItem = dr["CutSizeOffsetEndianess"];
+
+            this.rbUseTerminator.Checked = Convert.ToBoolean(dr["UseTerminatorString"]);
+            this.tbTerminatorString.Text = dr["TerminatorString"].ToString();
+            this.cbTreatTerminatorAsHex.Checked = Convert.ToBoolean(dr["TreatTerminatorStringAsHex"]);
+            this.cbIncludeTerminatorInLength.Checked = Convert.ToBoolean(dr["IncludeTerminatorInSize"]);
+
+            this.cbAddExtraBytes.Checked = Convert.ToBoolean(dr["AddExtraBytes"]);
+            this.tbExtraCutSizeBytes.Text = dr["AddExtraBytesSize"].ToString();
+
+            warningString = dr["NotesOrWarnings"].ToString();
+
+            if (!String.IsNullOrEmpty(warningString))
+            {
+                MessageBox.Show(warningString, "Notes/Warnings");
+            }
+        }
+
         private void comboPresets_KeyDown(object sender, KeyEventArgs e)
         {
             e.Handled = true;
@@ -359,6 +397,11 @@ namespace VGMToolbox.forms
         private void comboPresets_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = true;
+        }
+
+        private void btnLoadPreset_Click(object sender, EventArgs e)
+        {
+            loadSelectedItem();
         }
     }
 }
