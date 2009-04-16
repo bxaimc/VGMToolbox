@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.grpFiles = new System.Windows.Forms.GroupBox();
+            this.lblPresets = new System.Windows.Forms.Label();
             this.btnLoadPreset = new System.Windows.Forms.Button();
             this.lblDragNDrop = new System.Windows.Forms.Label();
             this.tbSourcePaths = new System.Windows.Forms.TextBox();
@@ -62,7 +63,6 @@
             this.rbStaticCutSize = new System.Windows.Forms.RadioButton();
             this.lblStringAtOffset = new System.Windows.Forms.Label();
             this.tbSearchStringOffset = new System.Windows.Forms.TextBox();
-            this.lblPresets = new System.Windows.Forms.Label();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -74,7 +74,7 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 486);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 329);
             this.pnlLabels.Size = new System.Drawing.Size(840, 19);
             // 
             // pnlTitle
@@ -83,12 +83,12 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 409);
+            this.tbOutput.Location = new System.Drawing.Point(0, 252);
             this.tbOutput.Size = new System.Drawing.Size(840, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 389);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 232);
             this.pnlButtons.Size = new System.Drawing.Size(840, 20);
             // 
             // btnCancel
@@ -113,6 +113,15 @@
             this.grpFiles.TabIndex = 5;
             this.grpFiles.TabStop = false;
             this.grpFiles.Text = "Files to Search";
+            // 
+            // lblPresets
+            // 
+            this.lblPresets.AutoSize = true;
+            this.lblPresets.Location = new System.Drawing.Point(315, 42);
+            this.lblPresets.Name = "lblPresets";
+            this.lblPresets.Size = new System.Drawing.Size(42, 13);
+            this.lblPresets.TabIndex = 4;
+            this.lblPresets.Text = "Presets";
             // 
             // btnLoadPreset
             // 
@@ -447,20 +456,11 @@
             this.tbSearchStringOffset.TabIndex = 0;
             this.tbSearchStringOffset.Text = "0x00";
             // 
-            // lblPresets
-            // 
-            this.lblPresets.AutoSize = true;
-            this.lblPresets.Location = new System.Drawing.Point(315, 42);
-            this.lblPresets.Name = "lblPresets";
-            this.lblPresets.Size = new System.Drawing.Size(42, 13);
-            this.lblPresets.TabIndex = 4;
-            this.lblPresets.Text = "Presets";
-            // 
             // Extract_OffsetFinderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(840, 527);
+            this.ClientSize = new System.Drawing.Size(840, 370);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.grpCriteria);
             this.Controls.Add(this.grpFiles);
