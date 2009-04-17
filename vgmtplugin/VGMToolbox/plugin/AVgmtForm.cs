@@ -221,7 +221,7 @@ namespace VGMToolbox.plugin
             this.completeMessage = getCompleteMessage();
             this.beginMessage = getBeginMessage();
 
-            this.toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_Xsf2Exe_MessageBegin"];
+            this.toolStripStatusLabel1.Text = this.beginMessage;
             this.tbOutput.Clear();
 
             setNodeAsWorking();

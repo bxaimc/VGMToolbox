@@ -4,11 +4,12 @@ using System.ComponentModel;
 using System.IO;
 using System.Text;
 
+using VGMToolbox.format;
 using VGMToolbox.plugin;
 
 namespace VGMToolbox.tools.genh
 {
-    class GenhCreatorWorker : BackgroundWorker, IVgmtBackgroundWorker
+    public class GenhCreatorWorker : BackgroundWorker, IVgmtBackgroundWorker
     {
         public struct GenhCreatorStruct : IVgmtWorkerStruct
         {
@@ -20,7 +21,15 @@ namespace VGMToolbox.tools.genh
 
             public string LoopStart;
             public string LoopEnd;
-            public string UseFileEnd;
+            public bool NoLoops;
+            public bool UseFileEnd;
+            public bool FindLoop;
+
+            public string CoefRightChannel;
+            public string CoefLeftChannel;
+            public bool CapcomHack;
+
+            public bool OutputHeaderOnly;
 
             private string[] sourcePaths;
             public string[] SourcePaths

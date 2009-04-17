@@ -73,6 +73,7 @@
     <Compile Include="VGMToolbox\format\sdat\Smap.cs" />
     <Compile Include="VGMToolbox\format\Spc.cs" />
     <Compile Include="VGMToolbox\format\util\GbsUtil.cs" />
+    <Compile Include="VGMToolbox\format\util\GenhUtil.cs" />
     <Compile Include="VGMToolbox\format\util\NezPlugUtil.cs" />
     <Compile Include="VGMToolbox\format\util\NsfUtil.cs" />
     <Compile Include="VGMToolbox\format\util\SdatUtil.cs" />
