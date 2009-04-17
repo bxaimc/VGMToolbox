@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 
 using VGMToolbox.dbutil;
+using VGMToolbox.plugin;
 
 namespace VGMToolbox.forms
 {

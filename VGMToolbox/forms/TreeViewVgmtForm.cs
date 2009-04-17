@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using VGMToolbox.format;
+using VGMToolbox.plugin;
 using VGMToolbox.util;
 using VGMToolbox.tools;
 

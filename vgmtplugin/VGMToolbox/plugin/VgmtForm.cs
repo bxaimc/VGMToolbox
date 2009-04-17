@@ -10,11 +10,11 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.plugin
 {
-    public abstract partial class AVgmtForm : Form
+    public partial class VgmtForm : Form
     {
         protected DateTime elapsedTimeStart;
         protected DateTime elapsedTimeEnd;
-        protected TimeSpan elapsedTime;
+        protected TimeSpan elapsedTime;        
         protected TreeNode menuTreeNode;
         protected bool errorFound;
 
@@ -23,7 +23,7 @@ namespace VGMToolbox.plugin
         protected string cancelMessage;
         protected string completeMessage;
 
-        protected AVgmtForm()
+        public VgmtForm()
         {
             menuTreeNode = null;
 
@@ -33,10 +33,11 @@ namespace VGMToolbox.plugin
 
             InitializeComponent();
         }
-        protected AVgmtForm(TreeNode pTreeNode)
+
+        public VgmtForm(TreeNode pTreeNode)
         {
             menuTreeNode = pTreeNode;
-
+            
             this.TopLevel = false;
             this.FormBorderStyle = FormBorderStyle.None;
             this.Dock = DockStyle.Fill;
@@ -50,6 +51,7 @@ namespace VGMToolbox.plugin
             pTreeNode.BackColor = Color.White;
             pTreeNode.ForeColor = Color.Black;
         }
+
         protected void setNodeAsWorking()
         {
             // set colors to indicate a working status
@@ -59,11 +61,12 @@ namespace VGMToolbox.plugin
                 menuTreeNode.ForeColor = Color.Black;
             }
         }
+
         protected void setNodeAsComplete()
         {
             if (errorFound)
             {
-                setNodeAsError();
+                setNodeAsError();            
             }
             else
             {
@@ -75,8 +78,9 @@ namespace VGMToolbox.plugin
                 }
             }
         }
+
         protected void setNodeAsError()
-        {
+        {            
             // set colors to indicate a error status
             if (menuTreeNode != null)
             {
@@ -84,6 +88,7 @@ namespace VGMToolbox.plugin
                 menuTreeNode.ForeColor = Color.White;
             }
         }
+
         protected void showElapsedTime()
         {
             this.elapsedTimeEnd = DateTime.Now;
@@ -121,7 +126,7 @@ namespace VGMToolbox.plugin
         protected bool checkTextBox(string pText, string pFieldName)
         {
             bool ret = true;
-
+            
             if (pText.Trim().Length == 0)
             {
                 MessageBox.Show(String.Format("{0} cannot be empty.", pFieldName), "Required Field Missing.");
@@ -133,11 +138,11 @@ namespace VGMToolbox.plugin
         protected virtual void backgroundWorker_ReportProgress(object sender, ProgressChangedEventArgs e)
         {
             VGMToolbox.util.ProgressStruct vProgressStruct = (VGMToolbox.util.ProgressStruct)e.UserState;
-
+            
             if (e.ProgressPercentage != Constants.IGNORE_PROGRESS &&
                 e.ProgressPercentage != Constants.PROGRESS_MSG_ONLY)
             {
-                this.toolStripProgressBar.Value = e.ProgressPercentage;
+                this.toolStripProgressBar.Value = e.ProgressPercentage;                
                 this.Text = "VGMToolbox [" + e.ProgressPercentage + "%]";
 
                 if (!String.IsNullOrEmpty(vProgressStruct.GenericMessage))
@@ -151,14 +156,14 @@ namespace VGMToolbox.plugin
                 tbOutput.Text += vProgressStruct.GenericMessage;
             }
             else if (e.UserState != null)
-            {
+            {                
                 lblProgressLabel.Text = vProgressStruct.Filename == null ? String.Empty : vProgressStruct.Filename;
 
                 if (!String.IsNullOrEmpty(vProgressStruct.ErrorMessage))
                 {
                     tbOutput.Text += vProgressStruct.ErrorMessage;
                     errorFound = true;
-                }
+                }                
             }
 
             this.showElapsedTime();
@@ -193,7 +198,7 @@ namespace VGMToolbox.plugin
         private void tbOutput_DoubleClick(object sender, EventArgs e)
         {
             string tempFileName = Path.GetTempFileName();
-
+            
             // write output to a temp file
             using (StreamWriter sw = new StreamWriter(File.Open(tempFileName, FileMode.Open, FileAccess.Write)))
             {
@@ -221,7 +226,7 @@ namespace VGMToolbox.plugin
             this.completeMessage = getCompleteMessage();
             this.beginMessage = getBeginMessage();
 
-            this.toolStripStatusLabel1.Text = ConfigurationSettings.AppSettings["Form_Xsf2Exe_MessageBegin"];
+            this.toolStripStatusLabel1.Text = this.beginMessage;
             this.tbOutput.Clear();
 
             setNodeAsWorking();
@@ -258,7 +263,7 @@ namespace VGMToolbox.plugin
         {
             try
             {
-                this.initializeProcessing();
+                initializeProcessing();
                 backgroundWorker.ProgressChanged += backgroundWorker_ReportProgress;
                 backgroundWorker.RunWorkerCompleted += backgroundWorker_WorkComplete;
             }
@@ -271,9 +276,21 @@ namespace VGMToolbox.plugin
         }
 
         // to be abstract
-        protected abstract IVgmtBackgroundWorker getBackgroundWorker();
-        protected abstract string getCancelMessage();
-        protected abstract string getCompleteMessage();
-        protected abstract string getBeginMessage();
+        protected virtual IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            throw new NotImplementedException();
+        }
+        protected virtual string getCancelMessage()
+        {
+            throw new NotImplementedException();
+        }
+        protected virtual string getCompleteMessage()
+        {
+            throw new NotImplementedException();
+        }
+        protected virtual string getBeginMessage()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

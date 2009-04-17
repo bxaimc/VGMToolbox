@@ -140,6 +140,12 @@
     <Compile Include="forms\Gbs_GbsToM3uForm.Designer.cs">
       <DependentUpon>Gbs_GbsToM3uForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\Genh_CreatorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\Genh_CreatorForm.Designer.cs">
+      <DependentUpon>Genh_CreatorForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\Hoot_XmlBuilderForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -163,12 +169,6 @@
     </Compile>
     <Compile Include="forms\TreeViewVgmtForm.Designer.cs">
       <DependentUpon>TreeViewVgmtForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="forms\VgmtForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="forms\VgmtForm.Designer.cs">
-      <DependentUpon>VgmtForm.cs</DependentUpon>
     </Compile>
     <Compile Include="forms\Xsf_2sfRipperForm.cs">
       <SubType>Form</SubType>
@@ -320,14 +320,6 @@
       <DependentUpon>SingleTagUpdateForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\TreeViewVgmtForm.resx">
-      <DependentUpon>TreeViewVgmtForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="forms\VgmtForm.resx">
-      <DependentUpon>VgmtForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="forms\Xsf_2sfRipperForm.resx">
       <DependentUpon>Xsf_2sfRipperForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -424,6 +416,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\gbs\GbsM3uBuilderWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tools\genh\GenhCreatorWorker.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\hoot\HootXmlBuilderWorker.cs">
@@ -573,6 +568,14 @@
     </Content>
     <EmbeddedResource Include="forms\Extract_ExtractCdxaForm.resx">
       <DependentUpon>Extract_ExtractCdxaForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\Genh_CreatorForm.resx">
+      <DependentUpon>Genh_CreatorForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\TreeViewVgmtForm.resx">
+      <DependentUpon>TreeViewVgmtForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Xsf_PsxSeqExtractForm.resx">

@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
 
+using VGMToolbox.plugin;
 using VGMToolbox.tools.xsf;
 
 namespace VGMToolbox.forms

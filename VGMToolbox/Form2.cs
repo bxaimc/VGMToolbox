@@ -92,8 +92,8 @@ namespace VGMToolbox
             // add Tools node to Root
             rootNode.Nodes.Add(tools_RootNode);
 
-            TreeNode plugins_RootNode = buildPluginTreeNode();
-            rootNode.Nodes.Add(plugins_RootNode);
+            TreeNode genh_RootNode = buildGenhTreeNode();
+            rootNode.Nodes.Add(genh_RootNode);
 
             // add Root node to tree
             tvMenuTree.Nodes.Add(rootNode);
@@ -621,14 +621,28 @@ namespace VGMToolbox
             return ext_RootNode;
         }
 
-        private TreeNode buildPluginTreeNode()
+        private TreeNode buildGenhTreeNode()
         {
             VGMToolbox.util.NodeTagStruct nodeTag = new VGMToolbox.util.NodeTagStruct();
 
-            TreeNode plugin_RootNode = new TreeNode("Plugins");
-            plugin_RootNode.NodeFont = this.treeviewBoldFont;
+            TreeNode genh_RootNode = new TreeNode("GENH");
+            genh_RootNode.NodeFont = this.treeviewBoldFont;
 
-            return plugin_RootNode;
+            // GENH Creator
+            TreeNode genh_CreatorNode =
+                new TreeNode("Create GENH");
+
+            // Add GENH Creator Form
+            Genh_CreatorForm genh_CreatorForm = new Genh_CreatorForm(genh_CreatorNode);
+            this.splitContainer1.Panel2.Controls.Add(genh_CreatorForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = genh_CreatorForm.GetType().Name;
+            genh_CreatorNode.Tag = nodeTag;
+
+            genh_RootNode.Nodes.Add(genh_CreatorNode);
+
+            return genh_RootNode;
         }
 
         private void tvMenuTree_doClick(object sender, TreeNodeMouseClickEventArgs e)
