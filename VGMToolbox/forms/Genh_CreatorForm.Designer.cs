@@ -35,6 +35,7 @@
             this.grpFormat = new System.Windows.Forms.GroupBox();
             this.comboFormat = new System.Windows.Forms.ComboBox();
             this.grpOptions = new System.Windows.Forms.GroupBox();
+            this.cbNoLoops = new System.Windows.Forms.CheckBox();
             this.cbFindLoop = new System.Windows.Forms.CheckBox();
             this.cbCapcomHack = new System.Windows.Forms.CheckBox();
             this.lblLeftCoef = new System.Windows.Forms.Label();
@@ -55,7 +56,6 @@
             this.lblHeaderSkip = new System.Windows.Forms.Label();
             this.tbHeaderSkip = new System.Windows.Forms.TextBox();
             this.cbHeaderOnly = new System.Windows.Forms.CheckBox();
-            this.cbNoLoops = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -182,6 +182,17 @@
             this.grpOptions.TabIndex = 8;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
+            // 
+            // cbNoLoops
+            // 
+            this.cbNoLoops.AutoSize = true;
+            this.cbNoLoops.Location = new System.Drawing.Point(6, 183);
+            this.cbNoLoops.Name = "cbNoLoops";
+            this.cbNoLoops.Size = new System.Drawing.Size(72, 17);
+            this.cbNoLoops.TabIndex = 20;
+            this.cbNoLoops.Text = "No Loops";
+            this.cbNoLoops.UseVisualStyleBackColor = true;
+            this.cbNoLoops.CheckedChanged += new System.EventHandler(this.cbNoLoops_CheckedChanged);
             // 
             // cbFindLoop
             // 
@@ -356,17 +367,6 @@
             this.cbHeaderOnly.Text = "Ouput Header Only";
             this.cbHeaderOnly.UseVisualStyleBackColor = true;
             // 
-            // cbNoLoops
-            // 
-            this.cbNoLoops.AutoSize = true;
-            this.cbNoLoops.Location = new System.Drawing.Point(6, 183);
-            this.cbNoLoops.Name = "cbNoLoops";
-            this.cbNoLoops.Size = new System.Drawing.Size(72, 17);
-            this.cbNoLoops.TabIndex = 20;
-            this.cbNoLoops.Text = "No Loops";
-            this.cbNoLoops.UseVisualStyleBackColor = true;
-            this.cbNoLoops.CheckedChanged += new System.EventHandler(this.cbNoLoops_CheckedChanged);
-            // 
             // Genh_CreatorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -374,12 +374,12 @@
             this.ClientSize = new System.Drawing.Size(840, 623);
             this.Controls.Add(this.grpFormat);
             this.Controls.Add(this.grpOptions);
-            this.Controls.Add(this.grpSourceFiles);
             this.Controls.Add(this.cbHeaderOnly);
+            this.Controls.Add(this.grpSourceFiles);
             this.Name = "Genh_CreatorForm";
             this.Text = "Genh_CreatorForm";
-            this.Controls.SetChildIndex(this.cbHeaderOnly, 0);
             this.Controls.SetChildIndex(this.grpSourceFiles, 0);
+            this.Controls.SetChildIndex(this.cbHeaderOnly, 0);
             this.Controls.SetChildIndex(this.grpOptions, 0);
             this.Controls.SetChildIndex(this.grpFormat, 0);
             this.Controls.SetChildIndex(this.pnlLabels, 0);
