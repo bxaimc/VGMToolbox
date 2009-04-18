@@ -53,8 +53,10 @@ namespace VGMToolbox.forms
         }
         private void tbSourceDirectory_TextChanged(object sender, EventArgs e)
         {
+            this.lbFiles.Items.Clear();
+            
             if (Directory.Exists(this.tbSourceDirectory.Text))
-            {
+            {                                
                 foreach (string f in Directory.GetFiles(this.tbSourceDirectory.Text))
                 {
                     this.lbFiles.Items.Add(Path.GetFileName(f));
@@ -123,10 +125,15 @@ namespace VGMToolbox.forms
             {
                 this.tbLoopEnd.Text = String.Empty;
                 this.tbLoopEnd.ReadOnly = true;
+
+                this.tbLoopStart.Text = String.Empty;
+                this.tbLoopStart.ReadOnly = true;
+
             }
             else
             {
                 this.tbLoopEnd.ReadOnly = false;
+                this.tbLoopStart.ReadOnly = false;
             }
         }
         private void cbNoLoops_CheckedChanged(object sender, EventArgs e)
@@ -239,7 +246,8 @@ namespace VGMToolbox.forms
             }
 
             // Loop Start
-            if (!pGenhCreatorStruct.NoLoops && 
+            if (!pGenhCreatorStruct.NoLoops &&
+                !pGenhCreatorStruct.FindLoop &&
                 String.IsNullOrEmpty(pGenhCreatorStruct.LoopStart.Trim()))
             {
                 isValid = false;
