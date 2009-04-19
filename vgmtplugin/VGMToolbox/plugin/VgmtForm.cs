@@ -221,12 +221,14 @@ namespace VGMToolbox.plugin
         {
             errorFound = false;
 
-            this.backgroundWorker = getBackgroundWorker();
-            this.cancelMessage = getCancelMessage();
-            this.completeMessage = getCompleteMessage();
-            this.beginMessage = getBeginMessage();
-
-            this.toolStripStatusLabel1.Text = this.beginMessage;
+            if (typeof(AVgmtForm).IsAssignableFrom(Type.GetType(this.Name)))
+            {
+                this.backgroundWorker = getBackgroundWorker();
+                this.cancelMessage = getCancelMessage();
+                this.completeMessage = getCompleteMessage();
+                this.beginMessage = getBeginMessage();
+                this.toolStripStatusLabel1.Text = this.beginMessage;
+            }            
             this.tbOutput.Clear();
 
             setNodeAsWorking();

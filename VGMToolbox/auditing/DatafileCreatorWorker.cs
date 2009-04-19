@@ -86,6 +86,8 @@ namespace VGMToolbox.auditing
                 {
                     IFormat vgmData = (IFormat)Activator.CreateInstance(formatType);
                     vgmData.Initialize(fs, pFileName);
+                    fs.Close();
+                    fs.Dispose();
 
                     // vgmData.getDatFileCrc32(pFileName, ref libHash, ref crc32Generator,
                     //    ref md5CryptoStream, ref sha1CryptoStream, pUseLibHash, pStreamInput);
@@ -150,9 +152,6 @@ namespace VGMToolbox.auditing
             romfile.name = pFileName.Substring((pDirectory.LastIndexOf(this.dir) + this.dir.Length + 1));
             // Cleanup
             crc32Generator.Reset();
-
-            fs.Close();
-            fs.Dispose();
 
             /*
             md5MemoryStream.Close();

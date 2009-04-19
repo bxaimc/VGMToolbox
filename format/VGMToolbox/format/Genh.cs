@@ -153,6 +153,22 @@ namespace VGMToolbox.format
         public void GetDatFileCrc32(ref Crc32 pChecksum)
         {
             pChecksum.Reset();
+
+            using (FileStream fs = File.Open(this.filePath, FileMode.Open, FileAccess.Read))
+            {
+                using (BinaryReader br = new BinaryReader(fs))
+                {
+                    br.BaseStream.Position = (long)BitConverter.ToUInt32(this.headerLength, 0);
+
+                    byte[] data = new byte[Constants.FILE_READ_CHUNK_SIZE];
+                    int bytesRead;
+
+                    while ((bytesRead = br.Read(data, 0, data.Length)) > 0)
+                    {
+                        pChecksum.Update(data, 0, bytesRead);
+                    }
+                }               
+            }
         }
         
         #endregion
