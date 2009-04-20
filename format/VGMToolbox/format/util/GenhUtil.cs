@@ -39,6 +39,34 @@ namespace VGMToolbox.format.util
             int dspInterleaveType =
                 GetDspInterleave(pGenhCreationStruct.Interleave, pGenhCreationStruct.Channels);
 
+            if (pGenhCreationStruct.NoLoops)
+            {
+                pGenhCreationStruct.LoopStart = Genh.EMPTY_SAMPLE_COUNT;
+            }
+
+            if (pGenhCreationStruct.UseFileEnd)
+            {
+                pGenhCreationStruct.LoopEnd = GetFileEndLoopEnd(pSourcePath, pGenhCreationStruct);
+            }
+
+            if (pGenhCreationStruct.FindLoop)
+            {
+                string loopStartFound;
+                string loopEndFound;
+
+                if (GetPsAdpcmLoop(pSourcePath, pGenhCreationStruct, out loopStartFound,
+                    out loopEndFound))
+                {
+                    pGenhCreationStruct.LoopStart = loopStartFound;
+                    pGenhCreationStruct.LoopEnd = loopEndFound;
+                }
+                else
+                {
+                    pGenhCreationStruct.LoopStart = Genh.EMPTY_SAMPLE_COUNT;
+                    pGenhCreationStruct.LoopEnd = String.Empty;
+                }
+            }
+
             FileInfo fi = new FileInfo(Path.GetFullPath(pSourcePath));
             UInt32 fileLength = (UInt32)fi.Length;
 
@@ -51,10 +79,19 @@ namespace VGMToolbox.format.util
                 {
                     bw.Write(Genh.ASCII_SIGNATURE);
                     bw.Write((UInt32)VGMToolbox.util.Encoding.GetIntFromString(pGenhCreationStruct.Channels));
-                    bw.Write((UInt32)VGMToolbox.util.Encoding.GetIntFromString(pGenhCreationStruct.Interleave));
+                    bw.Write((Int32)VGMToolbox.util.Encoding.GetIntFromString(pGenhCreationStruct.Interleave));
                     bw.Write((UInt32)VGMToolbox.util.Encoding.GetIntFromString(pGenhCreationStruct.Frequency));
                     bw.Write((UInt32)VGMToolbox.util.Encoding.GetIntFromString(pGenhCreationStruct.LoopStart));
-                    bw.Write((UInt32)VGMToolbox.util.Encoding.GetIntFromString(pGenhCreationStruct.LoopEnd));                        
+
+                    if (!String.IsNullOrEmpty(pGenhCreationStruct.LoopEnd))
+                    {
+                        bw.Write((UInt32)VGMToolbox.util.Encoding.GetIntFromString(pGenhCreationStruct.LoopEnd));
+                    }
+                    else
+                    {
+                        bw.Write(new byte[] {0x00, 0x00, 0x00, 0x00});
+                    }
+                    
                     bw.Write((UInt32)VGMToolbox.util.Encoding.GetIntFromString(pGenhCreationStruct.Format));
                     bw.Write((UInt32)(VGMToolbox.util.Encoding.GetIntFromString(pGenhCreationStruct.HeaderSkip) + Genh.GENH_HEADER_SIZE));
                     bw.Write((UInt32)Genh.GENH_HEADER_SIZE);
@@ -120,12 +157,12 @@ namespace VGMToolbox.format.util
             int genhChannels = (int)VGMToolbox.util.Encoding.GetIntFromString(GenhChannels);
 
             // Calculating the Interleave Type for DSP
-            if (genhInterleave > 7)
+            if (genhInterleave >= 8)
             {
                 dspInterleave = 0; // Normal Interleave Layout
             }
 
-            if (genhInterleave < 8)
+            if (genhInterleave <= 7)
             {
                 dspInterleave = 1; // Sub-FrameInterleave
             }
@@ -137,83 +174,90 @@ namespace VGMToolbox.format.util
 
             return dspInterleave;
         }
-        
-        /*
-        private void cmdFindLoopPS2_Click(object sender, EventArgs e)
+
+        public static string GetFileEndLoopEnd(string pSourcePath, GenhCreationStruct pGenhCreationStruct)
         {
+            int formatId = (int) VGMToolbox.util.Encoding.GetIntFromString(pGenhCreationStruct.Format);
+            int headerSkip = (int) VGMToolbox.util.Encoding.GetIntFromString(pGenhCreationStruct.HeaderSkip);
+            int channels = (int) VGMToolbox.util.Encoding.GetIntFromString(pGenhCreationStruct.Channels);
+            int interleave = (int) VGMToolbox.util.Encoding.GetIntFromString(pGenhCreationStruct.Interleave);
+            int loopEnd = -1;
 
-            FileStream strInputFileEditor = new FileStream(Path.GetFullPath(this.listBox1.Text), FileMode.Open, FileAccess.Read);
-            BinaryReader br = new BinaryReader(strInputFileEditor);
-            FileInfo fi = new FileInfo(Path.GetFullPath(this.listBox1.Text));
+            int frames;
+            int lastFrame;
+            int dataSize;
 
+            FileInfo fi = new FileInfo(Path.GetFullPath(pSourcePath));
+            int fileLength = (int)fi.Length;
 
-
-            long fileLength = fi.Length;
-            long readOffsetLoopStart = 0;
-            long readOffsetLoopEnd = 0;
-            int LoopStartFound = 0;
-            int LoopEndFound = 0;
-            int GENHChannels = int.Parse(this.txtChannelsCreator.Text);
-
-            // Loop Start
-            while (readOffsetLoopStart < fileLength)
+            switch (formatId)
             {
-                br.BaseStream.Position = readOffsetLoopStart + 0x01;
-                byte LoopFlag = br.ReadByte();
-
-                // Loop Start
-                if (LoopFlag == 0x06)
-                {
-                    LoopStartFound = 1;
-                    //this.txtLoopStartCreator.Text = (readOffset / 16 / GENHChannels * 28).ToString();
+                case 0x00: // "0x00 - PlayStation 4-bit ADPCM"
+                case 0x0E: // "0x0E - PlayStation 4-bit ADPCM (with bad flags)
+                    loopEnd = ((fileLength - headerSkip) / 16 / channels * 28);
                     break;
-                }
-                readOffsetLoopStart += 0x10;
-            }
-            // Loop Start End
-
-            // Loop End
-            readOffsetLoopEnd = fileLength;
-            while (readOffsetLoopEnd > 0)
-            {
-                br.BaseStream.Position = readOffsetLoopEnd - 0xF;
-                byte LoopFlag = br.ReadByte();
-
-                // Loop Start 
-                if (LoopFlag == 0x03)
-                {
-                    LoopEndFound = 1;
-                    //this.txtLoopEndCreator.Text = (readOffset / 16 / GENHChannels * 28).ToString();
+                
+                case 0x01: // "0x01 - XBOX 4-bit IMA ADPCM"
+                    loopEnd = ((fileLength - headerSkip) / 36 / channels * 64);
                     break;
-                }
-                readOffsetLoopEnd -= 0x10;
+                
+                case 0x02: // "0x02 - GameCube ADP/DTK 4-bit ADPCM"
+                    loopEnd = ((fileLength - headerSkip) / 32 * 28);
+                    break;
+
+                case 0x03: // "0x03 - PCM RAW (Big Endian)"
+                case 0x04: // "0x04 - PCM RAW (Little Endian)
+                    loopEnd = ((fileLength - headerSkip) / 2 / channels);
+                    break;
+
+                case 0x05: // "0x05 - PCM RAW (8-Bit)"
+                case 0x0D: // "0x05 - PCM RAW (8-Bit unsigned)"
+                    loopEnd = ((fileLength - headerSkip) / channels);
+                    break;
+
+                case 0x06: // "0x06 - Squareroot-delta-exact 8-bit DPCM"
+                    loopEnd = ((fileLength - headerSkip) / 1 / channels);
+                    break;
+
+                case 0x08: // "0x08 - MPEG Layer Audio File (MP1/2/3)"
+                    // Not Implemented
+                    break;
+
+                case 0x07: // "0x07 - Interleaved DVI 4-Bit IMA ADPCM"
+                case 0x09: // "0x09 - 4-bit IMA ADPCM"
+                case 0x0A: // "0x0A - Yamaha AICA 4-bit ADPCM"    
+                    loopEnd = ((fileLength - headerSkip) / channels * 2);
+                    break;
+
+                case 0x0B:
+                    frames = (fileLength - headerSkip) / interleave;
+                    lastFrame = (fileLength - headerSkip) - (frames * interleave);
+                    loopEnd = (frames * (0x800 - (14 - 2))) + (lastFrame - (14 - 2));                    
+                    break;
+
+                case 0x0C: // "0x0C - Nintendo GameCube DSP 4-bit ADPCM"
+                    loopEnd = ((fileLength - headerSkip) / channels / 8 * 14);
+                    break;
+
+                case 0x0F: // "0x0F - Microsoft 4-bit IMA ADPCM"
+                    dataSize = (fileLength - headerSkip);
+                    loopEnd = (dataSize / 0x800) * (0x800 - 4 * channels) * 2 / channels + ((dataSize % 0x800) != 0 ? (dataSize % 0x800 - 4 * channels) * 2 / channels : 0);
+                    break;
+
+                default:
+                    break;
             }
 
-            if (LoopStartFound == 1)
-            {
-                this.txtLoopStartCreator.Text = (readOffsetLoopStart / 16 / GENHChannels * 28).ToString();
-            }
-            else if (LoopStartFound == 0)
-            {
-                this.toolStripStatus.Text = "Loop Start not found";
-            }
-
-            if (LoopEndFound == 1)
-            {
-                this.txtLoopEndCreator.Text = (readOffsetLoopEnd / 16 / GENHChannels * 28).ToString();
-            }
-            else if (LoopEndFound == 0)
-            {
-                this.toolStripStatus.Text = "Loop End not found";
-            }
-
-
-            if (LoopStartFound == 0 && LoopEndFound == 0)
-            {
-                this.toolStripStatus.Text = "Loop Values not found";
-            }
-
+            return loopEnd.ToString();
         }
-        */    
+
+        public static bool GetPsAdpcmLoop(string pSourcePath, 
+            GenhCreationStruct pGenhCreationStruct, out string pLoopStart, out string pLoopEnd)
+        {
+            pLoopStart = Genh.EMPTY_SAMPLE_COUNT;
+            pLoopEnd = Genh.EMPTY_SAMPLE_COUNT;
+
+            return false;
+        }        
     }
 }

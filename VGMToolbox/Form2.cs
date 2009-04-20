@@ -57,6 +57,13 @@ namespace VGMToolbox
             rootNode.Nodes.Add(examine_RootNode);
 
             /////////
+            // GENH
+            ////////
+            TreeNode genh_RootNode = buildGenhTreeNode();
+            genh_RootNode.Tag = nodeTag;
+            rootNode.Nodes.Add(genh_RootNode);
+
+            /////////
             // Tools
             /////////
             TreeNode tools_RootNode = 
@@ -91,9 +98,6 @@ namespace VGMToolbox
 
             // add Tools node to Root
             rootNode.Nodes.Add(tools_RootNode);
-
-            TreeNode genh_RootNode = buildGenhTreeNode();
-            rootNode.Nodes.Add(genh_RootNode);
 
             // add Root node to tree
             tvMenuTree.Nodes.Add(rootNode);
@@ -625,12 +629,12 @@ namespace VGMToolbox
         {
             VGMToolbox.util.NodeTagStruct nodeTag = new VGMToolbox.util.NodeTagStruct();
 
-            TreeNode genh_RootNode = new TreeNode("GENH");
+            TreeNode genh_RootNode = new TreeNode(ConfigurationSettings.AppSettings["MenuTree_GenhRootNode"]);
             genh_RootNode.NodeFont = this.treeviewBoldFont;
 
             // GENH Creator
             TreeNode genh_CreatorNode =
-                new TreeNode("Create GENH");
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_GenhCreationRootNode"]);
 
             // Add GENH Creator Form
             Genh_CreatorForm genh_CreatorForm = new Genh_CreatorForm(genh_CreatorNode);

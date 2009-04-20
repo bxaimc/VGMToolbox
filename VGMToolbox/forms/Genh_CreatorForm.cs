@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.IO;
@@ -11,6 +12,7 @@ using VGMToolbox.dbutil;
 using VGMToolbox.format.util;
 using VGMToolbox.plugin;
 using VGMToolbox.tools.genh;
+using VGMToolbox.util;
 
 namespace VGMToolbox.forms
 {
@@ -24,9 +26,28 @@ namespace VGMToolbox.forms
         {
             InitializeComponent();
 
-            this.lblTitle.Text = "Create GENHs";
-            this.tbSourceDirectory.Text = "<Source Directory>";
-            this.btnDoTask.Text = "Create GENHs";
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_Title"];
+            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_BtnDoTask"];
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_IntroText"];
+            
+            this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_GroupSourceFiles"];
+            this.tbSourceDirectory.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_tbSourceDirectory"];
+
+            this.grpFormat.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_GroupFormat"];
+            this.grpOptions.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_GroupOptions"];
+            this.lblHeaderSkip.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_LblHeaderSkip"];
+            this.lblInterleave.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_LblInterleave"];
+            this.lblChannels.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_LblChannels"];
+            this.lblFrequency.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_LblFrequency"];
+            this.lblLoopStart.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_LblLoopStart"];
+            this.lblLoopEnd.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_LblLoopEnd"];
+            this.cbNoLoops.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_CheckBoxNoLoops"];
+            this.cbLoopFileEnd.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_CheckBoxFileEnd"];
+            this.cbFindLoop.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_CheckBoxFindLoop"];
+            this.lblRightCoef.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_LblRightCoef"];
+            this.lblLeftCoef.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_LblLeftCoef"];
+            this.cbCapcomHack.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_CheckBoxCapcomHack"];
+            this.cbHeaderOnly.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_CheckBoxHeaderOnly"];
 
             this.loadFormats();
         }
@@ -145,6 +166,7 @@ namespace VGMToolbox.forms
                 this.cbLoopFileEnd.Checked = false;
                 this.cbLoopFileEnd.Enabled = false;
 
+                this.tbLoopStart.Text = String.Empty;
                 this.tbLoopStart.ReadOnly = true;
                 this.tbLoopEnd.ReadOnly = true;
             }
@@ -173,6 +195,7 @@ namespace VGMToolbox.forms
             genhStruct.Frequency = this.tbFrequency.Text;
             genhStruct.LoopStart = this.tbLoopStart.Text;
             genhStruct.LoopEnd = this.tbLoopEnd.Text;
+            genhStruct.NoLoops = this.cbNoLoops.Checked;
             genhStruct.UseFileEnd = this.cbLoopFileEnd.Checked;
             genhStruct.FindLoop = this.cbFindLoop.Checked;
             genhStruct.CoefRightChannel = this.tbRightCoef.Text;
@@ -254,6 +277,13 @@ namespace VGMToolbox.forms
                 errorBuffer.Append("'Loop Start' is a required field.");
                 errorBuffer.Append(Environment.NewLine);
             }
+            else if (!pGenhCreatorStruct.NoLoops &&
+                     VGMToolbox.util.Encoding.GetIntFromString(pGenhCreatorStruct.LoopStart.Trim()) < 0)
+            {
+                isValid = false;
+                errorBuffer.Append("'Loop Start' must be greater than zero.  If you would like No Loops, please use the checkbox.");
+                errorBuffer.Append(Environment.NewLine);            
+            }
 
             // Loop End
             if (!pGenhCreatorStruct.NoLoops && 
@@ -282,6 +312,14 @@ namespace VGMToolbox.forms
                 isValid = false;
                 errorBuffer.Append("'Coef: Left Channel' is a required field for the selected format.");
                 errorBuffer.Append(Environment.NewLine);
+            }
+
+            // Find Loop End
+            if (pGenhCreatorStruct.UseFileEnd && pGenhCreatorStruct.Format.Equals("8"))
+            {
+                isValid = false;
+                errorBuffer.Append("'Use File End' is not implemented for the selected format.");
+                errorBuffer.Append(Environment.NewLine);            
             }
 
             pErrorMessages = errorBuffer.ToString();

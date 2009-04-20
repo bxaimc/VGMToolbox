@@ -16,6 +16,8 @@ namespace VGMToolbox.format
         public static readonly byte[] CURRENT_VERSION = new byte[] { 0x34, 0x30, 0x43, 0x23 };
         public const UInt32 GENH_HEADER_SIZE = 0x1000;
         public const string FILE_EXTENSION = ".genh";
+        public const string EMPTY_SAMPLE_COUNT = "-1";
+
 
         private const int SIG_OFFSET = 0x00;
         private const int SIG_LENGTH = 0x04;
