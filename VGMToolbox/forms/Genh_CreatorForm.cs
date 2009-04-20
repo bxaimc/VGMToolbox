@@ -332,15 +332,15 @@ namespace VGMToolbox.forms
         }
         protected override string getCancelMessage()
         {
-            return "Create GENH(s)...Cancelled";
+            return ConfigurationSettings.AppSettings["Form_GenhCreator_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return "Create GENH(s)...Complete";
+            return ConfigurationSettings.AppSettings["Form_GenhCreator_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return "Create GENH(s)...Begin";
+            return ConfigurationSettings.AppSettings["Form_GenhCreator_MessageBegin"];
         }        
     }
 }
