@@ -1,6 +1,6 @@
 ﻿namespace VGMToolbox.forms
 {
-    partial class TreeViewVgmtForm
+    abstract partial class TreeViewVgmtForm
     {
         /// <summary>
         /// Required designer variable.

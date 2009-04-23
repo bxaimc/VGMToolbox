@@ -254,10 +254,71 @@ namespace VGMToolbox.format.util
         public static bool GetPsAdpcmLoop(string pSourcePath, 
             GenhCreationStruct pGenhCreationStruct, out string pLoopStart, out string pLoopEnd)
         {
+            bool ret = false;
             pLoopStart = Genh.EMPTY_SAMPLE_COUNT;
             pLoopEnd = Genh.EMPTY_SAMPLE_COUNT;
 
-            return false;
+            long loopStart = -1;
+            long loopEnd = -1;
+
+            long headerSkip = VGMToolbox.util.Encoding.GetIntFromString(pGenhCreationStruct.HeaderSkip);
+            int channels = (int)VGMToolbox.util.Encoding.GetIntFromString(pGenhCreationStruct.Channels);
+            string fullIncomingPath = Path.GetFullPath(pSourcePath);
+
+            FileInfo fi = new FileInfo(Path.GetFullPath(fullIncomingPath));
+            if ((fi.Length - headerSkip) % 0x10 != 0)
+            { 
+                throw new Exception(String.Format("Error processing <{0}> Length of file minus the header skip value is not divisible by 0x10.  This is not a proper PS ADPCM rip.", fullIncomingPath));
+            }
+            
+            using (BinaryReader br = new BinaryReader(File.OpenRead(fullIncomingPath)))            
+            {   
+                // Loop Start
+                br.BaseStream.Position = headerSkip + 0x01;
+                
+                while (br.BaseStream.Position < fi.Length)
+                {
+                    if (br.Read() == 0x06)
+                    {
+                        loopStart = br.BaseStream.Position - 1;
+                        break;
+                    }
+                    else
+                    {
+                        br.BaseStream.Position += 0x10;
+                    }
+                }
+
+                // Loop End
+                br.BaseStream.Position = fi.Length - 0x0F;
+                
+                while (br.BaseStream.Position > headerSkip)
+                {
+                    if (br.Read() == 0x03)
+                    {
+                        loopEnd = br.BaseStream.Position - 1;
+                        break;
+                    }
+                    else
+                    {
+                        br.BaseStream.Position -= 0x10;
+                    }
+                }
+            }
+            
+            if (loopStart >= 0)
+            {
+                pLoopStart = (loopStart / 16 / channels * 28).ToString();
+                ret = true;
+            }
+            
+            if (loopEnd >= 0)
+            {
+                pLoopEnd = (loopEnd / 16 / channels * 28).ToString();
+                ret = true;
+            }
+
+            return ret;
         }        
     }
 }

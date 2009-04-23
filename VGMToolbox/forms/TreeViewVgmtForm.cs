@@ -15,7 +15,7 @@ using VGMToolbox.tools;
 
 namespace VGMToolbox.forms
 {
-    public partial class TreeViewVgmtForm : VgmtForm
+    public abstract partial class TreeViewVgmtForm : AVgmtForm
     {
         private TreeNode selectedNode;
         private TreeNode oldNode;
