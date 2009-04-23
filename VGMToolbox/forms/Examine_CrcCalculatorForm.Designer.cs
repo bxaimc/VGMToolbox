@@ -63,10 +63,10 @@
             // 
             // grpSourceFiles
             // 
-            this.grpSourceFiles.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpSourceFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpSourceFiles.Location = new System.Drawing.Point(0, 23);
             this.grpSourceFiles.Name = "grpSourceFiles";
-            this.grpSourceFiles.Size = new System.Drawing.Size(840, 249);
+            this.grpSourceFiles.Size = new System.Drawing.Size(840, 407);
             this.grpSourceFiles.TabIndex = 5;
             this.grpSourceFiles.TabStop = false;
             this.grpSourceFiles.Text = "Drop Files Here";

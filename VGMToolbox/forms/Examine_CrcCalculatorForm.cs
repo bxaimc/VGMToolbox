@@ -19,7 +19,9 @@ namespace VGMToolbox.forms
             InitializeComponent();
 
             this.grpSourceFiles.AllowDrop = true;
-            this.tbOutput.Text = "Calculate CRC32/MD5/SHA1 of input files.  Full file support only, VGMT special checksums not yet added.";
+            this.tbOutput.Text = "Calculate CRC32/MD5/SHA1 of input files.  Full file support only, VGMT MD5/SHA1 checksums not yet added.";
+            this.lblTitle.Text = "Checksum Calculator";
+            this.btnDoTask.Hide();
 
         }
 
