@@ -16,7 +16,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.forms
 {
-    public partial class Genh_CreatorForm : VgmtForm
+    public partial class Genh_CreatorForm : AVgmtForm
     {
         private static readonly string DB_PATH =
             Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "db"), "collection.s3db");
@@ -278,6 +278,7 @@ namespace VGMToolbox.forms
                 errorBuffer.Append(Environment.NewLine);
             }
             else if (!pGenhCreatorStruct.NoLoops &&
+                     !pGenhCreatorStruct.FindLoop &&
                      VGMToolbox.util.Encoding.GetIntFromString(pGenhCreatorStruct.LoopStart.Trim()) < 0)
             {
                 isValid = false;

@@ -66,7 +66,7 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 510);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 582);
             this.pnlLabels.Size = new System.Drawing.Size(840, 19);
             // 
             // pnlTitle
@@ -75,12 +75,12 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 433);
+            this.tbOutput.Location = new System.Drawing.Point(0, 505);
             this.tbOutput.Size = new System.Drawing.Size(840, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 413);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 485);
             this.pnlButtons.Size = new System.Drawing.Size(840, 20);
             // 
             // btnCancel
@@ -371,7 +371,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(840, 551);
+            this.ClientSize = new System.Drawing.Size(840, 623);
             this.Controls.Add(this.grpFormat);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.cbHeaderOnly);

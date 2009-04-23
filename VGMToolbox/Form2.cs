@@ -203,9 +203,19 @@ namespace VGMToolbox
             nodeTag.FormClass = examine_TagViewerForm.GetType().Name;
             examine_TagViewerNode.Tag = nodeTag;
 
-            examine_RootNode.NodeFont = this.treeviewBoldFont;
+            // Crc Calculator
+            TreeNode examine_CrcCalculatorNode =
+                new TreeNode("Checksum Calculator");
+            Examine_CrcCalculatorForm examine_CrcCalculatorForm =
+                new Examine_CrcCalculatorForm(examine_CrcCalculatorNode);
+            this.splitContainer1.Panel2.Controls.Add(examine_CrcCalculatorForm);
 
+            nodeTag.FormClass = examine_CrcCalculatorForm.GetType().Name;
+            examine_CrcCalculatorNode.Tag = nodeTag;
+            
+            examine_RootNode.NodeFont = this.treeviewBoldFont;
             examine_RootNode.Nodes.Add(examine_TagViewerNode);
+            examine_RootNode.Nodes.Add(examine_CrcCalculatorNode);
 
             return examine_RootNode;
         }

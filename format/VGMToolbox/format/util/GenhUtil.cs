@@ -116,7 +116,7 @@ namespace VGMToolbox.format.util
                     
                     
                     bw.BaseStream.Position = 0x200;
-                    bw.Write(Path.GetFileName(pSourcePath));
+                    bw.Write(enc.GetBytes(Path.GetFileName(pSourcePath).Trim()));
 
                     bw.BaseStream.Position = 0x300;
                     bw.Write(fileLength);
@@ -265,6 +265,8 @@ namespace VGMToolbox.format.util
             int channels = (int)VGMToolbox.util.Encoding.GetIntFromString(pGenhCreationStruct.Channels);
             string fullIncomingPath = Path.GetFullPath(pSourcePath);
 
+            byte[] checkByte = new byte[1];
+
             FileInfo fi = new FileInfo(Path.GetFullPath(fullIncomingPath));
             if ((fi.Length - headerSkip) % 0x10 != 0)
             { 
@@ -278,14 +280,16 @@ namespace VGMToolbox.format.util
                 
                 while (br.BaseStream.Position < fi.Length)
                 {
-                    if (br.Read() == 0x06)
+                    br.Read(checkByte, 0, checkByte.Length);
+
+                    if (checkByte[0] == 0x06)
                     {
-                        loopStart = br.BaseStream.Position - 1 - headerSkip;
+                        loopStart = br.BaseStream.Position - 2 - headerSkip;
                         break;
                     }
                     else
                     {
-                        br.BaseStream.Position += 0x10;
+                        br.BaseStream.Position += 0x10 - 0x01;
                     }
                 }
 
@@ -294,14 +298,16 @@ namespace VGMToolbox.format.util
                 
                 while (br.BaseStream.Position > headerSkip)
                 {
-                    if (br.Read() == 0x03)
+                    br.Read(checkByte, 0, checkByte.Length);
+
+                    if (checkByte[0] == 0x03)
                     {
-                        loopEnd = br.BaseStream.Position - 1 - headerSkip;
+                        loopEnd = br.BaseStream.Position + 0x0E - headerSkip;
                         break;
                     }
                     else
                     {
-                        br.BaseStream.Position -= 0x10;
+                        br.BaseStream.Position -= 0x10 - 0x01;
                     }
                 }
             }
