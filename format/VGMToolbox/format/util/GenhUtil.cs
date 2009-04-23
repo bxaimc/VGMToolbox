@@ -280,7 +280,7 @@ namespace VGMToolbox.format.util
                 {
                     if (br.Read() == 0x06)
                     {
-                        loopStart = br.BaseStream.Position - 1;
+                        loopStart = br.BaseStream.Position - 1 - headerSkip;
                         break;
                     }
                     else
@@ -296,7 +296,7 @@ namespace VGMToolbox.format.util
                 {
                     if (br.Read() == 0x03)
                     {
-                        loopEnd = br.BaseStream.Position - 1;
+                        loopEnd = br.BaseStream.Position - 1 - headerSkip;
                         break;
                     }
                     else
