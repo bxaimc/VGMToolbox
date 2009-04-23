@@ -139,7 +139,8 @@ namespace VGMToolbox.format
         public byte[] NsfRipperBytes { get { return nsfRipperBytes; } }
 
         // BANK Chunk
-        private byte[] bankSwitchInit;
+        private byte[] bankSwitchInit = new byte[] { 0x00, 0x00, 0x00, 0x00,
+                                                     0x00, 0x00, 0x00, 0x00};
         public byte[] BankSwitchInit { get { return bankSwitchInit; } }
 
         private ArrayList chunks = new ArrayList();
