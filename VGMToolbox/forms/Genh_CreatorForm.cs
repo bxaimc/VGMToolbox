@@ -80,7 +80,11 @@ namespace VGMToolbox.forms
             {                                
                 foreach (string f in Directory.GetFiles(this.tbSourceDirectory.Text))
                 {
-                    this.lbFiles.Items.Add(Path.GetFileName(f));
+                    if (!f.ToUpper().EndsWith("GENH") &&
+                        !f.ToUpper().EndsWith("EXE"))
+                    {
+                        this.lbFiles.Items.Add(Path.GetFileName(f));
+                    }
                 }
             }
             else
