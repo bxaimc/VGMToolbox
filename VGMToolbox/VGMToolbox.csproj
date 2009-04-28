@@ -122,6 +122,12 @@
     <Compile Include="forms\Examine_CrcCalculatorForm.Designer.cs">
       <DependentUpon>Examine_CrcCalculatorForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\Examine_SearchForFileForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\Examine_SearchForFileForm.Designer.cs">
+      <DependentUpon>Examine_SearchForFileForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\Examine_TagViewerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -418,6 +424,9 @@
     <Compile Include="tools\examine\ExamineChecksumGeneratorWorker.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\examine\ExamineSearchForFileWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\extract\ExtractCdxaWorker.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -577,6 +586,10 @@
     </Content>
     <EmbeddedResource Include="forms\Examine_CrcCalculatorForm.resx">
       <DependentUpon>Examine_CrcCalculatorForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\Examine_SearchForFileForm.resx">
+      <DependentUpon>Examine_SearchForFileForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Extract_ExtractCdxaForm.resx">

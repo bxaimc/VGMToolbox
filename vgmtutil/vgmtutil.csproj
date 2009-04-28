@@ -35,6 +35,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\VGMToolbox\3rd\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
+    <Reference Include="SevenZipSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=20de82c62b055c88, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Forms" />
@@ -43,11 +44,21 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VGMToolbox\util\ChecksumUtil.cs" />
+    <Compile Include="VGMToolbox\util\CompressionUtil.cs" />
     <Compile Include="VGMToolbox\util\Constants.cs" />
     <Compile Include="VGMToolbox\util\Encoding.cs" />
     <Compile Include="VGMToolbox\util\FileUtil.cs" />
     <Compile Include="VGMToolbox\util\IDeepCopy.cs" />
     <Compile Include="VGMToolbox\util\ParseFile.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="lib\7z.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib\SevenZipSharp.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -57,4 +68,9 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>if not exist ".\lib" mkdir lib
+move SevenZipSharp.dll ".\lib\SevenZipSharp.dll"
+move ICSharpCode.SharpZipLib.dll ".\lib\ICSharpCode.SharpZipLib.dll"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

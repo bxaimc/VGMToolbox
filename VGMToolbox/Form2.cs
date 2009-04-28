@@ -212,10 +212,20 @@ namespace VGMToolbox
 
             nodeTag.FormClass = examine_CrcCalculatorForm.GetType().Name;
             examine_CrcCalculatorNode.Tag = nodeTag;
-            
+
+            // Search for Files
+            TreeNode examine_SearchForFilesNode = new TreeNode("Search for Files");
+            Examine_SearchForFileForm examine_SearchForFileForm =
+                new Examine_SearchForFileForm(examine_SearchForFilesNode);
+            this.splitContainer1.Panel2.Controls.Add(examine_SearchForFileForm);
+
+            nodeTag.FormClass = examine_SearchForFileForm.GetType().Name;
+            examine_SearchForFilesNode.Tag = nodeTag;
+
             examine_RootNode.NodeFont = this.treeviewBoldFont;
             examine_RootNode.Nodes.Add(examine_TagViewerNode);
             examine_RootNode.Nodes.Add(examine_CrcCalculatorNode);
+            examine_RootNode.Nodes.Add(examine_SearchForFilesNode);
 
             return examine_RootNode;
         }

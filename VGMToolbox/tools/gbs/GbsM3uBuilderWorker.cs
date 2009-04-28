@@ -2,6 +2,7 @@
 
 using VGMToolbox.format.util;
 using VGMToolbox.plugin;
+using VGMToolbox.util;
 
 namespace VGMToolbox.tools.gbs
 {
@@ -29,7 +30,7 @@ namespace VGMToolbox.tools.gbs
             GbsUtil.GbsM3uBuilderStruct gbsM3uBuilderStruct = new GbsUtil.GbsM3uBuilderStruct();
             gbsM3uBuilderStruct.OnePlaylistPerFile = gbsM3uWorkerStruct.onePlaylistPerFile;
             gbsM3uBuilderStruct.Path = pPath;
-            GbsUtil.BuildM3uForFile(gbsM3uBuilderStruct);           
+            GbsUtil.BuildM3uForFile(gbsM3uBuilderStruct);
         }                       
     }
 }
