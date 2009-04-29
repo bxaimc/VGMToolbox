@@ -46,7 +46,7 @@ namespace VGMToolbox.util
             return filenames;
         }
 
-        public static void ExtractFileFromArchive(string pArchivePath, string pFileName)
+        public static void ExtractFileFromArchive(string pArchivePath, string pFileName, string pOutputPath)
         {
             SevenZipExtractor sevenZipExtractor = null;
             string outputDir;
@@ -55,8 +55,15 @@ namespace VGMToolbox.util
             {
                 try
                 {
-                    outputDir = Path.Combine(Path.GetDirectoryName(pArchivePath), Path.GetFileNameWithoutExtension(pArchivePath));
-                    
+                    if (!String.IsNullOrEmpty(pOutputPath))
+                    {
+                        outputDir = pOutputPath;
+                    }
+                    else
+                    {
+                        outputDir = Path.Combine(Path.GetDirectoryName(pArchivePath), Path.GetFileNameWithoutExtension(pArchivePath));
+                    }
+
                     if (!Directory.Exists(outputDir))
                     {
                         Directory.CreateDirectory(outputDir);

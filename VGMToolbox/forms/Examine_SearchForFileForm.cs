@@ -19,7 +19,8 @@ namespace VGMToolbox.forms
             InitializeComponent();
 
             this.lblTitle.Text = "Search for File(s)";
-            this.btnDoTask.Hide();
+            this.tbOutput.Text = "Search for files in a folder and archives.  Enter Search String, then select a folder and click 'Search' or Drag and Drop the folders you want to search.";
+            this.btnDoTask.Text = "Search";
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -54,8 +55,46 @@ namespace VGMToolbox.forms
             exStruct.ExtractFile = cbExtract.Checked;
             exStruct.SearchString = tbSearchString.Text;
             exStruct.CaseSensitive = cbCaseSensitive.Checked;
+            exStruct.OutputFolder = tbOutputFolder.Text;
 
             base.backgroundWorker_Execute(exStruct);
+        }
+        private void btnBrowseSource_Click(object sender, EventArgs e)
+        {
+            tbSource.Text = base.browseForFolder(sender, e);
+        }
+        private void btnDoTask_Click(object sender, EventArgs e)
+        {
+            if (base.checkFolderExists(tbSource.Text, "Source Folder"))
+            {
+                string[] s = new string[1];
+                s[0] = tbSource.Text;
+
+                ExamineSearchForFileWorker.ExamineSearchForFileStruct exStruct =
+                    new ExamineSearchForFileWorker.ExamineSearchForFileStruct();
+                exStruct.SourcePaths = s;
+                exStruct.ExtractFile = cbExtract.Checked;
+                exStruct.SearchString = tbSearchString.Text;
+                exStruct.CaseSensitive = cbCaseSensitive.Checked;
+                exStruct.OutputFolder = tbOutputFolder.Text;
+
+                base.backgroundWorker_Execute(exStruct);
+            }
+        }
+        private void cbExtract_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbExtract.Checked)
+            {
+                tbOutputFolder.Enabled = true;
+                btnOutputDir.Enabled = true;
+                lblOutputFolder.Enabled = true;
+            }
+            else
+            {
+                tbOutputFolder.Enabled = false;
+                btnOutputDir.Enabled = false;
+                lblOutputFolder.Enabled = false;
+            }
         }
     }
 }

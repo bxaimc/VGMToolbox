@@ -17,6 +17,7 @@ namespace VGMToolbox.tools.examine
             public bool ExtractFile;
             public bool CaseSensitive;
             public string SearchString;
+            public string OutputFolder;
 
             private string[] sourcePaths;
             public string[] SourcePaths
@@ -71,7 +72,7 @@ namespace VGMToolbox.tools.examine
 
                         if (examineSearchForFileStruct.ExtractFile)
                         {
-                            CompressionUtil.ExtractFileFromArchive(pPath, f);
+                            CompressionUtil.ExtractFileFromArchive(pPath, f, examineSearchForFileStruct.OutputFolder);
                         }
                     }
                 }
