@@ -3,6 +3,7 @@ using System.IO;
 
 using ICSharpCode.SharpZipLib.Checksums;
 
+using VGMToolbox.format.util;
 using VGMToolbox.util;
 
 namespace VGMToolbox.format
@@ -206,6 +207,20 @@ namespace VGMToolbox.format
         public string GetHootDriverAlias() { return HOOT_DRIVER_ALIAS; }
         public string GetHootDriverType() { return HOOT_DRIVER_TYPE; }
         public string GetHootDriver() { return HOOT_DRIVER; }
+
+        public bool usesPlaylist()
+        {
+            return true;
+        }
+        public NezPlugM3uEntry[] GetPlaylistEntries()
+        {
+            NezPlugM3uEntry[] entries = null;
+
+            string m3uFileName = Path.ChangeExtension(this.filePath, NezPlugUtil.M3U_FILE_EXTENSION);
+            entries = NezPlugUtil.GetNezPlugM3uEntriesFromFile(m3uFileName);
+
+            return entries;
+        }
 
         #endregion
     }

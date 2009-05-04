@@ -55,11 +55,11 @@ namespace VGMToolbox.format.util
 
             m3uEntry.filename = splitFirstChunk[0];
             m3uEntry.format = splitFirstChunk[1];
-            m3uEntry.songNumber = VGMToolbox.util.Encoding.GetIntFromString(splitLine[2].Replace("$", "0x")).ToString();
-            m3uEntry.title = splitFirstChunk[3];
-            m3uEntry.time = splitFirstChunk[4];
-            m3uEntry.fade = splitFirstChunk[5];
-            m3uEntry.loopCount = splitFirstChunk[6];
+            m3uEntry.songNumber = VGMToolbox.util.Encoding.GetIntFromString(splitLine[1].Replace("$", "0x")).ToString();
+            m3uEntry.title = splitLine[2];
+            m3uEntry.time = splitLine[3];
+            m3uEntry.fade = splitLine[4];
+            m3uEntry.loopCount = splitLine[5];
 
             return m3uEntry;
         }
@@ -76,7 +76,8 @@ namespace VGMToolbox.format.util
 
                     while ((currentLine = sr.ReadLine()) != null)
                     {
-                        if (!currentLine.StartsWith(COMMENT_MARKER))
+                        if (!currentLine.StartsWith(COMMENT_MARKER) &&
+                            (!String.IsNullOrEmpty(currentLine)))
                         {
                             NezPlugM3uEntry m3uEntry = new NezPlugM3uEntry();
                             m3uEntry = GetNezPlugM3uEntryFromString(currentLine);

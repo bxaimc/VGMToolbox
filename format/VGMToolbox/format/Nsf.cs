@@ -5,6 +5,7 @@ using System.Text;
 
 using ICSharpCode.SharpZipLib.Checksums;
 
+using VGMToolbox.format.util;
 using VGMToolbox.util;
 
 namespace VGMToolbox.format
@@ -464,6 +465,15 @@ namespace VGMToolbox.format
         public string GetHootDriverAlias() { return HOOT_DRIVER_ALIAS; }
         public string GetHootDriverType() { return HOOT_DRIVER_TYPE; }
         public string GetHootDriver() { return HOOT_DRIVER; }
+
+        public bool usesPlaylist()
+        {
+            return false;
+        }
+        public NezPlugM3uEntry[] GetPlaylistEntries()
+        {
+            return null;
+        }
 
         #endregion
 

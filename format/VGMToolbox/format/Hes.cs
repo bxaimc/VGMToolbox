@@ -11,7 +11,7 @@ using VGMToolbox.util;
 
 namespace format.VGMToolbox.format
 {
-    class Hes : IHootM3uFormat
+    class Hes : IHootFormat
     {
         public static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x48, 0x45, 0x53, 0x4D }; // HESM
         private const string FORMAT_ABBREVIATION = "HES";
@@ -208,10 +208,38 @@ namespace format.VGMToolbox.format
 
         #region HOOT
 
+        public int GetStartingSong() 
+        {
+            return this.startingSong[0];
+        }
+        public int GetTotalSongs()
+        {
+            NezPlugM3uEntry[] entries = this.GetPlaylistEntries();
+            int songCount = 0;
+
+            for (int i = 0; i < entries.Length; i++)
+            {
+                if (entries[i].filename != null)
+                {
+                    songCount++;
+                }
+            }
+
+            return songCount;
+        }
+        public string GetSongName()
+        {
+            return null;
+        }
+
         public string GetHootDriverAlias() { return HOOT_DRIVER_ALIAS; }
         public string GetHootDriverType() { return HOOT_DRIVER_TYPE; }
         public string GetHootDriver() { return HOOT_DRIVER; }
 
+        public bool usesPlaylist()
+        {
+            return true;
+        }
         public NezPlugM3uEntry[] GetPlaylistEntries()
         {
             NezPlugM3uEntry[] entries = null;
