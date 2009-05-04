@@ -189,7 +189,7 @@ namespace VGMToolbox.format.util
 
             foreach (Type t in asmtypes)
             {
-                if (t.IsClass & t.GetInterface("IHootFormat") != null)
+                if ((t.IsClass & t.GetInterface("IHootFormat") != null))
                 {
                     // Create and instance of this format
                     o = asm.CreateInstance(t.FullName);
