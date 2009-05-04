@@ -80,7 +80,6 @@ namespace VGMToolbox.tools.hoot
                         int totalSongs = vgmData.GetTotalSongs();
                         VGMToolbox.format.hoot.title hootTitle;
 
-                        // for (int i = vgmData.GetStartingSong(); i < (vgmData.GetStartingSong() + vgmData.GetTotalSongs()); i++)
                         for (int i = 0; i < totalSongs; i++)
                         {
                             hootTitle = new VGMToolbox.format.hoot.title();
