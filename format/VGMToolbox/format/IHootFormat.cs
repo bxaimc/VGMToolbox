@@ -12,7 +12,7 @@ namespace VGMToolbox.format
         int GetTotalSongs();
         string GetSongName();
 
-        bool usesPlaylist();
+        bool UsesPlaylist();
         NezPlugM3uEntry[] GetPlaylistEntries();
 
         string GetHootDriverAlias();

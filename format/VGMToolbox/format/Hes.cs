@@ -215,17 +215,7 @@ namespace format.VGMToolbox.format
         public int GetTotalSongs()
         {
             NezPlugM3uEntry[] entries = this.GetPlaylistEntries();
-            int songCount = 0;
-
-            for (int i = 0; i < entries.Length; i++)
-            {
-                if (entries[i].filename != null)
-                {
-                    songCount++;
-                }
-            }
-
-            return songCount;
+            return entries.Length;
         }
         public string GetSongName()
         {
@@ -236,7 +226,7 @@ namespace format.VGMToolbox.format
         public string GetHootDriverType() { return HOOT_DRIVER_TYPE; }
         public string GetHootDriver() { return HOOT_DRIVER; }
 
-        public bool usesPlaylist()
+        public bool UsesPlaylist()
         {
             return true;
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -9,7 +10,7 @@ namespace VGMToolbox.format.util
     {
         public string filename;
         public string format;
-        public string songNumber;
+        public int songNumber;
         public string title;
         public string time;
         public string fade;
@@ -23,6 +24,7 @@ namespace VGMToolbox.format.util
         
         public const string COMMENT_MARKER = "#";
         public const string M3U_FILE_EXTENSION = ".m3u";
+        public const int EMPTY_COUNT = -1;
 
         // convert to use struct
         public static string BuildPlaylistEntry(string pFileType, string pFileName, string pSongNumber,
@@ -53,23 +55,55 @@ namespace VGMToolbox.format.util
             string[] stringDelimtier = new string[] { "::" };
             string[] splitFirstChunk = splitLine[0].Split(stringDelimtier, StringSplitOptions.None);
 
-            m3uEntry.filename = splitFirstChunk[0];
-            m3uEntry.format = splitFirstChunk[1];
-            m3uEntry.songNumber = VGMToolbox.util.Encoding.GetIntFromString(splitLine[1].Replace("$", "0x")).ToString();
-            m3uEntry.title = splitLine[2];
-            m3uEntry.time = splitLine[3];
-            m3uEntry.fade = splitLine[4];
-            m3uEntry.loopCount = splitLine[5];
+            if (splitFirstChunk.Length > 0)
+            {
+                m3uEntry.filename = splitFirstChunk[0];
+            }
+
+            if (splitFirstChunk.Length > 1)
+            {
+                m3uEntry.format = splitFirstChunk[1];
+            }
+
+            if (splitLine.Length > 1)
+            {
+                m3uEntry.songNumber = (int)VGMToolbox.util.Encoding.GetIntFromString(splitLine[1].Replace("$", "0x"));
+            }
+            else
+            {
+                m3uEntry.songNumber = EMPTY_COUNT;
+            }
+            
+            if (splitLine.Length > 2)
+            {
+                m3uEntry.title = splitLine[2];
+            }
+
+            if (splitLine.Length > 3)
+            {
+                m3uEntry.time = splitLine[3];
+            }
+
+            if (splitLine.Length > 4)
+            {
+                m3uEntry.fade = splitLine[4];
+            }
+
+            if (splitLine.Length > 5)
+            {
+                m3uEntry.loopCount = splitLine[5];
+            }
 
             return m3uEntry;
         }
 
         public static NezPlugM3uEntry[] GetNezPlugM3uEntriesFromFile(string pPath)
         {
-            NezPlugM3uEntry[] m3uEntries = new NezPlugM3uEntry[0xFF];
+            NezPlugM3uEntry[] m3uEntries = null;
+            ArrayList m3uList = new ArrayList();
 
             if (File.Exists(pPath))
-            { 
+            {
                 using (StreamReader sr = new StreamReader(File.OpenRead(pPath)))
                 {
                     string currentLine;
@@ -81,10 +115,15 @@ namespace VGMToolbox.format.util
                         {
                             NezPlugM3uEntry m3uEntry = new NezPlugM3uEntry();
                             m3uEntry = GetNezPlugM3uEntryFromString(currentLine);
-                            m3uEntries[int.Parse(m3uEntry.songNumber)] = m3uEntry;
+                            m3uList.Add(m3uEntry);
                         }
                     }
+                    m3uEntries = (NezPlugM3uEntry[])m3uList.ToArray(typeof(NezPlugM3uEntry));
                 }
+            }
+            else
+            {
+                throw new IOException(String.Format("File not found: <{0}>", pPath));
             }
 
             return m3uEntries;

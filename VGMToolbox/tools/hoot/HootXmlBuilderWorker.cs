@@ -80,14 +80,34 @@ namespace VGMToolbox.tools.hoot
                         int totalSongs = vgmData.GetTotalSongs();
                         VGMToolbox.format.hoot.title hootTitle;
 
-                        for (int i = 0; i < totalSongs; i++)
+                        if (vgmData.UsesPlaylist())
                         {
-                            hootTitle = new VGMToolbox.format.hoot.title();
-                            hootTitle.code = "0x" + i.ToString("X2");
-                            hootTitle.Value = "BGM #" + i.ToString("X2");
+                            NezPlugM3uEntry[] entries = vgmData.GetPlaylistEntries();
 
-                            hootGame.titlelist[j] = hootTitle;
-                            j++;
+                            foreach (NezPlugM3uEntry en in entries)
+                            {
+                                if (en.songNumber != NezPlugUtil.EMPTY_COUNT)
+                                {
+                                    hootTitle = new VGMToolbox.format.hoot.title();
+                                    hootTitle.code = "0x" + en.songNumber.ToString("X2");
+                                    hootTitle.Value = en.title;
+
+                                    hootGame.titlelist[j] = hootTitle;
+                                    j++;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            for (int i = 0; i < totalSongs; i++)
+                            {
+                                hootTitle = new VGMToolbox.format.hoot.title();
+                                hootTitle.code = "0x" + i.ToString("X2");
+                                hootTitle.Value = "BGM #" + i.ToString("X2");
+
+                                hootGame.titlelist[j] = hootTitle;
+                                j++;
+                            }
                         }
 
                         hootGamesArrayList.Add(hootGame);

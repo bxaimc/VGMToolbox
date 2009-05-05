@@ -195,20 +195,24 @@ namespace VGMToolbox.format
 
         public bool UsesLibraries() { return false; }
         public bool IsLibraryPresent() { return true; }
-
-        public int GetStartingSong() { return 0; }
-        public int GetTotalSongs() { return 0; }
-        public string GetSongName() { return null; }
         
         #endregion
 
         #region HOOT
 
+        public int GetStartingSong() { return 0; }
+        public int GetTotalSongs()
+        {
+            NezPlugM3uEntry[] entries = this.GetPlaylistEntries();
+            return entries.Length;
+        }
+        public string GetSongName() { return null; }
+
         public string GetHootDriverAlias() { return HOOT_DRIVER_ALIAS; }
         public string GetHootDriverType() { return HOOT_DRIVER_TYPE; }
         public string GetHootDriver() { return HOOT_DRIVER; }
 
-        public bool usesPlaylist()
+        public bool UsesPlaylist()
         {
             return true;
         }

@@ -264,7 +264,7 @@ namespace VGMToolbox.format
         public string GetHootDriverType() { return HOOT_DRIVER_TYPE; }
         public string GetHootDriver() { return HOOT_DRIVER; }
 
-        public bool usesPlaylist()
+        public bool UsesPlaylist()
         {
             return false;
         }
