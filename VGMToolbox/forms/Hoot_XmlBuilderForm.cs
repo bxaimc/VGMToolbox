@@ -16,6 +16,8 @@ namespace VGMToolbox.forms
             // set title
             this.lblTitle.Text = 
                 ConfigurationSettings.AppSettings["Form_HootXmlBuilder_Title"];
+            this.tbOutput.Text =
+                ConfigurationSettings.AppSettings["Form_HootXmlBuilder_Intro"];
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
