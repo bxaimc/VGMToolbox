@@ -17,6 +17,7 @@ namespace VGMToolbox.format
         private const string HOOT_DRIVER_ALIAS = "Gameboy";
         private const string HOOT_DRIVER_TYPE = "gbs";
         private const string HOOT_DRIVER = "gb";
+        private const string HOOT_CHIP = "DMG";
 
         private const int SIG_OFFSET = 0x00;
         private const int SIG_LENGTH = 0x03;
@@ -249,7 +250,31 @@ namespace VGMToolbox.format
         public bool IsLibraryPresent() { return true; }
 
         public int GetStartingSong() { return Convert.ToInt16(this.startingSong[0]); }
-        public int GetTotalSongs() { return Convert.ToInt16(this.totalSongs[0]); }
+        public int GetTotalSongs() 
+        {
+            int ret;
+            NezPlugM3uEntry[] entries = null;
+
+            try
+            {
+                entries = this.GetPlaylistEntries();
+            }
+            catch (IOException)
+            {
+                // gulp! 
+            }
+
+            if (entries != null)
+            {
+                ret = entries.Length;
+            }
+            else
+            {
+                ret = Convert.ToInt16(this.totalSongs[0]);
+            }
+
+            return ret;          
+        }
         public string GetSongName() 
         {
             System.Text.Encoding enc = System.Text.Encoding.ASCII;
@@ -263,6 +288,7 @@ namespace VGMToolbox.format
         public string GetHootDriverAlias() { return HOOT_DRIVER_ALIAS; }
         public string GetHootDriverType() { return HOOT_DRIVER_TYPE; }
         public string GetHootDriver() { return HOOT_DRIVER; }
+        public string GetHootChips() { return HOOT_CHIP; }
 
         public bool UsesPlaylist()
         {
@@ -270,7 +296,12 @@ namespace VGMToolbox.format
         }
         public NezPlugM3uEntry[] GetPlaylistEntries()
         {
-            return null;
+            NezPlugM3uEntry[] entries = null;
+
+            string m3uFileName = Path.ChangeExtension(this.filePath, NezPlugUtil.M3U_FILE_EXTENSION);
+            entries = NezPlugUtil.GetNezPlugM3uEntriesFromFile(m3uFileName);
+
+            return entries;
         }
 
         #endregion

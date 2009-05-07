@@ -16,9 +16,10 @@ namespace format.VGMToolbox.format
         public static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x48, 0x45, 0x53, 0x4D }; // HESM
         private const string FORMAT_ABBREVIATION = "HES";
 
-        private const string HOOT_DRIVER_ALIAS = "PCE";
+        private const string HOOT_DRIVER_ALIAS = "TurboGrafx-16";
         private const string HOOT_DRIVER_TYPE = "hes";
         private const string HOOT_DRIVER = "pcengine";
+        private const string HOOT_CHIP = "Hudson WSG";
 
         private const int SIG_OFFSET = 0x00;
         private const int SIG_LENGTH = 0x04;
@@ -225,6 +226,7 @@ namespace format.VGMToolbox.format
         public string GetHootDriverAlias() { return HOOT_DRIVER_ALIAS; }
         public string GetHootDriverType() { return HOOT_DRIVER_TYPE; }
         public string GetHootDriver() { return HOOT_DRIVER; }
+        public string GetHootChips() { return HOOT_CHIP; }
 
         public bool UsesPlaylist()
         {

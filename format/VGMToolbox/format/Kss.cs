@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 using ICSharpCode.SharpZipLib.Checksums;
 
@@ -16,9 +17,18 @@ namespace VGMToolbox.format
         private const string HOOT_DRIVER_ALIAS = "MSX";
         private const string HOOT_DRIVER_TYPE = "kss";
         private const string HOOT_DRIVER = "msx";
+        private const string HOOT_CHIP = "Z80";
 
         private const int SIG_OFFSET = 0x00;
         private const int SIG_LENGTH = 0x04;
+
+        private const string CHIP_FMPAC = "FM-PAC";
+        private const string CHIP_FMUNIT = "FM-UNIT";
+        private const string CHIP_SN76489 = "SN76489";
+        private const string CHIP_RAM = "RAM";
+        private const string CHIP_GG = "GG Stereo";
+        private const string CHIP_MSXAUDIO = "MSX-AUDIO";
+
 
         private const int Z80_LOAD_OFFSET = 0x04;
         private const int Z80_LOAD_LENGTH = 0x02;
@@ -149,7 +159,7 @@ namespace VGMToolbox.format
         private void initializeTagHash()
         {
             System.Text.Encoding enc = System.Text.Encoding.ASCII;
-            tagHash.Add("Extra Chips Bytes", this.extraChips[0].ToString());
+            tagHash.Add("Extra Chips Bytes", this.GetExtraChipsString());
         }
 
         public void GetDatFileCrc32(ref Crc32 pChecksum)
@@ -164,6 +174,56 @@ namespace VGMToolbox.format
             pChecksum.Update(bankedExtraData);
             pChecksum.Update(extraChips);
             pChecksum.Update(data);
+        }
+
+        public string GetExtraChipsString()
+        {
+            StringBuilder sb = new StringBuilder();
+            
+            bool bit0set = ((this.extraChips[0] & 1 )== 1);
+            bool bit1set = ((this.extraChips[0] & 2) == 2);
+            bool bit2set = ((this.extraChips[0] & 4) == 4);
+            bool bit3set = ((this.extraChips[0] & 8) == 8);
+
+            if (bit0set)
+            {
+                if (bit1set)
+                {
+                    sb.AppendFormat("[{0}]", CHIP_FMUNIT);
+                }
+                else
+                {
+                    sb.AppendFormat("[{0}]", CHIP_FMPAC);
+                }
+            }
+            else if (bit2set)
+            {
+                if (bit1set)
+                {
+                    sb.AppendFormat("[{0}]", CHIP_GG);
+                }
+                else
+                {
+                    sb.AppendFormat("[{0}]", CHIP_RAM);
+                }            
+            }
+            else if (bit3set)
+            {
+                if (bit1set)
+                {
+                    sb.AppendFormat("[{0}]", CHIP_RAM);
+                }
+                else
+                {
+                    sb.AppendFormat("[{0}]", CHIP_MSXAUDIO);
+                }            
+            }
+            else if (bit1set)
+            {
+                sb.AppendFormat("[{0}]", CHIP_SN76489);
+            }
+
+            return sb.ToString();
         }
 
         public byte[] GetAsciiSignature()
@@ -211,6 +271,55 @@ namespace VGMToolbox.format
         public string GetHootDriverAlias() { return HOOT_DRIVER_ALIAS; }
         public string GetHootDriverType() { return HOOT_DRIVER_TYPE; }
         public string GetHootDriver() { return HOOT_DRIVER; }
+        public string GetHootChips() 
+        {
+            StringBuilder sb = new StringBuilder(HOOT_CHIP);
+
+            bool bit0set = ((this.extraChips[0] & 1) == 1);
+            bool bit1set = ((this.extraChips[0] & 2) == 2);
+            bool bit2set = ((this.extraChips[0] & 4) == 4);
+            bool bit3set = ((this.extraChips[0] & 8) == 8);
+
+            if (bit0set)
+            {
+                if (bit1set)
+                {
+                    sb.AppendFormat(", {0}", CHIP_FMUNIT);
+                }
+                else
+                {
+                    sb.AppendFormat(", {0}", CHIP_FMPAC);
+                }
+            }
+            else if (bit2set)
+            {
+                if (bit1set)
+                {
+                    sb.AppendFormat(", {0}", CHIP_GG);
+                }
+                else
+                {
+                    sb.AppendFormat(", {0}", CHIP_RAM);
+                }
+            }
+            else if (bit3set)
+            {
+                if (bit1set)
+                {
+                    sb.AppendFormat(", {0}", CHIP_RAM);
+                }
+                else
+                {
+                    sb.AppendFormat(", {0}", CHIP_MSXAUDIO);
+                }
+            }
+            else if (bit1set)
+            {
+                sb.AppendFormat(", {0}", CHIP_SN76489);
+            }
+
+            return sb.ToString();                        
+        }
 
         public bool UsesPlaylist()
         {

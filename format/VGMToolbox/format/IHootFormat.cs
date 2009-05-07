@@ -17,6 +17,7 @@ namespace VGMToolbox.format
 
         string GetHootDriverAlias();
         string GetHootDriverType();
-        string GetHootDriver();    
+        string GetHootDriver();
+        string GetHootChips();
     }
 }

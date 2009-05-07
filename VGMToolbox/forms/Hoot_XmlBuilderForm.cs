@@ -44,6 +44,7 @@ namespace VGMToolbox.forms
             xbStruct.SourcePaths = s;
             xbStruct.combineOutput = cbHootXML_CombineOutput.Checked;
             xbStruct.splitOutput = cbHootXML_SplitOutput.Checked;
+            xbStruct.parseFileName = cbParseFile.Checked;
 
             base.backgroundWorker_Execute(xbStruct);
         }

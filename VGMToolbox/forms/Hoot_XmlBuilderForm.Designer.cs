@@ -34,6 +34,7 @@
             this.gbHootXML_Options = new System.Windows.Forms.GroupBox();
             this.cbHootXML_SplitOutput = new System.Windows.Forms.CheckBox();
             this.cbHootXML_CombineOutput = new System.Windows.Forms.CheckBox();
+            this.cbParseFile = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -43,30 +44,30 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 486);
-            this.pnlLabels.Size = new System.Drawing.Size(716, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 383);
+            this.pnlLabels.Size = new System.Drawing.Size(711, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(716, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(711, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 409);
-            this.tbOutput.Size = new System.Drawing.Size(716, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 306);
+            this.tbOutput.Size = new System.Drawing.Size(711, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 389);
-            this.pnlButtons.Size = new System.Drawing.Size(716, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 286);
+            this.pnlButtons.Size = new System.Drawing.Size(711, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(656, 0);
+            this.btnCancel.Location = new System.Drawing.Point(651, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(596, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(591, 0);
             // 
             // gbHootXML_Source
             // 
@@ -75,7 +76,7 @@
             this.gbHootXML_Source.Dock = System.Windows.Forms.DockStyle.Top;
             this.gbHootXML_Source.Location = new System.Drawing.Point(0, 23);
             this.gbHootXML_Source.Name = "gbHootXML_Source";
-            this.gbHootXML_Source.Size = new System.Drawing.Size(716, 61);
+            this.gbHootXML_Source.Size = new System.Drawing.Size(711, 61);
             this.gbHootXML_Source.TabIndex = 5;
             this.gbHootXML_Source.TabStop = false;
             this.gbHootXML_Source.Text = "Source";
@@ -101,12 +102,13 @@
             // 
             // gbHootXML_Options
             // 
+            this.gbHootXML_Options.Controls.Add(this.cbParseFile);
             this.gbHootXML_Options.Controls.Add(this.cbHootXML_SplitOutput);
             this.gbHootXML_Options.Controls.Add(this.cbHootXML_CombineOutput);
             this.gbHootXML_Options.Dock = System.Windows.Forms.DockStyle.Top;
             this.gbHootXML_Options.Location = new System.Drawing.Point(0, 84);
             this.gbHootXML_Options.Name = "gbHootXML_Options";
-            this.gbHootXML_Options.Size = new System.Drawing.Size(716, 61);
+            this.gbHootXML_Options.Size = new System.Drawing.Size(711, 80);
             this.gbHootXML_Options.TabIndex = 6;
             this.gbHootXML_Options.TabStop = false;
             this.gbHootXML_Options.Text = "Options";
@@ -114,7 +116,7 @@
             // cbHootXML_SplitOutput
             // 
             this.cbHootXML_SplitOutput.AutoSize = true;
-            this.cbHootXML_SplitOutput.Location = new System.Drawing.Point(6, 38);
+            this.cbHootXML_SplitOutput.Location = new System.Drawing.Point(9, 58);
             this.cbHootXML_SplitOutput.Name = "cbHootXML_SplitOutput";
             this.cbHootXML_SplitOutput.Size = new System.Drawing.Size(142, 17);
             this.cbHootXML_SplitOutput.TabIndex = 1;
@@ -124,18 +126,28 @@
             // cbHootXML_CombineOutput
             // 
             this.cbHootXML_CombineOutput.AutoSize = true;
-            this.cbHootXML_CombineOutput.Location = new System.Drawing.Point(6, 19);
+            this.cbHootXML_CombineOutput.Location = new System.Drawing.Point(9, 39);
             this.cbHootXML_CombineOutput.Name = "cbHootXML_CombineOutput";
             this.cbHootXML_CombineOutput.Size = new System.Drawing.Size(183, 17);
             this.cbHootXML_CombineOutput.TabIndex = 0;
             this.cbHootXML_CombineOutput.Text = "Combine output to single XML file";
             this.cbHootXML_CombineOutput.UseVisualStyleBackColor = true;
             // 
+            // cbParseFile
+            // 
+            this.cbParseFile.AutoSize = true;
+            this.cbParseFile.Location = new System.Drawing.Point(9, 19);
+            this.cbParseFile.Name = "cbParseFile";
+            this.cbParseFile.Size = new System.Drawing.Size(314, 17);
+            this.cbParseFile.TabIndex = 2;
+            this.cbParseFile.Text = "Parse file name according to Knurek style naming convention";
+            this.cbParseFile.UseVisualStyleBackColor = true;
+            // 
             // Hoot_XmlBuilderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(716, 527);
+            this.ClientSize = new System.Drawing.Size(711, 424);
             this.Controls.Add(this.gbHootXML_Options);
             this.Controls.Add(this.gbHootXML_Source);
             this.Name = "Hoot_XmlBuilderForm";
@@ -169,5 +181,6 @@
         private System.Windows.Forms.GroupBox gbHootXML_Options;
         private System.Windows.Forms.CheckBox cbHootXML_SplitOutput;
         private System.Windows.Forms.CheckBox cbHootXML_CombineOutput;
+        private System.Windows.Forms.CheckBox cbParseFile;
     }
 }

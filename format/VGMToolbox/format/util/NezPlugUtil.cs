@@ -13,6 +13,7 @@ namespace VGMToolbox.format.util
         public int songNumber;
         public string title;
         public string time;
+        public string loop;
         public string fade;
         public string loopCount;
     }
@@ -49,49 +50,57 @@ namespace VGMToolbox.format.util
         {
             NezPlugM3uEntry m3uEntry = new NezPlugM3uEntry();
 
-            char[] charDelimtier = new char[] { ',' };
-            string[] splitLine = pString.Split(charDelimtier, StringSplitOptions.None);
-
             string[] stringDelimtier = new string[] { "::" };
-            string[] splitFirstChunk = splitLine[0].Split(stringDelimtier, StringSplitOptions.None);
-
-            if (splitFirstChunk.Length > 0)
-            {
-                m3uEntry.filename = splitFirstChunk[0];
-            }
-
-            if (splitFirstChunk.Length > 1)
-            {
-                m3uEntry.format = splitFirstChunk[1];
-            }
+            string[] splitLine = pString.Split(stringDelimtier, StringSplitOptions.None);
 
             if (splitLine.Length > 1)
             {
-                m3uEntry.songNumber = (int)VGMToolbox.util.Encoding.GetIntFromString(splitLine[1].Replace("$", "0x"));
-            }
-            else
-            {
-                m3uEntry.songNumber = EMPTY_COUNT;
-            }
-            
-            if (splitLine.Length > 2)
-            {
-                m3uEntry.title = splitLine[2];
-            }
+                char[] charDelimtier = new char[] { ',' };
+                string[] splitData = splitLine[1].Split(charDelimtier, StringSplitOptions.None);
 
-            if (splitLine.Length > 3)
-            {
-                m3uEntry.time = splitLine[3];
-            }
+                if (splitLine.Length > 0)
+                {
+                    m3uEntry.filename = splitLine[0];
+                }
 
-            if (splitLine.Length > 4)
-            {
-                m3uEntry.fade = splitLine[4];
-            }
+                if (splitData.Length > 0)
+                {
+                    m3uEntry.format = splitData[0];
+                }
 
-            if (splitLine.Length > 5)
-            {
-                m3uEntry.loopCount = splitLine[5];
+                if (splitData.Length > 1)
+                {
+                    m3uEntry.songNumber = (int)VGMToolbox.util.Encoding.GetIntFromString(splitData[1].Replace("$", "0x"));
+                }
+                else
+                {
+                    m3uEntry.songNumber = EMPTY_COUNT;
+                }
+
+                if (splitData.Length > 2)
+                {
+                    m3uEntry.title = splitData[2];
+                }
+
+                if (splitData.Length > 3)
+                {
+                    m3uEntry.time = splitData[3];
+                }
+
+                if (splitData.Length > 4)
+                {
+                    m3uEntry.loop = splitData[4];
+                }
+
+                if (splitData.Length > 5)
+                {
+                    m3uEntry.fade = splitData[5];
+                }
+
+                if (splitData.Length > 6)
+                {
+                    m3uEntry.loopCount = splitData[6];
+                }
             }
 
             return m3uEntry;
@@ -115,7 +124,11 @@ namespace VGMToolbox.format.util
                         {
                             NezPlugM3uEntry m3uEntry = new NezPlugM3uEntry();
                             m3uEntry = GetNezPlugM3uEntryFromString(currentLine);
-                            m3uList.Add(m3uEntry);
+
+                            if (!String.IsNullOrEmpty(m3uEntry.filename))
+                            {
+                                m3uList.Add(m3uEntry);
+                            }
                         }
                     }
                     m3uEntries = (NezPlugM3uEntry[])m3uList.ToArray(typeof(NezPlugM3uEntry));
@@ -123,7 +136,7 @@ namespace VGMToolbox.format.util
             }
             else
             {
-                throw new IOException(String.Format("File not found: <{0}>", pPath));
+                throw new IOException(String.Format("File not found: <{0}>{1}", pPath, Environment.NewLine));
             }
 
             return m3uEntries;

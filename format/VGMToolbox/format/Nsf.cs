@@ -15,6 +15,7 @@ namespace VGMToolbox.format
         public static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x4E, 0x45, 0x53, 0x4D, 0x1A };
         public static readonly byte[] CURRENT_VERSION_NUMBER = new byte[] { 0x01};
         private const string FORMAT_ABBREVIATION = "NSF";
+        private const string HOOT_CHIP = "2A03";
 
         public static readonly byte MASK_NTSC = 0;
         public static readonly byte MASK_PAL = 1;        
@@ -27,12 +28,12 @@ namespace VGMToolbox.format
         private static readonly byte MASK_N106  = 16;
         private static readonly byte MASK_FME07 = 32;
 
-        private const string CHIP_VRC6  = "[VRC6]";
-        private const string CHIP_VRC7  = "[VRC7]";
-        private const string CHIP_FDS   = "[FDS Sound]";
-        private const string CHIP_MMC5  = "[MMC5]";
-        private const string CHIP_N106  = "[NAMCO106]";
-        private const string CHIP_FME07 = "[Sunsoft FME-07]";
+        private const string CHIP_VRC6  = "VRC6";
+        private const string CHIP_VRC7  = "VRC7";
+        private const string CHIP_FDS   = "FDS Sound";
+        private const string CHIP_MMC5  = "MMC5";
+        private const string CHIP_N106  = "NAMCO106";
+        private const string CHIP_FME07 = "Sunsoft FME-07";
 
         private const string HOOT_DRIVER_ALIAS = "NES";
         private const string HOOT_DRIVER_TYPE = "nsf";
@@ -420,27 +421,27 @@ namespace VGMToolbox.format
             
             if ((this.extraChipsBits[0] & MASK_VRC6) == MASK_VRC6) 
             {
-                _ret += CHIP_VRC6;
+                _ret += String.Format("[{0}]", CHIP_VRC6);
             }
             if ((this.extraChipsBits[0] & MASK_VRC7) == MASK_VRC7)
             {
-                _ret += CHIP_VRC7;
+                _ret += String.Format("[{0}]", CHIP_VRC7);
             }
             if ((this.extraChipsBits[0] & MASK_FDS) == MASK_FDS)
             {
-                _ret += CHIP_FDS;
+                _ret += String.Format("[{0}]", CHIP_FDS);
             }
             if ((this.extraChipsBits[0] & MASK_MMC5) == MASK_MMC5)
             {
-                _ret += CHIP_MMC5;
+                _ret += String.Format("[{0}]", CHIP_MMC5);
             }
             if ((this.extraChipsBits[0] & MASK_N106) == MASK_N106)
             {
-                _ret += CHIP_N106;
+                _ret += String.Format("[{0}]", CHIP_N106);
             }
             if ((this.extraChipsBits[0] & MASK_FME07) == MASK_FME07)
             {
-                _ret += CHIP_FME07;
+                _ret += String.Format("[{0}]", CHIP_FME07);
             }
             
             return _ret;
@@ -450,13 +451,36 @@ namespace VGMToolbox.format
         public bool IsLibraryPresent() { return true; }
 
         public int GetStartingSong() { return Convert.ToInt16(this.startingSong[0]); }
-        public int GetTotalSongs() { return Convert.ToInt16(this.totalSongs[0]); }
+        public int GetTotalSongs() 
+        {
+            int ret;
+            NezPlugM3uEntry[] entries = null;
+
+            try
+            {
+                entries = this.GetPlaylistEntries();
+            }
+            catch (IOException) 
+            { 
+                // gulp! 
+            }
+
+            if (entries != null)
+            {
+                ret = entries.Length;
+            }
+            else
+            {
+                ret = Convert.ToInt16(this.totalSongs[0]);
+            }
+            
+            return ret; 
+        }
         public string GetSongName()
         {
             System.Text.Encoding enc = System.Text.Encoding.ASCII;
             return enc.GetString(FileUtil.ReplaceNullByteWithSpace(this.songName)).Trim();
         }
-
 
         #endregion
 
@@ -465,6 +489,38 @@ namespace VGMToolbox.format
         public string GetHootDriverAlias() { return HOOT_DRIVER_ALIAS; }
         public string GetHootDriverType() { return HOOT_DRIVER_TYPE; }
         public string GetHootDriver() { return HOOT_DRIVER; }
+        public string GetHootChips() 
+        {
+            StringBuilder _ret = new StringBuilder();
+            _ret.Append(HOOT_CHIP);
+
+            if ((this.extraChipsBits[0] & MASK_VRC6) == MASK_VRC6)
+            {
+                _ret.AppendFormat(", {0}", CHIP_VRC6);
+            }
+            if ((this.extraChipsBits[0] & MASK_VRC7) == MASK_VRC7)
+            {
+                _ret.AppendFormat(", {0}", CHIP_VRC7);
+            }
+            if ((this.extraChipsBits[0] & MASK_FDS) == MASK_FDS)
+            {
+                _ret.AppendFormat(", {0}", CHIP_FDS);
+            }
+            if ((this.extraChipsBits[0] & MASK_MMC5) == MASK_MMC5)
+            {
+                _ret.AppendFormat(", {0}", CHIP_MMC5);
+            }
+            if ((this.extraChipsBits[0] & MASK_N106) == MASK_N106)
+            {
+                _ret.AppendFormat(", {0}", CHIP_N106);
+            }
+            if ((this.extraChipsBits[0] & MASK_FME07) == MASK_FME07)
+            {
+                _ret.AppendFormat(", {0}", CHIP_FME07);
+            }
+                                                
+            return _ret.ToString();         
+        }
 
         public bool UsesPlaylist()
         {
@@ -472,7 +528,12 @@ namespace VGMToolbox.format
         }
         public NezPlugM3uEntry[] GetPlaylistEntries()
         {
-            return null;
+            NezPlugM3uEntry[] entries = null;
+
+            string m3uFileName = Path.ChangeExtension(this.filePath, NezPlugUtil.M3U_FILE_EXTENSION);
+            entries = NezPlugUtil.GetNezPlugM3uEntriesFromFile(m3uFileName);
+
+            return entries;
         }
 
         #endregion
