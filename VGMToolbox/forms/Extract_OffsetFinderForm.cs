@@ -360,6 +360,8 @@ namespace VGMToolbox.forms
             DataTable dt = SqlLiteUtil.GetSimpleDataItem(DB_PATH, "OffsetFinder", "OffsetFinderId", drv["OffsetFinderId"].ToString());
             DataRow dr = dt.Rows[0];
 
+            this.cbDoCut.Checked = true;
+
             this.tbSearchString.Text = dr["SearchString"].ToString();
             this.cbSearchAsHex.Checked = Convert.ToBoolean(dr["TreatSearchStringAsHex"]);
             
