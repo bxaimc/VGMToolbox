@@ -14,9 +14,16 @@ namespace VGMToolbox.format
         private static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x4B, 0x53, 0x43, 0x43 }; // KSCC
         private const string FORMAT_ABBREVIATION = "KSS";
 
-        private const string HOOT_DRIVER_ALIAS = "MSX";
-        private const string HOOT_DRIVER_TYPE = "kss";
-        private const string HOOT_DRIVER = "msx";
+        private const string HOOT_DRIVER_ALIAS_MSX = "MSX";
+        private const string HOOT_DRIVER_MSX = "msx";
+
+        private const string HOOT_DRIVER_ALIAS_SMS = "Sega Master Systems";
+        private const string HOOT_DRIVER_SMS = "sms";
+
+        private const string HOOT_DRIVER_ALIAS_GG = "Game Gear";
+        private const string HOOT_DRIVER_GG = "gg";
+
+        private const string HOOT_DRIVER_TYPE = "kss";        
         private const string HOOT_CHIP = "Z80";
 
         private const int SIG_OFFSET = 0x00;
@@ -28,7 +35,6 @@ namespace VGMToolbox.format
         private const string CHIP_RAM = "RAM";
         private const string CHIP_GG = "GG Stereo";
         private const string CHIP_MSXAUDIO = "MSX-AUDIO";
-
 
         private const int Z80_LOAD_OFFSET = 0x04;
         private const int Z80_LOAD_LENGTH = 0x02;
@@ -268,9 +274,85 @@ namespace VGMToolbox.format
         }
         public string GetSongName() { return null; }
 
-        public string GetHootDriverAlias() { return HOOT_DRIVER_ALIAS; }
+        public string GetHootDriverAlias() 
+        {
+            /*
+            string ret = null;
+
+            bool bit0set = ((this.extraChips[0] & 1) == 1);
+            bool bit1set = ((this.extraChips[0] & 2) == 2);
+            bool bit2set = ((this.extraChips[0] & 4) == 4);
+            bool bit3set = ((this.extraChips[0] & 8) == 8);
+
+            if (bit0set)
+            {
+                ret = HOOT_DRIVER_ALIAS_MSX;
+            }
+            else if (bit2set)
+            {
+                if (bit1set)
+                {
+                    ret = HOOT_DRIVER_ALIAS_GG;
+                }
+                else
+                {
+                    ret = HOOT_DRIVER_ALIAS_MSX;
+                }
+            }
+            else if (bit3set)
+            {
+                ret = HOOT_DRIVER_ALIAS_MSX;
+            }
+            else if (bit1set)
+            {
+                ret = HOOT_DRIVER_ALIAS_SMS;
+            }
+
+            return ret;
+            */
+
+            return HOOT_DRIVER_ALIAS_MSX;
+        }        
         public string GetHootDriverType() { return HOOT_DRIVER_TYPE; }
-        public string GetHootDriver() { return HOOT_DRIVER; }
+        public string GetHootDriver() 
+        {
+            /*
+            string ret = null;
+
+            bool bit0set = ((this.extraChips[0] & 1) == 1);
+            bool bit1set = ((this.extraChips[0] & 2) == 2);
+            bool bit2set = ((this.extraChips[0] & 4) == 4);
+            bool bit3set = ((this.extraChips[0] & 8) == 8);
+
+            if (bit0set)
+            {
+                ret = HOOT_DRIVER_MSX;
+            }
+            else if (bit2set)
+            {
+                if (bit1set)
+                {
+                    ret = HOOT_DRIVER_GG;
+                }
+                else
+                {
+                    ret = HOOT_DRIVER_MSX;
+                }
+            }
+            else if (bit3set)
+            {
+                ret = HOOT_DRIVER_MSX;
+            }
+            else if (bit1set)
+            {
+                ret = HOOT_DRIVER_SMS;
+            }
+
+            return ret;
+            */
+
+            return HOOT_DRIVER_MSX;
+        }
         public string GetHootChips() 
         {
             StringBuilder sb = new StringBuilder(HOOT_CHIP);
