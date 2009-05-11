@@ -504,10 +504,24 @@ namespace VGMToolbox
             nodeTag.FormClass = xsf_Xsf2ExeForm.GetType().Name;
             xsf_xsf2ExeNode.Tag = nodeTag;
 
+            //////////////////
+            // XSFRECOMPRESS
+            /////////////////
+            TreeNode xsf_xsfRecompressNode = new TreeNode("Recompress XSF");
+
+            // Add Xsf2Exe Form
+            Xsf_RecompressDataForm xsf_RecompressDataForm = new Xsf_RecompressDataForm(xsf_xsfRecompressNode);
+            this.splitContainer1.Panel2.Controls.Add(xsf_RecompressDataForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = xsf_RecompressDataForm.GetType().Name;
+            xsf_xsfRecompressNode.Tag = nodeTag;
+
             nodeTag.FormClass = emptyForm.GetType().Name;
             xsf_RootNode.NodeFont = this.treeviewBoldFont;
 
             xsf_RootNode.Nodes.Add(xsf_xsf2ExeNode);
+            xsf_RootNode.Nodes.Add(xsf_xsfRecompressNode);
 
             _2sf_RootNode.NodeFont = this.treeviewBoldFont;
             _2sf_RootNode.Tag = nodeTag;

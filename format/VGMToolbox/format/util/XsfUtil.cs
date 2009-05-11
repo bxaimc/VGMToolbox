@@ -5,6 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 
+using ICSharpCode.SharpZipLib.Zip.Compression;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 
 using VGMToolbox.format;
@@ -31,6 +32,11 @@ namespace VGMToolbox.format.util
         {
             public bool IncludeExtension;
             public bool StripGsfHeader;
+        }
+
+        public struct XsfRecompressStruct
+        {
+            public int CompressionLevel;
         }
 
         public static bool IsPythonPresentInPath()
@@ -145,6 +151,73 @@ namespace VGMToolbox.format.util
             }
             
             return outputFile;        
+        }
+
+        public static string ReCompressDataSection(string pPath, XsfRecompressStruct pXsfRecompressStruct)
+        {
+            string outputFolder = Path.Combine(Path.GetDirectoryName(pPath), "recompressed");
+            string outputPath = null;
+            long deflatedSectionLength;
+
+            Xsf2ExeStruct xsf2ExeStruct = new Xsf2ExeStruct();
+            xsf2ExeStruct.IncludeExtension = true;
+            xsf2ExeStruct.StripGsfHeader = false;
+
+            string extractedDataPath = ExtractCompressedDataSection(pPath, xsf2ExeStruct);
+            char[] deflatedCrc32;
+
+            if (extractedDataPath != null)
+            {
+                string deflatedOutputPath = Path.ChangeExtension(extractedDataPath, ".deflated");
+
+                int read;
+                byte[] data = new byte[4096];
+
+                // open decompressed data section
+                using (FileStream inFs = File.OpenRead(extractedDataPath))
+                {
+                    // open file for outputting deflated section
+                    using (FileStream outFs = File.Open(deflatedOutputPath, FileMode.Create, FileAccess.ReadWrite))
+                    {
+                        Deflater deflater = new Deflater(pXsfRecompressStruct.CompressionLevel);
+
+                        using (DeflaterOutputStream deflaterStream = new DeflaterOutputStream(outFs, deflater))
+                        {
+                            while ((read = inFs.Read(data, 0, data.Length)) > 0)
+                            {
+                                deflaterStream.Write(data, 0, read);
+                            }
+
+                            // create output path
+                            outputPath = Path.Combine(outputFolder, Path.GetFileName(pPath));
+
+                            if (!Directory.Exists(Path.GetDirectoryName(outputPath)))
+                            {
+                                Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
+                            }
+
+                            using (BinaryWriter bw = new BinaryWriter(File.OpenWrite(outputPath)))
+                            {
+                                using (FileStream vgmFs = File.OpenRead(pPath))
+                                {
+                                    Xsf vgmData = new Xsf();
+                                    vgmData.Initialize(vgmFs, pPath);
+
+                                    bw.Write(vgmData.AsciiSignature);
+                                    bw.Write(vgmData.VersionByte);
+                                    bw.Write(vgmData.ReservedSectionLength);
+                                    bw.Write(BitConverter.GetBytes((uint)new FileInfo(deflatedOutputPath).Length));
+
+                                    deflatedCrc32 = ChecksumUtil.GetCrc32OfFullFile(outFs).ToCharArray();
+                                    Array.Reverse(deflatedCrc32);
+                                    bw.Write(System.Text.Encoding.ASCII.GetBytes(new String(deflatedCrc32)));
+                                }
+                            }                        
+                        }
+                    }
+                }
+            }
+            return outputPath;
         }
 
         public static void Bin2Psf(string pExtension, int pVersionByte, string pPath, 
