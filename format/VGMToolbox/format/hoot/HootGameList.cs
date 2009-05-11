@@ -287,7 +287,7 @@ namespace VGMToolbox.format.hoot
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = true)]    
     public partial class game
     {
 

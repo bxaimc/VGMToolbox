@@ -170,11 +170,19 @@ namespace format.VGMToolbox.format
 
         private void initializeTagHash()
         {
-            System.Text.Encoding enc = System.Text.Encoding.ASCII;
-            
+            System.Text.Encoding enc = System.Text.Encoding.ASCII;            
             tagHash.Add("Starting Song", this.startingSong[0].ToString());
-            tagHash.Add("Data Size", BitConverter.ToInt32(this.dataSize, 0).ToString());
-            tagHash.Add("Load Address", BitConverter.ToInt32(this.loadAddress, 0).ToString());
+            tagHash.Add("Request Address", String.Format("0x{0}", BitConverter.ToInt16(this.requestAddress, 0).ToString("X2")));
+            tagHash.Add("Initial MPR0", String.Format("0x{0}", this.initialMpr0[0].ToString("X2")));
+            tagHash.Add("Initial MPR1", String.Format("0x{0}", this.initialMpr1[0].ToString("X2")));
+            tagHash.Add("Initial MPR2", String.Format("0x{0}", this.initialMpr2[0].ToString("X2")));
+            tagHash.Add("Initial MPR3", String.Format("0x{0}", this.initialMpr3[0].ToString("X2")));
+            tagHash.Add("Initial MPR4", String.Format("0x{0}", this.initialMpr4[0].ToString("X2")));
+            tagHash.Add("Initial MPR5", String.Format("0x{0}", this.initialMpr5[0].ToString("X2")));
+            tagHash.Add("Initial MPR6", String.Format("0x{0}", this.initialMpr6[0].ToString("X2")));
+            tagHash.Add("Initial MPR7", String.Format("0x{0}", this.initialMpr7[0].ToString("X2")));            
+            tagHash.Add("Data Size", String.Format("0x{0}", BitConverter.ToInt32(this.dataSize, 0).ToString("X4")));
+            tagHash.Add("Load Address", String.Format("0x{0}", BitConverter.ToInt32(this.loadAddress, 0).ToString("X4")));
         }
 
         public byte[] GetAsciiSignature()

@@ -15,6 +15,8 @@ namespace VGMToolbox.format
         private const string FORMAT_ABBREVIATION = "GBS";
 
         private const string HOOT_DRIVER_ALIAS = "Gameboy";
+        private const string HOOT_DRIVER_ALIAS_COLOR = "Gameboy Color";
+        private const string HOOT_GBC_FILENAME_FLAG = "(GBC)";
         private const string HOOT_DRIVER_TYPE = "gbs";
         private const string HOOT_DRIVER = "gb";
         private const string HOOT_CHIP = "DMG";
@@ -285,7 +287,17 @@ namespace VGMToolbox.format
 
         #region HOOT
         
-        public string GetHootDriverAlias() { return HOOT_DRIVER_ALIAS; }
+        public string GetHootDriverAlias() 
+        {
+            string ret = HOOT_DRIVER_ALIAS;
+
+            if (this.filePath.ToUpper().Contains(HOOT_GBC_FILENAME_FLAG))
+            {
+                ret = HOOT_DRIVER_ALIAS_COLOR;
+            }
+                        
+            return ret; 
+        }
         public string GetHootDriverType() { return HOOT_DRIVER_TYPE; }
         public string GetHootDriver() { return HOOT_DRIVER; }
         public string GetHootChips() { return HOOT_CHIP; }

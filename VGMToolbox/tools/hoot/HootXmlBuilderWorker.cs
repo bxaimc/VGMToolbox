@@ -3,6 +3,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
+using System.Xml;
 using System.Xml.Serialization;
 
 using VGMToolbox.format;
@@ -196,18 +197,48 @@ namespace VGMToolbox.tools.hoot
                 ret.JpGameName = String.Empty;
             }
 
-            // Company
+            // Company //
+
+            // Last Section
             int lastOpenParenLocation = filename.LastIndexOf('(');
             int lastCloseParenLocation = filename.LastIndexOf(')');
+            string lastSection; 
 
             if (lastOpenParenLocation != -1 &&
                 lastCloseParenLocation != -1)
             {
-                ret.Company = filename.Substring(lastOpenParenLocation + 1, (lastCloseParenLocation - lastOpenParenLocation) - 1).Trim();
+                lastSection = filename.Substring(lastOpenParenLocation + 1, (lastCloseParenLocation - lastOpenParenLocation) - 1).Trim();
             }
             else
             {
-                ret.Company = String.Empty;
+                lastSection = String.Empty;
+            }
+
+            // Second to Last Section
+            int secondLastOpenParenLocation = filename.LastIndexOf('(', lastOpenParenLocation - 1);
+            int secondLastCloseParenLocation = filename.LastIndexOf(')', lastCloseParenLocation - 1);
+            string secondLastSection;
+            double dummyDouble;
+
+            if (secondLastOpenParenLocation != -1 &&
+                secondLastCloseParenLocation != -1)
+            {
+                secondLastSection = filename.Substring(secondLastOpenParenLocation + 1, (secondLastCloseParenLocation - secondLastOpenParenLocation) - 1).Trim();
+            }
+            else
+            {
+                secondLastSection = String.Empty;
+            }
+
+            if (!String.IsNullOrEmpty(secondLastSection) &&
+                !secondLastSection.Trim().Equals("-") &&
+                !Double.TryParse(secondLastSection, out dummyDouble))
+            { 
+                ret.Company = secondLastSection;
+            }
+            else
+            {
+                ret.Company = lastSection;
             }
 
             return ret;
@@ -224,7 +255,14 @@ namespace VGMToolbox.tools.hoot
             if (hootGames.Length > 0)
             {
                 string outputPath;
-                
+
+                XmlWriterSettings settings = new XmlWriterSettings();
+                settings.Encoding = System.Text.Encoding.UTF8;
+                settings.Indent = true;
+                settings.IndentChars = "\t";
+                settings.NewLineChars = Environment.NewLine;
+                settings.ConformanceLevel = ConformanceLevel.Document;
+
                 // Use to suppress namespace attributes
                 XmlSerializerNamespaces namespaceSerializer = new XmlSerializerNamespaces();
                 namespaceSerializer.Add("", "");
@@ -235,10 +273,11 @@ namespace VGMToolbox.tools.hoot
                         Path.DirectorySeparatorChar + "[combined] hootgame.xml";
                     
                     XmlSerializer serializer = new XmlSerializer(hootGames.GetType());
-                    TextWriter textWriter = new StreamWriter(outputPath);
-                    serializer.Serialize(textWriter, hootGames, namespaceSerializer);
-                    textWriter.Close();
-                    textWriter.Dispose();
+
+                    using (XmlWriter xmlWriter = XmlTextWriter.Create(outputPath, settings))
+                    {
+                        serializer.Serialize(xmlWriter, hootGames, namespaceSerializer);
+                    }                    
                 }
 
                 if (hootXmlBuilderStruct.splitOutput)
@@ -249,10 +288,11 @@ namespace VGMToolbox.tools.hoot
                             Path.DirectorySeparatorChar + g.romlist.rom[0].Value + ".xml";
 
                         XmlSerializer serializer = new XmlSerializer(g.GetType());
-                        TextWriter textWriter = new StreamWriter(outputPath);
-                        serializer.Serialize(textWriter, g, namespaceSerializer);
-                        textWriter.Close();
-                        textWriter.Dispose();
+
+                        using (XmlWriter xmlWriter = XmlTextWriter.Create(outputPath, settings))
+                        {
+                            serializer.Serialize(xmlWriter, g, namespaceSerializer);
+                        }
                     }                
                 }
             }
