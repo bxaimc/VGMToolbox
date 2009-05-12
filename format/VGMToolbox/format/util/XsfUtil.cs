@@ -8,6 +8,8 @@ using System.Text;
 using ICSharpCode.SharpZipLib.Zip.Compression;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 
+
+
 using VGMToolbox.format;
 using VGMToolbox.util;
 
@@ -164,7 +166,7 @@ namespace VGMToolbox.format.util
             xsf2ExeStruct.StripGsfHeader = false;
 
             string extractedDataPath = ExtractCompressedDataSection(pPath, xsf2ExeStruct);
-            char[] deflatedCrc32;
+            string deflatedCrc32String;
 
             if (extractedDataPath != null)
             {
@@ -177,45 +179,67 @@ namespace VGMToolbox.format.util
                 using (FileStream inFs = File.OpenRead(extractedDataPath))
                 {
                     // open file for outputting deflated section
-                    using (FileStream outFs = File.Open(deflatedOutputPath, FileMode.Create, FileAccess.ReadWrite))
+                    using (FileStream outFs = File.Open(deflatedOutputPath, FileMode.Create, FileAccess.Write))
                     {
-                        Deflater deflater = new Deflater(pXsfRecompressStruct.CompressionLevel);
-
-                        using (DeflaterOutputStream deflaterStream = new DeflaterOutputStream(outFs, deflater))
+                        if (pXsfRecompressStruct.CompressionLevel > 2) // 7zip
                         {
-                            while ((read = inFs.Read(data, 0, data.Length)) > 0)
+                            CompressionUtil.CompressFileWith7zipZlib(inFs, outFs, pXsfRecompressStruct.CompressionLevel);
+                        }
+                        else
+                        {
+                            using (DeflaterOutputStream deflaterStream = new DeflaterOutputStream(outFs, new Deflater(pXsfRecompressStruct.CompressionLevel, false)))
                             {
-                                deflaterStream.Write(data, 0, read);
-                            }
-
-                            // create output path
-                            outputPath = Path.Combine(outputFolder, Path.GetFileName(pPath));
-
-                            if (!Directory.Exists(Path.GetDirectoryName(outputPath)))
-                            {
-                                Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
-                            }
-
-                            using (BinaryWriter bw = new BinaryWriter(File.OpenWrite(outputPath)))
-                            {
-                                using (FileStream vgmFs = File.OpenRead(pPath))
+                                while ((read = inFs.Read(data, 0, data.Length)) > 0)
                                 {
-                                    Xsf vgmData = new Xsf();
-                                    vgmData.Initialize(vgmFs, pPath);
-
-                                    bw.Write(vgmData.AsciiSignature);
-                                    bw.Write(vgmData.VersionByte);
-                                    bw.Write(vgmData.ReservedSectionLength);
-                                    bw.Write(BitConverter.GetBytes((uint)new FileInfo(deflatedOutputPath).Length));
-
-                                    deflatedCrc32 = ChecksumUtil.GetCrc32OfFullFile(outFs).ToCharArray();
-                                    Array.Reverse(deflatedCrc32);
-                                    bw.Write(System.Text.Encoding.ASCII.GetBytes(new String(deflatedCrc32)));
+                                    deflaterStream.Write(data, 0, read);
                                 }
-                            }                        
+
+                                deflaterStream.Flush();
+                            }
                         }
                     }
                 }
+
+                // create output path
+                outputPath = Path.Combine(outputFolder, Path.GetFileName(pPath));
+
+                if (!Directory.Exists(Path.GetDirectoryName(outputPath)))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
+                }
+
+                using (BinaryWriter bw = new BinaryWriter(File.OpenWrite(outputPath)))
+                {
+                    using (FileStream vgmFs = File.OpenRead(pPath))
+                    {
+                        Xsf vgmData = new Xsf();
+                        vgmData.Initialize(vgmFs, pPath);
+
+                        bw.Write(vgmData.AsciiSignature);
+                        bw.Write(vgmData.VersionByte);
+                        bw.Write(vgmData.ReservedSectionLength);
+                        bw.Write(BitConverter.GetBytes((uint)new FileInfo(deflatedOutputPath).Length));
+
+                        using (FileStream outFs = File.Open(deflatedOutputPath, FileMode.Open, FileAccess.Read))
+                        {
+                            // crc32
+                            deflatedCrc32String = "0x" + ChecksumUtil.GetCrc32OfFullFile(outFs);
+                            bw.Write((uint)VGMToolbox.util.Encoding.GetIntFromString(deflatedCrc32String));
+                            // reserved section
+                            bw.Write(ParseFile.parseSimpleOffset(vgmFs, Xsf.RESERVED_SECTION_OFFSET, (int)vgmData.ReservedSectionLength));
+
+                            // data section
+                            outFs.Position = 0;
+                            while ((read = outFs.Read(data, 0, data.Length)) > 0)
+                            {
+                                bw.Write(data, 0, read);
+                            }
+                        }
+                        
+                        long dataSectionEnd = Xsf.RESERVED_SECTION_OFFSET + vgmData.ReservedSectionLength + vgmData.CompressedProgramLength;
+                        bw.Write(ParseFile.parseSimpleOffset(vgmFs, dataSectionEnd, (int)(vgmFs.Length - dataSectionEnd)));
+                    }
+                }                        
             }
             return outputPath;
         }

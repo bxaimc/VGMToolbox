@@ -86,5 +86,39 @@ namespace VGMToolbox.util
                 }                
             }
         }
+
+        public static void CompressFileWith7zipZlib(Stream pInStream, Stream pOutStream, int pCompressionLevel)
+        {
+            SevenZipCompressor.SetLibraryPath(SEVEN_ZIP_DLL);
+            SevenZipCompressor compressor = new SevenZipCompressor();
+            compressor.CompressionMethod = CompressionMethod.Deflate;          
+            compressor.ArchiveFormat = OutArchiveFormat.SevenZip;
+
+            switch (pCompressionLevel)
+            { 
+                case 3:
+                    compressor.CompressionLevel = CompressionLevel.Low;
+                    break;
+                case 4:
+                    compressor.CompressionLevel = CompressionLevel.Fast;
+                    break;
+                case 5:
+                    compressor.CompressionLevel = CompressionLevel.Normal;
+                    break;
+                case 6:
+                    compressor.CompressionLevel = CompressionLevel.High;
+                    break;
+                case 7:
+                    compressor.CompressionLevel = CompressionLevel.Ultra;
+                    break;
+                default:
+                    compressor.CompressionLevel = CompressionLevel.Normal;
+                    break;
+            }
+                                    
+            compressor.CompressStream(pInStream, pOutStream);            
+            pOutStream.Flush();
+            
+        }
     }
 }

@@ -13,4 +13,4 @@ unpkpsf2.exe is courtesty of CaitSith2 (http://www.caitsith2.com/).
 zlib1.dll is courtesy of the zlib team (http://www.zlib.net/).
 
 SevenZipSharp.dll is written by markhor (http://www.codeplex.com/sevenzipsharp).
-7z.dll is courtesy of the 7zip team (http://7-zip.org/).
+7z.dll is courtesy of the 7zip team (http://7-zip.org/).  7-Zip is licensed under the GNU LGPL license.
