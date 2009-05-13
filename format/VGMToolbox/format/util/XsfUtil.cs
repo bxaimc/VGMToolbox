@@ -17,6 +17,7 @@ namespace VGMToolbox.format.util
 {
     public class XsfUtil
     {
+        public const string RECOMPRESSED_SUBFOLDER_NAME = "recompressed";
         public const int INVALID_DATA = -1;
         
         static readonly string UNPKPSF2_SOURCE_PATH =
@@ -157,9 +158,8 @@ namespace VGMToolbox.format.util
 
         public static string ReCompressDataSection(string pPath, XsfRecompressStruct pXsfRecompressStruct)
         {
-            string outputFolder = Path.Combine(Path.GetDirectoryName(pPath), "recompressed");
+            string outputFolder = Path.Combine(Path.GetDirectoryName(pPath), RECOMPRESSED_SUBFOLDER_NAME);
             string outputPath = null;
-            long deflatedSectionLength;
 
             Xsf2ExeStruct xsf2ExeStruct = new Xsf2ExeStruct();
             xsf2ExeStruct.IncludeExtension = true;
@@ -170,76 +170,94 @@ namespace VGMToolbox.format.util
 
             if (extractedDataPath != null)
             {
-                string deflatedOutputPath = Path.ChangeExtension(extractedDataPath, ".deflated");
-
-                int read;
-                byte[] data = new byte[4096];
-
-                // open decompressed data section
-                using (FileStream inFs = File.OpenRead(extractedDataPath))
+                string deflatedOutputPath = null;
+                
+                try
                 {
-                    // open file for outputting deflated section
-                    using (FileStream outFs = File.Open(deflatedOutputPath, FileMode.Create, FileAccess.Write))
+                    deflatedOutputPath = Path.ChangeExtension(extractedDataPath, ".deflated");
+
+                    int read;
+                    byte[] data = new byte[4096];
+
+                    // open decompressed data section
+                    using (FileStream inFs = File.OpenRead(extractedDataPath))
                     {
-                        if (pXsfRecompressStruct.CompressionLevel > 2) // 7zip
+                        // open file for outputting deflated section
+                        using (FileStream outFs = File.Open(deflatedOutputPath, FileMode.Create, FileAccess.Write))
                         {
-                            CompressionUtil.CompressFileWith7zipZlib(inFs, outFs, pXsfRecompressStruct.CompressionLevel);
-                        }
-                        else
-                        {
-                            using (DeflaterOutputStream deflaterStream = new DeflaterOutputStream(outFs, new Deflater(pXsfRecompressStruct.CompressionLevel, false)))
+                            if (pXsfRecompressStruct.CompressionLevel > 2) // 7zip
                             {
-                                while ((read = inFs.Read(data, 0, data.Length)) > 0)
+                                CompressionUtil.CompressFileWith7zipZlib(inFs, outFs, pXsfRecompressStruct.CompressionLevel);
+                            }
+                            else
+                            {
+                                using (DeflaterOutputStream deflaterStream = new DeflaterOutputStream(outFs, new Deflater(pXsfRecompressStruct.CompressionLevel, false)))
                                 {
-                                    deflaterStream.Write(data, 0, read);
+                                    while ((read = inFs.Read(data, 0, data.Length)) > 0)
+                                    {
+                                        deflaterStream.Write(data, 0, read);
+                                    }
+
+                                    deflaterStream.Flush();
                                 }
-
-                                deflaterStream.Flush();
                             }
                         }
                     }
-                }
 
-                // create output path
-                outputPath = Path.Combine(outputFolder, Path.GetFileName(pPath));
+                    // create output path
+                    outputPath = Path.Combine(outputFolder, Path.GetFileName(pPath));
 
-                if (!Directory.Exists(Path.GetDirectoryName(outputPath)))
-                {
-                    Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
-                }
-
-                using (BinaryWriter bw = new BinaryWriter(File.OpenWrite(outputPath)))
-                {
-                    using (FileStream vgmFs = File.OpenRead(pPath))
+                    if (!Directory.Exists(Path.GetDirectoryName(outputPath)))
                     {
-                        Xsf vgmData = new Xsf();
-                        vgmData.Initialize(vgmFs, pPath);
-
-                        bw.Write(vgmData.AsciiSignature);
-                        bw.Write(vgmData.VersionByte);
-                        bw.Write(vgmData.ReservedSectionLength);
-                        bw.Write(BitConverter.GetBytes((uint)new FileInfo(deflatedOutputPath).Length));
-
-                        using (FileStream outFs = File.Open(deflatedOutputPath, FileMode.Open, FileAccess.Read))
-                        {
-                            // crc32
-                            deflatedCrc32String = "0x" + ChecksumUtil.GetCrc32OfFullFile(outFs);
-                            bw.Write((uint)VGMToolbox.util.Encoding.GetIntFromString(deflatedCrc32String));
-                            // reserved section
-                            bw.Write(ParseFile.parseSimpleOffset(vgmFs, Xsf.RESERVED_SECTION_OFFSET, (int)vgmData.ReservedSectionLength));
-
-                            // data section
-                            outFs.Position = 0;
-                            while ((read = outFs.Read(data, 0, data.Length)) > 0)
-                            {
-                                bw.Write(data, 0, read);
-                            }
-                        }
-                        
-                        long dataSectionEnd = Xsf.RESERVED_SECTION_OFFSET + vgmData.ReservedSectionLength + vgmData.CompressedProgramLength;
-                        bw.Write(ParseFile.parseSimpleOffset(vgmFs, dataSectionEnd, (int)(vgmFs.Length - dataSectionEnd)));
+                        Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
                     }
-                }                        
+
+                    using (BinaryWriter bw = new BinaryWriter(File.OpenWrite(outputPath)))
+                    {
+                        using (FileStream vgmFs = File.OpenRead(pPath))
+                        {
+                            Xsf vgmData = new Xsf();
+                            vgmData.Initialize(vgmFs, pPath);
+
+                            bw.Write(vgmData.AsciiSignature);
+                            bw.Write(vgmData.VersionByte);
+                            bw.Write(vgmData.ReservedSectionLength);
+                            bw.Write(BitConverter.GetBytes((uint)new FileInfo(deflatedOutputPath).Length));
+
+                            using (FileStream outFs = File.Open(deflatedOutputPath, FileMode.Open, FileAccess.Read))
+                            {
+                                // crc32
+                                deflatedCrc32String = "0x" + ChecksumUtil.GetCrc32OfFullFile(outFs);
+                                bw.Write((uint)VGMToolbox.util.Encoding.GetIntFromString(deflatedCrc32String));
+                                // reserved section
+                                bw.Write(ParseFile.parseSimpleOffset(vgmFs, Xsf.RESERVED_SECTION_OFFSET, (int)vgmData.ReservedSectionLength));
+
+                                // data section
+                                outFs.Position = 0;
+                                while ((read = outFs.Read(data, 0, data.Length)) > 0)
+                                {
+                                    bw.Write(data, 0, read);
+                                }
+                            }
+
+                            long dataSectionEnd = Xsf.RESERVED_SECTION_OFFSET + vgmData.ReservedSectionLength + vgmData.CompressedProgramLength;
+                            bw.Write(ParseFile.parseSimpleOffset(vgmFs, dataSectionEnd, (int)(vgmFs.Length - dataSectionEnd)));
+                        }
+                    }
+                }
+                finally
+                {
+                    if (File.Exists(extractedDataPath))
+                    {
+                        File.Delete(extractedDataPath);
+                    }
+
+                    if ((deflatedOutputPath != null) && 
+                        (File.Exists(deflatedOutputPath)))
+                    {
+                        File.Delete(deflatedOutputPath);
+                    }
+                }
             }
             return outputPath;
         }

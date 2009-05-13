@@ -171,12 +171,13 @@
             this.btnCancel.TabIndex = 0;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.backgroundWorker_Cancel);
             // 
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
-            // VgmtForm
+            // AVgmtForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -187,7 +188,7 @@
             this.Controls.Add(this.pnlLabels);
             this.Controls.Add(this.statusStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "VgmtForm";
+            this.Name = "AVgmtForm";
             this.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();

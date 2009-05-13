@@ -23,6 +23,8 @@ namespace VGMToolbox.forms
         {
             InitializeComponent();
 
+            this.lblTitle.Text = "Recompress xSF Files";
+            this.btnDoTask.Text = "Recompress xSFs";
             this.loadCompressionComboBox();
         }
 
@@ -59,12 +61,7 @@ namespace VGMToolbox.forms
         private void tbSource_DragDrop(object sender, DragEventArgs e)
         {
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
-
-            XsfRecompressDataWorker.XsfRecompressDataStruct xrdStruct = new XsfRecompressDataWorker.XsfRecompressDataStruct();
-            xrdStruct.SourcePaths = s;
-            xrdStruct.CompressionLevel = Convert.ToInt32(this.cbCompressionLevel.SelectedValue);
-
-            base.backgroundWorker_Execute(xrdStruct);            
+            this.recompressData(s);            
         }
         private void cbCompressionLevel_KeyDown(object sender, KeyEventArgs e)
         {
@@ -73,6 +70,28 @@ namespace VGMToolbox.forms
         private void cbCompressionLevel_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = true;
+        }
+        private void btnBrowseSource_Click(object sender, EventArgs e)
+        {
+            this.tbSource.Text = base.browseForFolder(sender, e);
+        }        
+        private void btnDoTask_Click(object sender, EventArgs e)
+        {
+            if (base.checkFolderExists(this.tbSource.Text, "Source Directory"))
+            {
+                string[] paths = new string[] { this.tbSource.Text };
+                recompressData(paths);
+            }
+        }
+
+        private void recompressData(string[] pSourcePaths)
+        {
+            XsfRecompressDataWorker.XsfRecompressDataStruct xrdStruct = new XsfRecompressDataWorker.XsfRecompressDataStruct();
+            xrdStruct.SourcePaths = pSourcePaths;
+            xrdStruct.RecompressFolders = cb7zipTopLevelFolders.Checked;
+            xrdStruct.CompressionLevel = Convert.ToInt32(this.cbCompressionLevel.SelectedValue);
+
+            base.backgroundWorker_Execute(xrdStruct);
         }
     }
 }

@@ -120,5 +120,13 @@ namespace VGMToolbox.util
             pOutStream.Flush();
             
         }
+
+        public static void CompressFolderWith7zip(string pSourcePath, string pArchiveName)
+        {
+            SevenZipCompressor.SetLibraryPath(SEVEN_ZIP_DLL);
+            SevenZipCompressor compressor = new SevenZipCompressor();
+            compressor.CompressionLevel = CompressionLevel.Ultra;
+            compressor.CompressDirectory(pSourcePath, pArchiveName, true);
+        }
     }
 }

@@ -11,9 +11,9 @@ namespace VGMToolbox.plugin
 {
     public abstract class AVgmtDragAndDropWorker : BackgroundWorker, IVgmtBackgroundWorker
     {
-        private int fileCount;
-        private int maxFiles;
-        private int progress;
+        protected int fileCount;
+        protected int maxFiles;
+        protected int progress;
         protected VGMToolbox.util.ProgressStruct progressStruct;
 
         protected int Progress
@@ -83,7 +83,7 @@ namespace VGMToolbox.plugin
             return;
         }
 
-        protected void DoTaskForDirectory(string pPath, IVgmtWorkerStruct pTaskStruct,
+        protected virtual void DoTaskForDirectory(string pPath, IVgmtWorkerStruct pTaskStruct,
             DoWorkEventArgs e)
         {            
             foreach (string d in Directory.GetDirectories(pPath))
