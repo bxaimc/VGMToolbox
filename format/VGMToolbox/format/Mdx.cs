@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 
 using ICSharpCode.SharpZipLib.Checksums;
 
@@ -162,6 +163,55 @@ namespace VGMToolbox.format
                     while ((read = fs.Read(data, 0, data.Length)) > 0)
                     {
                         pChecksum.Update(data, 0, read);
+                    }
+
+                    fs.Close();
+                    fs.Dispose();
+                }
+                else  // Cannot be sure of unique value, raise exception to cause
+                {     //   fall back to full file checksum
+
+                    pChecksum.Reset();
+                    throw new IOException(EXCEPTION_PDX_MISSING);
+                }
+            }
+        }
+
+        public void GetDatFileChecksums(ref Crc32 pChecksum,
+            ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream)
+        {
+            int read;
+            byte[] data;
+            FileStream fs;
+
+            pChecksum.Reset();
+
+            // Add data segment
+            if (this.dataLength > 0)
+            {
+                pChecksum.Update(this.dataBytes);
+                pMd5CryptoStream.Write(this.dataBytes, 0, this.dataBytes.Length);
+                pSha1CryptoStream.Write(this.dataBytes, 0, this.dataBytes.Length);
+            }
+
+            // Add PDX if found
+            if (pdxFileName != null && !this.pdxFileName.Equals(String.Empty))
+            {
+                string pdxPath = Path.GetDirectoryName(this.filePath) +
+                    Path.DirectorySeparatorChar + this.pdxFileName;
+
+                if (File.Exists(pdxPath))
+                {
+                    data = new byte[4096];
+
+                    fs = new FileStream(pdxPath, FileMode.Open, FileAccess.Read);
+                    fs.Seek(this.dataOffset, SeekOrigin.Begin);
+
+                    while ((read = fs.Read(data, 0, data.Length)) > 0)
+                    {
+                        pChecksum.Update(data, 0, read);
+                        pMd5CryptoStream.Write(data, 0, read);
+                        pSha1CryptoStream.Write(data, 0, read);
                     }
 
                     fs.Close();

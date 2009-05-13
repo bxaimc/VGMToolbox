@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 
 using ICSharpCode.SharpZipLib.Checksums;
@@ -172,7 +173,31 @@ namespace VGMToolbox.format
                 }               
             }
         }
-        
+
+        public void GetDatFileChecksums(ref Crc32 pChecksum,
+            ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream)
+        {
+            pChecksum.Reset();
+
+            using (FileStream fs = File.Open(this.filePath, FileMode.Open, FileAccess.Read))
+            {
+                using (BinaryReader br = new BinaryReader(fs))
+                {
+                    br.BaseStream.Position = (long)BitConverter.ToUInt32(this.headerLength, 0);
+
+                    byte[] data = new byte[Constants.FILE_READ_CHUNK_SIZE];
+                    int bytesRead;
+
+                    while ((bytesRead = br.Read(data, 0, data.Length)) > 0)
+                    {
+                        pChecksum.Update(data, 0, bytesRead);
+                        pMd5CryptoStream.Write(data, 0, bytesRead);
+                        pSha1CryptoStream.Write(data, 0, bytesRead);
+                    }
+                }
+            }
+        }
+
         #endregion
     }
 }

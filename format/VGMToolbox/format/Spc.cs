@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 
 using ICSharpCode.SharpZipLib.Checksums;
 
@@ -428,6 +429,51 @@ namespace VGMToolbox.format
             pChecksum.Update(ram64k);
             pChecksum.Update(dspRegisters);
             pChecksum.Update(extraRam);
+        }
+
+        public void GetDatFileChecksums(ref Crc32 pChecksum,
+            ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream)
+        {
+            pChecksum.Reset();
+
+            pChecksum.Update(dummy26);
+            pChecksum.Update(headerHasId666);
+            pChecksum.Update(versionMinor);
+            pChecksum.Update(registerPc);
+            pChecksum.Update(registerA);
+            pChecksum.Update(registerX);
+            pChecksum.Update(registerY);
+            pChecksum.Update(registerPSW);
+            pChecksum.Update(registerSP);
+            pChecksum.Update(ram64k);
+            pChecksum.Update(dspRegisters);
+            pChecksum.Update(extraRam);
+
+            pMd5CryptoStream.Write(dummy26, 0, dummy26.Length);
+            pMd5CryptoStream.Write(headerHasId666, 0, headerHasId666.Length);
+            pMd5CryptoStream.Write(versionMinor, 0, versionMinor.Length);
+            pMd5CryptoStream.Write(registerPc, 0, registerPc.Length);
+            pMd5CryptoStream.Write(registerA, 0, registerA.Length);
+            pMd5CryptoStream.Write(registerX, 0, registerX.Length);
+            pMd5CryptoStream.Write(registerY, 0, registerY.Length);
+            pMd5CryptoStream.Write(registerPSW, 0, registerPSW.Length);
+            pMd5CryptoStream.Write(registerSP, 0, registerSP.Length);
+            pMd5CryptoStream.Write(ram64k, 0, ram64k.Length);
+            pMd5CryptoStream.Write(dspRegisters, 0, dspRegisters.Length);
+            pMd5CryptoStream.Write(extraRam, 0, extraRam.Length);
+
+            pSha1CryptoStream.Write(dummy26, 0, dummy26.Length);
+            pSha1CryptoStream.Write(headerHasId666, 0, headerHasId666.Length);
+            pSha1CryptoStream.Write(versionMinor, 0, versionMinor.Length);
+            pSha1CryptoStream.Write(registerPc, 0, registerPc.Length);
+            pSha1CryptoStream.Write(registerA, 0, registerA.Length);
+            pSha1CryptoStream.Write(registerX, 0, registerX.Length);
+            pSha1CryptoStream.Write(registerY, 0, registerY.Length);
+            pSha1CryptoStream.Write(registerPSW, 0, registerPSW.Length);
+            pSha1CryptoStream.Write(registerSP, 0, registerSP.Length);
+            pSha1CryptoStream.Write(ram64k, 0, ram64k.Length);
+            pSha1CryptoStream.Write(dspRegisters, 0, dspRegisters.Length);
+            pSha1CryptoStream.Write(extraRam, 0, extraRam.Length);
         }
 
         public byte[] GetAsciiSignature()

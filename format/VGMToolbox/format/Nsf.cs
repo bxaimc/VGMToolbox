@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 
 using ICSharpCode.SharpZipLib.Checksums;
@@ -386,6 +387,51 @@ namespace VGMToolbox.format
             pChecksum.Update(palNtscBits);
             pChecksum.Update(extraChipsBits);
             pChecksum.Update(data);
+        }
+
+        public void GetDatFileChecksums(ref Crc32 pChecksum,
+            ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream)
+        {
+            pChecksum.Reset();
+
+            pChecksum.Update(versionNumber);
+            pChecksum.Update(totalSongs);
+            pChecksum.Update(startingSong);
+            pChecksum.Update(loadAddress);
+            pChecksum.Update(initAddress);
+            pChecksum.Update(playAddress);
+            pChecksum.Update(ntscSpeed);
+            pChecksum.Update(bankSwitchInit);
+            pChecksum.Update(palSpeed);
+            pChecksum.Update(palNtscBits);
+            pChecksum.Update(extraChipsBits);
+            pChecksum.Update(data);
+
+            pMd5CryptoStream.Write(versionNumber, 0, versionNumber.Length);
+            pMd5CryptoStream.Write(totalSongs, 0, totalSongs.Length);
+            pMd5CryptoStream.Write(startingSong, 0, startingSong.Length);
+            pMd5CryptoStream.Write(loadAddress, 0, loadAddress.Length);
+            pMd5CryptoStream.Write(initAddress, 0, initAddress.Length);
+            pMd5CryptoStream.Write(playAddress, 0, playAddress.Length);
+            pMd5CryptoStream.Write(ntscSpeed, 0, ntscSpeed.Length);
+            pMd5CryptoStream.Write(bankSwitchInit, 0, bankSwitchInit.Length);
+            pMd5CryptoStream.Write(palSpeed, 0, palSpeed.Length);
+            pMd5CryptoStream.Write(palNtscBits, 0, palNtscBits.Length);
+            pMd5CryptoStream.Write(extraChipsBits, 0, extraChipsBits.Length);
+            pMd5CryptoStream.Write(data, 0, data.Length);
+
+            pSha1CryptoStream.Write(versionNumber, 0, versionNumber.Length);
+            pSha1CryptoStream.Write(totalSongs, 0, totalSongs.Length);
+            pSha1CryptoStream.Write(startingSong, 0, startingSong.Length);
+            pSha1CryptoStream.Write(loadAddress, 0, loadAddress.Length);
+            pSha1CryptoStream.Write(initAddress, 0, initAddress.Length);
+            pSha1CryptoStream.Write(playAddress, 0, playAddress.Length);
+            pSha1CryptoStream.Write(ntscSpeed, 0, ntscSpeed.Length);
+            pSha1CryptoStream.Write(bankSwitchInit, 0, bankSwitchInit.Length);
+            pSha1CryptoStream.Write(palSpeed, 0, palSpeed.Length);
+            pSha1CryptoStream.Write(palNtscBits, 0, palNtscBits.Length);
+            pSha1CryptoStream.Write(extraChipsBits, 0, extraChipsBits.Length);
+            pSha1CryptoStream.Write(data, 0, data.Length);
         }
 
         public byte[] GetAsciiSignature()

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 
 using ICSharpCode.SharpZipLib.Checksums;
 
@@ -352,6 +353,41 @@ namespace VGMToolbox.format
 
             pChecksum.Update(this.data);
             
+            // ADD LOOP POINT AS LOOP OFFSET - DATA OFFSET?
+        }
+
+        public void GetDatFileChecksums(ref Crc32 pChecksum,
+            ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream)
+        {
+            pChecksum.Reset();
+
+            pChecksum.Update(this.version);
+            pChecksum.Update(this.timerInfo);
+            pChecksum.Update(this.timerInfo2);
+            pChecksum.Update(this.compressing);
+
+            pMd5CryptoStream.Write(this.version, 0, this.version.Length);
+            pMd5CryptoStream.Write(this.timerInfo, 0, this.timerInfo.Length);
+            pMd5CryptoStream.Write(this.timerInfo2, 0, this.timerInfo2.Length);
+            pMd5CryptoStream.Write(this.compressing, 0, this.compressing.Length);
+
+            pSha1CryptoStream.Write(this.version, 0, this.version.Length);
+            pSha1CryptoStream.Write(this.timerInfo, 0, this.timerInfo.Length);
+            pSha1CryptoStream.Write(this.timerInfo2, 0, this.timerInfo2.Length);
+            pSha1CryptoStream.Write(this.compressing, 0, this.compressing.Length);
+
+            // Version 03
+            if (ParseFile.CompareSegment(this.version, 0, S98_VERSION_03))
+            {
+                pChecksum.Update(this.deviceCount);
+                pMd5CryptoStream.Write(this.deviceCount, 0, this.deviceCount.Length);
+                pSha1CryptoStream.Write(this.deviceCount, 0, this.deviceCount.Length);
+            }
+
+            pChecksum.Update(this.data);
+            pMd5CryptoStream.Write(this.data, 0, this.data.Length);
+            pSha1CryptoStream.Write(this.data, 0, this.data.Length);
+
             // ADD LOOP POINT AS LOOP OFFSET - DATA OFFSET?
         }
 

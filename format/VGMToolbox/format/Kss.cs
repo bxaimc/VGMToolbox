@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 
 using ICSharpCode.SharpZipLib.Checksums;
@@ -180,6 +181,39 @@ namespace VGMToolbox.format
             pChecksum.Update(bankedExtraData);
             pChecksum.Update(extraChips);
             pChecksum.Update(data);
+        }
+
+        public void GetDatFileChecksums(ref Crc32 pChecksum,
+            ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream)
+        {
+            pChecksum.Reset();
+
+            pChecksum.Update(z80Load);
+            pChecksum.Update(initDataLength);
+            pChecksum.Update(z80Init);
+            pChecksum.Update(z80Play);
+            pChecksum.Update(bankStartNo);
+            pChecksum.Update(bankedExtraData);
+            pChecksum.Update(extraChips);
+            pChecksum.Update(data);
+
+            pMd5CryptoStream.Write(z80Load, 0, z80Load.Length);
+            pMd5CryptoStream.Write(initDataLength, 0, initDataLength.Length);
+            pMd5CryptoStream.Write(z80Init, 0, z80Init.Length);
+            pMd5CryptoStream.Write(z80Play, 0, z80Play.Length);
+            pMd5CryptoStream.Write(bankStartNo, 0, bankStartNo.Length);
+            pMd5CryptoStream.Write(bankedExtraData, 0, bankedExtraData.Length);
+            pMd5CryptoStream.Write(extraChips, 0, extraChips.Length);
+            pMd5CryptoStream.Write(data, 0, data.Length);
+
+            pSha1CryptoStream.Write(z80Load, 0, z80Load.Length);
+            pSha1CryptoStream.Write(initDataLength, 0, initDataLength.Length);
+            pSha1CryptoStream.Write(z80Init, 0, z80Init.Length);
+            pSha1CryptoStream.Write(z80Play, 0, z80Play.Length);
+            pSha1CryptoStream.Write(bankStartNo, 0, bankStartNo.Length);
+            pSha1CryptoStream.Write(bankedExtraData, 0, bankedExtraData.Length);
+            pSha1CryptoStream.Write(extraChips, 0, extraChips.Length);
+            pSha1CryptoStream.Write(data, 0, data.Length);
         }
 
         public string GetExtraChipsString()

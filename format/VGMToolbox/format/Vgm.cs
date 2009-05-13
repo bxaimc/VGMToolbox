@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 
 using ICSharpCode.SharpZipLib.Checksums;
@@ -591,6 +592,72 @@ namespace VGMToolbox.format
             fs.Dispose();
         }
 
+        public void GetDatFileChecksums(ref Crc32 pChecksum,
+            ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream)
+        {
+            int intVersion = INT_VERSION_UNKNOWN;
+
+            pChecksum.Reset();
+
+            // Version 1.0 or greater (all versions)
+            pChecksum.Update(this.version);
+            pChecksum.Update(this.sn76489Clock);
+            pChecksum.Update(this.ym2413Clock);
+            pChecksum.Update(this.totalNumOfSamples);
+            pChecksum.Update(this.loopOffset);
+            pChecksum.Update(this.loopNumOfSamples);
+
+            pMd5CryptoStream.Write(this.version, 0, this.version.Length);
+            pMd5CryptoStream.Write(this.sn76489Clock, 0, this.sn76489Clock.Length);
+            pMd5CryptoStream.Write(this.ym2413Clock, 0, this.ym2413Clock.Length);
+            pMd5CryptoStream.Write(this.totalNumOfSamples, 0, this.totalNumOfSamples.Length);
+            pMd5CryptoStream.Write(this.loopOffset, 0, this.loopOffset.Length);
+            pMd5CryptoStream.Write(this.loopNumOfSamples, 0, this.loopNumOfSamples.Length);
+
+            pSha1CryptoStream.Write(this.version, 0, this.version.Length);
+            pSha1CryptoStream.Write(this.sn76489Clock, 0, this.sn76489Clock.Length);
+            pSha1CryptoStream.Write(this.ym2413Clock, 0, this.ym2413Clock.Length);
+            pSha1CryptoStream.Write(this.totalNumOfSamples, 0, this.totalNumOfSamples.Length);
+            pSha1CryptoStream.Write(this.loopOffset, 0, this.loopOffset.Length);
+            pSha1CryptoStream.Write(this.loopNumOfSamples, 0, this.loopNumOfSamples.Length);
+
+            // Get version to determine if other tags are present
+            intVersion = this.getIntVersion();
+
+            if (intVersion >= INT_VERSION_0101)
+            {
+                // Version 1.01 or greater
+                pChecksum.Update(this.rate);
+                pMd5CryptoStream.Write(this.rate, 0, this.rate.Length);
+                pSha1CryptoStream.Write(this.rate, 0, this.rate.Length);
+
+                if (intVersion >= INT_VERSION_0110)
+                {
+                    // Version 1.10 or greater
+                    pChecksum.Update(this.sn76489Feedback);
+                    pChecksum.Update(this.sn76489Srw);
+                    pChecksum.Update(this.ym2612Clock);
+                    pChecksum.Update(this.ym2151Clock);
+
+                    pMd5CryptoStream.Write(this.sn76489Feedback, 0, this.sn76489Feedback.Length);
+                    pMd5CryptoStream.Write(this.sn76489Srw, 0, this.sn76489Srw.Length);
+                    pMd5CryptoStream.Write(this.ym2612Clock, 0, this.ym2612Clock.Length);
+                    pMd5CryptoStream.Write(this.ym2151Clock, 0, this.ym2151Clock.Length);
+
+                    pSha1CryptoStream.Write(this.sn76489Feedback, 0, this.sn76489Feedback.Length);
+                    pSha1CryptoStream.Write(this.sn76489Srw, 0, this.sn76489Srw.Length);
+                    pSha1CryptoStream.Write(this.ym2612Clock, 0, this.ym2612Clock.Length);
+                    pSha1CryptoStream.Write(this.ym2151Clock, 0, this.ym2151Clock.Length);
+                }
+            }
+
+            // Add data
+            FileStream fs = new FileStream(this.filePath, FileMode.Open, FileAccess.Read);
+            this.addDataSection(fs, ref pChecksum, ref pMd5CryptoStream, ref pSha1CryptoStream);
+            fs.Close();
+            fs.Dispose();
+        }
+
         private void addDataSection(Stream pFileStream, ref Crc32 pChecksum)
         {
             long currentPosition = pFileStream.Position;
@@ -638,6 +705,59 @@ namespace VGMToolbox.format
             {
                 ChecksumUtil.AddChunkToChecksum(pFileStream, this.vgmDataAbsoluteOffset, bytesToRead,
                     ref pChecksum);
+            }
+
+            pFileStream.Position = currentPosition;
+        }
+
+        private void addDataSection(Stream pFileStream, ref Crc32 pChecksum, 
+            ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream)
+        {
+            long currentPosition = pFileStream.Position;
+            int bytesToRead = 0;
+
+            // Determine count of bytes to read for data section
+            if (this.gd3AbsoluteOffset > this.vgmDataAbsoluteOffset)
+            {
+                bytesToRead = this.gd3AbsoluteOffset - this.vgmDataAbsoluteOffset;
+            }
+            else
+            {
+                bytesToRead = this.eofAbsoluteOffset - this.vgmDataAbsoluteOffset;
+            }
+
+            if (FormatUtil.IsGzipFile(pFileStream))
+            {
+                GZipInputStream gZipInputStream = new GZipInputStream(pFileStream);
+                string tempGzipFile = Path.GetTempFileName();
+                FileStream gZipFileStream = new FileStream(tempGzipFile, FileMode.Open, FileAccess.ReadWrite);
+
+                int size = 4096;
+                byte[] writeData = new byte[size];
+                while (true)
+                {
+                    size = gZipInputStream.Read(writeData, 0, size);
+                    if (size > 0)
+                    {
+                        gZipFileStream.Write(writeData, 0, size);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                ChecksumUtil.AddChunkToChecksum(gZipFileStream, this.vgmDataAbsoluteOffset, bytesToRead,
+                    ref pChecksum, ref pMd5CryptoStream, ref pSha1CryptoStream);
+
+                gZipFileStream.Close();
+                gZipFileStream.Dispose();
+                File.Delete(tempGzipFile);
+            }
+            else
+            {
+                ChecksumUtil.AddChunkToChecksum(pFileStream, this.vgmDataAbsoluteOffset, bytesToRead,
+                    ref pChecksum, ref pMd5CryptoStream, ref pSha1CryptoStream);
             }
 
             pFileStream.Position = currentPosition;

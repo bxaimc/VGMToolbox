@@ -154,6 +154,37 @@ namespace VGMToolbox.format
             }
         }
 
+        public void GetDatFileChecksums(ref Crc32 pChecksum,
+            ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream)
+        {
+            using (FileStream fs = File.OpenRead(this.filePath))
+            {
+                // Reserved Section
+                ChecksumUtil.AddChunkToChecksum(fs, (int)RESERVED_SECTION_OFFSET,
+                    (int)this.reservedSectionLength, ref pChecksum, ref pMd5CryptoStream,
+                    ref pSha1CryptoStream);
+
+                // Compressed Program
+                addDecompressedProgramChecksum(fs, ref pChecksum, ref pMd5CryptoStream,
+                    ref pSha1CryptoStream);
+            }
+
+            // Libs
+            string[] libPaths = this.GetLibPathArray();
+
+            foreach (string f in libPaths)
+            {
+                using (FileStream lfs = File.OpenRead(f))
+                {
+                    Xsf libXsf = new Xsf();
+                    libXsf.Initialize(lfs, f);
+                    libXsf.GetDatFileChecksums(ref pChecksum, ref pMd5CryptoStream,
+                        ref pSha1CryptoStream);
+                    libXsf = null;
+                }
+            }
+        }
+
         protected void addDecompressedProgramChecksum(FileStream pFileStream, ref Crc32 pChecksum)
         {
             if (this.compressedProgramLength > 0)

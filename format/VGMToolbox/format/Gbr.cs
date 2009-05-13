@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 
 using ICSharpCode.SharpZipLib.Checksums;
 
@@ -183,6 +184,42 @@ namespace VGMToolbox.format
             pChecksum.Update(ff06Write);
             pChecksum.Update(ff07Write);
             pChecksum.Update(data);
+        }
+
+        public void GetDatFileChecksums(ref Crc32 pChecksum,
+            ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream)
+        {
+            pChecksum.Reset();
+
+            pChecksum.Update(numberOfBanks);
+            pChecksum.Update(initial0000_3FFFBankOffset);
+            pChecksum.Update(initial4000_7FFFBankOffset);
+            pChecksum.Update(timerFlag);
+            pChecksum.Update(vsync);
+            pChecksum.Update(timer);
+            pChecksum.Update(ff06Write);
+            pChecksum.Update(ff07Write);
+            pChecksum.Update(data);
+
+            pMd5CryptoStream.Write(numberOfBanks, 0, numberOfBanks.Length);
+            pMd5CryptoStream.Write(initial0000_3FFFBankOffset, 0, initial0000_3FFFBankOffset.Length);
+            pMd5CryptoStream.Write(initial4000_7FFFBankOffset, 0, initial4000_7FFFBankOffset.Length);
+            pMd5CryptoStream.Write(timerFlag, 0, timerFlag.Length);
+            pMd5CryptoStream.Write(vsync, 0, vsync.Length);
+            pMd5CryptoStream.Write(timer, 0, timer.Length);
+            pMd5CryptoStream.Write(ff06Write, 0, ff06Write.Length);
+            pMd5CryptoStream.Write(ff07Write, 0, ff07Write.Length);
+            pMd5CryptoStream.Write(data, 0, data.Length);
+
+            pSha1CryptoStream.Write(numberOfBanks, 0, numberOfBanks.Length);
+            pSha1CryptoStream.Write(initial0000_3FFFBankOffset, 0, initial0000_3FFFBankOffset.Length);
+            pSha1CryptoStream.Write(initial4000_7FFFBankOffset, 0, initial4000_7FFFBankOffset.Length);
+            pSha1CryptoStream.Write(timerFlag, 0, timerFlag.Length);
+            pSha1CryptoStream.Write(vsync, 0, vsync.Length);
+            pSha1CryptoStream.Write(timer, 0, timer.Length);
+            pSha1CryptoStream.Write(ff06Write, 0, ff06Write.Length);
+            pSha1CryptoStream.Write(ff07Write, 0, ff07Write.Length);
+            pSha1CryptoStream.Write(data, 0, data.Length);
         }
 
         public byte[] GetAsciiSignature()

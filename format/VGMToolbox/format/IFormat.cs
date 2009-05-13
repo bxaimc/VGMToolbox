@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 
 using ICSharpCode.SharpZipLib.Checksums;
 
@@ -24,9 +25,7 @@ namespace VGMToolbox.format
         Dictionary<string, string> GetTagHash();
 
         void GetDatFileCrc32(ref Crc32 pChecksum);
-
-        //void getDatFileCrc32(string pPath, ref Dictionary<string, ByteArray> pLibHash, 
-        //    ref Crc32 pChecksum, ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream, 
-        //    bool pUseLibHash);
+        void GetDatFileChecksums(ref Crc32 pChecksum, ref CryptoStream pMd5CryptoStream,
+            ref CryptoStream pSha1CryptoStream);
     }
 }

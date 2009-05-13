@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 
 using ICSharpCode.SharpZipLib.Checksums;
@@ -1313,7 +1314,9 @@ namespace VGMToolbox.format.sdat
 
         public Dictionary<string, string> GetTagHash() { return this.tagHash; }
         public void GetDatFileCrc32(ref Crc32 pChecksum) { pChecksum.Reset();}
-        
+        public void GetDatFileChecksums(ref Crc32 pChecksum,
+            ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream) { }
+
         #endregion
 
     }        

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 
 using ICSharpCode.SharpZipLib.Checksums;
@@ -166,6 +167,57 @@ namespace format.VGMToolbox.format
             pChecksum.Update(loadAddress);
             pChecksum.Update(reserve);
             pChecksum.Update(data);
+        }
+
+        public void GetDatFileChecksums(ref Crc32 pChecksum,
+            ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream)
+        {
+            pChecksum.Reset();
+
+            pChecksum.Update(versionNumber);
+            pChecksum.Update(startingSong);
+            pChecksum.Update(requestAddress);
+            pChecksum.Update(initialMpr0);
+            pChecksum.Update(initialMpr1);
+            pChecksum.Update(initialMpr2);
+            pChecksum.Update(initialMpr3);
+            pChecksum.Update(initialMpr4);
+            pChecksum.Update(initialMpr5);
+            pChecksum.Update(initialMpr6);
+            pChecksum.Update(initialMpr7);
+            pChecksum.Update(loadAddress);
+            pChecksum.Update(reserve);
+            pChecksum.Update(data);
+
+            pMd5CryptoStream.Write(versionNumber, 0, versionNumber.Length);
+            pMd5CryptoStream.Write(startingSong, 0, startingSong.Length);
+            pMd5CryptoStream.Write(requestAddress, 0, requestAddress.Length);
+            pMd5CryptoStream.Write(initialMpr0, 0, initialMpr0.Length);
+            pMd5CryptoStream.Write(initialMpr1, 0, initialMpr1.Length);
+            pMd5CryptoStream.Write(initialMpr2, 0, initialMpr2.Length);
+            pMd5CryptoStream.Write(initialMpr3, 0, initialMpr3.Length);
+            pMd5CryptoStream.Write(initialMpr4, 0, initialMpr4.Length);
+            pMd5CryptoStream.Write(initialMpr5, 0, initialMpr5.Length);
+            pMd5CryptoStream.Write(initialMpr6, 0, initialMpr6.Length);
+            pMd5CryptoStream.Write(initialMpr7, 0, initialMpr7.Length);
+            pMd5CryptoStream.Write(loadAddress, 0, loadAddress.Length);
+            pMd5CryptoStream.Write(reserve, 0, reserve.Length);
+            pMd5CryptoStream.Write(data, 0, data.Length);
+
+            pSha1CryptoStream.Write(versionNumber, 0, versionNumber.Length);
+            pSha1CryptoStream.Write(startingSong, 0, startingSong.Length);
+            pSha1CryptoStream.Write(requestAddress, 0, requestAddress.Length);
+            pSha1CryptoStream.Write(initialMpr0, 0, initialMpr0.Length);
+            pSha1CryptoStream.Write(initialMpr1, 0, initialMpr1.Length);
+            pSha1CryptoStream.Write(initialMpr2, 0, initialMpr2.Length);
+            pSha1CryptoStream.Write(initialMpr3, 0, initialMpr3.Length);
+            pSha1CryptoStream.Write(initialMpr4, 0, initialMpr4.Length);
+            pSha1CryptoStream.Write(initialMpr5, 0, initialMpr5.Length);
+            pSha1CryptoStream.Write(initialMpr6, 0, initialMpr6.Length);
+            pSha1CryptoStream.Write(initialMpr7, 0, initialMpr7.Length);
+            pSha1CryptoStream.Write(loadAddress, 0, loadAddress.Length);
+            pSha1CryptoStream.Write(reserve, 0, reserve.Length);
+            pSha1CryptoStream.Write(data, 0, data.Length);
         }
 
         private void initializeTagHash()
