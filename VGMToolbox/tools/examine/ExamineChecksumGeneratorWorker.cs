@@ -18,6 +18,8 @@ namespace VGMToolbox.tools.examine
     {
         public struct ExamineChecksumGeneratorStruct : IVgmtWorkerStruct
         {
+            public bool DoVgmtChecksums;
+            
             private string[] sourcePaths;
             public string[] SourcePaths
             {
@@ -59,7 +61,7 @@ namespace VGMToolbox.tools.examine
                 }
             }
 
-            if (vgmData != null)
+            if ((vgmData != null) && (examineChecksumGeneratorStruct.DoVgmtChecksums))
             {
                 Crc32 crc32Generator = new Crc32();
 
@@ -96,9 +98,16 @@ namespace VGMToolbox.tools.examine
             progressStruct.GenericMessage += String.Format("CRC32: {0}{1}", crc32, Environment.NewLine);
             progressStruct.GenericMessage += String.Format("MD5: {0}{1}", md5, Environment.NewLine);
             progressStruct.GenericMessage += String.Format("SHA1: {0}{1}", sha1, Environment.NewLine);
-            progressStruct.GenericMessage += String.Format("CRC32 (VGMT): {0}{1}", vgmtCrc32, Environment.NewLine);
-            progressStruct.GenericMessage += String.Format("MD5 (VGMT): {0}{1}", vgmtMd5, Environment.NewLine);
-            progressStruct.GenericMessage += String.Format("SHA1 (VGMT): {0}{1}{2}", vgmtSha1, Environment.NewLine, Environment.NewLine);
+
+            if (examineChecksumGeneratorStruct.DoVgmtChecksums)
+            {
+                progressStruct.GenericMessage += String.Format("CRC32 (VGMT): {0}{1}", vgmtCrc32, Environment.NewLine);
+                progressStruct.GenericMessage += String.Format("MD5 (VGMT): {0}{1}", vgmtMd5, Environment.NewLine);
+                progressStruct.GenericMessage += String.Format("SHA1 (VGMT): {0}{1}", vgmtSha1, Environment.NewLine);
+            }
+
+            progressStruct.GenericMessage += Environment.NewLine;
+
             ReportProgress(this.Progress, progressStruct);
         }
     }

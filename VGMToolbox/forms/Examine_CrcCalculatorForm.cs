@@ -32,6 +32,7 @@ namespace VGMToolbox.forms
             ExamineChecksumGeneratorWorker.ExamineChecksumGeneratorStruct crcStruct =
                 new ExamineChecksumGeneratorWorker.ExamineChecksumGeneratorStruct();
             crcStruct.SourcePaths = s;
+            crcStruct.DoVgmtChecksums = cbDoVgmtChecksums.Checked;
 
             base.backgroundWorker_Execute(crcStruct);
         }
