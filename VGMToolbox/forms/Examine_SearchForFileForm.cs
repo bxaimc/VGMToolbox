@@ -48,12 +48,14 @@ namespace VGMToolbox.forms
         private void tbSource_DragDrop(object sender, DragEventArgs e)
         {
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+            string[] searchStrings = tbSearchString.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+
 
             ExamineSearchForFileWorker.ExamineSearchForFileStruct exStruct =
                 new ExamineSearchForFileWorker.ExamineSearchForFileStruct();            
             exStruct.SourcePaths = s;
             exStruct.ExtractFile = cbExtract.Checked;
-            exStruct.SearchString = tbSearchString.Text;
+            exStruct.SearchStrings = searchStrings;
             exStruct.CaseSensitive = cbCaseSensitive.Checked;
             exStruct.OutputFolder = tbOutputFolder.Text;
 
@@ -69,12 +71,13 @@ namespace VGMToolbox.forms
             {
                 string[] s = new string[1];
                 s[0] = tbSource.Text;
+                string[] searchStrings = tbSearchString.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
                 ExamineSearchForFileWorker.ExamineSearchForFileStruct exStruct =
                     new ExamineSearchForFileWorker.ExamineSearchForFileStruct();
                 exStruct.SourcePaths = s;
                 exStruct.ExtractFile = cbExtract.Checked;
-                exStruct.SearchString = tbSearchString.Text;
+                exStruct.SearchStrings = searchStrings;
                 exStruct.CaseSensitive = cbCaseSensitive.Checked;
                 exStruct.OutputFolder = tbOutputFolder.Text;
 

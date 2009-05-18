@@ -200,6 +200,11 @@ namespace VGMToolbox.plugin
                 sw.Write(tbOutput.Text);
             }
 
+            if (File.Exists(Path.ChangeExtension(tempFileName, ".txt"))
+            {
+                File.Delete(Path.ChangeExtension(tempFileName, ".txt"));
+            }
+            
             File.Move(tempFileName, Path.ChangeExtension(tempFileName, ".txt"));
             Process.Start(Path.ChangeExtension(tempFileName, ".txt"));
         }

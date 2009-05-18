@@ -16,7 +16,7 @@ namespace VGMToolbox.tools.examine
         {
             public bool ExtractFile;
             public bool CaseSensitive;
-            public string SearchString;
+            public string[] SearchStrings;
             public string OutputFolder;
 
             private string[] sourcePaths;
@@ -36,51 +36,57 @@ namespace VGMToolbox.tools.examine
                 (ExamineSearchForFileStruct)pExamineSearchForFileStruct;
 
             StringBuilder filePaths = new StringBuilder();
+            StringBuilder searchStringHeader = new StringBuilder();
             string[] compressedFilePaths;
             string searchString;
 
-            if (examineSearchForFileStruct.CaseSensitive)
-            {
-                searchString = examineSearchForFileStruct.SearchString;
-            }
-            else
-            {
-                searchString = examineSearchForFileStruct.SearchString.ToUpper();
-            }
-
-            if ((examineSearchForFileStruct.CaseSensitive && 
-                Path.GetFileName(pPath).Contains(searchString)) ||
-                (!examineSearchForFileStruct.CaseSensitive &&
-                Path.GetFileName(pPath).ToUpper().Contains(searchString)))
-            {
-                filePaths.Append(pPath);
-                filePaths.Append(Environment.NewLine);
-            }
-
-            compressedFilePaths = CompressionUtil.GetFileList(pPath);
-            if (compressedFilePaths != null)
-            {
-                foreach (string f in compressedFilePaths)
+            foreach (string s in examineSearchForFileStruct.SearchStrings)
+            {                              
+                if (examineSearchForFileStruct.CaseSensitive)
                 {
-                    if ((examineSearchForFileStruct.CaseSensitive && 
-                        f.Contains(searchString)) ||
-                        (!examineSearchForFileStruct.CaseSensitive &&
-                        f.ToUpper().Contains(searchString)))
-                    {
-                        filePaths.AppendFormat("{0} ({1})", pPath, f);
-                        filePaths.Append(Environment.NewLine);
+                    searchString = s;
+                }
+                else
+                {
+                    searchString = s.ToUpper();
+                }
 
-                        if (examineSearchForFileStruct.ExtractFile)
+                if ((examineSearchForFileStruct.CaseSensitive &&
+                    Path.GetFileName(pPath).Contains(searchString)) ||
+                    (!examineSearchForFileStruct.CaseSensitive &&
+                    Path.GetFileName(pPath).ToUpper().Contains(searchString)))
+                {
+                    filePaths.AppendFormat("---= Search String: [{0}] =---{1}", s, Environment.NewLine);
+                    filePaths.Append(pPath);
+                    filePaths.Append(Environment.NewLine);
+                }
+
+                compressedFilePaths = CompressionUtil.GetFileList(pPath);
+                if (compressedFilePaths != null)
+                {
+                    foreach (string f in compressedFilePaths)
+                    {
+                        if ((examineSearchForFileStruct.CaseSensitive &&
+                            f.Contains(searchString)) ||
+                            (!examineSearchForFileStruct.CaseSensitive &&
+                            f.ToUpper().Contains(searchString)))
                         {
-                            CompressionUtil.ExtractFileFromArchive(pPath, f, examineSearchForFileStruct.OutputFolder);
+                            filePaths.AppendFormat("---= Search String: [{0}] =---{1}", s, Environment.NewLine);
+                            filePaths.AppendFormat("{0} ({1})", pPath, f);
+                            filePaths.Append(Environment.NewLine);
+
+                            if (examineSearchForFileStruct.ExtractFile)
+                            {
+                                CompressionUtil.ExtractFileFromArchive(pPath, f, examineSearchForFileStruct.OutputFolder);
+                            }
                         }
                     }
                 }
-            }
 
-            this.progressStruct.Clear();
-            progressStruct.GenericMessage = filePaths.ToString();
-            ReportProgress(this.Progress, progressStruct);
+                this.progressStruct.Clear();
+                progressStruct.GenericMessage = filePaths.ToString();
+                ReportProgress(this.Progress, progressStruct);
+            }
         }
     }        
 }

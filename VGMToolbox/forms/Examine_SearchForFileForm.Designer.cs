@@ -49,30 +49,30 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 526);
-            this.pnlLabels.Size = new System.Drawing.Size(791, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 501);
+            this.pnlLabels.Size = new System.Drawing.Size(1168, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(791, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(1168, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 449);
-            this.tbOutput.Size = new System.Drawing.Size(791, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 424);
+            this.tbOutput.Size = new System.Drawing.Size(1168, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 429);
-            this.pnlButtons.Size = new System.Drawing.Size(791, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 404);
+            this.pnlButtons.Size = new System.Drawing.Size(1168, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(731, 0);
+            this.btnCancel.Location = new System.Drawing.Point(1108, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(671, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(1048, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpSource
@@ -83,7 +83,7 @@
             this.grpSource.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSource.Location = new System.Drawing.Point(0, 23);
             this.grpSource.Name = "grpSource";
-            this.grpSource.Size = new System.Drawing.Size(791, 64);
+            this.grpSource.Size = new System.Drawing.Size(1168, 64);
             this.grpSource.TabIndex = 5;
             this.grpSource.TabStop = false;
             this.grpSource.Text = "Directories to Search";
@@ -129,7 +129,7 @@
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpOptions.Location = new System.Drawing.Point(0, 87);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(791, 111);
+            this.grpOptions.Size = new System.Drawing.Size(1168, 274);
             this.grpOptions.TabIndex = 6;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
@@ -138,7 +138,7 @@
             // 
             this.lblOutputFolder.AutoSize = true;
             this.lblOutputFolder.Enabled = false;
-            this.lblOutputFolder.Location = new System.Drawing.Point(3, 91);
+            this.lblOutputFolder.Location = new System.Drawing.Point(3, 252);
             this.lblOutputFolder.Name = "lblOutputFolder";
             this.lblOutputFolder.Size = new System.Drawing.Size(359, 13);
             this.lblOutputFolder.TabIndex = 6;
@@ -147,7 +147,7 @@
             // btnOutputDir
             // 
             this.btnOutputDir.Enabled = false;
-            this.btnOutputDir.Location = new System.Drawing.Point(270, 68);
+            this.btnOutputDir.Location = new System.Drawing.Point(270, 229);
             this.btnOutputDir.Name = "btnOutputDir";
             this.btnOutputDir.Size = new System.Drawing.Size(26, 20);
             this.btnOutputDir.TabIndex = 5;
@@ -157,7 +157,7 @@
             // tbOutputFolder
             // 
             this.tbOutputFolder.Enabled = false;
-            this.tbOutputFolder.Location = new System.Drawing.Point(6, 68);
+            this.tbOutputFolder.Location = new System.Drawing.Point(6, 229);
             this.tbOutputFolder.Name = "tbOutputFolder";
             this.tbOutputFolder.Size = new System.Drawing.Size(258, 20);
             this.tbOutputFolder.TabIndex = 4;
@@ -165,7 +165,7 @@
             // cbCaseSensitive
             // 
             this.cbCaseSensitive.AutoSize = true;
-            this.cbCaseSensitive.Location = new System.Drawing.Point(362, 21);
+            this.cbCaseSensitive.Location = new System.Drawing.Point(273, 38);
             this.cbCaseSensitive.Name = "cbCaseSensitive";
             this.cbCaseSensitive.Size = new System.Drawing.Size(96, 17);
             this.cbCaseSensitive.TabIndex = 3;
@@ -175,7 +175,7 @@
             // cbExtract
             // 
             this.cbExtract.AutoSize = true;
-            this.cbExtract.Location = new System.Drawing.Point(6, 45);
+            this.cbExtract.Location = new System.Drawing.Point(6, 206);
             this.cbExtract.Name = "cbExtract";
             this.cbExtract.Size = new System.Drawing.Size(410, 17);
             this.cbExtract.TabIndex = 2;
@@ -189,22 +189,25 @@
             this.lblSearchString.AutoSize = true;
             this.lblSearchString.Location = new System.Drawing.Point(270, 22);
             this.lblSearchString.Name = "lblSearchString";
-            this.lblSearchString.Size = new System.Drawing.Size(71, 13);
+            this.lblSearchString.Size = new System.Drawing.Size(146, 13);
             this.lblSearchString.TabIndex = 1;
-            this.lblSearchString.Text = "Search String";
+            this.lblSearchString.Text = "Search String(s) (one per line)";
             // 
             // tbSearchString
             // 
+            this.tbSearchString.AcceptsReturn = true;
             this.tbSearchString.Location = new System.Drawing.Point(6, 19);
+            this.tbSearchString.Multiline = true;
             this.tbSearchString.Name = "tbSearchString";
-            this.tbSearchString.Size = new System.Drawing.Size(258, 20);
+            this.tbSearchString.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.tbSearchString.Size = new System.Drawing.Size(258, 154);
             this.tbSearchString.TabIndex = 0;
             // 
             // Examine_SearchForFileForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(791, 567);
+            this.ClientSize = new System.Drawing.Size(1168, 542);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpSource);
             this.Name = "Examine_SearchForFileForm";
