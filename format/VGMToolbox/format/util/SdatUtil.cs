@@ -161,5 +161,32 @@ namespace VGMToolbox.format.util
                 }
             }
         }
+
+        public static Smap GetSmapFromSdat(string pSdatPath)
+        {
+            Smap smap = new Smap();
+            string fullPath = Path.GetFullPath(pSdatPath);
+
+            if (!File.Exists(fullPath))
+            {
+                throw new FileNotFoundException(String.Format("Cannot find file <{0}>", fullPath));
+            }
+            else
+            {
+                using (FileStream fs = File.OpenRead(fullPath))
+                {
+                    Type dataType = FormatUtil.getObjectType(fs);
+                    
+                    if (dataType != null && dataType.Name.Equals("Sdat"))
+                    {
+                        Sdat sdat = new Sdat();
+                        sdat.Initialize(fs, fullPath);
+                        smap = new Smap(sdat);
+                    }
+                }
+            }
+            
+            return smap;
+        }    
     }
 }

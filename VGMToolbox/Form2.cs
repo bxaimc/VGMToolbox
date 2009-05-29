@@ -337,6 +337,17 @@ namespace VGMToolbox
             //nodeTag.formClass = xsf_2sfRipperForm.GetType().Name;
             //xsf_2sfRipperNode.Tag = nodeTag;
 
+            TreeNode xsf_Make2sfNode = new TreeNode("Make 2SFs");
+
+            // Add Make 2SF Form
+            Xsf_Mk2sfForm xsf_Mk2sfForm = new Xsf_Mk2sfForm(xsf_Make2sfNode);
+            this.splitContainer1.Panel2.Controls.Add(xsf_Mk2sfForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = xsf_Mk2sfForm.GetType().Name;
+            xsf_Make2sfNode.Tag = nodeTag;
+
+
             //////////////
             // 2SF Timer
             //////////////
@@ -526,6 +537,7 @@ namespace VGMToolbox
             _2sf_RootNode.NodeFont = this.treeviewBoldFont;
             _2sf_RootNode.Tag = nodeTag;
             //_2sf_RootNode.Nodes.Add(xsf_2sfRipperNode);
+            _2sf_RootNode.Nodes.Add(xsf_Make2sfNode);            
             _2sf_RootNode.Nodes.Add(xsf_2sfTimerNode);
             _2sf_RootNode.Nodes.Add(xsf_SdatOptimizerNode);            
             xsf_RootNode.Nodes.Add(_2sf_RootNode);
