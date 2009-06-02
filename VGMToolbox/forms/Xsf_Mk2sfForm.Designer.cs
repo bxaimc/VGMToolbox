@@ -36,6 +36,14 @@
             this.btnBrowseSource = new System.Windows.Forms.Button();
             this.tbSource = new System.Windows.Forms.TextBox();
             this.grpSetInformation = new System.Windows.Forms.GroupBox();
+            this.tbYear = new System.Windows.Forms.TextBox();
+            this.lblYear = new System.Windows.Forms.Label();
+            this.lblGame = new System.Windows.Forms.Label();
+            this.tbGame = new System.Windows.Forms.TextBox();
+            this.lblCopyright = new System.Windows.Forms.Label();
+            this.tbCopyright = new System.Windows.Forms.TextBox();
+            this.lblArtist = new System.Windows.Forms.Label();
+            this.tbArtist = new System.Windows.Forms.TextBox();
             this.dataGridSseq = new System.Windows.Forms.DataGridView();
             this.CheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.NumberColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -47,16 +55,6 @@
             this.CprColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PprColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PlyColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tbArtist = new System.Windows.Forms.TextBox();
-            this.lblArtist = new System.Windows.Forms.Label();
-            this.tbCopyright = new System.Windows.Forms.TextBox();
-            this.lblCopyright = new System.Windows.Forms.Label();
-            this.tbGame = new System.Windows.Forms.TextBox();
-            this.lblGame = new System.Windows.Forms.Label();
-            this.lblYear = new System.Windows.Forms.Label();
-            this.tbYear = new System.Windows.Forms.TextBox();
-            this.tb2sfBy = new System.Windows.Forms.TextBox();
-            this.lbl2sfBy = new System.Windows.Forms.Label();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -67,30 +65,30 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 523);
-            this.pnlLabels.Size = new System.Drawing.Size(824, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 418);
+            this.pnlLabels.Size = new System.Drawing.Size(1180, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(824, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(1180, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 446);
-            this.tbOutput.Size = new System.Drawing.Size(824, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 341);
+            this.tbOutput.Size = new System.Drawing.Size(1180, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 426);
-            this.pnlButtons.Size = new System.Drawing.Size(824, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 321);
+            this.pnlButtons.Size = new System.Drawing.Size(1180, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(764, 0);
+            this.btnCancel.Location = new System.Drawing.Point(1120, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(704, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(1060, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpSourcePaths
@@ -104,7 +102,7 @@
             this.grpSourcePaths.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSourcePaths.Location = new System.Drawing.Point(0, 23);
             this.grpSourcePaths.Name = "grpSourcePaths";
-            this.grpSourcePaths.Size = new System.Drawing.Size(824, 72);
+            this.grpSourcePaths.Size = new System.Drawing.Size(1180, 72);
             this.grpSourcePaths.TabIndex = 5;
             this.grpSourcePaths.TabStop = false;
             this.grpSourcePaths.Text = "Source Paths";
@@ -164,8 +162,6 @@
             // 
             // grpSetInformation
             // 
-            this.grpSetInformation.Controls.Add(this.lbl2sfBy);
-            this.grpSetInformation.Controls.Add(this.tb2sfBy);
             this.grpSetInformation.Controls.Add(this.tbYear);
             this.grpSetInformation.Controls.Add(this.lblYear);
             this.grpSetInformation.Controls.Add(this.lblGame);
@@ -177,10 +173,75 @@
             this.grpSetInformation.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSetInformation.Location = new System.Drawing.Point(0, 95);
             this.grpSetInformation.Name = "grpSetInformation";
-            this.grpSetInformation.Size = new System.Drawing.Size(824, 102);
+            this.grpSetInformation.Size = new System.Drawing.Size(1180, 72);
             this.grpSetInformation.TabIndex = 6;
             this.grpSetInformation.TabStop = false;
             this.grpSetInformation.Text = "Set Information";
+            // 
+            // tbYear
+            // 
+            this.tbYear.Location = new System.Drawing.Point(403, 19);
+            this.tbYear.MaxLength = 4;
+            this.tbYear.Name = "tbYear";
+            this.tbYear.Size = new System.Drawing.Size(58, 20);
+            this.tbYear.TabIndex = 7;
+            // 
+            // lblYear
+            // 
+            this.lblYear.AutoSize = true;
+            this.lblYear.Location = new System.Drawing.Point(331, 22);
+            this.lblYear.Name = "lblYear";
+            this.lblYear.Size = new System.Drawing.Size(29, 13);
+            this.lblYear.TabIndex = 6;
+            this.lblYear.Text = "Year";
+            // 
+            // lblGame
+            // 
+            this.lblGame.AutoSize = true;
+            this.lblGame.Location = new System.Drawing.Point(6, 22);
+            this.lblGame.Name = "lblGame";
+            this.lblGame.Size = new System.Drawing.Size(35, 13);
+            this.lblGame.TabIndex = 5;
+            this.lblGame.Text = "Game";
+            // 
+            // tbGame
+            // 
+            this.tbGame.Location = new System.Drawing.Point(78, 19);
+            this.tbGame.Name = "tbGame";
+            this.tbGame.Size = new System.Drawing.Size(239, 20);
+            this.tbGame.TabIndex = 4;
+            // 
+            // lblCopyright
+            // 
+            this.lblCopyright.AutoSize = true;
+            this.lblCopyright.Location = new System.Drawing.Point(331, 48);
+            this.lblCopyright.Name = "lblCopyright";
+            this.lblCopyright.Size = new System.Drawing.Size(51, 13);
+            this.lblCopyright.TabIndex = 3;
+            this.lblCopyright.Text = "Copyright";
+            // 
+            // tbCopyright
+            // 
+            this.tbCopyright.Location = new System.Drawing.Point(403, 45);
+            this.tbCopyright.Name = "tbCopyright";
+            this.tbCopyright.Size = new System.Drawing.Size(239, 20);
+            this.tbCopyright.TabIndex = 2;
+            // 
+            // lblArtist
+            // 
+            this.lblArtist.AutoSize = true;
+            this.lblArtist.Location = new System.Drawing.Point(6, 48);
+            this.lblArtist.Name = "lblArtist";
+            this.lblArtist.Size = new System.Drawing.Size(30, 13);
+            this.lblArtist.TabIndex = 1;
+            this.lblArtist.Text = "Artist";
+            // 
+            // tbArtist
+            // 
+            this.tbArtist.Location = new System.Drawing.Point(78, 45);
+            this.tbArtist.Name = "tbArtist";
+            this.tbArtist.Size = new System.Drawing.Size(239, 20);
+            this.tbArtist.TabIndex = 0;
             // 
             // dataGridSseq
             // 
@@ -202,9 +263,9 @@
             this.PprColumn,
             this.PlyColumn});
             this.dataGridSseq.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridSseq.Location = new System.Drawing.Point(0, 197);
+            this.dataGridSseq.Location = new System.Drawing.Point(0, 167);
             this.dataGridSseq.Name = "dataGridSseq";
-            this.dataGridSseq.Size = new System.Drawing.Size(824, 229);
+            this.dataGridSseq.Size = new System.Drawing.Size(1180, 154);
             this.dataGridSseq.TabIndex = 7;
             // 
             // CheckBoxColumn
@@ -286,92 +347,11 @@
             this.PlyColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.PlyColumn.Width = 40;
             // 
-            // tbArtist
-            // 
-            this.tbArtist.Location = new System.Drawing.Point(78, 45);
-            this.tbArtist.Name = "tbArtist";
-            this.tbArtist.Size = new System.Drawing.Size(239, 20);
-            this.tbArtist.TabIndex = 0;
-            // 
-            // lblArtist
-            // 
-            this.lblArtist.AutoSize = true;
-            this.lblArtist.Location = new System.Drawing.Point(6, 48);
-            this.lblArtist.Name = "lblArtist";
-            this.lblArtist.Size = new System.Drawing.Size(30, 13);
-            this.lblArtist.TabIndex = 1;
-            this.lblArtist.Text = "Artist";
-            // 
-            // tbCopyright
-            // 
-            this.tbCopyright.Location = new System.Drawing.Point(78, 71);
-            this.tbCopyright.Name = "tbCopyright";
-            this.tbCopyright.Size = new System.Drawing.Size(239, 20);
-            this.tbCopyright.TabIndex = 2;
-            // 
-            // lblCopyright
-            // 
-            this.lblCopyright.AutoSize = true;
-            this.lblCopyright.Location = new System.Drawing.Point(6, 74);
-            this.lblCopyright.Name = "lblCopyright";
-            this.lblCopyright.Size = new System.Drawing.Size(51, 13);
-            this.lblCopyright.TabIndex = 3;
-            this.lblCopyright.Text = "Copyright";
-            // 
-            // tbGame
-            // 
-            this.tbGame.Location = new System.Drawing.Point(78, 19);
-            this.tbGame.Name = "tbGame";
-            this.tbGame.Size = new System.Drawing.Size(239, 20);
-            this.tbGame.TabIndex = 4;
-            // 
-            // lblGame
-            // 
-            this.lblGame.AutoSize = true;
-            this.lblGame.Location = new System.Drawing.Point(6, 22);
-            this.lblGame.Name = "lblGame";
-            this.lblGame.Size = new System.Drawing.Size(35, 13);
-            this.lblGame.TabIndex = 5;
-            this.lblGame.Text = "Game";
-            // 
-            // lblYear
-            // 
-            this.lblYear.AutoSize = true;
-            this.lblYear.Location = new System.Drawing.Point(331, 22);
-            this.lblYear.Name = "lblYear";
-            this.lblYear.Size = new System.Drawing.Size(29, 13);
-            this.lblYear.TabIndex = 6;
-            this.lblYear.Text = "Year";
-            // 
-            // tbYear
-            // 
-            this.tbYear.Location = new System.Drawing.Point(373, 19);
-            this.tbYear.MaxLength = 4;
-            this.tbYear.Name = "tbYear";
-            this.tbYear.Size = new System.Drawing.Size(58, 20);
-            this.tbYear.TabIndex = 7;
-            // 
-            // tb2sfBy
-            // 
-            this.tb2sfBy.Location = new System.Drawing.Point(373, 45);
-            this.tb2sfBy.Name = "tb2sfBy";
-            this.tb2sfBy.Size = new System.Drawing.Size(100, 20);
-            this.tb2sfBy.TabIndex = 8;
-            // 
-            // lbl2sfBy
-            // 
-            this.lbl2sfBy.AutoSize = true;
-            this.lbl2sfBy.Location = new System.Drawing.Point(331, 48);
-            this.lbl2sfBy.Name = "lbl2sfBy";
-            this.lbl2sfBy.Size = new System.Drawing.Size(36, 13);
-            this.lbl2sfBy.TabIndex = 9;
-            this.lbl2sfBy.Text = "2sf By";
-            // 
             // Xsf_Mk2sfForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(824, 564);
+            this.ClientSize = new System.Drawing.Size(1180, 459);
             this.Controls.Add(this.dataGridSseq);
             this.Controls.Add(this.grpSetInformation);
             this.Controls.Add(this.grpSourcePaths);
@@ -423,8 +403,6 @@
         private System.Windows.Forms.Button btnBrowseOutput;
         private System.Windows.Forms.Label lblArtist;
         private System.Windows.Forms.TextBox tbArtist;
-        private System.Windows.Forms.Label lbl2sfBy;
-        private System.Windows.Forms.TextBox tb2sfBy;
         private System.Windows.Forms.TextBox tbYear;
         private System.Windows.Forms.Label lblYear;
         private System.Windows.Forms.Label lblGame;

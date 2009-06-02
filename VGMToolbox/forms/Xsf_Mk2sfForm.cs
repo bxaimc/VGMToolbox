@@ -31,7 +31,6 @@ namespace VGMToolbox.forms
             this.btnDoTask.Text = "Make 2SFs";
 
             this.tbOutput.Text = "- 2sfTool.exe written by UNKNOWNFILE and CaitSith2." + Environment.NewLine;
-            this.tbOutput.Text += "- Tagging/Auto-Timing not yet functional." + Environment.NewLine;
             this.tbOutput.Text +=
                 String.Format("- 'testpack.nds' is not included and must be downloaded and placed in <{0}>", Path.GetDirectoryName(testpackPath));
         }
@@ -44,7 +43,7 @@ namespace VGMToolbox.forms
         {
             ArrayList allowedSequences = this.GetAllowedSequences();
 
-            if (CheckForTestPackNds())
+            if (CheckSdatPathAndOutputDir() && CheckForTestPackNds())
             {
                 Mk2sfWorker.Mk2sfStruct mk2sfStruct = new Mk2sfWorker.Mk2sfStruct();
                 mk2sfStruct.AllowedSequences = allowedSequences;
@@ -55,7 +54,6 @@ namespace VGMToolbox.forms
                 mk2sfStruct.TagCopyright = tbCopyright.Text;
                 mk2sfStruct.TagYear = tbYear.Text;
                 mk2sfStruct.TagGame = tbGame.Text;
-                mk2sfStruct.Tag2sfBy = tb2sfBy.Text;
 
                 base.backgroundWorker_Execute(mk2sfStruct);
             }
@@ -94,6 +92,10 @@ namespace VGMToolbox.forms
                         row.Cells[8].Value = s.ppr.ToString();
                         row.Cells[9].Value = s.ply.ToString();
                     }
+                    else
+                    {
+                        row.Cells[0].Value = false;
+                    }
 
                     this.dataGridSseq.Rows.Add(row);
                 }
@@ -105,7 +107,8 @@ namespace VGMToolbox.forms
 
             foreach (DataGridViewRow r in dataGridSseq.Rows)
             {
-                if (((bool)r.Cells[0].Value) && 
+                if (((bool)r.Cells[0].Value) &&
+                    (r.Cells[4].Value != null) &&
                     (!String.IsNullOrEmpty((string)r.Cells[4].Value)))
                 {
                     allowedSequences.Add(int.Parse((string)r.Cells[1].Value));
@@ -165,6 +168,22 @@ namespace VGMToolbox.forms
         protected override string getBeginMessage()
         {
             return "Make 2SFs...Begin";
+        }
+
+        private bool CheckSdatPathAndOutputDir()
+        {
+            bool ret = true;
+            
+            string sdatSourceDirectory = Path.GetDirectoryName(Path.GetFullPath(tbSource.Text));
+
+            if (sdatSourceDirectory.Equals(tbOutputPath.Text.Trim()))
+            {
+                ret = false;
+                MessageBox.Show("Output folder cannot be the same as the folder containing the source SDAT.",
+                    "INVALID OUTPUT FOLDER");             
+            }
+
+            return ret;
         }
     }
 }

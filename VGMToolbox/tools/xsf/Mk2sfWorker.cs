@@ -8,7 +8,9 @@ using System.Reflection;
 using System.Text;
 
 using VGMToolbox.format.sdat;
+using VGMToolbox.format.util;
 using VGMToolbox.plugin;
+using VGMToolbox.util;
 
 namespace VGMToolbox.tools.xsf
 {
@@ -37,7 +39,6 @@ namespace VGMToolbox.tools.xsf
             public string TagCopyright;
             public string TagYear;
             public string TagGame;
-            public string Tag2sfBy;
         }
 
         public Mk2sfWorker() 
@@ -74,6 +75,10 @@ namespace VGMToolbox.tools.xsf
             File.Copy(pMk2sfStruct.SourcePath, sdatDestinationPath, true);
             
             // Optimize SDAT
+            this.progressStruct.Clear();
+            this.progressStruct.GenericMessage = "Optimizing SDAT" + Environment.NewLine;
+            ReportProgress(Constants.PROGRESS_MSG_ONLY, progressStruct);
+
             using (FileStream sdatStream = File.OpenRead(sdatDestinationPath))
             {
                 sdat = new Sdat();
@@ -94,6 +99,10 @@ namespace VGMToolbox.tools.xsf
             }
 
             // Execute 2SF Tool
+            this.progressStruct.Clear();
+            this.progressStruct.GenericMessage = "Execute 2sfTool" + Environment.NewLine;
+            ReportProgress(Constants.PROGRESS_MSG_ONLY, progressStruct);
+            
             using (Process toolProcess = new Process())
             {
                 string arguments = String.Format(" \"{0}{1}{2}\" \"{3}\" {4} {5}",
@@ -112,7 +121,38 @@ namespace VGMToolbox.tools.xsf
                 toolProcess.Close();
             }
 
+            // Add Tags            
+            XsfUtil.XsfBasicTaggingStruct tagStruct = new XsfUtil.XsfBasicTaggingStruct();
+            tagStruct.TagArtist = pMk2sfStruct.TagArtist;
+            tagStruct.TagCopyright = pMk2sfStruct.TagCopyright;
+            tagStruct.TagYear = pMk2sfStruct.TagYear;
+            tagStruct.TagGame = pMk2sfStruct.TagGame;
+            tagStruct.TagComment = "uses Legacy of Ys: Book II driver hacked by Caitsith2";            
+            // tagStruct.TagXsfByTagName = "-2sfby";
+            // tagStruct.TagXsfByTagValue = "VGMToolbox";
+
+            string taggingBatchPath = XsfUtil.BuildBasicTaggingBatch(TwoSFDestinationPath, tagStruct, "*.mini2sf");
+            XsfUtil.ExecutePsfPointBatchScript(taggingBatchPath, true);
+
+            // Time 2SFs
+            this.progressStruct.Clear();
+            this.progressStruct.GenericMessage = "Timing Output" + Environment.NewLine;
+            ReportProgress(Constants.PROGRESS_MSG_ONLY, progressStruct);
+            
+            string outputTimerMessages;
+            
+            XsfUtil.Time2sfStruct timerStruct = new XsfUtil.Time2sfStruct();
+            timerStruct.DoSingleLoop = false;
+            timerStruct.Mini2sfDirectory = TwoSFDestinationPath;
+            timerStruct.SdatPath = pMk2sfStruct.SourcePath;
+
+            XsfUtil.Time2sfFolder(timerStruct, out outputTimerMessages);
+
             // Delete Files
+            this.progressStruct.Clear();
+            this.progressStruct.GenericMessage = "Cleaning Up" + Environment.NewLine;
+            ReportProgress(Constants.PROGRESS_MSG_ONLY, progressStruct);
+            
             if (File.Exists(sdatDestinationPath))
             {
                 File.Delete(sdatDestinationPath);

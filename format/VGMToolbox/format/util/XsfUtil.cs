@@ -29,11 +29,10 @@ namespace VGMToolbox.format.util
             Path.Combine(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "external"), "bin2psf.exe");
         static readonly string PSFPOINT_SOURCE_PATH =
             Path.Combine(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "external"), "psfpoint.exe");
-        
+        public const string PSFPOINT_BATCH_TXT = "psfpoint_batch.bat";
 
         // 2SF CONSTANTS
-        public const string SSEQ2MID_TXT = "sseq2mid_output.txt";
-        public const string PSFPOINT_BATCH_TXT = "psfpoint_batch.bat";
+        public const string SSEQ2MID_TXT = "sseq2mid_output.txt";        
         public const string SSEQ2MID_TXT_MARKER = ".sseq:";
         public const string SSEQ2MID_TXT_END_OF_TRACK = "End of Track";
         public const string EMPTY_FILE_DIRECTORY = "Empty_Files";
@@ -45,6 +44,17 @@ namespace VGMToolbox.format.util
         {
             public bool IncludeExtension;
             public bool StripGsfHeader;        
+        }
+
+        public struct XsfBasicTaggingStruct
+        {
+            public string TagArtist;
+            public string TagCopyright;
+            public string TagYear;
+            public string TagGame;
+            public string TagComment;
+            public string TagXsfByTagName;
+            public string TagXsfByTagValue;
         }
 
         public struct TimePsf2Struct
@@ -332,7 +342,7 @@ namespace VGMToolbox.format.util
             return ret;
         }
 
-        public static void ExecutePsfPointBatchScript(string pFullPathToScript)
+        public static void ExecutePsfPointBatchScript(string pFullPathToScript, bool pDeleteScriptAfterExecution)
         {
             Process batProcess;
             string folderContainingScript = Path.GetDirectoryName(pFullPathToScript);
@@ -363,6 +373,59 @@ namespace VGMToolbox.format.util
             {
                 File.Delete(psfpointDestinationPath);
             }
+
+            if (pDeleteScriptAfterExecution)
+            {
+                File.Delete(pFullPathToScript);
+            }
+        }
+
+        public static string BuildBasicTaggingBatch(string pFullPathToScriptDestinationFolder, 
+            XsfBasicTaggingStruct pXsfBasicTaggingStruct, string pFileMask)
+        {            
+            string batchFilePath = Path.Combine(pFullPathToScriptDestinationFolder, PSFPOINT_BATCH_TXT);
+            if (File.Exists(batchFilePath))
+            {
+                batchFilePath += "_" + new Random().Next().ToString();
+            }
+
+            using (StreamWriter sw = new StreamWriter(File.Open(batchFilePath, FileMode.CreateNew, FileAccess.Write)))
+            {
+                string tagFormat = "psfpoint.exe {0}=\"{1}\" {2}";
+                
+                if (!String.IsNullOrEmpty(pXsfBasicTaggingStruct.TagArtist))
+                {
+                    sw.WriteLine(String.Format(tagFormat, "-artist", pXsfBasicTaggingStruct.TagArtist, pFileMask));
+                }
+
+                if (!String.IsNullOrEmpty(pXsfBasicTaggingStruct.TagCopyright))
+                {
+                    sw.WriteLine(String.Format(tagFormat, "-copyright", pXsfBasicTaggingStruct.TagCopyright, pFileMask));
+                }
+
+                if (!String.IsNullOrEmpty(pXsfBasicTaggingStruct.TagYear))
+                {
+                    sw.WriteLine(String.Format(tagFormat, "-year", pXsfBasicTaggingStruct.TagYear, pFileMask));
+                }
+
+                if (!String.IsNullOrEmpty(pXsfBasicTaggingStruct.TagGame))
+                {
+                    sw.WriteLine(String.Format(tagFormat, "-game", pXsfBasicTaggingStruct.TagGame, pFileMask));
+                }
+
+                if (!String.IsNullOrEmpty(pXsfBasicTaggingStruct.TagComment))
+                {
+                    sw.WriteLine(String.Format(tagFormat, "-comment", pXsfBasicTaggingStruct.TagComment, pFileMask));
+                }
+
+                if (!String.IsNullOrEmpty(pXsfBasicTaggingStruct.TagXsfByTagValue))
+                {
+                    sw.WriteLine(String.Format(tagFormat, pXsfBasicTaggingStruct.TagXsfByTagName, 
+                        pXsfBasicTaggingStruct.TagXsfByTagValue, pFileMask));
+                }
+            }
+
+            return batchFilePath;
         }
 
         // PSF2
@@ -700,10 +763,7 @@ namespace VGMToolbox.format.util
                 File.Copy(psfpointBatchFilePath, psfpointBatchFileDestinationPath, true);
 
                 // run timing script
-                ExecutePsfPointBatchScript(psfpointBatchFileDestinationPath);
-
-                // delete script
-                File.Delete(psfpointBatchFileDestinationPath);
+                ExecutePsfPointBatchScript(psfpointBatchFileDestinationPath, true);
 
                 // delete extracted SDAT
                 Directory.Delete(extractedSdatPath, true);
