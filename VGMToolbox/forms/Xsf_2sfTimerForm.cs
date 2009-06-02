@@ -29,8 +29,6 @@ namespace VGMToolbox.forms
                 ConfigurationSettings.AppSettings["Form_2sfTimer_LblPathTo2sfFiles"];
             this.lblPathToSdat.Text =
                 ConfigurationSettings.AppSettings["Form_2sfTimer_LblPathToSdat"];
-            this.lblFilePrefix.Text =
-                ConfigurationSettings.AppSettings["Form_2sfTimer_LblFilePrefix"];
             this.grpOptions.Text =
                 ConfigurationSettings.AppSettings["Form_2sfTimer_GroupOptions"];
             this.cbOneLoop.Text =
@@ -40,10 +38,9 @@ namespace VGMToolbox.forms
         private void btnDoTask_Click(object sender, EventArgs e)
         {
             Time2sfWorker.Time2sfStruct t2Struct = new Time2sfWorker.Time2sfStruct();
-            t2Struct.pathTo2sf = tbPathTo2sfs.Text;
-            t2Struct.pathToSdat = tbSdatPath.Text;
-            t2Struct.filePrefix = tbFilePrefix.Text;
-            t2Struct.doSingleLoop = cbOneLoop.Checked;
+            t2Struct.PathTo2sf = tbPathTo2sfs.Text;
+            t2Struct.PathToSdat = tbSdatPath.Text;
+            t2Struct.DoSingleLoop = cbOneLoop.Checked;
 
             base.backgroundWorker_Execute(t2Struct);
         } 

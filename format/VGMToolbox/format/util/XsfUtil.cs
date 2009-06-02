@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,9 +9,11 @@ using System.Text;
 using ICSharpCode.SharpZipLib.Zip.Compression;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 
-
+using Un4seen.Bass;
+using Un4seen.Bass.AddOn.Midi;
 
 using VGMToolbox.format;
+using VGMToolbox.format.sdat;
 using VGMToolbox.util;
 
 namespace VGMToolbox.format.util
@@ -24,7 +27,20 @@ namespace VGMToolbox.format.util
             Path.Combine(Path.Combine(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "external"), "psf2"), "unpkpsf2.exe");
         static readonly string BIN2PSF_SOURCE_PATH =
             Path.Combine(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "external"), "bin2psf.exe");
+        static readonly string PSFPOINT_SOURCE_PATH =
+            Path.Combine(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "external"), "psfpoint.exe");
         
+
+        // 2SF CONSTANTS
+        public const string SSEQ2MID_TXT = "sseq2mid_output.txt";
+        public const string PSFPOINT_BATCH_TXT = "psfpoint_batch.bat";
+        public const string SSEQ2MID_TXT_MARKER = ".sseq:";
+        public const string SSEQ2MID_TXT_END_OF_TRACK = "End of Track";
+        public const string EMPTY_FILE_DIRECTORY = "Empty_Files";
+
+        static readonly string SSEQ2MID_SOURCE_PATH =
+            Path.Combine(Path.Combine(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "external"), "2sf"), "sseq2mid.exe");
+
         public struct Xsf2ExeStruct
         {
             public bool IncludeExtension;
@@ -35,6 +51,13 @@ namespace VGMToolbox.format.util
         {
             public bool IncludeExtension;
             public bool StripGsfHeader;
+        }
+
+        public struct Time2sfStruct
+        {
+            public string Mini2sfDirectory;
+            public string SdatPath;
+            public bool DoSingleLoop;
         }
 
         public struct XsfRecompressStruct
@@ -309,6 +332,39 @@ namespace VGMToolbox.format.util
             return ret;
         }
 
+        public static void ExecutePsfPointBatchScript(string pFullPathToScript)
+        {
+            Process batProcess;
+            string folderContainingScript = Path.GetDirectoryName(pFullPathToScript);
+            string scriptName = Path.GetFileName(pFullPathToScript);
+            bool cleanupPsfpoint = false;
+
+            // copy psfpoint.exe
+            string psfpointDestinationPath = Path.Combine(folderContainingScript, Path.GetFileName(PSFPOINT_SOURCE_PATH));
+
+            if (!File.Exists(psfpointDestinationPath))
+            {
+                File.Copy(PSFPOINT_SOURCE_PATH, psfpointDestinationPath, false);
+                cleanupPsfpoint = true;
+            }
+
+            // execute script
+            batProcess = new Process();
+            batProcess.StartInfo = new ProcessStartInfo(PSFPOINT_BATCH_TXT);
+            batProcess.StartInfo.WorkingDirectory = folderContainingScript;
+            batProcess.StartInfo.CreateNoWindow = true;
+            batProcess.Start();
+            batProcess.WaitForExit();
+
+            batProcess.Close();
+            batProcess.Dispose();
+
+            if (cleanupPsfpoint)
+            {
+                File.Delete(psfpointDestinationPath);
+            }
+        }
+
         // PSF2
         public static Ps2SequenceData.Ps2SqTimingStruct GetTimeForPsf2File(string pSqPath, int pSequenceId)
         {
@@ -509,10 +565,368 @@ namespace VGMToolbox.format.util
                             ret = (int)BitConverter.ToUInt16(ParseFile.parseSimpleOffset(fs, 8, 2), 0);
                         }
                     }
-                }
+
+                    File.Delete(decompressedDataSectionPath);                
+                }                
             }
 
             return ret;
+        }
+
+        public static void Time2sfFolder(Time2sfStruct pTime2sfStruct, out string pMessages)
+        {
+            Hashtable mini2sfSongNumbers = new Hashtable();
+            string emptyFolderFileName;
+            bool processSuccess;
+            
+            pMessages = String.Empty;
+
+            // Verify paths
+            if (!Directory.Exists(pTime2sfStruct.Mini2sfDirectory))
+            {
+                throw new DirectoryNotFoundException(String.Format("Cannot find directory <{0}>", pTime2sfStruct.Mini2sfDirectory));
+            }
+            
+            if (!File.Exists(pTime2sfStruct.SdatPath))
+            {
+                throw new FileNotFoundException(String.Format("Cannot find file <{0}>", pTime2sfStruct.SdatPath));
+            }
+
+            if (Sdat.IsSdat(pTime2sfStruct.SdatPath))
+            {
+
+                // delete existing batch file
+                string psfpointBatchFilePath = Path.Combine(Path.Combine(pTime2sfStruct.Mini2sfDirectory, "text"), PSFPOINT_BATCH_TXT);
+
+                if (File.Exists(psfpointBatchFilePath))
+                {
+                    File.Delete(psfpointBatchFilePath);
+                }
+
+                // extract SDAT
+                string extractedSdatPath = Path.Combine(Path.GetDirectoryName(pTime2sfStruct.SdatPath), Path.GetFileNameWithoutExtension(pTime2sfStruct.SdatPath));
+                if (Directory.Exists(extractedSdatPath))
+                {
+                    extractedSdatPath += String.Format("_temp_{0}", new Random().Next().ToString());
+                }
+
+                string extractedSseqPath = Path.Combine(extractedSdatPath, "Seq");
+
+                Sdat sdat = new Sdat();
+                using (FileStream fs = File.Open(pTime2sfStruct.SdatPath, FileMode.Open, FileAccess.Read))
+                {
+                    sdat.Initialize(fs, pTime2sfStruct.SdatPath);
+                    sdat.ExtractSseqs(fs, extractedSdatPath);
+                }
+
+                // Make SMAP
+                Smap smap = new Smap(sdat);
+
+                // Build Hashtable for mini2sfs
+                int songNumber;
+                foreach (string mini2sfFile in Directory.GetFiles(pTime2sfStruct.Mini2sfDirectory, "*.mini2sf"))
+                {
+                    songNumber = GetSongNumberForMini2sf(mini2sfFile);
+                    
+                    if (!mini2sfSongNumbers.ContainsKey(songNumber))
+                    {
+                        mini2sfSongNumbers.Add(songNumber, mini2sfFile);
+                    }
+                }
+
+                // Loop through SMAP and build timing script
+                string emptyFileDir = Path.Combine(pTime2sfStruct.Mini2sfDirectory, EMPTY_FILE_DIRECTORY);
+
+                int totalSequences = smap.SseqSection.Length;
+                int i = 1;
+
+                // Initialize Bass            
+                if (smap.SseqSection.Length > 0)
+                {
+                    Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero, null);
+                }
+
+                string rippedFileName;
+                string rippedFilePath;
+                string outputMessages;
+                string sseqFilePath;
+
+                foreach (Smap.SmapSeqStruct s in smap.SseqSection)
+                {
+                    if (mini2sfSongNumbers.ContainsKey(s.number))
+                    {
+                        rippedFileName = Path.GetFileName((string)mini2sfSongNumbers[s.number]);
+                        rippedFilePath = (string)mini2sfSongNumbers[s.number];
+
+                        // check if file is empty or not
+                        if (s.fileID == Smap.EMPTY_FILE_ID)
+                        {
+                            // move to empty dir
+                            if (!Directory.Exists(emptyFileDir))
+                            {
+                                Directory.CreateDirectory(emptyFileDir);
+                            }
+
+                            if (File.Exists(rippedFilePath))
+                            {
+                                emptyFolderFileName = Path.Combine(emptyFileDir, rippedFileName);
+                                File.Copy(rippedFilePath, emptyFolderFileName, true);
+                                File.Delete(rippedFilePath);
+                            }
+                        }
+                        else
+                        {
+                            sseqFilePath = Path.Combine(extractedSseqPath, s.name);
+                            
+                            // convert sseq file to midi
+                            processSuccess = convertSseqFile(SSEQ2MID_SOURCE_PATH, pTime2sfStruct.Mini2sfDirectory,
+                                sseqFilePath, pTime2sfStruct.DoSingleLoop, out outputMessages);
+                            pMessages += outputMessages;
+
+                            // time file
+                            if (processSuccess)
+                            {
+                                processSuccess = buildFileTimingBatch(pTime2sfStruct.Mini2sfDirectory,
+                                    rippedFilePath, sseqFilePath, out outputMessages);
+                                pMessages += outputMessages;
+                            }
+                        }                                        
+                    }
+                    i++;
+                }
+                
+                // copy script
+                string psfpointBatchFileDestinationPath = Path.Combine(pTime2sfStruct.Mini2sfDirectory, PSFPOINT_BATCH_TXT);
+                File.Copy(psfpointBatchFilePath, psfpointBatchFileDestinationPath, true);
+
+                // run timing script
+                ExecutePsfPointBatchScript(psfpointBatchFileDestinationPath);
+
+                // delete script
+                File.Delete(psfpointBatchFileDestinationPath);
+
+                // delete extracted SDAT
+                Directory.Delete(extractedSdatPath, true);
+            }
+            else
+            {
+                throw new FormatException(String.Format("{0} is not an SDAT file.", pTime2sfStruct.SdatPath));
+            } // if (Sdat.IsSdat(pTime2sfStruct.SdatPath))
+
+        }
+
+        private static bool convertSseqFile(string pSseq2MidToolPath, string pMini2sfPath,
+            string pSseqFilePath, bool pDoSingleLoop, out string pErrorMessage)
+        {
+            Process ndsProcess;
+            bool isSuccess;
+            pErrorMessage = String.Empty;
+
+            // convert existing sseq to mid            
+            string sseqPath = Path.GetDirectoryName(pSseqFilePath);
+            string sseq2MidDestinationPath = Path.Combine(sseqPath, Path.GetFileName(pSseq2MidToolPath));
+
+            try
+            {
+                if (!File.Exists(sseq2MidDestinationPath))
+                {
+                    File.Copy(pSseq2MidToolPath, sseq2MidDestinationPath, false);
+                }
+                
+                // pDoSingleLoop
+                string arguments;
+
+                if (pDoSingleLoop)
+                {
+                    arguments = String.Format(" -1 -l {0}", Path.GetFileName(pSseqFilePath));
+                }
+                else
+                {
+                    arguments = String.Format(" -2 -l {0}", Path.GetFileName(pSseqFilePath));
+                }
+
+                ndsProcess = new Process();
+
+                ndsProcess.StartInfo = new ProcessStartInfo(sseq2MidDestinationPath, arguments);
+                ndsProcess.StartInfo.WorkingDirectory = sseqPath;
+                ndsProcess.StartInfo.UseShellExecute = false;
+                ndsProcess.StartInfo.CreateNoWindow = true;
+                ndsProcess.StartInfo.RedirectStandardOutput = true;
+                isSuccess = ndsProcess.Start();
+                string sseqOutputFile = ndsProcess.StandardOutput.ReadToEnd();
+                ndsProcess.WaitForExit();
+                ndsProcess.Close();
+                ndsProcess.Dispose();
+
+                // output redirected standard output
+                string textOutputPath = Path.Combine(pMini2sfPath, "text");
+                string sseq2MidOutputPath = Path.Combine(textOutputPath, SSEQ2MID_TXT);
+
+                if (!Directory.Exists(textOutputPath)) { Directory.CreateDirectory(textOutputPath); }
+
+                TextWriter tw = File.CreateText(sseq2MidOutputPath);
+                tw.Write(sseqOutputFile);
+                tw.Close();
+                tw.Dispose();
+            }
+            catch (Exception _e)
+            {
+                isSuccess = false;
+                pErrorMessage = _e.Message + Environment.NewLine;
+            }
+
+            return isSuccess;
+        }
+
+        private static bool buildFileTimingBatch(string pMini2sfPath,
+            string p2sfFilePath, string pSseqFilePath, out string pErrorMessage)
+        {
+            bool isSuccess = false;
+            string arguments;
+            pErrorMessage = String.Empty;
+
+            StreamWriter sw;
+
+            StringBuilder strReturn = new StringBuilder(128);
+            int minutes;
+            int seconds;
+
+            int midiStream;
+
+            string _2sfFileName = Path.GetFileName(p2sfFilePath);
+
+            string psfpointBatchFilePath = Path.Combine(Path.Combine(pMini2sfPath, "text"), PSFPOINT_BATCH_TXT);
+
+            if (!File.Exists(psfpointBatchFilePath))
+            {
+                sw = File.CreateText(psfpointBatchFilePath);
+            }
+            else
+            {
+                sw = new StreamWriter(File.Open(psfpointBatchFilePath, FileMode.Append, FileAccess.Write));
+            }
+
+            try
+            {
+                string midiFilePath = pSseqFilePath + ".mid";
+
+                if (File.Exists(midiFilePath))
+                {
+                    midiStream = BassMidi.BASS_MIDI_StreamCreateFile(midiFilePath, 0L, 0L, BASSFlag.BASS_DEFAULT, 0);
+
+                    if (midiStream != 0)
+                    {
+                        // play the channel
+                        long length = Bass.BASS_ChannelGetLength(midiStream);
+                        double tlength = Bass.BASS_ChannelBytes2Seconds(midiStream, length);
+                        minutes = (int)(tlength / 60);
+                        seconds = (int)(tlength - (minutes * 60));
+
+                        if (seconds > 59)
+                        {
+                            minutes++;
+                            seconds -= 60;
+                        }
+                    }
+                    else
+                    {
+                        // error
+                        pErrorMessage = Environment.NewLine + String.Format("Stream error: {0}", Bass.BASS_ErrorGetCode()) +
+                            Environment.NewLine;                       
+                        return false;
+                    }
+
+
+                    // Do Fade
+                    if (isLoopingTrack(pMini2sfPath, Path.GetFileName(pSseqFilePath)))
+                    {
+                        arguments = " -fade=\"10\" " + _2sfFileName;
+
+                        if (minutes == 0 && seconds == 0)
+                        {
+                            seconds = 1;
+                        }
+                    }
+                    else
+                    {
+                        arguments = " -fade=\"1\" " + _2sfFileName;
+                        seconds++;
+                        if (seconds > 60)
+                        {
+                            minutes++;
+                            seconds -= 60;
+                        }
+
+                    }
+
+                    // Add fade info to batch file
+                    sw.WriteLine("psfpoint.exe" + arguments);
+
+                    // Add length info to batch file
+                    arguments = " -length=\"" + minutes + ":" + seconds.ToString().PadLeft(2, '0') + "\" " + _2sfFileName;
+                    sw.WriteLine("psfpoint.exe" + arguments);
+                }
+
+                isSuccess = true;
+            }
+            catch (Exception e)
+            {
+                pErrorMessage = String.Format("Error timing {0}: {1}", p2sfFilePath, e.Message) + Environment.NewLine;
+            }
+            finally
+            {
+                sw.Close();
+                sw.Dispose();
+            }
+
+            return isSuccess;
+        }
+
+        private static bool isLoopingTrack(string pMini2sfPath, string pSequenceName)
+        {
+            string sseq2MidOutputPath = Path.Combine(Path.Combine(pMini2sfPath, "text"), SSEQ2MID_TXT);
+            string oneLineBack = String.Empty;
+            string twoLinesBack = String.Empty;
+
+            bool _ret = true;
+
+            // Check Path
+            if (File.Exists(sseq2MidOutputPath))
+            {
+                string inputLine = String.Empty;
+
+                TextReader textReader = new StreamReader(sseq2MidOutputPath);
+                while ((inputLine = textReader.ReadLine()) != null)
+                {
+                    // Check for the incoming sequence name
+                    string sseqFileName = Path.GetFileName(pSequenceName);
+                    if (inputLine.Trim().Contains(sseqFileName))
+                    {
+                        // Skip columns headers
+                        textReader.ReadLine();
+
+                        // Read until EOF or End of SEQ section (blank line)
+                        while (((inputLine = textReader.ReadLine()) != null) &&
+                               !inputLine.Trim().Contains(SSEQ2MID_TXT_MARKER))
+                        {
+                            twoLinesBack = oneLineBack;
+                            oneLineBack = inputLine;
+                        }
+
+                        if (twoLinesBack.Contains(SSEQ2MID_TXT_END_OF_TRACK))
+                        {
+                            _ret = false;
+                        }
+                    }
+
+
+                }
+
+                textReader.Close();
+                textReader.Dispose();
+            }
+
+            return _ret;
         }
     }
 }

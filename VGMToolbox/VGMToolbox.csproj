@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{8A96D568-CB21-4E64-8FD2-849A8E2B2D4F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -728,6 +728,8 @@ move ICSharpCode.SharpZipLib.dll ".\lib\ICSharpCode.SharpZipLib.dll"
 move ICSharpCode.SharpZipLib.dll.COPYING.txt ".\lib\ICSharpCode.SharpZipLib.dll.COPYING.txt"
 move System.Data.SQLite.dll ".\lib\System.Data.SQLite.dll"
 move System.Data.SQLite.xml ".\lib\System.Data.SQLite.xml"
-del *.pdb</PostBuildEvent>
+del *.pdb
+del "Bass.Net.dll"
+del "Bass.Net.xml"</PostBuildEvent>
   </PropertyGroup>
 </Project>

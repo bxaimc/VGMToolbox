@@ -29,8 +29,6 @@
         private void InitializeComponent()
         {
             this.grpSourcePaths = new System.Windows.Forms.GroupBox();
-            this.lblFilePrefix = new System.Windows.Forms.Label();
-            this.tbFilePrefix = new System.Windows.Forms.TextBox();
             this.btnSdatBrowse = new System.Windows.Forms.Button();
             this.btn2sfBrowse = new System.Windows.Forms.Button();
             this.lblPathToSdat = new System.Windows.Forms.Label();
@@ -48,36 +46,34 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 415);
-            this.pnlLabels.Size = new System.Drawing.Size(716, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 418);
+            this.pnlLabels.Size = new System.Drawing.Size(1179, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(716, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(1179, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 338);
-            this.tbOutput.Size = new System.Drawing.Size(716, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 341);
+            this.tbOutput.Size = new System.Drawing.Size(1179, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 318);
-            this.pnlButtons.Size = new System.Drawing.Size(716, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 321);
+            this.pnlButtons.Size = new System.Drawing.Size(1179, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(656, 0);
+            this.btnCancel.Location = new System.Drawing.Point(1119, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(596, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(1059, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpSourcePaths
             // 
-            this.grpSourcePaths.Controls.Add(this.lblFilePrefix);
-            this.grpSourcePaths.Controls.Add(this.tbFilePrefix);
             this.grpSourcePaths.Controls.Add(this.btnSdatBrowse);
             this.grpSourcePaths.Controls.Add(this.btn2sfBrowse);
             this.grpSourcePaths.Controls.Add(this.lblPathToSdat);
@@ -87,26 +83,10 @@
             this.grpSourcePaths.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSourcePaths.Location = new System.Drawing.Point(0, 23);
             this.grpSourcePaths.Name = "grpSourcePaths";
-            this.grpSourcePaths.Size = new System.Drawing.Size(716, 100);
+            this.grpSourcePaths.Size = new System.Drawing.Size(1179, 74);
             this.grpSourcePaths.TabIndex = 5;
             this.grpSourcePaths.TabStop = false;
             this.grpSourcePaths.Text = "Source Paths";
-            // 
-            // lblFilePrefix
-            // 
-            this.lblFilePrefix.AutoSize = true;
-            this.lblFilePrefix.Location = new System.Drawing.Point(6, 77);
-            this.lblFilePrefix.Name = "lblFilePrefix";
-            this.lblFilePrefix.Size = new System.Drawing.Size(115, 13);
-            this.lblFilePrefix.TabIndex = 7;
-            this.lblFilePrefix.Text = "File Prefix of Input Files";
-            // 
-            // tbFilePrefix
-            // 
-            this.tbFilePrefix.Location = new System.Drawing.Point(127, 74);
-            this.tbFilePrefix.Name = "tbFilePrefix";
-            this.tbFilePrefix.Size = new System.Drawing.Size(248, 20);
-            this.tbFilePrefix.TabIndex = 6;
             // 
             // btnSdatBrowse
             // 
@@ -164,9 +144,9 @@
             // 
             this.grpOptions.Controls.Add(this.cbOneLoop);
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpOptions.Location = new System.Drawing.Point(0, 123);
+            this.grpOptions.Location = new System.Drawing.Point(0, 97);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(716, 47);
+            this.grpOptions.Size = new System.Drawing.Size(1179, 47);
             this.grpOptions.TabIndex = 6;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
@@ -185,7 +165,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(716, 456);
+            this.ClientSize = new System.Drawing.Size(1179, 459);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpSourcePaths);
             this.Name = "Xsf_2sfTimerForm";
@@ -220,8 +200,6 @@
         private System.Windows.Forms.Label lblPathToSdat;
         private System.Windows.Forms.Button btnSdatBrowse;
         private System.Windows.Forms.Button btn2sfBrowse;
-        private System.Windows.Forms.Label lblFilePrefix;
-        private System.Windows.Forms.TextBox tbFilePrefix;
         private System.Windows.Forms.GroupBox grpOptions;
         private System.Windows.Forms.CheckBox cbOneLoop;
     }

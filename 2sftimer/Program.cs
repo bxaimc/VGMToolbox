@@ -79,7 +79,7 @@ namespace _2sftimer
             // Extract SDAT
             Console.WriteLine("Extracting SDAT");
 
-            string extractedSdatPath = extractedSdatPath = Path.Combine(Path.GetDirectoryName(pathToSdat), Path.GetFileNameWithoutExtension(pathToSdat));
+            string extractedSdatPath = Path.Combine(Path.GetDirectoryName(pathToSdat), Path.GetFileNameWithoutExtension(pathToSdat));
             if (Directory.Exists(extractedSdatPath))
             {
                 extractedSdatPath += String.Format("_temp_{0}", new Random().Next().ToString()); 

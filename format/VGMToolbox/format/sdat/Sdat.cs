@@ -8,6 +8,7 @@ using System.Text;
 
 using ICSharpCode.SharpZipLib.Checksums;
 
+using VGMToolbox.format.util;
 using VGMToolbox.util;
 
 namespace VGMToolbox.format.sdat
@@ -1316,6 +1317,31 @@ namespace VGMToolbox.format.sdat
         public void GetDatFileCrc32(ref Crc32 pChecksum) { pChecksum.Reset();}
         public void GetDatFileChecksums(ref Crc32 pChecksum,
             ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream) { }
+
+        #endregion
+
+        #region Static Functions
+
+        public static bool IsSdat(string pFilePath)
+        {
+            bool ret = false;
+            string fullPath = Path.GetFullPath(pFilePath);
+
+            if (File.Exists(fullPath))
+            {
+                using (FileStream fs = File.OpenRead(fullPath))
+                {
+                    Type dataType = FormatUtil.getObjectType(fs);
+
+                    if ((dataType != null) && (dataType.Name.Equals("Sdat")))
+                    {
+                        ret = true;
+                    }
+                }
+            }
+                                    
+            return ret;
+        }
 
         #endregion
 
