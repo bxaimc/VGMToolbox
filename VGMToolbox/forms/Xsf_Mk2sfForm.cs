@@ -46,7 +46,9 @@ namespace VGMToolbox.forms
 
             this.GetAllowedSequences(out allowedSequences, out unallowedSequences);
 
-            if (CheckSdatPathAndOutputDir() && CheckForTestPackNds())
+            if (CheckSdatPathAndOutputDir() && 
+                CheckForTestPackNds() &&
+                CheckInputs())
             {
                 Mk2sfWorker.Mk2sfStruct mk2sfStruct = new Mk2sfWorker.Mk2sfStruct();
                 mk2sfStruct.AllowedSequences = allowedSequences;
@@ -85,13 +87,13 @@ namespace VGMToolbox.forms
                         row = new DataGridViewRow();
                         row.CreateCells(this.dataGridSseq);
 
-                        row.Cells[1].Value = s.number.ToString();
+                        row.Cells[1].Value = s.number.ToString().PadLeft(4, '0');
 
                         if (!String.IsNullOrEmpty(s.name))
                         {
                             row.Cells[0].Value = true;
                             row.Cells[2].Value = s.fileID.ToString();
-                            row.Cells[3].Value = s.size.ToString();
+                            row.Cells[3].Value = s.size.ToString().PadLeft(6, '0');
                             row.Cells[4].Value = s.name.ToString();
                             row.Cells[5].Value = s.bnk.ToString();
                             row.Cells[6].Value = s.vol.ToString();
@@ -169,7 +171,6 @@ namespace VGMToolbox.forms
             this.tbOutputPath.Text = base.browseForFolder(sender, e);
         }
 
-
         protected override IVgmtBackgroundWorker getBackgroundWorker()
         {
             return new Mk2sfWorker();
@@ -201,6 +202,10 @@ namespace VGMToolbox.forms
             }
 
             return ret;
+        }
+        private bool CheckInputs()
+        {
+            return base.checkFolderExists(tbOutputPath.Text, "Output Path");
         }
     }
 }

@@ -62,23 +62,52 @@ namespace VGMToolbox.tools.xsf
             string sdatPrefix;
             string testpackDestinationPath;
             string unallowedDestinationPath;
+            string strmDestinationPath;
             Sdat sdat;
 
             // Build Paths
-            sdatDestinationPath =
-                Path.Combine(pMk2sfStruct.DestinationFolder, Path.GetFileName(pMk2sfStruct.SourcePath));
+            if (String.IsNullOrEmpty(pMk2sfStruct.GameSerial))
+            {
+                sdatDestinationPath =
+                    Path.Combine(pMk2sfStruct.DestinationFolder, Path.GetFileName(pMk2sfStruct.SourcePath));
+            }
+            else
+            {
+                sdatDestinationPath =
+                    Path.Combine(pMk2sfStruct.DestinationFolder, pMk2sfStruct.GameSerial + Path.GetExtension(pMk2sfStruct.SourcePath));            
+            }
             TwoSFDestinationPath =
-                Path.Combine(pMk2sfStruct.DestinationFolder, Path.GetFileNameWithoutExtension(pMk2sfStruct.SourcePath));
+                Path.Combine(pMk2sfStruct.DestinationFolder, Path.GetFileNameWithoutExtension(sdatDestinationPath));
             TwoSFToolDestinationPath =
                 Path.Combine(pMk2sfStruct.DestinationFolder, Path.GetFileName(TWOSFTOOL_PATH));
-            sdatPrefix = Path.GetFileNameWithoutExtension(pMk2sfStruct.SourcePath);
+            sdatPrefix = Path.GetFileNameWithoutExtension(sdatDestinationPath);
             testpackDestinationPath = Path.Combine(pMk2sfStruct.DestinationFolder, 
                 Path.GetFileName(TESTPACK_FULL_PATH));
             unallowedDestinationPath = Path.Combine(TwoSFDestinationPath, "UnAllowed Sequences");
+            strmDestinationPath = TwoSFDestinationPath;
 
             // Copy SDAT to destination folder
-            File.Copy(pMk2sfStruct.SourcePath, sdatDestinationPath, true);
+            try
+            {
+                File.Copy(pMk2sfStruct.SourcePath, sdatDestinationPath, false);
+            }
+            catch (Exception sdatException)
+            {
+                throw new IOException(String.Format("Error: Cannot copy SDAT <{0}> to destination directory: {1}.", sdatDestinationPath, sdatException.Message));
+            }
             
+            // Copy STRMs
+            this.progressStruct.Clear();
+            this.progressStruct.GenericMessage = "Copying STRM files" + Environment.NewLine;
+            ReportProgress(Constants.PROGRESS_MSG_ONLY, progressStruct);
+            
+            using (FileStream sdatStream = File.OpenRead(sdatDestinationPath))
+            {
+                sdat = new Sdat();
+                sdat.Initialize(sdatStream, sdatDestinationPath);
+                sdat.ExtractStrms(sdatStream, strmDestinationPath);
+            }
+
             // Optimize SDAT
             this.progressStruct.Clear();
             this.progressStruct.GenericMessage = "Optimizing SDAT" + Environment.NewLine;
@@ -147,6 +176,10 @@ namespace VGMToolbox.tools.xsf
             }
 
             // Add Tags            
+            this.progressStruct.Clear();
+            this.progressStruct.GenericMessage = "Tagging Output" + Environment.NewLine;
+            ReportProgress(Constants.PROGRESS_MSG_ONLY, progressStruct);
+            
             XsfUtil.XsfBasicTaggingStruct tagStruct = new XsfUtil.XsfBasicTaggingStruct();
             tagStruct.TagArtist = pMk2sfStruct.TagArtist;
             tagStruct.TagCopyright = pMk2sfStruct.TagCopyright;
