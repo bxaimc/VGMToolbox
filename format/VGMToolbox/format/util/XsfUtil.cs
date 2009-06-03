@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Reflection;
 using System.Text;
 
@@ -987,6 +988,86 @@ namespace VGMToolbox.format.util
             }
 
             return _ret;
+        }
+
+        public static void Make2sfSet(string pRomPath, string pSdatPath, 
+            int pMinIndex, int pMaxIndex, string pOutputFolder)
+        {
+            // WIP - Needs more testing
+            
+            
+            int read;
+            byte[] data = new byte[Constants.FILE_READ_CHUNK_SIZE];
+            
+            string sdatPrefix = Path.GetFileNameWithoutExtension(pSdatPath);
+            string libOutputPath = Path.Combine(pOutputFolder, sdatPrefix + ".2sflib");
+            string compressedDataSectionPath = Path.Combine(pOutputFolder, sdatPrefix + ".data.bin");
+
+            string dataCrc32 = String.Empty;
+            UInt32 dataLength = 0;
+
+            // write compressed section
+            using (FileStream dataFs = File.Open(compressedDataSectionPath, FileMode.Create, FileAccess.ReadWrite))
+            {
+                //using (DeflaterOutputStream deflaterStream =
+                //    new DeflaterOutputStream(dataFs, new Deflater(Deflater.BEST_COMPRESSION, false)))
+                using (DeflateStream ds = 
+                    new DeflateStream(dataFs, CompressionMode.Compress, true))
+                {
+                    // write rom file
+                    using (FileStream romStream = File.OpenRead(pRomPath))
+                    {
+                        while ((read = romStream.Read(data, 0, data.Length)) > 0)
+                        {
+                            // deflaterStream.Write(data, 0, read);
+                            ds.Write(data, 0, read);
+                        }
+                    }
+                    
+                    // write SDAT                                        
+                    using (FileStream sdatStream = File.OpenRead(pSdatPath))
+                    {
+                        while ((read = sdatStream.Read(data, 0, data.Length)) > 0)
+                        {
+                            // deflaterStream.Write(data, 0, read);
+                            ds.Write(data, 0, read);
+                        }
+                        // deflaterStream.Flush();
+                        ds.Flush();                        
+                    }
+                }
+
+                // output 2sflib file
+                dataFs.Seek(0, SeekOrigin.Begin);
+                dataLength = (UInt32)dataFs.Length;
+                dataCrc32 = ChecksumUtil.GetCrc32OfFullFile(dataFs);
+
+                using (FileStream libStream = File.OpenWrite(libOutputPath))
+                {
+                    using (BinaryWriter bw = new BinaryWriter(libStream))
+                    {
+                        bw.Write('P');
+                        bw.Write('S');
+                        bw.Write('F');
+                        bw.Write(new byte[] { 0x24 });
+                        bw.Write(BitConverter.GetBytes((UInt32)0));          // reserved size
+                        bw.Write(BitConverter.GetBytes(dataLength)); // data length
+                        bw.Write((UInt32)VGMToolbox.util.Encoding.GetIntFromString("0x" + dataCrc32)); // data crc32
+
+                        dataFs.Seek(0, SeekOrigin.Begin);
+                        while ((read = dataFs.Read(data, 0, data.Length)) > 0)
+                        {
+                            bw.Write(data, 0, read);
+                        }
+                    }
+                }                                
+            }
+            
+
+
+
+
+
         }
     }
 }

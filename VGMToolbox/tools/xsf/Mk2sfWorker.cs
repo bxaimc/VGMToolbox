@@ -155,6 +155,11 @@ namespace VGMToolbox.tools.xsf
                 toolProcess.Close();
             }
 
+            // Check XsfUtil
+            XsfUtil.Make2sfSet(testpackDestinationPath, sdatDestinationPath,
+                GetMinAllowedSseq(pMk2sfStruct.AllowedSequences),
+                GetMaxAllowedSseq(pMk2sfStruct.AllowedSequences), TwoSFDestinationPath);
+
             // Move unallowed Sequences
             string unallowedFileName;
             string unallowedFilePath;

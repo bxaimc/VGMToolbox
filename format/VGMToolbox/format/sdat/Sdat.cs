@@ -21,6 +21,7 @@ namespace VGMToolbox.format.sdat
 
         private const string FORMAT_ABBREVIATION = "SDAT";
         private const string HEX_PREFIX = "0x";
+        public const string SDAT_FILE_EXTENSION = ".sdat";
 
         public const string SEQUENCE_FILE_EXTENSION = ".sseq";
 
