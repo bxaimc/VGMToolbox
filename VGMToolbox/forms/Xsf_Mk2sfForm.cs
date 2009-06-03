@@ -41,14 +41,19 @@ namespace VGMToolbox.forms
         }
         private void btnDoTask_Click(object sender, EventArgs e)
         {
-            ArrayList allowedSequences = this.GetAllowedSequences();
+            ArrayList allowedSequences;
+            ArrayList unallowedSequences;
+
+            this.GetAllowedSequences(out allowedSequences, out unallowedSequences);
 
             if (CheckSdatPathAndOutputDir() && CheckForTestPackNds())
             {
                 Mk2sfWorker.Mk2sfStruct mk2sfStruct = new Mk2sfWorker.Mk2sfStruct();
                 mk2sfStruct.AllowedSequences = allowedSequences;
+                mk2sfStruct.UnAllowedSequences = unallowedSequences;
                 mk2sfStruct.DestinationFolder = tbOutputPath.Text;
                 mk2sfStruct.SourcePath = tbSource.Text;
+                mk2sfStruct.GameSerial = tbGameSerial.Text;
 
                 mk2sfStruct.TagArtist = tbArtist.Text;
                 mk2sfStruct.TagCopyright = tbCopyright.Text;
@@ -66,44 +71,49 @@ namespace VGMToolbox.forms
 
         private void LoadComboBox(string pSourcePath)
         {
-            Smap smap = SdatUtil.GetSmapFromSdat(pSourcePath);
-            DataGridViewRow row = new DataGridViewRow();
-
             this.dataGridSseq.Rows.Clear();
-
-            if ((smap.SseqSection != null) && (smap.SseqSection.Length > 0))
+            
+            if (Sdat.IsSdat(pSourcePath))
             {
-                foreach (Smap.SmapSeqStruct s in smap.SseqSection)
+                Smap smap = SdatUtil.GetSmapFromSdat(pSourcePath);
+                DataGridViewRow row = new DataGridViewRow();
+                
+                if ((smap.SseqSection != null) && (smap.SseqSection.Length > 0))
                 {
-                    row = new DataGridViewRow();
-                    row.CreateCells(this.dataGridSseq);
-
-                    row.Cells[1].Value = s.number.ToString();
-
-                    if (!String.IsNullOrEmpty(s.name))
+                    foreach (Smap.SmapSeqStruct s in smap.SseqSection)
                     {
-                        row.Cells[0].Value = true;
-                        row.Cells[2].Value = s.fileID.ToString();
-                        row.Cells[3].Value = s.size.ToString();
-                        row.Cells[4].Value = s.name.ToString();
-                        row.Cells[5].Value = s.bnk.ToString();
-                        row.Cells[6].Value = s.vol.ToString();
-                        row.Cells[7].Value = s.cpr.ToString();
-                        row.Cells[8].Value = s.ppr.ToString();
-                        row.Cells[9].Value = s.ply.ToString();
-                    }
-                    else
-                    {
-                        row.Cells[0].Value = false;
-                    }
+                        row = new DataGridViewRow();
+                        row.CreateCells(this.dataGridSseq);
 
-                    this.dataGridSseq.Rows.Add(row);
+                        row.Cells[1].Value = s.number.ToString();
+
+                        if (!String.IsNullOrEmpty(s.name))
+                        {
+                            row.Cells[0].Value = true;
+                            row.Cells[2].Value = s.fileID.ToString();
+                            row.Cells[3].Value = s.size.ToString();
+                            row.Cells[4].Value = s.name.ToString();
+                            row.Cells[5].Value = s.bnk.ToString();
+                            row.Cells[6].Value = s.vol.ToString();
+                            row.Cells[7].Value = s.cpr.ToString();
+                            row.Cells[8].Value = s.ppr.ToString();
+                            row.Cells[9].Value = s.ply.ToString();
+                        }
+                        else
+                        {
+                            row.Cells[0].Value = false;
+                        }
+
+                        this.dataGridSseq.Rows.Add(row);
+                    }
                 }
             }
         }
-        private ArrayList GetAllowedSequences()
+        private void GetAllowedSequences(out ArrayList pAllowedSequences, 
+            out ArrayList pUnAllowedSequences)
         {
             ArrayList allowedSequences = new ArrayList();
+            ArrayList unallowedSequences = new ArrayList();
 
             foreach (DataGridViewRow r in dataGridSseq.Rows)
             {
@@ -113,9 +123,16 @@ namespace VGMToolbox.forms
                 {
                     allowedSequences.Add(int.Parse((string)r.Cells[1].Value));
                 }
+                else if (!((bool)r.Cells[0].Value) &&
+                          (r.Cells[4].Value != null) &&
+                          (!String.IsNullOrEmpty((string)r.Cells[4].Value)))
+                {
+                    unallowedSequences.Add(int.Parse((string)r.Cells[1].Value));
+                }
             }
 
-            return allowedSequences;
+            pAllowedSequences = allowedSequences;
+            pUnAllowedSequences = unallowedSequences;
         }
         private static bool CheckForTestPackNds()
         {

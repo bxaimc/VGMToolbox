@@ -32,8 +32,11 @@ namespace VGMToolbox.tools.xsf
         public struct Mk2sfStruct
         {
             public ArrayList AllowedSequences;
+            public ArrayList UnAllowedSequences;
+
             public string DestinationFolder;
             public string SourcePath;
+            public string GameSerial;
 
             public string TagArtist;
             public string TagCopyright;
@@ -58,6 +61,7 @@ namespace VGMToolbox.tools.xsf
             string TwoSFToolDestinationPath;
             string sdatPrefix;
             string testpackDestinationPath;
+            string unallowedDestinationPath;
             Sdat sdat;
 
             // Build Paths
@@ -70,6 +74,7 @@ namespace VGMToolbox.tools.xsf
             sdatPrefix = Path.GetFileNameWithoutExtension(pMk2sfStruct.SourcePath);
             testpackDestinationPath = Path.Combine(pMk2sfStruct.DestinationFolder, 
                 Path.GetFileName(TESTPACK_FULL_PATH));
+            unallowedDestinationPath = Path.Combine(TwoSFDestinationPath, "UnAllowed Sequences");
 
             // Copy SDAT to destination folder
             File.Copy(pMk2sfStruct.SourcePath, sdatDestinationPath, true);
@@ -121,6 +126,26 @@ namespace VGMToolbox.tools.xsf
                 toolProcess.Close();
             }
 
+            // Move unallowed Sequences
+            string unallowedFileName;
+            string unallowedFilePath;
+            foreach (int unallowedSequenceNumber in pMk2sfStruct.UnAllowedSequences)
+            {
+                unallowedFileName = String.Format("{0}-{1}.mini2sf", sdatPrefix, unallowedSequenceNumber.ToString("X4"));
+                unallowedFilePath = Path.Combine(TwoSFDestinationPath, unallowedFileName);
+
+                if (!Directory.Exists(unallowedDestinationPath))
+                {
+                    Directory.CreateDirectory(unallowedDestinationPath);
+                }
+
+                if (File.Exists(unallowedFilePath))
+                {
+                    File.Copy(unallowedFilePath, Path.Combine(unallowedDestinationPath, unallowedFileName), true);
+                    File.Delete(unallowedFilePath);
+                }                
+            }
+
             // Add Tags            
             XsfUtil.XsfBasicTaggingStruct tagStruct = new XsfUtil.XsfBasicTaggingStruct();
             tagStruct.TagArtist = pMk2sfStruct.TagArtist;
@@ -128,8 +153,8 @@ namespace VGMToolbox.tools.xsf
             tagStruct.TagYear = pMk2sfStruct.TagYear;
             tagStruct.TagGame = pMk2sfStruct.TagGame;
             tagStruct.TagComment = "uses Legacy of Ys: Book II driver hacked by Caitsith2";            
-            // tagStruct.TagXsfByTagName = "-2sfby";
-            // tagStruct.TagXsfByTagValue = "VGMToolbox";
+            tagStruct.TagXsfByTagName = "-2sfby";
+            tagStruct.TagXsfByTagValue = "VGMToolbox";
 
             string taggingBatchPath = XsfUtil.BuildBasicTaggingBatch(TwoSFDestinationPath, tagStruct, "*.mini2sf");
             XsfUtil.ExecutePsfPointBatchScript(taggingBatchPath, true);

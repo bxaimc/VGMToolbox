@@ -36,6 +36,8 @@
             this.btnBrowseSource = new System.Windows.Forms.Button();
             this.tbSource = new System.Windows.Forms.TextBox();
             this.grpSetInformation = new System.Windows.Forms.GroupBox();
+            this.tbGameSerial = new System.Windows.Forms.TextBox();
+            this.lblGameSerial = new System.Windows.Forms.Label();
             this.tbYear = new System.Windows.Forms.TextBox();
             this.lblYear = new System.Windows.Forms.Label();
             this.lblGame = new System.Windows.Forms.Label();
@@ -66,29 +68,29 @@
             // pnlLabels
             // 
             this.pnlLabels.Location = new System.Drawing.Point(0, 418);
-            this.pnlLabels.Size = new System.Drawing.Size(1180, 19);
+            this.pnlLabels.Size = new System.Drawing.Size(942, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(1180, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(942, 20);
             // 
             // tbOutput
             // 
             this.tbOutput.Location = new System.Drawing.Point(0, 341);
-            this.tbOutput.Size = new System.Drawing.Size(1180, 77);
+            this.tbOutput.Size = new System.Drawing.Size(942, 77);
             // 
             // pnlButtons
             // 
             this.pnlButtons.Location = new System.Drawing.Point(0, 321);
-            this.pnlButtons.Size = new System.Drawing.Size(1180, 20);
+            this.pnlButtons.Size = new System.Drawing.Size(942, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(1120, 0);
+            this.btnCancel.Location = new System.Drawing.Point(882, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(1060, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(822, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpSourcePaths
@@ -102,7 +104,7 @@
             this.grpSourcePaths.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSourcePaths.Location = new System.Drawing.Point(0, 23);
             this.grpSourcePaths.Name = "grpSourcePaths";
-            this.grpSourcePaths.Size = new System.Drawing.Size(1180, 72);
+            this.grpSourcePaths.Size = new System.Drawing.Size(942, 72);
             this.grpSourcePaths.TabIndex = 5;
             this.grpSourcePaths.TabStop = false;
             this.grpSourcePaths.Text = "Source Paths";
@@ -162,6 +164,8 @@
             // 
             // grpSetInformation
             // 
+            this.grpSetInformation.Controls.Add(this.tbGameSerial);
+            this.grpSetInformation.Controls.Add(this.lblGameSerial);
             this.grpSetInformation.Controls.Add(this.tbYear);
             this.grpSetInformation.Controls.Add(this.lblYear);
             this.grpSetInformation.Controls.Add(this.lblGame);
@@ -173,14 +177,30 @@
             this.grpSetInformation.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSetInformation.Location = new System.Drawing.Point(0, 95);
             this.grpSetInformation.Name = "grpSetInformation";
-            this.grpSetInformation.Size = new System.Drawing.Size(1180, 72);
+            this.grpSetInformation.Size = new System.Drawing.Size(942, 114);
             this.grpSetInformation.TabIndex = 6;
             this.grpSetInformation.TabStop = false;
             this.grpSetInformation.Text = "Set Information";
             // 
+            // tbGameSerial
+            // 
+            this.tbGameSerial.Location = new System.Drawing.Point(407, 19);
+            this.tbGameSerial.Name = "tbGameSerial";
+            this.tbGameSerial.Size = new System.Drawing.Size(100, 20);
+            this.tbGameSerial.TabIndex = 9;
+            // 
+            // lblGameSerial
+            // 
+            this.lblGameSerial.AutoSize = true;
+            this.lblGameSerial.Location = new System.Drawing.Point(331, 22);
+            this.lblGameSerial.Name = "lblGameSerial";
+            this.lblGameSerial.Size = new System.Drawing.Size(64, 13);
+            this.lblGameSerial.TabIndex = 8;
+            this.lblGameSerial.Text = "Game Serial";
+            // 
             // tbYear
             // 
-            this.tbYear.Location = new System.Drawing.Point(403, 19);
+            this.tbYear.Location = new System.Drawing.Point(407, 71);
             this.tbYear.MaxLength = 4;
             this.tbYear.Name = "tbYear";
             this.tbYear.Size = new System.Drawing.Size(58, 20);
@@ -189,7 +209,7 @@
             // lblYear
             // 
             this.lblYear.AutoSize = true;
-            this.lblYear.Location = new System.Drawing.Point(331, 22);
+            this.lblYear.Location = new System.Drawing.Point(331, 74);
             this.lblYear.Name = "lblYear";
             this.lblYear.Size = new System.Drawing.Size(29, 13);
             this.lblYear.TabIndex = 6;
@@ -214,7 +234,7 @@
             // lblCopyright
             // 
             this.lblCopyright.AutoSize = true;
-            this.lblCopyright.Location = new System.Drawing.Point(331, 48);
+            this.lblCopyright.Location = new System.Drawing.Point(6, 74);
             this.lblCopyright.Name = "lblCopyright";
             this.lblCopyright.Size = new System.Drawing.Size(51, 13);
             this.lblCopyright.TabIndex = 3;
@@ -222,7 +242,7 @@
             // 
             // tbCopyright
             // 
-            this.tbCopyright.Location = new System.Drawing.Point(403, 45);
+            this.tbCopyright.Location = new System.Drawing.Point(78, 71);
             this.tbCopyright.Name = "tbCopyright";
             this.tbCopyright.Size = new System.Drawing.Size(239, 20);
             this.tbCopyright.TabIndex = 2;
@@ -263,9 +283,9 @@
             this.PprColumn,
             this.PlyColumn});
             this.dataGridSseq.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridSseq.Location = new System.Drawing.Point(0, 167);
+            this.dataGridSseq.Location = new System.Drawing.Point(0, 209);
             this.dataGridSseq.Name = "dataGridSseq";
-            this.dataGridSseq.Size = new System.Drawing.Size(1180, 154);
+            this.dataGridSseq.Size = new System.Drawing.Size(942, 112);
             this.dataGridSseq.TabIndex = 7;
             // 
             // CheckBoxColumn
@@ -351,7 +371,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1180, 459);
+            this.ClientSize = new System.Drawing.Size(942, 459);
             this.Controls.Add(this.dataGridSseq);
             this.Controls.Add(this.grpSetInformation);
             this.Controls.Add(this.grpSourcePaths);
@@ -409,6 +429,8 @@
         private System.Windows.Forms.TextBox tbGame;
         private System.Windows.Forms.Label lblCopyright;
         private System.Windows.Forms.TextBox tbCopyright;
+        private System.Windows.Forms.TextBox tbGameSerial;
+        private System.Windows.Forms.Label lblGameSerial;
 
     }
 }
