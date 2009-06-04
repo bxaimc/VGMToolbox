@@ -1326,21 +1326,24 @@ namespace VGMToolbox.format.sdat
         public static bool IsSdat(string pFilePath)
         {
             bool ret = false;
-            string fullPath = Path.GetFullPath(pFilePath);
 
-            if (File.Exists(fullPath))
+            if (!String.IsNullOrEmpty(pFilePath))
             {
-                using (FileStream fs = File.OpenRead(fullPath))
-                {
-                    Type dataType = FormatUtil.getObjectType(fs);
+                string fullPath = Path.GetFullPath(pFilePath);
 
-                    if ((dataType != null) && (dataType.Name.Equals("Sdat")))
+                if (File.Exists(fullPath))
+                {
+                    using (FileStream fs = File.OpenRead(fullPath))
                     {
-                        ret = true;
+                        Type dataType = FormatUtil.getObjectType(fs);
+
+                        if ((dataType != null) && (dataType.Name.Equals("Sdat")))
+                        {
+                            ret = true;
+                        }
                     }
                 }
-            }
-                                    
+            }                     
             return ret;
         }
 

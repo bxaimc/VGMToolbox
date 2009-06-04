@@ -28,7 +28,7 @@ namespace VGMToolbox
         XsfCompressedProgramExtractorWorker xsfCompressedProgramExtractor;
         GbsM3uBuilderWorker gbsM3uBuilder;
         NsfeM3uBuilderWorker nsfeM3uBuilder;
-        Rip2sfWorker rip2sfWorker;
+        // Rip2sfWorker rip2sfWorker;
         SdatExtractorWorker sdatExtractorWorker;
         
 
@@ -965,93 +965,6 @@ namespace VGMToolbox
             {
                 tbOutput.Text += "CANCEL PENDING...";
                 xsfCompressedProgramExtractor.CancelAsync();
-            }
-        }
-
-        #endregion
-
-        #region XSF - 2sf Ripper
-
-        private void tb2sf_Source_DragEnter(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
-                e.Effect = DragDropEffects.All;
-            else
-                e.Effect = DragDropEffects.None;
-        }
-
-        private void tb2sf_Source_DragDrop(object sender, DragEventArgs e)
-        {
-            doCleanup();
-            do2sfRipCheck();
-
-            toolStripStatusLabel1.Text = "2SF Ripping...Begin";
-
-            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
-
-            int totalFileCount = 0;
-
-            foreach (string path in s)
-            {
-                if (File.Exists(path))
-                {
-                    totalFileCount++;
-                }
-                else if (Directory.Exists(path))
-                {
-                    totalFileCount += Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
-                }
-            }
-
-            Rip2sfWorker.Rip2sfStruct rip2sfStruct = new Rip2sfWorker.Rip2sfStruct();
-            rip2sfStruct.pPaths = s;
-            rip2sfStruct.totalFiles = totalFileCount;
-            rip2sfStruct.containerRomPath = tb2sf_ContainerPath.Text;
-            rip2sfStruct.filePrefix = tb2sf_FilePrefix.Text.Trim().Replace(' ', '_');
-
-            rip2sfWorker = new Rip2sfWorker();
-            rip2sfWorker.ProgressChanged += backgroundWorker_ReportProgress;
-            rip2sfWorker.RunWorkerCompleted += Rip2sfWorker_WorkComplete;
-            rip2sfWorker.RunWorkerAsync(rip2sfStruct);
-        }
-
-        private void do2sfRipCheck()
-        {
-            // Verify container file exists
-            if (!File.Exists(tb2sf_ContainerPath.Text))
-            {
-                MessageBox.Show("Container file does not exist.");
-            }
-
-            // Replace invalid filename chars with underscore
-            foreach (char c in Path.GetInvalidFileNameChars())
-            {
-                tb2sf_FilePrefix.Text = tb2sf_FilePrefix.Text.Replace(c, '_');
-            }
-        }
-        
-        private void Rip2sfWorker_WorkComplete(object sender,
-                     RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled)
-            {
-                doCancelCleanup(false);
-                toolStripStatusLabel1.Text = "2SF Ripping...Cancelled";
-                tbOutput.Text += "Operation cancelled.";
-            }
-            else
-            {
-                lblProgressLabel.Text = String.Empty;
-                toolStripStatusLabel1.Text = "2SF Ripping...Complete";
-            }
-        }
-
-        private void btn2sf_BrowseContainerRom_Click(object sender, EventArgs e)
-        {
-            openFileDialog1 = new OpenFileDialog();
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
-            {
-                tb2sf_ContainerPath.Text = openFileDialog1.FileName;
             }
         }
 

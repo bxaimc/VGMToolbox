@@ -20,7 +20,7 @@ namespace VGMToolbox.tools.xsf
         public const string TESTPACK_CRC32 = "FB16DF0E";
         public readonly string TWOSFTOOL_PATH =
             Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-            "external\\2sf\\2sftool_cs2.exe");
+            "external\\2sf\\2sftool.exe");
         public readonly string TESTPACK_FULL_PATH =
             Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
             TESTPACK_PATH);
@@ -156,9 +156,9 @@ namespace VGMToolbox.tools.xsf
             }
 
             // Check XsfUtil
-            XsfUtil.Make2sfSet(testpackDestinationPath, sdatDestinationPath,
-                GetMinAllowedSseq(pMk2sfStruct.AllowedSequences),
-                GetMaxAllowedSseq(pMk2sfStruct.AllowedSequences), TwoSFDestinationPath);
+            //XsfUtil.Make2sfSet(testpackDestinationPath, sdatDestinationPath,
+            //    GetMinAllowedSseq(pMk2sfStruct.AllowedSequences),
+            //    GetMaxAllowedSseq(pMk2sfStruct.AllowedSequences), TwoSFDestinationPath);
 
             // Move unallowed Sequences
             string unallowedFileName;

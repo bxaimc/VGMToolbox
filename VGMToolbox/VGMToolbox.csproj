@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{8A96D568-CB21-4E64-8FD2-849A8E2B2D4F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -194,12 +194,6 @@
     <Compile Include="forms\Xsf_RecompressDataForm.Designer.cs">
       <DependentUpon>Xsf_RecompressDataForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Xsf_2sfRipperForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="forms\Xsf_2sfRipperForm.Designer.cs">
-      <DependentUpon>Xsf_2sfRipperForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="forms\Xsf_2sfSdatOptimizerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -344,10 +338,6 @@
       <DependentUpon>SingleTagUpdateForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Xsf_2sfRipperForm.resx">
-      <DependentUpon>Xsf_2sfRipperForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="forms\Xsf_2sfSdatOptimizerForm.resx">
       <DependentUpon>Xsf_2sfSdatOptimizerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -488,9 +478,6 @@
     <Compile Include="tools\xsf\PsxSeqExtractWorker.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tools\xsf\Rip2sfWorker.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="tools\xsf\SdatOptimizerWorker.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -539,7 +526,7 @@
     <Content Include="credits.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="external\2sf\2sftool_cs2.exe">
+    <Content Include="external\2sf\2sftool.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="external\psf2\mkpsf2.exe">
@@ -564,33 +551,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="examine\dir.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="external\2sf\2sftool.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="external\2sf\DeSmuME_save.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="external\2sf\DeSmuME_trace.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="external\2sf\dst2bin.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="external\2sf\ndstool.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="external\2sf\sdattool.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="external\2sf\sseq2mid.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="external\2sf\zlib1.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="external\2sf\zlib_README.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="external\psfpoint.exe">

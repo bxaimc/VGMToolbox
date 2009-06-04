@@ -1658,16 +1658,6 @@
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Container ROM";
             // 
-            // btn2sf_BrowseContainerRom
-            // 
-            this.btn2sf_BrowseContainerRom.Location = new System.Drawing.Point(340, 19);
-            this.btn2sf_BrowseContainerRom.Name = "btn2sf_BrowseContainerRom";
-            this.btn2sf_BrowseContainerRom.Size = new System.Drawing.Size(28, 20);
-            this.btn2sf_BrowseContainerRom.TabIndex = 4;
-            this.btn2sf_BrowseContainerRom.Text = "...";
-            this.btn2sf_BrowseContainerRom.UseVisualStyleBackColor = true;
-            this.btn2sf_BrowseContainerRom.Click += new System.EventHandler(this.btn2sf_BrowseContainerRom_Click);
-            // 
             // tb2sf_ContainerPath
             // 
             this.tb2sf_ContainerPath.Location = new System.Drawing.Point(6, 19);
@@ -1694,16 +1684,6 @@
             this.groupBox7.TabIndex = 7;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Source ROM";
-            // 
-            // tb2sf_Source
-            // 
-            this.tb2sf_Source.AllowDrop = true;
-            this.tb2sf_Source.Location = new System.Drawing.Point(6, 19);
-            this.tb2sf_Source.Name = "tb2sf_Source";
-            this.tb2sf_Source.Size = new System.Drawing.Size(259, 20);
-            this.tb2sf_Source.TabIndex = 0;
-            this.tb2sf_Source.DragDrop += new System.Windows.Forms.DragEventHandler(this.tb2sf_Source_DragDrop);
-            this.tb2sf_Source.DragEnter += new System.Windows.Forms.DragEventHandler(this.tb2sf_Source_DragEnter);
             // 
             // label15
             // 
