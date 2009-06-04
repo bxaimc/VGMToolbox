@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Text;
@@ -18,9 +19,17 @@ namespace VGMToolbox.forms
         {
             InitializeComponent();
 
-            this.lblTitle.Text = "Search for File(s)";
-            this.tbOutput.Text = "Search for files in a folder and archives.  Enter Search String, then select a folder and click 'Search' or Drag and Drop the folders you want to search.";
-            this.btnDoTask.Text = "Search";
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_SearchForFile_Title"];
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_SearchForFile_IntroText"];
+            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_SearchForFile_DoTaskButton"];
+
+            this.grpSource.Text = ConfigurationSettings.AppSettings["Form_SearchForFile_GroupSource"];
+            this.lblDragNDrop.Text = ConfigurationSettings.AppSettings["Form_SearchForFile_LblDragNDrop"];
+            this.grpOptions.Text = ConfigurationSettings.AppSettings["Form_SearchForFile_GroupOptions"];
+            this.lblSearchString.Text = ConfigurationSettings.AppSettings["Form_SearchForFile_LblSearchString"];
+            this.cbCaseSensitive.Text = ConfigurationSettings.AppSettings["Form_SearchForFile_CheckBoxCaseSensitive"];
+            this.cbExtract.Text = ConfigurationSettings.AppSettings["Form_SearchForFile_CheckBoxExtract"];
+            this.lblOutputFolder.Text = ConfigurationSettings.AppSettings["Form_SearchForFile_LblOutputFolder"];
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -34,15 +43,15 @@ namespace VGMToolbox.forms
         }
         protected override string getCancelMessage()
         {
-            return "Search for Files...Cancelled";
+            return ConfigurationSettings.AppSettings["Form_SearchForFile_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return "Search for Files...Complete";
+            return ConfigurationSettings.AppSettings["Form_SearchForFile_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return "Search for Files...Begin";
+            return ConfigurationSettings.AppSettings["Form_SearchForFile_MessageBegin"];
         }
 
         private void tbSource_DragDrop(object sender, DragEventArgs e)
@@ -67,7 +76,7 @@ namespace VGMToolbox.forms
         }
         private void btnDoTask_Click(object sender, EventArgs e)
         {
-            if (base.checkFolderExists(tbSource.Text, "Source Folder"))
+            if (base.checkFolderExists(tbSource.Text, this.grpSource.Text))
             {
                 string[] s = new string[1];
                 s[0] = tbSource.Text;

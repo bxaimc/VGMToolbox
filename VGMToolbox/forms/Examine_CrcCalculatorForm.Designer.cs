@@ -41,29 +41,29 @@
             // pnlLabels
             // 
             this.pnlLabels.Location = new System.Drawing.Point(0, 523);
-            this.pnlLabels.Size = new System.Drawing.Size(824, 19);
+            this.pnlLabels.Size = new System.Drawing.Size(771, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(824, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(771, 20);
             // 
             // tbOutput
             // 
             this.tbOutput.Location = new System.Drawing.Point(0, 446);
-            this.tbOutput.Size = new System.Drawing.Size(824, 77);
+            this.tbOutput.Size = new System.Drawing.Size(771, 77);
             // 
             // pnlButtons
             // 
             this.pnlButtons.Location = new System.Drawing.Point(0, 426);
-            this.pnlButtons.Size = new System.Drawing.Size(824, 20);
+            this.pnlButtons.Size = new System.Drawing.Size(771, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(764, 0);
+            this.btnCancel.Location = new System.Drawing.Point(711, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(704, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(651, 0);
             // 
             // grpSourceFiles
             // 
@@ -71,7 +71,7 @@
             this.grpSourceFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpSourceFiles.Location = new System.Drawing.Point(0, 23);
             this.grpSourceFiles.Name = "grpSourceFiles";
-            this.grpSourceFiles.Size = new System.Drawing.Size(824, 403);
+            this.grpSourceFiles.Size = new System.Drawing.Size(771, 403);
             this.grpSourceFiles.TabIndex = 5;
             this.grpSourceFiles.TabStop = false;
             this.grpSourceFiles.Text = "Drop Files Here";
@@ -84,7 +84,7 @@
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.grpOptions.Location = new System.Drawing.Point(3, 357);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(818, 43);
+            this.grpOptions.Size = new System.Drawing.Size(765, 43);
             this.grpOptions.TabIndex = 6;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
@@ -103,7 +103,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(824, 564);
+            this.ClientSize = new System.Drawing.Size(771, 564);
             this.Controls.Add(this.grpSourceFiles);
             this.Name = "Examine_CrcCalculatorForm";
             this.Text = "Examine_CrcCalculatorForm";

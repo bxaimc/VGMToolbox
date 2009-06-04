@@ -25,8 +25,6 @@ namespace VGMToolbox.tools.xsf
             Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
             TESTPACK_PATH);
 
-        private int fileCount;
-        private int maxFiles;
         VGMToolbox.util.ProgressStruct progressStruct = new VGMToolbox.util.ProgressStruct();        
         
         public struct Mk2sfStruct
@@ -46,8 +44,6 @@ namespace VGMToolbox.tools.xsf
 
         public Mk2sfWorker() 
         {
-            fileCount = 0;
-            maxFiles = 0;
             this.progressStruct = new VGMToolbox.util.ProgressStruct();
 
             WorkerReportsProgress = true;

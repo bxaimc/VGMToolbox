@@ -9,8 +9,6 @@ namespace VGMToolbox.tools.xsf
 {
     class Time2sfWorker : BackgroundWorker, IVgmtBackgroundWorker
     {
-        private int fileCount = 0;
-        private int maxFiles = 0;
         private VGMToolbox.util.ProgressStruct progressStruct;
 
         public struct Time2sfStruct
@@ -23,8 +21,6 @@ namespace VGMToolbox.tools.xsf
         public Time2sfWorker()
         {
             this.progressStruct = new VGMToolbox.util.ProgressStruct();
-            this.fileCount = 0;
-            this.maxFiles = 0;
             
             WorkerReportsProgress = true;
             WorkerSupportsCancellation = true;

@@ -216,7 +216,7 @@ namespace VGMToolbox.forms
 
             if (!ValidateInputs(genhStruct, out errorMessages))
             {
-                MessageBox.Show(errorMessages, "Errors found in input");
+                MessageBox.Show(errorMessages, ConfigurationSettings.AppSettings["Form_GenhCreator_MessageErrors"]);
                 this.errorFound = true;
                 this.setNodeAsComplete();
             }
@@ -236,7 +236,7 @@ namespace VGMToolbox.forms
             if (pGenhCreatorStruct.SourcePaths.GetLength(0) < 1)
             {
                 isValid = false;
-                errorBuffer.Append("No Input Files are selected.");
+                errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageNoInputs"]);
                 errorBuffer.Append(Environment.NewLine);
             }
 
@@ -244,7 +244,7 @@ namespace VGMToolbox.forms
             if (String.IsNullOrEmpty(pGenhCreatorStruct.HeaderSkip.Trim()))
             {
                 isValid = false;
-                errorBuffer.Append("'Header Skip' is a required field.");
+                errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageHeaderSkip"]);
                 errorBuffer.Append(Environment.NewLine);
             }
 
@@ -252,7 +252,7 @@ namespace VGMToolbox.forms
             if (String.IsNullOrEmpty(pGenhCreatorStruct.Interleave.Trim()))
             {
                 isValid = false;
-                errorBuffer.Append("'Interleave' is a required field.");
+                errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageInterleave"]);
                 errorBuffer.Append(Environment.NewLine);
             }
 
@@ -260,7 +260,7 @@ namespace VGMToolbox.forms
             if (String.IsNullOrEmpty(pGenhCreatorStruct.Channels.Trim()))
             {
                 isValid = false;
-                errorBuffer.Append("'Channels' is a required field.");
+                errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageChannels"]);
                 errorBuffer.Append(Environment.NewLine);
             }
 
@@ -268,7 +268,7 @@ namespace VGMToolbox.forms
             if (String.IsNullOrEmpty(pGenhCreatorStruct.Frequency.Trim()))
             {
                 isValid = false;
-                errorBuffer.Append("'Frequency' is a required field.");
+                errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageFrequency"]);
                 errorBuffer.Append(Environment.NewLine);
             }
 
@@ -278,7 +278,7 @@ namespace VGMToolbox.forms
                 String.IsNullOrEmpty(pGenhCreatorStruct.LoopStart.Trim()))
             {
                 isValid = false;
-                errorBuffer.Append("'Loop Start' is a required field.");
+                errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageLoopStart1"]);
                 errorBuffer.Append(Environment.NewLine);
             }
             else if (!pGenhCreatorStruct.NoLoops &&
@@ -286,7 +286,7 @@ namespace VGMToolbox.forms
                      VGMToolbox.util.Encoding.GetIntFromString(pGenhCreatorStruct.LoopStart.Trim()) < 0)
             {
                 isValid = false;
-                errorBuffer.Append("'Loop Start' must be greater than zero.  If you would like No Loops, please use the checkbox.");
+                errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageLoopStart2"]);
                 errorBuffer.Append(Environment.NewLine);            
             }
 
@@ -297,7 +297,7 @@ namespace VGMToolbox.forms
                 String.IsNullOrEmpty(pGenhCreatorStruct.LoopEnd.Trim()))
             {
                 isValid = false;
-                errorBuffer.Append("'Loop End' is required if 'Use File End' or 'Find Loop' are unchecked.");
+                errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageLoopEnd"]);
                 errorBuffer.Append(Environment.NewLine);
             }
 
@@ -306,7 +306,7 @@ namespace VGMToolbox.forms
                 String.IsNullOrEmpty(pGenhCreatorStruct.CoefRightChannel.Trim()))
             {
                 isValid = false;
-                errorBuffer.Append("'Coef: Right Channel' is a required field for the selected format.");
+                errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageCoefRight"]);
                 errorBuffer.Append(Environment.NewLine);
             }
 
@@ -315,7 +315,7 @@ namespace VGMToolbox.forms
                 String.IsNullOrEmpty(pGenhCreatorStruct.CoefLeftChannel.Trim()))
             {
                 isValid = false;
-                errorBuffer.Append("'Coef: Left Channel' is a required field for the selected format.");
+                errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageCoefLeft"]);
                 errorBuffer.Append(Environment.NewLine);
             }
 
@@ -323,7 +323,7 @@ namespace VGMToolbox.forms
             if (pGenhCreatorStruct.UseFileEnd && pGenhCreatorStruct.Format.Equals("8"))
             {
                 isValid = false;
-                errorBuffer.Append("'Use File End' is not implemented for the selected format.");
+                errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageFileEnd"]);
                 errorBuffer.Append(Environment.NewLine);            
             }
 

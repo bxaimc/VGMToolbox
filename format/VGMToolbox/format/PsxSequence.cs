@@ -243,10 +243,10 @@ namespace VGMToolbox.format
 
                     currentTime = currentTicks != 0 ? (double)((currentTicks * (ulong)tempo) / (ulong)this.sqHeader.Resolution) : 0;
 
-                    if (currentTime > 10000000) // debug code used to find strange values
-                    {
-                        int x2 = 1;
-                    }
+                    //if (currentTime > 10000000) // debug code used to find strange values
+                    //{
+                    //    int x2 = 1;
+                    //}
 
                     if (loopTimeStack.Count > 0)
                     {
@@ -283,10 +283,10 @@ namespace VGMToolbox.format
                 currentByte = pStream.ReadByte();
                 currentOffset = pStream.Position - 1;
 
-                if (currentOffset > 0x1580) // code to quickly get to a position for debugging
-                {
-                    int x = 1;
-                }
+                //if (currentOffset > 0x1580) // code to quickly get to a position for debugging
+                //{
+                //    int x = 1;
+                //}
 
                 //if ((currentTime != 0) && (currentTime != 38461) && (currentTime != 192307))
                 //{

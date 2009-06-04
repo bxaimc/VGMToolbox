@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Text;
@@ -19,10 +20,15 @@ namespace VGMToolbox.forms
             InitializeComponent();
 
             this.grpSourceFiles.AllowDrop = true;
-            this.tbOutput.Text = "Calculate CRC32/MD5/SHA1 of input files.  Full file support only, VGMT MD5/SHA1 checksums not yet added.";
-            this.lblTitle.Text = "Checksum Calculator";
-            this.btnDoTask.Hide();
+            
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_ChecksumCalculator_Title"];
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_ChecksumCalculator_IntroText"];
 
+            this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_ChecksumCalculator_GroupSourceFiles"];
+            this.grpOptions.Text = ConfigurationSettings.AppSettings["Form_ChecksumCalculator_GroupOptions"];
+            this.cbDoVgmtChecksums.Text = ConfigurationSettings.AppSettings["Form_ChecksumCalculator_CheckBoxDoVgmtChecksums"];
+
+            this.btnDoTask.Hide();
         }
 
         private void grpSourceFiles_DragDrop(object sender, DragEventArgs e)
@@ -47,15 +53,15 @@ namespace VGMToolbox.forms
         }
         protected override string getCancelMessage()
         {
-            return "Generating Checksums...Cancelled";
+            return ConfigurationSettings.AppSettings["Form_ChecksumCalculator_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return "Generating Checksums...Complete";
+            return ConfigurationSettings.AppSettings["Form_ChecksumCalculator_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return "Generating Checksums...Begin";
+            return ConfigurationSettings.AppSettings["Form_ChecksumCalculator_MessageCancel"];
         }
     }
 }
