@@ -86,10 +86,11 @@ namespace VGMToolbox.tools.xsf
                     seconds = timingInfoSeconds - (minutes * 60);
                     // seconds = Math.Ceiling(seconds);
 
+                    // shouldn't be needed without Math.Ceiling call, but whatever 
                     if (seconds >= 60)
                     {
                         minutes++;
-                        seconds -= 60;
+                        seconds -= 60d;
                     }
 
                     batchFile.AppendFormat("psfpoint.exe -length=\"{0}:{1}\" -fade=\"{2}\" \"{3}\"",

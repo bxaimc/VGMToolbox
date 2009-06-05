@@ -17,7 +17,7 @@ namespace VGMToolbox.tools.xsf
         private const string BATCH_FILE_NAME = "!timing_batch.bat";
 
         public struct Psf2TimerStruct : IVgmtWorkerStruct
-        {
+        {                        
             private string[] sourcePaths;
             public string[] SourcePaths
             {
@@ -152,12 +152,13 @@ namespace VGMToolbox.tools.xsf
                     
                     minutes = (int)(psf2Time.TimeInSeconds / 60d);
                     seconds = (psf2Time.TimeInSeconds - (minutes * 60));
-                    seconds = Math.Ceiling(seconds);
+                    // seconds = Math.Ceiling(seconds);
 
-                    if (seconds > 59)
+                    // shouldn't be needed without Math.Ceiling call, but whatever
+                    if (seconds >= 60)
                     {
                         minutes++;
-                        seconds -= 60;
+                        seconds -= 60d;
                     }
 
                     batchFile.AppendFormat("psfpoint.exe -length=\"{0}:{1}\" -fade=\"{2}\" \"{3}\"",

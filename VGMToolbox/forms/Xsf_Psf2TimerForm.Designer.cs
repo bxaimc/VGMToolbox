@@ -39,30 +39,30 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 415);
-            this.pnlLabels.Size = new System.Drawing.Size(1006, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 523);
+            this.pnlLabels.Size = new System.Drawing.Size(771, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(1006, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(771, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 338);
-            this.tbOutput.Size = new System.Drawing.Size(1006, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 446);
+            this.tbOutput.Size = new System.Drawing.Size(771, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 318);
-            this.pnlButtons.Size = new System.Drawing.Size(1006, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 426);
+            this.pnlButtons.Size = new System.Drawing.Size(771, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(946, 0);
+            this.btnCancel.Location = new System.Drawing.Point(711, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(886, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(651, 0);
             // 
             // tbSourcePaths
             // 
@@ -81,7 +81,7 @@
             this.gbSource.Dock = System.Windows.Forms.DockStyle.Top;
             this.gbSource.Location = new System.Drawing.Point(0, 23);
             this.gbSource.Name = "gbSource";
-            this.gbSource.Size = new System.Drawing.Size(1006, 62);
+            this.gbSource.Size = new System.Drawing.Size(771, 62);
             this.gbSource.TabIndex = 6;
             this.gbSource.TabStop = false;
             this.gbSource.Text = "Source Files";
@@ -99,7 +99,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1006, 456);
+            this.ClientSize = new System.Drawing.Size(771, 564);
             this.Controls.Add(this.gbSource);
             this.Name = "Xsf_Psf2TimerForm";
             this.Text = "Xsf_Psf2TimerForm";
