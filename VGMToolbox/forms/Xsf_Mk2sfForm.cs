@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.IO;
@@ -27,12 +28,32 @@ namespace VGMToolbox.forms
             
             InitializeComponent();
 
-            this.lblTitle.Text = "Make 2SFs";
-            this.btnDoTask.Text = "Make 2SFs";
-
-            this.tbOutput.Text = "- 2sfTool.exe written by UNKNOWNFILE and CaitSith2." + Environment.NewLine;
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_Make2sf_Title"];
+            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_Make2sf_DoTaskButton"];
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_Make2sf_IntroText1"] + Environment.NewLine;
             this.tbOutput.Text +=
-                String.Format("- 'testpack.nds' is not included and must be downloaded and placed in <{0}>", Path.GetDirectoryName(testpackPath));
+                String.Format(ConfigurationSettings.AppSettings["Form_Make2sf_IntroText2"], Path.GetDirectoryName(testpackPath));
+
+            this.grpSourcePaths.Text = ConfigurationSettings.AppSettings["Form_Make2sf_GroupSourcePaths"];
+            this.lblSdat.Text = ConfigurationSettings.AppSettings["Form_Make2sf_LabelSdat"];
+            this.lblOutputPath.Text = ConfigurationSettings.AppSettings["Form_Make2sf_LabelOutputPath"];
+            this.grpSetInformation.Text = ConfigurationSettings.AppSettings["Form_Make2sf_GroupSetInformation"];
+            this.lblGame.Text = ConfigurationSettings.AppSettings["Form_Make2sf_LabelGame"];
+            this.lblArtist.Text = ConfigurationSettings.AppSettings["Form_Make2sf_LabelArtist"];
+            this.lblCopyright.Text = ConfigurationSettings.AppSettings["Form_Make2sf_LabelCopyright"];
+            this.lblGameSerial.Text = ConfigurationSettings.AppSettings["Form_Make2sf_LabelGameSerial"];
+            this.lblYear.Text = ConfigurationSettings.AppSettings["Form_Make2sf_LabelYear"];
+
+            this.dataGridSseq.Columns[0].HeaderText = ConfigurationSettings.AppSettings["Form_Make2sf_ColumnHeader0"];
+            this.dataGridSseq.Columns[1].HeaderText = ConfigurationSettings.AppSettings["Form_Make2sf_ColumnHeader1"];
+            this.dataGridSseq.Columns[2].HeaderText = ConfigurationSettings.AppSettings["Form_Make2sf_ColumnHeader2"];
+            this.dataGridSseq.Columns[3].HeaderText = ConfigurationSettings.AppSettings["Form_Make2sf_ColumnHeader3"];
+            this.dataGridSseq.Columns[4].HeaderText = ConfigurationSettings.AppSettings["Form_Make2sf_ColumnHeader4"];
+            this.dataGridSseq.Columns[5].HeaderText = ConfigurationSettings.AppSettings["Form_Make2sf_ColumnHeader5"];
+            this.dataGridSseq.Columns[6].HeaderText = ConfigurationSettings.AppSettings["Form_Make2sf_ColumnHeader6"];
+            this.dataGridSseq.Columns[7].HeaderText = ConfigurationSettings.AppSettings["Form_Make2sf_ColumnHeader7"];
+            this.dataGridSseq.Columns[8].HeaderText = ConfigurationSettings.AppSettings["Form_Make2sf_ColumnHeader8"];
+            this.dataGridSseq.Columns[9].HeaderText = ConfigurationSettings.AppSettings["Form_Make2sf_ColumnHeader9"];
         }
         
         private void btnBrowseSource_Click(object sender, EventArgs e)
@@ -145,9 +166,9 @@ namespace VGMToolbox.forms
             if (!File.Exists(testpackPath))
             {
                 ret = false;
-                MessageBox.Show(String.Format("{0} not found.  Please put {0} in <{1}>",
+                MessageBox.Show(String.Format(ConfigurationSettings.AppSettings["Form_Make2sf_ErrorMessageTestpackMissing"],
                     Path.GetFileName(testpackPath), Path.GetDirectoryName(testpackPath)),
-                    String.Format("MISSING <{0}>", Path.GetFileName(testpackPath)));
+                    String.Format(ConfigurationSettings.AppSettings["Form_Make2sf_ErrorMessageTestpackMissingHeader"], Path.GetFileName(testpackPath)));
             }
             else
             {
@@ -156,9 +177,9 @@ namespace VGMToolbox.forms
                     if (!ChecksumUtil.GetCrc32OfFullFile(fs).Equals(Mk2sfWorker.TESTPACK_CRC32))
                     {
                         ret = false;
-                        MessageBox.Show(String.Format("Invalid CRC32 for {0}.  Please put {0} in <{1}>.  The expected CRC32 is {2}.",
+                        MessageBox.Show(String.Format(ConfigurationSettings.AppSettings["Form_Make2sf_ErrorMessageTestpackCrc32"],
                             Path.GetFileName(testpackPath), Path.GetDirectoryName(testpackPath), Mk2sfWorker.TESTPACK_CRC32),
-                            String.Format("INVALID CRC32 FOR <{0}>", Path.GetFileName(testpackPath)));                    
+                            String.Format(ConfigurationSettings.AppSettings["Form_Make2sf_ErrorMessageTestpackCrc32Header"], Path.GetFileName(testpackPath)));                    
                     }
                 }                
             }
@@ -177,15 +198,15 @@ namespace VGMToolbox.forms
         }
         protected override string getCancelMessage()
         {
-            return "Make 2SFs...Cancelled";
+            return ConfigurationSettings.AppSettings["Form_Make2sf_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return "Make 2SFs...Complete";
+            return ConfigurationSettings.AppSettings["Form_Make2sf_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return "Make 2SFs...Begin";
+            return ConfigurationSettings.AppSettings["Form_Make2sf_MessageBegin"];
         }
 
         private bool CheckSdatPathAndOutputDir()
@@ -197,15 +218,15 @@ namespace VGMToolbox.forms
             if (sdatSourceDirectory.Equals(tbOutputPath.Text.Trim()))
             {
                 ret = false;
-                MessageBox.Show("Output folder cannot be the same as the folder containing the source SDAT.",
-                    "INVALID OUTPUT FOLDER");             
+                MessageBox.Show(ConfigurationSettings.AppSettings["Form_Make2sf_ErrorMessageOutputFolder"],
+                    ConfigurationSettings.AppSettings["Form_Make2sf_ErrorMessageOutputFolderHeader"]);             
             }
 
             return ret;
         }
         private bool CheckInputs()
         {
-            return base.checkFolderExists(tbOutputPath.Text, "Output Path");
+            return base.checkFolderExists(tbOutputPath.Text, this.lblOutputPath.Text);
         }
     }
 }

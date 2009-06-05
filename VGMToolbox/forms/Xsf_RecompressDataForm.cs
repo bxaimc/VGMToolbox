@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.IO;
@@ -23,9 +24,14 @@ namespace VGMToolbox.forms
         {
             InitializeComponent();
 
-            this.lblTitle.Text = "Recompress xSF Files";
-            this.btnDoTask.Text = "Recompress xSFs";
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_RecompressXsf_Title"];
+            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_RecompressXsf_DoTaskButton"];
             this.loadCompressionComboBox();
+
+            this.grpSource.Text = ConfigurationSettings.AppSettings["Form_RecompressXsf_GroupSource"];
+            this.lblSourceDragNDrop.Text = ConfigurationSettings.AppSettings["Form_RecompressXsf_LabelSourceDragNDrop"];
+            this.grpOptions.Text = ConfigurationSettings.AppSettings["Form_RecompressXsf_GroupOptions"];
+            this.cb7zipTopLevelFolders.Text = ConfigurationSettings.AppSettings["Form_RecompressXsf_CheckBox7zipTopLevelFolders"];
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -39,15 +45,15 @@ namespace VGMToolbox.forms
         }
         protected override string getCancelMessage()
         {
-            return "Recompress Data...Cancelled";
+            return ConfigurationSettings.AppSettings["Form_RecompressXsf_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return "Recompress Data...Complete";
+            return ConfigurationSettings.AppSettings["Form_RecompressXsf_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return "Recompress Data...Begin";
+            return ConfigurationSettings.AppSettings["Form_RecompressXsf_MessageBegin"];
         }
 
         private void loadCompressionComboBox()
@@ -77,7 +83,7 @@ namespace VGMToolbox.forms
         }        
         private void btnDoTask_Click(object sender, EventArgs e)
         {
-            if (base.checkFolderExists(this.tbSource.Text, "Source Directory"))
+            if (base.checkFolderExists(this.tbSource.Text, this.grpSource.Text))
             {
                 string[] paths = new string[] { this.tbSource.Text };
                 recompressData(paths);

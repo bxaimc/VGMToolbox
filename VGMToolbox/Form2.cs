@@ -205,7 +205,7 @@ namespace VGMToolbox
 
             // Crc Calculator
             TreeNode examine_CrcCalculatorNode =
-                new TreeNode("Checksum Calculator");
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_ChecksumNode"]);
             Examine_CrcCalculatorForm examine_CrcCalculatorForm =
                 new Examine_CrcCalculatorForm(examine_CrcCalculatorNode);
             this.splitContainer1.Panel2.Controls.Add(examine_CrcCalculatorForm);
@@ -214,7 +214,7 @@ namespace VGMToolbox
             examine_CrcCalculatorNode.Tag = nodeTag;
 
             // Search for Files
-            TreeNode examine_SearchForFilesNode = new TreeNode("Search for Files");
+            TreeNode examine_SearchForFilesNode = new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SearchForFilesNode"]);
             Examine_SearchForFileForm examine_SearchForFileForm =
                 new Examine_SearchForFileForm(examine_SearchForFilesNode);
             this.splitContainer1.Panel2.Controls.Add(examine_SearchForFileForm);
@@ -337,7 +337,7 @@ namespace VGMToolbox
             //nodeTag.formClass = xsf_2sfRipperForm.GetType().Name;
             //xsf_2sfRipperNode.Tag = nodeTag;
 
-            TreeNode xsf_Make2sfNode = new TreeNode("Make 2SFs");
+            TreeNode xsf_Make2sfNode = new TreeNode(ConfigurationSettings.AppSettings["MenuTree_Make2sfNode"]);
 
             // Add Make 2SF Form
             Xsf_Mk2sfForm xsf_Mk2sfForm = new Xsf_Mk2sfForm(xsf_Make2sfNode);
@@ -478,7 +478,6 @@ namespace VGMToolbox
 
 
             // SSFMAKE
-
             TreeNode xsf_SsfMakeFENode = 
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SsfMakeFENode"]);
             
@@ -518,7 +517,8 @@ namespace VGMToolbox
             //////////////////
             // XSFRECOMPRESS
             /////////////////
-            TreeNode xsf_xsfRecompressNode = new TreeNode("Recompress XSF");
+            TreeNode xsf_xsfRecompressNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_XsfRecompressNode"]);
 
             // Add Xsf2Exe Form
             Xsf_RecompressDataForm xsf_RecompressDataForm = new Xsf_RecompressDataForm(xsf_xsfRecompressNode);

@@ -32,6 +32,7 @@
             this.lblDragNDrop = new System.Windows.Forms.Label();
             this.tbSource = new System.Windows.Forms.TextBox();
             this.grpOptions = new System.Windows.Forms.GroupBox();
+            this.cbLoopEntireTrack = new System.Windows.Forms.CheckBox();
             this.rbForceSeqType = new System.Windows.Forms.RadioButton();
             this.rbForceSepType = new System.Windows.Forms.RadioButton();
             this.cbForceType = new System.Windows.Forms.CheckBox();
@@ -45,30 +46,30 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 354);
-            this.pnlLabels.Size = new System.Drawing.Size(776, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 523);
+            this.pnlLabels.Size = new System.Drawing.Size(771, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(776, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(771, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 277);
-            this.tbOutput.Size = new System.Drawing.Size(776, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 446);
+            this.tbOutput.Size = new System.Drawing.Size(771, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 257);
-            this.pnlButtons.Size = new System.Drawing.Size(776, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 426);
+            this.pnlButtons.Size = new System.Drawing.Size(771, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(716, 0);
+            this.btnCancel.Location = new System.Drawing.Point(711, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(656, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(651, 0);
             // 
             // grpSource
             // 
@@ -77,7 +78,7 @@
             this.grpSource.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSource.Location = new System.Drawing.Point(0, 23);
             this.grpSource.Name = "grpSource";
-            this.grpSource.Size = new System.Drawing.Size(776, 63);
+            this.grpSource.Size = new System.Drawing.Size(771, 63);
             this.grpSource.TabIndex = 5;
             this.grpSource.TabStop = false;
             this.grpSource.Text = "Source Files";
@@ -103,6 +104,7 @@
             // 
             // grpOptions
             // 
+            this.grpOptions.Controls.Add(this.cbLoopEntireTrack);
             this.grpOptions.Controls.Add(this.rbForceSeqType);
             this.grpOptions.Controls.Add(this.rbForceSepType);
             this.grpOptions.Controls.Add(this.cbForceType);
@@ -110,16 +112,27 @@
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpOptions.Location = new System.Drawing.Point(0, 86);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(776, 115);
+            this.grpOptions.Size = new System.Drawing.Size(771, 158);
             this.grpOptions.TabIndex = 6;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
+            // 
+            // cbLoopEntireTrack
+            // 
+            this.cbLoopEntireTrack.AutoSize = true;
+            this.cbLoopEntireTrack.Location = new System.Drawing.Point(6, 19);
+            this.cbLoopEntireTrack.Name = "cbLoopEntireTrack";
+            this.cbLoopEntireTrack.Size = new System.Drawing.Size(561, 17);
+            this.cbLoopEntireTrack.TabIndex = 4;
+            this.cbLoopEntireTrack.Text = "Loop entire track (this is useful for tracks that loop the entire track, but do n" +
+                "ot actually contain the loop command).";
+            this.cbLoopEntireTrack.UseVisualStyleBackColor = true;
             // 
             // rbForceSeqType
             // 
             this.rbForceSeqType.AutoSize = true;
             this.rbForceSeqType.Enabled = false;
-            this.rbForceSeqType.Location = new System.Drawing.Point(28, 87);
+            this.rbForceSeqType.Location = new System.Drawing.Point(28, 117);
             this.rbForceSeqType.Name = "rbForceSeqType";
             this.rbForceSeqType.Size = new System.Drawing.Size(74, 17);
             this.rbForceSeqType.TabIndex = 3;
@@ -131,7 +144,7 @@
             // 
             this.rbForceSepType.AutoSize = true;
             this.rbForceSepType.Enabled = false;
-            this.rbForceSepType.Location = new System.Drawing.Point(28, 64);
+            this.rbForceSepType.Location = new System.Drawing.Point(28, 94);
             this.rbForceSepType.Name = "rbForceSepType";
             this.rbForceSepType.Size = new System.Drawing.Size(73, 17);
             this.rbForceSepType.TabIndex = 2;
@@ -142,7 +155,7 @@
             // cbForceType
             // 
             this.cbForceType.AutoSize = true;
-            this.cbForceType.Location = new System.Drawing.Point(6, 42);
+            this.cbForceType.Location = new System.Drawing.Point(6, 72);
             this.cbForceType.Name = "cbForceType";
             this.cbForceType.Size = new System.Drawing.Size(111, 17);
             this.cbForceType.TabIndex = 1;
@@ -153,7 +166,7 @@
             // cbForce2Loops
             // 
             this.cbForce2Loops.AutoSize = true;
-            this.cbForce2Loops.Location = new System.Drawing.Point(6, 19);
+            this.cbForce2Loops.Location = new System.Drawing.Point(6, 49);
             this.cbForce2Loops.Name = "cbForce2Loops";
             this.cbForce2Loops.Size = new System.Drawing.Size(413, 17);
             this.cbForce2Loops.TabIndex = 0;
@@ -165,7 +178,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(776, 395);
+            this.ClientSize = new System.Drawing.Size(771, 564);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpSource);
             this.Name = "Xsf_PsxSeqExtractForm";
@@ -201,5 +214,6 @@
         private System.Windows.Forms.CheckBox cbForceType;
         private System.Windows.Forms.RadioButton rbForceSeqType;
         private System.Windows.Forms.RadioButton rbForceSepType;
+        private System.Windows.Forms.CheckBox cbLoopEntireTrack;
     }
 }

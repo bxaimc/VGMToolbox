@@ -34,6 +34,8 @@ namespace VGMToolbox.forms
                 ConfigurationSettings.AppSettings["Form_SeqExtractor_RadioForceSepType"];
             this.rbForceSeqType.Text =
                 ConfigurationSettings.AppSettings["Form_SeqExtractor_RadioForceSeqType"];
+            this.cbLoopEntireTrack.Text =
+                ConfigurationSettings.AppSettings["Form_SeqExtractor_CheckBoxLoopEntireTrack"];
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -49,6 +51,7 @@ namespace VGMToolbox.forms
             psxStruct.force2Loops = cbForce2Loops.Checked;
             psxStruct.forceSepType = rbForceSepType.Checked;
             psxStruct.forceSeqType = rbForceSeqType.Checked;
+            psxStruct.loopEntireTrack = cbLoopEntireTrack.Checked;
 
             base.backgroundWorker_Execute(psxStruct);
         }

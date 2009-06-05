@@ -68,29 +68,29 @@
             // pnlLabels
             // 
             this.pnlLabels.Location = new System.Drawing.Point(0, 523);
-            this.pnlLabels.Size = new System.Drawing.Size(824, 19);
+            this.pnlLabels.Size = new System.Drawing.Size(771, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(824, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(771, 20);
             // 
             // tbOutput
             // 
             this.tbOutput.Location = new System.Drawing.Point(0, 446);
-            this.tbOutput.Size = new System.Drawing.Size(824, 77);
+            this.tbOutput.Size = new System.Drawing.Size(771, 77);
             // 
             // pnlButtons
             // 
             this.pnlButtons.Location = new System.Drawing.Point(0, 426);
-            this.pnlButtons.Size = new System.Drawing.Size(824, 20);
+            this.pnlButtons.Size = new System.Drawing.Size(771, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(764, 0);
+            this.btnCancel.Location = new System.Drawing.Point(711, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(704, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(651, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpSourcePaths
@@ -104,7 +104,7 @@
             this.grpSourcePaths.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSourcePaths.Location = new System.Drawing.Point(0, 23);
             this.grpSourcePaths.Name = "grpSourcePaths";
-            this.grpSourcePaths.Size = new System.Drawing.Size(824, 72);
+            this.grpSourcePaths.Size = new System.Drawing.Size(771, 72);
             this.grpSourcePaths.TabIndex = 5;
             this.grpSourcePaths.TabStop = false;
             this.grpSourcePaths.Text = "Source Paths";
@@ -177,7 +177,7 @@
             this.grpSetInformation.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSetInformation.Location = new System.Drawing.Point(0, 95);
             this.grpSetInformation.Name = "grpSetInformation";
-            this.grpSetInformation.Size = new System.Drawing.Size(824, 114);
+            this.grpSetInformation.Size = new System.Drawing.Size(771, 114);
             this.grpSetInformation.TabIndex = 6;
             this.grpSetInformation.TabStop = false;
             this.grpSetInformation.Text = "Set Information";
@@ -285,7 +285,7 @@
             this.dataGridSseq.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridSseq.Location = new System.Drawing.Point(0, 209);
             this.dataGridSseq.Name = "dataGridSseq";
-            this.dataGridSseq.Size = new System.Drawing.Size(824, 217);
+            this.dataGridSseq.Size = new System.Drawing.Size(771, 217);
             this.dataGridSseq.TabIndex = 7;
             // 
             // CheckBoxColumn
@@ -371,7 +371,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(824, 564);
+            this.ClientSize = new System.Drawing.Size(771, 564);
             this.Controls.Add(this.dataGridSseq);
             this.Controls.Add(this.grpSetInformation);
             this.Controls.Add(this.grpSourcePaths);

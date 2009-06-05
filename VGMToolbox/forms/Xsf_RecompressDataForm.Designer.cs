@@ -44,30 +44,30 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 310);
-            this.pnlLabels.Size = new System.Drawing.Size(711, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 523);
+            this.pnlLabels.Size = new System.Drawing.Size(771, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(711, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(771, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 233);
-            this.tbOutput.Size = new System.Drawing.Size(711, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 446);
+            this.tbOutput.Size = new System.Drawing.Size(771, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 213);
-            this.pnlButtons.Size = new System.Drawing.Size(711, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 426);
+            this.pnlButtons.Size = new System.Drawing.Size(771, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(651, 0);
+            this.btnCancel.Location = new System.Drawing.Point(711, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(591, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(651, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpSource
@@ -78,7 +78,7 @@
             this.grpSource.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSource.Location = new System.Drawing.Point(0, 23);
             this.grpSource.Name = "grpSource";
-            this.grpSource.Size = new System.Drawing.Size(711, 60);
+            this.grpSource.Size = new System.Drawing.Size(771, 60);
             this.grpSource.TabIndex = 5;
             this.grpSource.TabStop = false;
             this.grpSource.Text = "Source";
@@ -129,7 +129,7 @@
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpOptions.Location = new System.Drawing.Point(0, 83);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(711, 69);
+            this.grpOptions.Size = new System.Drawing.Size(771, 69);
             this.grpOptions.TabIndex = 7;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
@@ -148,7 +148,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(711, 351);
+            this.ClientSize = new System.Drawing.Size(771, 564);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpSource);
             this.Name = "Xsf_RecompressDataForm";

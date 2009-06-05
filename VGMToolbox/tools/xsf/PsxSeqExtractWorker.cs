@@ -19,6 +19,7 @@ namespace VGMToolbox.tools.xsf
             public bool force2Loops;
             public bool forceSepType;
             public bool forceSeqType;
+            public bool loopEntireTrack;
 
             private string[] sourcePaths;
             public string[] SourcePaths 
@@ -70,12 +71,22 @@ namespace VGMToolbox.tools.xsf
 
                 if (psxSeq != null)
                 {
-                    // Add line to batch file.
-                    minutes = (int)(psxSeq.TimingInfo.TimeInSeconds / 60d);
-                    seconds = psxSeq.TimingInfo.TimeInSeconds - (minutes * 60);
-                    seconds = Math.Ceiling(seconds);
+                    double timingInfoSeconds = psxSeq.TimingInfo.TimeInSeconds;
+                    int timingInfoFadeInSeconds = psxSeq.TimingInfo.FadeInSeconds;
 
-                    if (seconds > 59)
+                    // loop entire track
+                    if (psxSeqExtractStruct.loopEntireTrack)
+                    {
+                        timingInfoSeconds = 2d * psxSeq.TimingInfo.TimeInSeconds;
+                        timingInfoFadeInSeconds = 10;
+                    }
+                    
+                    // Add line to batch file.
+                    minutes = (int)(timingInfoSeconds / 60d);
+                    seconds = timingInfoSeconds - (minutes * 60);
+                    // seconds = Math.Ceiling(seconds);
+
+                    if (seconds >= 60)
                     {
                         minutes++;
                         seconds -= 60;
@@ -83,7 +94,7 @@ namespace VGMToolbox.tools.xsf
 
                     batchFile.AppendFormat("psfpoint.exe -length=\"{0}:{1}\" -fade=\"{2}\" \"{3}\"",
                         minutes.ToString(), seconds.ToString().PadLeft(2, '0'),
-                        psxSeq.TimingInfo.FadeInSeconds.ToString(), Path.GetFileName(pPath));
+                        timingInfoFadeInSeconds.ToString(), Path.GetFileName(pPath));
                     batchFile.Append(Environment.NewLine);
 
                     batchFilePath = Path.Combine(Path.GetDirectoryName(pPath), BATCH_FILE_NAME);
