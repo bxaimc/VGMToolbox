@@ -168,6 +168,50 @@ namespace VGMToolbox.util
             return ret;
         }
 
+        public static long GetPreviousOffset(Stream pStream, long pOffset, byte[] pSearchBytes)
+        {
+            long initialStreamPosition = pStream.Position;
+
+            bool itemFound = false;
+            long relativeOffset;
+            byte[] checkBytes = new byte[Constants.FILE_READ_CHUNK_SIZE];
+            byte[] compareBytes;
+
+            long ret = -1;
+
+            long absoluteOffset = pOffset - (Constants.FILE_READ_CHUNK_SIZE) + pSearchBytes.Length;
+            while (!itemFound && (absoluteOffset > -1))
+            {
+                pStream.Position = absoluteOffset;
+                relativeOffset = pStream.Read(checkBytes, 0, Constants.FILE_READ_CHUNK_SIZE);
+
+                while (!itemFound && (relativeOffset > -1))
+                {
+                    if ((relativeOffset + pSearchBytes.Length) <= checkBytes.Length)
+                    {
+                        compareBytes = new byte[pSearchBytes.Length];
+                        Array.Copy(checkBytes, relativeOffset,
+                            compareBytes, 0, pSearchBytes.Length);
+
+                        if (CompareSegment(compareBytes, 0, pSearchBytes))
+                        {
+                            itemFound = true;
+                            ret = absoluteOffset + relativeOffset - pSearchBytes.Length;
+                            break;
+                        }
+                    }
+                    relativeOffset--;
+                }
+
+                absoluteOffset = absoluteOffset - Constants.FILE_READ_CHUNK_SIZE + pSearchBytes.Length;
+            }
+
+            // return stream to incoming position
+            pStream.Position = initialStreamPosition;
+
+            return ret;
+        }
+
         public static bool CompareSegment(byte[] pBytes, int pOffset, byte[] pTarget)
         {
             Boolean ret = true;
