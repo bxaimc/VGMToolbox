@@ -196,7 +196,14 @@ namespace VGMToolbox.util
                         if (CompareSegment(compareBytes, 0, pSearchBytes))
                         {
                             itemFound = true;
-                            ret = absoluteOffset + relativeOffset - pSearchBytes.Length;
+                            // ret = absoluteOffset + relativeOffset - pSearchBytes.Length;
+                            ret = absoluteOffset + relativeOffset;
+
+                            if (ret == pOffset)
+                            {
+                                ret -= pSearchBytes.Length;
+                            }
+
                             break;
                         }
                     }

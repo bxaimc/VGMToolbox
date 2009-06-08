@@ -43,22 +43,25 @@ namespace VGMToolbox.format.util
                         waveArcOutputPath = sdat.ExtractWaveArcs(fs, outputPath);
                         
                         // extract SWAVs
-                        foreach (string f in Directory.GetFiles(waveArcOutputPath, "*" + Swar.FILE_EXTENSION))
-                        {                            
-                            using (FileStream swarFs = File.Open(f, FileMode.Open, FileAccess.Read))
+                        if (!String.IsNullOrEmpty(waveArcOutputPath))
+                        {
+                            foreach (string f in Directory.GetFiles(waveArcOutputPath, "*" + Swar.FILE_EXTENSION))
                             {
-                                dataType = FormatUtil.getObjectType(swarFs);
-
-                                if (dataType != null && dataType.Name.Equals("Swar"))
+                                using (FileStream swarFs = File.Open(f, FileMode.Open, FileAccess.Read))
                                 {
-                                    swavOutputPath = Path.Combine(waveArcOutputPath, Path.GetFileNameWithoutExtension(f));
-                                    swar.Initialize(swarFs, f);
+                                    dataType = FormatUtil.getObjectType(swarFs);
 
-                                    ExtractAndWriteSwavFromSwar(swarFs, swar, swavOutputPath);
+                                    if (dataType != null && dataType.Name.Equals("Swar"))
+                                    {
+                                        swavOutputPath = Path.Combine(waveArcOutputPath, Path.GetFileNameWithoutExtension(f));
+                                        swar.Initialize(swarFs, f);
+
+                                        ExtractAndWriteSwavFromSwar(swarFs, swar, swavOutputPath);
+                                    }
                                 }
                             }
-                        }
 
+                        }
 
                         sdat.BuildSmap(outputPath, filePrefix);
                     }

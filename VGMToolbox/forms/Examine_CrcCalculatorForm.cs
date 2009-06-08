@@ -61,7 +61,7 @@ namespace VGMToolbox.forms
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_ChecksumCalculator_MessageCancel"];
+            return ConfigurationSettings.AppSettings["Form_ChecksumCalculator_MessageBegin"];
         }
     }
 }

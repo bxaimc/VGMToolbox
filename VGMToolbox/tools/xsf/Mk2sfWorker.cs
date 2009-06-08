@@ -187,8 +187,8 @@ namespace VGMToolbox.tools.xsf
             tagStruct.TagYear = pMk2sfStruct.TagYear;
             tagStruct.TagGame = pMk2sfStruct.TagGame;
             tagStruct.TagComment = "uses Legacy of Ys: Book II driver hacked by Caitsith2";            
-            tagStruct.TagXsfByTagName = "-2sfby";
-            tagStruct.TagXsfByTagValue = "VGMToolbox";
+            //tagStruct.TagXsfByTagName = "-2sfby";
+            //tagStruct.TagXsfByTagValue = "VGMToolbox";
 
             string taggingBatchPath = XsfUtil.BuildBasicTaggingBatch(TwoSFDestinationPath, tagStruct, "*.mini2sf");
             XsfUtil.ExecutePsfPointBatchScript(taggingBatchPath, true);
