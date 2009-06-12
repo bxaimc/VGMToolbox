@@ -262,7 +262,17 @@ namespace VGMToolbox.tools.xsf
         protected override void OnDoWork(DoWorkEventArgs e)
         {
             Mk2sfStruct mk2sfStruct = (Mk2sfStruct)e.Argument;
-            Make2sfFiles(mk2sfStruct);
+
+            try
+            {
+                Make2sfFiles(mk2sfStruct);
+            }
+            catch (Exception _ex)
+            {
+                this.progressStruct.Clear();
+                this.progressStruct.ErrorMessage = String.Format("Error creating 2sf files: {0}{1}", _ex.Message, Environment.NewLine);
+                ReportProgress(0, this.progressStruct);
+            }
         }
     }
 }
