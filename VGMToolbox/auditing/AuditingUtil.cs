@@ -174,9 +174,7 @@ namespace VGMToolbox.auditing
         /// </summary>
         /// <param name="pPath">Directory to write the Have and Miss lists to.</param>
         public void WriteHaveMissLists(string pPath)
-        {
-            StreamWriter sw;
-            
+        {                        
             string havePath = pPath + "_HAVE.TXT";
             string missPath = pPath + "_MISS.TXT";
             string unknownPath = pPath + "_UNKNOWNS.TXT";
@@ -239,63 +237,92 @@ namespace VGMToolbox.auditing
                 datafile.game.Length, datafile.header.description) + Environment.NewLine +
                 Environment.NewLine + missListText;
             
-            
             // Have List
-            if (File.Exists(havePath))
+            try
             {
-                File.Delete(havePath);
+                if (File.Exists(havePath))
+                {
+                    File.Delete(havePath);
+                }
+
+                using (StreamWriter sw = File.CreateText(havePath))
+                {
+                    sw.Write(haveListText);
+                    sw.Close();
+                }
             }
-
-            sw = File.CreateText(havePath);
-            sw.Write(haveListText);
-            sw.Close();
-
+            catch(Exception ex)
+            {
+                throw new IOException("Error creating 'HAVE' list:" + ex.Message);
+            }
+            
             // Miss List
-            if (File.Exists(missPath))
+            try
             {
-                File.Delete(missPath);
+                if (File.Exists(missPath))
+                {
+                    File.Delete(missPath);
+                }
+
+                using (StreamWriter sw = File.CreateText(missPath))
+                {
+                    sw.Write(missListText);
+                    sw.Close();
+                }
             }
-
-            sw = File.CreateText(missPath);
-            sw.Write(missListText);
-
-            sw.Close();
+            catch (Exception ex)
+            {
+                throw new IOException("Error creating 'MISS' list:" + ex.Message);
+            }
 
             // Fix Datafile
-            if (File.Exists(fixDatPath))
+            try
             {
-                File.Delete(fixDatPath);
-            }
+                if (File.Exists(fixDatPath))
+                {
+                    File.Delete(fixDatPath);
+                }
 
-            if (missList.game.Length > 0)
+                if (missList.game.Length > 0)
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(datafile));
+                    TextWriter textWriter = new StreamWriter(fixDatPath);
+                    serializer.Serialize(textWriter, missList);
+                    textWriter.Close();
+                    textWriter.Dispose();
+                }
+            }
+            catch (Exception ex)
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(datafile));
-                TextWriter textWriter = new StreamWriter(fixDatPath);
-                serializer.Serialize(textWriter, missList);
-                textWriter.Close();
-                textWriter.Dispose();
+                throw new IOException("Error creating 'FixDAT' file:" + ex.Message);
             }
 
             // Unknown Files
-            if (File.Exists(unknownPath))
+            try
             {
-                File.Delete(unknownPath);
-            }
-
-            if (this.unknownFiles.Count > 0)
-            {
-                sw = File.CreateText(unknownPath);
-                sw.Write(String.Format("The following files were not found in the existing datafile for {0}", datafile.header.description)
-                    + Environment.NewLine + Environment.NewLine);
-
-                foreach (string p in this.unknownFiles)
+                if (File.Exists(unknownPath))
                 {
-                    sw.Write(ROM_SPACER + p + Environment.NewLine);
+                    File.Delete(unknownPath);
                 }
-                sw.Close();
-            }
 
-            sw.Dispose();
+                if (this.unknownFiles.Count > 0)
+                {
+                    using (StreamWriter sw = File.CreateText(unknownPath))
+                    {
+                        sw.Write(String.Format("The following files were not found in the existing datafile for {0}", datafile.header.description)
+                            + Environment.NewLine + Environment.NewLine);
+
+                        foreach (string p in this.unknownFiles)
+                        {
+                            sw.Write(ROM_SPACER + p + Environment.NewLine);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new IOException("Error creating 'UNKNOWNS' list:" + ex.Message);
+            }
         }
 
         public void AddUnknownFile(string pPath)

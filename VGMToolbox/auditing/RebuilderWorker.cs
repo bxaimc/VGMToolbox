@@ -65,7 +65,7 @@ namespace VGMToolbox.auditing
             }
         }
 
-        private void moveFile(string pDestination, ArrayList pDestinationFiles, FileStream pSourceFile,
+        private bool moveFile(string pDestination, ArrayList pDestinationFiles, FileStream pSourceFile,
             string pSourceName, bool pOverwriteExisting, bool pCompressOutput,
             bool hasMultipleExtensions)
         {
@@ -77,7 +77,9 @@ namespace VGMToolbox.auditing
             string path;
             string destinationPath = String.Empty;
             string searchPattern;
-            
+
+            bool isSuccess = false;
+
             // ZipEntry tempZipEntry;
             ZipFile zf;
 
@@ -155,15 +157,20 @@ namespace VGMToolbox.auditing
                         }
                     }
                 } // foreach (AuditingUtil.ChecksumStruct cs in pDestinationFiles)
+
+
+                isSuccess = true;
             }
             catch (Exception exception)
             {
                 this.progressStruct.Clear();
                 this.progressStruct.Filename = pSourceName;
-                this.progressStruct.ErrorMessage = "Error processing <" + pSourceName + "> " + exception.Message;
+                this.progressStruct.ErrorMessage = "Error rebuilding <" + pSourceName + "> to destination: " + exception.Message + Environment.NewLine;
                 ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
-
+                isSuccess = false;
             }
+
+            return isSuccess;
         }
 
         private void rebuildFile(string pFilePath, RebuildSetsStruct pRebuildSetsStruct, AuditingUtil pAuditingUtil, 
@@ -172,6 +179,7 @@ namespace VGMToolbox.auditing
             ArrayList pDestinationFiles = new ArrayList();
             bool isFileLibrary = false;
             bool hasMultipleExtensions = false;
+            bool fileMovedOrScannedOk = true;
             Type formatType = null;
 
             if (FormatUtil.IsZipFile(pFilePath))
@@ -290,7 +298,7 @@ namespace VGMToolbox.auditing
                 {                    
                     if (!pRebuildSetsStruct.ScanOnly)
                     {
-                        this.moveFile(pRebuildSetsStruct.pDestinationDir, pDestinationFiles, fs, pFilePath, pRebuildSetsStruct.pOverwriteExisting,
+                        fileMovedOrScannedOk = this.moveFile(pRebuildSetsStruct.pDestinationDir, pDestinationFiles, fs, pFilePath, pRebuildSetsStruct.pOverwriteExisting,
                             pRebuildSetsStruct.pCompressOutput, hasMultipleExtensions);
                     }
                     pAuditingUtil.AddChecksumToCache(crc32Value);
@@ -319,7 +327,8 @@ namespace VGMToolbox.auditing
                 */
 
                 // Remove Source only if copied
-                if (pDestinationFiles != null && pRebuildSetsStruct.pRemoveSource && File.Exists(pFilePath))
+                if (fileMovedOrScannedOk && pDestinationFiles != null && 
+                    pRebuildSetsStruct.pRemoveSource && File.Exists(pFilePath))
                 {
                     if (!isFileLibrary)
                     {
@@ -462,22 +471,30 @@ namespace VGMToolbox.auditing
             AuditingUtil auditingUtil = new AuditingUtil(pRebuildSetsStruct.pDatFile);
 
             // Load/Create cache db
-            string cacheDbPath = pRebuildSetsStruct.pDestinationDir + CACHE_DB_FILENAME;
-            FileStream cacheFileStream = new FileStream(cacheDbPath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-            auditingUtil.ReadChecksumHashFromFile(cacheFileStream);
-            cacheFileStream.Close();
-            cacheFileStream.Dispose();
+            try
+            {
+                string cacheDbPath = pRebuildSetsStruct.pDestinationDir + CACHE_DB_FILENAME;
+                using (FileStream cacheFileStream = new FileStream(cacheDbPath, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+                {
+                    auditingUtil.ReadChecksumHashFromFile(cacheFileStream);
+                }
 
-            // Rebuild
-            this.rebuildSets(pRebuildSetsStruct, auditingUtil, 0, e);
+                // Rebuild
+                this.rebuildSets(pRebuildSetsStruct, auditingUtil, 0, e);
 
-            // Finish rebuilding
-            cacheFileStream = new FileStream(cacheDbPath, FileMode.Open, FileAccess.ReadWrite);
-            auditingUtil.WriteChecksumHashToFile(cacheFileStream);
-            auditingUtil.WriteHaveMissLists(pRebuildSetsStruct.pDestinationDir);
-
-            cacheFileStream.Close();
-            cacheFileStream.Dispose();
+                // Finish rebuilding
+                using (FileStream cacheFileStream = new FileStream(cacheDbPath, FileMode.Open, FileAccess.ReadWrite))
+                {
+                    auditingUtil.WriteChecksumHashToFile(cacheFileStream);
+                    auditingUtil.WriteHaveMissLists(pRebuildSetsStruct.pDestinationDir);
+                }
+            }
+            catch (Exception ex)
+            {
+                this.progressStruct.Clear();
+                this.progressStruct.ErrorMessage = String.Format("Error while rebuilding sets: {0}{1}", ex.Message, Environment.NewLine);
+                ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
+            }
         }
 
         protected override void OnDoWork(DoWorkEventArgs e)
