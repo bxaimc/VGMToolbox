@@ -17,6 +17,9 @@ namespace VGMToolbox.format
                 
         public const string FILE_EXTENSION = ".seq";
 
+        public const int FADE_SECONDS_LOOP = 10;
+        public const int FADE_SECONDS_NO_LOOP = 0;
+
         public struct PsxSqTimingStruct
         {
             public double TimeInSeconds;
@@ -458,11 +461,11 @@ DONE:       // Marker used for skipping delta ticks at the end of a file.
 
             if (loopFound)
             {
-                ret.FadeInSeconds = 10; // looping
+                ret.FadeInSeconds = FADE_SECONDS_LOOP; // looping
             }
             else
             {
-                ret.FadeInSeconds = 1;  // non-looping
+                ret.FadeInSeconds = FADE_SECONDS_NO_LOOP;  // non-looping
             }
 
             // return stream to incoming position

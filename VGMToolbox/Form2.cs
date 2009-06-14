@@ -252,11 +252,26 @@ namespace VGMToolbox
             // set tag for displaying the form
             nodeTag.FormClass = hoot_XmlBuilderForm.GetType().Name;
             hoot_XmlBuilderNode.Tag = nodeTag;
-            
+
+            ///////////////
+            // Auditor
+            ///////////////
+            TreeNode hoot_AuditorNode = new TreeNode("Collection Auditor");
+
+            // add form
+            Hoot_AuditorForm hoot_AuditorForm = new Hoot_AuditorForm(hoot_AuditorNode);
+            this.splitContainer1.Panel2.Controls.Add(hoot_AuditorForm);
+
+            // set tag for displaying the form
+            nodeTag.FormClass = hoot_AuditorForm.GetType().Name;
+            hoot_AuditorNode.Tag = nodeTag;
+
+
             hoot_RootNode.NodeFont = this.treeviewBoldFont;
 
             // hoot_RootNode.Nodes.Add(hoot_CsvDatafileNode);
             hoot_RootNode.Nodes.Add(hoot_XmlBuilderNode);
+            hoot_RootNode.Nodes.Add(hoot_AuditorNode);
 
             return hoot_RootNode;
         }

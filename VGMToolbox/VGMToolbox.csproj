@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{8A96D568-CB21-4E64-8FD2-849A8E2B2D4F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -157,6 +157,12 @@
     </Compile>
     <Compile Include="forms\Genh_CreatorForm.Designer.cs">
       <DependentUpon>Genh_CreatorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="forms\Hoot_AuditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\Hoot_AuditorForm.Designer.cs">
+      <DependentUpon>Hoot_AuditorForm.cs</DependentUpon>
     </Compile>
     <Compile Include="forms\Hoot_XmlBuilderForm.cs">
       <SubType>Form</SubType>
@@ -441,6 +447,9 @@
     <Compile Include="tools\genh\GenhCreatorWorker.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\hoot\HootAuditorWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\hoot\HootXmlBuilderWorker.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -580,6 +589,9 @@
     <EmbeddedResource Include="forms\Genh_CreatorForm.resx">
       <DependentUpon>Genh_CreatorForm.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\Hoot_AuditorForm.resx">
+      <DependentUpon>Hoot_AuditorForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\TreeViewVgmtForm.resx">
       <DependentUpon>TreeViewVgmtForm.cs</DependentUpon>
