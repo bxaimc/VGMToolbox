@@ -19,7 +19,9 @@ namespace VGMToolbox.forms
         {
             InitializeComponent();
 
-            this.tbOutput.Text = "Work in Progress, non-functional.";
+            this.lblTitle.Text = "Hoot Collection Auditor";
+            this.btnDoTask.Text = "Audit Collection";
+            this.tbOutput.Text = "- Warning: Duplicate archive names in different folders can lead to inaccurate results." + Environment.NewLine;
         }
 
         protected override IVgmtBackgroundWorker getBackgroundWorker()
@@ -46,7 +48,8 @@ namespace VGMToolbox.forms
             hootStruct.SourcePaths = sourcePaths;
             hootStruct.SetArchivePaths = 
                 tbArchiveFolders.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-            
+            hootStruct.IncludeSubDirectories = cbIncludeSubDirs.Checked;
+
             base.backgroundWorker_Execute(hootStruct);
         }
 
