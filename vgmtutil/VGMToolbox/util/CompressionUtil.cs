@@ -46,6 +46,42 @@ namespace VGMToolbox.util
             return filenames;
         }
 
+        public static string[] GetUpperCaseFileList(string pPath)
+        {
+            string[] filenames = null;
+            SevenZipExtractor sevenZipExtractor = null;
+
+            if (File.Exists(pPath))
+            {
+                SevenZipExtractor.SetLibraryPath(SEVEN_ZIP_DLL);
+
+                try
+                {
+                    sevenZipExtractor = new SevenZipExtractor(pPath);
+                    filenames = new string[sevenZipExtractor.ArchiveFileNames.Count];
+
+                    int i = 0;
+                    foreach (string f in sevenZipExtractor.ArchiveFileNames)
+                    {
+                        filenames[i++] = f.ToUpper();
+                    }
+                }
+                catch (System.ArgumentException)
+                {
+                    // ignore unsupported formats
+                }
+                finally
+                {
+                    if (sevenZipExtractor != null)
+                    {
+                        sevenZipExtractor.Dispose();
+                    }
+                }
+            }
+
+            return filenames;
+        }
+
         public static void ExtractFileFromArchive(string pArchivePath, string pFileName, string pOutputPath)
         {
             SevenZipExtractor sevenZipExtractor = null;
