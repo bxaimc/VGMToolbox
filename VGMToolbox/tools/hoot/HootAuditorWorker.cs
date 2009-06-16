@@ -67,6 +67,9 @@ namespace VGMToolbox.tools.hoot
                     TreeNode gameNode;
                     TreeNode romNode;
                     ArrayList archiveContentsStructs;
+
+                    string romNameUpperCase;
+
                     bool romFoundInDictionary;
                     bool romFoundInArchives;
                     HootRomCheckStruct newRom;
@@ -92,9 +95,10 @@ namespace VGMToolbox.tools.hoot
                                 // Check if Rom is in Dictionary
                                 romFoundInDictionary = false;
                                 romFoundInArchives = false;
+                                romNameUpperCase = r.Value.ToUpper();
                                 foreach (HootRomCheckStruct h in archiveContentsStructs)
                                 {
-                                    if (h.RomName.ToUpper().Equals(r.Value))
+                                    if (h.RomName.ToUpper().Equals(romNameUpperCase))
                                     {
                                         romFoundInDictionary = true;
                                         romFoundInArchives = h.IsPresent;
@@ -104,29 +108,29 @@ namespace VGMToolbox.tools.hoot
 
                                 if (!romFoundInDictionary)
                                 {
-                                    // Check if rom exists
-                                    romFoundInArchives =
-                                        isRomPresent(hootAuditorStruct.SetArchivePaths, gameArchiveFileName, r.Value, hootAuditorStruct.IncludeSubDirectories);
-
                                     // Add Rom to Dictionary
-                                    newRom = new HootRomCheckStruct(r.Value, romFoundInArchives);
+                                    newRom = new HootRomCheckStruct(r.Value, false);
                                     archiveContentsStructs.Add(newRom);
-                                }
-
-                                romNode = new TreeNode(r.Value);
-
-                                if (!romFoundInArchives)
-                                {
-                                    romNode.ForeColor = Color.Red;
-                                    gameNode.ForeColor = Color.Red;
-                                    rootNode.ForeColor = Color.Red;
-                                }
-
-                                gameNode.Nodes.Add(romNode);
+                                }                                
                             }
                         }
 
+                        // Scan for all roms
                         archiveContents[gameArchiveFileName] = (HootRomCheckStruct[])archiveContentsStructs.ToArray(typeof(HootRomCheckStruct));
+                        this.checkIfRomsArePresent(hootAuditorStruct.SetArchivePaths, ref archiveContents, gameArchiveFileName, hootAuditorStruct.IncludeSubDirectories);
+
+                        foreach (HootRomCheckStruct romCheckStruct in archiveContents[gameArchiveFileName])
+                        {
+                            romNode = new TreeNode(romCheckStruct.RomName);
+                            gameNode.Nodes.Add(romNode);
+
+                            if (!romCheckStruct.IsPresent)
+                            {
+                                romNode.ForeColor = Color.Red;
+                                gameNode.ForeColor = Color.Red;
+                                rootNode.ForeColor = Color.Red;                            
+                            }
+                        }
 
                         rootNode.Nodes.Add(gameNode);
                     }
@@ -146,11 +150,10 @@ namespace VGMToolbox.tools.hoot
             }
         }
 
-        private bool isRomPresent(string[] pArchivePaths, string pSetName, string pRomName, bool pIncludeSubDirectories)
+        private void checkIfRomsArePresent(string[] pArchivePaths, ref Dictionary<string, HootRomCheckStruct[]> pHootSet, 
+            string pSetArchiveName, bool pIncludeSubDirectories)
         {
-            bool isRomPresent = false;
-            string[] archiveContents;
-            string searchRom = pRomName.Replace('/', Path.DirectorySeparatorChar);
+            ArrayList archiveContents;
 
             foreach (string path in pArchivePaths)
             {
@@ -160,39 +163,34 @@ namespace VGMToolbox.tools.hoot
 
                     if (pIncludeSubDirectories)
                     {
-                        archiveFiles = Directory.GetFiles(path, pSetName, SearchOption.AllDirectories);
+                        archiveFiles = Directory.GetFiles(path, pSetArchiveName, SearchOption.AllDirectories);
                     }
                     else
                     {
-                        archiveFiles = Directory.GetFiles(path, pSetName, SearchOption.TopDirectoryOnly);
+                        archiveFiles = Directory.GetFiles(path, pSetArchiveName, SearchOption.TopDirectoryOnly);
                     }
 
+                    if (archiveFiles.Length > 1)
+                    {
+                        this.progressStruct.Clear();
+                        this.progressStruct.GenericMessage = String.Format("WARNING: Multiple copies of {0} found, results may be inaccurate", pSetArchiveName);
+                        ReportProgress(this.progress, this.progressStruct);
+                    }
+                    
                     foreach (string file in archiveFiles)
                     {
-                        archiveContents = CompressionUtil.GetFileList(file);
-                        foreach (string archiveContentFile in archiveContents)
-                        {
-                            if (archiveContentFile.ToUpper().Equals(searchRom.ToUpper()))
-                            {
-                                isRomPresent = true;
-                                break;
-                            }
-                        }
+                        archiveContents = new ArrayList(CompressionUtil.GetUpperCaseFileList(file));
 
-                        if (isRomPresent)
+                        for (int i = 0; i < pHootSet[pSetArchiveName].Length; i++)
                         {
-                            break;
+                            if (archiveContents.Contains(pHootSet[pSetArchiveName][i].RomName.Replace('/', Path.DirectorySeparatorChar).ToUpper()))
+                            {
+                                pHootSet[pSetArchiveName][i].IsPresent = true;
+                            }
                         }
                     }
                 }
-
-                if (isRomPresent)
-                {
-                    break;
-                }
-            }
-            
-            return isRomPresent;
+            }            
         }
     }
 }
