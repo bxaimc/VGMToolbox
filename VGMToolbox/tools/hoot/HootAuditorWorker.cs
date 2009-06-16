@@ -19,6 +19,7 @@ namespace VGMToolbox.tools.hoot
         private const string FILE_EXTENSION_XML = ".XML";
         private const string ROM_TYPE_SHELL = "SHELL";
         private const string ROM_TYPE_DEVICE = "DEVICE";
+        private const string ROM_TYPE_BINARY = "BINARY";
 
         public struct HootAuditorStruct : IVgmtWorkerStruct
         {
@@ -69,6 +70,7 @@ namespace VGMToolbox.tools.hoot
                     ArrayList archiveContentsStructs;
 
                     string romNameUpperCase;
+                    string romTypeUpperCase;
 
                     bool romFoundInDictionary;
                     bool romFoundInArchives;
@@ -90,12 +92,17 @@ namespace VGMToolbox.tools.hoot
 
                         foreach (rom r in g.romlist.rom)
                         {
-                            if (!r.type.ToUpper().Equals(ROM_TYPE_SHELL) && !r.type.ToUpper().Equals(ROM_TYPE_DEVICE))
+                            romNameUpperCase = r.Value.ToUpper();
+                            romTypeUpperCase = r.type.ToUpper();
+
+                            if (!romTypeUpperCase.Equals(ROM_TYPE_SHELL) &&
+                                !romTypeUpperCase.Equals(ROM_TYPE_DEVICE) &&
+                                !romTypeUpperCase.Equals(ROM_TYPE_BINARY))
                             {                                
                                 // Check if Rom is in Dictionary
                                 romFoundInDictionary = false;
                                 romFoundInArchives = false;
-                                romNameUpperCase = r.Value.ToUpper();
+                                
                                 foreach (HootRomCheckStruct h in archiveContentsStructs)
                                 {
                                     if (h.RomName.ToUpper().Equals(romNameUpperCase))
