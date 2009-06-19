@@ -13,7 +13,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.format
 {
-    public class Xsf : IFormat
+    public class Xsf : IFormat, IXsfTagFormat
     {
         // Fields
         private static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x50, 0x53, 0x46 }; // PSF
@@ -373,7 +373,8 @@ namespace VGMToolbox.format
 
         protected Dictionary<string, string> getTags(byte[] pBytes, int pTagOffset, int pLength)
         {
-            Dictionary<string, string> tags = new Dictionary<string, string>();
+            Dictionary<string, string> tags = 
+                new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
             if (pTagOffset < pLength)
             {
@@ -425,7 +426,7 @@ namespace VGMToolbox.format
                             tags.Add(tag[0], oldTag + tag[1]);
                         }
                     }
-                }
+                } //foreach (string s in splitTags)
             }
             return tags;
         }
@@ -555,5 +556,113 @@ namespace VGMToolbox.format
 
             return ret;
         }
+
+        #region IXsfTagFormat FUNCTIONS
+       
+        private string GetSimpleTag(string pTagKey)
+        {
+            string ret = String.Empty;
+
+            if (this.tagHash.ContainsKey(pTagKey))
+            {
+                ret = tagHash[pTagKey];
+            }
+            return ret;
+        }
+        public string GetTitleTag() { return GetSimpleTag("title"); }
+        public string GetArtistTag() { return GetSimpleTag("artist"); }
+        public string GetGameTag() { return GetSimpleTag("game"); }
+        public string GetYearTag() { return GetSimpleTag("year"); }
+        public string GetGenreTag() { return GetSimpleTag("genre"); }
+        public string GetCommentTag() { return GetSimpleTag("comment"); }
+        public string GetCopyrightTag() { return GetSimpleTag("copyright"); }
+        public string GetXsfByTag() { return GetSimpleTag(this.getFormat() + "by"); }
+        public string GetVolumeTag() { return GetSimpleTag("volume"); }
+        public string GetLengthTag() { return GetSimpleTag("length"); }
+        public string GetFadeTag() { return GetSimpleTag("fade"); }
+
+        private void SetSimpleTag(string pKey, string pNewValue)
+        {
+            if (!String.IsNullOrEmpty(pNewValue) && !String.IsNullOrEmpty(pNewValue.Trim()))
+            {
+                this.tagHash[pKey] = pNewValue.Trim();
+            }
+            else if (tagHash.ContainsKey(pKey))
+            {
+                tagHash.Remove(pKey);
+            }
+        }
+        public void SetTitleTag(string pNewValue) { SetSimpleTag("title", pNewValue); }
+        public void SetArtistTag(string pNewValue) { SetSimpleTag("artist", pNewValue); }
+        public void SetGameTag(string pNewValue) { SetSimpleTag("game", pNewValue); }
+        public void SetYearTag(string pNewValue) { SetSimpleTag("year", pNewValue); }
+        public void SetGenreTag(string pNewValue) { SetSimpleTag("genre", pNewValue); }
+        public void SetCommentTag(string pNewValue) { SetSimpleTag("comment", pNewValue); }
+        public void SetCopyrightTag(string pNewValue) { SetSimpleTag("copyright", pNewValue); }
+        public void SetXsfByTag(string pNewValue) { SetSimpleTag(this.getFormat().ToLower() + "by", pNewValue); }
+        public void SetVolumeTag(string pNewValue) { SetSimpleTag("volume", pNewValue); }
+        public void SetLengthTag(string pNewValue) { SetSimpleTag("length", pNewValue); }
+        public void SetFadeTag(string pNewValue) { SetSimpleTag("fade", pNewValue); }
+
+        public void UpdateTags()
+        {
+            int actualFileEnd;
+            string retaggingFilePath;
+            string[] splitValue;
+            string[] splitParam = new string[] { Environment.NewLine };
+
+            try
+            {
+                actualFileEnd = (int)(RESERVED_SECTION_OFFSET + this.reservedSectionLength + this.compressedProgramLength);
+                retaggingFilePath = Path.Combine(Path.GetDirectoryName(this.filePath),
+                    String.Format("{0}_RETAG_{1}{2}", Path.GetFileNameWithoutExtension(this.filePath), new Random().Next().ToString(), Path.GetExtension(this.filePath)));
+
+                // extract file without tags
+                using (FileStream fs = File.OpenRead(this.filePath))
+                {
+                    ParseFile.ExtractChunkToFile(fs, 0, actualFileEnd, retaggingFilePath);
+                }
+
+                // add new tags
+                using (FileStream fs = File.Open(retaggingFilePath, FileMode.Append, FileAccess.Write))
+                {
+                    System.Text.Encoding enc = System.Text.Encoding.ASCII;
+                    byte[] dataToWrite;
+
+                    // write [TAG]
+                    dataToWrite = enc.GetBytes(ASCII_TAG);
+                    fs.Write(dataToWrite, 0, dataToWrite.Length);
+                    
+                    // change to UTF8 encoding
+                    enc = System.Text.Encoding.UTF8;
+                    
+                    // add or update utf8=1 tag
+                    this.tagHash["utf8"] = "1";
+                    
+                    foreach (string key in tagHash.Keys)
+                    {
+                        splitValue = tagHash[key].Split(splitParam, StringSplitOptions.None);
+
+                        foreach (string valueItem in splitValue)
+                        {
+                            dataToWrite = enc.GetBytes(String.Format("{0}={1}", key, valueItem));
+                            fs.Write(dataToWrite, 0, dataToWrite.Length);
+                            fs.WriteByte(0x0A);
+                        }
+                    } // foreach (string key in tagHash.Keys)
+                } // using (FileStream fs = File.Open(this.filePath, FileMode.Append, FileAccess.Write))
+
+                File.Delete(this.filePath);
+                File.Move(retaggingFilePath, this.filePath);
+            }
+            catch (Exception _ex)
+            {
+                throw new Exception(String.Format("Error updating tags for <{0}>", this.filePath), _ex);
+            }
+        }
+
+
+        #endregion
+
     }
 }

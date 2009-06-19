@@ -87,7 +87,8 @@ namespace VGMToolbox.forms
                     VGMToolbox.util.NodeTagStruct nts = (VGMToolbox.util.NodeTagStruct)node.Tag;
 
                     if (typeof(IEmbeddedTagsFormat).IsAssignableFrom(Type.GetType(nts.ObjectType)) ||
-                        typeof(ISingleTagFormat).IsAssignableFrom(Type.GetType(nts.ObjectType)))
+                        typeof(ISingleTagFormat).IsAssignableFrom(Type.GetType(nts.ObjectType)) ||
+                        typeof(IXsfTagFormat).IsAssignableFrom(Type.GetType(nts.ObjectType)))
                     {
                         contextMenuStrip1.Show(treeViewTools, p);
                     }
@@ -110,6 +111,11 @@ namespace VGMToolbox.forms
                 {
                     SingleTagUpdateForm stuForm = new SingleTagUpdateForm(nts);
                     stuForm.Show();
+                }
+                else if (typeof(IXsfTagFormat).IsAssignableFrom(Type.GetType(nts.ObjectType)))
+                {
+                    XsfTagsUpdateForm xtuForm = new XsfTagsUpdateForm(nts);
+                    xtuForm.Show();
                 }
                                 
                 this.selectedNode = this.oldNode;

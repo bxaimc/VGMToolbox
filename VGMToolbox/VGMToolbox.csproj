@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{8A96D568-CB21-4E64-8FD2-849A8E2B2D4F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -187,6 +187,12 @@
     </Compile>
     <Compile Include="forms\TreeViewVgmtForm.Designer.cs">
       <DependentUpon>TreeViewVgmtForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="forms\XsfTagsUpdateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\XsfTagsUpdateForm.Designer.cs">
+      <DependentUpon>XsfTagsUpdateForm.cs</DependentUpon>
     </Compile>
     <Compile Include="forms\Xsf_Mk2sfForm.cs">
       <SubType>Form</SubType>
@@ -592,9 +598,14 @@
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Hoot_AuditorForm.resx">
       <DependentUpon>Hoot_AuditorForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\TreeViewVgmtForm.resx">
       <DependentUpon>TreeViewVgmtForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\XsfTagsUpdateForm.resx">
+      <DependentUpon>XsfTagsUpdateForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Xsf_Mk2sfForm.resx">

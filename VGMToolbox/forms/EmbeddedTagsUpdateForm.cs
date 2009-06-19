@@ -68,9 +68,7 @@ namespace VGMToolbox.forms
             // MessageBox.Show(String.Format("Tags for \"{0}\" have been updated.  Changes will not be displayed in the tree until you add the files again.", Path.GetFileName(this.vgmData.FilePath)));
             MessageBox.Show(String.Format(ConfigurationSettings.AppSettings["Form_EmbeddedTags_MessageUpdateComplete"], 
                 Path.GetFileName(this.vgmData.FilePath)));
-
-            
-            
+                        
             this.Close();
             this.Dispose();
         }

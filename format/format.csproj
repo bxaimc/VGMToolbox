@@ -37,6 +37,9 @@
       <HintPath>..\VGMToolbox\3rd\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
@@ -47,6 +50,7 @@
     <Compile Include="VGMToolbox\format\Hes.cs" />
     <Compile Include="VGMToolbox\format\hoot\HootCsv.cs" />
     <Compile Include="VGMToolbox\format\hoot\HootGameList.cs" />
+    <Compile Include="VGMToolbox\format\IXsfTagFormat.cs" />
     <Compile Include="VGMToolbox\format\PsxSequence.cs" />
     <Compile Include="VGMToolbox\format\sdat\Swar.cs" />
     <Compile Include="VGMToolbox\format\sdat\Swav.cs" />
