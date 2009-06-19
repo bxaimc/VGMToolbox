@@ -81,7 +81,6 @@ namespace VGMToolbox.forms
                 MessageBox.Show(String.Format("Update complete, updates will not be reflected in the tree until the files are added again.",
                     Path.GetFileName(this.vgmData.FilePath)));
 
-
                 this.Close();
                 this.Dispose();
             }

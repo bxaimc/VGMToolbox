@@ -535,7 +535,7 @@ namespace VGMToolbox
             TreeNode xsf_xsfRecompressNode = 
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_XsfRecompressNode"]);
 
-            // Add Xsf2Exe Form
+            // Add XsfRecompress Form
             Xsf_RecompressDataForm xsf_RecompressDataForm = new Xsf_RecompressDataForm(xsf_xsfRecompressNode);
             this.splitContainer1.Panel2.Controls.Add(xsf_RecompressDataForm);
 
@@ -543,11 +543,25 @@ namespace VGMToolbox
             nodeTag.FormClass = xsf_RecompressDataForm.GetType().Name;
             xsf_xsfRecompressNode.Tag = nodeTag;
 
+            //////////////////
+            // TAG EDITOR
+            /////////////////
+            TreeNode xsf_xsfTagEditorNode = new TreeNode("xSF Tag Editor");
+
+            // Add XsfRecompress Form
+            Xsf_XsfTagEditorForm xsf_XsfTagEditorForm = new Xsf_XsfTagEditorForm(xsf_xsfTagEditorNode);
+            this.splitContainer1.Panel2.Controls.Add(xsf_XsfTagEditorForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = xsf_XsfTagEditorForm.GetType().Name;
+            xsf_xsfTagEditorNode.Tag = nodeTag;
+
             nodeTag.FormClass = emptyForm.GetType().Name;
             xsf_RootNode.NodeFont = this.treeviewBoldFont;
 
             xsf_RootNode.Nodes.Add(xsf_xsf2ExeNode);
             xsf_RootNode.Nodes.Add(xsf_xsfRecompressNode);
+            xsf_RootNode.Nodes.Add(xsf_xsfTagEditorNode);
 
             _2sf_RootNode.NodeFont = this.treeviewBoldFont;
             _2sf_RootNode.Tag = nodeTag;

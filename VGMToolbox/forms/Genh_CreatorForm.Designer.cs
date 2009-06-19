@@ -66,30 +66,30 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 582);
-            this.pnlLabels.Size = new System.Drawing.Size(840, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 578);
+            this.pnlLabels.Size = new System.Drawing.Size(779, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(840, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(779, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 505);
-            this.tbOutput.Size = new System.Drawing.Size(840, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 501);
+            this.tbOutput.Size = new System.Drawing.Size(779, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 485);
-            this.pnlButtons.Size = new System.Drawing.Size(840, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 481);
+            this.pnlButtons.Size = new System.Drawing.Size(779, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(780, 0);
+            this.btnCancel.Location = new System.Drawing.Point(719, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(720, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(659, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // lbFiles
@@ -371,7 +371,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(840, 623);
+            this.ClientSize = new System.Drawing.Size(779, 619);
             this.Controls.Add(this.grpFormat);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.cbHeaderOnly);

@@ -575,11 +575,21 @@ namespace VGMToolbox.format
         public string GetYearTag() { return GetSimpleTag("year"); }
         public string GetGenreTag() { return GetSimpleTag("genre"); }
         public string GetCommentTag() { return GetSimpleTag("comment"); }
-        public string GetCopyrightTag() { return GetSimpleTag("copyright"); }
-        public string GetXsfByTag() { return GetSimpleTag(this.getFormat() + "by"); }
+        public string GetCopyrightTag() { return GetSimpleTag("copyright"); }        
         public string GetVolumeTag() { return GetSimpleTag("volume"); }
         public string GetLengthTag() { return GetSimpleTag("length"); }
         public string GetFadeTag() { return GetSimpleTag("fade"); }
+        public string GetXsfByTag() 
+        {
+            string format = this.getFormat();
+
+            if (format.Equals(FORMAT_NAME_PSF2))
+            {
+                format = FORMAT_NAME_PSF;
+            }
+
+            return GetSimpleTag(format + "by");         
+        }
 
         private void SetSimpleTag(string pKey, string pNewValue)
         {
@@ -598,11 +608,21 @@ namespace VGMToolbox.format
         public void SetYearTag(string pNewValue) { SetSimpleTag("year", pNewValue); }
         public void SetGenreTag(string pNewValue) { SetSimpleTag("genre", pNewValue); }
         public void SetCommentTag(string pNewValue) { SetSimpleTag("comment", pNewValue); }
-        public void SetCopyrightTag(string pNewValue) { SetSimpleTag("copyright", pNewValue); }
-        public void SetXsfByTag(string pNewValue) { SetSimpleTag(this.getFormat().ToLower() + "by", pNewValue); }
+        public void SetCopyrightTag(string pNewValue) { SetSimpleTag("copyright", pNewValue); }        
         public void SetVolumeTag(string pNewValue) { SetSimpleTag("volume", pNewValue); }
         public void SetLengthTag(string pNewValue) { SetSimpleTag("length", pNewValue); }
         public void SetFadeTag(string pNewValue) { SetSimpleTag("fade", pNewValue); }
+        public void SetXsfByTag(string pNewValue) 
+        { 
+            string format = this.getFormat();
+
+            if (format.Equals(FORMAT_NAME_PSF2))
+            {
+                format = FORMAT_NAME_PSF;
+            }
+
+            SetSimpleTag(format.ToLower() + "by", pNewValue); 
+        }
 
         public void UpdateTags()
         {
