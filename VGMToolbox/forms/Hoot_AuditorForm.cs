@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
@@ -14,14 +16,27 @@ namespace VGMToolbox.forms
 {
     public partial class Hoot_AuditorForm : TreeViewVgmtForm
     {
+        static readonly string AUDIT_OUTPUT_FILE = 
+            Path.Combine(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "hoot"), "audit.txt");
+
+        
         public Hoot_AuditorForm(TreeNode pTreeNode)
             : base(pTreeNode) 
         {
+            base.outputToText = true;
+            base.outputTextFile = AUDIT_OUTPUT_FILE;
+
+            NodePrintMessageStruct n = new NodePrintMessageStruct();
+            n.NodeColor = HootAuditorWorker.HOOT_MISSING_FILE_COLOR;
+            n.Message = "(MISSING)";
+            base.outputColorToMessageRules = new NodePrintMessageStruct[] { n };
+
             InitializeComponent();
 
             this.lblTitle.Text = "Hoot Collection Auditor (Hoot Auditor Result Verification Engine Yes!)";
             this.btnDoTask.Text = "Audit Collection";
             this.tbOutput.Text = "- Warning: Duplicate archive names in different folders can lead to inaccurate results." + Environment.NewLine;
+            this.tbOutput.Text += "- Results will also be output to the 'hoot' subfolder as 'audit.txt'." + Environment.NewLine;
         }
 
         protected override IVgmtBackgroundWorker getBackgroundWorker()

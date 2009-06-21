@@ -20,6 +20,16 @@ namespace VGMToolbox.forms
         private TreeNode selectedNode;
         private TreeNode oldNode;
         
+        protected bool outputToText;
+        protected string outputTextFile;
+        protected NodePrintMessageStruct[] outputColorToMessageRules;
+
+        protected struct NodePrintMessageStruct
+        { 
+            public Color NodeColor;
+            public string Message;
+        }
+
         public TreeViewVgmtForm() : base() 
         {
             InitializeComponent();
@@ -28,6 +38,7 @@ namespace VGMToolbox.forms
         public TreeViewVgmtForm(TreeNode pTreeNode) : base(pTreeNode)
         {
             InitializeComponent();
+            this.outputToText = false;
         }
 
         protected override void backgroundWorker_ReportProgress(object sender, ProgressChangedEventArgs e)
@@ -50,6 +61,15 @@ namespace VGMToolbox.forms
                 if (vProgressStruct.NewNode != null)
                 {
                     treeViewTools.Nodes.Add(vProgressStruct.NewNode);
+
+                    if (this.outputToText)
+                    {
+                        using (StreamWriter sw =
+                            new StreamWriter(File.Open(this.outputTextFile, FileMode.Append, FileAccess.Write)))
+                        {
+                            this.writeNodesToFile(vProgressStruct.NewNode, sw, 0);
+                        }
+                    }
                 }
 
                 lblProgressLabel.Text = vProgressStruct.Filename == null ? String.Empty : vProgressStruct.Filename;
@@ -120,6 +140,33 @@ namespace VGMToolbox.forms
                                 
                 this.selectedNode = this.oldNode;
                 this.oldNode = null;
+            }
+        }
+
+        private void writeNodesToFile(TreeNode pTreeNode, StreamWriter pStreamWriter, int pDepth)
+        {
+            int padAmount = pDepth * 4;
+            StringBuilder sbPadding = new StringBuilder();
+            StringBuilder sbMessageSuffix = new StringBuilder();
+
+            for (int i = 0; i <padAmount; i++)
+            {
+                sbPadding.Append(" ");
+            }
+            
+            foreach (NodePrintMessageStruct n in this.outputColorToMessageRules)
+            {
+                if (pTreeNode.ForeColor.Equals(n.NodeColor))
+                {
+                    sbMessageSuffix.Append(n.Message);
+                }
+            }
+
+            pStreamWriter.WriteLine(String.Format("{0}{1} {2}", sbPadding.ToString(), pTreeNode.Text.Trim(), sbMessageSuffix.ToString()));
+
+            foreach (TreeNode t in pTreeNode.Nodes)
+            {
+                this.writeNodesToFile(t, pStreamWriter, pDepth + 1);
             }
         }
     }

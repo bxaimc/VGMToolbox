@@ -21,6 +21,8 @@ namespace VGMToolbox.tools.hoot
         private const string ROM_TYPE_DEVICE = "DEVICE";
         private const string ROM_TYPE_BINARY = "BINARY";
 
+        public static readonly Color HOOT_MISSING_FILE_COLOR = Color.Red;
+
         public struct HootAuditorStruct : IVgmtWorkerStruct
         {
             private string[] sourcePaths; // xml paths
@@ -79,7 +81,8 @@ namespace VGMToolbox.tools.hoot
                     foreach (game g in hootGames.Items)
                     {
                         gameArchiveFileName = g.romlist.archive + ".zip";
-                        gameNode = new TreeNode(String.Format("{0} ({1})]", gameArchiveFileName, g.name));
+
+                        gameNode = new TreeNode(String.Format("{0} ({1})]", gameArchiveFileName, g.name));                        
 
                         if (archiveContents.ContainsKey(gameArchiveFileName))
                         {
@@ -127,15 +130,16 @@ namespace VGMToolbox.tools.hoot
                         this.checkIfRomsArePresent(hootAuditorStruct.SetArchivePaths, ref archiveContents, gameArchiveFileName, hootAuditorStruct.IncludeSubDirectories);
 
                         foreach (HootRomCheckStruct romCheckStruct in archiveContents[gameArchiveFileName])
-                        {
+                        {                            
                             romNode = new TreeNode(romCheckStruct.RomName);
+                            
                             gameNode.Nodes.Add(romNode);
 
                             if (!romCheckStruct.IsPresent)
                             {
-                                romNode.ForeColor = Color.Red;
-                                gameNode.ForeColor = Color.Red;
-                                rootNode.ForeColor = Color.Red;                            
+                                romNode.ForeColor  = HOOT_MISSING_FILE_COLOR;
+                                gameNode.ForeColor = HOOT_MISSING_FILE_COLOR;
+                                rootNode.ForeColor = HOOT_MISSING_FILE_COLOR;                            
                             }
                         }
 
