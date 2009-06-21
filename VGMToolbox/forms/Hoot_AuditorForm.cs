@@ -19,7 +19,7 @@ namespace VGMToolbox.forms
         {
             InitializeComponent();
 
-            this.lblTitle.Text = "Hoot Collection Auditor";
+            this.lblTitle.Text = "Hoot Collection Auditor (Hoot Auditor Result Verification Engine Yes!)";
             this.btnDoTask.Text = "Audit Collection";
             this.tbOutput.Text = "- Warning: Duplicate archive names in different folders can lead to inaccurate results." + Environment.NewLine;
         }

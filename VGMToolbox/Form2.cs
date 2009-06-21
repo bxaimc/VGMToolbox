@@ -614,6 +614,18 @@ namespace VGMToolbox
             nodeTag.FormClass = emptyForm.GetType().Name;
             ext_GenericNode.Tag = nodeTag;
 
+            // Snakebite
+            TreeNode ext_SimpleCutterNode = new TreeNode("Simple Cutter");
+
+            // Add Offset Finder Form
+            Extract_SnakebiteGuiForm extract_SnakebiteGuiForm = new Extract_SnakebiteGuiForm(ext_SimpleCutterNode);
+            this.splitContainer1.Panel2.Controls.Add(extract_SnakebiteGuiForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = extract_SnakebiteGuiForm.GetType().Name;
+            ext_SimpleCutterNode.Tag = nodeTag;
+
+
             // Offset Finder
             TreeNode ext_OffsetFinderNode =
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_OffsetFinderNode"]);
@@ -687,8 +699,10 @@ namespace VGMToolbox
             nodeTag.FormClass = emptyForm.GetType().Name;
             ext_PcNode.Tag = nodeTag;
 
+            ext_GenericNode.Nodes.Add(ext_SimpleCutterNode);
             ext_GenericNode.Nodes.Add(ext_OffsetFinderNode);
-            ext_GenericNode.Nodes.Add(ext_ExtractCdxaNode);
+            ext_GenericNode.Nodes.Add(ext_ExtractCdxaNode);            
+                        
             ext_RootNode.Nodes.Add(ext_GenericNode);
             
             ext_NdsNode.Nodes.Add(ext_SdatExtractorNode);

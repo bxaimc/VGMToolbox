@@ -220,5 +220,6 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
     }
 }

@@ -105,6 +105,19 @@ namespace VGMToolbox.plugin
             return filename;
         }
 
+        protected string browseForFileToSave(object sender, EventArgs e)
+        {
+            string filename = String.Empty;
+
+            saveFileDialog1 = new SaveFileDialog();
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                filename = saveFileDialog1.FileName;
+            }
+
+            return filename;
+        }
+
         protected string browseForFolder(object sender, EventArgs e)
         {
             string foldername = String.Empty;
