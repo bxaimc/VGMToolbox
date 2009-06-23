@@ -53,30 +53,30 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 497);
-            this.pnlLabels.Size = new System.Drawing.Size(939, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 523);
+            this.pnlLabels.Size = new System.Drawing.Size(779, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(939, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(779, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 420);
-            this.tbOutput.Size = new System.Drawing.Size(939, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 446);
+            this.tbOutput.Size = new System.Drawing.Size(779, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 400);
-            this.pnlButtons.Size = new System.Drawing.Size(939, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 426);
+            this.pnlButtons.Size = new System.Drawing.Size(779, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(879, 0);
+            this.btnCancel.Location = new System.Drawing.Point(719, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(819, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(659, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpFiles
@@ -91,7 +91,7 @@
             this.grpFiles.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFiles.Location = new System.Drawing.Point(0, 23);
             this.grpFiles.Name = "grpFiles";
-            this.grpFiles.Size = new System.Drawing.Size(939, 79);
+            this.grpFiles.Size = new System.Drawing.Size(779, 79);
             this.grpFiles.TabIndex = 5;
             this.grpFiles.TabStop = false;
             this.grpFiles.Text = "Files";
@@ -173,7 +173,7 @@
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpOptions.Location = new System.Drawing.Point(0, 102);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(939, 84);
+            this.grpOptions.Size = new System.Drawing.Size(779, 84);
             this.grpOptions.TabIndex = 6;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Cut Options";
@@ -248,7 +248,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(939, 538);
+            this.ClientSize = new System.Drawing.Size(779, 564);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpFiles);
             this.Name = "Extract_SnakebiteGuiForm";

@@ -75,6 +75,10 @@ namespace VGMToolbox.tools.extract
                     }
                     
                     ParseFile.ExtractChunkToFile(fs, startOffset, (int)cutLength, simpleCutterSnakebiteStruct.OutputFile);
+
+                    this.progressStruct.Clear();
+                    this.progressStruct.GenericMessage = String.Format("File <{0}>, extracted.{1}", simpleCutterSnakebiteStruct.OutputFile, Environment.NewLine);
+                    ReportProgress(this.progress, this.progressStruct);
                 }
             }
         }

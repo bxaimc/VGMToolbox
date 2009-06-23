@@ -124,26 +124,54 @@ namespace VGMToolbox.forms
 
         private void cutTheFile(string[] pPaths)
         {
-            SimpleCutterSnakebiteWorker.SimpleCutterSnakebiteStruct snbStruct = 
-                new SimpleCutterSnakebiteWorker.SimpleCutterSnakebiteStruct();
+            if (this.validateInputs())
+            {
+                SimpleCutterSnakebiteWorker.SimpleCutterSnakebiteStruct snbStruct =
+                    new SimpleCutterSnakebiteWorker.SimpleCutterSnakebiteStruct();
 
-            snbStruct.EndAddress = this.tbEndAddress.Text;
-            snbStruct.Length = this.tbLength.Text;
-            snbStruct.OutputFile = this.tbOutputFile.Text;
-            snbStruct.SourcePaths = pPaths;
-            snbStruct.StartOffset = this.tbStartAddress.Text;
-            snbStruct.UseEndAddress = this.rbEndAddress.Checked;
-            snbStruct.UseFileEnd = this.rbEndOfFile.Checked;
-            snbStruct.UseLength = this.rbLength.Checked;
+                snbStruct.EndAddress = this.tbEndAddress.Text;
+                snbStruct.Length = this.tbLength.Text;
+                snbStruct.OutputFile = this.tbOutputFile.Text;
+                snbStruct.SourcePaths = pPaths;
+                snbStruct.StartOffset = this.tbStartAddress.Text;
+                snbStruct.UseEndAddress = this.rbEndAddress.Checked;
+                snbStruct.UseFileEnd = this.rbEndOfFile.Checked;
+                snbStruct.UseLength = this.rbLength.Checked;
 
-            base.backgroundWorker_Execute(snbStruct);
-
+                base.backgroundWorker_Execute(snbStruct);
+            }
         }
 
         private void btnDoTask_Click(object sender, EventArgs e)
         {
             string[] s = new string[] { this.tbSourceFiles.Text };
             this.cutTheFile(s);
+        }
+
+        private bool validateInputs()
+        {
+            bool ret = true;
+
+            ret &= base.checkFileExists(this.tbSourceFiles.Text, this.lblSourceFiles.Text);
+            ret &= base.checkTextBox(this.tbStartAddress.Text, this.lblStartAddress.Text);
+
+            if (rbEndAddress.Checked)
+            {
+                ret &= base.checkTextBox(this.tbEndAddress.Text, this.rbEndAddress.Text);
+            }
+
+            if (rbLength.Checked)
+            {
+                ret &= base.checkTextBox(this.tbLength.Text, this.rbLength.Text);
+            }
+
+            if (this.tbSourceFiles.Text.Equals(this.tbOutputFile.Text))
+            {
+                MessageBox.Show("Input and Output files cannot be the same.", "Error");
+                ret = false;
+            }
+
+            return ret;
         }
     }
 }
