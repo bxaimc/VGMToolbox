@@ -410,6 +410,10 @@ namespace VGMToolbox.format
                                 loopTimeMultiplier = 2;
                                 loopFound = true;
                             }
+                            else if (loopTimeMultiplier == 0)
+                            {
+                                loopTimeMultiplier = 1;
+                            }
 
                             // add loop time
                             if (loopTimeStack.Count > 0)
