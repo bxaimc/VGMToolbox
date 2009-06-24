@@ -256,7 +256,8 @@ namespace VGMToolbox
             ///////////////
             // Auditor
             ///////////////
-            TreeNode hoot_AuditorNode = new TreeNode("Collection Auditor");
+            TreeNode hoot_AuditorNode =
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_HootAuditorNode"]);
 
             // add form
             Hoot_AuditorForm hoot_AuditorForm = new Hoot_AuditorForm(hoot_AuditorNode);
@@ -546,7 +547,8 @@ namespace VGMToolbox
             //////////////////
             // TAG EDITOR
             /////////////////
-            TreeNode xsf_xsfTagEditorNode = new TreeNode("xSF Tag Editor");
+            TreeNode xsf_xsfTagEditorNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_XsfTagEditorNode"]);
 
             // Add XsfRecompress Form
             Xsf_XsfTagEditorForm xsf_XsfTagEditorForm = new Xsf_XsfTagEditorForm(xsf_xsfTagEditorNode);
@@ -615,7 +617,8 @@ namespace VGMToolbox
             ext_GenericNode.Tag = nodeTag;
 
             // Snakebite
-            TreeNode ext_SimpleCutterNode = new TreeNode("Simple Cutter");
+            TreeNode ext_SimpleCutterNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SimpleCutterNode"]);
 
             // Add Offset Finder Form
             Extract_SnakebiteGuiForm extract_SnakebiteGuiForm = new Extract_SnakebiteGuiForm(ext_SimpleCutterNode);
