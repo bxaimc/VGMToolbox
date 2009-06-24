@@ -56,6 +56,9 @@
             this.lblHeaderSkip = new System.Windows.Forms.Label();
             this.tbHeaderSkip = new System.Windows.Forms.TextBox();
             this.cbHeaderOnly = new System.Windows.Forms.CheckBox();
+            this.rbCreate = new System.Windows.Forms.RadioButton();
+            this.rbEdit = new System.Windows.Forms.RadioButton();
+            this.rbExtract = new System.Windows.Forms.RadioButton();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -99,7 +102,7 @@
             this.lbFiles.Location = new System.Drawing.Point(6, 43);
             this.lbFiles.Name = "lbFiles";
             this.lbFiles.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lbFiles.Size = new System.Drawing.Size(254, 303);
+            this.lbFiles.Size = new System.Drawing.Size(254, 277);
             this.lbFiles.TabIndex = 5;
             this.lbFiles.SelectedIndexChanged += new System.EventHandler(this.lbFiles_SelectedIndexChanged);
             // 
@@ -110,7 +113,7 @@
             this.grpSourceFiles.Controls.Add(this.btnBrowseDirectory);
             this.grpSourceFiles.Location = new System.Drawing.Point(3, 29);
             this.grpSourceFiles.Name = "grpSourceFiles";
-            this.grpSourceFiles.Size = new System.Drawing.Size(266, 355);
+            this.grpSourceFiles.Size = new System.Drawing.Size(266, 332);
             this.grpSourceFiles.TabIndex = 6;
             this.grpSourceFiles.TabStop = false;
             this.grpSourceFiles.Text = "Source Files";
@@ -367,6 +370,42 @@
             this.cbHeaderOnly.Text = "Ouput Header Only";
             this.cbHeaderOnly.UseVisualStyleBackColor = true;
             // 
+            // rbCreate
+            // 
+            this.rbCreate.AutoSize = true;
+            this.rbCreate.Location = new System.Drawing.Point(3, 367);
+            this.rbCreate.Name = "rbCreate";
+            this.rbCreate.Size = new System.Drawing.Size(56, 17);
+            this.rbCreate.TabIndex = 9;
+            this.rbCreate.TabStop = true;
+            this.rbCreate.Text = "Create";
+            this.rbCreate.UseVisualStyleBackColor = true;
+            this.rbCreate.CheckedChanged += new System.EventHandler(this.rbCreate_CheckedChanged);
+            // 
+            // rbEdit
+            // 
+            this.rbEdit.AutoSize = true;
+            this.rbEdit.Location = new System.Drawing.Point(65, 367);
+            this.rbEdit.Name = "rbEdit";
+            this.rbEdit.Size = new System.Drawing.Size(43, 17);
+            this.rbEdit.TabIndex = 10;
+            this.rbEdit.TabStop = true;
+            this.rbEdit.Text = "Edit";
+            this.rbEdit.UseVisualStyleBackColor = true;
+            this.rbEdit.CheckedChanged += new System.EventHandler(this.rbEdit_CheckedChanged);
+            // 
+            // rbExtract
+            // 
+            this.rbExtract.AutoSize = true;
+            this.rbExtract.Location = new System.Drawing.Point(114, 367);
+            this.rbExtract.Name = "rbExtract";
+            this.rbExtract.Size = new System.Drawing.Size(58, 17);
+            this.rbExtract.TabIndex = 11;
+            this.rbExtract.TabStop = true;
+            this.rbExtract.Text = "Extract";
+            this.rbExtract.UseVisualStyleBackColor = true;
+            this.rbExtract.CheckedChanged += new System.EventHandler(this.rbExtract_CheckedChanged);
+            // 
             // Genh_CreatorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -376,8 +415,14 @@
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.cbHeaderOnly);
             this.Controls.Add(this.grpSourceFiles);
+            this.Controls.Add(this.rbExtract);
+            this.Controls.Add(this.rbEdit);
+            this.Controls.Add(this.rbCreate);
             this.Name = "Genh_CreatorForm";
             this.Text = "Genh_CreatorForm";
+            this.Controls.SetChildIndex(this.rbCreate, 0);
+            this.Controls.SetChildIndex(this.rbEdit, 0);
+            this.Controls.SetChildIndex(this.rbExtract, 0);
             this.Controls.SetChildIndex(this.grpSourceFiles, 0);
             this.Controls.SetChildIndex(this.cbHeaderOnly, 0);
             this.Controls.SetChildIndex(this.grpOptions, 0);
@@ -432,5 +477,8 @@
         private System.Windows.Forms.CheckBox cbCapcomHack;
         private System.Windows.Forms.CheckBox cbFindLoop;
         private System.Windows.Forms.CheckBox cbNoLoops;
+        private System.Windows.Forms.RadioButton rbCreate;
+        private System.Windows.Forms.RadioButton rbEdit;
+        private System.Windows.Forms.RadioButton rbExtract;
     }
 }

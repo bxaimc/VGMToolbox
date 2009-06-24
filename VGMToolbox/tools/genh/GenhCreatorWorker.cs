@@ -18,6 +18,10 @@ namespace VGMToolbox.tools.genh
         
         public struct GenhCreatorStruct : IVgmtWorkerStruct
         {
+            public bool doCreation;
+            public bool doEdit;
+            public bool doExtract;
+            
             public string Format;
             public string HeaderSkip;
             public string Interleave;
@@ -59,6 +63,9 @@ namespace VGMToolbox.tools.genh
             int progress;
 
             this.maxFiles = pGenhCreatorStruct.SourcePaths.Length;
+            
+            string outputFilePath = String.Empty;
+            string outputMessageAction = String.Empty;
 
             foreach (string file in pGenhCreatorStruct.SourcePaths)
             {
@@ -69,28 +76,43 @@ namespace VGMToolbox.tools.genh
                 
                 if (File.Exists(file))
                 {
-                    GenhCreationStruct genhCreationStruct = new GenhCreationStruct();
-                    genhCreationStruct.Format = pGenhCreatorStruct.Format;
-                    genhCreationStruct.HeaderSkip = pGenhCreatorStruct.HeaderSkip;
-                    genhCreationStruct.Interleave = pGenhCreatorStruct.Interleave;
-                    genhCreationStruct.Channels = pGenhCreatorStruct.Channels;
-                    genhCreationStruct.Frequency = pGenhCreatorStruct.Frequency;
-                    genhCreationStruct.LoopStart = pGenhCreatorStruct.LoopStart;
-                    genhCreationStruct.LoopEnd = pGenhCreatorStruct.LoopEnd;
-                    genhCreationStruct.NoLoops = pGenhCreatorStruct.NoLoops;
-                    genhCreationStruct.UseFileEnd = pGenhCreatorStruct.UseFileEnd;
-                    genhCreationStruct.FindLoop = pGenhCreatorStruct.FindLoop;
-                    genhCreationStruct.CoefRightChannel = pGenhCreatorStruct.CoefRightChannel;
-                    genhCreationStruct.CoefLeftChannel = pGenhCreatorStruct.CoefLeftChannel;
-                    genhCreationStruct.CapcomHack = pGenhCreatorStruct.CapcomHack;
-                    genhCreationStruct.OutputHeaderOnly = pGenhCreatorStruct.OutputHeaderOnly;
-                    genhCreationStruct.SourcePaths = pGenhCreatorStruct.SourcePaths;
+                    if (pGenhCreatorStruct.doExtract)
+                    {
+                        outputFilePath = GenhUtil.ExtractGenhFile(file);
+                        outputMessageAction = "Extracted";
+                    }
+                    else
+                    {
+                        GenhCreationStruct genhCreationStruct = new GenhCreationStruct();
+                        genhCreationStruct.Format = pGenhCreatorStruct.Format;
+                        genhCreationStruct.HeaderSkip = pGenhCreatorStruct.HeaderSkip;
+                        genhCreationStruct.Interleave = pGenhCreatorStruct.Interleave;
+                        genhCreationStruct.Channels = pGenhCreatorStruct.Channels;
+                        genhCreationStruct.Frequency = pGenhCreatorStruct.Frequency;
+                        genhCreationStruct.LoopStart = pGenhCreatorStruct.LoopStart;
+                        genhCreationStruct.LoopEnd = pGenhCreatorStruct.LoopEnd;
+                        genhCreationStruct.NoLoops = pGenhCreatorStruct.NoLoops;
+                        genhCreationStruct.UseFileEnd = pGenhCreatorStruct.UseFileEnd;
+                        genhCreationStruct.FindLoop = pGenhCreatorStruct.FindLoop;
+                        genhCreationStruct.CoefRightChannel = pGenhCreatorStruct.CoefRightChannel;
+                        genhCreationStruct.CoefLeftChannel = pGenhCreatorStruct.CoefLeftChannel;
+                        genhCreationStruct.CapcomHack = pGenhCreatorStruct.CapcomHack;
+                        genhCreationStruct.OutputHeaderOnly = pGenhCreatorStruct.OutputHeaderOnly;
+                        genhCreationStruct.SourcePaths = pGenhCreatorStruct.SourcePaths;
 
-                    string genhFilePath = GenhUtil.CreateGenhFile(file, genhCreationStruct);
+                        if (pGenhCreatorStruct.doCreation)
+                        {
+                            outputFilePath = GenhUtil.CreateGenhFile(file, genhCreationStruct);
+                            outputMessageAction = "Created";
+                        }
+                    }
 
-                    this.progressStruct.Clear();
-                    this.progressStruct.GenericMessage = String.Format("{0} Created.{1}", genhFilePath, Environment.NewLine);
-                    ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
+                    if (!String.IsNullOrEmpty(outputFilePath))
+                    {
+                        this.progressStruct.Clear();
+                        this.progressStruct.GenericMessage = String.Format("{0} {1}.{2}", outputFilePath, outputMessageAction, Environment.NewLine);
+                        ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
+                    }
                 }
             }
         }

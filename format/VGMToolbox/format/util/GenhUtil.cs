@@ -9,6 +9,10 @@ namespace VGMToolbox.format.util
 {
     public struct GenhCreationStruct
     {
+        public bool doCreation;
+        public bool doEdit;
+        public bool doExtract;
+        
         public string Format;
         public string HeaderSkip;
         public string Interleave;
@@ -28,9 +32,26 @@ namespace VGMToolbox.format.util
         public bool OutputHeaderOnly;
         public string[] SourcePaths;
     }
-    
+
     public class GenhUtil
     {
+        public static bool IsGenhFile(string pPath)
+        {
+            bool ret = false;
+
+            using (FileStream typeFs = File.Open(pPath, FileMode.Open, FileAccess.Read))
+            {
+                Type dataType = FormatUtil.getObjectType(typeFs);
+
+                if (dataType != null && dataType.Name.Equals("Genh"))
+                {
+                    ret = true;
+                }
+            }
+
+            return ret;
+        }
+        
         public static string CreateGenhFile(string pSourcePath, GenhCreationStruct pGenhCreationStruct)
         {
             string ret = String.Empty;
@@ -325,6 +346,35 @@ namespace VGMToolbox.format.util
             }
 
             return ret;
-        }        
+        }
+
+        public static string ExtractGenhFile(string pSourcePath)
+        {
+            string outputFileName = null;
+            
+            if (IsGenhFile(pSourcePath))
+            {
+                using (FileStream fs = File.Open(pSourcePath, FileMode.Open, FileAccess.Read))
+                {
+                    Genh genhFile = new Genh();
+                    genhFile.Initialize(fs, pSourcePath);
+                    Int32 headerLength = BitConverter.ToInt32(genhFile.HeaderLength, 0);
+                    Int32 originalFileSize = BitConverter.ToInt32(genhFile.OriginalFileSize, 0);
+                    string originalFileName = System.Text.Encoding.ASCII.GetString(genhFile.OriginalFileName);
+                    outputFileName = Path.Combine(Path.GetDirectoryName(pSourcePath), originalFileName).Trim();
+
+                    ParseFile.ExtractChunkToFile(fs, headerLength, originalFileSize, outputFileName);
+
+                    FileInfo fi = new FileInfo(outputFileName);
+                    if (fi.Length != (long)originalFileSize)
+                    {
+                        throw new IOException(String.Format("Extracted file <{0}> size did not match size in header of <{1}>: 0x{2}{3}", outputFileName, 
+                            pSourcePath, originalFileSize.ToString("X8"), Environment.NewLine));
+                    }
+                }            
+            }
+
+            return outputFileName;
+        }
     }
 }

@@ -26,8 +26,7 @@ namespace VGMToolbox.forms
         {
             InitializeComponent();
 
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_Title"];
-            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_BtnDoTask"];
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_Title"];            
             this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_IntroText"];
             
             this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_GroupSourceFiles"];
@@ -50,6 +49,11 @@ namespace VGMToolbox.forms
             this.cbHeaderOnly.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_CheckBoxHeaderOnly"];
 
             this.loadFormats();
+
+            rbCreate.Checked = true;
+            this.updateFormForTask();
+
+            rbEdit.Hide();
         }
              
         private void loadFormats()
@@ -74,23 +78,7 @@ namespace VGMToolbox.forms
         }
         private void tbSourceDirectory_TextChanged(object sender, EventArgs e)
         {
-            this.lbFiles.Items.Clear();
-            
-            if (Directory.Exists(this.tbSourceDirectory.Text))
-            {                                
-                foreach (string f in Directory.GetFiles(this.tbSourceDirectory.Text))
-                {
-                    if (!f.ToUpper().EndsWith("GENH") &&
-                        !f.ToUpper().EndsWith("EXE"))
-                    {
-                        this.lbFiles.Items.Add(Path.GetFileName(f));
-                    }
-                }
-            }
-            else
-            {
-                this.lbFiles.Items.Clear();
-            }
+            this.reloadFiles();
         }        
         private void comboFormat_SelectedValueChanged(object sender, EventArgs e)
         {
@@ -191,7 +179,10 @@ namespace VGMToolbox.forms
             this.initializeProcessing();
             DataRowView drv = (DataRowView)this.comboFormat.SelectedItem;
 
-            GenhCreatorWorker.GenhCreatorStruct genhStruct = new GenhCreatorWorker.GenhCreatorStruct();            
+            GenhCreatorWorker.GenhCreatorStruct genhStruct = new GenhCreatorWorker.GenhCreatorStruct();
+            genhStruct.doCreation = this.rbCreate.Checked;
+            genhStruct.doEdit = this.rbEdit.Checked;
+            genhStruct.doExtract = this.rbExtract.Checked;
             genhStruct.Format = Convert.ToUInt16(drv.Row.ItemArray[0]).ToString();
             genhStruct.HeaderSkip = this.tbHeaderSkip.Text;
             genhStruct.Interleave = this.tbInterleave.Text;
@@ -214,7 +205,7 @@ namespace VGMToolbox.forms
                 genhStruct.SourcePaths[j++] = Path.Combine(this.tbSourceDirectory.Text, this.lbFiles.Items[i].ToString());
             }
 
-            if (!ValidateInputs(genhStruct, out errorMessages))
+            if ((!rbExtract.Checked) && (!ValidateInputs(genhStruct, out errorMessages)))
             {
                 MessageBox.Show(errorMessages, ConfigurationSettings.AppSettings["Form_GenhCreator_MessageErrors"]);
                 this.errorFound = true;
@@ -346,6 +337,78 @@ namespace VGMToolbox.forms
         protected override string getBeginMessage()
         {
             return ConfigurationSettings.AppSettings["Form_GenhCreator_MessageBegin"];
-        }        
+        }
+
+        private void reloadFiles()
+        {
+            this.lbFiles.Items.Clear();
+
+            if (Directory.Exists(this.tbSourceDirectory.Text))
+            {
+                foreach (string f in Directory.GetFiles(this.tbSourceDirectory.Text))
+                {
+                    if (rbCreate.Checked)
+                    {
+                        if (!f.ToUpper().EndsWith("GENH") &&
+                            !f.ToUpper().EndsWith("EXE"))
+                        {
+                            this.lbFiles.Items.Add(Path.GetFileName(f));
+                        }
+                    }
+                    else
+                    {
+                        if (f.ToUpper().EndsWith("GENH"))
+                        {
+                            this.lbFiles.Items.Add(Path.GetFileName(f));
+                        }
+                    }
+                }
+            }
+            else
+            {
+                this.lbFiles.Items.Clear();
+            }        
+        }
+        private void updateFormForTask()
+        {
+            if (rbCreate.Checked)
+            {
+                this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_BtnDoTaskCreate"];
+                grpOptions.Show();
+                grpFormat.Show();
+                cbHeaderOnly.Show();
+            }
+            else if (rbEdit.Checked)
+            {
+                this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_BtnDoTaskEdit"];
+                grpOptions.Show();
+                grpFormat.Show();
+                cbHeaderOnly.Show();
+            }
+            else if (rbExtract.Checked)
+            {
+                this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_BtnDoTaskExtract"];
+                grpOptions.Hide();
+                grpFormat.Hide();
+                cbHeaderOnly.Hide();
+            }
+        }
+
+        private void rbCreate_CheckedChanged(object sender, EventArgs e)
+        {
+            this.reloadFiles();
+            this.updateFormForTask();
+        }
+        private void rbEdit_CheckedChanged(object sender, EventArgs e)
+        {
+            this.reloadFiles();
+            this.updateFormForTask();
+        }
+        private void rbExtract_CheckedChanged(object sender, EventArgs e)
+        {
+            this.reloadFiles();
+            this.updateFormForTask();
+        }
+
     }
 }
