@@ -20,6 +20,7 @@ namespace VGMToolbox.tools.hoot
         private const string ROM_TYPE_SHELL = "SHELL";
         private const string ROM_TYPE_DEVICE = "DEVICE";
         private const string ROM_TYPE_BINARY = "BINARY";
+        private const string ROM_TYPE_CONIN = "CONIN";
 
         public static readonly Color HOOT_MISSING_FILE_COLOR = Color.Red;
 
@@ -100,7 +101,8 @@ namespace VGMToolbox.tools.hoot
 
                             if (!romTypeUpperCase.Equals(ROM_TYPE_SHELL) &&
                                 !romTypeUpperCase.Equals(ROM_TYPE_DEVICE) &&
-                                !romTypeUpperCase.Equals(ROM_TYPE_BINARY))
+                                !romTypeUpperCase.Equals(ROM_TYPE_BINARY) &&
+                                !romTypeUpperCase.Equals(ROM_TYPE_CONIN))
                             {                                
                                 // Check if Rom is in Dictionary
                                 romFoundInDictionary = false;
