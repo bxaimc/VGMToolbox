@@ -45,7 +45,7 @@
             this.tbArtist = new System.Windows.Forms.TextBox();
             this.lblGame = new System.Windows.Forms.Label();
             this.tbGame = new System.Windows.Forms.TextBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.grpTrackTags = new System.Windows.Forms.GroupBox();
             this.tbVolume = new System.Windows.Forms.TextBox();
             this.lblVolume = new System.Windows.Forms.Label();
             this.tbFade = new System.Windows.Forms.TextBox();
@@ -62,7 +62,7 @@
             this.pnlButtons.SuspendLayout();
             this.grpSourceFiles.SuspendLayout();
             this.grpSetTags.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.grpTrackTags.SuspendLayout();
             this.grpComments.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -252,22 +252,22 @@
             this.tbGame.Size = new System.Drawing.Size(214, 20);
             this.tbGame.TabIndex = 1;
             // 
-            // groupBox1
+            // grpTrackTags
             // 
-            this.groupBox1.Controls.Add(this.tbVolume);
-            this.groupBox1.Controls.Add(this.lblVolume);
-            this.groupBox1.Controls.Add(this.tbFade);
-            this.groupBox1.Controls.Add(this.lblFade);
-            this.groupBox1.Controls.Add(this.lblTrackTitle);
-            this.groupBox1.Controls.Add(this.tbLength);
-            this.groupBox1.Controls.Add(this.tbTitle);
-            this.groupBox1.Controls.Add(this.lblLength);
-            this.groupBox1.Location = new System.Drawing.Point(238, 188);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(287, 67);
-            this.groupBox1.TabIndex = 18;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Track Tags";
+            this.grpTrackTags.Controls.Add(this.tbVolume);
+            this.grpTrackTags.Controls.Add(this.lblVolume);
+            this.grpTrackTags.Controls.Add(this.tbFade);
+            this.grpTrackTags.Controls.Add(this.lblFade);
+            this.grpTrackTags.Controls.Add(this.lblTrackTitle);
+            this.grpTrackTags.Controls.Add(this.tbLength);
+            this.grpTrackTags.Controls.Add(this.tbTitle);
+            this.grpTrackTags.Controls.Add(this.lblLength);
+            this.grpTrackTags.Location = new System.Drawing.Point(238, 188);
+            this.grpTrackTags.Name = "grpTrackTags";
+            this.grpTrackTags.Size = new System.Drawing.Size(287, 67);
+            this.grpTrackTags.TabIndex = 18;
+            this.grpTrackTags.TabStop = false;
+            this.grpTrackTags.Text = "Track Tags";
             // 
             // tbVolume
             // 
@@ -370,7 +370,7 @@
             this.ClientSize = new System.Drawing.Size(779, 564);
             this.Controls.Add(this.cbDeleteEmpty);
             this.Controls.Add(this.grpComments);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.grpTrackTags);
             this.Controls.Add(this.grpSetTags);
             this.Controls.Add(this.grpSourceFiles);
             this.Name = "Xsf_XsfTagEditorForm";
@@ -381,7 +381,7 @@
             this.Controls.SetChildIndex(this.pnlButtons, 0);
             this.Controls.SetChildIndex(this.grpSourceFiles, 0);
             this.Controls.SetChildIndex(this.grpSetTags, 0);
-            this.Controls.SetChildIndex(this.groupBox1, 0);
+            this.Controls.SetChildIndex(this.grpTrackTags, 0);
             this.Controls.SetChildIndex(this.grpComments, 0);
             this.Controls.SetChildIndex(this.cbDeleteEmpty, 0);
             this.pnlLabels.ResumeLayout(false);
@@ -394,8 +394,8 @@
             this.grpSourceFiles.PerformLayout();
             this.grpSetTags.ResumeLayout(false);
             this.grpSetTags.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.grpTrackTags.ResumeLayout(false);
+            this.grpTrackTags.PerformLayout();
             this.grpComments.ResumeLayout(false);
             this.grpComments.PerformLayout();
             this.ResumeLayout(false);
@@ -422,7 +422,7 @@
         private System.Windows.Forms.TextBox tbArtist;
         private System.Windows.Forms.Label lblGame;
         private System.Windows.Forms.TextBox tbGame;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox grpTrackTags;
         private System.Windows.Forms.TextBox tbVolume;
         private System.Windows.Forms.Label lblVolume;
         private System.Windows.Forms.TextBox tbFade;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.IO;
@@ -18,8 +19,19 @@ namespace VGMToolbox.forms
         {
             InitializeComponent();
 
-            this.lblTitle.Text = "Simple Cutter (SnakeBite(TM) GUI)";
-            this.btnDoTask.Text = "Cut File";
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_Title"];
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_IntroText"];
+            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_BtnDoTask"];
+
+            this.grpFiles.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_GrpFiles"];
+            this.lblSourceFiles.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_LblSourceFiles"];
+            this.lblDragNDrop.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_LblDragNDrop"];
+            this.lblOutputFile.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_LblOutputFile"];
+            this.grpOptions.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_GrpOptions"];
+            this.lblStartAddress.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_LblStartAddress"];
+            this.rbEndAddress.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_RbEndAddress"];
+            this.rbLength.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_RbLength"];
+            this.rbEndOfFile.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_RbEndOfFile"];
 
             this.rbEndAddress.Checked = true;
         }
@@ -88,28 +100,30 @@ namespace VGMToolbox.forms
         }
         protected override string getCancelMessage()
         {
-            return "Cutting File...Cancelled";
+            return ConfigurationSettings.AppSettings["Form_SnakebiteGUI_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return "Cutting File...Complete";
+            return ConfigurationSettings.AppSettings["Form_SnakebiteGUI_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return "Cutting File...Begin";
+            return ConfigurationSettings.AppSettings["Form_SnakebiteGUI_MessageBegin"];
         }
 
         private void tbSourceFiles_DragDrop(object sender, DragEventArgs e)
         {
             bool cutFiles = false;
-            string warningMessage = "Please only drop a single file.";
+            string warningMessage = 
+                ConfigurationSettings.AppSettings["Form_SnakebiteGUI_ErrorSingleFile"];
             
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
             if ((s.Length > 1) ||
                 ((s.Length == 1) && (Directory.Exists(s[0]))))
             {
-                MessageBox.Show(warningMessage, "Error");
+                MessageBox.Show(warningMessage, 
+                    ConfigurationSettings.AppSettings["Form_Global_ErrorWindowTitle"]);
             }
             else
             {
@@ -167,7 +181,8 @@ namespace VGMToolbox.forms
 
             if (this.tbSourceFiles.Text.Equals(this.tbOutputFile.Text))
             {
-                MessageBox.Show("Input and Output files cannot be the same.", "Error");
+                MessageBox.Show(ConfigurationSettings.AppSettings["Form_SnakebiteGUI_ErrorInputOutputSame"],
+                    ConfigurationSettings.AppSettings["Form_Global_ErrorWindowTitle"]);
                 ret = false;
             }
 

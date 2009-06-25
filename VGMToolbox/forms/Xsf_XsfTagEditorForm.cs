@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.IO;
@@ -27,8 +28,25 @@ namespace VGMToolbox.forms
             
             InitializeComponent();
 
-            this.lblTitle.Text = "xSF Tag Editor";
-            this.btnDoTask.Text = "Update Tags";
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_Title"];
+            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_DoTaskButton"];
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_Info"];
+
+            this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_GrpSourceFiles"];
+            this.grpSetTags.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_GrpSetTags"];
+            this.lblGame.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblGame"];
+            this.lblArtist.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblArtist"];
+            this.lblCopyright.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblCopyright"];
+            this.lblGenre.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblGenre"];
+            this.lblYear.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblYear"];
+            this.lblXsfBy.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblXsfBy"];
+            this.grpTrackTags.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_GrpTrackTags"];
+            this.lblTrackTitle.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblTrackTitle"];
+            this.lblLength.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblLength"];
+            this.lblFade.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblFade"];
+            this.lblVolume.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblVolume"];
+            this.grpComments.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_GrpComments"];
+            this.cbDeleteEmpty.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_CbDeleteEmpty"];
         }
 
         private void btnBrowseDirectory_Click(object sender, EventArgs e)
@@ -178,15 +196,15 @@ namespace VGMToolbox.forms
         }
         protected override string getCancelMessage()
         {
-            return "Updating xSF Tags...Cancelled.";
+            return ConfigurationSettings.AppSettings["Form_XsfTagEditor_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return "Updating xSF Tags...Complete.";
+            return ConfigurationSettings.AppSettings["Form_XsfTagEditor_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return "Updating xSF Tags...Begin.";
+            return ConfigurationSettings.AppSettings["Form_XsfTagEditor_MessageBegin"];
         }        
     }
 }

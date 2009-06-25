@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.IO;
@@ -28,15 +29,19 @@ namespace VGMToolbox.forms
 
             NodePrintMessageStruct n = new NodePrintMessageStruct();
             n.NodeColor = HootAuditorWorker.HOOT_MISSING_FILE_COLOR;
-            n.Message = "(MISSING)";
+            n.Message = ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_MessageMissing"];
             base.outputColorToMessageRules = new NodePrintMessageStruct[] { n };
 
             InitializeComponent();
 
-            this.lblTitle.Text = "Hoot Collection Auditor (Hoot Auditor Result Verification Engine Yes!)";
-            this.btnDoTask.Text = "Audit Collection";
-            this.tbOutput.Text = "- Warning: Duplicate archive names in different folders can lead to inaccurate results." + Environment.NewLine;
-            this.tbOutput.Text += "- Results will also be output to the 'hoot' subfolder as 'audit.txt'." + Environment.NewLine;
+            this.grpOptions.Text = ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_GrpOptions"];
+            this.lblFolder.Text = ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_LblFolder"];
+            this.lblArchiveFolders.Text = ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_LblArchiveFolders"];
+            this.cbIncludeSubDirs.Text = ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_CheckboxIncludeSubDirs"];
+
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_Title"];
+            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_BtnDoTask"];
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_Intro"];
         }
 
         protected override IVgmtBackgroundWorker getBackgroundWorker()
@@ -45,15 +50,15 @@ namespace VGMToolbox.forms
         }
         protected override string getCancelMessage()
         {
-            return "Auditing Hoot...Cancelled";
+            return ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return "Auditing Hoot...Complete";
+            return ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return "Auditing Hoot...Begin";
+            return ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_MessageBegin"];
         }
 
         private void btnDoTask_Click(object sender, EventArgs e)

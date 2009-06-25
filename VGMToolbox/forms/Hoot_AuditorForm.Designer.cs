@@ -29,13 +29,13 @@
         private void InitializeComponent()
         {
             this.grpOptions = new System.Windows.Forms.GroupBox();
+            this.cbIncludeSubDirs = new System.Windows.Forms.CheckBox();
             this.btnBrowseArchiveFolders = new System.Windows.Forms.Button();
             this.tbArchiveFolders = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblArchiveFolders = new System.Windows.Forms.Label();
             this.btnBrowseXmlFolder = new System.Windows.Forms.Button();
             this.lblFolder = new System.Windows.Forms.Label();
             this.tbXmlPath = new System.Windows.Forms.TextBox();
-            this.cbIncludeSubDirs = new System.Windows.Forms.CheckBox();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -48,7 +48,7 @@
             // treeViewTools
             // 
             this.treeViewTools.LineColor = System.Drawing.Color.Black;
-            this.treeViewTools.Size = new System.Drawing.Size(939, 218);
+            this.treeViewTools.Size = new System.Drawing.Size(779, 223);
             // 
             // splitContainer1
             // 
@@ -56,23 +56,35 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.grpOptions);
-            this.splitContainer1.Size = new System.Drawing.Size(939, 393);
-            this.splitContainer1.SplitterDistance = 218;
+            this.splitContainer1.Size = new System.Drawing.Size(779, 403);
+            this.splitContainer1.SplitterDistance = 223;
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 513);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 523);
+            this.pnlLabels.Size = new System.Drawing.Size(779, 19);
+            // 
+            // pnlTitle
+            // 
+            this.pnlTitle.Size = new System.Drawing.Size(779, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 436);
+            this.tbOutput.Location = new System.Drawing.Point(0, 446);
+            this.tbOutput.Size = new System.Drawing.Size(779, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 416);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 426);
+            this.pnlButtons.Size = new System.Drawing.Size(779, 20);
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Location = new System.Drawing.Point(719, 0);
             // 
             // btnDoTask
             // 
+            this.btnDoTask.Location = new System.Drawing.Point(659, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpOptions
@@ -80,17 +92,29 @@
             this.grpOptions.Controls.Add(this.cbIncludeSubDirs);
             this.grpOptions.Controls.Add(this.btnBrowseArchiveFolders);
             this.grpOptions.Controls.Add(this.tbArchiveFolders);
-            this.grpOptions.Controls.Add(this.label1);
+            this.grpOptions.Controls.Add(this.lblArchiveFolders);
             this.grpOptions.Controls.Add(this.btnBrowseXmlFolder);
             this.grpOptions.Controls.Add(this.lblFolder);
             this.grpOptions.Controls.Add(this.tbXmlPath);
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpOptions.Location = new System.Drawing.Point(0, 0);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(939, 171);
+            this.grpOptions.Size = new System.Drawing.Size(779, 176);
             this.grpOptions.TabIndex = 0;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
+            // 
+            // cbIncludeSubDirs
+            // 
+            this.cbIncludeSubDirs.AutoSize = true;
+            this.cbIncludeSubDirs.Checked = true;
+            this.cbIncludeSubDirs.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbIncludeSubDirs.Location = new System.Drawing.Point(92, 119);
+            this.cbIncludeSubDirs.Name = "cbIncludeSubDirs";
+            this.cbIncludeSubDirs.Size = new System.Drawing.Size(131, 17);
+            this.cbIncludeSubDirs.TabIndex = 6;
+            this.cbIncludeSubDirs.Text = "Include Subdirectories";
+            this.cbIncludeSubDirs.UseVisualStyleBackColor = true;
             // 
             // btnBrowseArchiveFolders
             // 
@@ -111,14 +135,14 @@
             this.tbArchiveFolders.Size = new System.Drawing.Size(321, 65);
             this.tbArchiveFolders.TabIndex = 4;
             // 
-            // label1
+            // lblArchiveFolders
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 51);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(80, 26);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Archive Folders\r\n(one per line)";
+            this.lblArchiveFolders.AutoSize = true;
+            this.lblArchiveFolders.Location = new System.Drawing.Point(6, 51);
+            this.lblArchiveFolders.Name = "lblArchiveFolders";
+            this.lblArchiveFolders.Size = new System.Drawing.Size(80, 26);
+            this.lblArchiveFolders.TabIndex = 3;
+            this.lblArchiveFolders.Text = "Archive Folders\r\n(one per line)";
             // 
             // btnBrowseXmlFolder
             // 
@@ -146,23 +170,11 @@
             this.tbXmlPath.Size = new System.Drawing.Size(321, 20);
             this.tbXmlPath.TabIndex = 0;
             // 
-            // cbIncludeSubDirs
-            // 
-            this.cbIncludeSubDirs.AutoSize = true;
-            this.cbIncludeSubDirs.Checked = true;
-            this.cbIncludeSubDirs.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbIncludeSubDirs.Location = new System.Drawing.Point(92, 119);
-            this.cbIncludeSubDirs.Name = "cbIncludeSubDirs";
-            this.cbIncludeSubDirs.Size = new System.Drawing.Size(131, 17);
-            this.cbIncludeSubDirs.TabIndex = 6;
-            this.cbIncludeSubDirs.Text = "Include Subdirectories";
-            this.cbIncludeSubDirs.UseVisualStyleBackColor = true;
-            // 
             // Hoot_AuditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(939, 554);
+            this.ClientSize = new System.Drawing.Size(779, 564);
             this.Name = "Hoot_AuditorForm";
             this.Text = "Hoot_AuditorForm";
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -188,7 +200,7 @@
         private System.Windows.Forms.TextBox tbXmlPath;
         private System.Windows.Forms.Button btnBrowseXmlFolder;
         private System.Windows.Forms.TextBox tbArchiveFolders;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblArchiveFolders;
         private System.Windows.Forms.Button btnBrowseArchiveFolders;
         private System.Windows.Forms.CheckBox cbIncludeSubDirs;
     }
