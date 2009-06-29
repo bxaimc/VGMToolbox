@@ -108,28 +108,10 @@ namespace VGMToolbox.forms
                     VGMToolbox.util.NodeTagStruct nts = (VGMToolbox.util.NodeTagStruct)node.Tag;
 
                     if (typeof(IEmbeddedTagsFormat).IsAssignableFrom(Type.GetType(nts.ObjectType)) ||
-                        typeof(ISingleTagFormat).IsAssignableFrom(Type.GetType(nts.ObjectType)))
+                        typeof(ISingleTagFormat).IsAssignableFrom(Type.GetType(nts.ObjectType)) ||
+                        typeof(IXsfTagFormat).IsAssignableFrom(Type.GetType(nts.ObjectType)))
                     {
                         contextMenuStrip1.Show(treeViewTools, p);
-                    }
-                    else if (typeof(IXsfTagFormat).IsAssignableFrom(Type.GetType(nts.ObjectType)))
-                    {
-                        Type formatType = null;
-                        IXsfTagFormat vgmData = null;
-
-                        using (FileStream fs = File.OpenRead(nts.FilePath))
-                        {
-                            formatType = FormatUtil.getObjectType(fs);
-                            if (formatType != null)
-                            {
-                                vgmData = (IXsfTagFormat)Activator.CreateInstance(formatType);
-                                vgmData.Initialize(fs, nts.FilePath);
-                                if (vgmData.CanUpdateXsfTags())
-                                {
-                                    contextMenuStrip1.Show(treeViewTools, p);
-                                }
-                            }
-                        }                        
                     }
                 }
             }

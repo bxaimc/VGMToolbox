@@ -52,6 +52,7 @@
     <Compile Include="VGMToolbox\format\hoot\HootGameList.cs" />
     <Compile Include="VGMToolbox\format\IXsfTagFormat.cs" />
     <Compile Include="VGMToolbox\format\PsxSequence.cs" />
+    <Compile Include="VGMToolbox\format\S98V3.cs" />
     <Compile Include="VGMToolbox\format\sdat\Swar.cs" />
     <Compile Include="VGMToolbox\format\sdat\Swav.cs" />
     <Compile Include="VGMToolbox\format\util\CdxaUtil.cs" />
@@ -69,7 +70,7 @@
     <Compile Include="VGMToolbox\format\Nsfe.cs" />
     <Compile Include="VGMToolbox\format\Ps2SequenceData.cs" />
     <Compile Include="VGMToolbox\format\Psf2.cs" />
-    <Compile Include="VGMToolbox\format\S98.cs" />
+    <Compile Include="VGMToolbox\format\S98V1.cs" />
     <Compile Include="VGMToolbox\format\Psid.cs" />
     <Compile Include="VGMToolbox\format\sdat\Sdat.cs" />
     <Compile Include="VGMToolbox\format\sdat\SdatFatSection.cs" />

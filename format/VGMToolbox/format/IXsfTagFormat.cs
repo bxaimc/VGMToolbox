@@ -5,9 +5,7 @@ using System.Text;
 namespace VGMToolbox.format
 {
     public interface IXsfTagFormat: IFormat
-    {
-        bool CanUpdateXsfTags();
-        
+    {       
         string GetTitleTag();
         string GetArtistTag();
         string GetGameTag();

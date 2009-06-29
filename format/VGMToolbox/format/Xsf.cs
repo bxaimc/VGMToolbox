@@ -559,8 +559,6 @@ namespace VGMToolbox.format
 
         #region IXsfTagFormat FUNCTIONS
 
-        public bool CanUpdateXsfTags() { return true; }
-
         private string GetSimpleTag(string pTagKey)
         {
             string ret = String.Empty;
