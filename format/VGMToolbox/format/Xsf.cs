@@ -558,7 +558,9 @@ namespace VGMToolbox.format
         }
 
         #region IXsfTagFormat FUNCTIONS
-       
+
+        public bool CanUpdateXsfTags() { return true; }
+
         private string GetSimpleTag(string pTagKey)
         {
             string ret = String.Empty;
@@ -579,6 +581,7 @@ namespace VGMToolbox.format
         public string GetVolumeTag() { return GetSimpleTag("volume"); }
         public string GetLengthTag() { return GetSimpleTag("length"); }
         public string GetFadeTag() { return GetSimpleTag("fade"); }
+        public string GetSystemTag() { return GetSimpleTag("system"); }
         public string GetXsfByTag() 
         {
             string format = this.getFormat();
@@ -612,6 +615,7 @@ namespace VGMToolbox.format
         public void SetVolumeTag(string pNewValue) { SetSimpleTag("volume", pNewValue); }
         public void SetLengthTag(string pNewValue) { SetSimpleTag("length", pNewValue); }
         public void SetFadeTag(string pNewValue) { SetSimpleTag("fade", pNewValue); }
+        public void SetSystemTag(string pNewValue) { SetSimpleTag("system", pNewValue); }
         public void SetXsfByTag(string pNewValue) 
         { 
             string format = this.getFormat();
@@ -680,7 +684,6 @@ namespace VGMToolbox.format
                 throw new Exception(String.Format("Error updating tags for <{0}>", this.filePath), _ex);
             }
         }
-
 
         #endregion
 

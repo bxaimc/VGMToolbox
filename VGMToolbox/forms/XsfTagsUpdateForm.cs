@@ -32,21 +32,26 @@ namespace VGMToolbox.forms
             {
                 this.vgmData =
                     (IXsfTagFormat)Activator.CreateInstance(Type.GetType(this.nodeTagInfo.ObjectType));
-                this.vgmData.Initialize(fs, this.nodeTagInfo.FilePath);
-
-                this.tbGame.Text = this.vgmData.GetGameTag();
-                this.tbArtist.Text = this.vgmData.GetArtistTag();
-                this.tbCopyright.Text = this.vgmData.GetCopyrightTag();
-                this.tbGenre.Text = this.vgmData.GetGenreTag();
-                this.tbYear.Text = this.vgmData.GetYearTag();
-                this.tbXsfBy.Text = this.vgmData.GetXsfByTag();
                 
-                this.tbTitle.Text = this.vgmData.GetTitleTag();
-                this.tbLength.Text = this.vgmData.GetLengthTag();
-                this.tbFade.Text = this.vgmData.GetFadeTag();
-                this.tbVolume.Text = this.vgmData.GetVolumeTag();
+                if (vgmData.CanUpdateXsfTags())
+                {
+                    this.vgmData.Initialize(fs, this.nodeTagInfo.FilePath);
 
-                this.tbComments.Text = this.vgmData.GetCommentTag();
+                    this.tbGame.Text = this.vgmData.GetGameTag();
+                    this.tbArtist.Text = this.vgmData.GetArtistTag();
+                    this.tbCopyright.Text = this.vgmData.GetCopyrightTag();
+                    this.tbGenre.Text = this.vgmData.GetGenreTag();
+                    this.tbYear.Text = this.vgmData.GetYearTag();
+                    this.tbXsfBy.Text = this.vgmData.GetXsfByTag();
+                    this.tbSystem.Text = this.vgmData.GetSystemTag();
+
+                    this.tbTitle.Text = this.vgmData.GetTitleTag();
+                    this.tbLength.Text = this.vgmData.GetLengthTag();
+                    this.tbFade.Text = this.vgmData.GetFadeTag();
+                    this.tbVolume.Text = this.vgmData.GetVolumeTag();
+
+                    this.tbComments.Text = this.vgmData.GetCommentTag();
+                }
             }
         }
         
@@ -66,6 +71,7 @@ namespace VGMToolbox.forms
                 this.vgmData.SetGenreTag(this.tbGenre.Text);
                 this.vgmData.SetYearTag(this.tbYear.Text);
                 this.vgmData.SetXsfByTag(this.tbXsfBy.Text);
+                this.vgmData.SetSystemTag(this.tbSystem.Text);
 
                 this.vgmData.SetTitleTag(this.tbTitle.Text);
                 this.vgmData.SetLengthTag(this.tbLength.Text);

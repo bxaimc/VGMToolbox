@@ -57,6 +57,8 @@
             this.grpComments = new System.Windows.Forms.GroupBox();
             this.tbComments = new System.Windows.Forms.TextBox();
             this.cbDeleteEmpty = new System.Windows.Forms.CheckBox();
+            this.lblSystem = new System.Windows.Forms.Label();
+            this.tbSystem = new System.Windows.Forms.TextBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -137,6 +139,8 @@
             // 
             // grpSetTags
             // 
+            this.grpSetTags.Controls.Add(this.tbSystem);
+            this.grpSetTags.Controls.Add(this.lblSystem);
             this.grpSetTags.Controls.Add(this.lblXsfBy);
             this.grpSetTags.Controls.Add(this.tbXsfBy);
             this.grpSetTags.Controls.Add(this.tbYear);
@@ -151,7 +155,7 @@
             this.grpSetTags.Controls.Add(this.tbGame);
             this.grpSetTags.Location = new System.Drawing.Point(238, 29);
             this.grpSetTags.Name = "grpSetTags";
-            this.grpSetTags.Size = new System.Drawing.Size(286, 153);
+            this.grpSetTags.Size = new System.Drawing.Size(286, 173);
             this.grpSetTags.TabIndex = 8;
             this.grpSetTags.TabStop = false;
             this.grpSetTags.Text = "GameTags";
@@ -262,7 +266,7 @@
             this.grpTrackTags.Controls.Add(this.tbLength);
             this.grpTrackTags.Controls.Add(this.tbTitle);
             this.grpTrackTags.Controls.Add(this.lblLength);
-            this.grpTrackTags.Location = new System.Drawing.Point(238, 188);
+            this.grpTrackTags.Location = new System.Drawing.Point(238, 208);
             this.grpTrackTags.Name = "grpTrackTags";
             this.grpTrackTags.Size = new System.Drawing.Size(287, 67);
             this.grpTrackTags.TabIndex = 18;
@@ -336,9 +340,9 @@
             // grpComments
             // 
             this.grpComments.Controls.Add(this.tbComments);
-            this.grpComments.Location = new System.Drawing.Point(238, 261);
+            this.grpComments.Location = new System.Drawing.Point(238, 281);
             this.grpComments.Name = "grpComments";
-            this.grpComments.Size = new System.Drawing.Size(287, 97);
+            this.grpComments.Size = new System.Drawing.Size(287, 77);
             this.grpComments.TabIndex = 22;
             this.grpComments.TabStop = false;
             this.grpComments.Text = "Comments";
@@ -346,11 +350,11 @@
             // tbComments
             // 
             this.tbComments.AcceptsReturn = true;
-            this.tbComments.Location = new System.Drawing.Point(9, 19);
+            this.tbComments.Location = new System.Drawing.Point(6, 19);
             this.tbComments.Multiline = true;
             this.tbComments.Name = "tbComments";
             this.tbComments.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbComments.Size = new System.Drawing.Size(269, 72);
+            this.tbComments.Size = new System.Drawing.Size(269, 53);
             this.tbComments.TabIndex = 19;
             // 
             // cbDeleteEmpty
@@ -362,6 +366,22 @@
             this.cbDeleteEmpty.TabIndex = 23;
             this.cbDeleteEmpty.Text = "Remove fields you\'ve left empty from the files\' tags.";
             this.cbDeleteEmpty.UseVisualStyleBackColor = true;
+            // 
+            // lblSystem
+            // 
+            this.lblSystem.AutoSize = true;
+            this.lblSystem.Location = new System.Drawing.Point(9, 153);
+            this.lblSystem.Name = "lblSystem";
+            this.lblSystem.Size = new System.Drawing.Size(41, 13);
+            this.lblSystem.TabIndex = 12;
+            this.lblSystem.Text = "System";
+            // 
+            // tbSystem
+            // 
+            this.tbSystem.Location = new System.Drawing.Point(63, 150);
+            this.tbSystem.Name = "tbSystem";
+            this.tbSystem.Size = new System.Drawing.Size(214, 20);
+            this.tbSystem.TabIndex = 13;
             // 
             // Xsf_XsfTagEditorForm
             // 
@@ -434,5 +454,7 @@
         private System.Windows.Forms.GroupBox grpComments;
         private System.Windows.Forms.TextBox tbComments;
         private System.Windows.Forms.CheckBox cbDeleteEmpty;
+        private System.Windows.Forms.TextBox tbSystem;
+        private System.Windows.Forms.Label lblSystem;
     }
 }

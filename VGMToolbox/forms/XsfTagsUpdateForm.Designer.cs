@@ -55,6 +55,8 @@
             this.lblFade = new System.Windows.Forms.Label();
             this.tbComments = new System.Windows.Forms.TextBox();
             this.grpComments = new System.Windows.Forms.GroupBox();
+            this.tbSystem = new System.Windows.Forms.TextBox();
+            this.lblSystem = new System.Windows.Forms.Label();
             this.grpSetTags.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.grpComments.SuspendLayout();
@@ -62,6 +64,8 @@
             // 
             // grpSetTags
             // 
+            this.grpSetTags.Controls.Add(this.lblSystem);
+            this.grpSetTags.Controls.Add(this.tbSystem);
             this.grpSetTags.Controls.Add(this.lblXsfBy);
             this.grpSetTags.Controls.Add(this.tbXsfBy);
             this.grpSetTags.Controls.Add(this.tbYear);
@@ -77,7 +81,7 @@
             this.grpSetTags.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSetTags.Location = new System.Drawing.Point(0, 0);
             this.grpSetTags.Name = "grpSetTags";
-            this.grpSetTags.Size = new System.Drawing.Size(443, 124);
+            this.grpSetTags.Size = new System.Drawing.Size(443, 153);
             this.grpSetTags.TabIndex = 0;
             this.grpSetTags.TabStop = false;
             this.grpSetTags.Text = "GameTags";
@@ -241,7 +245,7 @@
             this.groupBox1.Controls.Add(this.tbTitle);
             this.groupBox1.Controls.Add(this.lblLength);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox1.Location = new System.Drawing.Point(0, 124);
+            this.groupBox1.Location = new System.Drawing.Point(0, 153);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(443, 68);
             this.groupBox1.TabIndex = 17;
@@ -283,23 +287,39 @@
             // tbComments
             // 
             this.tbComments.AcceptsReturn = true;
-            this.tbComments.Location = new System.Drawing.Point(9, 19);
+            this.tbComments.Location = new System.Drawing.Point(6, 19);
             this.tbComments.Multiline = true;
             this.tbComments.Name = "tbComments";
             this.tbComments.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbComments.Size = new System.Drawing.Size(428, 121);
+            this.tbComments.Size = new System.Drawing.Size(428, 89);
             this.tbComments.TabIndex = 19;
             // 
             // grpComments
             // 
             this.grpComments.Controls.Add(this.tbComments);
             this.grpComments.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpComments.Location = new System.Drawing.Point(0, 192);
+            this.grpComments.Location = new System.Drawing.Point(0, 221);
             this.grpComments.Name = "grpComments";
-            this.grpComments.Size = new System.Drawing.Size(443, 146);
+            this.grpComments.Size = new System.Drawing.Size(443, 117);
             this.grpComments.TabIndex = 18;
             this.grpComments.TabStop = false;
             this.grpComments.Text = "Comments";
+            // 
+            // tbSystem
+            // 
+            this.tbSystem.Location = new System.Drawing.Point(77, 124);
+            this.tbSystem.Name = "tbSystem";
+            this.tbSystem.Size = new System.Drawing.Size(184, 20);
+            this.tbSystem.TabIndex = 12;
+            // 
+            // lblSystem
+            // 
+            this.lblSystem.AutoSize = true;
+            this.lblSystem.Location = new System.Drawing.Point(6, 127);
+            this.lblSystem.Name = "lblSystem";
+            this.lblSystem.Size = new System.Drawing.Size(41, 13);
+            this.lblSystem.TabIndex = 13;
+            this.lblSystem.Text = "System";
             // 
             // XsfTagsUpdateForm
             // 
@@ -352,5 +372,7 @@
         private System.Windows.Forms.TextBox tbVolume;
         private System.Windows.Forms.TextBox tbComments;
         private System.Windows.Forms.GroupBox grpComments;
+        private System.Windows.Forms.Label lblSystem;
+        private System.Windows.Forms.TextBox tbSystem;
     }
 }

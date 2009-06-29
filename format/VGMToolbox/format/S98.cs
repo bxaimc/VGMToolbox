@@ -10,7 +10,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.format
 {
-    public class S98 : IFormat
+    public class S98 : IFormat, IXsfTagFormat
     {
         private static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x53, 0x39, 0x38 };
         private const string FORMAT_ABBREVIATION = "S98";
@@ -19,6 +19,7 @@ namespace VGMToolbox.format
         private static readonly byte[] S98_VERSION_02 = new byte[] { 0x32 };
         private static readonly byte[] S98_VERSION_03 = new byte[] { 0x33 };
 
+        public const string ASCII_TAG = "[S98]";
         private const string TAG_UTF8_INDICATOR = "utf8=";
         private const int TAG_IDENTIFIER_LENGTH = 5;
 
@@ -123,7 +124,8 @@ namespace VGMToolbox.format
         public byte[] DeviceCount { get { return this.deviceCount; } }
         public byte[] V3Tags { get { return this.v3Tags; } }
 
-        Dictionary<string, string> tagHash = new Dictionary<string, string>();
+        Dictionary<string, string> tagHash = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        Dictionary<string, string> v3TagHash = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         Dictionary<int, string> deviceHash = new Dictionary<int, string>();
 
         #region METHODS
@@ -293,12 +295,15 @@ namespace VGMToolbox.format
                         if (!tagHash.ContainsKey(tag[0]))
                         {
                             tagHash.Add(tag[0].Trim(), tag[1].Trim());
+                            v3TagHash.Add(tag[0].Trim(), tag[1].Trim());
                         }
                         else
                         {
                             string oldTag = tagHash[tag[0]] + Environment.NewLine;
                             tagHash.Remove(tag[0]);
                             tagHash.Add(tag[0], oldTag + tag[1]);
+                            v3TagHash.Remove(tag[0]);
+                            v3TagHash.Add(tag[0], oldTag + tag[1]);
                         }
                     }
                 }                        
@@ -420,6 +425,139 @@ namespace VGMToolbox.format
 
         public bool UsesLibraries() { return false; }
         public bool IsLibraryPresent() { return true; }
+
+        #endregion
+
+        #region IXsfTagFormat FUNCTIONS
+
+        public bool CanUpdateXsfTags() 
+        {
+            bool ret = false;
+            
+            if (ParseFile.CompareSegment(this.version, 0, S98_VERSION_03))
+            {
+                ret = true;
+            }
+            
+            return ret;
+        }
+
+        private string GetSimpleTag(string pTagKey)
+        {
+            string ret = String.Empty;
+
+            if (ParseFile.CompareSegment(this.version, 0, S98_VERSION_03))
+            {
+                if (this.tagHash.ContainsKey(pTagKey))
+                {
+                    ret = tagHash[pTagKey];
+                }
+            }
+            
+            return ret;
+        }
+        public string GetTitleTag() { return GetSimpleTag("title"); }
+        public string GetArtistTag() { return GetSimpleTag("artist"); }
+        public string GetGameTag() { return GetSimpleTag("game"); }
+        public string GetYearTag() { return GetSimpleTag("year"); }
+        public string GetGenreTag() { return GetSimpleTag("genre"); }
+        public string GetCommentTag() { return GetSimpleTag("comment"); }
+        public string GetCopyrightTag() { return GetSimpleTag("copyright"); }
+        public string GetVolumeTag() { return GetSimpleTag("volume"); }
+        public string GetLengthTag() { return GetSimpleTag("length"); }
+        public string GetFadeTag() { return GetSimpleTag("fade"); }
+        public string GetXsfByTag() { return GetSimpleTag("s98by"); }
+        public string GetSystemTag() { return GetSimpleTag("system"); }
+
+        private void SetSimpleTag(string pKey, string pNewValue)
+        {
+            if (ParseFile.CompareSegment(this.version, 0, S98_VERSION_03))
+            {
+                if (!String.IsNullOrEmpty(pNewValue) && !String.IsNullOrEmpty(pNewValue.Trim()))
+                {
+                    this.tagHash[pKey] = pNewValue.Trim();
+                    this.v3TagHash[pKey] = pNewValue.Trim();
+                }
+                else if (tagHash.ContainsKey(pKey))
+                {
+                    tagHash.Remove(pKey);
+                    v3TagHash.Remove(pKey);
+                }
+            }
+        }
+        public void SetTitleTag(string pNewValue) { SetSimpleTag("title", pNewValue); }
+        public void SetArtistTag(string pNewValue) { SetSimpleTag("artist", pNewValue); }
+        public void SetGameTag(string pNewValue) { SetSimpleTag("game", pNewValue); }
+        public void SetYearTag(string pNewValue) { SetSimpleTag("year", pNewValue); }
+        public void SetGenreTag(string pNewValue) { SetSimpleTag("genre", pNewValue); }
+        public void SetCommentTag(string pNewValue) { SetSimpleTag("comment", pNewValue); }
+        public void SetCopyrightTag(string pNewValue) { SetSimpleTag("copyright", pNewValue); }
+        public void SetVolumeTag(string pNewValue) { SetSimpleTag("volume", pNewValue); }
+        public void SetLengthTag(string pNewValue) { SetSimpleTag("length", pNewValue); }
+        public void SetFadeTag(string pNewValue) { SetSimpleTag("fade", pNewValue); }
+        public void SetXsfByTag(string pNewValue) { SetSimpleTag("s98by", pNewValue); }
+        public void SetSystemTag(string pNewValue) { SetSimpleTag("system", pNewValue); }
+
+        public void UpdateTags()
+        {
+            int actualFileEnd;
+            string retaggingFilePath;
+            string[] splitValue;
+            string[] splitParam = new string[] { Environment.NewLine };
+
+            if (ParseFile.CompareSegment(this.version, 0, S98_VERSION_03))
+            {
+                try
+                {
+                    actualFileEnd = BitConverter.ToInt32(this.songNameOffset, 0);
+                    retaggingFilePath = Path.Combine(Path.GetDirectoryName(this.filePath),
+                        String.Format("{0}_RETAG_{1}{2}", Path.GetFileNameWithoutExtension(this.filePath), new Random().Next().ToString(), Path.GetExtension(this.filePath)));
+
+                    // extract file without tags
+                    using (FileStream fs = File.OpenRead(this.filePath))
+                    {
+                        ParseFile.ExtractChunkToFile(fs, 0, actualFileEnd, retaggingFilePath);
+                    }
+
+                    // add new tags
+                    using (FileStream fs = File.Open(retaggingFilePath, FileMode.Append, FileAccess.Write))
+                    {
+                        System.Text.Encoding enc = System.Text.Encoding.ASCII;
+                        byte[] dataToWrite;
+
+                        // write [S98]
+                        dataToWrite = enc.GetBytes(ASCII_TAG);
+                        fs.Write(dataToWrite, 0, dataToWrite.Length);
+
+                        // change to UTF8 encoding
+                        enc = System.Text.Encoding.UTF8;
+
+                        // add or update utf8=1 tag
+                        this.tagHash["utf8"] = "1";
+                        this.v3TagHash["utf8"] = "1";
+
+                        foreach (string key in v3TagHash.Keys)
+                        {
+                            splitValue = v3TagHash[key].Split(splitParam, StringSplitOptions.None);
+
+                            foreach (string valueItem in splitValue)
+                            {
+                                dataToWrite = enc.GetBytes(String.Format("{0}={1}", key, valueItem));
+                                fs.Write(dataToWrite, 0, dataToWrite.Length);
+                                fs.WriteByte(0x0A);
+                            }
+                        } // foreach (string key in tagHash.Keys)
+                    } // using (FileStream fs = File.Open(this.filePath, FileMode.Append, FileAccess.Write))
+
+                    File.Delete(this.filePath);
+                    File.Move(retaggingFilePath, this.filePath);
+                }
+                catch (Exception _ex)
+                {
+                    throw new Exception(String.Format("Error updating tags for <{0}>", this.filePath), _ex);
+                }
+            }
+        }
 
         #endregion
     }

@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 
 using VGMToolbox.format;
+using VGMToolbox.format.util;
 using VGMToolbox.plugin;
 
 namespace VGMToolbox.tools.xsf
@@ -29,6 +30,7 @@ namespace VGMToolbox.tools.xsf
             public string VolumeTag;
             public string LengthTag;
             public string FadeTag;
+            public string SystemTag;
 
             private string[] sourcePaths;
             public string[] SourcePaths
@@ -44,43 +46,55 @@ namespace VGMToolbox.tools.xsf
             IVgmtWorkerStruct pXsfTagUpdaterStruct, DoWorkEventArgs e)
         {
             XsfTagUpdaterStruct xsfTagUpdaterStruct = (XsfTagUpdaterStruct)pXsfTagUpdaterStruct;
-            Xsf vgmData = new Xsf();
+
+            Type formatType = null;
+            IXsfTagFormat vgmData = null;
 
             using (FileStream fs = File.OpenRead(pPath))
             {
-                vgmData.Initialize(fs, pPath);
+                formatType = FormatUtil.getObjectType(fs);
+                if (formatType != null)
+                {
+                    vgmData = (IXsfTagFormat)Activator.CreateInstance(formatType);
+                    vgmData.Initialize(fs, pPath);
+                }                
             }
 
-            XsfTagSetter xts;
-            
-            xts = new XsfTagSetter(vgmData.SetArtistTag);
-            updateXsfTag(xts, xsfTagUpdaterStruct.ArtistTag, xsfTagUpdaterStruct.RemoveEmptyTags);
-            xts = new XsfTagSetter(vgmData.SetGameTag);
-            updateXsfTag(xts, xsfTagUpdaterStruct.GameTag, xsfTagUpdaterStruct.RemoveEmptyTags);            
-            xts = new XsfTagSetter(vgmData.SetYearTag);
-            updateXsfTag(xts, xsfTagUpdaterStruct.YearTag, xsfTagUpdaterStruct.RemoveEmptyTags);
-            xts = new XsfTagSetter(vgmData.SetGenreTag);
-            updateXsfTag(xts, xsfTagUpdaterStruct.GenreTag, xsfTagUpdaterStruct.RemoveEmptyTags);
-            xts = new XsfTagSetter(vgmData.SetCommentTag);
-            updateXsfTag(xts, xsfTagUpdaterStruct.CommentTag, xsfTagUpdaterStruct.RemoveEmptyTags);
-            xts = new XsfTagSetter(vgmData.SetCopyrightTag);
-            updateXsfTag(xts, xsfTagUpdaterStruct.CopyrightTag, xsfTagUpdaterStruct.RemoveEmptyTags);
-            xts = new XsfTagSetter(vgmData.SetXsfByTag);
-            updateXsfTag(xts, xsfTagUpdaterStruct.XsfByTag, xsfTagUpdaterStruct.RemoveEmptyTags);
-            
-            if (!xsfTagUpdaterStruct.IsBatchMode)
+            if (vgmData != null)
             {
-                xts = new XsfTagSetter(vgmData.SetVolumeTag);
-                updateXsfTag(xts, xsfTagUpdaterStruct.VolumeTag, xsfTagUpdaterStruct.RemoveEmptyTags);
-                xts = new XsfTagSetter(vgmData.SetLengthTag);
-                updateXsfTag(xts, xsfTagUpdaterStruct.LengthTag, xsfTagUpdaterStruct.RemoveEmptyTags);
-                xts = new XsfTagSetter(vgmData.SetFadeTag);
-                updateXsfTag(xts, xsfTagUpdaterStruct.FadeTag, xsfTagUpdaterStruct.RemoveEmptyTags);
-                xts = new XsfTagSetter(vgmData.SetTitleTag);
-                updateXsfTag(xts, xsfTagUpdaterStruct.TitleTag, xsfTagUpdaterStruct.RemoveEmptyTags);
-            }
+                XsfTagSetter xts;
 
-            vgmData.UpdateTags();
+                xts = new XsfTagSetter(vgmData.SetArtistTag);
+                updateXsfTag(xts, xsfTagUpdaterStruct.ArtistTag, xsfTagUpdaterStruct.RemoveEmptyTags);
+                xts = new XsfTagSetter(vgmData.SetGameTag);
+                updateXsfTag(xts, xsfTagUpdaterStruct.GameTag, xsfTagUpdaterStruct.RemoveEmptyTags);
+                xts = new XsfTagSetter(vgmData.SetYearTag);
+                updateXsfTag(xts, xsfTagUpdaterStruct.YearTag, xsfTagUpdaterStruct.RemoveEmptyTags);
+                xts = new XsfTagSetter(vgmData.SetGenreTag);
+                updateXsfTag(xts, xsfTagUpdaterStruct.GenreTag, xsfTagUpdaterStruct.RemoveEmptyTags);
+                xts = new XsfTagSetter(vgmData.SetCommentTag);
+                updateXsfTag(xts, xsfTagUpdaterStruct.CommentTag, xsfTagUpdaterStruct.RemoveEmptyTags);
+                xts = new XsfTagSetter(vgmData.SetCopyrightTag);
+                updateXsfTag(xts, xsfTagUpdaterStruct.CopyrightTag, xsfTagUpdaterStruct.RemoveEmptyTags);
+                xts = new XsfTagSetter(vgmData.SetXsfByTag);
+                updateXsfTag(xts, xsfTagUpdaterStruct.XsfByTag, xsfTagUpdaterStruct.RemoveEmptyTags);
+                xts = new XsfTagSetter(vgmData.SetSystemTag);
+                updateXsfTag(xts, xsfTagUpdaterStruct.SystemTag, xsfTagUpdaterStruct.RemoveEmptyTags);
+                
+                if (!xsfTagUpdaterStruct.IsBatchMode)
+                {
+                    xts = new XsfTagSetter(vgmData.SetVolumeTag);
+                    updateXsfTag(xts, xsfTagUpdaterStruct.VolumeTag, xsfTagUpdaterStruct.RemoveEmptyTags);
+                    xts = new XsfTagSetter(vgmData.SetLengthTag);
+                    updateXsfTag(xts, xsfTagUpdaterStruct.LengthTag, xsfTagUpdaterStruct.RemoveEmptyTags);
+                    xts = new XsfTagSetter(vgmData.SetFadeTag);
+                    updateXsfTag(xts, xsfTagUpdaterStruct.FadeTag, xsfTagUpdaterStruct.RemoveEmptyTags);
+                    xts = new XsfTagSetter(vgmData.SetTitleTag);
+                    updateXsfTag(xts, xsfTagUpdaterStruct.TitleTag, xsfTagUpdaterStruct.RemoveEmptyTags);
+                }
+
+                vgmData.UpdateTags();
+            }
         }
 
         private void updateXsfTag(XsfTagSetter pXsfTagSetter, string pValue, 

@@ -6,6 +6,8 @@ namespace VGMToolbox.format
 {
     public interface IXsfTagFormat: IFormat
     {
+        bool CanUpdateXsfTags();
+        
         string GetTitleTag();
         string GetArtistTag();
         string GetGameTag();
@@ -17,7 +19,8 @@ namespace VGMToolbox.format
         string GetVolumeTag();
         string GetLengthTag();
         string GetFadeTag();
-        
+        string GetSystemTag();
+
         void SetTitleTag(string pNewValue);
         void SetArtistTag(string pNewValue);
         void SetGameTag(string pNewValue);
@@ -29,7 +32,8 @@ namespace VGMToolbox.format
         void SetVolumeTag(string pNewValue);
         void SetLengthTag(string pNewValue);
         void SetFadeTag(string pNewValue);
-        
-        void UpdateTags();  
+        void SetSystemTag(string pNewValue);
+
+        void UpdateTags();
     }
 }

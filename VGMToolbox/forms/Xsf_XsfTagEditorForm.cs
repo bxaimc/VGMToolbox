@@ -17,7 +17,7 @@ namespace VGMToolbox.forms
 {
     public partial class Xsf_XsfTagEditorForm : AVgmtForm
     {
-        Xsf vgmData;
+        IXsfTagFormat vgmData;
         bool isBatchMode;
         
 
@@ -40,6 +40,7 @@ namespace VGMToolbox.forms
             this.lblGenre.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblGenre"];
             this.lblYear.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblYear"];
             this.lblXsfBy.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblXsfBy"];
+            this.lblSystem.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblSystem"];
             this.grpTrackTags.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_GrpTrackTags"];
             this.lblTrackTitle.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblTrackTitle"];
             this.lblLength.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblLength"];
@@ -57,15 +58,23 @@ namespace VGMToolbox.forms
         private void tbSourceDirectory_TextChanged(object sender, EventArgs e)
         {
             this.lbFiles.Items.Clear();
+            Type formatType;
 
             if (Directory.Exists(this.tbSourceDirectory.Text))
             {
                 foreach (string f in Directory.GetFiles(this.tbSourceDirectory.Text))
                 {
-                    if (!String.IsNullOrEmpty(XsfUtil.GetXsfFormatString(f)))
+                    formatType = null;
+                    
+                    using (FileStream fs = File.OpenRead(f))
                     {
-                        this.lbFiles.Items.Add(Path.GetFileName(f));
-                    }
+                        formatType = FormatUtil.getObjectType(fs);
+                        if ((formatType != null) &&
+                            typeof(IXsfTagFormat).IsAssignableFrom(formatType))
+                        {
+                            this.lbFiles.Items.Add(Path.GetFileName(f));
+                        }
+                    }                   
                 }
             }
             else
@@ -100,22 +109,26 @@ namespace VGMToolbox.forms
                 using (FileStream fs =
                     File.Open(selectedFilePath, FileMode.Open, FileAccess.Read))
                 {
-                    this.vgmData = new Xsf();
-                    this.vgmData.Initialize(fs, selectedFilePath);
+                    Type formatType = FormatUtil.getObjectType(fs);
+                    if (formatType != null)
+                    {
+                        this.vgmData = (IXsfTagFormat)Activator.CreateInstance(formatType);
+                        this.vgmData.Initialize(fs, selectedFilePath);
 
-                    this.tbGame.Text = this.vgmData.GetGameTag();
-                    this.tbArtist.Text = this.vgmData.GetArtistTag();
-                    this.tbCopyright.Text = this.vgmData.GetCopyrightTag();
-                    this.tbGenre.Text = this.vgmData.GetGenreTag();
-                    this.tbYear.Text = this.vgmData.GetYearTag();
-                    this.tbXsfBy.Text = this.vgmData.GetXsfByTag();
-                    
-                    this.tbTitle.Text = this.vgmData.GetTitleTag();
-                    this.tbLength.Text = this.vgmData.GetLengthTag();
-                    this.tbFade.Text = this.vgmData.GetFadeTag();
-                    this.tbVolume.Text = this.vgmData.GetVolumeTag();
+                        this.tbGame.Text = this.vgmData.GetGameTag();
+                        this.tbArtist.Text = this.vgmData.GetArtistTag();
+                        this.tbCopyright.Text = this.vgmData.GetCopyrightTag();
+                        this.tbGenre.Text = this.vgmData.GetGenreTag();
+                        this.tbYear.Text = this.vgmData.GetYearTag();
+                        this.tbXsfBy.Text = this.vgmData.GetXsfByTag();
 
-                    this.tbComments.Text = this.vgmData.GetCommentTag();
+                        this.tbTitle.Text = this.vgmData.GetTitleTag();
+                        this.tbLength.Text = this.vgmData.GetLengthTag();
+                        this.tbFade.Text = this.vgmData.GetFadeTag();
+                        this.tbVolume.Text = this.vgmData.GetVolumeTag();
+
+                        this.tbComments.Text = this.vgmData.GetCommentTag();
+                    }
                 }
             }
         }
@@ -186,6 +199,7 @@ namespace VGMToolbox.forms
             xtUpdateStruct.VolumeTag = this.tbVolume.Text;
             xtUpdateStruct.LengthTag = this.tbLength.Text;
             xtUpdateStruct.FadeTag = this.tbFade.Text;
+            xtUpdateStruct.SystemTag = this.tbSystem.Text;
 
             base.backgroundWorker_Execute(xtUpdateStruct);
         }
