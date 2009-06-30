@@ -15,10 +15,6 @@ namespace VGMToolbox.format
         private static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x53, 0x39, 0x38, 0x31 }; // S981
         private const string FORMAT_ABBREVIATION = "S98V1";
 
-        protected static readonly byte[] S98_VERSION_01 = new byte[] { 0x31 };
-        protected static readonly byte[] S98_VERSION_02 = new byte[] { 0x32 };
-        protected static readonly byte[] S98_VERSION_03 = new byte[] { 0x33 };
-
         public const string ASCII_TAG = "[S98]";
         protected const string TAG_UTF8_INDICATOR = "utf8=";
         protected const int TAG_IDENTIFIER_LENGTH = 5;
@@ -162,14 +158,9 @@ namespace VGMToolbox.format
             this.dumpDataOffset = this.getDumpDataOffset(pStream);
             this.loopPointOffset = this.getLoopPointOffset(pStream);
             
-            // VERSION 01
-            if (ParseFile.CompareSegment(this.version, 0, S98_VERSION_01))
-            {
-                int v1DataOffset = BitConverter.ToInt32(this.dumpDataOffset, 0);
-
-                this.v1Reserved = this.getV1Reserved(pStream);
-                this.data = ParseFile.parseSimpleOffset(pStream, v1DataOffset, (int) pStream.Length - v1DataOffset);
-            }
+            int v1DataOffset = BitConverter.ToInt32(this.dumpDataOffset, 0);
+            this.v1Reserved = this.getV1Reserved(pStream);
+            this.data = ParseFile.parseSimpleOffset(pStream, v1DataOffset, (int) pStream.Length - v1DataOffset);
 
             this.initDeviceHash();
             this.initializeTagHash(pStream);
@@ -182,20 +173,16 @@ namespace VGMToolbox.format
             tagHash.Add("S98 Version", enc.GetString(this.version));
             
             // Song Name
-            if (ParseFile.CompareSegment(this.version, 0, S98_VERSION_01) ||
-                ParseFile.CompareSegment(this.version, 0, S98_VERSION_02))
+            if (BitConverter.ToUInt32(this.songNameOffset, 0) != 0)
             {
-                if (BitConverter.ToUInt32(this.songNameOffset, 0) != 0)
-                {
-                    Int32 songOffset = BitConverter.ToInt32(this.songNameOffset, 0);
-                    Int32 songLength = ParseFile.getSegmentLength(pStream, songOffset, new byte[] { 0x00 });
-                    byte[] songName = ParseFile.parseSimpleOffset(pStream, songOffset, songLength);
-                    
-                    tagHash.Add("Song Name", enc.GetString(songName));
-                    tagHash.Add("Uncompressed Data Size", "0x" + BitConverter.ToInt32(this.compressing, 0).ToString("X2"));
-                    tagHash.Add("Offset [Song Name]", "0x" + BitConverter.ToInt32(this.songNameOffset, 0).ToString("X2"));
-                }
-            }           
+                Int32 songOffset = BitConverter.ToInt32(this.songNameOffset, 0);
+                Int32 songLength = ParseFile.getSegmentLength(pStream, songOffset, new byte[] { 0x00 });
+                byte[] songName = ParseFile.parseSimpleOffset(pStream, songOffset, songLength);
+                
+                tagHash.Add("Song Name", enc.GetString(songName));
+                tagHash.Add("Uncompressed Data Size", "0x" + BitConverter.ToInt32(this.compressing, 0).ToString("X2"));
+                tagHash.Add("Offset [Song Name]", "0x" + BitConverter.ToInt32(this.songNameOffset, 0).ToString("X2"));
+            }
  
             // Offsets            
             tagHash.Add("Offset [Dump Data]", "0x" + BitConverter.ToInt32(this.dumpDataOffset, 0).ToString("X2"));
@@ -262,7 +249,7 @@ namespace VGMToolbox.format
 
         public virtual byte[] GetAsciiSignature()
         {
-            return ASCII_SIGNATURE;
+            return S98V1.ASCII_SIGNATURE;
         }
 
         public string GetFileExtensions()
@@ -270,9 +257,9 @@ namespace VGMToolbox.format
             return null;
         }
 
-        public string GetFormatAbbreviation()
+        public virtual string GetFormatAbbreviation()
         {
-            return FORMAT_ABBREVIATION;
+            return S98V1.FORMAT_ABBREVIATION;
         }
 
         public bool IsFileLibrary() { return false; }

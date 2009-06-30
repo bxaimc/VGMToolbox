@@ -182,7 +182,12 @@ namespace VGMToolbox.format
 
         public override byte[] GetAsciiSignature()
         {
-            return ASCII_SIGNATURE;
+            return S98V3.ASCII_SIGNATURE;
+        }
+
+        public override string GetFormatAbbreviation()
+        {
+            return S98V3.FORMAT_ABBREVIATION;
         }
 
         #region IXsfTagFormat FUNCTIONS
@@ -191,12 +196,9 @@ namespace VGMToolbox.format
         {
             string ret = String.Empty;
 
-            if (ParseFile.CompareSegment(this.version, 0, S98_VERSION_03))
+            if (this.tagHash.ContainsKey(pTagKey))
             {
-                if (this.tagHash.ContainsKey(pTagKey))
-                {
-                    ret = tagHash[pTagKey];
-                }
+                ret = tagHash[pTagKey];
             }
 
             return ret;
@@ -216,18 +218,15 @@ namespace VGMToolbox.format
 
         private void SetSimpleTag(string pKey, string pNewValue)
         {
-            if (ParseFile.CompareSegment(this.version, 0, S98_VERSION_03))
+            if (!String.IsNullOrEmpty(pNewValue) && !String.IsNullOrEmpty(pNewValue.Trim()))
             {
-                if (!String.IsNullOrEmpty(pNewValue) && !String.IsNullOrEmpty(pNewValue.Trim()))
-                {
-                    this.tagHash[pKey] = pNewValue.Trim();
-                    this.v3TagHash[pKey] = pNewValue.Trim();
-                }
-                else if (tagHash.ContainsKey(pKey))
-                {
-                    tagHash.Remove(pKey);
-                    v3TagHash.Remove(pKey);
-                }
+                this.tagHash[pKey] = pNewValue.Trim();
+                this.v3TagHash[pKey] = pNewValue.Trim();
+            }
+            else if (tagHash.ContainsKey(pKey))
+            {
+                tagHash.Remove(pKey);
+                v3TagHash.Remove(pKey);
             }
         }
         public void SetTitleTag(string pNewValue) { SetSimpleTag("title", pNewValue); }
