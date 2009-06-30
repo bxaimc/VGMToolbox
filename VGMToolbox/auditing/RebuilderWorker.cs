@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.IO;
 
 using ICSharpCode.SharpZipLib.Checksums;
-using ICSharpCode.SharpZipLib.Zip;
 
 using VGMToolbox.format;
 using VGMToolbox.format.auditing;
@@ -80,9 +79,6 @@ namespace VGMToolbox.auditing
 
             bool isSuccess = false;
 
-            // ZipEntry tempZipEntry;
-            ZipFile zf;
-
             try
             {
                 foreach (AuditingUtil.ChecksumStruct cs in pDestinationFiles)
@@ -99,32 +95,11 @@ namespace VGMToolbox.auditing
                         searchPattern = Path.GetFileName(cs.rom);
                     }
                     
-                    // tempZipEntry = null;
-
                     if (pCompressOutput)
                     {
-                        pZipFilePath = pDestination + cs.game + ".zip";
-                        pSourceFile.Seek(0, SeekOrigin.Begin);
-
-                        if (File.Exists(pZipFilePath))
-                        {
-                            zf = new ZipFile(pZipFilePath);
-                        }
-                        else
-                        {
-                            zf = ZipFile.Create(pZipFilePath);
-                        }
-
+                        pZipFilePath = pDestination + cs.game + ".zip";                        
                         destinationPath = Path.ChangeExtension(cs.rom, Path.GetExtension(pSourceFile.Name));
-
-                        //tempZipEntry = zf.GetEntry(destinationPath);
-                        //if (pOverwriteExisting || tempZipEntry == null)
-                        //{
-                            zf.BeginUpdate();
-                            zf.Add(new FileDataSource(pSourceName), destinationPath);
-                            zf.CommitUpdate();
-                        //}                      
-                        zf.Close();
+                        CompressionUtil.AddFileToZipFile(pZipFilePath, pSourceName, destinationPath);
                     }
                     else
                     {
@@ -133,7 +108,6 @@ namespace VGMToolbox.auditing
                             Directory.CreateDirectory(path);
                         }
 
-                        // if (pOverwriteExisting || !File.Exists(pDestination + filePath))                        
                         if (pOverwriteExisting || Directory.GetFiles(path, searchPattern, SearchOption.AllDirectories).Length == 0)
                         {
                             File.Delete(pDestination + filePath);
@@ -184,9 +158,8 @@ namespace VGMToolbox.auditing
 
             if (FormatUtil.IsZipFile(pFilePath))
             {
-                FastZip fz = new FastZip();
                 string tempDir = System.IO.Path.GetTempPath() + Path.GetFileNameWithoutExtension(pFilePath);
-                fz.ExtractZip(pFilePath, tempDir, String.Empty);
+                CompressionUtil.ExtractAllFilesFromZipFile(pFilePath, tempDir);
 
                 tempDirsForDeletion.Add(tempDir);           // Add in case of cancel button
                 
@@ -205,111 +178,110 @@ namespace VGMToolbox.auditing
             }
             else
             {
-                FileStream fs = File.OpenRead(pFilePath);
-                formatType = FormatUtil.getObjectType(fs);
-                fs.Seek(0, SeekOrigin.Begin);
-
-                // CRC32
-                string crc32Value = String.Empty;
-                Crc32 crc32Generator = new Crc32();
-
-                // @TODO - Change to file streams?  Out of memory errors on repeat runs
-
-                /*
-                // MD5
-                string md5FileName = Path.GetTempFileName();
-                MD5CryptoServiceProvider md5Hash = new MD5CryptoServiceProvider();
-                //MemoryStream md5MemoryStream = new MemoryStream();
-                FileStream md5MemoryStream = new FileStream(md5FileName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-                CryptoStream md5CryptoStream = new CryptoStream(md5MemoryStream, md5Hash, CryptoStreamMode.Write);
-
-                // SHA1
-                string sha1FileName = Path.GetTempFileName();
-                SHA1CryptoServiceProvider sha1Hash = new SHA1CryptoServiceProvider();
-                //MemoryStream sha1MemoryStream = new MemoryStream();
-                FileStream sha1MemoryStream = new FileStream(sha1FileName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-                CryptoStream sha1CryptoStream = new CryptoStream(sha1MemoryStream, sha1Hash, CryptoStreamMode.Write);
-                */
-
-
-                if (formatType != null)
+                using (FileStream fs = File.OpenRead(pFilePath))
                 {
-                    try
-                    {
-                        IFormat vgmData = (IFormat)Activator.CreateInstance(formatType);
-                        vgmData.Initialize(fs, pFilePath);
+                    formatType = FormatUtil.getObjectType(fs);
+                    fs.Seek(0, SeekOrigin.Begin);
 
-                        isFileLibrary = vgmData.IsFileLibrary();
-                        hasMultipleExtensions = vgmData.HasMultipleFileExtensions();
-                        // vgmData.getDatFileCrc32(pFilePath, ref libHash, ref crc32Generator,
-                        //    ref md5CryptoStream, ref sha1CryptoStream, false, pStreamInput);                    
-                        vgmData.GetDatFileCrc32(ref crc32Generator);
-                        vgmData = null;
+                    // CRC32
+                    string crc32Value = String.Empty;
+                    Crc32 crc32Generator = new Crc32();
+
+                    // @TODO - Change to file streams?  Out of memory errors on repeat runs
+
+                    /*
+                    // MD5
+                    string md5FileName = Path.GetTempFileName();
+                    MD5CryptoServiceProvider md5Hash = new MD5CryptoServiceProvider();
+                    //MemoryStream md5MemoryStream = new MemoryStream();
+                    FileStream md5MemoryStream = new FileStream(md5FileName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                    CryptoStream md5CryptoStream = new CryptoStream(md5MemoryStream, md5Hash, CryptoStreamMode.Write);
+
+                    // SHA1
+                    string sha1FileName = Path.GetTempFileName();
+                    SHA1CryptoServiceProvider sha1Hash = new SHA1CryptoServiceProvider();
+                    //MemoryStream sha1MemoryStream = new MemoryStream();
+                    FileStream sha1MemoryStream = new FileStream(sha1FileName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                    CryptoStream sha1CryptoStream = new CryptoStream(sha1MemoryStream, sha1Hash, CryptoStreamMode.Write);
+                    */
+
+
+                    if (formatType != null)
+                    {
+                        try
+                        {
+                            IFormat vgmData = (IFormat)Activator.CreateInstance(formatType);
+                            vgmData.Initialize(fs, pFilePath);
+
+                            isFileLibrary = vgmData.IsFileLibrary();
+                            hasMultipleExtensions = vgmData.HasMultipleFileExtensions();
+                            // vgmData.getDatFileCrc32(pFilePath, ref libHash, ref crc32Generator,
+                            //    ref md5CryptoStream, ref sha1CryptoStream, false, pStreamInput);                    
+                            vgmData.GetDatFileCrc32(ref crc32Generator);
+                            vgmData = null;
+                        }
+                        catch (EndOfStreamException e)
+                        {
+                            this.progressStruct.Clear();
+                            this.progressStruct.Filename = pFilePath;
+                            this.progressStruct.ErrorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
+                            ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
+
+                            crc32Generator.Reset();
+                            // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
+                            //    ref md5CryptoStream, ref sha1CryptoStream);
+                            ChecksumUtil.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
+                        }
+                        catch (System.OutOfMemoryException e)
+                        {
+                            this.progressStruct.Clear();
+                            this.progressStruct.Filename = pFilePath;
+                            this.progressStruct.ErrorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
+                            ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
+
+                            crc32Generator.Reset();
+                            // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
+                            //    ref md5CryptoStream, ref sha1CryptoStream);
+                            ChecksumUtil.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
+                        }
+                        catch (IOException e)
+                        {
+                            this.progressStruct.Clear();
+                            this.progressStruct.Filename = pFilePath;
+                            this.progressStruct.ErrorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
+                            ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
+
+                            crc32Generator.Reset();
+                            // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
+                            //    ref md5CryptoStream, ref sha1CryptoStream);
+                            ChecksumUtil.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
+                        }
                     }
-                    catch (EndOfStreamException e)
+                    else
                     {
-                        this.progressStruct.Clear();
-                        this.progressStruct.Filename = pFilePath;
-                        this.progressStruct.ErrorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
-                        ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
-
-                        crc32Generator.Reset();
                         // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
                         //    ref md5CryptoStream, ref sha1CryptoStream);
                         ChecksumUtil.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
                     }
-                    catch (System.OutOfMemoryException e)
-                    {
-                        this.progressStruct.Clear();
-                        this.progressStruct.Filename = pFilePath;
-                        this.progressStruct.ErrorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
-                        ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
 
-                        crc32Generator.Reset();
-                        // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
-                        //    ref md5CryptoStream, ref sha1CryptoStream);
-                        ChecksumUtil.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
+                    // @TODO Add MD5/SHA1 to make checksum hash correct String(CRC32 + MD5 + SHA1)
+                    crc32Value = crc32Generator.Value.ToString("X2");
+
+                    pDestinationFiles = (ArrayList)pAuditingUtil.ChecksumHash[crc32Value];
+                    if (pDestinationFiles != null)
+                    {
+                        if (!pRebuildSetsStruct.ScanOnly)
+                        {
+                            fileMovedOrScannedOk = this.moveFile(pRebuildSetsStruct.pDestinationDir, pDestinationFiles, fs, pFilePath, pRebuildSetsStruct.pOverwriteExisting,
+                                pRebuildSetsStruct.pCompressOutput, hasMultipleExtensions);
+                        }
+                        pAuditingUtil.AddChecksumToCache(crc32Value);
                     }
-                    catch (IOException e)
+                    else
                     {
-                        this.progressStruct.Clear();
-                        this.progressStruct.Filename = pFilePath;
-                        this.progressStruct.ErrorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
-                        ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
-
-                        crc32Generator.Reset();
-                        // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
-                        //    ref md5CryptoStream, ref sha1CryptoStream);
-                        ChecksumUtil.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
+                        pAuditingUtil.AddUnknownFile(pFilePath);
                     }
                 }
-                else
-                {
-                    // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
-                    //    ref md5CryptoStream, ref sha1CryptoStream);
-                    ChecksumUtil.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
-                }
-
-                // @TODO Add MD5/SHA1 to make checksum hash correct String(CRC32 + MD5 + SHA1)
-                crc32Value = crc32Generator.Value.ToString("X2");
-
-                pDestinationFiles = (ArrayList)pAuditingUtil.ChecksumHash[crc32Value];
-                if (pDestinationFiles != null)
-                {                    
-                    if (!pRebuildSetsStruct.ScanOnly)
-                    {
-                        fileMovedOrScannedOk = this.moveFile(pRebuildSetsStruct.pDestinationDir, pDestinationFiles, fs, pFilePath, pRebuildSetsStruct.pOverwriteExisting,
-                            pRebuildSetsStruct.pCompressOutput, hasMultipleExtensions);
-                    }
-                    pAuditingUtil.AddChecksumToCache(crc32Value);
-                }
-                else
-                {
-                    pAuditingUtil.AddUnknownFile(pFilePath);
-                }
-
-                fs.Close();
-                fs.Dispose();
 
                 /*
                 md5CryptoStream.Close();

@@ -35,6 +35,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\VGMToolbox\3rd\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
+    <Reference Include="Ionic.Zip.Debug, Version=1.8.4.0, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\Ionic.Zip.Debug.dll</HintPath>
+    </Reference>
     <Reference Include="SevenZipSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=20de82c62b055c88, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
@@ -57,6 +61,14 @@
     <Content Include="lib\7z.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="lib\Ionic.Zip.Debug.dll" />
+    <Content Include="lib\Ionic.Zip.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib\Ionic.Zip.License.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib\Ionic.Zip.XML" />
     <Content Include="lib\SevenZipSharp.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

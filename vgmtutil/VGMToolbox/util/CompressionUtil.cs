@@ -3,6 +3,8 @@ using System.IO;
 using System.Reflection;
 using SevenZip;
 
+using Ionic.Zip;
+
 namespace VGMToolbox.util
 {
     public class CompressionUtil
@@ -127,7 +129,7 @@ namespace VGMToolbox.util
         {
             SevenZipCompressor.SetLibraryPath(SEVEN_ZIP_DLL);
             SevenZipCompressor compressor = new SevenZipCompressor();
-            compressor.CompressionMethod = CompressionMethod.Deflate;          
+            compressor.CompressionMethod = SevenZip.CompressionMethod.Deflate;          
             compressor.ArchiveFormat = OutArchiveFormat.SevenZip;
 
             switch (pCompressionLevel)
@@ -163,6 +165,37 @@ namespace VGMToolbox.util
             SevenZipCompressor compressor = new SevenZipCompressor();
             compressor.CompressionLevel = CompressionLevel.Ultra;
             compressor.CompressDirectory(pSourcePath, pArchiveName, true);
+        }
+
+        public static void ExtractAllFilesFromZipFile(string pZipFilePath, string pOutputFolder)
+        {
+            using (ZipFile zip = ZipFile.Read(pZipFilePath))
+            {
+                zip.ExtractAll(pOutputFolder);
+            }
+        }
+
+        public static void AddFileToZipFile(string pZipFileName, string pNewEntrySourceFileName, string pNewEntryDestinationName)
+        {            
+            ZipFile zf;
+
+            // create or open zip file
+            if (File.Exists(pZipFileName))
+            {
+                zf = ZipFile.Read(pZipFileName);
+            }
+            else
+            {
+                zf = new ZipFile(pZipFileName);
+            }
+
+            zf.CompressionLevel = Ionic.Zlib.CompressionLevel.BestCompression;
+
+            using (FileStream fs = File.OpenRead(pNewEntrySourceFileName))
+            {
+                zf.AddEntry(Path.GetFileName(pNewEntryDestinationName), Path.GetDirectoryName(pNewEntryDestinationName), fs);
+                zf.Save();
+            }           
         }
     }
 }
