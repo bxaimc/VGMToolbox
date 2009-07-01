@@ -4,6 +4,7 @@ using System.IO;
 using System.Security.Cryptography;
 
 using ICSharpCode.SharpZipLib.Checksums;
+using Ionic.Zlib;
 
 namespace VGMToolbox.util
 {
@@ -13,21 +14,20 @@ namespace VGMToolbox.util
 
         public static string GetCrc32OfFullFile(Stream pFileStream)
         {
-            Crc32 crc32Generator = new Crc32();
-
-            long remaining = pFileStream.Length;
-            byte[] data = new byte[Constants.FILE_READ_CHUNK_SIZE];
-            int read;
-
+            // get incoming stream position
+            long initialStreamPosition = pFileStream.Position;
+            
+            // move to zero position
             pFileStream.Seek(0, SeekOrigin.Begin);
-            crc32Generator.Reset();
+            
+            // calculate CRC32
+            CRC32 crc32 = new CRC32();
+            int ret = crc32.GetCrc32(pFileStream);
 
-            while ((read = pFileStream.Read(data, 0, data.Length)) > 0)
-            {
-                crc32Generator.Update(data, 0, read);
-            }
+            // return stream to incoming position
+            pFileStream.Position = initialStreamPosition;
 
-            return crc32Generator.Value.ToString("X8", CultureInfo.InvariantCulture);
+            return ret.ToString("X8", CultureInfo.InvariantCulture);
         }
 
         public static string GetMd5OfFullFile(Stream pFileStream)
