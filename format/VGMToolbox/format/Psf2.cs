@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-using ICSharpCode.SharpZipLib.Zip.Compression;
-using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
+using Ionic.Zlib;
 
 using VGMToolbox.util;
 
@@ -230,6 +229,7 @@ namespace VGMToolbox.format
             }
         }
 
+        /*
         private void extractFile(Psf2DirectoryEntry pPsf2DirectoryEntry, string pDestinationFile)
         {            
             uint blockCount = 
@@ -242,8 +242,9 @@ namespace VGMToolbox.format
             byte[] compressedBlock;
             int bytesRead;
             int bytesInflated;
-            int totalBytesInflated = 0;
+            long totalBytesInflated = 0;
 
+            FileInfo tempFileInfo;
 
 
             using (FileStream pfs = File.Open(this.FilePath, FileMode.Open, FileAccess.Read))
@@ -275,22 +276,22 @@ namespace VGMToolbox.format
                     }
                 }
 
+                System.Windows.Forms.Application.DoEvents();
+                
                 using (FileStream fs = File.Open(tempCompressedFile, FileMode.Open, FileAccess.Read))
                 {
                     using (FileStream outputFs = File.Open(pDestinationFile, FileMode.Create, FileAccess.Write))
                     {
-                        using (InflaterInputStream inflaterStream = new InflaterInputStream(fs))
-                        {
+                        // using (InflaterInputStream inflaterStream = new InflaterInputStream(fs))
+                        using (ZlibStream zs = new ZlibStream(fs, CompressionMode.Decompress, true))
+                        {                            
                             uncompressedBlock = new byte[pPsf2DirectoryEntry.BlockSize];
 
                             using (BinaryWriter bw = new BinaryWriter(outputFs))
                             {
-                                
-                                // !DOESN'T SEEM TO WORK ON ALL FILES?
-                                
-                                while ((bytesInflated =
-                                            inflaterStream.Read(uncompressedBlock, 0, (int)pPsf2DirectoryEntry.BlockSize)) > 0)
+                                while ((bytesInflated = zs.Read(uncompressedBlock, 0, uncompressedBlock.Length)) > 0)
                                 {
+                                    totalBytesInflated += bytesInflated;
                                     bw.Write(uncompressedBlock, 0, bytesInflated);
                                 }                            
                             }
@@ -298,6 +299,82 @@ namespace VGMToolbox.format
                     }
                 }
                 File.Delete(tempCompressedFile);
+            }
+        }
+        */
+
+        private void extractFile(Psf2DirectoryEntry pPsf2DirectoryEntry, string pDestinationFile)
+        {
+            uint blockCount =
+                ((pPsf2DirectoryEntry.UncompressedSize + pPsf2DirectoryEntry.BlockSize) - 1) / pPsf2DirectoryEntry.BlockSize;
+            UInt32[] blockTable = new UInt32[blockCount];
+
+            string tempCompressedFile = Path.GetTempFileName();
+
+            byte[] uncompressedBlock;
+            int bytesInflated;
+            long totalBytesInflated = 0;
+
+            using (FileStream pfs = File.Open(this.FilePath, FileMode.Open, FileAccess.Read))
+            {
+                pfs.Position = (long)pPsf2DirectoryEntry.Offset;
+
+                for (int i = 0; i < blockCount; i++)
+                {
+                    blockTable[i] =
+                        BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pfs, (long)pPsf2DirectoryEntry.Offset + (i * 4), 4), 0);
+                }
+
+                pfs.Position = (long)(pPsf2DirectoryEntry.Offset + (blockCount * 4));
+
+
+                if (!IsEmptyFile(pPsf2DirectoryEntry))
+                {
+                    foreach (UInt32 b in blockTable)
+                    {
+                        using (FileStream outputFs = File.Open(pDestinationFile, FileMode.Append, FileAccess.Write))
+                        {
+                            if (pDestinationFile.EndsWith("00000011.SQ"))
+                            {
+                                int x = 0;
+                            }
+                            
+                            using (ZlibStream zs = new ZlibStream(pfs, CompressionMode.Decompress, true))
+                            {
+                                if ((int)b > 0x2000)
+                                {
+                                    zs.BufferSize = (int)b;
+                                }
+                                else
+                                {
+                                    zs.BufferSize = 0x2000;
+                                }
+                                                         // set buffer size to current compressed 
+                                                         //  block size so we read the entire block 
+                                                         //  in one read.  Default buffer size will 
+                                                         //  read past the end of block and give an 
+                                                         //  unknown compression format error for 
+                                                         //  files larger than 32k.
+                                uncompressedBlock = new byte[pPsf2DirectoryEntry.BlockSize];
+
+                                using (BinaryWriter bw = new BinaryWriter(outputFs))
+                                {
+                                    while ((bytesInflated = zs.Read(uncompressedBlock, 0, uncompressedBlock.Length)) > 0)
+                                    {
+                                        totalBytesInflated += bytesInflated;
+                                        bw.Write(uncompressedBlock, 0, bytesInflated);
+
+                                        if ((bytesInflated == pPsf2DirectoryEntry.BlockSize) ||
+                                            (totalBytesInflated == pPsf2DirectoryEntry.UncompressedSize))
+                                        {
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }               
             }
         }
 
