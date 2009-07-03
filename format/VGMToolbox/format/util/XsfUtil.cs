@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Reflection;
 using System.Text;
 
-using ICSharpCode.SharpZipLib.Zip.Compression;
-using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
+using Ionic.Zlib;
 
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Midi;
 
-using VGMToolbox.format;
 using VGMToolbox.format.sdat;
 using VGMToolbox.util;
 
@@ -107,7 +103,6 @@ namespace VGMToolbox.format.util
 
             if (!String.IsNullOrEmpty(formatString))
             {
-
                 using (FileStream fs = File.OpenRead(pPath))
                 {
                     Xsf vgmData = new Xsf();
@@ -115,28 +110,23 @@ namespace VGMToolbox.format.util
 
                     if (vgmData.CompressedProgramLength > 0)
                     {
-                        BinaryWriter bw;
                         outputFile = Path.GetDirectoryName(pPath) + Path.DirectorySeparatorChar;
                         outputFile += (pXsf2ExeStruct.IncludeExtension ? Path.GetFileName(pPath) : Path.GetFileNameWithoutExtension(pPath)) + ".data.bin";
 
-
-                        bw = new BinaryWriter(File.Create(outputFile));
-
-                        InflaterInputStream inflater;
-                        int read;
-                        byte[] data = new byte[4096];
-
-                        fs.Seek((long)(Xsf.RESERVED_SECTION_OFFSET + vgmData.ReservedSectionLength), SeekOrigin.Begin);
-                        inflater = new InflaterInputStream(fs);
-
-                        while ((read = inflater.Read(data, 0, data.Length)) > 0)
+                        using (BinaryWriter bw = new BinaryWriter(File.Create(outputFile)))
                         {
-                            bw.Write(data, 0, read);
-                        }
+                            using (ZlibStream zs = new ZlibStream(fs, Ionic.Zlib.CompressionMode.Decompress, true))
+                            {
+                                fs.Seek((long)(Xsf.RESERVED_SECTION_OFFSET + vgmData.ReservedSectionLength), SeekOrigin.Begin);
+                                int read;
+                                byte[] data = new byte[4096];
 
-                        bw.Close();
-                        inflater.Close();
-                        inflater.Dispose();
+                                while ((read = zs.Read(data, 0, data.Length)) > 0)
+                                {
+                                    bw.Write(data, 0, read);
+                                }                                
+                            }
+                        }
 
                         // strip GSF header
                         if (pXsf2ExeStruct.StripGsfHeader)
@@ -219,21 +209,14 @@ namespace VGMToolbox.format.util
                         // open file for outputting deflated section
                         using (FileStream outFs = File.Open(deflatedOutputPath, FileMode.Create, FileAccess.Write))
                         {
-                            if (pXsfRecompressStruct.CompressionLevel > 2) // 7zip
+                            using (ZlibStream zs = new ZlibStream(outFs, Ionic.Zlib.CompressionMode.Compress, (CompressionLevel)pXsfRecompressStruct.CompressionLevel, true))
                             {
-                                CompressionUtil.CompressFileWith7zipZlib(inFs, outFs, pXsfRecompressStruct.CompressionLevel);
-                            }
-                            else
-                            {
-                                using (DeflaterOutputStream deflaterStream = new DeflaterOutputStream(outFs, new Deflater(pXsfRecompressStruct.CompressionLevel, false)))
+                                while ((read = inFs.Read(data, 0, data.Length)) > 0)
                                 {
-                                    while ((read = inFs.Read(data, 0, data.Length)) > 0)
-                                    {
-                                        deflaterStream.Write(data, 0, read);
-                                    }
-
-                                    deflaterStream.Flush();
+                                    zs.Write(data, 0, read);
                                 }
+
+                                zs.Flush();
                             }
                         }
                     }
@@ -1005,22 +988,31 @@ namespace VGMToolbox.format.util
 
             string dataCrc32 = String.Empty;
             UInt32 dataLength = 0;
+            long totalRomSize;
+            FileInfo fi;
 
             // write compressed section
             using (FileStream dataFs = File.Open(compressedDataSectionPath, FileMode.Create, FileAccess.ReadWrite))
-            {
+            {                                
                 //using (DeflaterOutputStream deflaterStream =
                 //    new DeflaterOutputStream(dataFs, new Deflater(Deflater.BEST_COMPRESSION, false)))
-                using (DeflateStream ds = 
-                    new DeflateStream(dataFs, CompressionMode.Compress, true))
+                using (ZlibStream zs = new ZlibStream(dataFs, Ionic.Zlib.CompressionMode.Compress, CompressionLevel.BestCompression, true))
                 {
+                    fi = new FileInfo(pRomPath);
+                    totalRomSize = fi.Length;
+                    fi = new FileInfo(pSdatPath);
+                    totalRomSize += fi.Length;
+
+                    zs.Write(new byte[] { 0, 0, 0, 0}, 0, 4);
+                    zs.Write(BitConverter.GetBytes((UInt32) totalRomSize), 0, 4);
+                    
                     // write rom file
                     using (FileStream romStream = File.OpenRead(pRomPath))
                     {
                         while ((read = romStream.Read(data, 0, data.Length)) > 0)
                         {
                             // deflaterStream.Write(data, 0, read);
-                            ds.Write(data, 0, read);
+                            zs.Write(data, 0, read);
                         }
                     }
                     
@@ -1030,10 +1022,10 @@ namespace VGMToolbox.format.util
                         while ((read = sdatStream.Read(data, 0, data.Length)) > 0)
                         {
                             // deflaterStream.Write(data, 0, read);
-                            ds.Write(data, 0, read);
+                            zs.Write(data, 0, read);
                         }
                         // deflaterStream.Flush();
-                        ds.Flush();                        
+                        zs.Flush();                        
                     }
                 }
 
@@ -1051,9 +1043,10 @@ namespace VGMToolbox.format.util
                         bw.Write('F');
                         bw.Write(new byte[] { 0x24 });
                         bw.Write(BitConverter.GetBytes((UInt32)0));          // reserved size
-                        bw.Write(BitConverter.GetBytes(dataLength)); // data length
+                        bw.Write(BitConverter.GetBytes(dataLength));         // data length
                         bw.Write((UInt32)VGMToolbox.util.Encoding.GetIntFromString("0x" + dataCrc32)); // data crc32
 
+                        // data
                         dataFs.Seek(0, SeekOrigin.Begin);
                         while ((read = dataFs.Read(data, 0, data.Length)) > 0)
                         {
