@@ -54,7 +54,6 @@ namespace VGMToolbox.tools.xsf
         {
             string sdatDestinationPath;
             string TwoSFDestinationPath;
-            string TwoSFToolDestinationPath;
             string sdatPrefix;
             string testpackDestinationPath;
             string unallowedDestinationPath;
@@ -74,8 +73,6 @@ namespace VGMToolbox.tools.xsf
             }
             TwoSFDestinationPath =
                 Path.Combine(pMk2sfStruct.DestinationFolder, Path.GetFileNameWithoutExtension(sdatDestinationPath));
-            TwoSFToolDestinationPath =
-                Path.Combine(pMk2sfStruct.DestinationFolder, Path.GetFileName(TWOSFTOOL_PATH));
             sdatPrefix = Path.GetFileNameWithoutExtension(sdatDestinationPath);
             testpackDestinationPath = Path.Combine(pMk2sfStruct.DestinationFolder, 
                 Path.GetFileName(TESTPACK_FULL_PATH));
@@ -116,9 +113,6 @@ namespace VGMToolbox.tools.xsf
             }
             sdat.OptimizeForZlib(pMk2sfStruct.AllowedSequences);
 
-            // Copy 2sfTool.exe
-            File.Copy(TWOSFTOOL_PATH, TwoSFToolDestinationPath, true);
-
             // Copy testpack.nds
             File.Copy(TESTPACK_FULL_PATH, testpackDestinationPath, true);
 
@@ -128,40 +122,21 @@ namespace VGMToolbox.tools.xsf
                 Directory.CreateDirectory(TwoSFDestinationPath);
             }
 
-            // Execute 2SF Tool
+            // Build 2SFs
             this.progressStruct.Clear();
-            this.progressStruct.GenericMessage = "Execute 2sfTool" + Environment.NewLine;
+            this.progressStruct.GenericMessage = "Build 2SFs" + Environment.NewLine;
             ReportProgress(Constants.PROGRESS_MSG_ONLY, progressStruct);
-            
-            using (Process toolProcess = new Process())
-            {
-                string arguments = String.Format(" \"{0}{1}{2}\" \"{3}\" {4} {5}",
-                    Path.GetFileName(TwoSFDestinationPath),
-                    Path.DirectorySeparatorChar,
-                    sdatPrefix,
-                    Path.GetFileName(sdatDestinationPath),
-                    GetMinAllowedSseq(pMk2sfStruct.AllowedSequences).ToString(),
-                    GetMaxAllowedSseq(pMk2sfStruct.AllowedSequences).ToString());
-                toolProcess.StartInfo = new ProcessStartInfo(TwoSFToolDestinationPath, arguments);
-                toolProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(TwoSFToolDestinationPath);
-                toolProcess.StartInfo.UseShellExecute = false;
-                toolProcess.StartInfo.CreateNoWindow = true;
-                toolProcess.Start();
-                toolProcess.WaitForExit();
-                toolProcess.Close();
-            }
 
-            // Check XsfUtil
-            //XsfUtil.Make2sfSet(testpackDestinationPath, sdatDestinationPath,
-            //    GetMinAllowedSseq(pMk2sfStruct.AllowedSequences),
-            //    GetMaxAllowedSseq(pMk2sfStruct.AllowedSequences), TwoSFDestinationPath);
+            XsfUtil.Make2sfSet(testpackDestinationPath, sdatDestinationPath,
+                GetMinAllowedSseq(pMk2sfStruct.AllowedSequences),
+                GetMaxAllowedSseq(pMk2sfStruct.AllowedSequences), TwoSFDestinationPath);
 
             // Move unallowed Sequences
             string unallowedFileName;
             string unallowedFilePath;
             foreach (int unallowedSequenceNumber in pMk2sfStruct.UnAllowedSequences)
             {
-                unallowedFileName = String.Format("{0}-{1}.mini2sf", sdatPrefix, unallowedSequenceNumber.ToString("X4"));
+                unallowedFileName = String.Format("{0}-{1}.mini2sf", sdatPrefix, unallowedSequenceNumber.ToString("x4"));
                 unallowedFilePath = Path.Combine(TwoSFDestinationPath, unallowedFileName);
 
                 if (!Directory.Exists(unallowedDestinationPath))
@@ -187,8 +162,8 @@ namespace VGMToolbox.tools.xsf
             tagStruct.TagYear = pMk2sfStruct.TagYear;
             tagStruct.TagGame = pMk2sfStruct.TagGame;
             tagStruct.TagComment = "uses Legacy of Ys: Book II driver hacked by Caitsith2";            
-            //tagStruct.TagXsfByTagName = "-2sfby";
-            //tagStruct.TagXsfByTagValue = "VGMToolbox";
+            tagStruct.TagXsfByTagName = "-2sfby";
+            tagStruct.TagXsfByTagValue = "VGMToolbox";
 
             string taggingBatchPath = XsfUtil.BuildBasicTaggingBatch(TwoSFDestinationPath, tagStruct, "*.mini2sf");
             XsfUtil.ExecutePsfPointBatchScript(taggingBatchPath, true);
@@ -216,10 +191,6 @@ namespace VGMToolbox.tools.xsf
             {
                 File.Delete(sdatDestinationPath);
             }
-            //if (File.Exists(TwoSFToolDestinationPath))
-            //{
-            //    File.Delete(TwoSFToolDestinationPath);
-            //}
             if (File.Exists(testpackDestinationPath))
             {
                 File.Delete(testpackDestinationPath);

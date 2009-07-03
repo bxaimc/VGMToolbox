@@ -37,6 +37,9 @@ namespace VGMToolbox.format.util
         static readonly string SSEQ2MID_SOURCE_PATH =
             Path.Combine(Path.Combine(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "external"), "2sf"), "sseq2mid.exe");
 
+        static readonly byte[] MINI2SF_DATA_START = new byte[] { 0xC0, 0x0F, 0x0D, 0x00, 0x02, 0x00, 0x00, 0x00 };
+
+
         public struct Xsf2ExeStruct
         {
             public bool IncludeExtension;
@@ -976,9 +979,6 @@ namespace VGMToolbox.format.util
         public static void Make2sfSet(string pRomPath, string pSdatPath, 
             int pMinIndex, int pMaxIndex, string pOutputFolder)
         {
-            // WIP - Needs more testing
-            
-            
             int read;
             byte[] data = new byte[Constants.FILE_READ_CHUNK_SIZE];
             
@@ -991,11 +991,12 @@ namespace VGMToolbox.format.util
             long totalRomSize;
             FileInfo fi;
 
-            // write compressed section
+            System.Text.Encoding enc = System.Text.Encoding.ASCII;
+            byte[] tagData;
+
+            // write compressed section to temp file
             using (FileStream dataFs = File.Open(compressedDataSectionPath, FileMode.Create, FileAccess.ReadWrite))
             {                                
-                //using (DeflaterOutputStream deflaterStream =
-                //    new DeflaterOutputStream(dataFs, new Deflater(Deflater.BEST_COMPRESSION, false)))
                 using (ZlibStream zs = new ZlibStream(dataFs, Ionic.Zlib.CompressionMode.Compress, CompressionLevel.BestCompression, true))
                 {
                     fi = new FileInfo(pRomPath);
@@ -1011,7 +1012,6 @@ namespace VGMToolbox.format.util
                     {
                         while ((read = romStream.Read(data, 0, data.Length)) > 0)
                         {
-                            // deflaterStream.Write(data, 0, read);
                             zs.Write(data, 0, read);
                         }
                     }
@@ -1021,10 +1021,8 @@ namespace VGMToolbox.format.util
                     {
                         while ((read = sdatStream.Read(data, 0, data.Length)) > 0)
                         {
-                            // deflaterStream.Write(data, 0, read);
                             zs.Write(data, 0, read);
                         }
-                        // deflaterStream.Flush();
                         zs.Flush();                        
                     }
                 }
@@ -1055,12 +1053,70 @@ namespace VGMToolbox.format.util
                     }
                 }                                
             }
+
+            // delete compressed data section
+            if (File.Exists(compressedDataSectionPath))
+            {
+                File.Delete(compressedDataSectionPath);
+            }
+
+            // write .mini2sfs
+            string mini2sfFileName;
+            int mini2sfCrc32;
             
+            byte[] mini2sfData = new byte[MINI2SF_DATA_START.Length + 2];
+            Array.ConstrainedCopy(MINI2SF_DATA_START, 0, mini2sfData, 0, MINI2SF_DATA_START.Length);
 
 
+            for (int i = pMinIndex; i <= pMaxIndex; i++)
+            {
+                using (MemoryStream mini2sfMs = new MemoryStream(mini2sfData, true))
+                {
+                    // build data section
+                    Array.ConstrainedCopy(BitConverter.GetBytes((UInt16)i), 0, mini2sfData, mini2sfData.Length - 2, 2);
 
+                    // create compressed Stream
+                    using (MemoryStream compressedMs = new MemoryStream())
+                    {
+                        using (ZlibStream zs = new ZlibStream(compressedMs, Ionic.Zlib.CompressionMode.Compress, CompressionLevel.None, true))
+                        {
+                            zs.Write(mini2sfMs.ToArray(), 0, (int)mini2sfMs.Length);
+                            zs.Flush();
+                        }
 
+                        // get CRC32
+                        CRC32 crc32Calc = new CRC32();
+                        mini2sfCrc32 = crc32Calc.GetCrc32(new System.IO.MemoryStream(compressedMs.ToArray()));
 
+                        // write mini2sf to disk
+                        mini2sfFileName = Path.Combine(pOutputFolder, String.Format("{0}-{1}.mini2sf", sdatPrefix, i.ToString("x4")));
+
+                        using (FileStream mini2sfFs = File.Open(mini2sfFileName, FileMode.Create, FileAccess.Write))
+                        {
+                            using (BinaryWriter bw = new BinaryWriter(mini2sfFs))
+                            {
+                                bw.Write('P');
+                                bw.Write('S');
+                                bw.Write('F');
+                                bw.Write(new byte[] { 0x24 });
+                                bw.Write(BitConverter.GetBytes((UInt32)0));                  // reserved size
+                                bw.Write(BitConverter.GetBytes((UInt32)compressedMs.Length)); // data length                        
+                                bw.Write(BitConverter.GetBytes((UInt32)mini2sfCrc32));       // data crc32    
+                                bw.Write(compressedMs.ToArray());                            // data
+
+                                // add [TAG]
+                                tagData = enc.GetBytes(Xsf.ASCII_TAG);
+                                bw.Write(tagData, 0, tagData.Length);
+
+                                tagData = enc.GetBytes(String.Format("_lib={0}", Path.GetFileName(libOutputPath)));
+                                bw.Write(tagData, 0, tagData.Length);
+                                bw.Write(0x0A);
+
+                            }
+                        }
+                    }
+                }
+            }    
         }
     }
 }
