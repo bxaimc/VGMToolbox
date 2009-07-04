@@ -654,6 +654,18 @@ namespace VGMToolbox
             nodeTag.FormClass = extract_ExtractCdxaForm.GetType().Name;
             ext_ExtractCdxaNode.Tag = nodeTag;
 
+            // ZLIB
+            TreeNode ext_ExtractZlibNode = new TreeNode("Zlib Extractor");
+
+            // Add Cdxa Extractor Form
+            Extract_ZlibExtractForm extract_ZlibExtractForm = new Extract_ZlibExtractForm(ext_ExtractZlibNode);
+            this.splitContainer1.Panel2.Controls.Add(extract_ZlibExtractForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = extract_ZlibExtractForm.GetType().Name;
+            ext_ExtractZlibNode.Tag = nodeTag;
+
+
 
             ///////
             // NDS
@@ -704,8 +716,9 @@ namespace VGMToolbox
 
             ext_GenericNode.Nodes.Add(ext_SimpleCutterNode);
             ext_GenericNode.Nodes.Add(ext_OffsetFinderNode);
-            ext_GenericNode.Nodes.Add(ext_ExtractCdxaNode);            
-                        
+            ext_GenericNode.Nodes.Add(ext_ExtractCdxaNode);
+            ext_GenericNode.Nodes.Add(ext_ExtractZlibNode);
+                               
             ext_RootNode.Nodes.Add(ext_GenericNode);
             
             ext_NdsNode.Nodes.Add(ext_SdatExtractorNode);

@@ -4,6 +4,7 @@ using System.Reflection;
 using SevenZip;
 
 using Ionic.Zip;
+using Ionic.Zlib;
 
 namespace VGMToolbox.util
 {
@@ -124,46 +125,12 @@ namespace VGMToolbox.util
                 }                
             }
         }
-
-        public static void CompressFileWith7zipZlib(Stream pInStream, Stream pOutStream, int pCompressionLevel)
-        {
-            SevenZipCompressor.SetLibraryPath(SEVEN_ZIP_DLL);
-            SevenZipCompressor compressor = new SevenZipCompressor();
-            compressor.CompressionMethod = SevenZip.CompressionMethod.Deflate;          
-            compressor.ArchiveFormat = OutArchiveFormat.SevenZip;
-
-            switch (pCompressionLevel)
-            { 
-                case 3:
-                    compressor.CompressionLevel = CompressionLevel.Low;
-                    break;
-                case 4:
-                    compressor.CompressionLevel = CompressionLevel.Fast;
-                    break;
-                case 5:
-                    compressor.CompressionLevel = CompressionLevel.Normal;
-                    break;
-                case 6:
-                    compressor.CompressionLevel = CompressionLevel.High;
-                    break;
-                case 7:
-                    compressor.CompressionLevel = CompressionLevel.Ultra;
-                    break;
-                default:
-                    compressor.CompressionLevel = CompressionLevel.Normal;
-                    break;
-            }
-                                    
-            compressor.CompressStream(pInStream, pOutStream);            
-            pOutStream.Flush();
-            
-        }
-
+        
         public static void CompressFolderWith7zip(string pSourcePath, string pArchiveName)
         {
             SevenZipCompressor.SetLibraryPath(SEVEN_ZIP_DLL);
             SevenZipCompressor compressor = new SevenZipCompressor();
-            compressor.CompressionLevel = CompressionLevel.Ultra;
+            compressor.CompressionLevel = SevenZip.CompressionLevel.Ultra;
             compressor.CompressDirectory(pSourcePath, pArchiveName, true);
         }
 
@@ -196,6 +163,26 @@ namespace VGMToolbox.util
                 zf.AddEntry(Path.GetFileName(pNewEntryDestinationName), Path.GetDirectoryName(pNewEntryDestinationName), fs);
                 zf.Save();
             }           
+        }
+
+        public static void DecompressZlibStreamToFile(Stream pStream, string pOutputFilePath)
+        {
+            using (FileStream outFs = new FileStream(pOutputFilePath, FileMode.Create, FileAccess.Write))
+            {
+                using (BinaryWriter bw = new BinaryWriter(outFs))
+                {
+                    using (ZlibStream zs = new ZlibStream(pStream, CompressionMode.Decompress, true))
+                    {
+                        int read;
+                        byte[] data = new byte[4096];
+
+                        while ((read = zs.Read(data, 0, data.Length)) > 0)
+                        {
+                            bw.Write(data, 0, read);
+                        }
+                    }
+                }
+            }
         }
     }
 }
