@@ -108,7 +108,7 @@ namespace VGMToolbox.forms
                         row = new DataGridViewRow();
                         row.CreateCells(this.dataGridSseq);
 
-                        row.Cells[1].Value = s.number.ToString().PadLeft(4, '0');
+                        row.Cells[1].Value = s.number.ToString("x4");
 
                         if (!String.IsNullOrEmpty(s.name))
                         {
@@ -144,13 +144,13 @@ namespace VGMToolbox.forms
                     (r.Cells[4].Value != null) &&
                     (!String.IsNullOrEmpty((string)r.Cells[4].Value)))
                 {
-                    allowedSequences.Add(int.Parse((string)r.Cells[1].Value));
+                    allowedSequences.Add(int.Parse((string)r.Cells[1].Value, System.Globalization.NumberStyles.HexNumber));
                 }
                 else if (!((bool)r.Cells[0].Value) &&
                           (r.Cells[4].Value != null) &&
                           (!String.IsNullOrEmpty((string)r.Cells[4].Value)))
                 {
-                    unallowedSequences.Add(int.Parse((string)r.Cells[1].Value));
+                    unallowedSequences.Add(int.Parse((string)r.Cells[1].Value, System.Globalization.NumberStyles.HexNumber));
                 }
             }
 

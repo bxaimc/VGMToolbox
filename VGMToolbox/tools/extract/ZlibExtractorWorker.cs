@@ -10,9 +10,7 @@ using VGMToolbox.util;
 namespace VGMToolbox.tools.extract
 {
     class ZlibExtractorWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
-    {
-        public static string OUTPUT_EXTENSION = ".zlibx";
-        
+    {                
         public struct ZlibExtractorStruct : IVgmtWorkerStruct
         {
             private string[] sourcePaths;
@@ -37,7 +35,7 @@ namespace VGMToolbox.tools.extract
 
             try
             {
-                string outputFileName = Path.ChangeExtension(pPath, OUTPUT_EXTENSION);
+                string outputFileName = Path.ChangeExtension(pPath, CompressionUtil.ZLIB_OUTPUT_EXTENSION);
 
                 using (FileStream fs = File.OpenRead(pPath))
                 {

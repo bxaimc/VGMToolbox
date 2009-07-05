@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Configuration;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 using VGMToolbox.plugin;
 using VGMToolbox.tools.extract;
+using VGMToolbox.util;
 
 namespace VGMToolbox.forms
 {
@@ -26,7 +21,7 @@ namespace VGMToolbox.forms
             this.tbOutput.Text = String.Format("Zlib compressed section must begin at the start of the file.{0}", 
                 Environment.NewLine);
             this.tbOutput.Text = String.Format("Files will be output using the original file name with the '{0}' file extension.{1}",
-                            ZlibExtractorWorker.OUTPUT_EXTENSION, Environment.NewLine);
+                            CompressionUtil.ZLIB_OUTPUT_EXTENSION, Environment.NewLine);
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)

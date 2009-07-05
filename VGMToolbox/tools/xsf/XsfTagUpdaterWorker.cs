@@ -10,7 +10,7 @@ using VGMToolbox.plugin;
 
 namespace VGMToolbox.tools.xsf
 {
-    class XsfTagUpdaterWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
+    public class XsfTagUpdaterWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
         private delegate void XsfTagSetter(string pValue);
         

@@ -17,6 +17,9 @@ namespace VGMToolbox.format.util
 {
     public class XsfUtil
     {
+        private delegate void XsfTagSetter(string pValue);
+        private delegate string XsfTagGetter();
+        
         public const string RECOMPRESSED_SUBFOLDER_NAME = "recompressed";
         public const int INVALID_DATA = -1;
         
@@ -38,6 +41,7 @@ namespace VGMToolbox.format.util
             Path.Combine(Path.Combine(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "external"), "2sf"), "sseq2mid.exe");
 
         static readonly byte[] MINI2SF_DATA_START = new byte[] { 0xC0, 0x0F, 0x0D, 0x00, 0x02, 0x00, 0x00, 0x00 };
+        static readonly byte[] MINI2SF_SAVESTATE_ID = new byte[] { 0x53, 0x41, 0x56, 0x45 };
 
 
         public struct Xsf2ExeStruct
@@ -73,6 +77,24 @@ namespace VGMToolbox.format.util
         public struct XsfRecompressStruct
         {
             public int CompressionLevel;
+        }
+
+        public struct XsfTagCopyStruct
+        {
+            public bool CopyEmptyTags;
+
+            public bool UpdateTitleTag;
+            public bool UpdateArtistTag;
+            public bool UpdateGameTag;
+            public bool UpdateYearTag;
+            public bool UpdateGenreTag;
+            public bool UpdateCommentTag;
+            public bool UpdateCopyrightTag;
+            public bool UpdateXsfByTag;
+            public bool UpdateVolumeTag;
+            public bool UpdateLengthTag;
+            public bool UpdateFadeTag;
+            public bool UpdateSystemTag;
         }
 
         public static bool IsPythonPresentInPath()
@@ -415,6 +437,79 @@ namespace VGMToolbox.format.util
             return batchFilePath;
         }
 
+        public static void CopyTags(IXsfTagFormat pSource, IXsfTagFormat pDestination, 
+            XsfTagCopyStruct pXsfTagCopyStruct)
+        {
+            XsfTagGetter getter;
+            XsfTagSetter setter;
+
+            getter = new XsfTagGetter(pSource.GetTitleTag);
+            setter = new XsfTagSetter(pDestination.SetTitleTag);
+            CopyTag(pXsfTagCopyStruct.UpdateTitleTag, getter, setter, pXsfTagCopyStruct.CopyEmptyTags);
+
+            getter = new XsfTagGetter(pSource.GetArtistTag);
+            setter = new XsfTagSetter(pDestination.SetArtistTag);
+            CopyTag(pXsfTagCopyStruct.UpdateArtistTag, getter, setter, pXsfTagCopyStruct.CopyEmptyTags);
+
+            getter = new XsfTagGetter(pSource.GetGameTag);
+            setter = new XsfTagSetter(pDestination.SetGameTag);
+            CopyTag(pXsfTagCopyStruct.UpdateGameTag, getter, setter, pXsfTagCopyStruct.CopyEmptyTags);
+            
+            getter = new XsfTagGetter(pSource.GetYearTag);
+            setter = new XsfTagSetter(pDestination.SetYearTag);
+            CopyTag(pXsfTagCopyStruct.UpdateYearTag, getter, setter, pXsfTagCopyStruct.CopyEmptyTags);
+
+            getter = new XsfTagGetter(pSource.GetGenreTag);
+            setter = new XsfTagSetter(pDestination.SetGenreTag);
+            CopyTag(pXsfTagCopyStruct.UpdateGenreTag, getter, setter, pXsfTagCopyStruct.CopyEmptyTags);
+            
+            getter = new XsfTagGetter(pSource.GetCommentTag);
+            setter = new XsfTagSetter(pDestination.SetCommentTag);
+            CopyTag(pXsfTagCopyStruct.UpdateCommentTag, getter, setter, pXsfTagCopyStruct.CopyEmptyTags);
+
+
+            getter = new XsfTagGetter(pSource.GetCopyrightTag);
+            setter = new XsfTagSetter(pDestination.SetCopyrightTag);
+            CopyTag(pXsfTagCopyStruct.UpdateCopyrightTag, getter, setter, pXsfTagCopyStruct.CopyEmptyTags);            
+
+            getter = new XsfTagGetter(pSource.GetXsfByTag);
+            setter = new XsfTagSetter(pDestination.SetXsfByTag);
+            CopyTag(pXsfTagCopyStruct.UpdateXsfByTag, getter, setter, pXsfTagCopyStruct.CopyEmptyTags);
+
+            getter = new XsfTagGetter(pSource.GetVolumeTag);
+            setter = new XsfTagSetter(pDestination.SetVolumeTag);
+            CopyTag(pXsfTagCopyStruct.UpdateVolumeTag, getter, setter, pXsfTagCopyStruct.CopyEmptyTags);
+            
+            getter = new XsfTagGetter(pSource.GetLengthTag);
+            setter = new XsfTagSetter(pDestination.SetLengthTag);
+            CopyTag(pXsfTagCopyStruct.UpdateLengthTag, getter, setter, pXsfTagCopyStruct.CopyEmptyTags);
+
+            getter = new XsfTagGetter(pSource.GetFadeTag);
+            setter = new XsfTagSetter(pDestination.SetFadeTag);
+            CopyTag(pXsfTagCopyStruct.UpdateFadeTag, getter, setter, pXsfTagCopyStruct.CopyEmptyTags);            
+
+            getter = new XsfTagGetter(pSource.GetSystemTag);
+            setter = new XsfTagSetter(pDestination.SetSystemTag);
+            CopyTag(pXsfTagCopyStruct.UpdateSystemTag, getter, setter, pXsfTagCopyStruct.CopyEmptyTags);
+
+            pDestination.UpdateTags();
+        }
+
+        private static void CopyTag(bool pDoCopy, XsfTagGetter pXsfTagGetter,
+            XsfTagSetter pXsfTagSetter, bool pCopyEmptyTags)
+        {                        
+            if (pDoCopy)
+            {
+                string tagData = pXsfTagGetter();
+
+                if ((pCopyEmptyTags) || 
+                    ((!pCopyEmptyTags) && (!String.IsNullOrEmpty(tagData))))
+                {
+                    pXsfTagSetter(tagData);
+                }
+            }
+        }
+
         // PSF2
         public static Ps2SequenceData.Ps2SqTimingStruct GetTimeForPsf2File(string pSqPath, int pSequenceId)
         {
@@ -618,6 +713,57 @@ namespace VGMToolbox.format.util
 
                     File.Delete(decompressedDataSectionPath);                
                 }                
+            }
+
+            return ret;
+        }
+
+        public static int GetSongNumberForYoshiIslandMini2sf(string pPath)
+        {
+            int ret = INVALID_DATA;
+
+            string formatString = GetXsfFormatString(pPath);
+            Xsf2ExeStruct xsf2ExeStruct;
+            string decompressedReservedSectionPath;
+            string decompressedSaveStatePath;
+
+            if (!String.IsNullOrEmpty(formatString) && formatString.Equals(Xsf.FORMAT_NAME_2SF))
+            {
+                // extract reserved section
+                xsf2ExeStruct = new Xsf2ExeStruct();
+                xsf2ExeStruct.IncludeExtension = true;
+                xsf2ExeStruct.StripGsfHeader = false;
+                decompressedReservedSectionPath = ExtractReservedSection(pPath, xsf2ExeStruct);
+
+                if (!String.IsNullOrEmpty(decompressedReservedSectionPath))
+                {
+                    using (FileStream fs = File.OpenRead(decompressedReservedSectionPath))
+                    {
+                        byte[] savestateCheckbytes = new byte[4];
+                        fs.Read(savestateCheckbytes, 0, 4);
+
+                        // check for SAVE bytes to indicate this is a V1 set.
+                        if (ParseFile.CompareSegment(savestateCheckbytes, 0, MINI2SF_SAVESTATE_ID))
+                        {                            
+                            decompressedSaveStatePath =
+                                Path.ChangeExtension(decompressedReservedSectionPath, CompressionUtil.ZLIB_OUTPUT_EXTENSION);
+                            fs.Position = 0x0C;  // move to zlib section
+
+                            // decompress save state
+                            CompressionUtil.DecompressZlibStreamToFile(fs, decompressedSaveStatePath);
+
+                            using (FileStream ssFs = File.OpenRead(decompressedSaveStatePath))
+                            {
+                                if (ssFs.Length == 0x0C) // verify save state length
+                                {
+                                    ret = (int)BitConverter.ToUInt32(ParseFile.parseSimpleOffset(ssFs, 8, 4), 0);
+                                }
+                            }
+                            File.Delete(decompressedSaveStatePath);
+                        }
+                    }
+                    File.Delete(decompressedReservedSectionPath);
+                }
             }
 
             return ret;

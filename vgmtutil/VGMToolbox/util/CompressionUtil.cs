@@ -10,6 +10,7 @@ namespace VGMToolbox.util
 {
     public class CompressionUtil
     {
+        public static string ZLIB_OUTPUT_EXTENSION = ".zlibx";
         public static readonly string SEVEN_ZIP_DLL = 
             Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "7z.dll");
         

@@ -388,6 +388,17 @@ namespace VGMToolbox
             nodeTag.FormClass = xsf_2sfSdatOptimizerForm.GetType().Name;
             xsf_SdatOptimizerNode.Tag = nodeTag;
 
+            ////////////////////
+            // 2SF TAG COPIER
+            ////////////////////
+            TreeNode xsf_2sfTagMigratorNode = new TreeNode("V1 to V2 Tag Copier");
+
+            Xsf_2sfTagsMigratorForm xsf_2sfTagsMigratorForm = new Xsf_2sfTagsMigratorForm(xsf_2sfTagMigratorNode);
+            this.splitContainer1.Panel2.Controls.Add(xsf_2sfTagsMigratorForm);
+
+            nodeTag.FormClass = xsf_2sfTagsMigratorForm.GetType().Name;
+            xsf_2sfTagMigratorNode.Tag = nodeTag;
+
             ////////////
             // MKPSF2FE
             ////////////
@@ -570,7 +581,9 @@ namespace VGMToolbox
             //_2sf_RootNode.Nodes.Add(xsf_2sfRipperNode);
             _2sf_RootNode.Nodes.Add(xsf_Make2sfNode);            
             _2sf_RootNode.Nodes.Add(xsf_2sfTimerNode);
-            _2sf_RootNode.Nodes.Add(xsf_SdatOptimizerNode);            
+            _2sf_RootNode.Nodes.Add(xsf_SdatOptimizerNode);
+            _2sf_RootNode.Nodes.Add(xsf_2sfTagMigratorNode);
+            
             xsf_RootNode.Nodes.Add(_2sf_RootNode);
 
             psf_RootNode.NodeFont = this.treeviewBoldFont;
@@ -664,7 +677,6 @@ namespace VGMToolbox
             // Set Tag for displaying the Form
             nodeTag.FormClass = extract_ZlibExtractForm.GetType().Name;
             ext_ExtractZlibNode.Tag = nodeTag;
-
 
 
             ///////

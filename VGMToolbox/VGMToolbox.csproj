@@ -199,6 +199,12 @@
     <Compile Include="forms\TreeViewVgmtForm.Designer.cs">
       <DependentUpon>TreeViewVgmtForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\Xsf_2sfTagsMigratorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\Xsf_2sfTagsMigratorForm.Designer.cs">
+      <DependentUpon>Xsf_2sfTagsMigratorForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\Xsf_XsfTagEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -531,6 +537,9 @@
     <Compile Include="tools\xsf\UnpkPsf2Worker.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\xsf\Xsf2sfTagMigratorWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\xsf\XsfCompressedProgramExtractorWorker.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -635,6 +644,9 @@
     <EmbeddedResource Include="forms\XsfTagsUpdateForm.resx">
       <DependentUpon>XsfTagsUpdateForm.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\Xsf_2sfTagsMigratorForm.resx">
+      <DependentUpon>Xsf_2sfTagsMigratorForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Xsf_Mk2sfForm.resx">
       <DependentUpon>Xsf_Mk2sfForm.cs</DependentUpon>
