@@ -122,7 +122,15 @@ namespace VGMToolbox.forms
                         this.tbYear.Text = this.vgmData.GetYearTag();
                         this.tbXsfBy.Text = this.vgmData.GetXsfByTag();
 
-                        this.tbTitle.Text = this.vgmData.GetTitleTag();
+                        if (this.cbGenerateTitleFromFilename.Checked)
+                        {
+                            this.tbTitle.Text = XsfUtil.GetTitleForFileName(selectedFilePath);
+                        }
+                        else
+                        {
+                            this.tbTitle.Text = this.vgmData.GetTitleTag();
+                        }
+                        
                         this.tbLength.Text = this.vgmData.GetLengthTag();
                         this.tbFade.Text = this.vgmData.GetFadeTag();
                         this.tbVolume.Text = this.vgmData.GetVolumeTag();
@@ -130,6 +138,8 @@ namespace VGMToolbox.forms
                         this.tbComments.Text = this.vgmData.GetCommentTag();
                     }
                 }
+
+                this.setTitleTagEnable();
             }
         }
 
@@ -187,6 +197,7 @@ namespace VGMToolbox.forms
 
             xtUpdateStruct.RemoveEmptyTags = cbDeleteEmpty.Checked;
             xtUpdateStruct.IsBatchMode = this.isBatchMode;
+            xtUpdateStruct.GenerateTitleFromFilename = this.cbGenerateTitleFromFilename.Checked;
 
             xtUpdateStruct.TitleTag = this.tbTitle.Text;
             xtUpdateStruct.ArtistTag = this.tbArtist.Text;
@@ -219,6 +230,22 @@ namespace VGMToolbox.forms
         protected override string getBeginMessage()
         {
             return ConfigurationSettings.AppSettings["Form_XsfTagEditor_MessageBegin"];
-        }        
+        }
+
+        private void cbGenerateTitleFromFilename_CheckedChanged(object sender, EventArgs e)
+        {
+            this.setTitleTagEnable();
+        }
+        private void setTitleTagEnable()
+        {
+            if (this.cbGenerateTitleFromFilename.Checked)
+            {
+                this.tbTitle.Enabled = false;
+            }
+            else
+            {
+                this.tbTitle.Enabled = true;
+            }        
+        }
     }
 }

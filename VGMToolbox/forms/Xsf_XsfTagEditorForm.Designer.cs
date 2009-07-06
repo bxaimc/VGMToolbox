@@ -33,6 +33,8 @@
             this.lbFiles = new System.Windows.Forms.ListBox();
             this.btnBrowseDirectory = new System.Windows.Forms.Button();
             this.grpSetTags = new System.Windows.Forms.GroupBox();
+            this.tbSystem = new System.Windows.Forms.TextBox();
+            this.lblSystem = new System.Windows.Forms.Label();
             this.lblXsfBy = new System.Windows.Forms.Label();
             this.tbXsfBy = new System.Windows.Forms.TextBox();
             this.tbYear = new System.Windows.Forms.TextBox();
@@ -54,11 +56,10 @@
             this.tbLength = new System.Windows.Forms.TextBox();
             this.tbTitle = new System.Windows.Forms.TextBox();
             this.lblLength = new System.Windows.Forms.Label();
+            this.cbGenerateTitleFromFilename = new System.Windows.Forms.CheckBox();
             this.grpComments = new System.Windows.Forms.GroupBox();
             this.tbComments = new System.Windows.Forms.TextBox();
             this.cbDeleteEmpty = new System.Windows.Forms.CheckBox();
-            this.lblSystem = new System.Windows.Forms.Label();
-            this.tbSystem = new System.Windows.Forms.TextBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -70,7 +71,7 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 523);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 481);
             this.pnlLabels.Size = new System.Drawing.Size(779, 19);
             // 
             // pnlTitle
@@ -79,12 +80,12 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 446);
+            this.tbOutput.Location = new System.Drawing.Point(0, 404);
             this.tbOutput.Size = new System.Drawing.Size(779, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 426);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 384);
             this.pnlButtons.Size = new System.Drawing.Size(779, 20);
             // 
             // btnCancel
@@ -159,6 +160,22 @@
             this.grpSetTags.TabIndex = 8;
             this.grpSetTags.TabStop = false;
             this.grpSetTags.Text = "GameTags";
+            // 
+            // tbSystem
+            // 
+            this.tbSystem.Location = new System.Drawing.Point(63, 150);
+            this.tbSystem.Name = "tbSystem";
+            this.tbSystem.Size = new System.Drawing.Size(214, 20);
+            this.tbSystem.TabIndex = 13;
+            // 
+            // lblSystem
+            // 
+            this.lblSystem.AutoSize = true;
+            this.lblSystem.Location = new System.Drawing.Point(9, 153);
+            this.lblSystem.Name = "lblSystem";
+            this.lblSystem.Size = new System.Drawing.Size(41, 13);
+            this.lblSystem.TabIndex = 12;
+            this.lblSystem.Text = "System";
             // 
             // lblXsfBy
             // 
@@ -268,7 +285,7 @@
             this.grpTrackTags.Controls.Add(this.lblLength);
             this.grpTrackTags.Location = new System.Drawing.Point(238, 208);
             this.grpTrackTags.Name = "grpTrackTags";
-            this.grpTrackTags.Size = new System.Drawing.Size(287, 67);
+            this.grpTrackTags.Size = new System.Drawing.Size(287, 64);
             this.grpTrackTags.TabIndex = 18;
             this.grpTrackTags.TabStop = false;
             this.grpTrackTags.Text = "Track Tags";
@@ -337,12 +354,23 @@
             this.lblLength.TabIndex = 14;
             this.lblLength.Text = "Length";
             // 
+            // cbGenerateTitleFromFilename
+            // 
+            this.cbGenerateTitleFromFilename.AutoSize = true;
+            this.cbGenerateTitleFromFilename.Location = new System.Drawing.Point(238, 338);
+            this.cbGenerateTitleFromFilename.Name = "cbGenerateTitleFromFilename";
+            this.cbGenerateTitleFromFilename.Size = new System.Drawing.Size(161, 17);
+            this.cbGenerateTitleFromFilename.TabIndex = 19;
+            this.cbGenerateTitleFromFilename.Text = "Generate Title from Filename";
+            this.cbGenerateTitleFromFilename.UseVisualStyleBackColor = true;
+            this.cbGenerateTitleFromFilename.CheckedChanged += new System.EventHandler(this.cbGenerateTitleFromFilename_CheckedChanged);
+            // 
             // grpComments
             // 
             this.grpComments.Controls.Add(this.tbComments);
-            this.grpComments.Location = new System.Drawing.Point(238, 281);
+            this.grpComments.Location = new System.Drawing.Point(238, 278);
             this.grpComments.Name = "grpComments";
-            this.grpComments.Size = new System.Drawing.Size(287, 77);
+            this.grpComments.Size = new System.Drawing.Size(287, 54);
             this.grpComments.TabIndex = 22;
             this.grpComments.TabStop = false;
             this.grpComments.Text = "Comments";
@@ -350,44 +378,29 @@
             // tbComments
             // 
             this.tbComments.AcceptsReturn = true;
-            this.tbComments.Location = new System.Drawing.Point(6, 19);
+            this.tbComments.Location = new System.Drawing.Point(6, 15);
             this.tbComments.Multiline = true;
             this.tbComments.Name = "tbComments";
             this.tbComments.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbComments.Size = new System.Drawing.Size(269, 53);
+            this.tbComments.Size = new System.Drawing.Size(269, 35);
             this.tbComments.TabIndex = 19;
             // 
             // cbDeleteEmpty
             // 
             this.cbDeleteEmpty.AutoSize = true;
-            this.cbDeleteEmpty.Location = new System.Drawing.Point(238, 364);
+            this.cbDeleteEmpty.Location = new System.Drawing.Point(238, 358);
             this.cbDeleteEmpty.Name = "cbDeleteEmpty";
             this.cbDeleteEmpty.Size = new System.Drawing.Size(265, 17);
             this.cbDeleteEmpty.TabIndex = 23;
             this.cbDeleteEmpty.Text = "Remove fields you\'ve left empty from the files\' tags.";
             this.cbDeleteEmpty.UseVisualStyleBackColor = true;
             // 
-            // lblSystem
-            // 
-            this.lblSystem.AutoSize = true;
-            this.lblSystem.Location = new System.Drawing.Point(9, 153);
-            this.lblSystem.Name = "lblSystem";
-            this.lblSystem.Size = new System.Drawing.Size(41, 13);
-            this.lblSystem.TabIndex = 12;
-            this.lblSystem.Text = "System";
-            // 
-            // tbSystem
-            // 
-            this.tbSystem.Location = new System.Drawing.Point(63, 150);
-            this.tbSystem.Name = "tbSystem";
-            this.tbSystem.Size = new System.Drawing.Size(214, 20);
-            this.tbSystem.TabIndex = 13;
-            // 
             // Xsf_XsfTagEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(779, 564);
+            this.ClientSize = new System.Drawing.Size(779, 522);
+            this.Controls.Add(this.cbGenerateTitleFromFilename);
             this.Controls.Add(this.cbDeleteEmpty);
             this.Controls.Add(this.grpComments);
             this.Controls.Add(this.grpTrackTags);
@@ -404,6 +417,7 @@
             this.Controls.SetChildIndex(this.grpTrackTags, 0);
             this.Controls.SetChildIndex(this.grpComments, 0);
             this.Controls.SetChildIndex(this.cbDeleteEmpty, 0);
+            this.Controls.SetChildIndex(this.cbGenerateTitleFromFilename, 0);
             this.pnlLabels.ResumeLayout(false);
             this.pnlLabels.PerformLayout();
             this.pnlTitle.ResumeLayout(false);
@@ -456,5 +470,6 @@
         private System.Windows.Forms.CheckBox cbDeleteEmpty;
         private System.Windows.Forms.TextBox tbSystem;
         private System.Windows.Forms.Label lblSystem;
+        private System.Windows.Forms.CheckBox cbGenerateTitleFromFilename;
     }
 }

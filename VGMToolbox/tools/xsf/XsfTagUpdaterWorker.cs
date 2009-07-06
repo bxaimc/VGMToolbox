@@ -18,6 +18,7 @@ namespace VGMToolbox.tools.xsf
         {
             public bool RemoveEmptyTags;
             public bool IsBatchMode;
+            public bool GenerateTitleFromFilename;
 
             public string TitleTag;
             public string ArtistTag;
@@ -80,7 +81,14 @@ namespace VGMToolbox.tools.xsf
                 updateXsfTag(xts, xsfTagUpdaterStruct.XsfByTag, xsfTagUpdaterStruct.RemoveEmptyTags);
                 xts = new XsfTagSetter(vgmData.SetSystemTag);
                 updateXsfTag(xts, xsfTagUpdaterStruct.SystemTag, xsfTagUpdaterStruct.RemoveEmptyTags);
-                
+
+                if (xsfTagUpdaterStruct.GenerateTitleFromFilename)
+                {
+                    xsfTagUpdaterStruct.TitleTag = XsfUtil.GetTitleForFileName(pPath);
+                    xts = new XsfTagSetter(vgmData.SetTitleTag);
+                    updateXsfTag(xts, xsfTagUpdaterStruct.TitleTag, xsfTagUpdaterStruct.RemoveEmptyTags);
+                }
+
                 if (!xsfTagUpdaterStruct.IsBatchMode)
                 {
                     xts = new XsfTagSetter(vgmData.SetVolumeTag);
@@ -88,7 +96,7 @@ namespace VGMToolbox.tools.xsf
                     xts = new XsfTagSetter(vgmData.SetLengthTag);
                     updateXsfTag(xts, xsfTagUpdaterStruct.LengthTag, xsfTagUpdaterStruct.RemoveEmptyTags);
                     xts = new XsfTagSetter(vgmData.SetFadeTag);
-                    updateXsfTag(xts, xsfTagUpdaterStruct.FadeTag, xsfTagUpdaterStruct.RemoveEmptyTags);
+                    updateXsfTag(xts, xsfTagUpdaterStruct.FadeTag, xsfTagUpdaterStruct.RemoveEmptyTags);                    
                     xts = new XsfTagSetter(vgmData.SetTitleTag);
                     updateXsfTag(xts, xsfTagUpdaterStruct.TitleTag, xsfTagUpdaterStruct.RemoveEmptyTags);
                 }

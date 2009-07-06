@@ -60,7 +60,7 @@ namespace VGMToolbox.tools.xsf
             {
                 // build source list
                 foreach (string f in Directory.GetFiles(pXsf2sfTagMigratorStruct.SourceDirectory, "*.*"))
-                {
+                {                    
                     songNumber = XsfUtil.GetSongNumberForYoshiIslandMini2sf(f);
 
                     if ((songNumber != XsfUtil.INVALID_DATA) &&
