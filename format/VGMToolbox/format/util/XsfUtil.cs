@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 
 using Ionic.Zlib;
 
@@ -437,6 +438,30 @@ namespace VGMToolbox.format.util
             return batchFilePath;
         }
 
+        public static string GetTitleForFileName(string pFilePath)
+        {
+            string fileName = Path.GetFileNameWithoutExtension(pFilePath);
+            string[] splitFileName = fileName.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string ret = fileName.Trim();
+
+            if (splitFileName.Length > 1)
+            {
+                string firstSegment = splitFileName[0].Trim();
+                string firstSegmentNumOnly = Regex.Replace(firstSegment, "[^0-9]", String.Empty);
+
+                float firstSegmentLength = (float) firstSegment.Length;
+                float firstSegmentNumOnlyLength = (float) firstSegmentNumOnly.Length;
+
+                if ((firstSegmentNumOnlyLength > 0) && 
+                    ((firstSegmentNumOnlyLength / firstSegmentLength) > 0.5)) // more than half are numeric
+                {
+                    ret = fileName.Substring(firstSegment.Length).Trim();
+                }
+            }
+
+            return ret;
+        }
+        
         public static void CopyTags(IXsfTagFormat pSource, IXsfTagFormat pDestination, 
             XsfTagCopyStruct pXsfTagCopyStruct)
         {

@@ -63,16 +63,16 @@ namespace VGMToolbox.format
             set { filePath = value; }
         }
 
-        private byte[] asciiSignature;
-        private byte[] versionByte;
-        private uint reservedSectionLength;
-        private uint compressedProgramLength;
-        private byte[] compressedProgramCrc32;
-        private byte[] reservedSection;
-        private byte[] compressedProgram;
+        protected byte[] asciiSignature;
+        protected byte[] versionByte;
+        protected uint reservedSectionLength;
+        protected uint compressedProgramLength;
+        protected byte[] compressedProgramCrc32;
+        protected byte[] reservedSection;
+        protected byte[] compressedProgram;
 
-        private Dictionary<string, string> tagHash;
-        private Hashtable formatHash;
+        protected Dictionary<string, string> tagHash;
+        protected Hashtable formatHash;
 
         // Properties
         public byte[] AsciiSignature { get { return this.asciiSignature; } }
@@ -442,7 +442,7 @@ namespace VGMToolbox.format
             this.tagHash = this.getTags(pBytes);         
         }
 
-        public void Initialize(Stream pStream, string pFilePath)                 
+        public virtual void Initialize(Stream pStream, string pFilePath)                 
         {
             this.filePath = pFilePath;
             this.asciiSignature = this.getSignatureTag(pStream);

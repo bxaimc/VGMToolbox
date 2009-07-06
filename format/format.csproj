@@ -92,6 +92,7 @@
     <Compile Include="VGMToolbox\format\Vgm.cs" />
     <Compile Include="VGMToolbox\format\Wsr.cs" />
     <Compile Include="VGMToolbox\format\Xsf.cs" />
+    <Compile Include="VGMToolbox\format\_2sf.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\vgmtutil\vgmtutil.csproj">
