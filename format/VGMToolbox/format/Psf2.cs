@@ -228,8 +228,7 @@ namespace VGMToolbox.format
                 }
             }
         }
-
-        /*
+        
         private void extractFile(Psf2DirectoryEntry pPsf2DirectoryEntry, string pDestinationFile)
         {            
             uint blockCount = 
@@ -245,7 +244,7 @@ namespace VGMToolbox.format
             long totalBytesInflated = 0;
 
             FileInfo tempFileInfo;
-
+            MemoryStream compressedBytesStream;
 
             using (FileStream pfs = File.Open(this.FilePath, FileMode.Open, FileAccess.Read))
             {
@@ -259,125 +258,46 @@ namespace VGMToolbox.format
 
                 pfs.Position = (long)(pPsf2DirectoryEntry.Offset + (blockCount * 4));
 
-                using (FileStream fs = File.Open(tempCompressedFile, FileMode.Create, FileAccess.Write))
-                {
-                    if (!IsEmptyFile(pPsf2DirectoryEntry))
-                    {
-                        // write compressed bytes to temp file
-                        using (BinaryWriter bw = new BinaryWriter(fs))
-                        {                                                        
-                            foreach (UInt32 b in blockTable)
-                            {
-                                compressedBlock = new byte[b];
-                                bytesRead = pfs.Read(compressedBlock, 0, (int)b);
-                                bw.Write(compressedBlock, 0, bytesRead);
-                            }                        
-                        }                           
-                    }
-                }
-
-                System.Windows.Forms.Application.DoEvents();
-                
-                using (FileStream fs = File.Open(tempCompressedFile, FileMode.Open, FileAccess.Read))
-                {
-                    using (FileStream outputFs = File.Open(pDestinationFile, FileMode.Create, FileAccess.Write))
-                    {
-                        // using (InflaterInputStream inflaterStream = new InflaterInputStream(fs))
-                        using (ZlibStream zs = new ZlibStream(fs, CompressionMode.Decompress, true))
-                        {                            
-                            uncompressedBlock = new byte[pPsf2DirectoryEntry.BlockSize];
-
-                            using (BinaryWriter bw = new BinaryWriter(outputFs))
-                            {
-                                while ((bytesInflated = zs.Read(uncompressedBlock, 0, uncompressedBlock.Length)) > 0)
-                                {
-                                    totalBytesInflated += bytesInflated;
-                                    bw.Write(uncompressedBlock, 0, bytesInflated);
-                                }                            
-                            }
-                        }
-                    }
-                }
-                File.Delete(tempCompressedFile);
-            }
-        }
-        */
-
-        private void extractFile(Psf2DirectoryEntry pPsf2DirectoryEntry, string pDestinationFile)
-        {
-            uint blockCount =
-                ((pPsf2DirectoryEntry.UncompressedSize + pPsf2DirectoryEntry.BlockSize) - 1) / pPsf2DirectoryEntry.BlockSize;
-            UInt32[] blockTable = new UInt32[blockCount];
-
-            string tempCompressedFile = Path.GetTempFileName();
-
-            byte[] uncompressedBlock;
-            int bytesInflated;
-            long totalBytesInflated = 0;
-
-            using (FileStream pfs = File.Open(this.FilePath, FileMode.Open, FileAccess.Read))
-            {
-                pfs.Position = (long)pPsf2DirectoryEntry.Offset;
-
-                for (int i = 0; i < blockCount; i++)
-                {
-                    blockTable[i] =
-                        BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pfs, (long)pPsf2DirectoryEntry.Offset + (i * 4), 4), 0);
-                }
-
-                pfs.Position = (long)(pPsf2DirectoryEntry.Offset + (blockCount * 4));
-
-
                 if (!IsEmptyFile(pPsf2DirectoryEntry))
                 {
+                    // write compressed bytes to mem stream and decompress to file                                                       
                     foreach (UInt32 b in blockTable)
                     {
-                        using (FileStream outputFs = File.Open(pDestinationFile, FileMode.Append, FileAccess.Write))
+                        compressedBlock = new byte[b];
+                        bytesRead = pfs.Read(compressedBlock, 0, (int)b);
+                        using (compressedBytesStream = new MemoryStream(compressedBlock, 0, bytesRead))
                         {
-                            if (pDestinationFile.EndsWith("00000011.SQ"))
+                            using (FileStream outputFs = File.Open(pDestinationFile, FileMode.Append, FileAccess.Write))
                             {
-                                int x = 0;
-                            }
-                            
-                            using (ZlibStream zs = new ZlibStream(pfs, CompressionMode.Decompress, true))
-                            {
-                                if ((int)b > 0x2000)
+                                using (ZlibStream zs = new ZlibStream(compressedBytesStream, CompressionMode.Decompress, true))
                                 {
-                                    zs.BufferSize = (int)b;
-                                }
-                                else
-                                {
-                                    zs.BufferSize = 0x2000;
-                                }
-                                                         // set buffer size to current compressed 
-                                                         //  block size so we read the entire block 
-                                                         //  in one read.  Default buffer size will 
-                                                         //  read past the end of block and give an 
-                                                         //  unknown compression format error for 
-                                                         //  files larger than 32k.
-                                uncompressedBlock = new byte[pPsf2DirectoryEntry.BlockSize];
-
-                                using (BinaryWriter bw = new BinaryWriter(outputFs))
-                                {
-                                    while ((bytesInflated = zs.Read(uncompressedBlock, 0, uncompressedBlock.Length)) > 0)
+                                    if ((int)b > 0x2000)
                                     {
-                                        totalBytesInflated += bytesInflated;
-                                        bw.Write(uncompressedBlock, 0, bytesInflated);
+                                        zs.BufferSize = (int)b;
+                                    }
+                                    else
+                                    {
+                                        zs.BufferSize = 0x2000;
+                                    }
+                                    
+                                    uncompressedBlock = new byte[pPsf2DirectoryEntry.BlockSize];
 
-                                        if ((bytesInflated == pPsf2DirectoryEntry.BlockSize) ||
-                                            (totalBytesInflated == pPsf2DirectoryEntry.UncompressedSize))
+                                    using (BinaryWriter bw = new BinaryWriter(outputFs))
+                                    {
+                                        while ((bytesInflated = zs.Read(uncompressedBlock, 0, uncompressedBlock.Length)) > 0)
                                         {
-                                            break;
+                                            totalBytesInflated += bytesInflated;
+                                            bw.Write(uncompressedBlock, 0, bytesInflated);
                                         }
                                     }
                                 }
                             }
                         }
-                    }
-                }               
+                    }                                                   
+                }                
             }
         }
-
+                
         public static bool IsEmptyFile(Psf2DirectoryEntry pPsf2DirectoryEntry)
         {
             return (pPsf2DirectoryEntry.UncompressedSize == 0 &&

@@ -70,122 +70,128 @@ namespace VGMToolbox.tools.xsf
 
                 // parse ini
                 iniFiles = Directory.GetFiles(outputDir, "PSF2.INI", SearchOption.AllDirectories);
-                using (FileStream iniFs = File.Open(iniFiles[0], FileMode.Open, FileAccess.Read))
-                {
-                    // parse ini file to get SQ info
-                    psf2IniStruct = Psf2.ParseClsIniFile(iniFs);
-                }
 
-                using (FileStream fs = File.OpenRead(pPath))
+                if (iniFiles.Length > 0)
                 {
-                    Psf2 psf2File = new Psf2();
-                    psf2File.Initialize(fs, pPath);
-
-                    // check for libs
-                    libPaths = psf2File.GetLibPathArray();
-                }
-                
-                // copy the SQ file out (should only be one)
-                sqFiles = Directory.GetFiles(outputDir, psf2IniStruct.SqFileName, SearchOption.AllDirectories);
-
-                if (sqFiles.Length > 0)
-                {
-                    if (!String.IsNullOrEmpty(psf2IniStruct.SequenceNumber))
+                    using (FileStream iniFs = File.Open(iniFiles[0], FileMode.Open, FileAccess.Read))
                     {
-                        sequenceNumber = int.Parse(psf2IniStruct.SequenceNumber);
-                        outputSqFileName = String.Format("{0}_n={1}.SQ", outputDir, psf2IniStruct.SequenceNumber);
+                        // parse ini file to get SQ info
+                        psf2IniStruct = Psf2.ParseClsIniFile(iniFs);
                     }
-                    else
-                    {
-                        outputSqFileName = String.Format("{0}.SQ", outputDir);                                        
-                    }
-                    File.Copy(sqFiles[0], outputSqFileName, true);
-                }
-                else // miniPSF2
-                {                                    
-                    // unpack each lib, looking for the needed file
-                    foreach (string libPath in libPaths)
-                    {
-                        fileDir = Path.GetDirectoryName(libPath);
-                        fileName = Path.GetFileNameWithoutExtension(libPath);
-                        libOutputDir = Path.Combine(fileDir, fileName);
 
-                        if (!extractedLibHash.ContainsKey(libPath))
+                    using (FileStream fs = File.OpenRead(pPath))
+                    {
+                        Psf2 psf2File = new Psf2();
+                        psf2File.Initialize(fs, pPath);
+
+                        // check for libs
+                        libPaths = psf2File.GetLibPathArray();
+                    }
+
+                    // copy the SQ file out (should only be one)
+                    sqFiles = Directory.GetFiles(outputDir, psf2IniStruct.SqFileName, SearchOption.AllDirectories);
+
+                    if (sqFiles.Length > 0)
+                    {
+                        if (!String.IsNullOrEmpty(psf2IniStruct.SequenceNumber))
                         {
-                            libOutputDir = XsfUtil.UnpackPsf2(libPath, out unpkOutput, out unpkError);                                                                                        
-                            extractedLibHash.Add(libPath, libOutputDir);
+                            sequenceNumber = int.Parse(psf2IniStruct.SequenceNumber);
+                            outputSqFileName = String.Format("{0}_n={1}.SQ", outputDir, psf2IniStruct.SequenceNumber);
+                        }
+                        else
+                        {
+                            outputSqFileName = String.Format("{0}.SQ", outputDir);
+                        }
+                        File.Copy(sqFiles[0], outputSqFileName, true);
+                    }
+                    else // miniPSF2
+                    {
+                        // unpack each lib, looking for the needed file
+                        foreach (string libPath in libPaths)
+                        {
+                            fileDir = Path.GetDirectoryName(libPath);
+                            fileName = Path.GetFileNameWithoutExtension(libPath);
+                            libOutputDir = Path.Combine(fileDir, fileName);
+
+                            if (!extractedLibHash.ContainsKey(libPath))
+                            {
+                                libOutputDir = XsfUtil.UnpackPsf2(libPath, out unpkOutput, out unpkError);
+                                extractedLibHash.Add(libPath, libOutputDir);
+                            }
+
+                            // look for the file in this lib
+                            sqFiles = Directory.GetFiles(libOutputDir, psf2IniStruct.SqFileName, SearchOption.AllDirectories);
+
+                            if (sqFiles.Length > 0)
+                            {
+                                if (!String.IsNullOrEmpty(psf2IniStruct.SequenceNumber))
+                                {
+                                    sequenceNumber = int.Parse(psf2IniStruct.SequenceNumber);
+                                    outputSqFileName = String.Format("{0}_n={1}.SQ", outputDir, psf2IniStruct.SequenceNumber);
+                                }
+                                else
+                                {
+                                    outputSqFileName = String.Format("{0}.SQ", outputDir);
+                                }
+
+                                File.Copy(sqFiles[0], outputSqFileName, true);
+                                break;
+                            }
+
+                            // delete the unpkpsf2 output folder
+                            Directory.Delete(libOutputDir, true);
+
+                        } // foreach (string libPath in libPaths)
+                    }
+
+                    // get time and add to script
+                    if (!String.IsNullOrEmpty(outputSqFileName))
+                    {
+                        psf2Time = XsfUtil.GetTimeForPsf2File(outputSqFileName, sequenceNumber);
+
+                        File.Delete(outputSqFileName);  // delete SQ file
+
+                        minutes = (int)(psf2Time.TimeInSeconds / 60d);
+                        seconds = (psf2Time.TimeInSeconds - (minutes * 60));
+                        // seconds = Math.Ceiling(seconds);
+
+                        // shouldn't be needed without Math.Ceiling call, but whatever
+                        if (seconds >= 60)
+                        {
+                            minutes++;
+                            seconds -= 60d;
                         }
 
-                        // look for the file in this lib
-                        sqFiles = Directory.GetFiles(libOutputDir, psf2IniStruct.SqFileName, SearchOption.AllDirectories);
+                        batchFile.AppendFormat("psfpoint.exe -length=\"{0}:{1}\" -fade=\"{2}\" \"{3}\"",
+                            minutes.ToString(), seconds.ToString().PadLeft(2, '0'),
+                            psf2Time.FadeInSeconds.ToString(), Path.GetFileName(pPath));
+                        batchFile.Append(Environment.NewLine);
 
-                        if (sqFiles.Length > 0)
+                        batchFilePath = Path.Combine(Path.GetDirectoryName(pPath), BATCH_FILE_NAME);
+
+                        if (!File.Exists(batchFilePath))
                         {
-                            if (!String.IsNullOrEmpty(psf2IniStruct.SequenceNumber))
-                            {
-                                sequenceNumber = int.Parse(psf2IniStruct.SequenceNumber);
-                                outputSqFileName = String.Format("{0}_n={1}.SQ", outputDir, psf2IniStruct.SequenceNumber);
-                            }
-                            else
-                            {
-                                outputSqFileName = String.Format("{0}.SQ", outputDir);
-                            }
-                            
-                            File.Copy(sqFiles[0], outputSqFileName, true);                                                                                                                                  
-                            break;
+                            using (FileStream cfs = File.Create(batchFilePath)) { };
                         }
-                        
-                        // delete the unpkpsf2 output folder
-                        Directory.Delete(libOutputDir, true);
-                    
-                    } // foreach (string libPath in libPaths)
-                }
+
+                        using (StreamWriter sw = new StreamWriter(File.Open(batchFilePath, FileMode.Append, FileAccess.Write)))
+                        {
+                            sw.Write(batchFile.ToString());
+                        }
+
+                        // report warnings
+                        if (!String.IsNullOrEmpty(psf2Time.Warnings))
+                        {
+                            this.progressStruct.Clear();
+                            progressStruct.GenericMessage = String.Format("{0}{1}  WARNINGS{2}    {3}", pPath, Environment.NewLine, Environment.NewLine, psf2Time.Warnings);
+                            ReportProgress(this.Progress, progressStruct);
+                        }
+                    }
+                } // if (iniFiles.Length > 0)
+
                 // delete the unpkpsf2 output folder
                 Directory.Delete(outputDir, true);
 
-                // get time and add to script
-                if (!String.IsNullOrEmpty(outputSqFileName))
-                {
-                    psf2Time = XsfUtil.GetTimeForPsf2File(outputSqFileName, sequenceNumber);
-                    
-                    File.Delete(outputSqFileName);  // delete SQ file
-                    
-                    minutes = (int)(psf2Time.TimeInSeconds / 60d);
-                    seconds = (psf2Time.TimeInSeconds - (minutes * 60));
-                    // seconds = Math.Ceiling(seconds);
-
-                    // shouldn't be needed without Math.Ceiling call, but whatever
-                    if (seconds >= 60)
-                    {
-                        minutes++;
-                        seconds -= 60d;
-                    }
-
-                    batchFile.AppendFormat("psfpoint.exe -length=\"{0}:{1}\" -fade=\"{2}\" \"{3}\"",
-                        minutes.ToString(), seconds.ToString().PadLeft(2, '0'),
-                        psf2Time.FadeInSeconds.ToString(), Path.GetFileName(pPath));
-                    batchFile.Append(Environment.NewLine);
-
-                    batchFilePath = Path.Combine(Path.GetDirectoryName(pPath), BATCH_FILE_NAME);
-
-                    if (!File.Exists(batchFilePath))
-                    {
-                        using (FileStream cfs = File.Create(batchFilePath)) { };                                        
-                    }
-
-                    using (StreamWriter sw = new StreamWriter(File.Open(batchFilePath, FileMode.Append, FileAccess.Write)))
-                    {
-                        sw.Write(batchFile.ToString());
-                    }
-
-                    // report warnings
-                    if (!String.IsNullOrEmpty(psf2Time.Warnings))
-                    {
-                        this.progressStruct.Clear();
-                        progressStruct.GenericMessage = String.Format("{0}{1}  WARNINGS{2}    {3}", pPath, Environment.NewLine, Environment.NewLine, psf2Time.Warnings);
-                        ReportProgress(this.Progress, progressStruct);
-                    }
-                }
             } // if (psf2File.getFormat().Equals(Xsf.FORMAT_NAME_PSF2) && (!psf2File.IsFileLibrary()))
         }    
 

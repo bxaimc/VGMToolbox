@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{8A96D568-CB21-4E64-8FD2-849A8E2B2D4F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -628,6 +628,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Extract_ZlibExtractForm.resx">
       <DependentUpon>Extract_ZlibExtractForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Genh_CreatorForm.resx">
       <DependentUpon>Genh_CreatorForm.cs</DependentUpon>
@@ -647,6 +648,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Xsf_2sfTagsMigratorForm.resx">
       <DependentUpon>Xsf_2sfTagsMigratorForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Xsf_Mk2sfForm.resx">
       <DependentUpon>Xsf_Mk2sfForm.cs</DependentUpon>
