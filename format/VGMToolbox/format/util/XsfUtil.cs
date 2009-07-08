@@ -561,49 +561,6 @@ namespace VGMToolbox.format.util
             return time;
         }
 
-        public static string UnpackPsf2(string pPath, out string pStandardOutput, out string pStandardError)
-        {
-            string filePath;
-            string outputDir = null;
-
-            pStandardOutput = null;
-            pStandardError = null;
-
-            Process unpkPsf2Process = null;
-
-            string formatString = GetXsfFormatString(pPath);
-
-            if (!String.IsNullOrEmpty(formatString) && formatString.Equals(Xsf.FORMAT_NAME_PSF2))
-            {
-                using (FileStream fs = File.OpenRead(pPath))
-                {
-
-                    filePath = Path.GetFullPath(pPath);
-                    outputDir = Path.Combine(Path.GetDirectoryName(filePath),
-                        Path.GetFileNameWithoutExtension(filePath));
-
-                    // call unpkpsf2.exe
-                    string arguments = String.Format(" \"{0}\" \"{1}\"", filePath, outputDir);
-                    unpkPsf2Process = new Process();
-                    unpkPsf2Process.StartInfo = new ProcessStartInfo(UNPKPSF2_SOURCE_PATH, arguments);
-                    unpkPsf2Process.StartInfo.UseShellExecute = false;
-                    unpkPsf2Process.StartInfo.CreateNoWindow = true;
-
-                    unpkPsf2Process.StartInfo.RedirectStandardError = true;
-                    unpkPsf2Process.StartInfo.RedirectStandardOutput = true;
-
-                    bool isSuccess = unpkPsf2Process.Start();
-                    pStandardOutput = unpkPsf2Process.StandardOutput.ReadToEnd();
-                    pStandardError = unpkPsf2Process.StandardError.ReadToEnd();
-
-                    unpkPsf2Process.WaitForExit();
-                    unpkPsf2Process.Close();
-                    unpkPsf2Process.Dispose();
-                }
-            }
-            return outputDir;
-        }
-
         public static string UnpackPsf2(string pPath)
         { 
             return UnpackPsf2(pPath, null);
