@@ -604,6 +604,41 @@ namespace VGMToolbox.format.util
             return outputDir;
         }
 
+        public static string UnpackPsf2(string pPath)
+        { 
+            return UnpackPsf2(pPath, null);
+        }
+
+        public static string UnpackPsf2(string pPath, string pDestinationFolder)
+        {
+            string outputDir = null;
+            string formatString = GetXsfFormatString(pPath);
+
+            if (!String.IsNullOrEmpty(formatString) && formatString.Equals(Xsf.FORMAT_NAME_PSF2))
+            {
+                Psf2 vgmData = new Psf2();
+                
+                using (FileStream fs = File.OpenRead(pPath))
+                {
+                    vgmData.Initialize(fs, pPath);                    
+                }
+
+                // prepare output folder
+                if (String.IsNullOrEmpty(pDestinationFolder))
+                {
+                    outputDir = Path.Combine(Path.GetDirectoryName(pPath),
+                        Path.GetFileNameWithoutExtension(pPath));
+                }
+                else
+                {
+                    outputDir = pDestinationFolder;
+                }
+
+                vgmData.Unpack(outputDir);
+            }
+            return outputDir;
+        }
+
         // PSF        
         public static string ExtractPsxSequences(string pPath)
         {
