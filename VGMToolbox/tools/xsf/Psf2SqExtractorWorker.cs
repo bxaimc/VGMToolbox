@@ -26,7 +26,7 @@ namespace VGMToolbox.tools.xsf
         public Psf2SqExtractorWorker() : 
             base()
         {
-            extractedLibHash = new Dictionary<string, string>();
+            extractedLibHash = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
         }
 
         protected override void DoTaskForFile(string pPath, IVgmtWorkerStruct pPsf2SqExtractorStruct, 
@@ -103,7 +103,7 @@ namespace VGMToolbox.tools.xsf
                             if (!extractedLibHash.ContainsKey(libPath))
                             {
                                 libOutputDir = XsfUtil.UnpackPsf2(libPath);
-                                extractedLibHash.Add(libPath, libOutputDir);
+                                extractedLibHash.Add(libPath, libOutputDir.ToUpper());
                             }
 
                             // look for the file in this lib
@@ -135,7 +135,8 @@ namespace VGMToolbox.tools.xsf
                 } // if (iniFiles.Length > 0)
 
                 // delete the unpkpsf2 output folder
-                if (Directory.Exists(outputDir))
+                if ((Directory.Exists(outputDir)) &&
+                    (!extractedLibHash.ContainsValue(outputDir.ToUpper())))
                 {
                     Directory.Delete(outputDir, true);
                 }

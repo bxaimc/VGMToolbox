@@ -29,7 +29,7 @@ namespace VGMToolbox.tools.xsf
         public Psf2TimerWorker() :
             base()
         {            
-            extractedLibHash = new Dictionary<string, string>();
+            extractedLibHash = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
         }
 
         protected override void DoTaskForFile(string pPath, IVgmtWorkerStruct pPsf2TimerStruct, 
@@ -47,9 +47,6 @@ namespace VGMToolbox.tools.xsf
             string outputDir;
             string libOutputDir;
 
-            string unpkOutput;
-            string unpkError;
-
             Ps2SequenceData.Ps2SqTimingStruct psf2Time;
             int minutes;
             double seconds;
@@ -66,7 +63,7 @@ namespace VGMToolbox.tools.xsf
                 fileDir = Path.GetDirectoryName(filePath);
                 fileName = Path.GetFileNameWithoutExtension(filePath);
                             
-                outputDir = XsfUtil.UnpackPsf2(filePath, out unpkOutput, out unpkError);
+                outputDir = XsfUtil.UnpackPsf2(filePath);
 
                 // parse ini
                 iniFiles = Directory.GetFiles(outputDir, "PSF2.INI", SearchOption.AllDirectories);
@@ -115,8 +112,8 @@ namespace VGMToolbox.tools.xsf
 
                             if (!extractedLibHash.ContainsKey(libPath))
                             {
-                                libOutputDir = XsfUtil.UnpackPsf2(libPath, out unpkOutput, out unpkError);
-                                extractedLibHash.Add(libPath, libOutputDir);
+                                libOutputDir = XsfUtil.UnpackPsf2(libPath);
+                                extractedLibHash.Add(libPath, libOutputDir.ToUpper());
                             }
 
                             // look for the file in this lib
@@ -139,7 +136,10 @@ namespace VGMToolbox.tools.xsf
                             }
 
                             // delete the unpkpsf2 output folder
-                            Directory.Delete(libOutputDir, true);
+                            if (Directory.Exists(libOutputDir))
+                            {
+                                Directory.Delete(libOutputDir, true);
+                            }
 
                         } // foreach (string libPath in libPaths)
                     }
@@ -190,7 +190,11 @@ namespace VGMToolbox.tools.xsf
                 } // if (iniFiles.Length > 0)
 
                 // delete the unpkpsf2 output folder
-                Directory.Delete(outputDir, true);
+                if ((Directory.Exists(outputDir)) &&
+                    (!extractedLibHash.ContainsValue(outputDir.ToUpper())))
+                {
+                    Directory.Delete(outputDir, true);
+                }
 
             } // if (psf2File.getFormat().Equals(Xsf.FORMAT_NAME_PSF2) && (!psf2File.IsFileLibrary()))
         }    

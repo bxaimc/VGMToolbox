@@ -243,7 +243,6 @@ namespace VGMToolbox.format
             int bytesInflated;
             long totalBytesInflated = 0;
 
-            FileInfo tempFileInfo;
             MemoryStream compressedBytesStream;
 
             using (FileStream pfs = File.Open(this.FilePath, FileMode.Open, FileAccess.Read))
