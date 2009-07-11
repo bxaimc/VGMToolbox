@@ -19,6 +19,8 @@ namespace VGMToolbox.forms
 {
     public partial class Xsf_Mk2sfForm : AVgmtForm
     {
+        Mk2sfWorker.VolumeChangeStruct[] sseqVolumeList;
+
         public Xsf_Mk2sfForm(TreeNode pTreeNode)
             : base(pTreeNode)
         {
@@ -83,6 +85,8 @@ namespace VGMToolbox.forms
                 mk2sfStruct.TagYear = tbYear.Text;
                 mk2sfStruct.TagGame = tbGame.Text;
 
+                mk2sfStruct.VolumeChangeList = this.sseqVolumeList;
+
                 base.backgroundWorker_Execute(mk2sfStruct);
             }
         }
@@ -94,6 +98,8 @@ namespace VGMToolbox.forms
 
         private void LoadComboBox(string pSourcePath)
         {
+            Smap.SmapSeqStruct s;
+
             this.dataGridSseq.Rows.Clear();
             
             if (Sdat.IsSdat(pSourcePath))
@@ -103,8 +109,14 @@ namespace VGMToolbox.forms
                 
                 if ((smap.SseqSection != null) && (smap.SseqSection.Length > 0))
                 {
-                    foreach (Smap.SmapSeqStruct s in smap.SseqSection)
+                    // setup volume tracking struct
+                    this.sseqVolumeList = new Mk2sfWorker.VolumeChangeStruct[smap.SseqSection.Length];
+                    
+                    // foreach (Smap.SmapSeqStruct s in smap.SseqSection)
+                    for (int i = 0; i < smap.SseqSection.Length; i++)
                     {
+                        s = smap.SseqSection[i];
+                        
                         row = new DataGridViewRow();
                         row.CreateCells(this.dataGridSseq);
 
@@ -121,6 +133,10 @@ namespace VGMToolbox.forms
                             row.Cells[7].Value = s.cpr.ToString();
                             row.Cells[8].Value = s.ppr.ToString();
                             row.Cells[9].Value = s.ply.ToString();
+
+                            // add volume tracking
+                            this.sseqVolumeList[i].oldValue = s.vol;
+                            this.sseqVolumeList[i].newValue = s.vol;
                         }
                         else
                         {
@@ -227,6 +243,52 @@ namespace VGMToolbox.forms
         private bool CheckInputs()
         {
             return base.checkFolderExists(tbOutputPath.Text, this.lblOutputPath.Text);
+        }
+
+        private void dataGridSseq_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            string errMessage = null;
+            
+            if ((e.ColumnIndex == 6)) // volume column 
+            {
+                DataGridViewCell volumeCell = this.dataGridSseq[e.ColumnIndex, e.RowIndex];
+                DataGridViewCell fileIdCell = this.dataGridSseq[2, e.RowIndex];
+
+                if (!String.IsNullOrEmpty((string)fileIdCell.Value))
+                {
+                    int newVolume;
+
+                    if (int.TryParse((string)volumeCell.Value, out newVolume))
+                    {
+                        if (newVolume < 0 || newVolume > 255)
+                        {
+                            errMessage = "Please enter a value between 0 and 255";
+                            volumeCell.Value = this.sseqVolumeList[e.RowIndex].oldValue.ToString();
+                        }
+                        else
+                        {
+                            this.sseqVolumeList[e.RowIndex].newValue = newVolume;
+                        }
+                    }
+                    else
+                    {
+                        errMessage = String.Format("Cannot convert [{0}] to an integer.  Please use decimal values only.", volumeCell.Value);
+                        volumeCell.Value = this.sseqVolumeList[e.RowIndex].oldValue.ToString();
+                    }
+                }
+                else
+                {
+                    errMessage = "Volume cannot be adjusted for empty sequences.";
+                    volumeCell.Value = "";
+                }
+            }
+
+            
+            // display error if needed
+            if (!String.IsNullOrEmpty(errMessage))
+            {
+                MessageBox.Show(errMessage, "Error");
+            }
         }
     }
 }

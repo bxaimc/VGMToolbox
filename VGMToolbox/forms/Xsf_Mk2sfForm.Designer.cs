@@ -68,29 +68,29 @@
             // pnlLabels
             // 
             this.pnlLabels.Location = new System.Drawing.Point(0, 418);
-            this.pnlLabels.Size = new System.Drawing.Size(551, 19);
+            this.pnlLabels.Size = new System.Drawing.Size(732, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(551, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(732, 20);
             // 
             // tbOutput
             // 
             this.tbOutput.Location = new System.Drawing.Point(0, 341);
-            this.tbOutput.Size = new System.Drawing.Size(551, 77);
+            this.tbOutput.Size = new System.Drawing.Size(732, 77);
             // 
             // pnlButtons
             // 
             this.pnlButtons.Location = new System.Drawing.Point(0, 321);
-            this.pnlButtons.Size = new System.Drawing.Size(551, 20);
+            this.pnlButtons.Size = new System.Drawing.Size(732, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(491, 0);
+            this.btnCancel.Location = new System.Drawing.Point(672, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(431, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(612, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpSourcePaths
@@ -104,7 +104,7 @@
             this.grpSourcePaths.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSourcePaths.Location = new System.Drawing.Point(0, 23);
             this.grpSourcePaths.Name = "grpSourcePaths";
-            this.grpSourcePaths.Size = new System.Drawing.Size(551, 72);
+            this.grpSourcePaths.Size = new System.Drawing.Size(732, 72);
             this.grpSourcePaths.TabIndex = 5;
             this.grpSourcePaths.TabStop = false;
             this.grpSourcePaths.Text = "Source Paths";
@@ -177,7 +177,7 @@
             this.grpSetInformation.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSetInformation.Location = new System.Drawing.Point(0, 95);
             this.grpSetInformation.Name = "grpSetInformation";
-            this.grpSetInformation.Size = new System.Drawing.Size(551, 114);
+            this.grpSetInformation.Size = new System.Drawing.Size(732, 114);
             this.grpSetInformation.TabIndex = 6;
             this.grpSetInformation.TabStop = false;
             this.grpSetInformation.Text = "Set Information";
@@ -285,8 +285,9 @@
             this.dataGridSseq.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridSseq.Location = new System.Drawing.Point(0, 209);
             this.dataGridSseq.Name = "dataGridSseq";
-            this.dataGridSseq.Size = new System.Drawing.Size(551, 112);
+            this.dataGridSseq.Size = new System.Drawing.Size(732, 112);
             this.dataGridSseq.TabIndex = 7;
+            this.dataGridSseq.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridSseq_CellEndEdit);
             // 
             // CheckBoxColumn
             // 
@@ -338,8 +339,8 @@
             // VolumeColumn
             // 
             this.VolumeColumn.HeaderText = "Volume";
+            this.VolumeColumn.MaxInputLength = 3;
             this.VolumeColumn.Name = "VolumeColumn";
-            this.VolumeColumn.ReadOnly = true;
             this.VolumeColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.VolumeColumn.Width = 45;
             // 
@@ -371,7 +372,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(551, 459);
+            this.ClientSize = new System.Drawing.Size(732, 459);
             this.Controls.Add(this.dataGridSseq);
             this.Controls.Add(this.grpSetInformation);
             this.Controls.Add(this.grpSourcePaths);
@@ -407,16 +408,6 @@
         private System.Windows.Forms.DataGridView dataGridSseq;
         private System.Windows.Forms.Button btnBrowseSource;
         private System.Windows.Forms.TextBox tbSource;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn CheckBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn NumberColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn FileIdColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn SizeColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn NameColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn BankColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn VolumeColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn CprColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn PprColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn PlyColumn;
         private System.Windows.Forms.TextBox tbOutputPath;
         private System.Windows.Forms.Label lblOutputPath;
         private System.Windows.Forms.Label lblSdat;
@@ -431,6 +422,16 @@
         private System.Windows.Forms.TextBox tbCopyright;
         private System.Windows.Forms.TextBox tbGameSerial;
         private System.Windows.Forms.Label lblGameSerial;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn CheckBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn NumberColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn FileIdColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SizeColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn NameColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn BankColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn VolumeColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn CprColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn PprColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn PlyColumn;
 
     }
 }

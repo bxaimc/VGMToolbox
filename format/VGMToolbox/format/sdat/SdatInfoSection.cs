@@ -218,6 +218,8 @@ namespace VGMToolbox.format.sdat
         /////////////        
 
         // private
+        int sectionOffset;
+        
         private byte[] stdHeaderSignature;
         private byte[] stdHeaderSectionSize;
 
@@ -456,6 +458,8 @@ namespace VGMToolbox.format.sdat
 
         public void Initialize(Stream pStream, int pSectionOffset)
         {
+            this.sectionOffset = pSectionOffset;
+            
             // Header Info
             stdHeaderSignature = ParseFile.parseSimpleOffset(pStream, pSectionOffset + STD_HEADER_SIGNATURE_OFFSET,
                 STD_HEADER_SIGNATURE_LENGTH);
@@ -506,6 +510,26 @@ namespace VGMToolbox.format.sdat
                 INFO_RECORD_STRM_OFFSET_LENGTH);
             strmInfoRec = getInfoRec(pStream, pSectionOffset, BitConverter.ToInt32(infoRecordStrmOffset, 0));
             sdatInfoStrms = getInfoStrmEntries(pStream, pSectionOffset, strmInfoRec);
+        }
+
+        public void UpdateSseqVolume(Stream pStream, int pSseqNumber, int pNewVolumeValue)
+        {
+            int entryCount = BitConverter.ToInt32(this.seqInfoRec.nCount, 0);
+            long initialStreamPosition = pStream.Position;
+
+            if ((pSseqNumber < entryCount) &&
+                (pNewVolumeValue >= 0) && (pNewVolumeValue <= 255))
+            {
+                int infoOffset = BitConverter.ToInt32(this.seqInfoRec.nEntryOffsets[pSseqNumber], 0);
+                int absoluteOffset = this.sectionOffset + infoOffset + INFO_ENTRY_SEQ_VOL_OFFSET;
+                byte newVolumeValueByte = (byte)pNewVolumeValue;
+
+                using (BinaryWriter bw = new BinaryWriter(pStream))
+                {
+                    bw.BaseStream.Position = (long)absoluteOffset;
+                    bw.Write(newVolumeValueByte);
+                }
+            }
         }
     }    
 }

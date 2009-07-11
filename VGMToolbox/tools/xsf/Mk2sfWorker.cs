@@ -40,6 +40,14 @@ namespace VGMToolbox.tools.xsf
             public string TagCopyright;
             public string TagYear;
             public string TagGame;
+
+            public VolumeChangeStruct[] VolumeChangeList;
+        }
+
+        public struct VolumeChangeStruct
+        {
+            public int oldValue;
+            public int newValue;
         }
 
         public Mk2sfWorker() 
@@ -100,6 +108,16 @@ namespace VGMToolbox.tools.xsf
                 sdat.Initialize(sdatStream, sdatDestinationPath);
                 sdat.ExtractStrms(sdatStream, strmDestinationPath);
             }
+
+            // Update Volume
+            for (int i = 0; i < pMk2sfStruct.VolumeChangeList.Length; i++)
+            {
+                if (pMk2sfStruct.VolumeChangeList[i].newValue != pMk2sfStruct.VolumeChangeList[i].oldValue)
+                {
+                    sdat.UpdateSseqVolume(i, pMk2sfStruct.VolumeChangeList[i].newValue);
+                }
+            }
+
 
             // Optimize SDAT
             this.progressStruct.Clear();

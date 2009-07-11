@@ -508,6 +508,8 @@ namespace VGMToolbox.format.sdat
             return outputDirectory;
         }
 
+        #region Optimization Functions
+
         public void OptimizeForZlib(int pStartSequence, int pEndSequence)
         {
             fileIdChecklist = new bool[BitConverter.ToUInt32(this.fatSection.FatHeaderNumberOfFiles, 0)];
@@ -830,6 +832,9 @@ namespace VGMToolbox.format.sdat
             }
         }
 
+        #endregion
+
+        #region SMAP Builders
         public void BuildSmap(string pOutputPath, string pFilePrefix)
         { 
             checkOutputDirectory(pOutputPath);
@@ -1280,6 +1285,19 @@ namespace VGMToolbox.format.sdat
 
             sw.Close();
             sw.Dispose();
+        }
+
+        #endregion
+
+        public void UpdateSseqVolume(int pSseqNumber, int pNewVolumeValue)
+        {
+            if (this.infoSection != null)
+            {
+                using (FileStream fs = File.Open(this.filePath, FileMode.Open, FileAccess.ReadWrite))
+                {
+                    this.infoSection.UpdateSseqVolume(fs, pSseqNumber, pNewVolumeValue);
+                }
+            }
         }
 
         private void checkOutputDirectory(string pOutputPath)
