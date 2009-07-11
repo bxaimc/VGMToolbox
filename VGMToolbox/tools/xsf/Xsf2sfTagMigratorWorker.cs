@@ -81,7 +81,7 @@ namespace VGMToolbox.tools.xsf
 
             if (sourceFiles.Count > 0)
             {
-                this.maxFiles = FileUtil.GetFileCount(new string[] { pXsf2sfTagMigratorStruct.DestinationDirectory });
+                this.maxFiles = FileUtil.GetFileCount(new string[] { pXsf2sfTagMigratorStruct.DestinationDirectory }, false);
                 
                 // loop through destination
                 foreach (string f in Directory.GetFiles(pXsf2sfTagMigratorStruct.DestinationDirectory, "*.*"))

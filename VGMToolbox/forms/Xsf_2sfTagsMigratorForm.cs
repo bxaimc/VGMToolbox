@@ -126,7 +126,7 @@ namespace VGMToolbox.forms
 
         private bool validateInputs()
         {
-            bool ret = false;
+            bool ret = true;
 
             ret &= base.checkFolderExists(this.tbV1Source.Text, this.lblV1Folder.Text);
             ret &= base.checkFolderExists(this.tbV2Source.Text, this.lblV2Folder.Text);

@@ -53,6 +53,11 @@ namespace VGMToolbox.util
         }
 
         public static int GetFileCount(string[] pPaths)
+        { 
+            return GetFileCount(pPaths, true);
+        }
+
+        public static int GetFileCount(string[] pPaths, bool pIncludeSubdirs)
         {
             int totalFileCount = 0;
             
@@ -64,7 +69,14 @@ namespace VGMToolbox.util
                 }
                 else if (Directory.Exists(path))
                 {
-                    totalFileCount += Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
+                    if (pIncludeSubdirs)
+                    {
+                        totalFileCount += Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
+                    }
+                    else
+                    {
+                        totalFileCount += Directory.GetFiles(path, "*.*", SearchOption.TopDirectoryOnly).Length;
+                    }
                 }
             }
 
