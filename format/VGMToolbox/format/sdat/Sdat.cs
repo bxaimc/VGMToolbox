@@ -1308,6 +1308,48 @@ namespace VGMToolbox.format.sdat
             }
         }
 
+        public ArrayList GetDuplicatesList()
+        {
+            ArrayList nonDupes = new ArrayList();
+            ArrayList duplicates = new ArrayList();
+
+            SdatInfoSection.SdatInfoSseq sseqInfo;
+            SdatInfoSection.SdatInfoBank sbnkInfo;
+
+            UInt16 sseqFileId;
+            UInt16 sbnkFileId;
+
+            string checkString;
+
+            for (int i = 0; i < infoSection.SdatInfoSseqs.Length; i++)
+            {
+                sseqInfo = infoSection.SdatInfoSseqs[i];
+                if (sseqInfo.fileId != null)
+                {
+                    sbnkInfo = infoSection.SdatInfoBanks[BitConverter.ToUInt16(sseqInfo.bnk, 0)];
+                    if (sbnkInfo.fileId != null)
+                    {
+                        sseqFileId = BitConverter.ToUInt16(sseqInfo.fileId, 0);
+                        sbnkFileId = BitConverter.ToUInt16(sbnkInfo.fileId, 0);
+
+                        checkString = String.Format("{0}_{1}", sseqFileId.ToString("X4"),
+                            sbnkFileId.ToString("X4"));
+
+                        if (!nonDupes.Contains(checkString))
+                        {
+                            nonDupes.Add(checkString);
+                        }
+                        else
+                        {
+                            duplicates.Add(i);
+                        }
+                    }
+                }
+            }
+            
+            return duplicates;
+        }
+
         #region IFormat Required Functions
         
         public byte[] GetAsciiSignature()

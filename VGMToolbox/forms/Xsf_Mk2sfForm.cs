@@ -34,7 +34,9 @@ namespace VGMToolbox.forms
             this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_Make2sf_DoTaskButton"];
             this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_Make2sf_IntroText1"] + Environment.NewLine;
             this.tbOutput.Text +=
-                String.Format(ConfigurationSettings.AppSettings["Form_Make2sf_IntroText2"], Path.GetDirectoryName(testpackPath));
+                String.Format(ConfigurationSettings.AppSettings["Form_Make2sf_IntroText2"], Path.GetDirectoryName(testpackPath)) + Environment.NewLine;
+            this.tbOutput.Text += ConfigurationSettings.AppSettings["Form_Make2sf_IntroText3"] + Environment.NewLine;
+            this.tbOutput.Text += ConfigurationSettings.AppSettings["Form_Make2sf_IntroText4"];
 
             this.grpSourcePaths.Text = ConfigurationSettings.AppSettings["Form_Make2sf_GroupSourcePaths"];
             this.lblSdat.Text = ConfigurationSettings.AppSettings["Form_Make2sf_LabelSdat"];
@@ -104,11 +106,14 @@ namespace VGMToolbox.forms
             
             if (Sdat.IsSdat(pSourcePath))
             {
-                Smap smap = SdatUtil.GetSmapFromSdat(pSourcePath);
+                Smap smap = SdatUtil.GetSmapFromSdat(pSourcePath);                
                 DataGridViewRow row = new DataGridViewRow();
                 
                 if ((smap.SseqSection != null) && (smap.SseqSection.Length > 0))
                 {
+                    // get duplicates list
+                    ArrayList duplicatesList = SdatUtil.GetDuplicateSseqsList(pSourcePath);
+                    
                     // setup volume tracking struct
                     this.sseqVolumeList = new Mk2sfWorker.VolumeChangeStruct[smap.SseqSection.Length];
                     
@@ -137,6 +142,13 @@ namespace VGMToolbox.forms
                             // add volume tracking
                             this.sseqVolumeList[i].oldValue = s.vol;
                             this.sseqVolumeList[i].newValue = s.vol;
+
+                            // check for duplicate
+                            if (duplicatesList.Contains(i))
+                            {
+                                row.Cells[0].Value = false;
+                                row.DefaultCellStyle.BackColor = Color.Crimson;
+                            }
                         }
                         else
                         {

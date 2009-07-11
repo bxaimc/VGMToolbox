@@ -190,6 +190,31 @@ namespace VGMToolbox.format.util
             }
             
             return smap;
-        }    
+        }
+
+        public static ArrayList GetDuplicateSseqsList(string pSdatPath)
+        {
+            string fullPath = Path.GetFullPath(pSdatPath);
+            ArrayList ret = null;
+
+            if (!File.Exists(fullPath))
+            {
+                throw new FileNotFoundException(String.Format("Cannot find file <{0}>", fullPath));
+            }
+            else
+            {
+                if (Sdat.IsSdat(fullPath))
+                {
+                    using (FileStream fs = File.OpenRead(fullPath))
+                    {
+                        Sdat sdat = new Sdat();
+                        sdat.Initialize(fs, fullPath);
+                        ret = sdat.GetDuplicatesList();
+                    }
+                }
+            }
+
+            return ret;        
+        }
     }
 }
