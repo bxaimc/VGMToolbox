@@ -16,16 +16,15 @@ namespace VGMToolbox.forms
             // set title
             this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_SdatExtractor_Title"];
             this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_SdatExtractor_IntroText"];
-
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
 
             InitializeComponent();
 
+            this.groupSource.AllowDrop = true;
+
             this.groupSource.Text =
-                ConfigurationSettings.AppSettings["Form_SdatExtractor_GroupSource"];
-            this.lblDragNDrop.Text =
-                ConfigurationSettings.AppSettings["Form_SdatExtractor_LblDragNDrop"];
+                ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
         }
 
         private void tbNDS_SdatExtractor_Source_DragDrop(object sender, DragEventArgs e)

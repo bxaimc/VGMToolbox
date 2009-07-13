@@ -18,16 +18,15 @@ namespace VGMToolbox.forms
                 ConfigurationSettings.AppSettings["Form_HootXmlBuilder_Title"];
             this.tbOutput.Text =
                 ConfigurationSettings.AppSettings["Form_HootXmlBuilder_Intro"];
-
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
 
             InitializeComponent();
 
+            this.gbHootXML_Source.AllowDrop = true;
+
             this.gbHootXML_Source.Text =
-                ConfigurationSettings.AppSettings["Form_HootXmlBuilder_GroupSource"];
-            this.lblDragNDrop.Text =
-                ConfigurationSettings.AppSettings["Form_HootXmlBuilder_LblDragNDrop"];
+                ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
             this.gbHootXML_Options.Text =
                 ConfigurationSettings.AppSettings["Form_HootXmlBuilder_GroupOptions"];
             this.cbHootXML_CombineOutput.Text =

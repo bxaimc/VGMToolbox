@@ -20,10 +20,10 @@ namespace VGMToolbox.forms
 
             InitializeComponent();
 
+            this.grpSource.AllowDrop = true;
+
             this.grpSource.Text =
-                ConfigurationSettings.AppSettings["Form_SdatFinder_GroupSource"];
-            this.lblDragNDrop.Text =
-                ConfigurationSettings.AppSettings["Form_SdatFinder_LblDragNDrop"];
+                ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)

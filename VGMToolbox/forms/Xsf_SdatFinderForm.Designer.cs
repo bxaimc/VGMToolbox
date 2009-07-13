@@ -28,79 +28,56 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tbSourceFiles = new System.Windows.Forms.TextBox();
             this.grpSource = new System.Windows.Forms.GroupBox();
-            this.lblDragNDrop = new System.Windows.Forms.Label();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
-            this.grpSource.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 422);
-            this.pnlLabels.Size = new System.Drawing.Size(874, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 373);
+            this.pnlLabels.Size = new System.Drawing.Size(779, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(874, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(779, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 345);
-            this.tbOutput.Size = new System.Drawing.Size(874, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 296);
+            this.tbOutput.Size = new System.Drawing.Size(779, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 325);
-            this.pnlButtons.Size = new System.Drawing.Size(874, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 276);
+            this.pnlButtons.Size = new System.Drawing.Size(779, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(814, 0);
+            this.btnCancel.Location = new System.Drawing.Point(719, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(754, 0);
-            // 
-            // tbSourceFiles
-            // 
-            this.tbSourceFiles.AllowDrop = true;
-            this.tbSourceFiles.Location = new System.Drawing.Point(6, 19);
-            this.tbSourceFiles.Name = "tbSourceFiles";
-            this.tbSourceFiles.Size = new System.Drawing.Size(282, 20);
-            this.tbSourceFiles.TabIndex = 0;
-            this.tbSourceFiles.TabStop = false;
-            this.tbSourceFiles.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbSourceFiles_DragDrop);
-            this.tbSourceFiles.DragEnter += new System.Windows.Forms.DragEventHandler(this.doDragEnter);
+            this.btnDoTask.Location = new System.Drawing.Point(659, 0);
             // 
             // grpSource
             // 
-            this.grpSource.Controls.Add(this.lblDragNDrop);
-            this.grpSource.Controls.Add(this.tbSourceFiles);
-            this.grpSource.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpSource.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpSource.Location = new System.Drawing.Point(0, 23);
             this.grpSource.Name = "grpSource";
-            this.grpSource.Size = new System.Drawing.Size(874, 62);
+            this.grpSource.Size = new System.Drawing.Size(779, 253);
             this.grpSource.TabIndex = 5;
             this.grpSource.TabStop = false;
             this.grpSource.Text = "Source Files";
-            // 
-            // lblDragNDrop
-            // 
-            this.lblDragNDrop.AutoSize = true;
-            this.lblDragNDrop.Location = new System.Drawing.Point(3, 42);
-            this.lblDragNDrop.Name = "lblDragNDrop";
-            this.lblDragNDrop.Size = new System.Drawing.Size(125, 13);
-            this.lblDragNDrop.TabIndex = 1;
-            this.lblDragNDrop.Text = "Drag files to search here.";
+            this.grpSource.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbSourceFiles_DragDrop);
+            this.grpSource.DragEnter += new System.Windows.Forms.DragEventHandler(this.doDragEnter);
             // 
             // Xsf_SdatFinderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(874, 463);
+            this.ClientSize = new System.Drawing.Size(779, 414);
             this.Controls.Add(this.grpSource);
             this.Name = "Xsf_SdatFinderForm";
             this.Text = "Xsf_SdatFinderForm";
@@ -115,8 +92,6 @@
             this.pnlTitle.PerformLayout();
             this.pnlButtons.ResumeLayout(false);
             this.pnlButtons.PerformLayout();
-            this.grpSource.ResumeLayout(false);
-            this.grpSource.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -124,9 +99,7 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox tbSourceFiles;
         private System.Windows.Forms.GroupBox grpSource;
-        private System.Windows.Forms.Label lblDragNDrop;
 
     }
 }

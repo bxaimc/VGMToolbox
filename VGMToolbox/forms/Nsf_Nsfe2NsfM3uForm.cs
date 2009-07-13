@@ -16,16 +16,15 @@ namespace VGMToolbox.forms
             // set title
             this.lblTitle.Text = 
                 ConfigurationSettings.AppSettings["Form_Nsfe2M3u_Title"];
-
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
             
             InitializeComponent();
 
+            this.grpSourceFiles.AllowDrop = true;
+
             this.grpSourceFiles.Text =
-                ConfigurationSettings.AppSettings["Form_Nsfe2M3u_GroupSourceFiles"];
-            this.lblDragNDrop.Text =
-                ConfigurationSettings.AppSettings["Form_Nsfe2M3u_LblDragNDrop"];
+                ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
             this.grpOptions.Text =
                 ConfigurationSettings.AppSettings["Form_Nsfe2M3u_GroupOptions"];
             this.cbNSFE_OneM3uPerTrack.Text =
