@@ -29,8 +29,6 @@
         private void InitializeComponent()
         {
             this.grpSource = new System.Windows.Forms.GroupBox();
-            this.lblDragNDrop = new System.Windows.Forms.Label();
-            this.tbSource = new System.Windows.Forms.TextBox();
             this.grpOptions = new System.Windows.Forms.GroupBox();
             this.cbPatchByte0x11 = new System.Windows.Forms.CheckBox();
             this.cbAddRiffHeader = new System.Windows.Forms.CheckBox();
@@ -43,70 +41,52 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 512);
-            this.pnlLabels.Size = new System.Drawing.Size(846, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 400);
+            this.pnlLabels.Size = new System.Drawing.Size(779, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(846, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(779, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 435);
-            this.tbOutput.Size = new System.Drawing.Size(846, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 323);
+            this.tbOutput.Size = new System.Drawing.Size(779, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 415);
-            this.pnlButtons.Size = new System.Drawing.Size(846, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 303);
+            this.pnlButtons.Size = new System.Drawing.Size(779, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(786, 0);
+            this.btnCancel.Location = new System.Drawing.Point(719, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(726, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(659, 0);
             // 
             // grpSource
             // 
-            this.grpSource.Controls.Add(this.lblDragNDrop);
-            this.grpSource.Controls.Add(this.tbSource);
-            this.grpSource.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpSource.Controls.Add(this.grpOptions);
+            this.grpSource.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpSource.Location = new System.Drawing.Point(0, 23);
             this.grpSource.Name = "grpSource";
-            this.grpSource.Size = new System.Drawing.Size(846, 62);
+            this.grpSource.Size = new System.Drawing.Size(779, 280);
             this.grpSource.TabIndex = 5;
             this.grpSource.TabStop = false;
             this.grpSource.Text = "Source Files";
-            // 
-            // lblDragNDrop
-            // 
-            this.lblDragNDrop.AutoSize = true;
-            this.lblDragNDrop.Location = new System.Drawing.Point(3, 42);
-            this.lblDragNDrop.Name = "lblDragNDrop";
-            this.lblDragNDrop.Size = new System.Drawing.Size(332, 13);
-            this.lblDragNDrop.TabIndex = 1;
-            this.lblDragNDrop.Text = "Drag and Drop files (or folders containing them) to check for XA data.";
-            // 
-            // tbSource
-            // 
-            this.tbSource.AllowDrop = true;
-            this.tbSource.Location = new System.Drawing.Point(6, 19);
-            this.tbSource.Name = "tbSource";
-            this.tbSource.Size = new System.Drawing.Size(282, 20);
-            this.tbSource.TabIndex = 0;
-            this.tbSource.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbSource_DragDrop);
-            this.tbSource.DragEnter += new System.Windows.Forms.DragEventHandler(this.doDragEnter);
+            this.grpSource.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbSource_DragDrop);
+            this.grpSource.DragEnter += new System.Windows.Forms.DragEventHandler(this.doDragEnter);
             // 
             // grpOptions
             // 
             this.grpOptions.Controls.Add(this.cbPatchByte0x11);
             this.grpOptions.Controls.Add(this.cbAddRiffHeader);
-            this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpOptions.Location = new System.Drawing.Point(0, 85);
+            this.grpOptions.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.grpOptions.Location = new System.Drawing.Point(3, 214);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(846, 63);
+            this.grpOptions.Size = new System.Drawing.Size(773, 63);
             this.grpOptions.TabIndex = 6;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
@@ -139,8 +119,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(846, 553);
-            this.Controls.Add(this.grpOptions);
+            this.ClientSize = new System.Drawing.Size(779, 441);
             this.Controls.Add(this.grpSource);
             this.Name = "Extract_ExtractCdxaForm";
             this.Text = "Extract_ExtractCdxaForm";
@@ -149,7 +128,6 @@
             this.Controls.SetChildIndex(this.pnlTitle, 0);
             this.Controls.SetChildIndex(this.pnlButtons, 0);
             this.Controls.SetChildIndex(this.grpSource, 0);
-            this.Controls.SetChildIndex(this.grpOptions, 0);
             this.pnlLabels.ResumeLayout(false);
             this.pnlLabels.PerformLayout();
             this.pnlTitle.ResumeLayout(false);
@@ -157,7 +135,6 @@
             this.pnlButtons.ResumeLayout(false);
             this.pnlButtons.PerformLayout();
             this.grpSource.ResumeLayout(false);
-            this.grpSource.PerformLayout();
             this.grpOptions.ResumeLayout(false);
             this.grpOptions.PerformLayout();
             this.ResumeLayout(false);
@@ -168,8 +145,6 @@
         #endregion
 
         private System.Windows.Forms.GroupBox grpSource;
-        private System.Windows.Forms.Label lblDragNDrop;
-        private System.Windows.Forms.TextBox tbSource;
         private System.Windows.Forms.GroupBox grpOptions;
         private System.Windows.Forms.CheckBox cbPatchByte0x11;
         private System.Windows.Forms.CheckBox cbAddRiffHeader;

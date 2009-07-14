@@ -16,16 +16,15 @@ namespace VGMToolbox.forms
             // set title
             this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_CdxaExtractor_Title"];
             this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_CdxaExtractor_IntroText"];
-
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
             
             InitializeComponent();
 
+            this.grpSource.AllowDrop = true;
+
             this.grpSource.Text =
-                ConfigurationSettings.AppSettings["Form_CdxaExtractor_GroupSource"];
-            this.lblDragNDrop.Text =
-                ConfigurationSettings.AppSettings["Form_CdxaExtractor_LblDragNDrop"];
+                ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
             this.grpOptions.Text =
                 ConfigurationSettings.AppSettings["Form_CdxaExtractor_GroupOptions"];
             this.cbAddRiffHeader.Text =
