@@ -853,7 +853,175 @@ namespace VGMToolbox.format
 
         public void UpdateTags() 
         {
-            int x = 1;
+            string retaggingFilePathUncompressed;
+
+            try
+            {
+                retaggingFilePathUncompressed = Path.Combine(Path.GetDirectoryName(this.filePath),
+                    String.Format("{0}_RETAG_UNCOMPRESSED_{1}.vgm", Path.GetFileNameWithoutExtension(this.filePath), new Random().Next().ToString()));
+
+                // build and compress file
+                this.outputToVersion150File(retaggingFilePathUncompressed);
+
+                // rename original
+
+                // rename gzip'd file to original
+
+                // delete original
+            }
+            catch (Exception _ex)
+            {
+                throw new Exception(String.Format("Error updating tags for <{0}>", this.filePath), _ex);
+            }
+        }
+
+        private void outputToVersion150File(string pOutputPath)
+        {
+            long dataOffset = 0x40;
+            
+            // Write Incomplete Header
+             this.writeHeaderSection(pOutputPath);
+
+            // Write Data
+             UInt32 dataLength = this.writeDataSection(pOutputPath, dataOffset);
+        }
+
+        private void writeHeaderSection(string pOutputPath)
+        {
+            byte[] empty32BitVal = new byte[] { 0x00, 0x00, 0x00, 0x00 };
+
+            using (FileStream outFs = File.Open(pOutputPath, FileMode.Create, FileAccess.Write))
+            {
+                using (BinaryWriter bw = new BinaryWriter(outFs))
+                {
+                    // write header, adding empty sections for unknown values
+                    bw.Write(Vgm.ASCII_SIGNATURE);
+                    bw.Write(empty32BitVal);      // EOF Offset
+                    bw.Write(Vgm.VERSION_0150);
+                    bw.Write(this.sn76489Clock);
+
+                    bw.Write(this.ym2413Clock);
+                    bw.Write(empty32BitVal);      // GD3 Offset
+                    bw.Write(this.totalNumOfSamples);
+                    bw.Write(this.loopOffset);    // not sure if this needs to be adjusted
+
+                    bw.Write(this.loopNumOfSamples);
+
+                    /////////
+                    // v1.01
+                    /////////                                        
+                    if (this.getIntVersion() < INT_VERSION_0101)
+                    {
+                        bw.Write(empty32BitVal); // Rate
+                    }
+                    else
+                    {
+                        bw.Write(this.Rate);
+                    }
+
+                    //////////
+                    // v1.10
+                    //////////                                        
+                    if (this.getIntVersion() < INT_VERSION_0110)
+                    {
+                        if (ParseFile.CompareSegment(this.Sn76489Clock, 0, empty32BitVal))
+                        {
+                            bw.Write(new byte[] { 0x00, 0x00 }); // SN76489 feedback
+                            bw.Write(new byte[] { 0x00 });       // SN76489 shift register width
+                        }
+                        else // use defaults
+                        {
+                            bw.Write(new byte[] { 0x09, 0x00 }); // SN76489 feedback
+                            bw.Write(new byte[] { 0x10, 0x00 }); // SN76489 shift register width
+                        }
+                        bw.Write(new byte[] { 0x00 });  // Reserved - 0x2B
+                        bw.Write(this.ym2413Clock);     // how to tell if YM2612 is used here?
+                        bw.Write(this.ym2413Clock);     // how to tell if YM2151 is used here?
+
+                    }
+                    else
+                    {
+                        bw.Write(this.sn76489Feedback);
+                        bw.Write(this.sn76489Srw);
+                        bw.Write(new byte[] { 0x00 });  // Reserved - 0x2B
+                        bw.Write(this.ym2612Clock);
+                        bw.Write(this.ym2151Clock);
+                    }
+
+                    /////////
+                    // v1.50
+                    /////////
+                    bw.Write(new byte[] { 0x0c, 0x00, 0x00, 0x00 }); // Data Start Address
+                    bw.Write(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }); // Reserved - 0x38
+                }
+            }        
+        }
+        
+        private UInt32 writeDataSection(string pOutputPath, long pDestinationOffset)
+        {
+            int bytesToRead = 0;
+            string decompressedFilePath;
+            string tempGzipFile = null;
+
+            int size = 4096;
+            byte[] writeData = new byte[size];
+
+            // Determine count of bytes to read for data section
+            if (this.gd3AbsoluteOffset > this.vgmDataAbsoluteOffset)
+            {
+                bytesToRead = this.gd3AbsoluteOffset - this.vgmDataAbsoluteOffset;
+            }
+            else
+            {
+                bytesToRead = this.eofAbsoluteOffset - this.vgmDataAbsoluteOffset;
+            }
+
+            using (FileStream fs = File.OpenRead(this.filePath)) // open source file
+            {
+                if (FormatUtil.IsGzipFile(fs))
+                {
+                    using (GZipInputStream gZipInputStream = new GZipInputStream(fs)) // open for reading
+                    {
+                        tempGzipFile = Path.GetTempFileName();              // get temp file
+
+                        // open temp file for output
+                        FileStream gZipFileStream =
+                            new FileStream(tempGzipFile, FileMode.Open, FileAccess.ReadWrite);
+
+                        // decompress file
+                        while (true)
+                        {
+                            size = gZipInputStream.Read(writeData, 0, size);
+                            if (size > 0)
+                            {
+                                gZipFileStream.Write(writeData, 0, size);
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+
+                        decompressedFilePath = tempGzipFile;
+                    }                    
+                }
+                else
+                {
+                    decompressedFilePath = this.filePath;
+                }
+            }
+
+            // write data section
+            FileUtil.ReplaceFileChunk(decompressedFilePath, this.vgmDataAbsoluteOffset,
+                bytesToRead, pOutputPath, pDestinationOffset);
+
+            // delete temp file
+            if (!String.IsNullOrEmpty(tempGzipFile))
+            {
+                File.Delete(tempGzipFile);
+            }
+
+            return (UInt32)bytesToRead;
         }
 
         #endregion

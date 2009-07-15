@@ -14,7 +14,7 @@ using VGMToolbox.tools.vgm;
 
 namespace VGMToolbox.forms
 {    
-    public partial class Vgm_VgmTagEditorForm : AVgmtForm
+    public partial class Vgm_VgmTagEditorForm : VgmtForm
     {
         IGd3TagFormat vgmData;
         bool isBatchMode;
