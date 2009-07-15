@@ -15,9 +15,13 @@ namespace VGMToolbox.forms
 {
     public partial class Extract_SnakebiteGuiForm : AVgmtForm
     {
+        bool doDrag;
+        
         public Extract_SnakebiteGuiForm(TreeNode pTreeNode) : base(pTreeNode)
         {
             InitializeComponent();
+
+            this.doDrag = false;
 
             this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_Title"];
             this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_IntroText"];
@@ -119,7 +123,7 @@ namespace VGMToolbox.forms
             
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-            if ((s.Length > 1) ||
+            if (((s.Length > 1) && (!this.rbAutoName.Checked)) ||
                 ((s.Length == 1) && (Directory.Exists(s[0]))))
             {
                 MessageBox.Show(warningMessage, 
@@ -131,21 +135,25 @@ namespace VGMToolbox.forms
             }
 
             if (cutFiles)
-            { 
+            {
+                this.doDrag = true;
                 this.cutTheFile(s);
             }
         }
 
         private void cutTheFile(string[] pPaths)
         {
-            if (this.validateInputs())
+            if (this.validateInputs(!this.doDrag))
             {
+                this.doDrag = false;
+                
                 SimpleCutterSnakebiteWorker.SimpleCutterSnakebiteStruct snbStruct =
                     new SimpleCutterSnakebiteWorker.SimpleCutterSnakebiteStruct();
 
                 snbStruct.EndAddress = this.tbEndAddress.Text;
                 snbStruct.Length = this.tbLength.Text;
                 snbStruct.OutputFile = this.tbOutputFile.Text;
+                snbStruct.NewFileExtension = this.tbFileExtension.Text;
                 snbStruct.SourcePaths = pPaths;
                 snbStruct.StartOffset = this.tbStartAddress.Text;
                 snbStruct.UseEndAddress = this.rbEndAddress.Checked;
@@ -159,14 +167,23 @@ namespace VGMToolbox.forms
         private void btnDoTask_Click(object sender, EventArgs e)
         {
             string[] s = new string[] { this.tbSourceFiles.Text };
+            this.doDrag = false;
             this.cutTheFile(s);
         }
 
         private bool validateInputs()
+        { 
+            return validateInputs(true);
+        }
+
+        private bool validateInputs(bool pCheckInputFile)
         {
             bool ret = true;
 
-            ret &= base.checkFileExists(this.tbSourceFiles.Text, this.lblSourceFiles.Text);
+            if (pCheckInputFile)
+            {
+                ret &= base.checkFileExists(this.tbSourceFiles.Text, this.lblSourceFiles.Text);
+            }
             ret &= base.checkTextBox(this.tbStartAddress.Text, this.lblStartAddress.Text);
 
             if (rbEndAddress.Checked)
@@ -179,7 +196,7 @@ namespace VGMToolbox.forms
                 ret &= base.checkTextBox(this.tbLength.Text, this.rbLength.Text);
             }
 
-            if (this.tbSourceFiles.Text.Equals(this.tbOutputFile.Text))
+            if (pCheckInputFile && (this.tbSourceFiles.Text.Equals(this.tbOutputFile.Text)))
             {
                 MessageBox.Show(ConfigurationSettings.AppSettings["Form_SnakebiteGUI_ErrorInputOutputSame"],
                     ConfigurationSettings.AppSettings["Form_Global_ErrorWindowTitle"]);
@@ -187,6 +204,28 @@ namespace VGMToolbox.forms
             }
 
             return ret;
+        }
+
+        private void rbFileNameButtons_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.rbNameOutput.Checked)
+            {
+                this.tbOutputFile.Enabled = true;
+                this.tbOutputFile.ReadOnly = false;
+
+                this.tbFileExtension.Enabled = false;
+                this.tbFileExtension.ReadOnly = true;
+                this.tbFileExtension.Clear();
+            }
+            else
+            {
+                this.tbOutputFile.Enabled = false;
+                this.tbOutputFile.ReadOnly = true;
+                this.tbOutputFile.Clear();
+
+                this.tbFileExtension.Enabled = true;
+                this.tbFileExtension.ReadOnly = false;                            
+            }
         }
     }
 }

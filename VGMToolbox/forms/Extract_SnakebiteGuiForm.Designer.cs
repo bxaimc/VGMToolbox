@@ -44,6 +44,10 @@
             this.rbEndAddress = new System.Windows.Forms.RadioButton();
             this.tbStartAddress = new System.Windows.Forms.TextBox();
             this.lblStartAddress = new System.Windows.Forms.Label();
+            this.rbAutoName = new System.Windows.Forms.RadioButton();
+            this.rbNameOutput = new System.Windows.Forms.RadioButton();
+            this.tbFileExtension = new System.Windows.Forms.TextBox();
+            this.lblFileExtension = new System.Windows.Forms.Label();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -53,34 +57,38 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 523);
-            this.pnlLabels.Size = new System.Drawing.Size(779, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 608);
+            this.pnlLabels.Size = new System.Drawing.Size(900, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(779, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(900, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 446);
-            this.tbOutput.Size = new System.Drawing.Size(779, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 531);
+            this.tbOutput.Size = new System.Drawing.Size(900, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 426);
-            this.pnlButtons.Size = new System.Drawing.Size(779, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 511);
+            this.pnlButtons.Size = new System.Drawing.Size(900, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(719, 0);
+            this.btnCancel.Location = new System.Drawing.Point(840, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(659, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(780, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpFiles
             // 
+            this.grpFiles.Controls.Add(this.lblFileExtension);
+            this.grpFiles.Controls.Add(this.tbFileExtension);
+            this.grpFiles.Controls.Add(this.rbNameOutput);
+            this.grpFiles.Controls.Add(this.rbAutoName);
             this.grpFiles.Controls.Add(this.lblDragNDrop);
             this.grpFiles.Controls.Add(this.btnBrowseOutput);
             this.grpFiles.Controls.Add(this.tbOutputFile);
@@ -91,7 +99,7 @@
             this.grpFiles.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFiles.Location = new System.Drawing.Point(0, 23);
             this.grpFiles.Name = "grpFiles";
-            this.grpFiles.Size = new System.Drawing.Size(779, 79);
+            this.grpFiles.Size = new System.Drawing.Size(900, 105);
             this.grpFiles.TabIndex = 5;
             this.grpFiles.TabStop = false;
             this.grpFiles.Text = "Files";
@@ -108,7 +116,7 @@
             // 
             // btnBrowseOutput
             // 
-            this.btnBrowseOutput.Location = new System.Drawing.Point(327, 52);
+            this.btnBrowseOutput.Location = new System.Drawing.Point(419, 54);
             this.btnBrowseOutput.Name = "btnBrowseOutput";
             this.btnBrowseOutput.Size = new System.Drawing.Size(25, 20);
             this.btnBrowseOutput.TabIndex = 5;
@@ -118,7 +126,7 @@
             // 
             // tbOutputFile
             // 
-            this.tbOutputFile.Location = new System.Drawing.Point(72, 52);
+            this.tbOutputFile.Location = new System.Drawing.Point(164, 54);
             this.tbOutputFile.Name = "tbOutputFile";
             this.tbOutputFile.Size = new System.Drawing.Size(249, 20);
             this.tbOutputFile.TabIndex = 4;
@@ -171,9 +179,9 @@
             this.grpOptions.Controls.Add(this.tbStartAddress);
             this.grpOptions.Controls.Add(this.lblStartAddress);
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpOptions.Location = new System.Drawing.Point(0, 102);
+            this.grpOptions.Location = new System.Drawing.Point(0, 128);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(779, 84);
+            this.grpOptions.Size = new System.Drawing.Size(900, 84);
             this.grpOptions.TabIndex = 6;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Cut Options";
@@ -244,11 +252,52 @@
             this.lblStartAddress.TabIndex = 0;
             this.lblStartAddress.Text = "Start Address";
             // 
+            // rbAutoName
+            // 
+            this.rbAutoName.AutoSize = true;
+            this.rbAutoName.Location = new System.Drawing.Point(70, 81);
+            this.rbAutoName.Name = "rbAutoName";
+            this.rbAutoName.Size = new System.Drawing.Size(125, 17);
+            this.rbAutoName.TabIndex = 7;
+            this.rbAutoName.TabStop = true;
+            this.rbAutoName.Text = "Auto Generate Name";
+            this.rbAutoName.UseVisualStyleBackColor = true;
+            this.rbAutoName.CheckedChanged += new System.EventHandler(this.rbFileNameButtons_CheckedChanged);
+            // 
+            // rbNameOutput
+            // 
+            this.rbNameOutput.AutoSize = true;
+            this.rbNameOutput.Location = new System.Drawing.Point(70, 55);
+            this.rbNameOutput.Name = "rbNameOutput";
+            this.rbNameOutput.Size = new System.Drawing.Size(88, 17);
+            this.rbNameOutput.TabIndex = 8;
+            this.rbNameOutput.TabStop = true;
+            this.rbNameOutput.Text = "Name Output";
+            this.rbNameOutput.UseVisualStyleBackColor = true;
+            this.rbNameOutput.CheckedChanged += new System.EventHandler(this.rbFileNameButtons_CheckedChanged);
+            // 
+            // tbFileExtension
+            // 
+            this.tbFileExtension.Location = new System.Drawing.Point(202, 80);
+            this.tbFileExtension.Name = "tbFileExtension";
+            this.tbFileExtension.Size = new System.Drawing.Size(100, 20);
+            this.tbFileExtension.TabIndex = 9;
+            // 
+            // lblFileExtension
+            // 
+            this.lblFileExtension.AutoSize = true;
+            this.lblFileExtension.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.lblFileExtension.Location = new System.Drawing.Point(308, 83);
+            this.lblFileExtension.Name = "lblFileExtension";
+            this.lblFileExtension.Size = new System.Drawing.Size(318, 13);
+            this.lblFileExtension.TabIndex = 10;
+            this.lblFileExtension.Text = "File Extension (for Drag and Drop multiple files) ADD VALIDATION";
+            // 
             // Extract_SnakebiteGuiForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(779, 564);
+            this.ClientSize = new System.Drawing.Size(900, 649);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpFiles);
             this.Name = "Extract_SnakebiteGuiForm";
@@ -292,5 +341,9 @@
         private System.Windows.Forms.TextBox tbLength;
         private System.Windows.Forms.TextBox tbEndAddress;
         private System.Windows.Forms.RadioButton rbEndOfFile;
+        private System.Windows.Forms.RadioButton rbNameOutput;
+        private System.Windows.Forms.RadioButton rbAutoName;
+        private System.Windows.Forms.Label lblFileExtension;
+        private System.Windows.Forms.TextBox tbFileExtension;
     }
 }

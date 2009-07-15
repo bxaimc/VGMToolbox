@@ -12,6 +12,8 @@ namespace VGMToolbox.tools.extract
         public struct SimpleCutterSnakebiteStruct : IVgmtWorkerStruct
         {
             public string OutputFile;
+            public string NewFileExtension;
+
 
             public bool UseEndAddress;
             public bool UseLength;
@@ -62,6 +64,15 @@ namespace VGMToolbox.tools.extract
                 }
                 else
                 {
+                    if (!String.IsNullOrEmpty(simpleCutterSnakebiteStruct.NewFileExtension))
+                    {
+                        if (!simpleCutterSnakebiteStruct.NewFileExtension.StartsWith("."))
+                        {
+                            simpleCutterSnakebiteStruct.NewFileExtension = "." + simpleCutterSnakebiteStruct.NewFileExtension;
+                        }
+                        simpleCutterSnakebiteStruct.OutputFile = Path.ChangeExtension(pPath, simpleCutterSnakebiteStruct.NewFileExtension);
+                    }
+                    
                     if (!Path.IsPathRooted(simpleCutterSnakebiteStruct.OutputFile))
                     { 
                         simpleCutterSnakebiteStruct.OutputFile = Path.Combine(Path.GetDirectoryName(pPath), simpleCutterSnakebiteStruct.OutputFile);
