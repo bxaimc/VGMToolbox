@@ -21,6 +21,7 @@ namespace VGMToolbox.forms
         {
             InitializeComponent();
 
+            this.grpFiles.AllowDrop = true;
             this.doDrag = false;
 
             this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_Title"];
@@ -44,7 +45,6 @@ namespace VGMToolbox.forms
         {
             this.tbSourceFiles.Text = base.browseForFile(sender, e);
         }
-
         private void btnBrowseOutput_Click(object sender, EventArgs e)
         {
             this.tbOutputFile.Text = base.browseForFileToSave(sender, e);
@@ -77,17 +77,14 @@ namespace VGMToolbox.forms
                 tbLength.ReadOnly = true;
             }
         }
-
         private void rbEndAddress_CheckedChanged(object sender, EventArgs e)
         {
             this.setRadioButtons();
         }
-
         private void rbLength_CheckedChanged(object sender, EventArgs e)
         {
             this.setRadioButtons();
         }
-
         private void rbEndOfFile_CheckedChanged(object sender, EventArgs e)
         {
             this.setRadioButtons();
@@ -118,14 +115,15 @@ namespace VGMToolbox.forms
         private void tbSourceFiles_DragDrop(object sender, DragEventArgs e)
         {
             bool cutFiles = false;
-            string warningMessage = 
-                ConfigurationSettings.AppSettings["Form_SnakebiteGUI_ErrorSingleFile"];
+            string warningMessage;
             
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
             if (((s.Length > 1) && (!this.rbAutoName.Checked)) ||
                 ((s.Length == 1) && (Directory.Exists(s[0]))))
             {
+                warningMessage =
+                    ConfigurationSettings.AppSettings["Form_SnakebiteGUI_ErrorSingleFile"];
                 MessageBox.Show(warningMessage, 
                     ConfigurationSettings.AppSettings["Form_Global_ErrorWindowTitle"]);
             }
@@ -175,7 +173,6 @@ namespace VGMToolbox.forms
         { 
             return validateInputs(true);
         }
-
         private bool validateInputs(bool pCheckInputFile)
         {
             bool ret = true;
@@ -184,18 +181,26 @@ namespace VGMToolbox.forms
             {
                 ret &= base.checkFileExists(this.tbSourceFiles.Text, this.lblSourceFiles.Text);
             }
+            if (this.rbNameOutput.Checked)
+            {
+                ret &= base.checkTextBox(this.tbOutputFile.Text, this.rbNameOutput.Text);
+            }
+            if (this.rbAutoName.Checked)
+            {
+                ret &= base.checkTextBox(this.tbFileExtension.Text, this.rbAutoName.Text);
+            }
+            
             ret &= base.checkTextBox(this.tbStartAddress.Text, this.lblStartAddress.Text);
 
             if (rbEndAddress.Checked)
             {
                 ret &= base.checkTextBox(this.tbEndAddress.Text, this.rbEndAddress.Text);
             }
-
             if (rbLength.Checked)
             {
                 ret &= base.checkTextBox(this.tbLength.Text, this.rbLength.Text);
             }
-
+            
             if (pCheckInputFile && (this.tbSourceFiles.Text.Equals(this.tbOutputFile.Text)))
             {
                 MessageBox.Show(ConfigurationSettings.AppSettings["Form_SnakebiteGUI_ErrorInputOutputSame"],
@@ -212,6 +217,7 @@ namespace VGMToolbox.forms
             {
                 this.tbOutputFile.Enabled = true;
                 this.tbOutputFile.ReadOnly = false;
+                this.btnBrowseOutput.Enabled = true;
 
                 this.tbFileExtension.Enabled = false;
                 this.tbFileExtension.ReadOnly = true;
@@ -222,6 +228,7 @@ namespace VGMToolbox.forms
                 this.tbOutputFile.Enabled = false;
                 this.tbOutputFile.ReadOnly = true;
                 this.tbOutputFile.Clear();
+                this.btnBrowseOutput.Enabled = false;
 
                 this.tbFileExtension.Enabled = true;
                 this.tbFileExtension.ReadOnly = false;                            

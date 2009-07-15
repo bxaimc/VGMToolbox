@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3951D6E5-61BE-4D7C-A464-F44D98E9CE83}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -54,6 +54,7 @@
     <Compile Include="VGMToolbox\format\Hes.cs" />
     <Compile Include="VGMToolbox\format\hoot\HootCsv.cs" />
     <Compile Include="VGMToolbox\format\hoot\HootGameList.cs" />
+    <Compile Include="VGMToolbox\format\IGd3TagFormat.cs" />
     <Compile Include="VGMToolbox\format\IXsfTagFormat.cs" />
     <Compile Include="VGMToolbox\format\PsxSequence.cs" />
     <Compile Include="VGMToolbox\format\S98V3.cs" />

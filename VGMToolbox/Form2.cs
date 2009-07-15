@@ -90,7 +90,11 @@ namespace VGMToolbox
             TreeNode xsf_RootNode = buildXsfTreeNode();
             xsf_RootNode.Tag = nodeTag;
             tools_RootNode.Nodes.Add(xsf_RootNode);
-            
+
+            TreeNode vgm_RootNode = buildVgmTreeNode();
+            vgm_RootNode.Tag = nodeTag;
+            tools_RootNode.Nodes.Add(vgm_RootNode);
+
             // EXTRACTION                        
             TreeNode ext_RootNode = buildExtractionTreeNode();
             ext_RootNode.Tag = nodeTag;
@@ -764,6 +768,29 @@ namespace VGMToolbox
             genh_RootNode.Nodes.Add(genh_CreatorNode);
 
             return genh_RootNode;
+        }
+
+        private TreeNode buildVgmTreeNode()
+        {
+            VGMToolbox.util.NodeTagStruct nodeTag = new VGMToolbox.util.NodeTagStruct();
+
+            TreeNode vgm_RootNode = new TreeNode("VGM Tools");
+            vgm_RootNode.NodeFont = this.treeviewBoldFont;
+
+            // VGM Tagger
+            TreeNode vgm_TaggerNode = new TreeNode("VGM Tagger");
+
+            // Add  Form
+            Vgm_VgmTagEditorForm vgm_VgmTagEditorForm = new Vgm_VgmTagEditorForm(vgm_TaggerNode);
+            this.splitContainer1.Panel2.Controls.Add(vgm_VgmTagEditorForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = vgm_VgmTagEditorForm.GetType().Name;
+            vgm_TaggerNode.Tag = nodeTag;
+
+            vgm_RootNode.Nodes.Add(vgm_TaggerNode);
+
+            return vgm_RootNode;
         }
 
         private void tvMenuTree_doClick(object sender, TreeNodeMouseClickEventArgs e)

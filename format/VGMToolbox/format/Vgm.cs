@@ -12,7 +12,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.format
 {
-    public class Vgm : IFormat
+    public class Vgm : IFormat, IGd3TagFormat
     {
         public Vgm() { }
         
@@ -166,7 +166,7 @@ namespace VGMToolbox.format
         private const int GD3_NOTES = 10;
 
         // Others
-        Dictionary<string, string> tagHash = new Dictionary<string, string>();
+        Dictionary<string, string> tagHash = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         private int vgmDataAbsoluteOffset;
         private int gd3AbsoluteOffset;
         private int eofAbsoluteOffset;
@@ -784,8 +784,6 @@ namespace VGMToolbox.format
                 char[] tagSeparator = new char[] { (char)(0x00), (char)(0x00) };
                 string[] splitTags = tagsString.Trim().Split(tagSeparator);
 
-                //try
-                //{
                 string versionTag = getIntVersion().ToString();
                 this.tagHash.Add("VGM Format Version", versionTag);                
                 
@@ -800,8 +798,8 @@ namespace VGMToolbox.format
                 this.tagHash.Add("Game Date", splitTags[GD3_GAME_DATE_IDX]);
                 this.tagHash.Add("Set Ripper", splitTags[GD3_RIPPER_IDX]);
                 this.tagHash.Add("Notes", splitTags[GD3_NOTES]);
-                //}
-                //catch (Exception) { }
+
+                // Need to add code for newlines in Notes field.
             }
         }
 
@@ -809,5 +807,56 @@ namespace VGMToolbox.format
         public bool IsLibraryPresent() { return true; }
 
         #endregion
+
+        #region IGd3TagFormat
+
+        private string GetSimpleTag(string pTagKey)
+        {
+            string ret = String.Empty;
+
+            if (this.tagHash.ContainsKey(pTagKey))
+            {
+                ret = tagHash[pTagKey];
+            }
+            return ret;
+        }
+        public string GetTitleTagEn() { return GetSimpleTag("Track Name (E)"); }
+        public string GetTitleTagJp() { return GetSimpleTag("Track Name (J)"); }
+        public string GetGameTagEn() { return GetSimpleTag("Game Name (E)"); }
+        public string GetGameTagJp() { return GetSimpleTag("Game Name (J)"); }
+        public string GetSystemTagEn() { return GetSimpleTag("System Name (E)"); }
+        public string GetSystemTagJp() { return GetSimpleTag("System Name (J)"); }
+        public string GetArtistTagEn() { return GetSimpleTag("Author Name (E)"); }
+        public string GetArtistTagJp() { return GetSimpleTag("Author Name (J)"); }
+        public string GetDateTag() { return GetSimpleTag("Game Date"); }
+        public string GetRipperTag() { return GetSimpleTag("Set Ripper"); }
+        public string GetCommentTag() { return GetSimpleTag("Notes"); }
+
+        private void SetSimpleTag(string pKey, string pNewValue)
+        {
+            if (!String.IsNullOrEmpty(pNewValue) && !String.IsNullOrEmpty(pNewValue.Trim()))
+            {
+                this.tagHash[pKey] = pNewValue.Trim();
+            }            
+        }
+        public void SetTitleTagEn(string pNewValue) { SetSimpleTag("Track Name (E)", pNewValue); }
+        public void SetTitleTagJp(string pNewValue) { SetSimpleTag("Track Name (J)", pNewValue); }
+        public void SetGameTagEn(string pNewValue) { SetSimpleTag("Game Name (E)", pNewValue); }
+        public void SetGameTagJp(string pNewValue) { SetSimpleTag("Game Name (J)", pNewValue); }
+        public void SetSystemTagEn(string pNewValue) { SetSimpleTag("System Name (E)", pNewValue); }
+        public void SetSystemTagJp(string pNewValue) { SetSimpleTag("System Name (J)", pNewValue); }
+        public void SetArtistTagEn(string pNewValue) { SetSimpleTag("Author Name (E)", pNewValue); }
+        public void SetArtistTagJp(string pNewValue) { SetSimpleTag("Author Name (J)", pNewValue); }
+        public void SetDateTag(string pNewValue) { SetSimpleTag("Game Date", pNewValue); }
+        public void SetRipperTag(string pNewValue) { SetSimpleTag("Set Ripper", pNewValue); }
+        public void SetCommentTag(string pNewValue) { SetSimpleTag("Notes", pNewValue); }
+
+        public void UpdateTags() 
+        {
+            int x = 1;
+        }
+
+        #endregion
+
     }
 }
