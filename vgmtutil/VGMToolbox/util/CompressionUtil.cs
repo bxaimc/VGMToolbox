@@ -185,5 +185,36 @@ namespace VGMToolbox.util
                 }
             }
         }
+
+        public static void GzipEntireFile(string pFileName)
+        {
+            string tempFileName;
+                        
+            if (File.Exists(pFileName))
+            {
+                using (FileStream fs = File.OpenRead(pFileName))
+                {
+                    tempFileName = Path.GetTempFileName();
+
+                    using (FileStream outFs = File.OpenWrite(tempFileName))
+                    {
+                        using (GZipStream gs = new GZipStream(outFs, CompressionMode.Compress, 
+                            Ionic.Zlib.CompressionLevel.BestCompression))
+                        {
+                            int read;
+                            byte[] data = new byte[Constants.FILE_READ_CHUNK_SIZE];
+
+                            while ((read = fs.Read(data, 0, data.Length)) > 0)
+                            {
+                                gs.Write(data, 0, read);
+                            }
+                        }
+                    }
+                }
+
+                File.Delete(pFileName);
+                File.Move(tempFileName, pFileName);
+            }
+        }
     }
 }

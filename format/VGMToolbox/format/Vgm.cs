@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
@@ -18,6 +19,8 @@ namespace VGMToolbox.format
         
         // Constants
         private static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x56, 0x67, 0x6d, 0x20 }; // "Vgm "
+        private static readonly byte[] ASCII_SIGNATURE_GD3 = new byte[] { 0x47, 0x64, 0x33, 0x20 }; // "Gd3 "
+
 
         private const string TYPE_VGM = "VGM";
         private const string TYPE_VGM7Z = "VGM7Z";
@@ -33,6 +36,8 @@ namespace VGMToolbox.format
         private static readonly int INT_VERSION_0101 = 101;
         private static readonly int INT_VERSION_0110 = 110;
         private static readonly int INT_VERSION_0150 = 150;
+
+        private static readonly byte[] VERSION_GD3_0100 = new byte[] { 0x00, 0x01, 0x00, 0x00 };
 
         // Version 1.0 or greater
         private const int SIG_OFFSET = 0x00;
@@ -447,9 +452,7 @@ namespace VGMToolbox.format
         }
 
         public void Initialize(Stream pStream, string pFilePath)
-        {
-            this.filePath = pFilePath;
-            
+        {            
             if (FormatUtil.IsGzipFile(pStream))
             {
                 GZipInputStream gZipInputStream = new GZipInputStream(pStream);
@@ -523,11 +526,13 @@ namespace VGMToolbox.format
                 {
                     this.vgmDataOffset = BitConverter.GetBytes(VGM_DATA_OFFSET_PRE150);
                 }
-
+               
                 this.getAbsoluteOffsets(intVersion);
                 this.initializeTagHash(pStream);
 
             } // if (FormatUtil.IsGzipFile(pFileStream))
+
+            this.filePath = pFilePath; 
         }
 
         private void getAbsoluteOffsets(int pIntVersion)
@@ -853,21 +858,31 @@ namespace VGMToolbox.format
 
         public void UpdateTags() 
         {
-            string retaggingFilePathUncompressed;
+            string retaggingFilePath;
 
             try
             {
-                retaggingFilePathUncompressed = Path.Combine(Path.GetDirectoryName(this.filePath),
-                    String.Format("{0}_RETAG_UNCOMPRESSED_{1}.vgm", Path.GetFileNameWithoutExtension(this.filePath), new Random().Next().ToString()));
+                retaggingFilePath = Path.Combine(Path.GetDirectoryName(this.filePath),
+                    String.Format("{0}_RETAG_{1}.vgm", Path.GetFileNameWithoutExtension(this.filePath), new Random().Next().ToString()));
 
-                // build and compress file
-                this.outputToVersion150File(retaggingFilePathUncompressed);
+                // rebuild file
+                this.outputToVersion150File(retaggingFilePath);
 
-                // rename original
-
-                // rename gzip'd file to original
+                // recompress if original was gzipped
+                if (FormatUtil.IsGzipFile(this.filePath))
+                {
+                    CompressionUtil.GzipEntireFile(retaggingFilePath);
+                }
 
                 // delete original
+                if (File.Exists(this.filePath))
+                {
+                    File.Delete(this.filePath);
+                }
+                
+                // rename rebuilt file to original
+                File.Move(retaggingFilePath, this.filePath);
+
             }
             catch (Exception _ex)
             {
@@ -877,18 +892,34 @@ namespace VGMToolbox.format
 
         private void outputToVersion150File(string pOutputPath)
         {
-            long dataOffset = 0x40;
+            UInt32 headerLength;
+            UInt32 dataLength;
+            long gd3Offset;
+            UInt32 gd3Length = 0;
+            UInt32 eofOffset = 0;
             
+
             // Write Incomplete Header
-             this.writeHeaderSection(pOutputPath);
+            headerLength = this.writeHeaderSection(pOutputPath);
 
             // Write Data
-             UInt32 dataLength = this.writeDataSection(pOutputPath, dataOffset);
+            dataLength = this.writeDataSection(pOutputPath, headerLength);
+
+            // Write GD3
+            gd3Offset = (long)(headerLength + dataLength);
+            gd3Length = this.writeGd3Section(pOutputPath, gd3Offset);
+            
+            // Update Header
+            eofOffset = (headerLength + dataLength + gd3Length) - Vgm.EOF_OFFSET_OFFSET;
+            gd3Offset -= Vgm.GD3_OFFSET_OFFSET;
+            this.updateHeader(pOutputPath, eofOffset, (UInt32)gd3Offset);
+
         }
 
-        private void writeHeaderSection(string pOutputPath)
+        private UInt32 writeHeaderSection(string pOutputPath)
         {
             byte[] empty32BitVal = new byte[] { 0x00, 0x00, 0x00, 0x00 };
+            UInt32 headerSize = 0x40;
 
             using (FileStream outFs = File.Open(pOutputPath, FileMode.Create, FileAccess.Write))
             {
@@ -954,7 +985,9 @@ namespace VGMToolbox.format
                     bw.Write(new byte[] { 0x0c, 0x00, 0x00, 0x00 }); // Data Start Address
                     bw.Write(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }); // Reserved - 0x38
                 }
-            }        
+            }
+
+            return headerSize;
         }
         
         private UInt32 writeDataSection(string pOutputPath, long pDestinationOffset)
@@ -985,23 +1018,22 @@ namespace VGMToolbox.format
                         tempGzipFile = Path.GetTempFileName();              // get temp file
 
                         // open temp file for output
-                        FileStream gZipFileStream =
-                            new FileStream(tempGzipFile, FileMode.Open, FileAccess.ReadWrite);
-
-                        // decompress file
-                        while (true)
+                        using (FileStream gZipFileStream = new FileStream(tempGzipFile, FileMode.Open, FileAccess.ReadWrite))
                         {
-                            size = gZipInputStream.Read(writeData, 0, size);
-                            if (size > 0)
+                            // decompress file
+                            while (true)
                             {
-                                gZipFileStream.Write(writeData, 0, size);
-                            }
-                            else
-                            {
-                                break;
+                                size = gZipInputStream.Read(writeData, 0, size);
+                                if (size > 0)
+                                {
+                                    gZipFileStream.Write(writeData, 0, size);
+                                }
+                                else
+                                {
+                                    break;
+                                }
                             }
                         }
-
                         decompressedFilePath = tempGzipFile;
                     }                    
                 }
@@ -1022,6 +1054,77 @@ namespace VGMToolbox.format
             }
 
             return (UInt32)bytesToRead;
+        }
+
+        private UInt32 writeGd3Section(string pOutputPath, long pDestinationOffset)
+        {
+            UInt32 totalLength = 0;
+            
+            using (MemoryStream ms = new MemoryStream())
+            {
+                totalLength += this.addGd3TagToMemoryStream("Track Name (E)", ms);
+                totalLength += this.addGd3TagToMemoryStream("Track Name (J)", ms);
+                totalLength += this.addGd3TagToMemoryStream("Game Name (E)", ms);
+                totalLength += this.addGd3TagToMemoryStream("Game Name (J)", ms);
+                totalLength += this.addGd3TagToMemoryStream("System Name (E)", ms);
+                totalLength += this.addGd3TagToMemoryStream("System Name (J)", ms);
+                totalLength += this.addGd3TagToMemoryStream("Author Name (E)", ms);
+                totalLength += this.addGd3TagToMemoryStream("Author Name (J)", ms);
+                totalLength += this.addGd3TagToMemoryStream("Game Date", ms);
+                totalLength += this.addGd3TagToMemoryStream("Set Ripper", ms);
+                totalLength += this.addGd3TagToMemoryStream("Notes", ms);
+
+                using (FileStream outFs = File.Open(pOutputPath, FileMode.Open, FileAccess.Write))
+                {                
+                    using (BinaryWriter bw = new BinaryWriter(outFs))
+                    {
+                        bw.BaseStream.Position = pDestinationOffset;
+                        bw.Write(Vgm.ASCII_SIGNATURE_GD3);
+                        bw.Write(Vgm.VERSION_GD3_0100);
+                        bw.Write(BitConverter.GetBytes((UInt32)ms.Length));
+                        bw.Write(ms.ToArray());
+                    }
+                }
+            }
+            return totalLength;
+        }
+
+        private void updateHeader(string pOutputPath, UInt32 pEofOffset, UInt32 pGd3Offset)
+        { 
+            using (FileStream fs = File.Open(pOutputPath, FileMode.Open, FileAccess.Write))
+            {
+                using (BinaryWriter bw = new BinaryWriter(fs))
+                {
+                    bw.BaseStream.Position = Vgm.EOF_OFFSET_OFFSET;
+                    bw.Write(BitConverter.GetBytes(pEofOffset));
+
+                    bw.BaseStream.Position = Vgm.GD3_OFFSET_OFFSET;
+                    bw.Write(BitConverter.GetBytes(pGd3Offset));
+                }
+            }
+        }
+
+        private UInt32 addGd3TagToMemoryStream(string pKeyName, MemoryStream pMs)
+        {
+            System.Text.Encoding enc = System.Text.Encoding.Unicode;
+            byte[] nullTerminator = new byte[] { 0x00, 0x00 };
+            byte[] newLine = new byte[] { 0x00, 0x0A };
+            byte[] tagValue;
+            UInt32 totalBytesWritten = 0;
+
+            // add tag
+            if (tagHash.ContainsKey(pKeyName))
+            {
+                tagValue = enc.GetBytes(tagHash[pKeyName].Trim());
+                pMs.Write(tagValue, 0, tagValue.Length);
+                totalBytesWritten += (UInt32)tagValue.Length;
+            }
+
+            // add terminator
+            pMs.Write(nullTerminator, 0, nullTerminator.Length);
+            totalBytesWritten += (UInt32)nullTerminator.Length;
+
+            return totalBytesWritten;
         }
 
         #endregion

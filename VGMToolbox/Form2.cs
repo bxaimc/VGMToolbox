@@ -86,14 +86,15 @@ namespace VGMToolbox
             gbs_RootNode.Tag = nodeTag;
             tools_RootNode.Nodes.Add(gbs_RootNode);
 
+            // VGM
+            TreeNode vgm_RootNode = buildVgmTreeNode();
+            vgm_RootNode.Tag = nodeTag;
+            tools_RootNode.Nodes.Add(vgm_RootNode);
+
             // xSF
             TreeNode xsf_RootNode = buildXsfTreeNode();
             xsf_RootNode.Tag = nodeTag;
             tools_RootNode.Nodes.Add(xsf_RootNode);
-
-            TreeNode vgm_RootNode = buildVgmTreeNode();
-            vgm_RootNode.Tag = nodeTag;
-            tools_RootNode.Nodes.Add(vgm_RootNode);
 
             // EXTRACTION                        
             TreeNode ext_RootNode = buildExtractionTreeNode();
@@ -778,7 +779,7 @@ namespace VGMToolbox
             vgm_RootNode.NodeFont = this.treeviewBoldFont;
 
             // VGM Tagger
-            TreeNode vgm_TaggerNode = new TreeNode("VGM Tagger");
+            TreeNode vgm_TaggerNode = new TreeNode("VGM Tag Editor");
 
             // Add  Form
             Vgm_VgmTagEditorForm vgm_VgmTagEditorForm = new Vgm_VgmTagEditorForm(vgm_TaggerNode);

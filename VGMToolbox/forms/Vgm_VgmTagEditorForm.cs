@@ -14,7 +14,7 @@ using VGMToolbox.tools.vgm;
 
 namespace VGMToolbox.forms
 {    
-    public partial class Vgm_VgmTagEditorForm : VgmtForm
+    public partial class Vgm_VgmTagEditorForm : AVgmtForm
     {
         IGd3TagFormat vgmData;
         bool isBatchMode;
@@ -26,7 +26,12 @@ namespace VGMToolbox.forms
             
             InitializeComponent();
 
+            this.lblTitle.Text = "VGM Tag Editor";
             this.btnDoTask.Text = "Update Tags";
+
+            this.tbOutput.Text = "- WARNING: Tagger is still in beta mode, please backup your files before usage." + Environment.NewLine;
+            this.tbOutput.Text += "- Output will be GZip'd only if the input was GZip'd." + Environment.NewLine;
+            this.tbOutput.Text += "- vgm7z not supported." + Environment.NewLine;
         }
 
         private void btnBrowseDirectory_Click(object sender, EventArgs e)
