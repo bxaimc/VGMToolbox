@@ -7,6 +7,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
+using VGMToolbox.dbutil;
 using VGMToolbox.format;
 using VGMToolbox.format.util;
 using VGMToolbox.plugin;
@@ -16,6 +17,9 @@ namespace VGMToolbox.forms
 {    
     public partial class Vgm_VgmTagEditorForm : AVgmtForm
     {
+        private static readonly string DB_PATH =
+            Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "db"), "collection.s3db");
+        
         IGd3TagFormat vgmData;
         bool isBatchMode;
         
@@ -32,6 +36,22 @@ namespace VGMToolbox.forms
             this.tbOutput.Text = "- WARNING: Tagger is still in beta mode, please backup your files before usage." + Environment.NewLine;
             this.tbOutput.Text += "- Output will be GZip'd only if the input was GZip'd." + Environment.NewLine;
             this.tbOutput.Text += "- vgm7z not supported." + Environment.NewLine;
+
+            this.loadSystems();
+        }
+
+        private void loadSystems()
+        {
+            DataTable dt = SqlLiteUtil.GetSimpleDataTable(DB_PATH, "VgmSystemNames", "SystemName");
+            DataRow dr = dt.NewRow();
+            dt.Rows.InsertAt(dr, 0);
+            this.cbSystemEn.DataSource = dt;
+            this.cbSystemEn.DisplayMember = "SystemName";
+            this.cbSystemEn.ValueMember = "SystemName";
+
+            this.cbSystemJp.DataSource = dt;
+            this.cbSystemJp.DisplayMember = "SystemName";
+            this.cbSystemJp.ValueMember = "SystemName";
         }
 
         private void btnBrowseDirectory_Click(object sender, EventArgs e)
@@ -119,8 +139,8 @@ namespace VGMToolbox.forms
 
                         this.tbGameEn.Text = this.vgmData.GetGameTagEn();
                         this.tbGameJp.Text = this.vgmData.GetGameTagJp();
-                        this.tbSystemEn.Text = this.vgmData.GetSystemTagEn();
-                        this.tbSystemJp.Text = this.vgmData.GetSystemTagJp();
+                        this.cbSystemEn.Text = this.vgmData.GetSystemTagEn();
+                        this.cbSystemJp.Text = this.vgmData.GetSystemTagJp();
                         this.tbArtistEn.Text = this.vgmData.GetArtistTagEn();
                         this.tbArtistJp.Text = this.vgmData.GetArtistTagJp();
                         this.tbGameDate.Text = this.vgmData.GetDateTag();
@@ -167,8 +187,8 @@ namespace VGMToolbox.forms
             vtUpdateStruct.TitleTagJp = this.tbTitleJp.Text;
             vtUpdateStruct.GameTagEn = this.tbGameEn.Text;
             vtUpdateStruct.GameTagJp = this.tbGameJp.Text;
-            vtUpdateStruct.SystemTagEn = this.tbSystemEn.Text;
-            vtUpdateStruct.SystemTagJp = this.tbSystemJp.Text;
+            vtUpdateStruct.SystemTagEn = this.cbSystemEn.Text;
+            vtUpdateStruct.SystemTagJp = this.cbSystemJp.Text;
             vtUpdateStruct.ArtistTagEn = this.tbArtistEn.Text;
             vtUpdateStruct.ArtistTagJp = this.tbArtistJp.Text;
             vtUpdateStruct.DateTag = this.tbGameDate.Text;
@@ -176,6 +196,24 @@ namespace VGMToolbox.forms
             vtUpdateStruct.CommentTag = this.tbComments.Text;
 
             base.backgroundWorker_Execute(vtUpdateStruct);
+        }
+
+        private void cbSystemEn_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
+        private void cbSystemEn_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void cbSystemJp_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
+        private void cbSystemJp_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
         }
     }
 }

@@ -34,17 +34,16 @@
             this.lblTrackTitleEn = new System.Windows.Forms.Label();
             this.tbTitleEn = new System.Windows.Forms.TextBox();
             this.grpSetTags = new System.Windows.Forms.GroupBox();
+            this.cbSystemEn = new System.Windows.Forms.ComboBox();
             this.lblGameDate = new System.Windows.Forms.Label();
             this.tbGameDate = new System.Windows.Forms.TextBox();
             this.tbRipper = new System.Windows.Forms.TextBox();
             this.lblRipper = new System.Windows.Forms.Label();
             this.lblArtistJp = new System.Windows.Forms.Label();
             this.tbArtistJp = new System.Windows.Forms.TextBox();
-            this.tbSystemJp = new System.Windows.Forms.TextBox();
             this.lblSystemJp = new System.Windows.Forms.Label();
             this.lblGameJp = new System.Windows.Forms.Label();
             this.tbGameJp = new System.Windows.Forms.TextBox();
-            this.tbSystemEn = new System.Windows.Forms.TextBox();
             this.lblSystemEn = new System.Windows.Forms.Label();
             this.lblArtistEn = new System.Windows.Forms.Label();
             this.tbArtistEn = new System.Windows.Forms.TextBox();
@@ -56,6 +55,7 @@
             this.btnBrowseDirectory = new System.Windows.Forms.Button();
             this.grpComments = new System.Windows.Forms.GroupBox();
             this.tbComments = new System.Windows.Forms.TextBox();
+            this.cbSystemJp = new System.Windows.Forms.ComboBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -140,17 +140,17 @@
             // 
             // grpSetTags
             // 
+            this.grpSetTags.Controls.Add(this.cbSystemJp);
+            this.grpSetTags.Controls.Add(this.cbSystemEn);
             this.grpSetTags.Controls.Add(this.lblGameDate);
             this.grpSetTags.Controls.Add(this.tbGameDate);
             this.grpSetTags.Controls.Add(this.tbRipper);
             this.grpSetTags.Controls.Add(this.lblRipper);
             this.grpSetTags.Controls.Add(this.lblArtistJp);
             this.grpSetTags.Controls.Add(this.tbArtistJp);
-            this.grpSetTags.Controls.Add(this.tbSystemJp);
             this.grpSetTags.Controls.Add(this.lblSystemJp);
             this.grpSetTags.Controls.Add(this.lblGameJp);
             this.grpSetTags.Controls.Add(this.tbGameJp);
-            this.grpSetTags.Controls.Add(this.tbSystemEn);
             this.grpSetTags.Controls.Add(this.lblSystemEn);
             this.grpSetTags.Controls.Add(this.lblArtistEn);
             this.grpSetTags.Controls.Add(this.tbArtistEn);
@@ -162,6 +162,16 @@
             this.grpSetTags.TabIndex = 25;
             this.grpSetTags.TabStop = false;
             this.grpSetTags.Text = "GameTags";
+            // 
+            // cbSystemEn
+            // 
+            this.cbSystemEn.FormattingEnabled = true;
+            this.cbSystemEn.Location = new System.Drawing.Point(75, 73);
+            this.cbSystemEn.Name = "cbSystemEn";
+            this.cbSystemEn.Size = new System.Drawing.Size(202, 21);
+            this.cbSystemEn.TabIndex = 24;
+            this.cbSystemEn.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cbSystemEn_KeyPress);
+            this.cbSystemEn.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cbSystemEn_KeyDown);
             // 
             // lblGameDate
             // 
@@ -211,13 +221,6 @@
             this.tbArtistJp.Size = new System.Drawing.Size(214, 20);
             this.tbArtistJp.TabIndex = 19;
             // 
-            // tbSystemJp
-            // 
-            this.tbSystemJp.Location = new System.Drawing.Point(75, 100);
-            this.tbSystemJp.Name = "tbSystemJp";
-            this.tbSystemJp.Size = new System.Drawing.Size(202, 20);
-            this.tbSystemJp.TabIndex = 17;
-            // 
             // lblSystemJp
             // 
             this.lblSystemJp.AutoSize = true;
@@ -242,13 +245,6 @@
             this.tbGameJp.Name = "tbGameJp";
             this.tbGameJp.Size = new System.Drawing.Size(214, 20);
             this.tbGameJp.TabIndex = 15;
-            // 
-            // tbSystemEn
-            // 
-            this.tbSystemEn.Location = new System.Drawing.Point(75, 74);
-            this.tbSystemEn.Name = "tbSystemEn";
-            this.tbSystemEn.Size = new System.Drawing.Size(202, 20);
-            this.tbSystemEn.TabIndex = 13;
             // 
             // lblSystemEn
             // 
@@ -352,6 +348,16 @@
             this.tbComments.Size = new System.Drawing.Size(272, 49);
             this.tbComments.TabIndex = 19;
             // 
+            // cbSystemJp
+            // 
+            this.cbSystemJp.FormattingEnabled = true;
+            this.cbSystemJp.Location = new System.Drawing.Point(75, 100);
+            this.cbSystemJp.Name = "cbSystemJp";
+            this.cbSystemJp.Size = new System.Drawing.Size(202, 21);
+            this.cbSystemJp.TabIndex = 29;
+            this.cbSystemJp.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cbSystemJp_KeyPress);
+            this.cbSystemJp.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cbSystemJp_KeyDown);
+            // 
             // Vgm_VgmTagEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -396,7 +402,6 @@
         private System.Windows.Forms.Label lblTrackTitleEn;
         private System.Windows.Forms.TextBox tbTitleEn;
         private System.Windows.Forms.GroupBox grpSetTags;
-        private System.Windows.Forms.TextBox tbSystemEn;
         private System.Windows.Forms.Label lblSystemEn;
         private System.Windows.Forms.Label lblArtistEn;
         private System.Windows.Forms.TextBox tbArtistEn;
@@ -410,7 +415,6 @@
         private System.Windows.Forms.TextBox tbTitleJp;
         private System.Windows.Forms.Label lblGameJp;
         private System.Windows.Forms.TextBox tbGameJp;
-        private System.Windows.Forms.TextBox tbSystemJp;
         private System.Windows.Forms.Label lblSystemJp;
         private System.Windows.Forms.Label lblArtistJp;
         private System.Windows.Forms.TextBox tbArtistJp;
@@ -420,5 +424,7 @@
         private System.Windows.Forms.TextBox tbGameDate;
         private System.Windows.Forms.GroupBox grpComments;
         private System.Windows.Forms.TextBox tbComments;
+        private System.Windows.Forms.ComboBox cbSystemEn;
+        private System.Windows.Forms.ComboBox cbSystemJp;
     }
 }
