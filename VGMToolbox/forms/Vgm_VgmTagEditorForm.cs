@@ -34,22 +34,26 @@ namespace VGMToolbox.forms
             this.btnDoTask.Text = "Update Tags";
 
             this.tbOutput.Text = "- WARNING: Tagger is still in beta mode, please backup your files before usage." + Environment.NewLine;
+            this.tbOutput.Text += "- One or multiple files can be selected for tagging.  Use Shift-Click and Ctrl-Click to select multiple files." + Environment.NewLine;
+            this.tbOutput.Text += "- Right-Click on the File List to Refresh it." + Environment.NewLine;
             this.tbOutput.Text += "- Output will be GZip'd only if the input was GZip'd." + Environment.NewLine;
-            this.tbOutput.Text += "- vgm7z not supported." + Environment.NewLine;
 
             this.loadSystems();
         }
 
         private void loadSystems()
         {
-            DataTable dt = SqlLiteUtil.GetSimpleDataTable(DB_PATH, "VgmSystemNames", "SystemName");
-            DataRow dr = dt.NewRow();
-            dt.Rows.InsertAt(dr, 0);
-            this.cbSystemEn.DataSource = dt;
+            DataTable dtEn = SqlLiteUtil.GetSimpleDataTable(DB_PATH, "VgmSystemNames", "SystemName");
+            DataRow drEn = dtEn.NewRow();
+            dtEn.Rows.InsertAt(drEn, 0);
+            this.cbSystemEn.DataSource = dtEn;
             this.cbSystemEn.DisplayMember = "SystemName";
             this.cbSystemEn.ValueMember = "SystemName";
-
-            this.cbSystemJp.DataSource = dt;
+            
+            DataTable dtJp = SqlLiteUtil.GetSimpleDataTable(DB_PATH, "VgmSystemNames", "SystemName");
+            DataRow drJp = dtJp.NewRow();
+            dtJp.Rows.InsertAt(drJp, 0);
+            this.cbSystemJp.DataSource = dtJp;
             this.cbSystemJp.DisplayMember = "SystemName";
             this.cbSystemJp.ValueMember = "SystemName";
         }
@@ -214,6 +218,23 @@ namespace VGMToolbox.forms
         private void cbSystemJp_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = true;
+        }
+
+        private void lbFiles_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                // Point where the mouse is clicked.
+                Point p = new Point(e.X, e.Y);
+
+                // show menu
+                contextMenuRefresh.Show(lbFiles, p);
+            }
+        }
+
+        private void tsmRefresh_Click(object sender, EventArgs e)
+        {
+            this.tbSourceDirectory_TextChanged(sender, e);
         }
     }
 }

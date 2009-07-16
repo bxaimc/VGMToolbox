@@ -15,7 +15,7 @@ using VGMToolbox.tools.xsf;
 
 namespace VGMToolbox.forms
 {
-    public partial class Xsf_XsfTagEditorForm : AVgmtForm
+    public partial class Xsf_XsfTagEditorForm : VgmtForm
     {
         IXsfTagFormat vgmData;
         bool isBatchMode;
@@ -246,6 +246,22 @@ namespace VGMToolbox.forms
             {
                 this.tbTitle.Enabled = true;
             }        
+        }
+        
+        private void refreshFileListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.tbSourceDirectory_TextChanged(sender, e);
+        }
+        private void lbFiles_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                // Point where the mouse is clicked.
+                Point p = new Point(e.X, e.Y);
+
+                // show menu
+                contextMenuRefresh.Show(lbFiles, p);
+            }
         }
     }
 }

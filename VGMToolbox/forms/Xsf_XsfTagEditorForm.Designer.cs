@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.grpSourceFiles = new System.Windows.Forms.GroupBox();
             this.tbSourceDirectory = new System.Windows.Forms.TextBox();
             this.lbFiles = new System.Windows.Forms.ListBox();
@@ -60,6 +61,8 @@
             this.grpComments = new System.Windows.Forms.GroupBox();
             this.tbComments = new System.Windows.Forms.TextBox();
             this.cbDeleteEmpty = new System.Windows.Forms.CheckBox();
+            this.contextMenuRefresh = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.refreshFileListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -67,6 +70,7 @@
             this.grpSetTags.SuspendLayout();
             this.grpTrackTags.SuspendLayout();
             this.grpComments.SuspendLayout();
+            this.contextMenuRefresh.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
@@ -126,6 +130,7 @@
             this.lbFiles.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.lbFiles.Size = new System.Drawing.Size(215, 303);
             this.lbFiles.TabIndex = 5;
+            this.lbFiles.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lbFiles_MouseUp);
             this.lbFiles.SelectedIndexChanged += new System.EventHandler(this.lbFiles_SelectedIndexChanged);
             // 
             // btnBrowseDirectory
@@ -395,6 +400,20 @@
             this.cbDeleteEmpty.Text = "Remove fields you\'ve left empty from the files\' tags.";
             this.cbDeleteEmpty.UseVisualStyleBackColor = true;
             // 
+            // contextMenuRefresh
+            // 
+            this.contextMenuRefresh.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.refreshFileListToolStripMenuItem});
+            this.contextMenuRefresh.Name = "contextMenuStrip1";
+            this.contextMenuRefresh.Size = new System.Drawing.Size(162, 26);
+            // 
+            // refreshFileListToolStripMenuItem
+            // 
+            this.refreshFileListToolStripMenuItem.Name = "refreshFileListToolStripMenuItem";
+            this.refreshFileListToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.refreshFileListToolStripMenuItem.Text = "Refresh File List";
+            this.refreshFileListToolStripMenuItem.Click += new System.EventHandler(this.refreshFileListToolStripMenuItem_Click);
+            // 
             // Xsf_XsfTagEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -432,6 +451,7 @@
             this.grpTrackTags.PerformLayout();
             this.grpComments.ResumeLayout(false);
             this.grpComments.PerformLayout();
+            this.contextMenuRefresh.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -471,5 +491,7 @@
         private System.Windows.Forms.TextBox tbSystem;
         private System.Windows.Forms.Label lblSystem;
         private System.Windows.Forms.CheckBox cbGenerateTitleFromFilename;
+        private System.Windows.Forms.ContextMenuStrip contextMenuRefresh;
+        private System.Windows.Forms.ToolStripMenuItem refreshFileListToolStripMenuItem;
     }
 }

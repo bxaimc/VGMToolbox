@@ -28,12 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.grpTrackTags = new System.Windows.Forms.GroupBox();
             this.lblTrackTitleJp = new System.Windows.Forms.Label();
             this.tbTitleJp = new System.Windows.Forms.TextBox();
             this.lblTrackTitleEn = new System.Windows.Forms.Label();
             this.tbTitleEn = new System.Windows.Forms.TextBox();
             this.grpSetTags = new System.Windows.Forms.GroupBox();
+            this.cbSystemJp = new System.Windows.Forms.ComboBox();
             this.cbSystemEn = new System.Windows.Forms.ComboBox();
             this.lblGameDate = new System.Windows.Forms.Label();
             this.tbGameDate = new System.Windows.Forms.TextBox();
@@ -55,7 +57,8 @@
             this.btnBrowseDirectory = new System.Windows.Forms.Button();
             this.grpComments = new System.Windows.Forms.GroupBox();
             this.tbComments = new System.Windows.Forms.TextBox();
-            this.cbSystemJp = new System.Windows.Forms.ComboBox();
+            this.contextMenuRefresh = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsmRefresh = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -63,34 +66,35 @@
             this.grpSetTags.SuspendLayout();
             this.grpSourceFiles.SuspendLayout();
             this.grpComments.SuspendLayout();
+            this.contextMenuRefresh.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
             // 
             this.pnlLabels.Location = new System.Drawing.Point(0, 523);
-            this.pnlLabels.Size = new System.Drawing.Size(847, 19);
+            this.pnlLabels.Size = new System.Drawing.Size(687, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(847, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(687, 20);
             // 
             // tbOutput
             // 
             this.tbOutput.Location = new System.Drawing.Point(0, 446);
-            this.tbOutput.Size = new System.Drawing.Size(847, 77);
+            this.tbOutput.Size = new System.Drawing.Size(687, 77);
             // 
             // pnlButtons
             // 
             this.pnlButtons.Location = new System.Drawing.Point(0, 426);
-            this.pnlButtons.Size = new System.Drawing.Size(847, 20);
+            this.pnlButtons.Size = new System.Drawing.Size(687, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(787, 0);
+            this.btnCancel.Location = new System.Drawing.Point(627, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(727, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(567, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpTrackTags
@@ -162,6 +166,16 @@
             this.grpSetTags.TabIndex = 25;
             this.grpSetTags.TabStop = false;
             this.grpSetTags.Text = "GameTags";
+            // 
+            // cbSystemJp
+            // 
+            this.cbSystemJp.FormattingEnabled = true;
+            this.cbSystemJp.Location = new System.Drawing.Point(75, 100);
+            this.cbSystemJp.Name = "cbSystemJp";
+            this.cbSystemJp.Size = new System.Drawing.Size(202, 21);
+            this.cbSystemJp.TabIndex = 29;
+            this.cbSystemJp.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cbSystemJp_KeyPress);
+            this.cbSystemJp.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cbSystemJp_KeyDown);
             // 
             // cbSystemEn
             // 
@@ -316,6 +330,7 @@
             this.lbFiles.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.lbFiles.Size = new System.Drawing.Size(215, 303);
             this.lbFiles.TabIndex = 5;
+            this.lbFiles.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lbFiles_MouseUp);
             this.lbFiles.SelectedIndexChanged += new System.EventHandler(this.lbFiles_SelectedIndexChanged);
             // 
             // btnBrowseDirectory
@@ -348,21 +363,25 @@
             this.tbComments.Size = new System.Drawing.Size(272, 49);
             this.tbComments.TabIndex = 19;
             // 
-            // cbSystemJp
+            // contextMenuRefresh
             // 
-            this.cbSystemJp.FormattingEnabled = true;
-            this.cbSystemJp.Location = new System.Drawing.Point(75, 100);
-            this.cbSystemJp.Name = "cbSystemJp";
-            this.cbSystemJp.Size = new System.Drawing.Size(202, 21);
-            this.cbSystemJp.TabIndex = 29;
-            this.cbSystemJp.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cbSystemJp_KeyPress);
-            this.cbSystemJp.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cbSystemJp_KeyDown);
+            this.contextMenuRefresh.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmRefresh});
+            this.contextMenuRefresh.Name = "contextMenuRefresh";
+            this.contextMenuRefresh.Size = new System.Drawing.Size(162, 48);
+            // 
+            // tsmRefresh
+            // 
+            this.tsmRefresh.Name = "tsmRefresh";
+            this.tsmRefresh.Size = new System.Drawing.Size(161, 22);
+            this.tsmRefresh.Text = "Refresh File List";
+            this.tsmRefresh.Click += new System.EventHandler(this.tsmRefresh_Click);
             // 
             // Vgm_VgmTagEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(847, 564);
+            this.ClientSize = new System.Drawing.Size(687, 564);
             this.Controls.Add(this.grpComments);
             this.Controls.Add(this.grpTrackTags);
             this.Controls.Add(this.grpSetTags);
@@ -391,6 +410,7 @@
             this.grpSourceFiles.PerformLayout();
             this.grpComments.ResumeLayout(false);
             this.grpComments.PerformLayout();
+            this.contextMenuRefresh.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -426,5 +446,7 @@
         private System.Windows.Forms.TextBox tbComments;
         private System.Windows.Forms.ComboBox cbSystemEn;
         private System.Windows.Forms.ComboBox cbSystemJp;
+        private System.Windows.Forms.ContextMenuStrip contextMenuRefresh;
+        private System.Windows.Forms.ToolStripMenuItem tsmRefresh;
     }
 }

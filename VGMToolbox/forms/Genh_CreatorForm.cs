@@ -410,5 +410,21 @@ namespace VGMToolbox.forms
             this.updateFormForTask();
         }
 
+        private void lbFiles_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                // Point where the mouse is clicked.
+                Point p = new Point(e.X, e.Y);
+
+                // show menu
+                contextMenuRefresh.Show(lbFiles, p);
+            }
+        }
+        private void refreshFileListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.reloadFiles();
+        }
+
     }
 }
