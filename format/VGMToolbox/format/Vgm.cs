@@ -920,6 +920,8 @@ namespace VGMToolbox.format
         {
             byte[] empty32BitVal = new byte[] { 0x00, 0x00, 0x00, 0x00 };
             UInt32 headerSize = 0x40;
+            int numberOfZeroesToWrite;
+            long finalPosition;
 
             using (FileStream outFs = File.Open(pOutputPath, FileMode.Create, FileAccess.Write))
             {
@@ -928,7 +930,7 @@ namespace VGMToolbox.format
                     // write header, adding empty sections for unknown values
                     bw.Write(Vgm.ASCII_SIGNATURE);
                     bw.Write(empty32BitVal);      // EOF Offset
-                    bw.Write(Vgm.VERSION_0150);
+                    bw.Write(this.version);
                     bw.Write(this.sn76489Clock);
 
                     bw.Write(this.ym2413Clock);
@@ -943,49 +945,49 @@ namespace VGMToolbox.format
                     /////////                                        
                     if (this.getIntVersion() < INT_VERSION_0101)
                     {
-                        bw.Write(empty32BitVal); // Rate
+                        // fill in the rest of the header with zeroes
+                        numberOfZeroesToWrite = (int)((long)headerSize - outFs.Position);
                     }
                     else
                     {
                         bw.Write(this.Rate);
-                    }
 
-                    //////////
-                    // v1.10
-                    //////////                                        
-                    if (this.getIntVersion() < INT_VERSION_0110)
-                    {
-                        if (ParseFile.CompareSegment(this.Sn76489Clock, 0, empty32BitVal))
+                        //////////
+                        // v1.10
+                        //////////                                        
+                        if (this.getIntVersion() < INT_VERSION_0110)
                         {
-                            bw.Write(new byte[] { 0x00, 0x00 }); // SN76489 feedback
-                            bw.Write(new byte[] { 0x00 });       // SN76489 shift register width
+                            numberOfZeroesToWrite = (int)((long)headerSize - outFs.Position);
+
                         }
-                        else // use defaults
+                        else
                         {
-                            bw.Write(new byte[] { 0x09, 0x00 }); // SN76489 feedback
-                            bw.Write(new byte[] { 0x10, 0x00 }); // SN76489 shift register width
+                            bw.Write(this.sn76489Feedback);
+                            bw.Write(this.sn76489Srw);
+                            bw.Write(new byte[] { 0x00 });  // Reserved - 0x2B
+                            bw.Write(this.ym2612Clock);
+                            bw.Write(this.ym2151Clock);
                         }
-                        bw.Write(new byte[] { 0x00 });  // Reserved - 0x2B
-                        bw.Write(this.ym2413Clock);     // how to tell if YM2612 is used here?
-                        bw.Write(this.ym2413Clock);     // how to tell if YM2151 is used here?
 
-                    }
-                    else
-                    {
-                        bw.Write(this.sn76489Feedback);
-                        bw.Write(this.sn76489Srw);
-                        bw.Write(new byte[] { 0x00 });  // Reserved - 0x2B
-                        bw.Write(this.ym2612Clock);
-                        bw.Write(this.ym2151Clock);
+                        /////////
+                        // v1.50
+                        /////////
+                        if (this.getIntVersion() < INT_VERSION_0150)
+                        {
+                            numberOfZeroesToWrite = (int)((long)headerSize - outFs.Position);
+                        }
+                        else
+                        {
+                            bw.Write(new byte[] { 0x0c, 0x00, 0x00, 0x00 }); // Data Start Address
+                            numberOfZeroesToWrite = (int)((long)headerSize - outFs.Position);
+                        }
                     }
 
-                    /////////
-                    // v1.50
-                    /////////
-                    bw.Write(new byte[] { 0x0c, 0x00, 0x00, 0x00 }); // Data Start Address
-                    bw.Write(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }); // Reserved - 0x38
+                    finalPosition = outFs.Position;
                 }
             }
+
+            FileUtil.ZeroOutFileChunk(pOutputPath, finalPosition, numberOfZeroesToWrite);
 
             return headerSize;
         }
