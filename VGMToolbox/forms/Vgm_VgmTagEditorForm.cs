@@ -38,25 +38,55 @@ namespace VGMToolbox.forms
             this.tbOutput.Text += "- Right-Click on the File List to Refresh it." + Environment.NewLine;
             this.tbOutput.Text += "- Output will be GZip'd only if the input was GZip'd." + Environment.NewLine;
 
-            this.loadSystems();
+            // this.loadSystems();
         }
 
-        private void loadSystems()
-        {
-            DataTable dtEn = SqlLiteUtil.GetSimpleDataTable(DB_PATH, "VgmSystemNames", "SystemName");
-            DataRow drEn = dtEn.NewRow();
-            dtEn.Rows.InsertAt(drEn, 0);
-            this.cbSystemEn.DataSource = dtEn;
-            this.cbSystemEn.DisplayMember = "SystemName";
-            this.cbSystemEn.ValueMember = "SystemName";
+        
+        //private void loadSystems()
+        //{
+        //    System.Text.Encoding utf8 = System.Text.Encoding.UTF8;
+        //    System.Text.Encoding unicode = System.Text.Encoding.Unicode;
+        //    byte[] decodedString;
+
+        //    DataTable dtEn = SqlLiteUtil.GetSimpleDataTable(DB_PATH, "VgmSystemNames", "SystemName");
+        //    /*
+        //    DataRow drEn = dtEn.NewRow();
+        //    dtEn.Rows.InsertAt(drEn, 0);
+        //    */
+
+        //    this.cbSystemEn.Items.Add(String.Empty);
+        //    this.cbSystemJp.Items.Add(String.Empty);
+
+        //    foreach (DataRow dr in  dtEn.Rows)
+        //    {
+        //        if (!dr["SystemLanguage"].ToString().Equals("Jp"))
+        //        {
+        //            decodedString = utf8.GetBytes((string)dr["SystemName"]);
+        //            this.cbSystemEn.Items.Add(utf8.GetString(decodedString));
+        //            this.cbSystemJp.Items.Add(utf8.GetString(decodedString));
+        //        }
+        //        else
+        //        {
+        //            decodedString = unicode.GetBytes((string)dr["SystemName"]);
+        //            this.cbSystemEn.Items.Add(unicode.GetString(decodedString));
+        //            this.cbSystemJp.Items.Add(unicode.GetString(decodedString));                
+        //        }
+        //    }
             
-            DataTable dtJp = SqlLiteUtil.GetSimpleDataTable(DB_PATH, "VgmSystemNames", "SystemName");
-            DataRow drJp = dtJp.NewRow();
-            dtJp.Rows.InsertAt(drJp, 0);
-            this.cbSystemJp.DataSource = dtJp;
-            this.cbSystemJp.DisplayMember = "SystemName";
-            this.cbSystemJp.ValueMember = "SystemName";
-        }
+        //    /*
+        //    this.cbSystemEn.DataSource = dtEn;
+        //    this.cbSystemEn.DisplayMember = "SystemName";
+        //    this.cbSystemEn.ValueMember = "SystemName";
+            
+
+        //    DataTable dtJp = SqlLiteUtil.GetSimpleDataTable(DB_PATH, "VgmSystemNames", "SystemName");
+        //    DataRow drJp = dtJp.NewRow();
+        //    dtJp.Rows.InsertAt(drJp, 0);
+        //    this.cbSystemJp.DataSource = dtJp;
+        //    this.cbSystemJp.DisplayMember = "SystemName";
+        //    this.cbSystemJp.ValueMember = "SystemName";
+        //    */ 
+        //}
 
         private void btnBrowseDirectory_Click(object sender, EventArgs e)
         {
@@ -143,8 +173,8 @@ namespace VGMToolbox.forms
 
                         this.tbGameEn.Text = this.vgmData.GetGameTagEn();
                         this.tbGameJp.Text = this.vgmData.GetGameTagJp();
-                        this.cbSystemEn.Text = this.vgmData.GetSystemTagEn();
-                        this.cbSystemJp.Text = this.vgmData.GetSystemTagJp();
+                        this.tbSystemEn.Text = this.vgmData.GetSystemTagEn();
+                        this.tbSystemJp.Text = this.vgmData.GetSystemTagJp();
                         this.tbArtistEn.Text = this.vgmData.GetArtistTagEn();
                         this.tbArtistJp.Text = this.vgmData.GetArtistTagJp();
                         this.tbGameDate.Text = this.vgmData.GetDateTag();
@@ -191,8 +221,8 @@ namespace VGMToolbox.forms
             vtUpdateStruct.TitleTagJp = this.tbTitleJp.Text;
             vtUpdateStruct.GameTagEn = this.tbGameEn.Text;
             vtUpdateStruct.GameTagJp = this.tbGameJp.Text;
-            vtUpdateStruct.SystemTagEn = this.cbSystemEn.Text;
-            vtUpdateStruct.SystemTagJp = this.cbSystemJp.Text;
+            vtUpdateStruct.SystemTagEn = this.tbSystemEn.Text;
+            vtUpdateStruct.SystemTagJp = this.tbSystemJp.Text;
             vtUpdateStruct.ArtistTagEn = this.tbArtistEn.Text;
             vtUpdateStruct.ArtistTagJp = this.tbArtistJp.Text;
             vtUpdateStruct.DateTag = this.tbGameDate.Text;
