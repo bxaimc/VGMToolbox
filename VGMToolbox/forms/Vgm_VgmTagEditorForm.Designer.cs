@@ -57,8 +57,8 @@
             this.tbComments = new System.Windows.Forms.TextBox();
             this.contextMenuRefresh = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmRefresh = new System.Windows.Forms.ToolStripMenuItem();
-            this.tbSystemEn = new System.Windows.Forms.TextBox();
-            this.tbSystemJp = new System.Windows.Forms.TextBox();
+            this.cbSystemEn = new System.Windows.Forms.ComboBox();
+            this.cbSystemJp = new System.Windows.Forms.ComboBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -71,7 +71,7 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 608);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 506);
             this.pnlLabels.Size = new System.Drawing.Size(900, 19);
             // 
             // pnlTitle
@@ -80,12 +80,12 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 531);
+            this.tbOutput.Location = new System.Drawing.Point(0, 429);
             this.tbOutput.Size = new System.Drawing.Size(900, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 511);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 409);
             this.pnlButtons.Size = new System.Drawing.Size(900, 20);
             // 
             // btnCancel
@@ -144,8 +144,8 @@
             // 
             // grpSetTags
             // 
-            this.grpSetTags.Controls.Add(this.tbSystemJp);
-            this.grpSetTags.Controls.Add(this.tbSystemEn);
+            this.grpSetTags.Controls.Add(this.cbSystemJp);
+            this.grpSetTags.Controls.Add(this.cbSystemEn);
             this.grpSetTags.Controls.Add(this.lblGameDate);
             this.grpSetTags.Controls.Add(this.tbGameDate);
             this.grpSetTags.Controls.Add(this.tbRipper);
@@ -357,25 +357,27 @@
             this.tsmRefresh.Text = "Refresh File List";
             this.tsmRefresh.Click += new System.EventHandler(this.tsmRefresh_Click);
             // 
-            // tbSystemEn
+            // cbSystemEn
             // 
-            this.tbSystemEn.Location = new System.Drawing.Point(75, 74);
-            this.tbSystemEn.Name = "tbSystemEn";
-            this.tbSystemEn.Size = new System.Drawing.Size(202, 20);
-            this.tbSystemEn.TabIndex = 30;
+            this.cbSystemEn.FormattingEnabled = true;
+            this.cbSystemEn.Location = new System.Drawing.Point(75, 74);
+            this.cbSystemEn.Name = "cbSystemEn";
+            this.cbSystemEn.Size = new System.Drawing.Size(202, 21);
+            this.cbSystemEn.TabIndex = 32;
             // 
-            // tbSystemJp
+            // cbSystemJp
             // 
-            this.tbSystemJp.Location = new System.Drawing.Point(75, 100);
-            this.tbSystemJp.Name = "tbSystemJp";
-            this.tbSystemJp.Size = new System.Drawing.Size(202, 20);
-            this.tbSystemJp.TabIndex = 31;
+            this.cbSystemJp.FormattingEnabled = true;
+            this.cbSystemJp.Location = new System.Drawing.Point(75, 100);
+            this.cbSystemJp.Name = "cbSystemJp";
+            this.cbSystemJp.Size = new System.Drawing.Size(202, 21);
+            this.cbSystemJp.TabIndex = 29;
             // 
             // Vgm_VgmTagEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(900, 649);
+            this.ClientSize = new System.Drawing.Size(900, 547);
             this.Controls.Add(this.grpComments);
             this.Controls.Add(this.grpTrackTags);
             this.Controls.Add(this.grpSetTags);
@@ -440,7 +442,7 @@
         private System.Windows.Forms.TextBox tbComments;
         private System.Windows.Forms.ContextMenuStrip contextMenuRefresh;
         private System.Windows.Forms.ToolStripMenuItem tsmRefresh;
-        private System.Windows.Forms.TextBox tbSystemEn;
-        private System.Windows.Forms.TextBox tbSystemJp;
+        private System.Windows.Forms.ComboBox cbSystemEn;
+        private System.Windows.Forms.ComboBox cbSystemJp;
     }
 }

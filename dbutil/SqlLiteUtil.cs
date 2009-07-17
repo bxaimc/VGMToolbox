@@ -24,7 +24,7 @@ namespace VGMToolbox.dbutil
 
             try
             {
-                conn = new SQLiteConnection(String.Format("Data Source={0};Version=3;Read Only=True;", pDbPath));
+                conn = new SQLiteConnection(String.Format("Data Source={0};Version=3;Read Only=True;UseUTF16Encoding=True;", pDbPath));
                 conn.Open();
 
                 sqlCommand.AppendFormat("SELECT * FROM {0}", pTableName);
