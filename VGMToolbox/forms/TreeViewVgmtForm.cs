@@ -66,7 +66,7 @@ namespace VGMToolbox.forms
                     if (this.outputToText)
                     {
                         using (StreamWriter sw =
-                            new StreamWriter(File.Open(this.outputTextFile, FileMode.Append, FileAccess.Write)))
+                            new StreamWriter(File.Open(this.outputTextFile, FileMode.Append, FileAccess.Write), System.Text.Encoding.Unicode))
                         {
                             this.writeNodesToFile(vProgressStruct.NewNode, sw, 0);
                         }

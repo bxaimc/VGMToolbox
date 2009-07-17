@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Text;
+using System.Xml;
 using System.Xml.Serialization;
 using System.Windows.Forms;
 
@@ -62,11 +63,14 @@ namespace VGMToolbox.tools.hoot
                 {
                     gamelist hootGames = new gamelist();
                     XmlSerializer serializer = new XmlSerializer(typeof(gamelist));
-                    using (TextReader textReader = new StreamReader(pPath))
+                    using (FileStream xmlFs = File.OpenRead(pPath))
                     {
-                        hootGames = (gamelist)serializer.Deserialize(textReader);
+                        using (XmlTextReader textReader = new XmlTextReader(xmlFs))
+                        {
+                            hootGames = (gamelist)serializer.Deserialize(textReader);
+                        }
                     }
-
+                        
                     string gameArchiveFileName;
                     TreeNode gameNode;
                     TreeNode romNode;
