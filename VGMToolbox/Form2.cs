@@ -101,6 +101,11 @@ namespace VGMToolbox
             ext_RootNode.Tag = nodeTag;
             tools_RootNode.Nodes.Add(ext_RootNode);
 
+            // Compression                        
+            TreeNode comp_RootNode = buildCompressionTreeNode();
+            comp_RootNode.Tag = nodeTag;
+            tools_RootNode.Nodes.Add(comp_RootNode);
+
             // add Tools node to Root
             rootNode.Nodes.Add(tools_RootNode);
 
@@ -672,6 +677,7 @@ namespace VGMToolbox
             nodeTag.FormClass = extract_ExtractCdxaForm.GetType().Name;
             ext_ExtractCdxaNode.Tag = nodeTag;
 
+            /*
             // ZLIB
             TreeNode ext_ExtractZlibNode = new TreeNode("Zlib Extractor");
 
@@ -682,7 +688,7 @@ namespace VGMToolbox
             // Set Tag for displaying the Form
             nodeTag.FormClass = extract_ZlibExtractForm.GetType().Name;
             ext_ExtractZlibNode.Tag = nodeTag;
-
+            */
 
             ///////
             // NDS
@@ -734,7 +740,6 @@ namespace VGMToolbox
             ext_GenericNode.Nodes.Add(ext_SimpleCutterNode);
             ext_GenericNode.Nodes.Add(ext_OffsetFinderNode);
             ext_GenericNode.Nodes.Add(ext_ExtractCdxaNode);
-            ext_GenericNode.Nodes.Add(ext_ExtractZlibNode);
                                
             ext_RootNode.Nodes.Add(ext_GenericNode);
             
@@ -792,6 +797,34 @@ namespace VGMToolbox
             vgm_RootNode.Nodes.Add(vgm_TaggerNode);
 
             return vgm_RootNode;
+        }
+
+        private TreeNode buildCompressionTreeNode()
+        {
+            VGMToolbox.util.NodeTagStruct nodeTag = new VGMToolbox.util.NodeTagStruct();
+            TreeNode comp_RootNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_CompressionRootNode"]);
+            comp_RootNode.NodeFont = this.treeviewBoldFont;
+
+            nodeTag = new VGMToolbox.util.NodeTagStruct();
+            EmptyForm emptyForm = new EmptyForm();
+            nodeTag.FormClass = emptyForm.GetType().Name;
+
+            // ZLIB
+            TreeNode ext_ExtractZlibNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_ExtractZlibNode"]);
+
+            // Add Form
+            Extract_ZlibExtractForm extract_ZlibExtractForm = new Extract_ZlibExtractForm(ext_ExtractZlibNode);
+            this.splitContainer1.Panel2.Controls.Add(extract_ZlibExtractForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = extract_ZlibExtractForm.GetType().Name;
+            ext_ExtractZlibNode.Tag = nodeTag;
+
+            comp_RootNode.Nodes.Add(ext_ExtractZlibNode);
+
+            return comp_RootNode;
         }
 
         private void tvMenuTree_doClick(object sender, TreeNodeMouseClickEventArgs e)

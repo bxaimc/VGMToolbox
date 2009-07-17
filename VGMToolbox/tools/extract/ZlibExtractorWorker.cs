@@ -13,6 +13,9 @@ namespace VGMToolbox.tools.extract
     {                
         public struct ZlibExtractorStruct : IVgmtWorkerStruct
         {
+            public bool DoDecompress;
+            public long StartingOffset;
+            
             private string[] sourcePaths;
             public string[] SourcePaths
             {
@@ -30,20 +33,57 @@ namespace VGMToolbox.tools.extract
                 (ZlibExtractorStruct)pZlibExtractorStruct;
 
             this.progressStruct.Clear();
-            progressStruct.GenericMessage = String.Format("Extracting from <{0}>{1}", pPath, Environment.NewLine);
+
+            if (zlibExtractorStruct.DoDecompress)
+            {
+                progressStruct.GenericMessage = String.Format("Decompressing <{0}>{1}", pPath, Environment.NewLine);
+            }
+            else
+            {
+                progressStruct.GenericMessage = String.Format("Compressing <{0}>{1}", pPath, Environment.NewLine);
+            }
             ReportProgress(this.Progress, progressStruct);
 
             try
             {
-                string outputFileName = Path.ChangeExtension(pPath, CompressionUtil.ZLIB_OUTPUT_EXTENSION);
-
+                string outputFileName;
+                
+                if (zlibExtractorStruct.DoDecompress)
+                {
+                    outputFileName = Path.ChangeExtension(pPath, CompressionUtil.ZLIB_DECOMPRESS_OUTPUT_EXTENSION);
+                }
+                else
+                {
+                    outputFileName = Path.ChangeExtension(pPath, CompressionUtil.ZLIB_COMPRESS_OUTPUT_EXTENSION);
+                }
+                
                 using (FileStream fs = File.OpenRead(pPath))
                 {
-                    CompressionUtil.DecompressZlibStreamToFile(fs, outputFileName);
+                    if (zlibExtractorStruct.StartingOffset > fs.Length)
+                    {
+                        throw new ArgumentOutOfRangeException("Starting Offset", "Offset cannot be greater than the file size.");
+                    }
+                    
+                    if (zlibExtractorStruct.DoDecompress)
+                    {
+                        CompressionUtil.DecompressZlibStreamToFile(fs, outputFileName, zlibExtractorStruct.StartingOffset);
+                    }
+                    else
+                    {
+                        CompressionUtil.CompressStreamToZlibFile(fs, outputFileName, zlibExtractorStruct.StartingOffset);
+                    }
                 }
 
                 this.progressStruct.Clear();
-                progressStruct.GenericMessage = String.Format("    {0} extracted.{1}", Path.GetFileName(outputFileName), Environment.NewLine);
+                if (zlibExtractorStruct.DoDecompress)
+                {
+                    progressStruct.GenericMessage = String.Format("    {0} decompressed.{1}", Path.GetFileName(outputFileName), Environment.NewLine);
+                }
+                else
+                {
+                    progressStruct.GenericMessage = String.Format("    {0} compressed.{1}", Path.GetFileName(outputFileName), Environment.NewLine);
+                }
+                                
                 ReportProgress(this.Progress, progressStruct);
             }
             catch (Exception ex)

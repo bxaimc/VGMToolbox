@@ -31,7 +31,11 @@ namespace VGMToolbox.forms
             this.grpFiles.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_GrpFiles"];
             this.lblSourceFiles.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_LblSourceFiles"];
             this.lblDragNDrop.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_LblDragNDrop"];
+            this.groupOutputMode.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_GroupOutputMode"];
+            this.rbNameOutput.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_RbNameOutput"];
+            this.rbAutoName.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_RbAutoName"];
             this.lblOutputFile.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_LblOutputFile"];
+            this.lblFileExtension.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_LblFileExtension"];            
             this.grpOptions.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_GrpOptions"];
             this.lblStartAddress.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_LblStartAddress"];
             this.rbEndAddress.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_RbEndAddress"];

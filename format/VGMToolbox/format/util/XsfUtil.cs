@@ -763,7 +763,7 @@ namespace VGMToolbox.format.util
                         if (ParseFile.CompareSegment(savestateCheckbytes, 0, MINI2SF_SAVESTATE_ID))
                         {                            
                             decompressedSaveStatePath =
-                                Path.ChangeExtension(decompressedReservedSectionPath, CompressionUtil.ZLIB_OUTPUT_EXTENSION);
+                                Path.ChangeExtension(decompressedReservedSectionPath, CompressionUtil.ZLIB_DECOMPRESS_OUTPUT_EXTENSION);
                             fs.Position = 0x0C;  // move to zlib section
 
                             // decompress save state

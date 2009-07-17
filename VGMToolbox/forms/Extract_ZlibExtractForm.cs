@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Windows.Forms;
 
 using VGMToolbox.plugin;
@@ -16,12 +17,18 @@ namespace VGMToolbox.forms
 
             this.grpSourceFiles.AllowDrop = true;
             this.btnDoTask.Hide();
-            
-            this.lblTitle.Text = "Zlib Extractor";
-            this.tbOutput.Text = String.Format("Zlib compressed section must begin at the start of the file.{0}", 
-                Environment.NewLine);
-            this.tbOutput.Text = String.Format("Files will be output using the original file name with the '{0}' file extension.{1}",
-                            CompressionUtil.ZLIB_OUTPUT_EXTENSION, Environment.NewLine);
+
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_ZlibCompress_Title"];
+            this.tbOutput.Text = String.Format(ConfigurationSettings.AppSettings["Form_ZlibCompress_IntroText1"],
+                            CompressionUtil.ZLIB_DECOMPRESS_OUTPUT_EXTENSION, Environment.NewLine);
+            this.tbOutput.Text += String.Format(ConfigurationSettings.AppSettings["Form_ZlibCompress_IntroText2"],
+                CompressionUtil.ZLIB_COMPRESS_OUTPUT_EXTENSION, Environment.NewLine);
+
+            this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
+            this.grpOptions.Text = ConfigurationSettings.AppSettings["Form_ZlibCompress_GrpOptions"];
+            this.rbDecompress.Text = ConfigurationSettings.AppSettings["Form_ZlibCompress_RbDecompress"];
+            this.rbCompress.Text = ConfigurationSettings.AppSettings["Form_ZlibCompress_RbCompress"];
+            this.lblOffset.Text = ConfigurationSettings.AppSettings["Form_ZlibCompress_LblOffset"];
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -35,25 +42,54 @@ namespace VGMToolbox.forms
         }
         protected override string getCancelMessage()
         {
-            return "Extracting Zlib Compressed Data...Cancelled";
+            return ConfigurationSettings.AppSettings["Form_ZlibCompress_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return "Extracting Zlib Compressed Data...Complete";
+            return ConfigurationSettings.AppSettings["Form_ZlibCompress_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return "Extracting Zlib Compressed Data...Begin";
+            return ConfigurationSettings.AppSettings["Form_ZlibCompress_MessageBegin"];
         }
 
         private void grpSourceFiles_DragDrop(object sender, DragEventArgs e)
         {
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-            ZlibExtractorWorker.ZlibExtractorStruct zlStruct = new ZlibExtractorWorker.ZlibExtractorStruct();
-            zlStruct.SourcePaths = s;
+            if (validateInputs())
+            {
 
-            base.backgroundWorker_Execute(zlStruct);
+                ZlibExtractorWorker.ZlibExtractorStruct zlStruct = new ZlibExtractorWorker.ZlibExtractorStruct();
+                zlStruct.SourcePaths = s;
+                zlStruct.DoDecompress = this.rbDecompress.Checked;
+                zlStruct.StartingOffset = VGMToolbox.util.Encoding.GetIntFromString(this.tbOffset.Text);
+
+                base.backgroundWorker_Execute(zlStruct);
+            }
+        }
+        private bool validateInputs()
+        {
+            bool ret = true;
+
+            // put 0 in Offset if it is empty
+            if (String.IsNullOrEmpty(this.tbOffset.Text))
+            {
+                this.tbOffset.Text = "0";
+            }
+
+            try
+            {
+                long tempval = VGMToolbox.util.Encoding.GetIntFromString(this.tbOffset.Text);
+            }
+            catch
+            {
+                MessageBox.Show("Cannot parse Offset, please enter an integer.  Be sure to prefix hex values with 0x",
+                    ConfigurationSettings.AppSettings["Form_Global_ErrorWindowTitle"]);
+                ret = false;
+            }
+
+            return ret;
         }
     }
 }

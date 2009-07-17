@@ -10,7 +10,8 @@ namespace VGMToolbox.util
 {
     public class CompressionUtil
     {
-        public static string ZLIB_OUTPUT_EXTENSION = ".zlibx";
+        public static string ZLIB_DECOMPRESS_OUTPUT_EXTENSION = ".zlibx";
+        public static string ZLIB_COMPRESS_OUTPUT_EXTENSION = ".zlib";
         public static readonly string SEVEN_ZIP_DLL = 
             Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "7z.dll");
         
@@ -167,20 +168,56 @@ namespace VGMToolbox.util
         }
 
         public static void DecompressZlibStreamToFile(Stream pStream, string pOutputFilePath)
+        { 
+            DecompressZlibStreamToFile(pStream, pOutputFilePath, 0);
+        }
+
+        public static void DecompressZlibStreamToFile(Stream pStream, string pOutputFilePath, long pStartingOffset)
         {
             using (FileStream outFs = new FileStream(pOutputFilePath, FileMode.Create, FileAccess.Write))
             {
                 using (BinaryWriter bw = new BinaryWriter(outFs))
                 {
+                    pStream.Position = pStartingOffset;
+                    
                     using (ZlibStream zs = new ZlibStream(pStream, CompressionMode.Decompress, true))
                     {
                         int read;
-                        byte[] data = new byte[4096];
+                        byte[] data = new byte[Constants.FILE_READ_CHUNK_SIZE];
 
                         while ((read = zs.Read(data, 0, data.Length)) > 0)
                         {
                             bw.Write(data, 0, read);
                         }
+                    }
+                }
+            }
+        }
+
+        public static void CompressStreamToZlibFile(Stream pStream, string pOutputFilePath)
+        { 
+            CompressStreamToZlibFile(pStream, pOutputFilePath, 0);
+        }
+        
+        public static void CompressStreamToZlibFile(Stream pStream, string pOutputFilePath, long pStartingOffset)
+        {
+            using (FileStream outFs = new FileStream(pOutputFilePath, FileMode.Create, FileAccess.Write))
+            {
+                using (BinaryReader br = new BinaryReader(pStream))
+                {
+                    pStream.Position = pStartingOffset;
+
+                    using (ZlibStream zs = new ZlibStream(outFs, CompressionMode.Compress, Ionic.Zlib.CompressionLevel.BestCompression, true))
+                    {
+                        int read;
+                        byte[] data = new byte[Constants.FILE_READ_CHUNK_SIZE];
+
+                        while ((read = br.Read(data, 0, data.Length)) > 0)
+                        {
+                            zs.Write(data, 0, read);
+                        }
+
+                        zs.Flush();
                     }
                 }
             }
