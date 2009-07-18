@@ -35,6 +35,8 @@ namespace VGMToolbox.format
         public const int XA_BLOCK_SIZE = 2352;
         public const int XA_TRACK_OFFSET = 0x10;
         public const int XA_TRACK_SIZE = 0x04;
-        public const string XA_FILE_EXTENSION = ".xa";        
+        public const string XA_FILE_EXTENSION = ".xa";
+
+        public const string XA_ENDING_DIGITS = "6401";
     }
 }

@@ -44,57 +44,56 @@ namespace VGMToolbox.format.util
                         Directory.CreateDirectory(outputDirectory);
                     }
 
-                    while ((offset + Cdxa.XA_BLOCK_SIZE) <= fs.Length)
+                    while ((offset != -1)  && ((offset + Cdxa.XA_BLOCK_SIZE) <= fs.Length))
                     {
                         trackId = ParseFile.parseSimpleOffset(fs, offset + Cdxa.XA_TRACK_OFFSET, Cdxa.XA_TRACK_SIZE);
                         trackKey = BitConverter.ToUInt32(trackId, 0);
 
-                        if (!bwDictionary.ContainsKey(trackKey))
+                        if (!ParseFile.ByteArrayToString(trackId).EndsWith(Cdxa.XA_ENDING_DIGITS))
                         {
-                            // outputFileName = Path.Combine(outputDirectory, Path.GetFileNameWithoutExtension(pExtractXaStruct.Path) + "_" + ParseFile.ByteArrayToString(trackId) + Cdxa.XA_FILE_EXTENSION);
-                            outputFileName = GetOutputFileName(pExtractXaStruct, trackId);
-                            bwDictionary.Add(trackKey, new BinaryWriter(File.Open(outputFileName, FileMode.Create, FileAccess.Write)));
-
-                            if (pExtractXaStruct.AddRiffHeader)
-                            {
-                                bwDictionary[trackKey].Write(Cdxa.XA_RIFF_HEADER);
-                            }
-                        }
-
-                        // get the next block
-                        buffer = ParseFile.parseSimpleOffset(fs, offset, Cdxa.XA_BLOCK_SIZE);
-
-                        // check if this is a "silent" block, ignore leading silence (first block)
-                        if ((bwDictionary[trackKey].BaseStream.Length > Cdxa.XA_BLOCK_SIZE) && IsSilentBlock(buffer, pExtractXaStruct))
-                        {
-                            // check for start of new block in this block
-                            long newBlockOffset = ParseFile.GetNextOffset(buffer, 1, Cdxa.XA_SIG);
-
-                            if (newBlockOffset > -1)
-                            {
-                                int x = 1;
-                            }
-
-                            // write the block
-                            bwDictionary[trackKey].Write(buffer);
-
-                            // close up this file, we're done.
-                            FixHeaderAndCloseWriter(bwDictionary[trackKey], pExtractXaStruct);
-                            bwDictionary.Remove(trackKey);
+                            offset = ParseFile.GetNextOffset(fs, offset + 1, Cdxa.XA_SIG);
                         }
                         else
                         {
-                            // patch if needed
-                            if (pExtractXaStruct.PatchByte0x11)
+                            if (!bwDictionary.ContainsKey(trackKey))
                             {
-                                buffer[0x11] = 0x00;
+                                // outputFileName = Path.Combine(outputDirectory, Path.GetFileNameWithoutExtension(pExtractXaStruct.Path) + "_" + ParseFile.ByteArrayToString(trackId) + Cdxa.XA_FILE_EXTENSION);
+                                outputFileName = GetOutputFileName(pExtractXaStruct, trackId);
+                                bwDictionary.Add(trackKey, new BinaryWriter(File.Open(outputFileName, FileMode.Create, FileAccess.Write)));
+
+                                if (pExtractXaStruct.AddRiffHeader)
+                                {
+                                    bwDictionary[trackKey].Write(Cdxa.XA_RIFF_HEADER);
+                                }
                             }
 
-                            // write the block
-                            bwDictionary[trackKey].Write(buffer);
+                            // get the next block
+                            buffer = ParseFile.parseSimpleOffset(fs, offset, Cdxa.XA_BLOCK_SIZE);
+
+                            // check if this is a "silent" block, ignore leading silence (first block)
+                            if ((bwDictionary[trackKey].BaseStream.Length > Cdxa.XA_BLOCK_SIZE) && IsSilentBlock(buffer, pExtractXaStruct))
+                            {
+                                // write the block
+                                bwDictionary[trackKey].Write(buffer);
+
+                                // close up this file, we're done.
+                                FixHeaderAndCloseWriter(bwDictionary[trackKey], pExtractXaStruct);
+                                bwDictionary.Remove(trackKey);
+                            }
+                            else
+                            {
+                                // patch if needed
+                                if (pExtractXaStruct.PatchByte0x11)
+                                {
+                                    buffer[0x11] = 0x00;
+                                }
+
+                                // write the block
+                                bwDictionary[trackKey].Write(buffer);
+                            }
+
+                            offset += Cdxa.XA_BLOCK_SIZE;
                         }
-                                                
-                        offset += Cdxa.XA_BLOCK_SIZE;
                     }
 
                     // fix header and close writers
