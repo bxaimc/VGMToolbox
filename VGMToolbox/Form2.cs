@@ -401,7 +401,8 @@ namespace VGMToolbox
             ////////////////////
             // 2SF TAG COPIER
             ////////////////////
-            TreeNode xsf_2sfTagMigratorNode = new TreeNode("V1 to V2 Tag Copier");
+            TreeNode xsf_2sfTagMigratorNode =
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_V1toV2CopyNode"]);
 
             Xsf_2sfTagsMigratorForm xsf_2sfTagsMigratorForm = new Xsf_2sfTagsMigratorForm(xsf_2sfTagMigratorNode);
             this.splitContainer1.Panel2.Controls.Add(xsf_2sfTagsMigratorForm);

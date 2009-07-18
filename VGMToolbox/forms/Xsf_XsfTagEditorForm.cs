@@ -15,7 +15,7 @@ using VGMToolbox.tools.xsf;
 
 namespace VGMToolbox.forms
 {
-    public partial class Xsf_XsfTagEditorForm : VgmtForm
+    public partial class Xsf_XsfTagEditorForm : AVgmtForm
     {
         IXsfTagFormat vgmData;
         bool isBatchMode;

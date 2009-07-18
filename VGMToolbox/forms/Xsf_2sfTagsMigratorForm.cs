@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Text;
@@ -18,8 +19,17 @@ namespace VGMToolbox.forms
         {
             InitializeComponent();
 
-            this.lblTitle.Text = "2SF - V1 to V2 Tag Copier";
-            this.btnDoTask.Text = "Copy Tags";
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_Title"];
+            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_DoTaskButton"];
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_Title_IntroText"];
+
+            this.lblV1Folder.Text = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_LblV1Folder"];
+            this.lblV2Folder.Text = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_LblV1Folder"];
+            this.btnDefault.Text = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_BtnDefault"];
+            this.btnCheckAll.Text = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_BtnCheckAll"];
+            this.btnCheckNone.Text = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_BtnCheckNone"];
+            
+            // Add checkmarks later?  Since they are a standard, may never be changed anyhow
         }
 
         private void btnBrowseV1Source_Click(object sender, EventArgs e)
@@ -37,15 +47,15 @@ namespace VGMToolbox.forms
         }
         protected override string getCancelMessage()
         {
-            return "Migrating Tags...Cancelled";
+            return ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_Title_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return "Migrating Tags...Complete";
+            return ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_Title_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return "Migrating Tags...Begin";
+            return ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_Title_MessageBegin"];
         }
 
         private void btnDoTask_Click(object sender, EventArgs e)
@@ -133,7 +143,8 @@ namespace VGMToolbox.forms
 
             if (this.tbV1Source.Text.Equals(this.tbV2Source.Text))
             {
-                MessageBox.Show(String.Format("{0} cannot match {1}", this.lblV1Folder.Text, this.lblV2Folder.Text), "ERROR");
+                MessageBox.Show(String.Format(ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_ErrorMatch"], this.lblV1Folder.Text, this.lblV2Folder.Text), 
+                    ConfigurationSettings.AppSettings["Form_Global_ErrorWindowTitle"]);
                 ret = false;
             }
 
