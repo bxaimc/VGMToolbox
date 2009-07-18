@@ -20,12 +20,12 @@ namespace VGMToolbox.format.util
         public static void ExtractXaFiles(ExtractXaStruct pExtractXaStruct)
         { 
             Dictionary<UInt32, BinaryWriter> bwDictionary = new Dictionary<UInt32, BinaryWriter>();
+            List<UInt32> bwKeys;
 
             long offset;
             byte[] trackId;
             byte[] buffer = new byte[Cdxa.XA_BLOCK_SIZE];
             UInt32 trackKey;
-            UInt32 xaFileSize;
 
             string outputFileName;
             string outputDirectory = Path.Combine(Path.GetDirectoryName(pExtractXaStruct.Path),
@@ -50,8 +50,8 @@ namespace VGMToolbox.format.util
 
                         if (!bwDictionary.ContainsKey(trackKey))
                         {
-                            outputFileName = Path.Combine(outputDirectory, Path.GetFileNameWithoutExtension(pExtractXaStruct.Path) + "_" + ParseFile.ByteArrayToString(trackId) + Cdxa.XA_FILE_EXTENSION);
-                            // outputFileName = Path.Combine(outputDirectory, ParseFile.ByteArrayToString(trackId) + Cdxa.XA_FILE_EXTENSION);
+                            // outputFileName = Path.Combine(outputDirectory, Path.GetFileNameWithoutExtension(pExtractXaStruct.Path) + "_" + ParseFile.ByteArrayToString(trackId) + Cdxa.XA_FILE_EXTENSION);
+                            outputFileName = GetOutputFileName(pExtractXaStruct, trackId);
                             bwDictionary.Add(trackKey, new BinaryWriter(File.Open(outputFileName, FileMode.Create, FileAccess.Write)));
 
                             if (pExtractXaStruct.AddRiffHeader)
@@ -60,37 +60,40 @@ namespace VGMToolbox.format.util
                             }
                         }
 
-                        if (!pExtractXaStruct.PatchByte0x11)
+                        // get the next block
+                        buffer = ParseFile.parseSimpleOffset(fs, offset, Cdxa.XA_BLOCK_SIZE);                        
+                        
+                        // check if this is a "silent" block, ignore leading silence (first block)
+                        if ((bwDictionary[trackKey].BaseStream.Length > Cdxa.XA_BLOCK_SIZE) && IsSilentBlock(buffer))
                         {
-                            bwDictionary[trackKey].Write(ParseFile.parseSimpleOffset(fs, offset, Cdxa.XA_BLOCK_SIZE));
+                            // write the block
+                            bwDictionary[trackKey].Write(buffer);
+
+                            // close up this file, we're done.
+                            FixHeaderAndCloseWriter(bwDictionary[trackKey], pExtractXaStruct);
+                            bwDictionary.Remove(trackKey);
                         }
                         else
                         {
-                            buffer = ParseFile.parseSimpleOffset(fs, offset, Cdxa.XA_BLOCK_SIZE);
-                            buffer[0x11] = 0x00;
+                            // patch if needed
+                            if (pExtractXaStruct.PatchByte0x11)
+                            {
+                                buffer[0x11] = 0x00;
+                            }
+
+                            // write the block
                             bwDictionary[trackKey].Write(buffer);
                         }
-
+                                                
                         offset += Cdxa.XA_BLOCK_SIZE;
                     }
 
                     // fix header and close writers
-                    foreach (UInt32 keyname in bwDictionary.Keys)
+                    bwKeys = new List<UInt32>(bwDictionary.Keys);
+                    foreach (UInt32 keyname in bwKeys)
                     {
-                        if (pExtractXaStruct.AddRiffHeader)
-                        {
-                            xaFileSize = (UInt32)bwDictionary[keyname].BaseStream.Length;
-
-                            // add file size
-                            bwDictionary[keyname].BaseStream.Position = Cdxa.FILESIZE_OFFSET;
-                            bwDictionary[keyname].Write(BitConverter.GetBytes(xaFileSize - 8));
-
-                            // add data size
-                            bwDictionary[keyname].BaseStream.Position = Cdxa.DATA_OFFSET;
-                            bwDictionary[keyname].Write(BitConverter.GetBytes(xaFileSize - Cdxa.XA_RIFF_HEADER.Length));
-                        }
-
-                        bwDictionary[keyname].Close();
+                        FixHeaderAndCloseWriter(bwDictionary[keyname], pExtractXaStruct);
+                        bwDictionary.Remove(keyname);
                     }
                 }
                 else
@@ -98,6 +101,56 @@ namespace VGMToolbox.format.util
                     // Console.WriteLine("XA Signature bytes not found");
                 }
             }                
-        }    
+        }
+
+        private static void FixHeaderAndCloseWriter(BinaryWriter pBw, ExtractXaStruct pExtractXaStruct)
+        {
+            if (pExtractXaStruct.AddRiffHeader)
+            {
+                UInt32 xaFileSize = (UInt32)pBw.BaseStream.Length;
+
+                // add file size
+                pBw.BaseStream.Position = Cdxa.FILESIZE_OFFSET;
+                pBw.Write(BitConverter.GetBytes(xaFileSize - 8));
+
+                // add data size
+                pBw.BaseStream.Position = Cdxa.DATA_OFFSET;
+                pBw.Write(BitConverter.GetBytes(xaFileSize - Cdxa.XA_RIFF_HEADER.Length));
+            }
+
+            pBw.Close();
+        }
+
+        private static bool IsSilentBlock(byte[] pCdxaBlock)
+        {
+            bool ret = true;
+
+            for (int i = 0; i < Cdxa.NUM_SILENT_FRAMES_FOR_SILENT_BLOCK; i++)
+            {
+                ret = ret && ParseFile.CompareSegment(pCdxaBlock, 
+                    (i * Cdxa.XA_SILENT_FRAME.Length) + ((i + 1) * Cdxa.BLOCK_HEADER_SIZE), Cdxa.XA_SILENT_FRAME);
+
+                if (!ret)
+                {
+                    break;
+                }
+            }
+
+            return ret;
+        }
+
+        private static string GetOutputFileName(ExtractXaStruct pExtractXaStruct, byte[] pTrackId)
+        {
+            string outputDirectory = Path.Combine(Path.GetDirectoryName(pExtractXaStruct.Path),
+                Path.GetFileNameWithoutExtension(pExtractXaStruct.Path));
+            string outputFileName = Path.GetFileNameWithoutExtension(pExtractXaStruct.Path) + "_" + ParseFile.ByteArrayToString(pTrackId) + Cdxa.XA_FILE_EXTENSION;
+
+            int fileCount = Directory.GetFiles(outputDirectory, String.Format("{0}*", Path.GetFileNameWithoutExtension(outputFileName)), SearchOption.TopDirectoryOnly).Length;
+            outputFileName = String.Format("{0}_{1}{2}", Path.GetFileNameWithoutExtension(outputFileName), fileCount.ToString("X4"), Cdxa.XA_FILE_EXTENSION);
+
+            string ret = Path.Combine(outputDirectory, outputFileName);
+            
+            return ret;
+        }
     }
 }

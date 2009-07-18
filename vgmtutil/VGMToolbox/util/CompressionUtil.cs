@@ -253,5 +253,51 @@ namespace VGMToolbox.util
                 File.Move(tempFileName, pFileName);
             }
         }
+
+        public static void DecompressGzipStreamToFile(Stream pStream, string pOutputFilePath, long pStartingOffset)
+        {
+            using (FileStream outFs = new FileStream(pOutputFilePath, FileMode.Create, FileAccess.Write))
+            {
+                using (BinaryWriter bw = new BinaryWriter(outFs))
+                {
+                    pStream.Position = pStartingOffset;
+
+                    using (GZipStream gs = new GZipStream(pStream, CompressionMode.Decompress, true))
+                    {
+                        int read;
+                        byte[] data = new byte[Constants.FILE_READ_CHUNK_SIZE];
+
+                        while ((read = gs.Read(data, 0, data.Length)) > 0)
+                        {
+                            bw.Write(data, 0, read);
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void CompressStreamToGzipFile(Stream pStream, string pOutputFilePath, long pStartingOffset)
+        {
+            using (FileStream outFs = new FileStream(pOutputFilePath, FileMode.Create, FileAccess.Write))
+            {
+                using (BinaryReader br = new BinaryReader(pStream))
+                {
+                    pStream.Position = pStartingOffset;
+
+                    using (GZipStream gs = new GZipStream(outFs, CompressionMode.Compress, Ionic.Zlib.CompressionLevel.BestCompression, true))
+                    {
+                        int read;
+                        byte[] data = new byte[Constants.FILE_READ_CHUNK_SIZE];
+
+                        while ((read = br.Read(data, 0, data.Length)) > 0)
+                        {
+                            gs.Write(data, 0, read);
+                        }
+
+                        gs.Flush();
+                    }
+                }
+            }
+        }
     }
 }
