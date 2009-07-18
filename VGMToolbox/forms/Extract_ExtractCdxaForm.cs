@@ -28,6 +28,8 @@ namespace VGMToolbox.forms
                 ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
             this.grpOptions.Text =
                 ConfigurationSettings.AppSettings["Form_CdxaExtractor_GroupOptions"];
+            this.lblSilentBlocks.Text = ConfigurationSettings.AppSettings["Form_CdxaExtractor_LblSilentBlocks"];
+            
             this.cbAddRiffHeader.Text =
                 ConfigurationSettings.AppSettings["Form_CdxaExtractor_CheckBoxAddRiffHeader"];
             this.cbPatchByte0x11.Text =

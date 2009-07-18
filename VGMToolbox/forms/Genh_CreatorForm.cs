@@ -31,7 +31,7 @@ namespace VGMToolbox.forms
             
             this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_GroupSourceFiles"];
             this.tbSourceDirectory.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_tbSourceDirectory"];
-
+            this.lblFilenameFilter.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_LblFilenameFilter"];
             this.grpFormat.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_GroupFormat"];
             this.grpOptions.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_GroupOptions"];
             this.lblHeaderSkip.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_LblHeaderSkip"];
@@ -340,19 +340,36 @@ namespace VGMToolbox.forms
         }
 
         private void reloadFiles()
-        {
+        {            
+            string fileName;
+
             this.lbFiles.Items.Clear();
 
             if (Directory.Exists(this.tbSourceDirectory.Text))
             {
-                foreach (string f in Directory.GetFiles(this.tbSourceDirectory.Text))
-                {
+                string[] fileList = Directory.GetFiles(this.tbSourceDirectory.Text);
+                Array.Sort(fileList);
+
+                foreach (string f in fileList)
+                {                    
                     if (rbCreate.Checked)
                     {
                         if (!f.ToUpper().EndsWith("GENH") &&
                             !f.ToUpper().EndsWith("EXE"))
                         {
-                            this.lbFiles.Items.Add(Path.GetFileName(f));
+                            if (!String.IsNullOrEmpty(this.tbFilenameFilter.Text))
+                            {
+                                fileName = Path.GetFileName(f);
+                                
+                                if (fileName.ToUpper().Contains(this.tbFilenameFilter.Text.ToUpper()))
+                                {
+                                    this.lbFiles.Items.Add(Path.GetFileName(f));
+                                }
+                            }
+                            else
+                            {
+                                this.lbFiles.Items.Add(Path.GetFileName(f));
+                            }
                         }
                     }
                     else
@@ -422,6 +439,11 @@ namespace VGMToolbox.forms
             }
         }
         private void refreshFileListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.reloadFiles();
+        }
+
+        private void tbFilenameFilter_TextChanged(object sender, EventArgs e)
         {
             this.reloadFiles();
         }

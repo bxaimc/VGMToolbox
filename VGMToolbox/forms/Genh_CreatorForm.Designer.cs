@@ -31,6 +31,8 @@
             this.components = new System.ComponentModel.Container();
             this.lbFiles = new System.Windows.Forms.ListBox();
             this.grpSourceFiles = new System.Windows.Forms.GroupBox();
+            this.lblFilenameFilter = new System.Windows.Forms.Label();
+            this.tbFilenameFilter = new System.Windows.Forms.TextBox();
             this.tbSourceDirectory = new System.Windows.Forms.TextBox();
             this.btnBrowseDirectory = new System.Windows.Forms.Button();
             this.grpFormat = new System.Windows.Forms.GroupBox();
@@ -73,46 +75,48 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 578);
-            this.pnlLabels.Size = new System.Drawing.Size(687, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 561);
+            this.pnlLabels.Size = new System.Drawing.Size(665, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(687, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(665, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 501);
-            this.tbOutput.Size = new System.Drawing.Size(687, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 484);
+            this.tbOutput.Size = new System.Drawing.Size(665, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 481);
-            this.pnlButtons.Size = new System.Drawing.Size(687, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 464);
+            this.pnlButtons.Size = new System.Drawing.Size(665, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(627, 0);
+            this.btnCancel.Location = new System.Drawing.Point(605, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(567, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(545, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // lbFiles
             // 
             this.lbFiles.FormattingEnabled = true;
             this.lbFiles.HorizontalScrollbar = true;
-            this.lbFiles.Location = new System.Drawing.Point(6, 43);
+            this.lbFiles.Location = new System.Drawing.Point(6, 69);
             this.lbFiles.Name = "lbFiles";
             this.lbFiles.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lbFiles.Size = new System.Drawing.Size(254, 277);
+            this.lbFiles.Size = new System.Drawing.Size(254, 251);
             this.lbFiles.TabIndex = 5;
             this.lbFiles.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lbFiles_MouseUp);
             this.lbFiles.SelectedIndexChanged += new System.EventHandler(this.lbFiles_SelectedIndexChanged);
             // 
             // grpSourceFiles
             // 
+            this.grpSourceFiles.Controls.Add(this.lblFilenameFilter);
+            this.grpSourceFiles.Controls.Add(this.tbFilenameFilter);
             this.grpSourceFiles.Controls.Add(this.tbSourceDirectory);
             this.grpSourceFiles.Controls.Add(this.lbFiles);
             this.grpSourceFiles.Controls.Add(this.btnBrowseDirectory);
@@ -122,6 +126,24 @@
             this.grpSourceFiles.TabIndex = 6;
             this.grpSourceFiles.TabStop = false;
             this.grpSourceFiles.Text = "Source Files";
+            // 
+            // lblFilenameFilter
+            // 
+            this.lblFilenameFilter.AutoSize = true;
+            this.lblFilenameFilter.Location = new System.Drawing.Point(186, 45);
+            this.lblFilenameFilter.Name = "lblFilenameFilter";
+            this.lblFilenameFilter.Size = new System.Drawing.Size(74, 13);
+            this.lblFilenameFilter.TabIndex = 11;
+            this.lblFilenameFilter.Text = "Filename Filter";
+            this.lblFilenameFilter.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // tbFilenameFilter
+            // 
+            this.tbFilenameFilter.Location = new System.Drawing.Point(6, 42);
+            this.tbFilenameFilter.Name = "tbFilenameFilter";
+            this.tbFilenameFilter.Size = new System.Drawing.Size(174, 20);
+            this.tbFilenameFilter.TabIndex = 10;
+            this.tbFilenameFilter.TextChanged += new System.EventHandler(this.tbFilenameFilter_TextChanged);
             // 
             // tbSourceDirectory
             // 
@@ -416,12 +438,12 @@
             this.contextMenuRefresh.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.refreshFileListToolStripMenuItem});
             this.contextMenuRefresh.Name = "contextMenuRefresh";
-            this.contextMenuRefresh.Size = new System.Drawing.Size(162, 48);
+            this.contextMenuRefresh.Size = new System.Drawing.Size(151, 26);
             // 
             // refreshFileListToolStripMenuItem
             // 
             this.refreshFileListToolStripMenuItem.Name = "refreshFileListToolStripMenuItem";
-            this.refreshFileListToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.refreshFileListToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.refreshFileListToolStripMenuItem.Text = "Refresh File List";
             this.refreshFileListToolStripMenuItem.Click += new System.EventHandler(this.refreshFileListToolStripMenuItem_Click);
             // 
@@ -429,7 +451,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(687, 619);
+            this.ClientSize = new System.Drawing.Size(665, 602);
             this.Controls.Add(this.grpFormat);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.cbHeaderOnly);
@@ -502,5 +524,7 @@
         private System.Windows.Forms.RadioButton rbExtract;
         private System.Windows.Forms.ContextMenuStrip contextMenuRefresh;
         private System.Windows.Forms.ToolStripMenuItem refreshFileListToolStripMenuItem;
+        private System.Windows.Forms.Label lblFilenameFilter;
+        private System.Windows.Forms.TextBox tbFilenameFilter;
     }
 }
