@@ -12,6 +12,10 @@ namespace VGMToolbox.util
     {
         public static string ZLIB_DECOMPRESS_OUTPUT_EXTENSION = ".zlibx";
         public static string ZLIB_COMPRESS_OUTPUT_EXTENSION = ".zlib";
+
+        public static string GZIP_DECOMPRESS_OUTPUT_EXTENSION = ".gzipx";
+        public static string GZIP_COMPRESS_OUTPUT_EXTENSION = ".gz";
+        
         public static readonly string SEVEN_ZIP_DLL = 
             Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "7z.dll");
         

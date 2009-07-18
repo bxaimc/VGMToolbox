@@ -1,6 +1,6 @@
 ﻿namespace VGMToolbox.forms
 {
-    partial class Extract_ZlibExtractForm
+    partial class Compression_GzipCompressionForm
     {
         /// <summary>
         /// Required designer variable.
@@ -31,9 +31,9 @@
             this.grpSourceFiles = new System.Windows.Forms.GroupBox();
             this.grpOptions = new System.Windows.Forms.GroupBox();
             this.lblOffset = new System.Windows.Forms.Label();
+            this.rbDecompress = new System.Windows.Forms.RadioButton();
             this.tbOffset = new System.Windows.Forms.TextBox();
             this.rbCompress = new System.Windows.Forms.RadioButton();
-            this.rbDecompress = new System.Windows.Forms.RadioButton();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -84,13 +84,13 @@
             // grpOptions
             // 
             this.grpOptions.Controls.Add(this.lblOffset);
+            this.grpOptions.Controls.Add(this.rbDecompress);
             this.grpOptions.Controls.Add(this.tbOffset);
             this.grpOptions.Controls.Add(this.rbCompress);
-            this.grpOptions.Controls.Add(this.rbDecompress);
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.grpOptions.Location = new System.Drawing.Point(3, 314);
+            this.grpOptions.Location = new System.Drawing.Point(3, 316);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(897, 69);
+            this.grpOptions.Size = new System.Drawing.Size(897, 67);
             this.grpOptions.TabIndex = 0;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
@@ -101,26 +101,8 @@
             this.lblOffset.Location = new System.Drawing.Point(121, 21);
             this.lblOffset.Name = "lblOffset";
             this.lblOffset.Size = new System.Drawing.Size(74, 13);
-            this.lblOffset.TabIndex = 3;
+            this.lblOffset.TabIndex = 7;
             this.lblOffset.Text = "Starting Offset";
-            // 
-            // tbOffset
-            // 
-            this.tbOffset.Location = new System.Drawing.Point(201, 18);
-            this.tbOffset.Name = "tbOffset";
-            this.tbOffset.Size = new System.Drawing.Size(78, 20);
-            this.tbOffset.TabIndex = 2;
-            this.tbOffset.Text = "0";
-            // 
-            // rbCompress
-            // 
-            this.rbCompress.AutoSize = true;
-            this.rbCompress.Location = new System.Drawing.Point(6, 42);
-            this.rbCompress.Name = "rbCompress";
-            this.rbCompress.Size = new System.Drawing.Size(71, 17);
-            this.rbCompress.TabIndex = 1;
-            this.rbCompress.Text = "Compress";
-            this.rbCompress.UseVisualStyleBackColor = true;
             // 
             // rbDecompress
             // 
@@ -129,19 +111,37 @@
             this.rbDecompress.Location = new System.Drawing.Point(6, 19);
             this.rbDecompress.Name = "rbDecompress";
             this.rbDecompress.Size = new System.Drawing.Size(84, 17);
-            this.rbDecompress.TabIndex = 0;
+            this.rbDecompress.TabIndex = 4;
             this.rbDecompress.TabStop = true;
             this.rbDecompress.Text = "Decompress";
             this.rbDecompress.UseVisualStyleBackColor = true;
             // 
-            // Extract_ZlibExtractForm
+            // tbOffset
+            // 
+            this.tbOffset.Location = new System.Drawing.Point(201, 18);
+            this.tbOffset.Name = "tbOffset";
+            this.tbOffset.Size = new System.Drawing.Size(78, 20);
+            this.tbOffset.TabIndex = 6;
+            this.tbOffset.Text = "0";
+            // 
+            // rbCompress
+            // 
+            this.rbCompress.AutoSize = true;
+            this.rbCompress.Location = new System.Drawing.Point(6, 42);
+            this.rbCompress.Name = "rbCompress";
+            this.rbCompress.Size = new System.Drawing.Size(71, 17);
+            this.rbCompress.TabIndex = 5;
+            this.rbCompress.Text = "Compress";
+            this.rbCompress.UseVisualStyleBackColor = true;
+            // 
+            // Compression_GzipCompressionForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(903, 547);
             this.Controls.Add(this.grpSourceFiles);
-            this.Name = "Extract_ZlibExtractForm";
-            this.Text = "Extract_ZlibExtractForm";
+            this.Name = "Compression_GzipCompressionForm";
+            this.Text = "Compression_GzipCompressionForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);
@@ -165,9 +165,9 @@
 
         private System.Windows.Forms.GroupBox grpSourceFiles;
         private System.Windows.Forms.GroupBox grpOptions;
-        private System.Windows.Forms.RadioButton rbDecompress;
-        private System.Windows.Forms.RadioButton rbCompress;
         private System.Windows.Forms.Label lblOffset;
+        private System.Windows.Forms.RadioButton rbDecompress;
         private System.Windows.Forms.TextBox tbOffset;
+        private System.Windows.Forms.RadioButton rbCompress;
     }
 }

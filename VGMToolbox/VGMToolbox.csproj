@@ -103,6 +103,12 @@
     <Compile Include="forms\Auditing_CollectionBuilderForm.Designer.cs">
       <DependentUpon>Auditing_CollectionBuilderForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\Compression_GzipCompressionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\Compression_GzipCompressionForm.Designer.cs">
+      <DependentUpon>Compression_GzipCompressionForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\EmbeddedTagsUpdateForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -473,6 +479,9 @@
     <Compile Include="tools\extract\ExtractCdxaWorker.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\extract\GzipExtractorWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\extract\OffsetFinderWorker.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -619,6 +628,9 @@
     <Content Include="readme.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="forms\Compression_GzipCompressionForm.resx">
+      <DependentUpon>Compression_GzipCompressionForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="forms\Examine_CrcCalculatorForm.resx">
       <DependentUpon>Examine_CrcCalculatorForm.cs</DependentUpon>
       <SubType>Designer</SubType>

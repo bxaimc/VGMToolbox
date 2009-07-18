@@ -798,6 +798,19 @@ namespace VGMToolbox
             EmptyForm emptyForm = new EmptyForm();
             nodeTag.FormClass = emptyForm.GetType().Name;
 
+            // GZIP
+            TreeNode ext_ExtractGzipNode =
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_ExtractGzipNode"]);
+
+            // Add Form
+            Compression_GzipCompressionForm compression_GzipCompressionForm =
+                new Compression_GzipCompressionForm(ext_ExtractGzipNode);
+            this.splitContainer1.Panel2.Controls.Add(compression_GzipCompressionForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = compression_GzipCompressionForm.GetType().Name;
+            ext_ExtractGzipNode.Tag = nodeTag;
+
             // ZLIB
             TreeNode ext_ExtractZlibNode = 
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_ExtractZlibNode"]);
@@ -810,6 +823,7 @@ namespace VGMToolbox
             nodeTag.FormClass = extract_ZlibExtractForm.GetType().Name;
             ext_ExtractZlibNode.Tag = nodeTag;
 
+            comp_RootNode.Nodes.Add(ext_ExtractGzipNode);
             comp_RootNode.Nodes.Add(ext_ExtractZlibNode);
 
             return comp_RootNode;
