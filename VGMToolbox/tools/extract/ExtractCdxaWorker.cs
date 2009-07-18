@@ -11,6 +11,7 @@ namespace VGMToolbox.tools.extract
         {
             public bool AddRiffHeader;
             public bool PatchByte0x11;
+            public uint SilentFramesCount;
 
             private string[] sourcePaths;
             public string[] SourcePaths
@@ -31,6 +32,7 @@ namespace VGMToolbox.tools.extract
             extStruct.Path = pPath;
             extStruct.AddRiffHeader = extractCdxaStruct.AddRiffHeader;
             extStruct.PatchByte0x11 = extractCdxaStruct.PatchByte0x11;
+            extStruct.SilentFramesCount = extractCdxaStruct.SilentFramesCount;
 
             CdxaUtil.ExtractXaFiles(extStruct);            
         }       

@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Windows.Forms;
 
+using VGMToolbox.format;
 using VGMToolbox.plugin;
 using VGMToolbox.tools.extract;
 
@@ -31,6 +32,8 @@ namespace VGMToolbox.forms
                 ConfigurationSettings.AppSettings["Form_CdxaExtractor_CheckBoxAddRiffHeader"];
             this.cbPatchByte0x11.Text =
                 ConfigurationSettings.AppSettings["Form_CdxaExtractor_CheckBoxPatchByte0x11"];
+
+            this.silentFrameCounter.Value = Cdxa.NUM_SILENT_FRAMES_FOR_SILENT_BLOCK;
         }
 
         private void tbSource_DragDrop(object sender, DragEventArgs e)
@@ -41,7 +44,8 @@ namespace VGMToolbox.forms
             extStruct.SourcePaths = s;
             extStruct.AddRiffHeader = cbAddRiffHeader.Checked;
             extStruct.PatchByte0x11 = cbPatchByte0x11.Checked;
-            
+            extStruct.SilentFramesCount = (uint)this.silentFrameCounter.Value;
+
             base.backgroundWorker_Execute(extStruct);
         }
         protected override void doDragEnter(object sender, DragEventArgs e)

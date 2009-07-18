@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.IO;
@@ -30,13 +31,24 @@ namespace VGMToolbox.forms
             
             InitializeComponent();
 
-            this.lblTitle.Text = "VGM Tag Editor";
-            this.btnDoTask.Text = "Update Tags";
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_Title"];
+            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_DoTaskButton"];
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_Info"];
 
-            this.tbOutput.Text = "- WARNING: Tagger is still in beta mode, please backup your files before usage." + Environment.NewLine;
-            this.tbOutput.Text += "- One or multiple files can be selected for tagging.  Use Shift-Click and Ctrl-Click to select multiple files." + Environment.NewLine;
-            this.tbOutput.Text += "- Right-Click on the File List to Refresh it." + Environment.NewLine;
-            this.tbOutput.Text += "- Output will be GZip'd only if the input was GZip'd." + Environment.NewLine;
+            this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_GrpSourceFiles"];
+            this.grpSetTags.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_GrpSetTags"];
+            this.lblGameEn.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblGameEn"];
+            this.lblGameJp.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblGameJp"];
+            this.lblSystemEn.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblSystemEn"];
+            this.lblSystemJp.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblSystemJp"];
+            this.lblArtistEn.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblArtistEn"];
+            this.lblArtistJp.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblArtistJp"];
+            this.lblGameDate.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblGameDate"];
+            this.lblRipper.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblRipper"];
+            this.grpTrackTags.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_GrpTrackTags"];
+            this.lblTrackTitleEn.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblTrackTitleEn"];
+            this.lblTrackTitleJp.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblTrackTitleJp"];
+            this.grpComments.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_GrpComments"];
 
             this.loadSystems();
         }
@@ -169,15 +181,15 @@ namespace VGMToolbox.forms
         }
         protected override string getCancelMessage()
         {
-            return "VGM Tagging...Cancelled";
+            return ConfigurationSettings.AppSettings["Form_VgmTagEditor_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return "VGM Tagging...Complete";
+            return ConfigurationSettings.AppSettings["Form_VgmTagEditor_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return "VGM Tagging...Begin";
+            return ConfigurationSettings.AppSettings["Form_VgmTagEditor_MessageBegin"];
         }
 
         private void btnDoTask_Click(object sender, EventArgs e)

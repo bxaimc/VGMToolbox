@@ -15,6 +15,7 @@ namespace VGMToolbox.format.util
             public string Path;
             public bool AddRiffHeader;
             public bool PatchByte0x11;
+            public uint SilentFramesCount;
         }
 
         public static void ExtractXaFiles(ExtractXaStruct pExtractXaStruct)
@@ -61,11 +62,19 @@ namespace VGMToolbox.format.util
                         }
 
                         // get the next block
-                        buffer = ParseFile.parseSimpleOffset(fs, offset, Cdxa.XA_BLOCK_SIZE);                        
-                        
+                        buffer = ParseFile.parseSimpleOffset(fs, offset, Cdxa.XA_BLOCK_SIZE);
+
                         // check if this is a "silent" block, ignore leading silence (first block)
-                        if ((bwDictionary[trackKey].BaseStream.Length > Cdxa.XA_BLOCK_SIZE) && IsSilentBlock(buffer))
+                        if ((bwDictionary[trackKey].BaseStream.Length > Cdxa.XA_BLOCK_SIZE) && IsSilentBlock(buffer, pExtractXaStruct))
                         {
+                            // check for start of new block in this block
+                            long newBlockOffset = ParseFile.GetNextOffset(buffer, 1, Cdxa.XA_SIG);
+
+                            if (newBlockOffset > -1)
+                            {
+                                int x = 1;
+                            }
+
                             // write the block
                             bwDictionary[trackKey].Write(buffer);
 
@@ -121,20 +130,35 @@ namespace VGMToolbox.format.util
             pBw.Close();
         }
 
-        private static bool IsSilentBlock(byte[] pCdxaBlock)
+        private static bool IsSilentBlock(byte[] pCdxaBlock, ExtractXaStruct pExtractXaStruct)
         {
-            bool ret = true;
+            bool ret = false;
+            int silentFrameCount = 0;
+            long bufferOffset = 0;
 
-            for (int i = 0; i < Cdxa.NUM_SILENT_FRAMES_FOR_SILENT_BLOCK; i++)
+            while ((bufferOffset = ParseFile.GetNextOffset(pCdxaBlock, bufferOffset, Cdxa.XA_SILENT_FRAME)) > -1)
             {
-                ret = ret && ParseFile.CompareSegment(pCdxaBlock, 
-                    (i * Cdxa.XA_SILENT_FRAME.Length) + ((i + 1) * Cdxa.BLOCK_HEADER_SIZE), Cdxa.XA_SILENT_FRAME);
-
-                if (!ret)
-                {
-                    break;
-                }
+                silentFrameCount++;
+                bufferOffset += 1;
             }
+
+            // did we find enough silent frames?
+            if (silentFrameCount >= pExtractXaStruct.SilentFramesCount)
+            {
+                ret = true;
+            }
+
+
+            //for (int i = 0; i < Cdxa.NUM_SILENT_FRAMES_FOR_SILENT_BLOCK; i++)
+            //{
+            //    ret = ret && ParseFile.CompareSegment(pCdxaBlock, 
+            //        (i * Cdxa.XA_SILENT_FRAME.Length) + ((i + 1) * Cdxa.BLOCK_HEADER_SIZE), Cdxa.XA_SILENT_FRAME);
+
+            //    if (!ret)
+            //    {
+            //        break;
+            //    }
+            //}
 
             return ret;
         }

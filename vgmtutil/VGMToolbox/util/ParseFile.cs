@@ -168,6 +168,33 @@ namespace VGMToolbox.util
             return ret;
         }
 
+        public static long GetNextOffset(byte[] pBufferToSearch, long pOffset, byte[] pSearchBytes)
+        {
+            bool itemFound = false;
+            long absoluteOffset = pOffset;
+            byte[] compareBytes;
+
+            long ret = -1;
+
+            while (!itemFound && (absoluteOffset < (pBufferToSearch.Length - pSearchBytes.Length)))
+            {
+                compareBytes = new byte[pSearchBytes.Length];
+                Array.Copy(pBufferToSearch, absoluteOffset,
+                    compareBytes, 0, pSearchBytes.Length);
+
+                if (CompareSegment(compareBytes, 0, pSearchBytes))
+                {
+                    itemFound = true;
+                    ret = absoluteOffset;
+                    break;
+                }
+
+                absoluteOffset++;
+            }
+
+            return ret;
+        }
+
         public static long GetPreviousOffset(Stream pStream, long pOffset, byte[] pSearchBytes)
         {
             long initialStreamPosition = pStream.Position;

@@ -35,6 +35,8 @@
             this.lblTrackTitleEn = new System.Windows.Forms.Label();
             this.tbTitleEn = new System.Windows.Forms.TextBox();
             this.grpSetTags = new System.Windows.Forms.GroupBox();
+            this.cbSystemJp = new System.Windows.Forms.ComboBox();
+            this.cbSystemEn = new System.Windows.Forms.ComboBox();
             this.lblGameDate = new System.Windows.Forms.Label();
             this.tbGameDate = new System.Windows.Forms.TextBox();
             this.tbRipper = new System.Windows.Forms.TextBox();
@@ -57,8 +59,6 @@
             this.tbComments = new System.Windows.Forms.TextBox();
             this.contextMenuRefresh = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmRefresh = new System.Windows.Forms.ToolStripMenuItem();
-            this.cbSystemEn = new System.Windows.Forms.ComboBox();
-            this.cbSystemJp = new System.Windows.Forms.ComboBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -72,29 +72,29 @@
             // pnlLabels
             // 
             this.pnlLabels.Location = new System.Drawing.Point(0, 506);
-            this.pnlLabels.Size = new System.Drawing.Size(900, 19);
+            this.pnlLabels.Size = new System.Drawing.Size(665, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(900, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(665, 20);
             // 
             // tbOutput
             // 
             this.tbOutput.Location = new System.Drawing.Point(0, 429);
-            this.tbOutput.Size = new System.Drawing.Size(900, 77);
+            this.tbOutput.Size = new System.Drawing.Size(665, 77);
             // 
             // pnlButtons
             // 
             this.pnlButtons.Location = new System.Drawing.Point(0, 409);
-            this.pnlButtons.Size = new System.Drawing.Size(900, 20);
+            this.pnlButtons.Size = new System.Drawing.Size(665, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(840, 0);
+            this.btnCancel.Location = new System.Drawing.Point(605, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(780, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(545, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpTrackTags
@@ -165,7 +165,23 @@
             this.grpSetTags.Size = new System.Drawing.Size(286, 202);
             this.grpSetTags.TabIndex = 25;
             this.grpSetTags.TabStop = false;
-            this.grpSetTags.Text = "GameTags";
+            this.grpSetTags.Text = "Game Tags";
+            // 
+            // cbSystemJp
+            // 
+            this.cbSystemJp.FormattingEnabled = true;
+            this.cbSystemJp.Location = new System.Drawing.Point(75, 100);
+            this.cbSystemJp.Name = "cbSystemJp";
+            this.cbSystemJp.Size = new System.Drawing.Size(202, 21);
+            this.cbSystemJp.TabIndex = 29;
+            // 
+            // cbSystemEn
+            // 
+            this.cbSystemEn.FormattingEnabled = true;
+            this.cbSystemEn.Location = new System.Drawing.Point(75, 74);
+            this.cbSystemEn.Name = "cbSystemEn";
+            this.cbSystemEn.Size = new System.Drawing.Size(202, 21);
+            this.cbSystemEn.TabIndex = 32;
             // 
             // lblGameDate
             // 
@@ -357,27 +373,11 @@
             this.tsmRefresh.Text = "Refresh File List";
             this.tsmRefresh.Click += new System.EventHandler(this.tsmRefresh_Click);
             // 
-            // cbSystemEn
-            // 
-            this.cbSystemEn.FormattingEnabled = true;
-            this.cbSystemEn.Location = new System.Drawing.Point(75, 74);
-            this.cbSystemEn.Name = "cbSystemEn";
-            this.cbSystemEn.Size = new System.Drawing.Size(202, 21);
-            this.cbSystemEn.TabIndex = 32;
-            // 
-            // cbSystemJp
-            // 
-            this.cbSystemJp.FormattingEnabled = true;
-            this.cbSystemJp.Location = new System.Drawing.Point(75, 100);
-            this.cbSystemJp.Name = "cbSystemJp";
-            this.cbSystemJp.Size = new System.Drawing.Size(202, 21);
-            this.cbSystemJp.TabIndex = 29;
-            // 
             // Vgm_VgmTagEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(900, 547);
+            this.ClientSize = new System.Drawing.Size(665, 547);
             this.Controls.Add(this.grpComments);
             this.Controls.Add(this.grpTrackTags);
             this.Controls.Add(this.grpSetTags);

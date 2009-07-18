@@ -30,6 +30,8 @@
         {
             this.grpSource = new System.Windows.Forms.GroupBox();
             this.grpOptions = new System.Windows.Forms.GroupBox();
+            this.lblSilentBlocks = new System.Windows.Forms.Label();
+            this.silentFrameCounter = new System.Windows.Forms.NumericUpDown();
             this.cbPatchByte0x11 = new System.Windows.Forms.CheckBox();
             this.cbAddRiffHeader = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
@@ -37,34 +39,35 @@
             this.pnlButtons.SuspendLayout();
             this.grpSource.SuspendLayout();
             this.grpOptions.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.silentFrameCounter)).BeginInit();
             this.SuspendLayout();
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 400);
-            this.pnlLabels.Size = new System.Drawing.Size(779, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 506);
+            this.pnlLabels.Size = new System.Drawing.Size(903, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(779, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(903, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 323);
-            this.tbOutput.Size = new System.Drawing.Size(779, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 429);
+            this.tbOutput.Size = new System.Drawing.Size(903, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 303);
-            this.pnlButtons.Size = new System.Drawing.Size(779, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 409);
+            this.pnlButtons.Size = new System.Drawing.Size(903, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(719, 0);
+            this.btnCancel.Location = new System.Drawing.Point(843, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(659, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(783, 0);
             // 
             // grpSource
             // 
@@ -72,7 +75,7 @@
             this.grpSource.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpSource.Location = new System.Drawing.Point(0, 23);
             this.grpSource.Name = "grpSource";
-            this.grpSource.Size = new System.Drawing.Size(779, 280);
+            this.grpSource.Size = new System.Drawing.Size(903, 386);
             this.grpSource.TabIndex = 5;
             this.grpSource.TabStop = false;
             this.grpSource.Text = "Source Files";
@@ -81,22 +84,55 @@
             // 
             // grpOptions
             // 
+            this.grpOptions.Controls.Add(this.lblSilentBlocks);
+            this.grpOptions.Controls.Add(this.silentFrameCounter);
             this.grpOptions.Controls.Add(this.cbPatchByte0x11);
             this.grpOptions.Controls.Add(this.cbAddRiffHeader);
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.grpOptions.Location = new System.Drawing.Point(3, 214);
+            this.grpOptions.Location = new System.Drawing.Point(3, 267);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(773, 63);
+            this.grpOptions.Size = new System.Drawing.Size(897, 116);
             this.grpOptions.TabIndex = 6;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
+            // 
+            // lblSilentBlocks
+            // 
+            this.lblSilentBlocks.Location = new System.Drawing.Point(54, 19);
+            this.lblSilentBlocks.Name = "lblSilentBlocks";
+            this.lblSilentBlocks.Size = new System.Drawing.Size(317, 46);
+            this.lblSilentBlocks.TabIndex = 3;
+            this.lblSilentBlocks.Text = "Number of Silent Frames to determine EOF (decrease this value if multiple tracks " +
+                "are extracted to a single file)";
+            // 
+            // silentFrameCounter
+            // 
+            this.silentFrameCounter.Location = new System.Drawing.Point(8, 19);
+            this.silentFrameCounter.Maximum = new decimal(new int[] {
+            20,
+            0,
+            0,
+            0});
+            this.silentFrameCounter.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.silentFrameCounter.Name = "silentFrameCounter";
+            this.silentFrameCounter.Size = new System.Drawing.Size(40, 20);
+            this.silentFrameCounter.TabIndex = 2;
+            this.silentFrameCounter.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // cbPatchByte0x11
             // 
             this.cbPatchByte0x11.AutoSize = true;
             this.cbPatchByte0x11.Checked = true;
             this.cbPatchByte0x11.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbPatchByte0x11.Location = new System.Drawing.Point(7, 42);
+            this.cbPatchByte0x11.Location = new System.Drawing.Point(8, 93);
             this.cbPatchByte0x11.Name = "cbPatchByte0x11";
             this.cbPatchByte0x11.Size = new System.Drawing.Size(330, 17);
             this.cbPatchByte0x11.TabIndex = 1;
@@ -108,7 +144,7 @@
             this.cbAddRiffHeader.AutoSize = true;
             this.cbAddRiffHeader.Checked = true;
             this.cbAddRiffHeader.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbAddRiffHeader.Location = new System.Drawing.Point(7, 19);
+            this.cbAddRiffHeader.Location = new System.Drawing.Point(8, 70);
             this.cbAddRiffHeader.Name = "cbAddRiffHeader";
             this.cbAddRiffHeader.Size = new System.Drawing.Size(261, 17);
             this.cbAddRiffHeader.TabIndex = 0;
@@ -119,7 +155,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(779, 441);
+            this.ClientSize = new System.Drawing.Size(903, 547);
             this.Controls.Add(this.grpSource);
             this.Name = "Extract_ExtractCdxaForm";
             this.Text = "Extract_ExtractCdxaForm";
@@ -137,6 +173,7 @@
             this.grpSource.ResumeLayout(false);
             this.grpOptions.ResumeLayout(false);
             this.grpOptions.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.silentFrameCounter)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -148,5 +185,7 @@
         private System.Windows.Forms.GroupBox grpOptions;
         private System.Windows.Forms.CheckBox cbPatchByte0x11;
         private System.Windows.Forms.CheckBox cbAddRiffHeader;
+        private System.Windows.Forms.Label lblSilentBlocks;
+        private System.Windows.Forms.NumericUpDown silentFrameCounter;
     }
 }

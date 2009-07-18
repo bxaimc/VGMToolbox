@@ -677,19 +677,6 @@ namespace VGMToolbox
             nodeTag.FormClass = extract_ExtractCdxaForm.GetType().Name;
             ext_ExtractCdxaNode.Tag = nodeTag;
 
-            /*
-            // ZLIB
-            TreeNode ext_ExtractZlibNode = new TreeNode("Zlib Extractor");
-
-            // Add Cdxa Extractor Form
-            Extract_ZlibExtractForm extract_ZlibExtractForm = new Extract_ZlibExtractForm(ext_ExtractZlibNode);
-            this.splitContainer1.Panel2.Controls.Add(extract_ZlibExtractForm);
-
-            // Set Tag for displaying the Form
-            nodeTag.FormClass = extract_ZlibExtractForm.GetType().Name;
-            ext_ExtractZlibNode.Tag = nodeTag;
-            */
-
             ///////
             // NDS
             ///////
@@ -780,11 +767,11 @@ namespace VGMToolbox
         {
             VGMToolbox.util.NodeTagStruct nodeTag = new VGMToolbox.util.NodeTagStruct();
 
-            TreeNode vgm_RootNode = new TreeNode("VGM Tools");
+            TreeNode vgm_RootNode = new TreeNode(ConfigurationSettings.AppSettings["MenuTree_VgmRootNode"]);
             vgm_RootNode.NodeFont = this.treeviewBoldFont;
 
             // VGM Tagger
-            TreeNode vgm_TaggerNode = new TreeNode("VGM Tag Editor");
+            TreeNode vgm_TaggerNode = new TreeNode(ConfigurationSettings.AppSettings["MenuTree_VgmTagEditorNode"]);
 
             // Add  Form
             Vgm_VgmTagEditorForm vgm_VgmTagEditorForm = new Vgm_VgmTagEditorForm(vgm_TaggerNode);
