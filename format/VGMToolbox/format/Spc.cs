@@ -27,6 +27,9 @@ namespace VGMToolbox.format
         private static readonly byte[] EXID666_SUBCHUNK_TYPE_STRING = new byte[] { 0x01 };
         private static readonly byte[] EXID666_SUBCHUNK_TYPE_INTEGER = new byte[] { 0x04 };
 
+        private const string EXID666_SUBCHUNK_ID_DUMPDATE = "05";
+        private const string EXID666_SUBCHUNK_ID_OST_TRACK = "12";
+
 
         private const int SIG_OFFSET = 0x00;
         private const int SIG_LENGTH = 0x21;
@@ -507,31 +510,26 @@ namespace VGMToolbox.format
         {
             System.Text.Encoding enc = System.Text.Encoding.ASCII;
             // EXID666 - SUBCHUNK
-            /*
-            private static readonly byte[] EXID666_SUBCHUNK_TYPE_LENGTH = new byte[] { 0x00 };
-            private static readonly byte[] EXID666_SUBCHUNK_TYPE_STRING = new byte[] { 0x01 };
-            private static readonly byte[] EXID666_SUBCHUNK_TYPE_INTEGER = new byte[] { 0x04 };              
-             */
-
             byte[] exidSubChunkId;
             byte[] exidSubChunkType;
             byte[] exidSubChunkLength;
 
             string exidSubChunkIntId;
-            int exidSubChunkIntLength;
+            int exidSubChunkIntLength;            
+            int exidSubChunkRemainder;
 
+            string ostTrackNo;
 
             int offset = 0;
             while (offset < pBytes.Length)
             {
                 exidSubChunkId = ParseFile.parseSimpleOffset(pBytes, offset + EX_ID666_SUBCHUNK_ID_OFFSET, EX_ID666_SUBCHUNK_ID_LENGTH);
+                exidSubChunkIntId = BitConverter.ToString(exidSubChunkId, 0);
+
                 exidSubChunkType = ParseFile.parseSimpleOffset(pBytes, offset + EX_ID666_SUBCHUNK_TYPE_OFFSET, EX_ID666_SUBCHUNK_TYPE_LENGTH);
-                exidSubChunkLength = ParseFile.parseSimpleOffset(pBytes, offset + EX_ID666_SUBCHUNK_LENGTH_OFFSET, EX_ID666_SUBCHUNK_LENGTH_LENGTH);
-
-                exidSubChunkIntId  = BitConverter.ToString(exidSubChunkId, 0);
+                exidSubChunkLength = ParseFile.parseSimpleOffset(pBytes, offset + EX_ID666_SUBCHUNK_LENGTH_OFFSET, EX_ID666_SUBCHUNK_LENGTH_LENGTH);                
                 exidSubChunkIntLength = BitConverter.ToInt16(exidSubChunkLength, 0);
-
-
+                
                 // LENGTH
                 if (!exId666Hash.ContainsKey(exidSubChunkIntId))
                 {
@@ -544,7 +542,22 @@ namespace VGMToolbox.format
                     {
                         tagHash.Remove(exId666Hash[exidSubChunkIntId]);
                     }
-                    tagHash.Add(exId666Hash[exidSubChunkIntId], System.BitConverter.ToInt16(exidSubChunkLength, 0).ToString());
+
+                    if (exidSubChunkIntId.Equals(EXID666_SUBCHUNK_ID_OST_TRACK))
+                    {
+                        Array.Reverse(exidSubChunkLength);
+                        ostTrackNo = ParseFile.ByteArrayToString(exidSubChunkLength);
+                        if (ostTrackNo.Substring(2).Equals("00"))
+                        {
+                            ostTrackNo = ostTrackNo.Substring(0, 2);
+                        }
+
+                        tagHash.Add(exId666Hash[exidSubChunkIntId], ostTrackNo);                        
+                    }
+                    else
+                    {
+                        tagHash.Add(exId666Hash[exidSubChunkIntId], System.BitConverter.ToInt16(exidSubChunkLength, 0).ToString());
+                    }
 
                     offset += EX_ID666_SUBCHUNK_ID_LENGTH + EX_ID666_SUBCHUNK_TYPE_LENGTH +
                         EX_ID666_SUBCHUNK_LENGTH_LENGTH;                
@@ -552,8 +565,17 @@ namespace VGMToolbox.format
                 
                 // STRING
                 else if (ParseFile.CompareSegment(exidSubChunkType, 0, EXID666_SUBCHUNK_TYPE_STRING))
-                {
+                {                    
                     int stringStartOffset = offset + EX_ID666_SUBCHUNK_LENGTH_OFFSET + EX_ID666_SUBCHUNK_LENGTH_LENGTH;
+
+                    // setup for 32-bit align
+                    //exidSubChunkRemainder = (EXTENDED_INFO_OFFSET + EX_ID666_CHUNK_DATA_OFFSET + stringStartOffset + exidSubChunkIntLength) % 4;
+                    
+                    //if (exidSubChunkRemainder != 0)
+                    //{
+                    //    exidSubChunkIntLength += exidSubChunkRemainder;
+                    //}
+                                        
                     byte[] subChunkData = ParseFile.parseSimpleOffset(pBytes, stringStartOffset, (int) exidSubChunkIntLength);
 
                     if (tagHash.ContainsKey(exId666Hash[exidSubChunkIntId]))
@@ -569,14 +591,19 @@ namespace VGMToolbox.format
                 // INTEGER
                 else if (ParseFile.CompareSegment(exidSubChunkType, 0, EXID666_SUBCHUNK_TYPE_INTEGER))
                 {
+                    if (exidSubChunkIntId.Equals(EXID666_SUBCHUNK_ID_DUMPDATE))
+                    {
+                        int intStartOffset = offset + EX_ID666_SUBCHUNK_LENGTH_OFFSET + EX_ID666_SUBCHUNK_LENGTH_LENGTH;
+                        byte[] subChunkData = ParseFile.parseSimpleOffset(pBytes, intStartOffset, (int)exidSubChunkIntLength);
+                        
+                        ostTrackNo = ParseFile.ByteArrayToString(exidSubChunkLength);
+                        tagHash.Add(exId666Hash[exidSubChunkIntId], ParseFile.ByteArrayToString(subChunkData));
+                    }
+                    
+                    
                     offset += EX_ID666_SUBCHUNK_ID_LENGTH + EX_ID666_SUBCHUNK_TYPE_LENGTH +
                         EX_ID666_SUBCHUNK_LENGTH_LENGTH + (int)exidSubChunkIntLength;
                 }
-                else
-                {
-                    break;  // bad format (see rs2-01a.spc, 0x10257 == 0x00 invalid ID)
-                }
-
             } // while (offset < pBytes.GetLength())
 
         }
