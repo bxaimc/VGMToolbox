@@ -109,7 +109,8 @@ namespace VGMToolbox.forms
 
                     if (typeof(IEmbeddedTagsFormat).IsAssignableFrom(Type.GetType(nts.ObjectType)) ||
                         typeof(ISingleTagFormat).IsAssignableFrom(Type.GetType(nts.ObjectType)) ||
-                        typeof(IXsfTagFormat).IsAssignableFrom(Type.GetType(nts.ObjectType)))
+                        typeof(IXsfTagFormat).IsAssignableFrom(Type.GetType(nts.ObjectType)) ||
+                        typeof(IGd3TagFormat).IsAssignableFrom(Type.GetType(nts.ObjectType)))
                     {
                         contextMenuStrip1.Show(treeViewTools, p);
                     }
@@ -137,6 +138,11 @@ namespace VGMToolbox.forms
                 {
                     XsfTagsUpdateForm xtuForm = new XsfTagsUpdateForm(nts);
                     xtuForm.Show();
+                }
+                else if (typeof(IGd3TagFormat).IsAssignableFrom(Type.GetType(nts.ObjectType)))
+                {
+                    VgmTagsUpdateForm gd3uForm = new VgmTagsUpdateForm(nts);
+                    gd3uForm.Show();
                 }
                                 
                 this.selectedNode = this.oldNode;

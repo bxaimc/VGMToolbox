@@ -56,7 +56,6 @@ namespace VGMToolbox.forms
 
         private void loadSystems()
         {
-            System.Text.Encoding utf8 = System.Text.Encoding.UTF8;
             System.Text.Encoding unicode = System.Text.Encoding.Unicode;
 
             DataTable dtEn = SqlLiteUtil.GetSimpleDataTable(DB_PATH, "VgmSystemNames", "SystemName");

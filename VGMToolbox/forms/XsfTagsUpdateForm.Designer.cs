@@ -30,6 +30,8 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(XsfTagsUpdateForm));
             this.grpSetTags = new System.Windows.Forms.GroupBox();
+            this.lblSystem = new System.Windows.Forms.Label();
+            this.tbSystem = new System.Windows.Forms.TextBox();
             this.lblXsfBy = new System.Windows.Forms.Label();
             this.tbXsfBy = new System.Windows.Forms.TextBox();
             this.tbYear = new System.Windows.Forms.TextBox();
@@ -55,8 +57,6 @@
             this.lblFade = new System.Windows.Forms.Label();
             this.tbComments = new System.Windows.Forms.TextBox();
             this.grpComments = new System.Windows.Forms.GroupBox();
-            this.tbSystem = new System.Windows.Forms.TextBox();
-            this.lblSystem = new System.Windows.Forms.Label();
             this.grpSetTags.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.grpComments.SuspendLayout();
@@ -85,6 +85,22 @@
             this.grpSetTags.TabIndex = 0;
             this.grpSetTags.TabStop = false;
             this.grpSetTags.Text = "GameTags";
+            // 
+            // lblSystem
+            // 
+            this.lblSystem.AutoSize = true;
+            this.lblSystem.Location = new System.Drawing.Point(6, 127);
+            this.lblSystem.Name = "lblSystem";
+            this.lblSystem.Size = new System.Drawing.Size(41, 13);
+            this.lblSystem.TabIndex = 13;
+            this.lblSystem.Text = "System";
+            // 
+            // tbSystem
+            // 
+            this.tbSystem.Location = new System.Drawing.Point(77, 124);
+            this.tbSystem.Name = "tbSystem";
+            this.tbSystem.Size = new System.Drawing.Size(184, 20);
+            this.tbSystem.TabIndex = 12;
             // 
             // lblXsfBy
             // 
@@ -305,22 +321,6 @@
             this.grpComments.TabStop = false;
             this.grpComments.Text = "Comments";
             // 
-            // tbSystem
-            // 
-            this.tbSystem.Location = new System.Drawing.Point(77, 124);
-            this.tbSystem.Name = "tbSystem";
-            this.tbSystem.Size = new System.Drawing.Size(184, 20);
-            this.tbSystem.TabIndex = 12;
-            // 
-            // lblSystem
-            // 
-            this.lblSystem.AutoSize = true;
-            this.lblSystem.Location = new System.Drawing.Point(6, 127);
-            this.lblSystem.Name = "lblSystem";
-            this.lblSystem.Size = new System.Drawing.Size(41, 13);
-            this.lblSystem.TabIndex = 13;
-            this.lblSystem.Text = "System";
-            // 
             // XsfTagsUpdateForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -331,6 +331,7 @@
             this.Controls.Add(this.btnUpdate);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.grpSetTags);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "XsfTagsUpdateForm";
             this.Text = "Update Tags";

@@ -71,30 +71,30 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 506);
-            this.pnlLabels.Size = new System.Drawing.Size(665, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 523);
+            this.pnlLabels.Size = new System.Drawing.Size(832, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(665, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(832, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 429);
-            this.tbOutput.Size = new System.Drawing.Size(665, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 446);
+            this.tbOutput.Size = new System.Drawing.Size(832, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 409);
-            this.pnlButtons.Size = new System.Drawing.Size(665, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 426);
+            this.pnlButtons.Size = new System.Drawing.Size(832, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(605, 0);
+            this.btnCancel.Location = new System.Drawing.Point(772, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(545, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(712, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpTrackTags
@@ -364,12 +364,12 @@
             this.contextMenuRefresh.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmRefresh});
             this.contextMenuRefresh.Name = "contextMenuRefresh";
-            this.contextMenuRefresh.Size = new System.Drawing.Size(151, 26);
+            this.contextMenuRefresh.Size = new System.Drawing.Size(162, 26);
             // 
             // tsmRefresh
             // 
             this.tsmRefresh.Name = "tsmRefresh";
-            this.tsmRefresh.Size = new System.Drawing.Size(150, 22);
+            this.tsmRefresh.Size = new System.Drawing.Size(161, 22);
             this.tsmRefresh.Text = "Refresh File List";
             this.tsmRefresh.Click += new System.EventHandler(this.tsmRefresh_Click);
             // 
@@ -377,7 +377,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(665, 547);
+            this.ClientSize = new System.Drawing.Size(832, 564);
             this.Controls.Add(this.grpComments);
             this.Controls.Add(this.grpTrackTags);
             this.Controls.Add(this.grpSetTags);
