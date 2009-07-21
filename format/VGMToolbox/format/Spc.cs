@@ -214,124 +214,124 @@ namespace VGMToolbox.format
 
         public byte[] getAsciiSignature(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
         }
         public byte[] getDummy26(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, DUMMY_26_OFFSET, DUMMY_26_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, DUMMY_26_OFFSET, DUMMY_26_LENGTH);
         }
         public byte[] getHeaderHasId666(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, HEADER_HAS_ID666_OFFSET, HEADER_HAS_ID666_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, HEADER_HAS_ID666_OFFSET, HEADER_HAS_ID666_LENGTH);
         }
         public byte[] getVersionMinor(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, VERSION_MINOR_OFFSET, VERSION_MINOR_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, VERSION_MINOR_OFFSET, VERSION_MINOR_LENGTH);
         }
         public byte[] getRegisterPc(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, REGISTER_PC_OFFSET, REGISTER_PC_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, REGISTER_PC_OFFSET, REGISTER_PC_LENGTH);
         }
         public byte[] getRegisterA(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, REGISTER_A_OFFSET, REGISTER_A_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, REGISTER_A_OFFSET, REGISTER_A_LENGTH);
         }
         public byte[] getRegisterX(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, REGISTER_X_OFFSET, REGISTER_X_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, REGISTER_X_OFFSET, REGISTER_X_LENGTH);
         }
         public byte[] getRegisterY(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, REGISTER_Y_OFFSET, REGISTER_Y_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, REGISTER_Y_OFFSET, REGISTER_Y_LENGTH);
         }
         public byte[] getRegisterPSW(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, REGISTER_PSW_OFFSET, REGISTER_PSW_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, REGISTER_PSW_OFFSET, REGISTER_PSW_LENGTH);
         }
         public byte[] getRegisterSP(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, REGISTER_SP_OFFSET, REGISTER_SP_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, REGISTER_SP_OFFSET, REGISTER_SP_LENGTH);
         }
         public byte[] getReserved(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, RESERVED_OFFSET, RESERVED_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, RESERVED_OFFSET, RESERVED_LENGTH);
         }
         public byte[] getId666(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, ID666_OFFSET, ID666_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, ID666_OFFSET, ID666_LENGTH);
         }
         public byte[] getRam64k(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, RAM_64K_OFFSET, RAM_64K_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, RAM_64K_OFFSET, RAM_64K_LENGTH);
         }
         public byte[] getDspRegisters(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, DSP_REGISTERS_OFFSET, DSP_REGISTERS_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, DSP_REGISTERS_OFFSET, DSP_REGISTERS_LENGTH);
         }
         public byte[] getUnused(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, UNUSED_OFFSET, UNUSED_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, UNUSED_OFFSET, UNUSED_LENGTH);
         }
         public byte[] getExtraRam(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, EXTRA_RAM_OFFSET, EXTRA_RAM_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, EXTRA_RAM_OFFSET, EXTRA_RAM_LENGTH);
         }
         public byte[] getExtendedInfo(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, EXTENDED_INFO_OFFSET, 
+            return ParseFile.ParseSimpleOffset(pStream, EXTENDED_INFO_OFFSET, 
                 (int)(pStream.Length - EXTENDED_INFO_OFFSET));
         }
 
         /* ID666 */
         public byte[] getIdSongTitle(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, ID_SONG_TITLE_OFFSET, ID_SONG_TITLE_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, ID_SONG_TITLE_OFFSET, ID_SONG_TITLE_LENGTH);
         }
         public byte[] getIdGameTitle(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, ID_GAME_TITLE_OFFSET, ID_GAME_TITLE_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, ID_GAME_TITLE_OFFSET, ID_GAME_TITLE_LENGTH);
         }
         public byte[] getIdNameOfDumper(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, ID_NAME_OF_DUMPER_OFFSET, ID_NAME_OF_DUMPER_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, ID_NAME_OF_DUMPER_OFFSET, ID_NAME_OF_DUMPER_LENGTH);
         }
         public byte[] getIdComments(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, ID_COMMENTS_OFFSET, ID_COMMENTS_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, ID_COMMENTS_OFFSET, ID_COMMENTS_LENGTH);
         }
         public byte[] getIdDumpDate(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, ID_DUMP_DATE_OFFSET, ID_DUMP_DATE_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, ID_DUMP_DATE_OFFSET, ID_DUMP_DATE_LENGTH);
         }
         public byte[] getIdNumSecondsToPlay(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, ID_NUM_SECS_TO_PLAY_OFFSET, ID_NUM_SECS_TO_PLAY_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, ID_NUM_SECS_TO_PLAY_OFFSET, ID_NUM_SECS_TO_PLAY_LENGTH);
         }
         public byte[] getIdLengthOfFade(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, ID_LENGTH_OF_FADE_OFFSET, ID_LENGTH_OF_FADE_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, ID_LENGTH_OF_FADE_OFFSET, ID_LENGTH_OF_FADE_LENGTH);
         }
         public byte[] getIdSongArtist(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, ID_SONG_ARTIST_OFFSET, ID_SONG_ARTIST_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, ID_SONG_ARTIST_OFFSET, ID_SONG_ARTIST_LENGTH);
         }
         public byte[] getIdDefaultChanDisab(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, ID_DEFAULT_CHAN_DISAB_OFFSET, ID_DEFAULT_CHAN_DISAB_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, ID_DEFAULT_CHAN_DISAB_OFFSET, ID_DEFAULT_CHAN_DISAB_LENGTH);
         }
         public byte[] getIdEmulatorUsed(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, ID_EMULATOR_USED_OFFSET, ID_EMULATOR_USED_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, ID_EMULATOR_USED_OFFSET, ID_EMULATOR_USED_LENGTH);
         }
         public byte[] getIdReserved(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, ID_RESERVED_OFFSET, ID_RESERVED_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, ID_RESERVED_OFFSET, ID_RESERVED_LENGTH);
         }
         
         /* EXID666 CHUNK */
         public byte[] getExidHeaderChunkSize(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, EX_ID666_HEADER_CHUNK_SIZE_OFFSET, EX_ID666_HEADER_CHUNK_SIZE_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, EX_ID666_HEADER_CHUNK_SIZE_OFFSET, EX_ID666_HEADER_CHUNK_SIZE_LENGTH);
         }
 
         public void Initialize(Stream pStream, string pFilePath)
@@ -383,7 +383,7 @@ namespace VGMToolbox.format
                 exidHeaderChunkSize = this.getExidHeaderChunkSize(this.extendedInfo);
                 if (BitConverter.ToInt32(exidHeaderChunkSize, 0) > 0)
                 {
-                    exidFullChunk = ParseFile.parseSimpleOffset(this.extendedInfo, EX_ID666_CHUNK_DATA_OFFSET, BitConverter.ToInt32(exidHeaderChunkSize, 0));
+                    exidFullChunk = ParseFile.ParseSimpleOffset(this.extendedInfo, EX_ID666_CHUNK_DATA_OFFSET, BitConverter.ToInt32(exidHeaderChunkSize, 0));
                 }
                 this.parseExtendedChunk(exidFullChunk);
             }
@@ -523,11 +523,11 @@ namespace VGMToolbox.format
             int offset = 0;
             while (offset < pBytes.Length)
             {
-                exidSubChunkId = ParseFile.parseSimpleOffset(pBytes, offset + EX_ID666_SUBCHUNK_ID_OFFSET, EX_ID666_SUBCHUNK_ID_LENGTH);
+                exidSubChunkId = ParseFile.ParseSimpleOffset(pBytes, offset + EX_ID666_SUBCHUNK_ID_OFFSET, EX_ID666_SUBCHUNK_ID_LENGTH);
                 exidSubChunkIntId = BitConverter.ToString(exidSubChunkId, 0);
 
-                exidSubChunkType = ParseFile.parseSimpleOffset(pBytes, offset + EX_ID666_SUBCHUNK_TYPE_OFFSET, EX_ID666_SUBCHUNK_TYPE_LENGTH);
-                exidSubChunkLength = ParseFile.parseSimpleOffset(pBytes, offset + EX_ID666_SUBCHUNK_LENGTH_OFFSET, EX_ID666_SUBCHUNK_LENGTH_LENGTH);                
+                exidSubChunkType = ParseFile.ParseSimpleOffset(pBytes, offset + EX_ID666_SUBCHUNK_TYPE_OFFSET, EX_ID666_SUBCHUNK_TYPE_LENGTH);
+                exidSubChunkLength = ParseFile.ParseSimpleOffset(pBytes, offset + EX_ID666_SUBCHUNK_LENGTH_OFFSET, EX_ID666_SUBCHUNK_LENGTH_LENGTH);                
                 exidSubChunkIntLength = BitConverter.ToInt16(exidSubChunkLength, 0);
                 
                 // LENGTH
@@ -576,7 +576,7 @@ namespace VGMToolbox.format
                     //    exidSubChunkIntLength += exidSubChunkRemainder;
                     //}
                                         
-                    byte[] subChunkData = ParseFile.parseSimpleOffset(pBytes, stringStartOffset, (int) exidSubChunkIntLength);
+                    byte[] subChunkData = ParseFile.ParseSimpleOffset(pBytes, stringStartOffset, (int) exidSubChunkIntLength);
 
                     if (tagHash.ContainsKey(exId666Hash[exidSubChunkIntId]))
                     {
@@ -594,7 +594,7 @@ namespace VGMToolbox.format
                     if (exidSubChunkIntId.Equals(EXID666_SUBCHUNK_ID_DUMPDATE))
                     {
                         int intStartOffset = offset + EX_ID666_SUBCHUNK_LENGTH_OFFSET + EX_ID666_SUBCHUNK_LENGTH_LENGTH;
-                        byte[] subChunkData = ParseFile.parseSimpleOffset(pBytes, intStartOffset, (int)exidSubChunkIntLength);
+                        byte[] subChunkData = ParseFile.ParseSimpleOffset(pBytes, intStartOffset, (int)exidSubChunkIntLength);
                         
                         ostTrackNo = ParseFile.ByteArrayToString(exidSubChunkLength);
                         tagHash.Add(exId666Hash[exidSubChunkIntId], ParseFile.ByteArrayToString(subChunkData));

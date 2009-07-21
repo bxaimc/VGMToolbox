@@ -209,12 +209,12 @@ namespace sdatopt
                             {
                                 if (!String.IsNullOrEmpty(args[1]))
                                 {
-                                    startSequence = (int)VGMToolbox.util.Encoding.GetIntFromString(args[1]);
+                                    startSequence = (int)VGMToolbox.util.Encoding.GetLongFromString(args[1]);
                                 }
 
                                 if (!String.IsNullOrEmpty(args[2]))
                                 {
-                                    endSequence = (int)VGMToolbox.util.Encoding.GetIntFromString(args[2]);
+                                    endSequence = (int)VGMToolbox.util.Encoding.GetLongFromString(args[2]);
                                 }
                             }
 

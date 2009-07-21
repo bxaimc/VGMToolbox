@@ -87,62 +87,62 @@ namespace VGMToolbox.format
 
         public byte[] getAsciiSignature(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
         }
 
         public byte[] getNumberOfBanks(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, NUMBER_OF_BANKS_OFFSET, NUMBER_OF_BANKS_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, NUMBER_OF_BANKS_OFFSET, NUMBER_OF_BANKS_LENGTH);
         }
 
         public byte[] getInitial0000_3FFFBankOffset(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, INITIAL_0000_3FFF_BANK_OFFSET, INITIAL_0000_3FFF_BANK_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, INITIAL_0000_3FFF_BANK_OFFSET, INITIAL_0000_3FFF_BANK_LENGTH);
         }
 
         public byte[] getInitial4000_7FFFBankOffset(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, INITIAL_4000_7FFF_BANK_OFFSET, INITIAL_4000_7FFF_BANK_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, INITIAL_4000_7FFF_BANK_OFFSET, INITIAL_4000_7FFF_BANK_LENGTH);
         }
 
         public byte[] getTimerFlag(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, TIMERFLAG_OFFSET, TIMERFLAG_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, TIMERFLAG_OFFSET, TIMERFLAG_LENGTH);
         }
 
         public byte[] getSongInit(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, SONG_INIT_OFFSET, SONG_INIT_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, SONG_INIT_OFFSET, SONG_INIT_LENGTH);
         }
 
         public byte[] getVsync(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, VSYNC_OFFSET, VSYNC_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, VSYNC_OFFSET, VSYNC_LENGTH);
         }
 
         public byte[] getTimer(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, TIMER_OFFSET, TIMER_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, TIMER_OFFSET, TIMER_LENGTH);
         }
 
         public byte[] getFf06Write(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, FF06_WRITE_OFFSET, FF06_WRITE_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, FF06_WRITE_OFFSET, FF06_WRITE_LENGTH);
         }
 
         public byte[] getFf07Write(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, FF07_WRITE_OFFSET, FF07_WRITE_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, FF07_WRITE_OFFSET, FF07_WRITE_LENGTH);
         }
 
         public byte[] getUnused(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, UNUSED_OFFSET, UNUSED_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, UNUSED_OFFSET, UNUSED_LENGTH);
         }
 
         public byte[] getData(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, DATA_OFFSET, (int)(pStream.Length - DATA_OFFSET) + 1);
+            return ParseFile.ParseSimpleOffset(pStream, DATA_OFFSET, (int)(pStream.Length - DATA_OFFSET) + 1);
         }
 
 

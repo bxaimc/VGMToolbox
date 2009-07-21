@@ -8,11 +8,19 @@ using Ionic.Zlib;
 
 namespace VGMToolbox.util
 {
+    /// <summary>
+    /// Class containing static functions related to checksum generation.
+    /// </summary>
     public sealed class ChecksumUtil
     {
         private ChecksumUtil() { }
 
-        public static string GetCrc32OfFullFile(Stream pFileStream)
+        /// <summary>
+        /// Get the CRC32 checksum of the input stream.
+        /// </summary>
+        /// <param name="pFileStream">File Stream for which to generate the checksum.</param>
+        /// <returns>String containing the hexidecimal representation of the CRC32 of the input stream.</returns>
+        public static string GetCrc32OfFullFile(FileStream pFileStream)
         {
             // get incoming stream position
             long initialStreamPosition = pFileStream.Position;
@@ -30,7 +38,12 @@ namespace VGMToolbox.util
             return ret.ToString("X8", CultureInfo.InvariantCulture);
         }
 
-        public static string GetMd5OfFullFile(Stream pFileStream)
+        /// <summary>
+        /// Get the MD5 checksum of the input stream.
+        /// </summary>
+        /// <param name="pFileStream">File Stream for which to generate the checksum.</param>
+        /// <returns>String containing the hexidecimal representation of the MD5 of the input stream.</returns>
+        public static string GetMd5OfFullFile(FileStream pFileStream)
         {
             MD5CryptoServiceProvider md5Hash = new MD5CryptoServiceProvider();
 
@@ -39,7 +52,12 @@ namespace VGMToolbox.util
             return ParseFile.ByteArrayToString(md5Hash.Hash);
         }
 
-        public static string GetSha1OfFullFile(Stream pFileStream)
+        /// <summary>
+        /// Get the SHA1 checksum of the input stream.
+        /// </summary>
+        /// <param name="pFileStream">File Stream for which to generate the checksum.</param>
+        /// <returns>String containing the hexidecimal representation of the SHA1 of the input stream.</returns>
+        public static string GetSha1OfFullFile(FileStream pFileStream)
         {
             SHA1CryptoServiceProvider sha1Hash = new SHA1CryptoServiceProvider();
 
@@ -48,6 +66,13 @@ namespace VGMToolbox.util
             return ParseFile.ByteArrayToString(sha1Hash.Hash);
         }
 
+        /// <summary>
+        /// Adds a chunk of data to the input CRC32 generator.
+        /// </summary>
+        /// <param name="pStream">Stream to read data from.</param>
+        /// <param name="pOffset">Offset to begin reading from.</param>
+        /// <param name="pLength">Number of bytes to read.</param>
+        /// <param name="pCrc32">CRC32 generator.</param>
         public static void AddChunkToChecksum(Stream pStream, int pOffset, int pLength,
             ref Crc32 pCrc32)
         {
@@ -79,6 +104,15 @@ namespace VGMToolbox.util
             }
         }
 
+        /// <summary>
+        /// Adds a chunk of data to the input CRC32/MD5/SHA1 generator.
+        /// </summary>
+        /// <param name="pStream">Stream to read data from.</param>
+        /// <param name="pOffset">Offset to begin reading from.</param>
+        /// <param name="pLength">Number of bytes to read.</param>
+        /// <param name="pCrc32">CRC32 generator.</param>
+        /// <param name="pMd5CryptoStream">MD5 generator.</param>
+        /// <param name="pSha1CryptoStream">SHA1 generator.</param>
         public static void AddChunkToChecksum(Stream pStream, int pOffset, int pLength,
             ref Crc32 pCrc32, ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream)
         {

@@ -125,18 +125,18 @@ namespace VGMToolbox.format
         public void Initialize(Stream pStream, string pFilePath)
         {
             this.filePath =  pFilePath;
-            this.asciiSignature = ParseFile.parseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
-            this.versionNumber = ParseFile.parseSimpleOffset(pStream, VERSION_OFFSET, VERSION_LENGTH);            
-            this.dataOffset = ParseFile.parseSimpleOffset(pStream, DATA_OFFSET_OFFSET, DATA_OFFSET_LENGTH);
-            this.loadAddress = ParseFile.parseSimpleOffset(pStream, LOAD_ADDRESS_OFFSET, LOAD_ADDRESS_LENGTH);
-            this.initAddress = ParseFile.parseSimpleOffset(pStream, INIT_ADDRESS_OFFSET, INIT_ADDRESS_LENGTH);
-            this.playAddress = ParseFile.parseSimpleOffset(pStream, PLAY_ADDRESS_OFFSET, PLAY_ADDRESS_LENGTH);
-            this.totalSongs = ParseFile.parseSimpleOffset(pStream, TOTAL_SONGS_OFFSET, TOTAL_SONGS_LENGTH);
-            this.startingSong = ParseFile.parseSimpleOffset(pStream, STARTING_SONG_OFFSET, STARTING_SONG_LENGTH);
-            this.speed = ParseFile.parseSimpleOffset(pStream, SPEED_OFFSET, SPEED_LENGTH);
-            this.songName = ParseFile.parseSimpleOffset(pStream, NAME_OFFSET, NAME_LENGTH);
-            this.songArtist = ParseFile.parseSimpleOffset(pStream, ARTIST_OFFSET, ARTIST_LENGTH);
-            this.songCopyright = ParseFile.parseSimpleOffset(pStream, COPYRIGHT_OFFSET, COPYRIGHT_LENGTH);
+            this.asciiSignature = ParseFile.ParseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
+            this.versionNumber = ParseFile.ParseSimpleOffset(pStream, VERSION_OFFSET, VERSION_LENGTH);            
+            this.dataOffset = ParseFile.ParseSimpleOffset(pStream, DATA_OFFSET_OFFSET, DATA_OFFSET_LENGTH);
+            this.loadAddress = ParseFile.ParseSimpleOffset(pStream, LOAD_ADDRESS_OFFSET, LOAD_ADDRESS_LENGTH);
+            this.initAddress = ParseFile.ParseSimpleOffset(pStream, INIT_ADDRESS_OFFSET, INIT_ADDRESS_LENGTH);
+            this.playAddress = ParseFile.ParseSimpleOffset(pStream, PLAY_ADDRESS_OFFSET, PLAY_ADDRESS_LENGTH);
+            this.totalSongs = ParseFile.ParseSimpleOffset(pStream, TOTAL_SONGS_OFFSET, TOTAL_SONGS_LENGTH);
+            this.startingSong = ParseFile.ParseSimpleOffset(pStream, STARTING_SONG_OFFSET, STARTING_SONG_LENGTH);
+            this.speed = ParseFile.ParseSimpleOffset(pStream, SPEED_OFFSET, SPEED_LENGTH);
+            this.songName = ParseFile.ParseSimpleOffset(pStream, NAME_OFFSET, NAME_LENGTH);
+            this.songArtist = ParseFile.ParseSimpleOffset(pStream, ARTIST_OFFSET, ARTIST_LENGTH);
+            this.songCopyright = ParseFile.ParseSimpleOffset(pStream, COPYRIGHT_OFFSET, COPYRIGHT_LENGTH);
 
             this.totalSongsLE = new byte[TOTAL_SONGS_LENGTH];
             Array.Copy(this.totalSongs, this.totalSongsLE, TOTAL_SONGS_LENGTH);
@@ -154,10 +154,10 @@ namespace VGMToolbox.format
 
             if (this.intVersionNumber == 2)
             {
-                this.v2Flags = ParseFile.parseSimpleOffset(pStream, V2_FLAGS_OFFSET, V2_FLAGS_LENGTH);
-                this.v2StartPage = ParseFile.parseSimpleOffset(pStream, V2_START_PAGE_OFFSET, V2_START_PAGE_LENGTH);
-                this.v2PageLength = ParseFile.parseSimpleOffset(pStream, V2_PAGE_LENGTH_OFFSET, V2_PAGE_LENGTH_LENGTH);
-                this.v2Reserved = ParseFile.parseSimpleOffset(pStream, V2_RESERVED_OFFSET, V2_RESERVED_LENGTH);
+                this.v2Flags = ParseFile.ParseSimpleOffset(pStream, V2_FLAGS_OFFSET, V2_FLAGS_LENGTH);
+                this.v2StartPage = ParseFile.ParseSimpleOffset(pStream, V2_START_PAGE_OFFSET, V2_START_PAGE_LENGTH);
+                this.v2PageLength = ParseFile.ParseSimpleOffset(pStream, V2_PAGE_LENGTH_OFFSET, V2_PAGE_LENGTH_LENGTH);
+                this.v2Reserved = ParseFile.ParseSimpleOffset(pStream, V2_RESERVED_OFFSET, V2_RESERVED_LENGTH);
             }
 
             // data
@@ -165,7 +165,7 @@ namespace VGMToolbox.format
             Array.Reverse(dataOffsetLE);
             int intDataOffset = BitConverter.ToInt16(dataOffsetLE, 0);
 
-            this.data = ParseFile.parseSimpleOffset(pStream, intDataOffset, (int) (pStream.Length - intDataOffset));
+            this.data = ParseFile.ParseSimpleOffset(pStream, intDataOffset, (int) (pStream.Length - intDataOffset));
 
             this.initializeTagHash();
         }

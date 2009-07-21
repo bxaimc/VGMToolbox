@@ -84,26 +84,26 @@ namespace VGMToolbox.format
 
             // magic bytes
             ret = new SqHeaderStruct();
-            ret.MagicBytes = ParseFile.parseSimpleOffset(pStream, 0, 4); // pQES
+            ret.MagicBytes = ParseFile.ParseSimpleOffset(pStream, 0, 4); // pQES
 
             // version
-            temp = ParseFile.parseSimpleOffset(pStream, 4, 4);
+            temp = ParseFile.ParseSimpleOffset(pStream, 4, 4);
             Array.Reverse(temp);
             ret.Version = BitConverter.ToUInt32(temp, 0);
 
             // resolution
-            temp = ParseFile.parseSimpleOffset(pStream, 8, 2);
+            temp = ParseFile.ParseSimpleOffset(pStream, 8, 2);
             Array.Reverse(temp);
             ret.Resolution = BitConverter.ToUInt16(temp, 0);
 
             // tempo
             temp = new byte[4];
-            Array.Copy(ParseFile.parseSimpleOffset(pStream, 10, 3), 0, temp, 1, 3);
+            Array.Copy(ParseFile.ParseSimpleOffset(pStream, 10, 3), 0, temp, 1, 3);
             Array.Reverse(temp);
             ret.InitialTempo = BitConverter.ToUInt32(temp, 0);
 
             // unknown
-            temp = ParseFile.parseSimpleOffset(pStream, 13, 2);
+            temp = ParseFile.ParseSimpleOffset(pStream, 13, 2);
             Array.Reverse(temp);
             ret.unknown = BitConverter.ToUInt16(temp, 0);
 
@@ -335,7 +335,7 @@ namespace VGMToolbox.format
                     {
                         // tempo switch
                         tempoValBytes = new byte[4];
-                        Array.Copy(ParseFile.parseSimpleOffset(pStream, pStream.Position, 3), 0, tempoValBytes, 1, 3);
+                        Array.Copy(ParseFile.ParseSimpleOffset(pStream, pStream.Position, 3), 0, tempoValBytes, 1, 3);
 
                         Array.Reverse(tempoValBytes); // flip order to LE for use with BitConverter
                         tempo = BitConverter.ToUInt32(tempoValBytes, 0);

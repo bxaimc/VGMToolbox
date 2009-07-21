@@ -8,29 +8,55 @@ using Ionic.Zlib;
 
 namespace VGMToolbox.util
 {
+    /// <summary>
+    /// Class containing static functions for compresson related tasks
+    /// </summary>
     public class CompressionUtil
     {
+        /// <summary>
+        /// File extension used to output decompressed zlib data.
+        /// </summary>
         public static string ZLIB_DECOMPRESS_OUTPUT_EXTENSION = ".zlibx";
+        /// <summary>
+        /// File extension used to output compressed zlib data.
+        /// </summary>
         public static string ZLIB_COMPRESS_OUTPUT_EXTENSION = ".zlib";
 
+        /// <summary>
+        /// File extension used to output decompressed gzip data.
+        /// </summary>
         public static string GZIP_DECOMPRESS_OUTPUT_EXTENSION = ".gzipx";
+        /// <summary>
+        /// File extension used to output compressed gzip data.
+        /// </summary>
         public static string GZIP_COMPRESS_OUTPUT_EXTENSION = ".gz";
         
+        /// <summary>
+        /// Path to the included 7z.dll file.
+        /// </summary>
         public static readonly string SEVEN_ZIP_DLL = 
             Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "7z.dll");
         
+        /// <summary>
+        /// Get a list of files inside an archive file.
+        /// </summary>
+        /// <param name="pPath">Path to the archive file.</param>
+        /// <returns>An array of strings containing a list of files inside the archive.</returns>
+        /// <remarks>Must be an archive supported by 7z.dll.</remarks>
         public static string[] GetFileList(string pPath)
         {
+            string archivePath = Path.GetFullPath(pPath);
             string[] filenames = null;
             SevenZipExtractor sevenZipExtractor = null;
 
-            if (File.Exists(pPath))
+
+            if (File.Exists(archivePath))
             {
                 SevenZipExtractor.SetLibraryPath(SEVEN_ZIP_DLL);
 
                 try
                 {
-                    sevenZipExtractor = new SevenZipExtractor(pPath);
+                    sevenZipExtractor = new SevenZipExtractor(archivePath);
                     filenames = new string[sevenZipExtractor.ArchiveFileNames.Count];
 
                     int i = 0;
@@ -55,18 +81,25 @@ namespace VGMToolbox.util
             return filenames;
         }
 
+        /// <summary>
+        /// Get an uppercase list of files inside an archive file.  Must be an archive supported by 7z.dll.
+        /// </summary>
+        /// <param name="pPath">Path to the archive file.</param>
+        /// <returns>An array of strings containing an uppercase list of files inside the archive.</returns>
+        /// <remarks>Must be an archive supported by 7z.dll.</remarks>
         public static string[] GetUpperCaseFileList(string pPath)
         {
+            string archivePath = Path.GetFullPath(pPath);
             string[] filenames = null;
             SevenZipExtractor sevenZipExtractor = null;
 
-            if (File.Exists(pPath))
+            if (File.Exists(archivePath))
             {
                 SevenZipExtractor.SetLibraryPath(SEVEN_ZIP_DLL);
 
                 try
                 {
-                    sevenZipExtractor = new SevenZipExtractor(pPath);
+                    sevenZipExtractor = new SevenZipExtractor(archivePath);
                     filenames = new string[sevenZipExtractor.ArchiveFileNames.Count];
 
                     int i = 0;
@@ -91,12 +124,34 @@ namespace VGMToolbox.util
             return filenames;
         }
 
+        /// <summary>
+        /// Extracts a file from an archive.  The file will be output to a subfolder in the archive's directory; 
+        /// named with the original archive name.
+        /// </summary>
+        /// <param name="pArchivePath">Path to the archive file.</param>
+        /// <param name="pFileName">Name of file to extract.</param>
+        /// <remarks>Must be an archive supported by 7z.dll.</remarks>
+        public static void ExtractFileFromArchive(string pArchivePath, string pFileName)
+        { 
+            ExtractFileFromArchive(pArchivePath, pFileName, String.Empty);
+        }
+
+        /// <summary>
+        /// Extracts a file from an archive.
+        /// </summary>
+        /// <param name="pArchivePath">Path to the archive file.</param>
+        /// <param name="pFileName">Name of file to extract.</param>
+        /// <param name="pOutputPath">Folder to output the file to.  If empty or null, 
+        /// the file will be output to a subfolder in the archive's directory; 
+        /// named with the original archive name.</param>
+        /// <remarks>Must be an archive supported by 7z.dll.</remarks>
         public static void ExtractFileFromArchive(string pArchivePath, string pFileName, string pOutputPath)
         {
+            string archivePath = Path.GetFullPath(pArchivePath);
             SevenZipExtractor sevenZipExtractor = null;
             string outputDir;
-            
-            if (File.Exists(pArchivePath))
+
+            if (File.Exists(archivePath))
             {
                 try
                 {
@@ -106,7 +161,7 @@ namespace VGMToolbox.util
                     }
                     else
                     {
-                        outputDir = Path.Combine(Path.GetDirectoryName(pArchivePath), Path.GetFileNameWithoutExtension(pArchivePath));
+                        outputDir = Path.Combine(Path.GetDirectoryName(archivePath), Path.GetFileNameWithoutExtension(archivePath));
                     }
 
                     if (!Directory.Exists(outputDir))
@@ -115,7 +170,7 @@ namespace VGMToolbox.util
                     }
 
                     SevenZipExtractor.SetLibraryPath(SEVEN_ZIP_DLL);
-                    sevenZipExtractor = new SevenZipExtractor(pArchivePath);
+                    sevenZipExtractor = new SevenZipExtractor(archivePath);
                     sevenZipExtractor.ExtractFile(pFileName, outputDir, true);
                 }
                 catch (Exception ex)
@@ -132,6 +187,11 @@ namespace VGMToolbox.util
             }
         }
         
+        /// <summary>
+        /// Compress input folder (recursively) with 7zip Ultra compression.
+        /// </summary>
+        /// <param name="pSourcePath">Source directory to compress.</param>
+        /// <param name="pArchiveName">Fully rooted output archive name.</param>
         public static void CompressFolderWith7zip(string pSourcePath, string pArchiveName)
         {
             SevenZipCompressor.SetLibraryPath(SEVEN_ZIP_DLL);
@@ -140,6 +200,11 @@ namespace VGMToolbox.util
             compressor.CompressDirectory(pSourcePath, pArchiveName, true);
         }
 
+        /// <summary>
+        /// Extract all files from the input .zip compressed file.
+        /// </summary>
+        /// <param name="pZipFilePath">Fully rooted path to the .zip file.</param>
+        /// <param name="pOutputFolder">Fully rooted path to the output folder to place the deompressed files.</param>
         public static void ExtractAllFilesFromZipFile(string pZipFilePath, string pOutputFolder)
         {
             using (ZipFile zip = ZipFile.Read(pZipFilePath))
@@ -148,6 +213,12 @@ namespace VGMToolbox.util
             }
         }
 
+        /// <summary>
+        /// Add a file to the input .zip file.
+        /// </summary>
+        /// <param name="pZipFileName">Fully rooted path to the .zip file to add files to.</param>
+        /// <param name="pNewEntrySourceFileName">Fully rooted path to the file to insert.</param>
+        /// <param name="pNewEntryDestinationName">Path within the .zip file to insert the new file as.</param>
         public static void AddFileToZipFile(string pZipFileName, string pNewEntrySourceFileName, string pNewEntryDestinationName)
         {            
             ZipFile zf;
@@ -171,11 +242,22 @@ namespace VGMToolbox.util
             }           
         }
 
+        /// <summary>
+        /// Decompress a zlib compressed section of a stream to file.  Data must begin at offset 0.
+        /// </summary>
+        /// <param name="pStream">Stream containing zlib compressed bytes.</param>
+        /// <param name="pOutputFilePath">Fully rooted output file name to output the decompressed data to.</param>
         public static void DecompressZlibStreamToFile(Stream pStream, string pOutputFilePath)
         { 
             DecompressZlibStreamToFile(pStream, pOutputFilePath, 0);
         }
 
+        /// <summary>
+        /// Decompress a zlib compressed section of a stream to file.
+        /// </summary>
+        /// <param name="pStream">Stream containing zlib compressed bytes.</param>
+        /// <param name="pOutputFilePath">Fully rooted output file name to output the decompressed data to.</param>
+        /// <param name="pStartingOffset">Offset to begin reading data from.</param>
         public static void DecompressZlibStreamToFile(Stream pStream, string pOutputFilePath, long pStartingOffset)
         {
             using (FileStream outFs = new FileStream(pOutputFilePath, FileMode.Create, FileAccess.Write))
@@ -197,7 +279,7 @@ namespace VGMToolbox.util
                 }
             }
         }
-
+        
         public static void CompressStreamToZlibFile(Stream pStream, string pOutputFilePath)
         { 
             CompressStreamToZlibFile(pStream, pOutputFilePath, 0);
@@ -227,6 +309,10 @@ namespace VGMToolbox.util
             }
         }
 
+        /// <summary>
+        /// Compress an entire file using gzip compression.
+        /// </summary>
+        /// <param name="pFileName">Fully rooted file name of file to compress.</param>
         public static void GzipEntireFile(string pFileName)
         {
             string tempFileName;
@@ -258,6 +344,12 @@ namespace VGMToolbox.util
             }
         }
 
+        /// <summary>
+        /// Decompress a gzip compressed section of a stream to file.
+        /// </summary>
+        /// <param name="pStream">Stream containing gzip compressed bytes.</param>
+        /// <param name="pOutputFilePath">Fully rooted output file name to output the decompressed data to.</param>
+        /// <param name="pStartingOffset">Offset to begin reading data from.</param>
         public static void DecompressGzipStreamToFile(Stream pStream, string pOutputFilePath, long pStartingOffset)
         {
             using (FileStream outFs = new FileStream(pOutputFilePath, FileMode.Create, FileAccess.Write))

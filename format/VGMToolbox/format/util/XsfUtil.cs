@@ -271,9 +271,9 @@ namespace VGMToolbox.format.util
                             {
                                 // crc32
                                 deflatedCrc32String = "0x" + ChecksumUtil.GetCrc32OfFullFile(outFs);
-                                bw.Write((uint)VGMToolbox.util.Encoding.GetIntFromString(deflatedCrc32String));
+                                bw.Write((uint)VGMToolbox.util.Encoding.GetLongFromString(deflatedCrc32String));
                                 // reserved section
-                                bw.Write(ParseFile.parseSimpleOffset(vgmFs, Xsf.RESERVED_SECTION_OFFSET, (int)vgmData.ReservedSectionLength));
+                                bw.Write(ParseFile.ParseSimpleOffset(vgmFs, Xsf.RESERVED_SECTION_OFFSET, (int)vgmData.ReservedSectionLength));
 
                                 // data section
                                 outFs.Position = 0;
@@ -284,7 +284,7 @@ namespace VGMToolbox.format.util
                             }
 
                             long dataSectionEnd = Xsf.RESERVED_SECTION_OFFSET + vgmData.ReservedSectionLength + vgmData.CompressedProgramLength;
-                            bw.Write(ParseFile.parseSimpleOffset(vgmFs, dataSectionEnd, (int)(vgmFs.Length - dataSectionEnd)));
+                            bw.Write(ParseFile.ParseSimpleOffset(vgmFs, dataSectionEnd, (int)(vgmFs.Length - dataSectionEnd)));
                         }
                     }
                 }
@@ -724,7 +724,7 @@ namespace VGMToolbox.format.util
                     {
                         if (fs.Length == 0x0A) // make sure it is a mini2sf
                         {
-                            ret = (int)BitConverter.ToUInt16(ParseFile.parseSimpleOffset(fs, 8, 2), 0);
+                            ret = (int)BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(fs, 8, 2), 0);
                         }
                     }
 
@@ -773,7 +773,7 @@ namespace VGMToolbox.format.util
                             {
                                 if (ssFs.Length == 0x0C) // verify save state length
                                 {
-                                    ret = (int)BitConverter.ToUInt32(ParseFile.parseSimpleOffset(ssFs, 8, 4), 0);
+                                    ret = (int)BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(ssFs, 8, 4), 0);
                                 }
                             }
                             File.Delete(decompressedSaveStatePath);
@@ -1205,7 +1205,7 @@ namespace VGMToolbox.format.util
                         bw.Write(new byte[] { 0x24 });
                         bw.Write(BitConverter.GetBytes((UInt32)0));          // reserved size
                         bw.Write(BitConverter.GetBytes(dataLength));         // data length
-                        bw.Write((UInt32)VGMToolbox.util.Encoding.GetIntFromString("0x" + dataCrc32)); // data crc32
+                        bw.Write((UInt32)VGMToolbox.util.Encoding.GetLongFromString("0x" + dataCrc32)); // data crc32
 
                         // data
                         dataFs.Seek(0, SeekOrigin.Begin);

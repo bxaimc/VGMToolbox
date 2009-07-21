@@ -62,21 +62,21 @@ namespace VGMToolbox.format
             // int _pdxLength;
 
             // Title
-            this.titleLength = ParseFile.getSegmentLength(pBytes, 0, TITLE_TERMINATOR);
+            this.titleLength = ParseFile.GetSegmentLength(pBytes, 0, TITLE_TERMINATOR);
 
             if (this.titleLength > 0)
             {
-                title = VGMToolbox.util.Encoding.getJpEncodedText(ParseFile.parseSimpleOffset(pBytes, 0,
+                title = VGMToolbox.util.Encoding.GetJpEncodedText(ParseFile.ParseSimpleOffset(pBytes, 0,
                          this.titleLength));
             }
 
             // PDX
             this.pdxOffset = this.titleLength + TITLE_TERMINATOR.Length;
-            this.pdxLength = ParseFile.getSegmentLength(pBytes,
+            this.pdxLength = ParseFile.GetSegmentLength(pBytes,
                             (this.titleLength + TITLE_TERMINATOR.Length), PDX_TERMINATOR);
             if (this.pdxLength > 0)
             {
-                pdxFileName = VGMToolbox.util.Encoding.getJpEncodedText(ParseFile.parseSimpleOffset(pBytes,
+                pdxFileName = VGMToolbox.util.Encoding.GetJpEncodedText(ParseFile.ParseSimpleOffset(pBytes,
                                 (this.titleLength + TITLE_TERMINATOR.Length), this.pdxLength));
             }
 
@@ -90,22 +90,22 @@ namespace VGMToolbox.format
             this.filePath = pFilePath;
             
             // Title
-            this.titleLength = ParseFile.getSegmentLength(pStream, 0, TITLE_TERMINATOR);
+            this.titleLength = ParseFile.GetSegmentLength(pStream, 0, TITLE_TERMINATOR);
             
             if (this.titleLength > 0)
             {
-                this.titleBytes = ParseFile.parseSimpleOffset(pStream, 0, this.titleLength);
-                this.title = VGMToolbox.util.Encoding.getJpEncodedText(this.titleBytes);
+                this.titleBytes = ParseFile.ParseSimpleOffset(pStream, 0, this.titleLength);
+                this.title = VGMToolbox.util.Encoding.GetJpEncodedText(this.titleBytes);
             }
 
             // PDX
             this.pdxOffset = this.titleLength + TITLE_TERMINATOR.Length;
-            this.pdxLength = ParseFile.getSegmentLength(pStream, this.pdxOffset, PDX_TERMINATOR);
+            this.pdxLength = ParseFile.GetSegmentLength(pStream, this.pdxOffset, PDX_TERMINATOR);
 
             if (this.pdxLength > 0)
             {
-                this.pdxBytes = ParseFile.parseSimpleOffset(pStream, this.pdxOffset, this.pdxLength);
-                this.pdxFileName = VGMToolbox.util.Encoding.getJpEncodedText(this.pdxBytes);
+                this.pdxBytes = ParseFile.ParseSimpleOffset(pStream, this.pdxOffset, this.pdxLength);
+                this.pdxFileName = VGMToolbox.util.Encoding.GetJpEncodedText(this.pdxBytes);
                 
                 string pdxExtension = Path.GetExtension(this.pdxFileName);
 
@@ -120,7 +120,7 @@ namespace VGMToolbox.format
             this.dataOffset = this.titleLength + TITLE_TERMINATOR.Length +
                 this.pdxLength + PDX_TERMINATOR.Length;
             this.dataLength = (int)(pStream.Length - this.dataOffset);
-            this.dataBytes = ParseFile.parseSimpleOffset(pStream, this.dataOffset, this.dataLength);
+            this.dataBytes = ParseFile.ParseSimpleOffset(pStream, this.dataOffset, this.dataLength);
         }
 
         private void initializeTagHash()

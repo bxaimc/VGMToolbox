@@ -326,7 +326,7 @@ namespace VGMToolbox.tools.xsf
             using (FileStream fs = File.OpenRead(Path.GetFullPath(pFileName)))
             {
                 // byte[] seqNumberBytes = ParseFile.parseSimpleOffset(fs, seqOffset, 1);
-                byte[] seqNumberBytes = ParseFile.parseSimpleOffset(fs, seqOffset, 4);
+                byte[] seqNumberBytes = ParseFile.ParseSimpleOffset(fs, seqOffset, 4);
                 ret = System.BitConverter.ToInt32(seqNumberBytes, 0);
 
                 ret = ret > 0 ? ret : 1;
@@ -344,7 +344,7 @@ namespace VGMToolbox.tools.xsf
             int tempValue;
             this.validSequenceArray = new bool[pSequenceCount];
 
-            tempValue = BitConverter.ToInt32(ParseFile.parseSimpleOffset(pFileStream,
+            tempValue = BitConverter.ToInt32(ParseFile.ParseSimpleOffset(pFileStream,
                 PSF2_CSL_SEQ_OFFSET_BEGIN, 4), 0);
             if (tempValue > 0)
             {
@@ -353,7 +353,7 @@ namespace VGMToolbox.tools.xsf
 
             for (int i = 1; i < pSequenceCount; i++)
             {
-                tempValue = BitConverter.ToInt32(ParseFile.parseSimpleOffset(pFileStream,
+                tempValue = BitConverter.ToInt32(ParseFile.ParseSimpleOffset(pFileStream,
                     PSF2_CSL_SEQ_OFFSET_BEGIN + (i * 4), 4), 0);
                 
                 if (tempValue > 0)

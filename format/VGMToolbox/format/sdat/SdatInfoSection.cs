@@ -267,7 +267,7 @@ namespace VGMToolbox.format.sdat
             int entryOffsetCount;
             SdatInfoRec sdatInfoRec = new SdatInfoRec();
 
-            sdatInfoRec.nCount = ParseFile.parseSimpleOffset(pStream,
+            sdatInfoRec.nCount = ParseFile.ParseSimpleOffset(pStream,
                 pSectionOffset + pInfoRecOffset + INFO_RECORD_STRUCT_COUNT_OFFSET,
                 INFO_RECORD_STRUCT_COUNT_LENGTH);
 
@@ -276,7 +276,7 @@ namespace VGMToolbox.format.sdat
 
             for (int i = 1; i <= entryOffsetCount; i++)
             {
-                sdatInfoRec.nEntryOffsets[i - 1] = ParseFile.parseSimpleOffset(pStream,
+                sdatInfoRec.nEntryOffsets[i - 1] = ParseFile.ParseSimpleOffset(pStream,
                     pSectionOffset + pInfoRecOffset + (INFO_RECORD_STRUCT_OFFSETS_OFFSET * i),
                     INFO_RECORD_STRUCT_OFFSETS_LENGTH);
             }
@@ -298,28 +298,28 @@ namespace VGMToolbox.format.sdat
                 if (infoOffset > 0)
                 {                    
 
-                    ret[i].fileId = ParseFile.parseSimpleOffset(pStream,
+                    ret[i].fileId = ParseFile.ParseSimpleOffset(pStream,
                         pSectionOffset + infoOffset +
                         INFO_ENTRY_SEQ_FILEID_OFFSET, INFO_ENTRY_SEQ_FILEID_LENGTH);
-                    ret[i].unknown = ParseFile.parseSimpleOffset(pStream,
+                    ret[i].unknown = ParseFile.ParseSimpleOffset(pStream,
                         pSectionOffset + infoOffset +
                         INFO_ENTRY_SEQ_UNKNOWN_OFFSET, INFO_ENTRY_SEQ_UNKNOWN_LENGTH);
-                    ret[i].bnk = ParseFile.parseSimpleOffset(pStream,
+                    ret[i].bnk = ParseFile.ParseSimpleOffset(pStream,
                         pSectionOffset + infoOffset +
                         INFO_ENTRY_SEQ_BANKID_OFFSET, INFO_ENTRY_SEQ_BANKID_LENGTH);
-                    ret[i].vol = ParseFile.parseSimpleOffset(pStream,
+                    ret[i].vol = ParseFile.ParseSimpleOffset(pStream,
                         pSectionOffset + infoOffset +
                         INFO_ENTRY_SEQ_VOL_OFFSET, INFO_ENTRY_SEQ_VOL_LENGTH);
-                    ret[i].cpr = ParseFile.parseSimpleOffset(pStream,
+                    ret[i].cpr = ParseFile.ParseSimpleOffset(pStream,
                         pSectionOffset + infoOffset +
                         INFO_ENTRY_SEQ_CPR_OFFSET, INFO_ENTRY_SEQ_CPR_LENGTH);
-                    ret[i].ppr = ParseFile.parseSimpleOffset(pStream,
+                    ret[i].ppr = ParseFile.ParseSimpleOffset(pStream,
                         pSectionOffset + infoOffset +
                         INFO_ENTRY_SEQ_PPR_OFFSET, INFO_ENTRY_SEQ_PPR_LENGTH);
-                    ret[i].ply = ParseFile.parseSimpleOffset(pStream,
+                    ret[i].ply = ParseFile.ParseSimpleOffset(pStream,
                         pSectionOffset + infoOffset +
                         INFO_ENTRY_SEQ_PLY_OFFSET, INFO_ENTRY_SEQ_PLY_LENGTH);
-                    ret[i].unknown2 = ParseFile.parseSimpleOffset(pStream,
+                    ret[i].unknown2 = ParseFile.ParseSimpleOffset(pStream,
                         pSectionOffset + infoOffset +
                         INFO_ENTRY_SEQ_UNKNOWN2_OFFSET, INFO_ENTRY_SEQ_UNKNOWN2_LENGTH);
                 }
@@ -341,10 +341,10 @@ namespace VGMToolbox.format.sdat
 
                 if (infoOffset > 0)
                 {
-                    ret[i].fileId = ParseFile.parseSimpleOffset(pStream,
+                    ret[i].fileId = ParseFile.ParseSimpleOffset(pStream,
                         pSectionOffset + infoOffset +
                         INFO_ENTRY_SEQARC_FILEID_OFFSET, INFO_ENTRY_SEQARC_FILEID_LENGTH);
-                    ret[i].unknown = ParseFile.parseSimpleOffset(pStream,
+                    ret[i].unknown = ParseFile.ParseSimpleOffset(pStream,
                         pSectionOffset + infoOffset +
                         INFO_ENTRY_SEQARC_UNKNOWN_OFFSET, INFO_ENTRY_SEQARC_UNKNOWN_LENGTH);
                 }
@@ -368,23 +368,23 @@ namespace VGMToolbox.format.sdat
                 if (infoOffset > 0)
                 {
 
-                    ret[i].fileId = ParseFile.parseSimpleOffset(pStream,
+                    ret[i].fileId = ParseFile.ParseSimpleOffset(pStream,
                         pSectionOffset + infoOffset +
                         INFO_ENTRY_BANK_FILEID_OFFSET, INFO_ENTRY_BANK_FILEID_LENGTH);                                        
-                    ret[i].unknown = ParseFile.parseSimpleOffset(pStream,
+                    ret[i].unknown = ParseFile.ParseSimpleOffset(pStream,
                         pSectionOffset + infoOffset +
                         INFO_ENTRY_BANK_UNKNOWN_OFFSET, INFO_ENTRY_BANK_UNKNOWN_LENGTH);
 
-                    ret[i].wa[0] = ParseFile.parseSimpleOffset(pStream,
+                    ret[i].wa[0] = ParseFile.ParseSimpleOffset(pStream,
                         pSectionOffset + infoOffset +
                         INFO_ENTRY_BANK_WAVEARCID1_OFFSET, INFO_ENTRY_BANK_WAVEARCID1_LENGTH);
-                    ret[i].wa[1] = ParseFile.parseSimpleOffset(pStream,
+                    ret[i].wa[1] = ParseFile.ParseSimpleOffset(pStream,
                         pSectionOffset + infoOffset +
                         INFO_ENTRY_BANK_WAVEARCID2_OFFSET, INFO_ENTRY_BANK_WAVEARCID2_LENGTH);
-                    ret[i].wa[2] = ParseFile.parseSimpleOffset(pStream,
+                    ret[i].wa[2] = ParseFile.ParseSimpleOffset(pStream,
                         pSectionOffset + infoOffset +
                         INFO_ENTRY_BANK_WAVEARCID3_OFFSET, INFO_ENTRY_BANK_WAVEARCID3_LENGTH);
-                    ret[i].wa[3] = ParseFile.parseSimpleOffset(pStream,
+                    ret[i].wa[3] = ParseFile.ParseSimpleOffset(pStream,
                         pSectionOffset + infoOffset +
                         INFO_ENTRY_BANK_WAVEARCID4_OFFSET, INFO_ENTRY_BANK_WAVEARCID4_LENGTH);
                 }
@@ -406,10 +406,10 @@ namespace VGMToolbox.format.sdat
 
                 if (infoOffset > 0)
                 {
-                    ret[i].fileId = ParseFile.parseSimpleOffset(pStream,
+                    ret[i].fileId = ParseFile.ParseSimpleOffset(pStream,
                         pSectionOffset + infoOffset +
                         INFO_ENTRY_WAVARC_FILEID_OFFSET, INFO_ENTRY_WAVARC_FILEID_LENGTH);
-                    ret[i].unknown = ParseFile.parseSimpleOffset(pStream,
+                    ret[i].unknown = ParseFile.ParseSimpleOffset(pStream,
                         pSectionOffset + infoOffset +
                         INFO_ENTRY_WAVARC_UNKNOWN_OFFSET, INFO_ENTRY_WAVARC_UNKNOWN_LENGTH);
                 }
@@ -432,22 +432,22 @@ namespace VGMToolbox.format.sdat
 
                 if (infoOffset > 0)
                 {
-                    ret[i].fileId = ParseFile.parseSimpleOffset(pStream,
+                    ret[i].fileId = ParseFile.ParseSimpleOffset(pStream,
                         pSectionOffset + infoOffset +
                         INFO_ENTRY_STRM_FILEID_OFFSET, INFO_ENTRY_STRM_FILEID_LENGTH);
-                    ret[i].unknown = ParseFile.parseSimpleOffset(pStream,
+                    ret[i].unknown = ParseFile.ParseSimpleOffset(pStream,
                         pSectionOffset + infoOffset +
                         INFO_ENTRY_STRM_UNKNOWN_OFFSET, INFO_ENTRY_STRM_UNKNOWN_LENGTH);
-                    ret[i].vol = ParseFile.parseSimpleOffset(pStream,
+                    ret[i].vol = ParseFile.ParseSimpleOffset(pStream,
                         pSectionOffset + infoOffset +
                         INFO_ENTRY_STRM_VOL_OFFSET, INFO_ENTRY_STRM_VOL_LENGTH);
-                    ret[i].pri = ParseFile.parseSimpleOffset(pStream,
+                    ret[i].pri = ParseFile.ParseSimpleOffset(pStream,
                         pSectionOffset + infoOffset +
                         INFO_ENTRY_STRM_PRI_OFFSET, INFO_ENTRY_STRM_PRI_LENGTH);
-                    ret[i].ply = ParseFile.parseSimpleOffset(pStream,
+                    ret[i].ply = ParseFile.ParseSimpleOffset(pStream,
                         pSectionOffset + infoOffset +
                         INFO_ENTRY_STRM_PLY_OFFSET, INFO_ENTRY_STRM_PLY_LENGTH);
-                    ret[i].reserved = ParseFile.parseSimpleOffset(pStream,
+                    ret[i].reserved = ParseFile.ParseSimpleOffset(pStream,
                         pSectionOffset + infoOffset +
                         INFO_ENTRY_STRM_RESERVED_OFFSET, INFO_ENTRY_STRM_RESERVED_LENGTH);
                 }
@@ -461,52 +461,52 @@ namespace VGMToolbox.format.sdat
             this.sectionOffset = pSectionOffset;
             
             // Header Info
-            stdHeaderSignature = ParseFile.parseSimpleOffset(pStream, pSectionOffset + STD_HEADER_SIGNATURE_OFFSET,
+            stdHeaderSignature = ParseFile.ParseSimpleOffset(pStream, pSectionOffset + STD_HEADER_SIGNATURE_OFFSET,
                 STD_HEADER_SIGNATURE_LENGTH);
-            stdHeaderSectionSize = ParseFile.parseSimpleOffset(pStream, pSectionOffset + STD_HEADER_SECTION_SIZE_OFFSET,
+            stdHeaderSectionSize = ParseFile.ParseSimpleOffset(pStream, pSectionOffset + STD_HEADER_SECTION_SIZE_OFFSET,
                 STD_HEADER_SECTION_SIZE_LENGTH);
 
             // SEQ
-            infoRecordSeqOffset = ParseFile.parseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_SEQ_OFFSET_OFFSET,
+            infoRecordSeqOffset = ParseFile.ParseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_SEQ_OFFSET_OFFSET,
                 INFO_RECORD_SEQ_OFFSET_LENGTH);
             seqInfoRec = getInfoRec(pStream, pSectionOffset, BitConverter.ToInt32(infoRecordSeqOffset, 0));
             sdatInfoSseqs = getInfoSseqEntries(pStream, pSectionOffset, seqInfoRec);
 
             // SEQARC
-            infoRecordSeqArcOffset = ParseFile.parseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_SEQARC_OFFSET_OFFSET,
+            infoRecordSeqArcOffset = ParseFile.ParseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_SEQARC_OFFSET_OFFSET,
                 INFO_RECORD_SEQARC_OFFSET_LENGTH);
             seqArcInfoRec = getInfoRec(pStream, pSectionOffset, BitConverter.ToInt32(infoRecordSeqArcOffset, 0));
             sdatInfoSeqArcs = getInfoSeqArcEntries(pStream, pSectionOffset, seqArcInfoRec);
 
             // BANK
-            infoRecordBankOffset = ParseFile.parseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_BANK_OFFSET_OFFSET,
+            infoRecordBankOffset = ParseFile.ParseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_BANK_OFFSET_OFFSET,
                 INFO_RECORD_BANK_OFFSET_LENGTH);
             bankInfoRec = getInfoRec(pStream, pSectionOffset, BitConverter.ToInt32(infoRecordBankOffset, 0));
             sdatInfoBanks = getInfoBankEntries(pStream, pSectionOffset, bankInfoRec);
 
             // WAVEARC
-            infoRecordWaveArcOffset = ParseFile.parseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_WAVEARC_OFFSET_OFFSET,
+            infoRecordWaveArcOffset = ParseFile.ParseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_WAVEARC_OFFSET_OFFSET,
                 INFO_RECORD_WAVEARC_OFFSET_LENGTH);
             waveArcInfoRec = getInfoRec(pStream, pSectionOffset, BitConverter.ToInt32(infoRecordWaveArcOffset, 0));
             sdatInfoWaveArcs = getInfoWaveArcEntries(pStream, pSectionOffset, waveArcInfoRec);
 
             // PLAYER
-            infoRecordPlayerOffset = ParseFile.parseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_PLAYER_OFFSET_OFFSET,
+            infoRecordPlayerOffset = ParseFile.ParseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_PLAYER_OFFSET_OFFSET,
                 INFO_RECORD_PLAYER_OFFSET_LENGTH);
             playerInfoRec = getInfoRec(pStream, pSectionOffset, BitConverter.ToInt32(infoRecordPlayerOffset, 0));
 
             // GROUP
-            infoRecordGroupOffset = ParseFile.parseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_GROUP_OFFSET_OFFSET,
+            infoRecordGroupOffset = ParseFile.ParseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_GROUP_OFFSET_OFFSET,
                 INFO_RECORD_GROUP_OFFSET_LENGTH);
             groupInfoRec = getInfoRec(pStream, pSectionOffset, BitConverter.ToInt32(infoRecordGroupOffset, 0));
 
             // PLAYER2
-            infoRecordPlayer2Offset = ParseFile.parseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_PLAYER2_OFFSET_OFFSET,
+            infoRecordPlayer2Offset = ParseFile.ParseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_PLAYER2_OFFSET_OFFSET,
                 INFO_RECORD_PLAYER2_OFFSET_LENGTH);
             player2InfoRec = getInfoRec(pStream, pSectionOffset, BitConverter.ToInt32(infoRecordPlayer2Offset, 0));
 
             // STRM
-            infoRecordStrmOffset = ParseFile.parseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_STRM_OFFSET_OFFSET,
+            infoRecordStrmOffset = ParseFile.ParseSimpleOffset(pStream, pSectionOffset + INFO_RECORD_STRM_OFFSET_OFFSET,
                 INFO_RECORD_STRM_OFFSET_LENGTH);
             strmInfoRec = getInfoRec(pStream, pSectionOffset, BitConverter.ToInt32(infoRecordStrmOffset, 0));
             sdatInfoStrms = getInfoStrmEntries(pStream, pSectionOffset, strmInfoRec);

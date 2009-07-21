@@ -67,47 +67,47 @@ namespace VGMToolbox.format
 
         public byte[] getAsciiSignature(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
         }
 
         public byte[] getLoadAddress(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, LOAD_ADDRESS_OFFSET, LOAD_ADDRESS_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, LOAD_ADDRESS_OFFSET, LOAD_ADDRESS_LENGTH);
         }
 
         public byte[] getLoadSize(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, LOAD_SIZE_OFFSET, LOAD_SIZE_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, LOAD_SIZE_OFFSET, LOAD_SIZE_LENGTH);
         }
 
         public byte[] getInitAddress(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, INIT_ADDRESS_OFFSET, INIT_ADDRESS_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, INIT_ADDRESS_OFFSET, INIT_ADDRESS_LENGTH);
         }
 
         public byte[] getPlayAddress(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, PLAY_ADDRESS_OFFSET, PLAY_ADDRESS_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, PLAY_ADDRESS_OFFSET, PLAY_ADDRESS_LENGTH);
         }
 
         public byte[] getBankStartNo(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, BANK_START_NO_OFFSET, BANK_START_NO_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, BANK_START_NO_OFFSET, BANK_START_NO_LENGTH);
         }
 
         public byte[] getBankedMode(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, BANKED_MODE_OFFSET, BANKED_MODE_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, BANKED_MODE_OFFSET, BANKED_MODE_LENGTH);
         }
 
         public byte[] getExtraHeaderSize(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, EXTRA_HEADER_SIZE_OFFSET, EXTRA_HEADER_SIZE_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, EXTRA_HEADER_SIZE_OFFSET, EXTRA_HEADER_SIZE_LENGTH);
         }
 
         public byte[] getDeviceFlag(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, DEVICE_FLAG_OFFSET, DEVICE_FLAG_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, DEVICE_FLAG_OFFSET, DEVICE_FLAG_LENGTH);
         }
 
 

@@ -139,87 +139,87 @@ namespace VGMToolbox.format
         #region STREAM BASED METHODS
         public byte[] getAsciiSignature(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
         }
 
         public byte[] getVersionNumber(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, VERSION_OFFSET, VERSION_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, VERSION_OFFSET, VERSION_LENGTH);
         }
 
         public byte[] getTotalSongs(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, TOTAL_SONGS_OFFSET, TOTAL_SONGS_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, TOTAL_SONGS_OFFSET, TOTAL_SONGS_LENGTH);
         }
 
         public byte[] getStartingSong(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, STARTING_SONG_OFFSET, STARTING_SONG_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, STARTING_SONG_OFFSET, STARTING_SONG_LENGTH);
         }
 
         public byte[] getLoadAddress(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, LOAD_ADDRESS_OFFSET, LOAD_ADDRESS_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, LOAD_ADDRESS_OFFSET, LOAD_ADDRESS_LENGTH);
         }
 
         public byte[] getInitAddress(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, INIT_ADDRESS_OFFSET, INIT_ADDRESS_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, INIT_ADDRESS_OFFSET, INIT_ADDRESS_LENGTH);
         }
 
         public byte[] getPlayAddress(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, PLAY_ADDRESS_OFFSET, PLAY_ADDRESS_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, PLAY_ADDRESS_OFFSET, PLAY_ADDRESS_LENGTH);
         }
 
         public byte[] getSongName(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, NAME_OFFSET, NAME_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, NAME_OFFSET, NAME_LENGTH);
         }
 
         public byte[] getSongArtist(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, ARTIST_OFFSET, ARTIST_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, ARTIST_OFFSET, ARTIST_LENGTH);
         }
 
         public byte[] getSongCopyright(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, COPYRIGHT_OFFSET, COPYRIGHT_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, COPYRIGHT_OFFSET, COPYRIGHT_LENGTH);
         }
 
         public byte[] getNtscSpeed(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, SPEED_NTSC_OFFSET, SPEED_NTSC_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, SPEED_NTSC_OFFSET, SPEED_NTSC_LENGTH);
         }
 
         public byte[] getBankSwitchInit(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, BANKSWITCH_INIT_OFFSET, BANKSWITCH_INIT_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, BANKSWITCH_INIT_OFFSET, BANKSWITCH_INIT_LENGTH);
         }
 
         public byte[] getPalSpeed(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, SPEED_PAL_OFFSET, SPEED_PAL_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, SPEED_PAL_OFFSET, SPEED_PAL_LENGTH);
         }
 
         public byte[] getPalNtscBits(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, PAL_NTSC_BITS_OFFSET, PAL_NTSC_BITS_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, PAL_NTSC_BITS_OFFSET, PAL_NTSC_BITS_LENGTH);
         }
 
         public byte[] getExtraChipsBits(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, EXTRA_SOUND_BITS_OFFSET, EXTRA_SOUND_BITS_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, EXTRA_SOUND_BITS_OFFSET, EXTRA_SOUND_BITS_LENGTH);
         }
 
         public byte[] getFutureExpansion(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, FUTURE_USE_OFFSET, FUTURE_USE_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, FUTURE_USE_OFFSET, FUTURE_USE_LENGTH);
         }
 
         public byte[] getData(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, DATA_OFFSET, (int) (pStream.Length - DATA_OFFSET));
+            return ParseFile.ParseSimpleOffset(pStream, DATA_OFFSET, (int) (pStream.Length - DATA_OFFSET));
         }
 
         public void Initialize(Stream pStream, string pFilePath)
@@ -250,87 +250,87 @@ namespace VGMToolbox.format
         #region BYTE[] BASED METHODS
         public byte[] getAsciiSignature(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, SIG_OFFSET, SIG_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, SIG_OFFSET, SIG_LENGTH);
         }
 
         public byte[] getVersionNumber(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, VERSION_OFFSET, VERSION_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, VERSION_OFFSET, VERSION_LENGTH);
         }
 
         public byte[] getTotalSongs(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, TOTAL_SONGS_OFFSET, TOTAL_SONGS_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, TOTAL_SONGS_OFFSET, TOTAL_SONGS_LENGTH);
         }
 
         public byte[] getStartingSong(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, STARTING_SONG_OFFSET, STARTING_SONG_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, STARTING_SONG_OFFSET, STARTING_SONG_LENGTH);
         }
 
         public byte[] getLoadAddress(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, LOAD_ADDRESS_OFFSET, LOAD_ADDRESS_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, LOAD_ADDRESS_OFFSET, LOAD_ADDRESS_LENGTH);
         }
 
         public byte[] getInitAddress(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, INIT_ADDRESS_OFFSET, INIT_ADDRESS_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, INIT_ADDRESS_OFFSET, INIT_ADDRESS_LENGTH);
         }
 
         public byte[] getPlayAddress(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, PLAY_ADDRESS_OFFSET, PLAY_ADDRESS_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, PLAY_ADDRESS_OFFSET, PLAY_ADDRESS_LENGTH);
         }
 
         public byte[] getSongName(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, NAME_OFFSET, NAME_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, NAME_OFFSET, NAME_LENGTH);
         }
 
         public byte[] getSongArtist(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, ARTIST_OFFSET, ARTIST_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, ARTIST_OFFSET, ARTIST_LENGTH);
         }
 
         public byte[] getSongCopyright(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, COPYRIGHT_OFFSET, COPYRIGHT_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, COPYRIGHT_OFFSET, COPYRIGHT_LENGTH);
         }
 
         public byte[] getNtscSpeed(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, SPEED_NTSC_OFFSET, SPEED_NTSC_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, SPEED_NTSC_OFFSET, SPEED_NTSC_LENGTH);
         }
 
         public byte[] getBankSwitchInit(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, BANKSWITCH_INIT_OFFSET, BANKSWITCH_INIT_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, BANKSWITCH_INIT_OFFSET, BANKSWITCH_INIT_LENGTH);
         }
 
         public byte[] getPalSpeed(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, SPEED_PAL_OFFSET, SPEED_PAL_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, SPEED_PAL_OFFSET, SPEED_PAL_LENGTH);
         }
 
         public byte[] getPalNtscBits(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, PAL_NTSC_BITS_OFFSET, PAL_NTSC_BITS_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, PAL_NTSC_BITS_OFFSET, PAL_NTSC_BITS_LENGTH);
         }
 
         public byte[] getExtraChipsBits(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, EXTRA_SOUND_BITS_OFFSET, EXTRA_SOUND_BITS_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, EXTRA_SOUND_BITS_OFFSET, EXTRA_SOUND_BITS_LENGTH);
         }
 
         public byte[] getFutureExpansion(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, FUTURE_USE_OFFSET, FUTURE_USE_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, FUTURE_USE_OFFSET, FUTURE_USE_LENGTH);
         }
 
         public byte[] getData(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, DATA_OFFSET, (int)(pBytes.Length - DATA_OFFSET) + 1);
+            return ParseFile.ParseSimpleOffset(pBytes, DATA_OFFSET, (int)(pBytes.Length - DATA_OFFSET) + 1);
         }
 
         public void initialize(byte[] pBytes)

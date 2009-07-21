@@ -89,10 +89,10 @@ namespace VGMToolbox.format
         {
             VersionChunkStruct ret = new VersionChunkStruct();
 
-            ret.magicBytes = BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, 0, 4), 0);
-            ret.magicBytesSection = BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, 4, 4), 0);
-            ret.chunkSize = BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, 8, 4), 0);
-            ret.unknown = BitConverter.ToUInt16(ParseFile.parseSimpleOffset(pStream, 12, 4), 0);
+            ret.magicBytes = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pStream, 0, 4), 0);
+            ret.magicBytesSection = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pStream, 4, 4), 0);
+            ret.chunkSize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pStream, 8, 4), 0);
+            ret.unknown = BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(pStream, 12, 4), 0);
 
             return ret;
         }
@@ -101,15 +101,15 @@ namespace VGMToolbox.format
         {
             SequChunkStruct ret = new SequChunkStruct();
 
-            ret.magicBytes = BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, HEADER_CHUNK_OFFSET + 0, 4), 0);
-            ret.magicBytesSection = BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, HEADER_CHUNK_OFFSET + 4, 4), 0);
-            ret.chunkSize = BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, HEADER_CHUNK_OFFSET + 8, 4), 0);
-            ret.fileSize = BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, HEADER_CHUNK_OFFSET + 12, 4), 0);
+            ret.magicBytes = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pStream, HEADER_CHUNK_OFFSET + 0, 4), 0);
+            ret.magicBytesSection = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pStream, HEADER_CHUNK_OFFSET + 4, 4), 0);
+            ret.chunkSize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pStream, HEADER_CHUNK_OFFSET + 8, 4), 0);
+            ret.fileSize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pStream, HEADER_CHUNK_OFFSET + 12, 4), 0);
 
-            ret.songChunkAddrAbsolute = BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, HEADER_CHUNK_OFFSET + 16, 4), 0);
-            ret.midiChunkAddrAbsolute = BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, HEADER_CHUNK_OFFSET + 20, 4), 0);
-            ret.seSequenceChunkAddrAbsolute = BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, HEADER_CHUNK_OFFSET + 24, 4), 0);
-            ret.seSongChunkAddrAbsolute = BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, HEADER_CHUNK_OFFSET + 28, 4), 0);
+            ret.songChunkAddrAbsolute = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pStream, HEADER_CHUNK_OFFSET + 16, 4), 0);
+            ret.midiChunkAddrAbsolute = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pStream, HEADER_CHUNK_OFFSET + 20, 4), 0);
+            ret.seSequenceChunkAddrAbsolute = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pStream, HEADER_CHUNK_OFFSET + 24, 4), 0);
+            ret.seSongChunkAddrAbsolute = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pStream, HEADER_CHUNK_OFFSET + 28, 4), 0);
 
             return ret;
         }
@@ -118,16 +118,16 @@ namespace VGMToolbox.format
         {
             MidiChunkStruct ret = new MidiChunkStruct();
 
-            ret.magicBytes = BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, MIDI_CHUNK_OFFSET + 0, 4), 0);
-            ret.magicBytesSection = BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, MIDI_CHUNK_OFFSET + 4, 4), 0);
-            ret.chunkSize = BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, MIDI_CHUNK_OFFSET + 8, 4), 0);
-            ret.maxSeqCount = BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, MIDI_CHUNK_OFFSET + 12, 4), 0);
+            ret.magicBytes = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pStream, MIDI_CHUNK_OFFSET + 0, 4), 0);
+            ret.magicBytesSection = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pStream, MIDI_CHUNK_OFFSET + 4, 4), 0);
+            ret.chunkSize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pStream, MIDI_CHUNK_OFFSET + 8, 4), 0);
+            ret.maxSeqCount = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pStream, MIDI_CHUNK_OFFSET + 12, 4), 0);
 
             ret.subSeqOffsetAddr = new int[ret.maxSeqCount + 1];
 
             for (int i = 0; i < ret.subSeqOffsetAddr.Length; i++)
             {
-                ret.subSeqOffsetAddr[i] = BitConverter.ToInt32(ParseFile.parseSimpleOffset(pStream, MIDI_CHUNK_OFFSET + 16 + (4 * i), 4), 0);
+                ret.subSeqOffsetAddr[i] = BitConverter.ToInt32(ParseFile.ParseSimpleOffset(pStream, MIDI_CHUNK_OFFSET + 16 + (4 * i), 4), 0);
             }
 
             return ret;
@@ -151,7 +151,7 @@ namespace VGMToolbox.format
                 long setTempoOffset = ParseFile.GetNextOffset(pStream, (long)midiBlockOffset, SET_TEMPO_BYTES);
                 
                 byte[] tempoValBytes = new byte[4];
-                Array.Copy(ParseFile.parseSimpleOffset(pStream, setTempoOffset + 3, 3), 0, tempoValBytes, 1, 3);
+                Array.Copy(ParseFile.ParseSimpleOffset(pStream, setTempoOffset + 3, 3), 0, tempoValBytes, 1, 3);
                 
                 Array.Reverse(tempoValBytes); // flip order to LE for use with BitConverter
                 ret = BitConverter.ToUInt32(tempoValBytes, 0);
@@ -189,8 +189,8 @@ namespace VGMToolbox.format
                 Int32 midiBlockOffset = MIDI_CHUNK_OFFSET + this.midiChunk.subSeqOffsetAddr[pSequenceNumber];
 
                 MidiDataChunkStruct dataChunkHeader = new MidiDataChunkStruct();
-                dataChunkHeader.sequenceOffsetRelativeToChunk = BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, (long)midiBlockOffset, 4), 0);
-                dataChunkHeader.resolution = BitConverter.ToUInt16(ParseFile.parseSimpleOffset(pStream, (long)(midiBlockOffset + 4), 2), 0);
+                dataChunkHeader.sequenceOffsetRelativeToChunk = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pStream, (long)midiBlockOffset, 4), 0);
+                dataChunkHeader.resolution = BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(pStream, (long)(midiBlockOffset + 4), 2), 0);
 
                 if (dataChunkHeader.sequenceOffsetRelativeToChunk == 6) // uncompressed
                 {
@@ -374,7 +374,7 @@ namespace VGMToolbox.format
                         {
                             // tempo switch
                             tempoValBytes = new byte[4];
-                            Array.Copy(ParseFile.parseSimpleOffset(pStream, pStream.Position, metaCommandLengthByte), 0, tempoValBytes, 1, 3);
+                            Array.Copy(ParseFile.ParseSimpleOffset(pStream, pStream.Position, metaCommandLengthByte), 0, tempoValBytes, 1, 3);
 
                             Array.Reverse(tempoValBytes); // flip order to LE for use with BitConverter
                             tempo = BitConverter.ToUInt32(tempoValBytes, 0);

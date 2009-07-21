@@ -39,13 +39,13 @@ namespace VGMToolbox.format.sdat
 
         public void Initialize(Stream pStream, int pSectionOffset)
         {
-            fileHeaderSignature = ParseFile.parseSimpleOffset(pStream, pSectionOffset + FILE_HEADER_SIGNATURE_OFFSET,
+            fileHeaderSignature = ParseFile.ParseSimpleOffset(pStream, pSectionOffset + FILE_HEADER_SIGNATURE_OFFSET,
                 FILE_HEADER_SIGNATURE_LENGTH);
-            fileHeaderSectionSize = ParseFile.parseSimpleOffset(pStream, pSectionOffset + FILE_HEADER_SECTION_SIZE_OFFSET,
+            fileHeaderSectionSize = ParseFile.ParseSimpleOffset(pStream, pSectionOffset + FILE_HEADER_SECTION_SIZE_OFFSET,
                 FILE_HEADER_SECTION_SIZE_LENGTH);
-            fileHeaderNumberOfFiles = ParseFile.parseSimpleOffset(pStream, pSectionOffset + FILE_HEADER_NUMBER_OF_FILES_OFFSET,
+            fileHeaderNumberOfFiles = ParseFile.ParseSimpleOffset(pStream, pSectionOffset + FILE_HEADER_NUMBER_OF_FILES_OFFSET,
                 FILE_HEADER_NUMBER_OF_FILES_LENGTH);
-            fileHeaderReservedSection = ParseFile.parseSimpleOffset(pStream, pSectionOffset + FILE_HEADER_RESERVED_OFFSET,
+            fileHeaderReservedSection = ParseFile.ParseSimpleOffset(pStream, pSectionOffset + FILE_HEADER_RESERVED_OFFSET,
                 FILE_HEADER_RESERVED_LENGTH);
         }
 

@@ -100,17 +100,17 @@ namespace VGMToolbox.format.sdat
             SwavInfo ret = new SwavInfo();
 
             ret.WaveType = 
-                (uint) ParseFile.parseSimpleOffset(pStream, pOffset + SWAV_INFO_WAVETYPE_OFFSET, SWAV_INFO_WAVETYPE_LENGTH)[0];
+                (uint) ParseFile.ParseSimpleOffset(pStream, pOffset + SWAV_INFO_WAVETYPE_OFFSET, SWAV_INFO_WAVETYPE_LENGTH)[0];
             ret.Loop =
-                (uint)ParseFile.parseSimpleOffset(pStream, pOffset + SWAV_INFO_LOOPFLAG_OFFSET, SWAV_INFO_LOOPFLAG_LENGTH)[0];
+                (uint)ParseFile.ParseSimpleOffset(pStream, pOffset + SWAV_INFO_LOOPFLAG_OFFSET, SWAV_INFO_LOOPFLAG_LENGTH)[0];
             ret.SampleRate =
-                BitConverter.ToUInt16(ParseFile.parseSimpleOffset(pStream, pOffset + SWAV_INFO_SAMPLERATE_OFFSET, SWAV_INFO_SAMPLERATE_LENGTH), 0);
+                BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(pStream, pOffset + SWAV_INFO_SAMPLERATE_OFFSET, SWAV_INFO_SAMPLERATE_LENGTH), 0);
             ret.Time =
-                BitConverter.ToUInt16(ParseFile.parseSimpleOffset(pStream, pOffset + SWAV_INFO_SAMPLETIME_OFFSET, SWAV_INFO_SAMPLETIME_LENGTH), 0);
+                BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(pStream, pOffset + SWAV_INFO_SAMPLETIME_OFFSET, SWAV_INFO_SAMPLETIME_LENGTH), 0);
             ret.LoopOffset =
-                BitConverter.ToUInt16(ParseFile.parseSimpleOffset(pStream, pOffset + SWAV_INFO_LOOPOFFSET_OFFSET, SWAV_INFO_LOOPOFFSET_LENGTH), 0);
+                BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(pStream, pOffset + SWAV_INFO_LOOPOFFSET_OFFSET, SWAV_INFO_LOOPOFFSET_LENGTH), 0);
             ret.NonLoopLength =
-                BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, pOffset + SWAV_INFO_NONLOOPLENGTH_OFFSET, SWAV_INFO_NONLOOPLENGTH_OFFSET), 0);
+                BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pStream, pOffset + SWAV_INFO_NONLOOPLENGTH_OFFSET, SWAV_INFO_NONLOOPLENGTH_OFFSET), 0);
 
             return ret;
         }

@@ -274,7 +274,7 @@ namespace VGMToolbox.forms
             }
             else if (!pGenhCreatorStruct.NoLoops &&
                      !pGenhCreatorStruct.FindLoop &&
-                     VGMToolbox.util.Encoding.GetIntFromString(pGenhCreatorStruct.LoopStart.Trim()) < 0)
+                     VGMToolbox.util.Encoding.GetLongFromString(pGenhCreatorStruct.LoopStart.Trim()) < 0)
             {
                 isValid = false;
                 errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageLoopStart2"]);

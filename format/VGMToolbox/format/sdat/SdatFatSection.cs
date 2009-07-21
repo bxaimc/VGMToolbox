@@ -75,7 +75,7 @@ namespace VGMToolbox.format.sdat
                 int offsetAfterHeader = (i == 0 ? 0 : (i * fatRecordSize));
 
                 // get our current record
-                byte[] tempBytes = ParseFile.parseSimpleOffset(pStream,
+                byte[] tempBytes = ParseFile.ParseSimpleOffset(pStream,
                     pSectionOffset + fatHeaderSize + offsetAfterHeader,
                     fatRecordSize);
 
@@ -98,11 +98,11 @@ namespace VGMToolbox.format.sdat
 
         public void Initialize(Stream pStream, int pSectionOffset)
         {
-            fatHeaderSignature = ParseFile.parseSimpleOffset(pStream, pSectionOffset + FAT_HEADER_SIGNATURE_OFFSET,
+            fatHeaderSignature = ParseFile.ParseSimpleOffset(pStream, pSectionOffset + FAT_HEADER_SIGNATURE_OFFSET,
                 FAT_HEADER_SIGNATURE_LENGTH);
-            fatHeaderSectionSize = ParseFile.parseSimpleOffset(pStream, pSectionOffset + FAT_HEADER_SECTION_SIZE_OFFSET,
+            fatHeaderSectionSize = ParseFile.ParseSimpleOffset(pStream, pSectionOffset + FAT_HEADER_SECTION_SIZE_OFFSET,
                 FAT_HEADER_SECTION_SIZE_LENGTH);
-            fatHeaderNumberOfFiles = ParseFile.parseSimpleOffset(pStream, pSectionOffset + FAT_HEADER_NUMBER_OF_FILES_OFFSET,
+            fatHeaderNumberOfFiles = ParseFile.ParseSimpleOffset(pStream, pSectionOffset + FAT_HEADER_NUMBER_OF_FILES_OFFSET,
                 FAT_HEADER_NUMBER_OF_FILES_LENGTH);
 
             getSdatFatRecs(pStream, pSectionOffset);

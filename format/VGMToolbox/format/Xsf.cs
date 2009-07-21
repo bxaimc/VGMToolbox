@@ -104,27 +104,27 @@ namespace VGMToolbox.format
 
         protected byte[] getCompressedProgram(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, (int) (RESERVED_SECTION_OFFSET + this.getReservedSectionLength(pBytes)), (int) this.getCompressedProgramLength(pBytes));
+            return ParseFile.ParseSimpleOffset(pBytes, (int) (RESERVED_SECTION_OFFSET + this.getReservedSectionLength(pBytes)), (int) this.getCompressedProgramLength(pBytes));
         }
 
         private byte[] getCompressedProgramCrc32(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, CRC32_OFFSET, CRC32_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, CRC32_OFFSET, CRC32_LENGTH);
         }
 
         private byte[] getCompressedProgramCrc32(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, CRC32_OFFSET, CRC32_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, CRC32_OFFSET, CRC32_LENGTH);
         }
 
         private uint getCompressedProgramLength(byte[] pBytes)
         {
-            return BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pBytes, COMPRESSED_SIZE_OFFSET, COMPRESSED_SIZE_LENGTH), 0);
+            return BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pBytes, COMPRESSED_SIZE_OFFSET, COMPRESSED_SIZE_LENGTH), 0);
         }
 
         private uint getCompressedProgramLength(Stream pStream)
         {
-            return BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, COMPRESSED_SIZE_OFFSET, COMPRESSED_SIZE_LENGTH), 0);
+            return BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pStream, COMPRESSED_SIZE_OFFSET, COMPRESSED_SIZE_LENGTH), 0);
         }
 
         public void GetDatFileCrc32(ref Crc32 pChecksum)
@@ -309,37 +309,37 @@ namespace VGMToolbox.format
 
         protected byte[] getReservedSection(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, RESERVED_SECTION_OFFSET, (int) this.getReservedSectionLength(pBytes));
+            return ParseFile.ParseSimpleOffset(pBytes, RESERVED_SECTION_OFFSET, (int) this.getReservedSectionLength(pBytes));
         }
 
         protected uint getReservedSectionLength(byte[] pBytes)
         {
-            return BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pBytes, RESERVED_SIZE_OFFSET, RESERVED_SIZE_LENGTH), 0);
+            return BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pBytes, RESERVED_SIZE_OFFSET, RESERVED_SIZE_LENGTH), 0);
         }
 
         protected uint getReservedSectionLength(Stream pStream)
         {
-            return BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, RESERVED_SIZE_OFFSET, RESERVED_SIZE_LENGTH), 0);
+            return BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pStream, RESERVED_SIZE_OFFSET, RESERVED_SIZE_LENGTH), 0);
         }
 
         protected byte[] getSignatureTag(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, SIG_OFFSET, SIG_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, SIG_OFFSET, SIG_LENGTH);
         }
 
         protected byte[] getSignatureTag(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
         }
 
         protected byte[] getVersionTag(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, VERSION_OFFSET, VERSION_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, VERSION_OFFSET, VERSION_LENGTH);
         }
 
         protected byte[] getVersionTag(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, VERSION_OFFSET, VERSION_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, VERSION_OFFSET, VERSION_LENGTH);
         }
 
         protected Dictionary<string, string> getTags(byte[] pBytes)
@@ -364,7 +364,7 @@ namespace VGMToolbox.format
 
             if ((tagLength > 0))
             {
-                byte[] tagBytes = ParseFile.parseSimpleOffset(pStream, tagOffset, tagLength);
+                byte[] tagBytes = ParseFile.ParseSimpleOffset(pStream, tagOffset, tagLength);
                 ret = getTags(tagBytes, 0, (int)tagLength);
             }
 
@@ -385,7 +385,7 @@ namespace VGMToolbox.format
 
                 if (pTagOffset != 0)
                 {
-                    tagBytes = ParseFile.parseSimpleOffset(pBytes, pTagOffset, tagLength);
+                    tagBytes = ParseFile.ParseSimpleOffset(pBytes, pTagOffset, tagLength);
                 }
                 else
                 {

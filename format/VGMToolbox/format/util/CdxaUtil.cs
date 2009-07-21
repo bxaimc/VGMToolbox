@@ -46,7 +46,7 @@ namespace VGMToolbox.format.util
 
                     while ((offset != -1)  && ((offset + Cdxa.XA_BLOCK_SIZE) <= fs.Length))
                     {
-                        trackId = ParseFile.parseSimpleOffset(fs, offset + Cdxa.XA_TRACK_OFFSET, Cdxa.XA_TRACK_SIZE);
+                        trackId = ParseFile.ParseSimpleOffset(fs, offset + Cdxa.XA_TRACK_OFFSET, Cdxa.XA_TRACK_SIZE);
                         trackKey = BitConverter.ToUInt32(trackId, 0);
 
                         if (!ParseFile.ByteArrayToString(trackId).EndsWith(Cdxa.XA_ENDING_DIGITS))
@@ -68,7 +68,7 @@ namespace VGMToolbox.format.util
                             }
 
                             // get the next block
-                            buffer = ParseFile.parseSimpleOffset(fs, offset, Cdxa.XA_BLOCK_SIZE);
+                            buffer = ParseFile.ParseSimpleOffset(fs, offset, Cdxa.XA_BLOCK_SIZE);
 
                             // check if this is a "silent" block, ignore leading silence (first block)
                             if ((bwDictionary[trackKey].BaseStream.Length > Cdxa.XA_BLOCK_SIZE) && IsSilentBlock(buffer, pExtractXaStruct))

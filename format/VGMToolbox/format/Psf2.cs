@@ -179,20 +179,20 @@ namespace VGMToolbox.format
             using (FileStream fs = File.Open(this.FilePath, FileMode.Open, FileAccess.Read))
             {
                 numberOfDirectoryEntries =
-                    BitConverter.ToUInt32(ParseFile.parseSimpleOffset(fs, pOffset, 4), 0);
+                    BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, pOffset, 4), 0);
                 ret = new Psf2DirectoryEntry[numberOfDirectoryEntries];
 
                 for (UInt32 i = 0; i < numberOfDirectoryEntries; i++)
                 {
                     ret[i].Filename =
-                        enc.GetString(FileUtil.ReplaceNullByteWithSpace(ParseFile.parseSimpleOffset(fs, (pOffset + 4) + (48 * i), 36))).Trim();
+                        enc.GetString(FileUtil.ReplaceNullByteWithSpace(ParseFile.ParseSimpleOffset(fs, (pOffset + 4) + (48 * i), 36))).Trim();
                     ret[i].Offset =
                         Xsf.RESERVED_SECTION_OFFSET +
-                        BitConverter.ToUInt32(ParseFile.parseSimpleOffset(fs, (pOffset + 4) + (48 * i) + 36, 4), 0);
+                        BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, (pOffset + 4) + (48 * i) + 36, 4), 0);
                     ret[i].UncompressedSize =
-                        BitConverter.ToUInt32(ParseFile.parseSimpleOffset(fs, (pOffset + 4) + (48 * i) + 40, 4), 0);
+                        BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, (pOffset + 4) + (48 * i) + 40, 4), 0);
                     ret[i].BlockSize =
-                        BitConverter.ToUInt32(ParseFile.parseSimpleOffset(fs, (pOffset + 4) + (48 * i) + 44, 4), 0);
+                        BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, (pOffset + 4) + (48 * i) + 44, 4), 0);
                 }
             }
             return ret;
@@ -252,7 +252,7 @@ namespace VGMToolbox.format
                 for (int i = 0; i < blockCount; i++)
                 {
                     blockTable[i] =
-                        BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pfs, (long)pPsf2DirectoryEntry.Offset + (i * 4), 4), 0);
+                        BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pfs, (long)pPsf2DirectoryEntry.Offset + (i * 4), 4), 0);
                 }
 
                 pfs.Position = (long)(pPsf2DirectoryEntry.Offset + (blockCount * 4));

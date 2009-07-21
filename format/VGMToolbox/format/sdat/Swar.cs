@@ -79,22 +79,22 @@ namespace VGMToolbox.format.sdat
         {
             this.filePath = pFilePath;
 
-            this.magicBytes = ParseFile.parseSimpleOffset(pStream, STD_HEADER_SIGNATURE_OFFSET, STD_HEADER_SIGNATURE_LENGTH);
-            this.fileSize = BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, STD_HEADER_FILE_SIZE_OFFSET, STD_HEADER_FILE_SIZE_LENGTH), 0);
-            this.fileHeaderSize = BitConverter.ToUInt16(ParseFile.parseSimpleOffset(pStream, STD_HEADER_HEADER_SIZE_OFFSET, STD_HEADER_HEADER_SIZE_LENGTH), 0);
-            this.numberOfBlocks = BitConverter.ToUInt16(ParseFile.parseSimpleOffset(pStream, STD_HEADER_NUMBER_OF_SECTIONS_OFFSET, STD_HEADER_NUMBER_OF_SECTIONS_LENGTH), 0);
+            this.magicBytes = ParseFile.ParseSimpleOffset(pStream, STD_HEADER_SIGNATURE_OFFSET, STD_HEADER_SIGNATURE_LENGTH);
+            this.fileSize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pStream, STD_HEADER_FILE_SIZE_OFFSET, STD_HEADER_FILE_SIZE_LENGTH), 0);
+            this.fileHeaderSize = BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(pStream, STD_HEADER_HEADER_SIZE_OFFSET, STD_HEADER_HEADER_SIZE_LENGTH), 0);
+            this.numberOfBlocks = BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(pStream, STD_HEADER_NUMBER_OF_SECTIONS_OFFSET, STD_HEADER_NUMBER_OF_SECTIONS_LENGTH), 0);
 
-            this.dataBytes = ParseFile.parseSimpleOffset(pStream, SWAR_HEADER_SIGNATURE_OFFSET, SWAR_HEADER_SIGNATURE_LENGTH);
-            this.swarHeaderSize = BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, SWAR_HEADER_SIZE_OFFSET, SWAR_HEADER_SIZE_LENGTH), 0);
-            this.reserved = ParseFile.parseSimpleOffset(pStream, SWAR_HEADER_RESERVED_OFFSET, SWAR_HEADER_RESERVED_LENGTH);
-            this.numberofSamples = BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, SWAR_HEADER_NUM_SAMPLES_OFFSET, SWAR_HEADER_NUM_SAMPLES_LENGTH), 0);
+            this.dataBytes = ParseFile.ParseSimpleOffset(pStream, SWAR_HEADER_SIGNATURE_OFFSET, SWAR_HEADER_SIGNATURE_LENGTH);
+            this.swarHeaderSize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pStream, SWAR_HEADER_SIZE_OFFSET, SWAR_HEADER_SIZE_LENGTH), 0);
+            this.reserved = ParseFile.ParseSimpleOffset(pStream, SWAR_HEADER_RESERVED_OFFSET, SWAR_HEADER_RESERVED_LENGTH);
+            this.numberofSamples = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pStream, SWAR_HEADER_NUM_SAMPLES_OFFSET, SWAR_HEADER_NUM_SAMPLES_LENGTH), 0);
 
             this.sampleOffsets = new UInt32[this.numberofSamples];
 
             for (int i = 0; i < this.sampleOffsets.Length; i++)
             {
                 this.sampleOffsets[i] = 
-                    BitConverter.ToUInt32(ParseFile.parseSimpleOffset(pStream, SWAR_HEADER_SAMPLE_OFFSETS_OFFSET + (SWAR_HEADER_SAMPLE_OFFSETS_LENGTH * i), SWAR_HEADER_SAMPLE_OFFSETS_LENGTH), 0);
+                    BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pStream, SWAR_HEADER_SAMPLE_OFFSETS_OFFSET + (SWAR_HEADER_SAMPLE_OFFSETS_LENGTH * i), SWAR_HEADER_SAMPLE_OFFSETS_LENGTH), 0);
             }
         }
 

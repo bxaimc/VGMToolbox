@@ -200,15 +200,15 @@ namespace VGMToolbox.tools.xsf
                             using (FileStream fs = File.OpenRead(destinationExeFile))
                             {
                                 // get offset of text section
-                                textSectionOffset = ParseFile.parseSimpleOffset(fs, 0x18, 4);
+                                textSectionOffset = ParseFile.ParseSimpleOffset(fs, 0x18, 4);
                                 textSectionOffsetValue = BitConverter.ToUInt32(textSectionOffset, 0);
 
                                 // calculate pc offsets
-                                pcOffsetSeq = VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.seqOffset) -
+                                pcOffsetSeq = VGMToolbox.util.Encoding.GetLongFromString(pBin2PsfStruct.seqOffset) -
                                     textSectionOffsetValue + PC_OFFSET_CORRECTION;
-                                pcOffsetVb = VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.vbOffset) -
+                                pcOffsetVb = VGMToolbox.util.Encoding.GetLongFromString(pBin2PsfStruct.vbOffset) -
                                     textSectionOffsetValue + PC_OFFSET_CORRECTION;
-                                pcOffsetVh = VGMToolbox.util.Encoding.GetIntFromString(pBin2PsfStruct.vhOffset) -
+                                pcOffsetVh = VGMToolbox.util.Encoding.GetLongFromString(pBin2PsfStruct.vhOffset) -
                                     textSectionOffsetValue + PC_OFFSET_CORRECTION;
                             }
 

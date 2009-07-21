@@ -111,39 +111,39 @@ namespace VGMToolbox.format
 
         public byte[] getAsciiSignature(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
         }
         public byte[] getVersion(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, VERSION_OFFSET, VERSION_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, VERSION_OFFSET, VERSION_LENGTH);
         }
         public byte[] getTimerInfo(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, TIMER_INFO_OFFSET, TIMER_INFO_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, TIMER_INFO_OFFSET, TIMER_INFO_LENGTH);
         }
         public byte[] getTimerInfo2(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, TIMER_INFO2_OFFSET, TIMER_INFO2_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, TIMER_INFO2_OFFSET, TIMER_INFO2_LENGTH);
         }
         public byte[] getCompressing(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, COMPRESSING_OFFSET, COMPRESSING_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, COMPRESSING_OFFSET, COMPRESSING_LENGTH);
         }
         public byte[] getSongNameOffset(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, SONG_NAME_OFFSET_OFFSET, SONG_NAME_OFFSET_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, SONG_NAME_OFFSET_OFFSET, SONG_NAME_OFFSET_LENGTH);
         }
         public byte[] getDumpDataOffset(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, DUMP_DATA_OFFSET_OFFSET, DUMP_DATA_OFFSET_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, DUMP_DATA_OFFSET_OFFSET, DUMP_DATA_OFFSET_LENGTH);
         }
         public byte[] getLoopPointOffset(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, LOOP_POINT_OFFSET_OFFSET, LOOP_POINT_OFFSET_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, LOOP_POINT_OFFSET_OFFSET, LOOP_POINT_OFFSET_LENGTH);
         }
         public byte[] getV1Reserved(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, V1_RESERVED_OFFSET, V1_RESERVED_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, V1_RESERVED_OFFSET, V1_RESERVED_LENGTH);
         }
 
         public virtual void Initialize(Stream pStream, string pFilePath)
@@ -160,7 +160,7 @@ namespace VGMToolbox.format
             
             int v1DataOffset = BitConverter.ToInt32(this.dumpDataOffset, 0);
             this.v1Reserved = this.getV1Reserved(pStream);
-            this.data = ParseFile.parseSimpleOffset(pStream, v1DataOffset, (int) pStream.Length - v1DataOffset);
+            this.data = ParseFile.ParseSimpleOffset(pStream, v1DataOffset, (int) pStream.Length - v1DataOffset);
 
             this.initDeviceHash();
             this.initializeTagHash(pStream);
@@ -176,8 +176,8 @@ namespace VGMToolbox.format
             if (BitConverter.ToUInt32(this.songNameOffset, 0) != 0)
             {
                 Int32 songOffset = BitConverter.ToInt32(this.songNameOffset, 0);
-                Int32 songLength = ParseFile.getSegmentLength(pStream, songOffset, new byte[] { 0x00 });
-                byte[] songName = ParseFile.parseSimpleOffset(pStream, songOffset, songLength);
+                Int32 songLength = ParseFile.GetSegmentLength(pStream, songOffset, new byte[] { 0x00 });
+                byte[] songName = ParseFile.ParseSimpleOffset(pStream, songOffset, songLength);
                 
                 tagHash.Add("Song Name", enc.GetString(songName));
                 tagHash.Add("Uncompressed Data Size", "0x" + BitConverter.ToInt32(this.compressing, 0).ToString("X2"));

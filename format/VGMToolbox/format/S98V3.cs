@@ -32,7 +32,7 @@ namespace VGMToolbox.format
 
         public byte[] getDeviceCount(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, V3_DEVICE_COUNT_OFFSET, V3_DEVICE_COUNT_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, V3_DEVICE_COUNT_OFFSET, V3_DEVICE_COUNT_LENGTH);
         }
         public void getS98Devices(Stream pStream)
         {
@@ -42,13 +42,13 @@ namespace VGMToolbox.format
             for (int i = 0; i < deviceCount; i++)
             {
                 S98Device s98Device = new S98Device();
-                s98Device.DeviceType = ParseFile.parseSimpleOffset(pStream, offset + S98DEVICE_TYPE_OFFSET,
+                s98Device.DeviceType = ParseFile.ParseSimpleOffset(pStream, offset + S98DEVICE_TYPE_OFFSET,
                                         S98DEVICE_TYPE_LENGTH);
-                s98Device.Clock = ParseFile.parseSimpleOffset(pStream, offset + S98DEVICE_CLOCK_OFFSET,
+                s98Device.Clock = ParseFile.ParseSimpleOffset(pStream, offset + S98DEVICE_CLOCK_OFFSET,
                                         S98DEVICE_CLOCK_LENGTH);
-                s98Device.Pan = ParseFile.parseSimpleOffset(pStream, offset + S98DEVICE_PAN_OFFSET,
+                s98Device.Pan = ParseFile.ParseSimpleOffset(pStream, offset + S98DEVICE_PAN_OFFSET,
                                         S98DEVICE_PAN_LENGTH);
-                s98Device.Reserve = ParseFile.parseSimpleOffset(pStream, offset + S98DEVICE_RESERVED_OFFSET,
+                s98Device.Reserve = ParseFile.ParseSimpleOffset(pStream, offset + S98DEVICE_RESERVED_OFFSET,
                                         S98DEVICE_RESERVED_LENGTH);
 
                 s98Devices.Add(s98Device);
@@ -65,11 +65,11 @@ namespace VGMToolbox.format
             this.getS98Devices(pStream);
 
             Int32 tagOffset = BitConverter.ToInt32(this.songNameOffset, 0) + TAG_IDENTIFIER_LENGTH;
-            this.v3Tags = ParseFile.parseSimpleOffset(pStream, tagOffset, (int)pStream.Length - tagOffset);
+            this.v3Tags = ParseFile.ParseSimpleOffset(pStream, tagOffset, (int)pStream.Length - tagOffset);
             tagOffset -= TAG_IDENTIFIER_LENGTH;
 
             // check this
-            this.data = ParseFile.parseSimpleOffset(pStream, V3_DEVICE_INFO_OFFSET, tagOffset - V3_DEVICE_INFO_OFFSET);
+            this.data = ParseFile.ParseSimpleOffset(pStream, V3_DEVICE_INFO_OFFSET, tagOffset - V3_DEVICE_INFO_OFFSET);
             
             this.parseTagData();
             this.addDevicesToHash();

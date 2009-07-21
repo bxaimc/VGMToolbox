@@ -123,26 +123,26 @@ namespace format.VGMToolbox.format
         {
             this.filePath = pFilePath;
             
-            this.asciiSignature = ParseFile.parseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
-            this.versionNumber = ParseFile.parseSimpleOffset(pStream, VERSION_OFFSET, VERSION_LENGTH);
-            this.startingSong = ParseFile.parseSimpleOffset(pStream, STARTING_SONG_OFFSET, STARTING_SONG_LENGTH);
-            this.requestAddress = ParseFile.parseSimpleOffset(pStream, REQUEST_ADDRESS_OFFSET, REQUEST_ADDRESS_LENGTH);
-            this.initialMpr0 = ParseFile.parseSimpleOffset(pStream, INITIAL_MPR0_OFFSET, INITIAL_MPR0_LENGTH);
-            this.initialMpr1 = ParseFile.parseSimpleOffset(pStream, INITIAL_MPR1_OFFSET, INITIAL_MPR1_LENGTH);
-            this.initialMpr2 = ParseFile.parseSimpleOffset(pStream, INITIAL_MPR2_OFFSET, INITIAL_MPR2_LENGTH);
-            this.initialMpr3 = ParseFile.parseSimpleOffset(pStream, INITIAL_MPR3_OFFSET, INITIAL_MPR3_LENGTH);
-            this.initialMpr4 = ParseFile.parseSimpleOffset(pStream, INITIAL_MPR4_OFFSET, INITIAL_MPR4_LENGTH);
-            this.initialMpr5 = ParseFile.parseSimpleOffset(pStream, INITIAL_MPR5_OFFSET, INITIAL_MPR5_LENGTH);
-            this.initialMpr6 = ParseFile.parseSimpleOffset(pStream, INITIAL_MPR6_OFFSET, INITIAL_MPR6_LENGTH);
-            this.initialMpr7 = ParseFile.parseSimpleOffset(pStream, INITIAL_MPR7_OFFSET, INITIAL_MPR7_LENGTH);
+            this.asciiSignature = ParseFile.ParseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
+            this.versionNumber = ParseFile.ParseSimpleOffset(pStream, VERSION_OFFSET, VERSION_LENGTH);
+            this.startingSong = ParseFile.ParseSimpleOffset(pStream, STARTING_SONG_OFFSET, STARTING_SONG_LENGTH);
+            this.requestAddress = ParseFile.ParseSimpleOffset(pStream, REQUEST_ADDRESS_OFFSET, REQUEST_ADDRESS_LENGTH);
+            this.initialMpr0 = ParseFile.ParseSimpleOffset(pStream, INITIAL_MPR0_OFFSET, INITIAL_MPR0_LENGTH);
+            this.initialMpr1 = ParseFile.ParseSimpleOffset(pStream, INITIAL_MPR1_OFFSET, INITIAL_MPR1_LENGTH);
+            this.initialMpr2 = ParseFile.ParseSimpleOffset(pStream, INITIAL_MPR2_OFFSET, INITIAL_MPR2_LENGTH);
+            this.initialMpr3 = ParseFile.ParseSimpleOffset(pStream, INITIAL_MPR3_OFFSET, INITIAL_MPR3_LENGTH);
+            this.initialMpr4 = ParseFile.ParseSimpleOffset(pStream, INITIAL_MPR4_OFFSET, INITIAL_MPR4_LENGTH);
+            this.initialMpr5 = ParseFile.ParseSimpleOffset(pStream, INITIAL_MPR5_OFFSET, INITIAL_MPR5_LENGTH);
+            this.initialMpr6 = ParseFile.ParseSimpleOffset(pStream, INITIAL_MPR6_OFFSET, INITIAL_MPR6_LENGTH);
+            this.initialMpr7 = ParseFile.ParseSimpleOffset(pStream, INITIAL_MPR7_OFFSET, INITIAL_MPR7_LENGTH);
 
-            this.dataSig = ParseFile.parseSimpleOffset(pStream, DATA_SIG_OFFSET, DATA_SIG_LENGTH);
-            this.dataSize = ParseFile.parseSimpleOffset(pStream, DATA_SIZE_OFFSET, DATA_SIZE_LENGTH);                                                           
-            this.loadAddress = ParseFile.parseSimpleOffset(pStream, LOAD_ADDRESS_OFFSET, LOAD_ADDRESS_LENGTH);
-            this.reserve = ParseFile.parseSimpleOffset(pStream, RESERVE_OFFSET, RESERVE_LENGTH);
+            this.dataSig = ParseFile.ParseSimpleOffset(pStream, DATA_SIG_OFFSET, DATA_SIG_LENGTH);
+            this.dataSize = ParseFile.ParseSimpleOffset(pStream, DATA_SIZE_OFFSET, DATA_SIZE_LENGTH);                                                           
+            this.loadAddress = ParseFile.ParseSimpleOffset(pStream, LOAD_ADDRESS_OFFSET, LOAD_ADDRESS_LENGTH);
+            this.reserve = ParseFile.ParseSimpleOffset(pStream, RESERVE_OFFSET, RESERVE_LENGTH);
             
             int dataLength = BitConverter.ToInt32(this.dataSize, 0);
-            this.data = ParseFile.parseSimpleOffset(pStream, DATA_OFFSET, dataLength);            
+            this.data = ParseFile.ParseSimpleOffset(pStream, DATA_OFFSET, dataLength);            
 
             this.initializeTagHash();
         }

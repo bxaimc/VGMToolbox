@@ -96,18 +96,18 @@ namespace VGMToolbox.format
         public void Initialize(Stream pStream, string pFilePath)
         {
             this.filePath = pFilePath;            
-            this.asciiSignature = ParseFile.parseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
-            this.channels = ParseFile.parseSimpleOffset(pStream, CHANNELS_OFFSET, CHANNELS_LENGTH);
-            this.interleave = ParseFile.parseSimpleOffset(pStream, INTERLEAVE_OFFSET, INTERLEAVE_LENGTH);
-            this.frequency = ParseFile.parseSimpleOffset(pStream, FREQUENCY_OFFSET, FREQUENCY_LENGTH);
-            this.loopStart = ParseFile.parseSimpleOffset(pStream, LOOP_START_OFFSET, LOOP_START_LENGTH);
-            this.loopEnd = ParseFile.parseSimpleOffset(pStream, LOOP_END_OFFSET, LOOP_END_LENGTH);
-            this.identifier = ParseFile.parseSimpleOffset(pStream, IDENTIFIER_OFFSET, IDENTIFIER_LENGTH);
-            this.audioStart = ParseFile.parseSimpleOffset(pStream, AUDIO_START_OFFSET, AUDIO_START_LENGTH);
-            this.headerLength = ParseFile.parseSimpleOffset(pStream, HEADER_LENGTH_OFFSET, HEADER_LENGTH_LENGTH);
-            this.originalFileName = ParseFile.parseSimpleOffset(pStream, ORIG_FILENAME_OFFSET, ORIG_FILENAME_LENGTH);
-            this.originalFileSize = ParseFile.parseSimpleOffset(pStream, ORIG_FILESIZE_OFFSET, ORIG_FILESIZE_LENGTH);
-            this.versionNumber = ParseFile.parseSimpleOffset(pStream, GENH_VERSION_OFFSET, GENH_VERSION_LENGTH);
+            this.asciiSignature = ParseFile.ParseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
+            this.channels = ParseFile.ParseSimpleOffset(pStream, CHANNELS_OFFSET, CHANNELS_LENGTH);
+            this.interleave = ParseFile.ParseSimpleOffset(pStream, INTERLEAVE_OFFSET, INTERLEAVE_LENGTH);
+            this.frequency = ParseFile.ParseSimpleOffset(pStream, FREQUENCY_OFFSET, FREQUENCY_LENGTH);
+            this.loopStart = ParseFile.ParseSimpleOffset(pStream, LOOP_START_OFFSET, LOOP_START_LENGTH);
+            this.loopEnd = ParseFile.ParseSimpleOffset(pStream, LOOP_END_OFFSET, LOOP_END_LENGTH);
+            this.identifier = ParseFile.ParseSimpleOffset(pStream, IDENTIFIER_OFFSET, IDENTIFIER_LENGTH);
+            this.audioStart = ParseFile.ParseSimpleOffset(pStream, AUDIO_START_OFFSET, AUDIO_START_LENGTH);
+            this.headerLength = ParseFile.ParseSimpleOffset(pStream, HEADER_LENGTH_OFFSET, HEADER_LENGTH_LENGTH);
+            this.originalFileName = ParseFile.ParseSimpleOffset(pStream, ORIG_FILENAME_OFFSET, ORIG_FILENAME_LENGTH);
+            this.originalFileSize = ParseFile.ParseSimpleOffset(pStream, ORIG_FILESIZE_OFFSET, ORIG_FILESIZE_LENGTH);
+            this.versionNumber = ParseFile.ParseSimpleOffset(pStream, GENH_VERSION_OFFSET, GENH_VERSION_LENGTH);
 
             this.initializeTagHash();
         }

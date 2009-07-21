@@ -9,7 +9,14 @@ namespace VGMToolbox.util
     {
         private ParseFile() { }
                 
-        public static byte[] parseSimpleOffset(byte[] pBytes, int pOffset, int pLength)
+        /// <summary>
+        /// Extract a section from the incoming byte array.
+        /// </summary>
+        /// <param name="pBytes">Bytes to extract from.</param>
+        /// <param name="pOffset">Offset to begin cutting from.</param>
+        /// <param name="pLength">Number of bytes to cut.</param>
+        /// <returns>Byte array containing the extracted section.</returns>
+        public static byte[] ParseSimpleOffset(byte[] pBytes, int pOffset, int pLength)
         {
             byte[] ret = new byte[pLength];
             uint j = 0;
@@ -23,7 +30,14 @@ namespace VGMToolbox.util
             return ret;
         }
 
-        public static byte[] parseSimpleOffset(Stream pFileStream, int pOffset, int pLength)
+        /// <summary>
+        /// Extract a section from the incoming stream.
+        /// </summary>
+        /// <param name="pFileStream">Stream to extract the chunk from.</param>
+        /// <param name="pOffset">Offset to begin cutting from.</param>
+        /// <param name="pLength">Number of bytes to cut.</param>
+        /// <returns>Byte array containing the extracted section.</returns>
+        public static byte[] ParseSimpleOffset(Stream pFileStream, int pOffset, int pLength)
         {
             byte[] ret = new byte[pLength];
             long currentStreamPosition = pFileStream.Position;
@@ -37,7 +51,14 @@ namespace VGMToolbox.util
             return ret;
         }
 
-        public static byte[] parseSimpleOffset(Stream pFileStream, long pOffset, int pLength)
+        /// <summary>
+        /// Extract a section from the incoming stream.
+        /// </summary>
+        /// <param name="pFileStream">Stream to extract the chunk from.</param>
+        /// <param name="pOffset">Offset to begin cutting from.</param>
+        /// <param name="pLength">Number of bytes to cut.</param>
+        /// <returns>Byte array containing the extracted section.</returns>
+        public static byte[] ParseSimpleOffset(Stream pFileStream, long pOffset, int pLength)
         {
             byte[] ret = new byte[pLength];
             long currentStreamPosition = pFileStream.Position;
@@ -51,7 +72,14 @@ namespace VGMToolbox.util
             return ret;
         }
 
-        public static int getSegmentLength(byte[] pBytes, int pOffset, byte[] pTerminator)
+        /// <summary>
+        /// Get the length from the input offset to the location of the input terminator bytes or zero.
+        /// </summary>
+        /// <param name="pBytes">Bytes to check.</param>
+        /// <param name="pOffset">Offset at which to begin searching for the terminator bytes.</param>
+        /// <param name="pTerminator">Bytes to search for.</param>
+        /// <returns>Length of distance between offset and terminator or zero if not found.</returns>
+        public static int GetSegmentLength(byte[] pBytes, int pOffset, byte[] pTerminator)
         {
             int ret;
             Boolean terminatorFound = false;
@@ -83,7 +111,14 @@ namespace VGMToolbox.util
             return ret;
         }
 
-        public static int getSegmentLength(Stream pStream, int pOffset, byte[] pTerminator)
+        /// <summary>
+        /// Get the length from the input offset to the location of the input terminator bytes or zero.
+        /// </summary>
+        /// <param name="pStream">Stream to check.</param>
+        /// <param name="pOffset">Offset at which to begin searching for the terminator bytes.</param>
+        /// <param name="pTerminator">Bytes to search for.</param>
+        /// <returns>Length of distance between offset and terminator or zero if not found.</returns>
+        public static int GetSegmentLength(Stream pStream, int pOffset, byte[] pTerminator)
         {
             int ret;
             Boolean terminatorFound = false;
@@ -123,6 +158,13 @@ namespace VGMToolbox.util
             return ret;
         }
 
+        /// <summary>
+        /// Get the offset of the first instance of pSearchBytes after the input offset.
+        /// </summary>
+        /// <param name="pStream">Stream to search.</param>
+        /// <param name="pOffset">Offset to begin searching from.</param>
+        /// <param name="pSearchBytes">Bytes to search for.</param>
+        /// <returns>Returns the offset of the first instance of pSearchBytes after the input offset or -1 otherwise.</returns>
         public static long GetNextOffset(Stream pStream, long pOffset, byte[] pSearchBytes)
         {
             long initialStreamPosition = pStream.Position;
@@ -168,6 +210,13 @@ namespace VGMToolbox.util
             return ret;
         }
 
+        /// <summary>
+        /// Get the offset of the first instance of pSearchBytes after the input offset.
+        /// </summary>
+        /// <param name="pBufferToSearch">Byte array to search.</param>
+        /// <param name="pOffset">Offset to begin searching from.</param>
+        /// <param name="pSearchBytes">Bytes to search for.</param>
+        /// <returns>Returns the offset of the first instance of pSearchBytes after the input offset or -1 otherwise.</returns>
         public static long GetNextOffset(byte[] pBufferToSearch, long pOffset, byte[] pSearchBytes)
         {
             bool itemFound = false;
@@ -195,6 +244,13 @@ namespace VGMToolbox.util
             return ret;
         }
 
+        /// <summary>
+        /// Get the offset of the first instance of pSearchBytes before the input offset.
+        /// </summary>
+        /// <param name="pStream">Stream to search.</param>
+        /// <param name="pOffset">Offset to begin searching from.</param>
+        /// <param name="pSearchBytes">Bytes to search for.</param>
+        /// <returns>Returns the offset of the first instance of pSearchBytes before the input offset or -1 otherwise.</returns>
         public static long GetPreviousOffset(Stream pStream, long pOffset, byte[] pSearchBytes)
         {
             long initialStreamPosition = pStream.Position;
@@ -246,6 +302,13 @@ namespace VGMToolbox.util
             return ret;
         }
 
+        /// <summary>
+        /// Compare bytes at input offset to target bytes.
+        /// </summary>
+        /// <param name="pBytes">Bytes to compare.</param>
+        /// <param name="pOffset">Offset to begin comparison of pBytes to pTarget.</param>
+        /// <param name="pTarget">Target bytes to compare.</param>
+        /// <returns>True if the bytes at pOffset match the pTarget bytes.</returns>
         public static bool CompareSegment(byte[] pBytes, int pOffset, byte[] pTarget)
         {
             Boolean ret = true;
@@ -263,6 +326,13 @@ namespace VGMToolbox.util
             return ret;
         }
 
+        /// <summary>
+        /// Compare bytes at input offset to target bytes.
+        /// </summary>
+        /// <param name="pBytes">Bytes to compare.</param>
+        /// <param name="pOffset">Offset to begin comparison of pBytes to pTarget.</param>
+        /// <param name="pTarget">Target bytes to compare.</param>
+        /// <returns>True if the bytes at pOffset match the pTarget bytes.</returns>
         public static bool CompareSegment(byte[] pBytes, long pOffset, byte[] pTarget)
         {
             Boolean ret = true;
@@ -280,6 +350,13 @@ namespace VGMToolbox.util
             return ret;
         }
 
+        /// <summary>
+        /// Extracts a section of the incoming stream to a file.
+        /// </summary>
+        /// <param name="pStream">Stream to extract from.</param>
+        /// <param name="pOffset">Offset to begin the cut.</param>
+        /// <param name="pLength">Number of bytes to cut.</param>
+        /// <param name="pFilePath">File path to output the extracted chunk to.</param>
         public static void ExtractChunkToFile(Stream pStream, long pOffset, int pLength, string pFilePath)
         {
             BinaryWriter bw = null;
@@ -320,6 +397,11 @@ namespace VGMToolbox.util
 
         }
 
+        /// <summary>
+        /// Convert the input bytes to a string containing the hex values.
+        /// </summary>
+        /// <param name="pBytes">Bytes to convert to a string.</param>
+        /// <returns>String of hex values that represent the incoming byte array.</returns>
         public static string ByteArrayToString(byte[] pBytes)
         {
             StringBuilder sBuilder = new StringBuilder();
@@ -334,6 +416,13 @@ namespace VGMToolbox.util
             return sBuilder.ToString();
         }
 
+        /// <summary>
+        /// Find an offset and cut the file based on incoming criteria.
+        /// </summary>
+        /// <param name="pPath">Path of file to search.</param>
+        /// <param name="pFindOffsetStruct">Struct containing search criteria.</param>
+        /// <param name="pMessages">Output messages.</param>
+        /// <returns>Directory that extracted files were output into.</returns>
         public static string FindOffsetAndCutFile(string pPath, FindOffsetStruct pFindOffsetStruct, out string pMessages)
         {
             int i;
@@ -411,14 +500,14 @@ namespace VGMToolbox.util
                     {
                         skipCut = false;
 
-                        cutStart = offset - VGMToolbox.util.Encoding.GetIntFromString(pFindOffsetStruct.SearchStringOffset);
+                        cutStart = offset - VGMToolbox.util.Encoding.GetLongFromString(pFindOffsetStruct.SearchStringOffset);
 
                         if (pFindOffsetStruct.IsCutSizeAnOffset)
                         {
-                            cutSizeOffset = cutStart + VGMToolbox.util.Encoding.GetIntFromString(pFindOffsetStruct.CutSize);
+                            cutSizeOffset = cutStart + VGMToolbox.util.Encoding.GetLongFromString(pFindOffsetStruct.CutSize);
                             previousPosition = fs.Position;
-                            cutSizeBytes = ParseFile.parseSimpleOffset(fs, cutSizeOffset,
-                                (int)VGMToolbox.util.Encoding.GetIntFromString(pFindOffsetStruct.CutSizeOffsetSize));
+                            cutSizeBytes = ParseFile.ParseSimpleOffset(fs, cutSizeOffset,
+                                (int)VGMToolbox.util.Encoding.GetLongFromString(pFindOffsetStruct.CutSizeOffsetSize));
                             fs.Position = previousPosition;
 
                             if (!pFindOffsetStruct.IsLittleEndian)
@@ -460,7 +549,7 @@ namespace VGMToolbox.util
                         }
                         else
                         {
-                            cutSize = VGMToolbox.util.Encoding.GetIntFromString(pFindOffsetStruct.CutSize);
+                            cutSize = VGMToolbox.util.Encoding.GetLongFromString(pFindOffsetStruct.CutSize);
                         }
 
                         outputFile = String.Format(CultureInfo.InvariantCulture, "{0}_{1}{2}", Path.GetFileNameWithoutExtension(pPath), chunkCount.ToString("X8", CultureInfo.InvariantCulture), pFindOffsetStruct.OutputFileExtension);
@@ -496,7 +585,7 @@ namespace VGMToolbox.util
                         {
                             if (!String.IsNullOrEmpty(pFindOffsetStruct.ExtraCutSizeBytes))
                             {
-                                cutSize += (long)VGMToolbox.util.Encoding.GetIntFromString(pFindOffsetStruct.ExtraCutSizeBytes);
+                                cutSize += (long)VGMToolbox.util.Encoding.GetLongFromString(pFindOffsetStruct.ExtraCutSizeBytes);
                             }                            
                             
                             ParseFile.ExtractChunkToFile(fs, cutStart, (int)cutSize, Path.Combine(outputFolder, outputFile));

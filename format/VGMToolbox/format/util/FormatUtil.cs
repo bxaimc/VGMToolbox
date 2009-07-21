@@ -35,7 +35,7 @@ namespace VGMToolbox.format.util
             }
             else
             {
-                signatureBytes = ParseFile.parseSimpleOffset(pFileStream, HEADER_OFFSET, MAX_SIGNATURE_LENGTH);
+                signatureBytes = ParseFile.ParseSimpleOffset(pFileStream, HEADER_OFFSET, MAX_SIGNATURE_LENGTH);
             }
             
             Type ret = null;
@@ -103,7 +103,7 @@ namespace VGMToolbox.format.util
             }
             else
             {
-                signatureBytes = ParseFile.parseSimpleOffset(pFileStream, HEADER_OFFSET, MAX_SIGNATURE_LENGTH);
+                signatureBytes = ParseFile.ParseSimpleOffset(pFileStream, HEADER_OFFSET, MAX_SIGNATURE_LENGTH);
             }
 
             Type ret = null;
@@ -170,7 +170,7 @@ namespace VGMToolbox.format.util
             }
             else
             {
-                signatureBytes = ParseFile.parseSimpleOffset(pFileStream, HEADER_OFFSET, MAX_SIGNATURE_LENGTH);
+                signatureBytes = ParseFile.ParseSimpleOffset(pFileStream, HEADER_OFFSET, MAX_SIGNATURE_LENGTH);
             }
 
             Type ret = null;
@@ -231,7 +231,7 @@ namespace VGMToolbox.format.util
 
             using (FileStream fs = File.OpenRead(pFilePath))
             {
-                signatureBytes = ParseFile.parseSimpleOffset(fs, HEADER_OFFSET, ZIP_SIGNATURE.Length);
+                signatureBytes = ParseFile.ParseSimpleOffset(fs, HEADER_OFFSET, ZIP_SIGNATURE.Length);
             }
 
             if ((signatureBytes != null) && 
@@ -249,7 +249,7 @@ namespace VGMToolbox.format.util
             byte[] signatureBytes = null;
             using (FileStream fs = File.OpenRead(pFilePath))
             {
-                signatureBytes = ParseFile.parseSimpleOffset(fs, HEADER_OFFSET, GZIP_SIGNATURE.Length);
+                signatureBytes = ParseFile.ParseSimpleOffset(fs, HEADER_OFFSET, GZIP_SIGNATURE.Length);
             }
 
             if ((signatureBytes != null) && 
@@ -266,7 +266,7 @@ namespace VGMToolbox.format.util
             bool ret = false;
             long currentOffset = pFileStream.Position;
             
-            byte[] signatureBytes = ParseFile.parseSimpleOffset(pFileStream, HEADER_OFFSET, 
+            byte[] signatureBytes = ParseFile.ParseSimpleOffset(pFileStream, HEADER_OFFSET, 
                 GZIP_SIGNATURE.Length);
 
             if (ParseFile.CompareSegment(signatureBytes, HEADER_OFFSET, GZIP_SIGNATURE))
@@ -304,7 +304,7 @@ namespace VGMToolbox.format.util
                 }
             }
 
-            ret = ParseFile.parseSimpleOffset(gZipFileStream, HEADER_OFFSET, MAX_SIGNATURE_LENGTH);
+            ret = ParseFile.ParseSimpleOffset(gZipFileStream, HEADER_OFFSET, MAX_SIGNATURE_LENGTH);
             gZipFileStream.Close();
             gZipFileStream.Dispose();
 

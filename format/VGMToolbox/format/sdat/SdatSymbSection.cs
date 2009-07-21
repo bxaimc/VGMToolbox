@@ -164,53 +164,53 @@ namespace VGMToolbox.format.sdat
         ////////////
         public byte[] getStdHeaderSignature(Stream pStream, int pSectionOffset)
         {
-            return ParseFile.parseSimpleOffset(pStream, pSectionOffset + STD_HEADER_SIGNATURE_OFFSET,
+            return ParseFile.ParseSimpleOffset(pStream, pSectionOffset + STD_HEADER_SIGNATURE_OFFSET,
                 STD_HEADER_SIGNATURE_LENGTH);
         }
         public byte[] getStdHeaderSectionSize(Stream pStream, int pSectionOffset)
         {
-            return ParseFile.parseSimpleOffset(pStream, pSectionOffset + STD_HEADER_SECTION_SIZE_OFFSET,
+            return ParseFile.ParseSimpleOffset(pStream, pSectionOffset + STD_HEADER_SECTION_SIZE_OFFSET,
                 STD_HEADER_SECTION_SIZE_LENGTH);
         }
 
         public byte[] getSymbRecordSeqOffset(Stream pStream, int pSectionOffset)
         {
-            return ParseFile.parseSimpleOffset(pStream, pSectionOffset + SYMB_RECORD_SEQ_OFFSET_OFFSET,
+            return ParseFile.ParseSimpleOffset(pStream, pSectionOffset + SYMB_RECORD_SEQ_OFFSET_OFFSET,
                 SYMB_RECORD_SEQ_OFFSET_LENGTH);
         }
         public byte[] getSymbRecordSeqArcOffset(Stream pStream, int pSectionOffset)
         {
-            return ParseFile.parseSimpleOffset(pStream, pSectionOffset + SYMB_RECORD_SEQARC_OFFSET_OFFSET,
+            return ParseFile.ParseSimpleOffset(pStream, pSectionOffset + SYMB_RECORD_SEQARC_OFFSET_OFFSET,
                 SYMB_RECORD_SEQARC_OFFSET_LENGTH);
         }
         public byte[] getSymbRecordBankOffset(Stream pStream, int pSectionOffset)
         {
-            return ParseFile.parseSimpleOffset(pStream, pSectionOffset + SYMB_RECORD_BANK_OFFSET_OFFSET,
+            return ParseFile.ParseSimpleOffset(pStream, pSectionOffset + SYMB_RECORD_BANK_OFFSET_OFFSET,
                 SYMB_RECORD_BANK_OFFSET_LENGTH);
         }
         public byte[] getSymbRecordWaveArcOffset(Stream pStream, int pSectionOffset)
         {
-            return ParseFile.parseSimpleOffset(pStream, pSectionOffset + SYMB_RECORD_WAVEARC_OFFSET_OFFSET,
+            return ParseFile.ParseSimpleOffset(pStream, pSectionOffset + SYMB_RECORD_WAVEARC_OFFSET_OFFSET,
                 SYMB_RECORD_WAVEARC_OFFSET_LENGTH);
         }
         public byte[] getSymbRecordPlayerOffset(Stream pStream, int pSectionOffset)
         {
-            return ParseFile.parseSimpleOffset(pStream, pSectionOffset + SYMB_RECORD_PLAYER_OFFSET_OFFSET,
+            return ParseFile.ParseSimpleOffset(pStream, pSectionOffset + SYMB_RECORD_PLAYER_OFFSET_OFFSET,
                 SYMB_RECORD_PLAYER_OFFSET_LENGTH);
         }
         public byte[] getSymbRecordGroupOffset(Stream pStream, int pSectionOffset)
         {
-            return ParseFile.parseSimpleOffset(pStream, pSectionOffset + SYMB_RECORD_GROUP_OFFSET_OFFSET,
+            return ParseFile.ParseSimpleOffset(pStream, pSectionOffset + SYMB_RECORD_GROUP_OFFSET_OFFSET,
                 SYMB_RECORD_GROUP_OFFSET_LENGTH);
         }
         public byte[] getSymbRecordPlayer2Offset(Stream pStream, int pSectionOffset)
         {
-            return ParseFile.parseSimpleOffset(pStream, pSectionOffset + SYMB_RECORD_PLAYER2_OFFSET_OFFSET,
+            return ParseFile.ParseSimpleOffset(pStream, pSectionOffset + SYMB_RECORD_PLAYER2_OFFSET_OFFSET,
                 SYMB_RECORD_PLAYER2_OFFSET_LENGTH);
         }
         public byte[] getSymbRecordStrmOffset(Stream pStream, int pSectionOffset)
         {
-            return ParseFile.parseSimpleOffset(pStream, pSectionOffset + SYMB_RECORD_STRM_OFFSET_OFFSET,
+            return ParseFile.ParseSimpleOffset(pStream, pSectionOffset + SYMB_RECORD_STRM_OFFSET_OFFSET,
                 SYMB_RECORD_STRM_OFFSET_LENGTH);
         }
 
@@ -219,7 +219,7 @@ namespace VGMToolbox.format.sdat
         {
             pSdatSymbolRec = new SdatSymbolRec();
             
-            pSdatSymbolRec.nCount = ParseFile.parseSimpleOffset(pStream,
+            pSdatSymbolRec.nCount = ParseFile.ParseSimpleOffset(pStream,
                 pSectionOffset + pSubSectionOffset + SYMB_ENTRY_SEQARC_COUNT_OFFSET,
                 SYMB_ENTRY_SEQARC_COUNT_LENGTH);
 
@@ -231,7 +231,7 @@ namespace VGMToolbox.format.sdat
 
             for (int i = 1; i <= subRecordCount; i++)
             {
-                pSdatSymbolRec.nEntryOffsets[i - 1] = ParseFile.parseSimpleOffset(pStream,
+                pSdatSymbolRec.nEntryOffsets[i - 1] = ParseFile.ParseSimpleOffset(pStream,
                     pSectionOffset + pSubSectionOffset + SYMB_ENTRY_NUM_FILES_OFFSET + (SYMB_ENTRY_FILE_NAME_SIZE * i) + (SYMB_ENTRY_SEQARC_SUBENTRY_SUBREC_OFFSET_LENGTH * (i - 1)),
                     SYMB_ENTRY_NUM_FILES_LENGTH);
 
@@ -239,8 +239,8 @@ namespace VGMToolbox.format.sdat
 
                 if (fileOffset > 0)
                 {
-                    int fileLength = ParseFile.getSegmentLength(pStream, pSectionOffset + fileOffset, NULL_BYTE_ARRAY);
-                    pSymbFileNames[i - 1] = ParseFile.parseSimpleOffset(pStream, pSectionOffset + fileOffset, fileLength);
+                    int fileLength = ParseFile.GetSegmentLength(pStream, pSectionOffset + fileOffset, NULL_BYTE_ARRAY);
+                    pSymbFileNames[i - 1] = ParseFile.ParseSimpleOffset(pStream, pSectionOffset + fileOffset, fileLength);
                 }
                 else
                 {
@@ -254,7 +254,7 @@ namespace VGMToolbox.format.sdat
         {
             pSdatSymbolRec = new SdatSymbolRec();
 
-            pSdatSymbolRec.nCount = ParseFile.parseSimpleOffset(pStream,
+            pSdatSymbolRec.nCount = ParseFile.ParseSimpleOffset(pStream,
                 pSectionOffset + pSubSectionOffset + SYMB_ENTRY_NUM_FILES_OFFSET,
                 SYMB_ENTRY_NUM_FILES_LENGTH);
 
@@ -266,7 +266,7 @@ namespace VGMToolbox.format.sdat
 
             for (int i = 1; i <= subRecordCount; i++)
             {
-                pSdatSymbolRec.nEntryOffsets[i - 1] = ParseFile.parseSimpleOffset(pStream,
+                pSdatSymbolRec.nEntryOffsets[i - 1] = ParseFile.ParseSimpleOffset(pStream,
                     pSectionOffset + pSubSectionOffset + SYMB_ENTRY_NUM_FILES_OFFSET + (SYMB_ENTRY_FILE_NAME_SIZE * i),
                     SYMB_ENTRY_NUM_FILES_LENGTH);
 
@@ -274,8 +274,8 @@ namespace VGMToolbox.format.sdat
 
                 if (fileOffset > 0)
                 {
-                    int fileLength = ParseFile.getSegmentLength(pStream, pSectionOffset + fileOffset, NULL_BYTE_ARRAY);
-                    pSymbFileNames[i - 1] = ParseFile.parseSimpleOffset(pStream, pSectionOffset + fileOffset, fileLength);
+                    int fileLength = ParseFile.GetSegmentLength(pStream, pSectionOffset + fileOffset, NULL_BYTE_ARRAY);
+                    pSymbFileNames[i - 1] = ParseFile.ParseSimpleOffset(pStream, pSectionOffset + fileOffset, fileLength);
                 }
                 else
                 {

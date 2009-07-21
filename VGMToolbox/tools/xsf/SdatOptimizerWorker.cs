@@ -67,12 +67,12 @@ namespace VGMToolbox.tools.xsf
             {
                 if (!String.IsNullOrEmpty(sdatOptimizerStruct.startSequence))
                 {
-                    startSequence = (int)VGMToolbox.util.Encoding.GetIntFromString(sdatOptimizerStruct.startSequence.Trim());
+                    startSequence = (int)VGMToolbox.util.Encoding.GetLongFromString(sdatOptimizerStruct.startSequence.Trim());
                 }
 
                 if (!String.IsNullOrEmpty(sdatOptimizerStruct.endSequence))
                 {
-                    endSequence = (int)VGMToolbox.util.Encoding.GetIntFromString(sdatOptimizerStruct.endSequence);
+                    endSequence = (int)VGMToolbox.util.Encoding.GetLongFromString(sdatOptimizerStruct.endSequence);
                 }
 
                 sdat.OptimizeForZlib(startSequence, endSequence);                

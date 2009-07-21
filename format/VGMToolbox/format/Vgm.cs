@@ -181,22 +181,22 @@ namespace VGMToolbox.format
         #region BYTE FUNCTIONS
         protected byte[] getEofOffset(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, EOF_OFFSET_OFFSET, EOF_OFFSET_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, EOF_OFFSET_OFFSET, EOF_OFFSET_LENGTH);
         }
 
         protected byte[] getGd3Offset(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, GD3_OFFSET_OFFSET, GD3_OFFSET_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, GD3_OFFSET_OFFSET, GD3_OFFSET_LENGTH);
         }
 
         protected byte[] getLoopNumOfSamples(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, LOOP_NUM_SAMPLES_OFFSET, LOOP_NUM_SAMPLES_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, LOOP_NUM_SAMPLES_OFFSET, LOOP_NUM_SAMPLES_LENGTH);
         }
 
         protected byte[] getLoopOffset(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, LOOP_OFFSET_OFFSET, LOOP_OFFSET_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, LOOP_OFFSET_OFFSET, LOOP_OFFSET_LENGTH);
         }
 
         /*
@@ -216,63 +216,63 @@ namespace VGMToolbox.format
 
         protected byte[] getRate(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, RATE_OFFSET, RATE_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, RATE_OFFSET, RATE_LENGTH);
         }
 
         protected byte[] getSignatureTag(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, SIG_OFFSET, SIG_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, SIG_OFFSET, SIG_LENGTH);
         }
 
         protected byte[] getSn76489Clock(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, SN76489_CLOCK_OFFSET, SN76489_CLOCK_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, SN76489_CLOCK_OFFSET, SN76489_CLOCK_LENGTH);
         }
 
         protected byte[] getSn76489Feedback(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, SN76489_FEEDBACK_OFFSET, SN76489_FEEDBACK_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, SN76489_FEEDBACK_OFFSET, SN76489_FEEDBACK_LENGTH);
         }
 
         protected byte[] getSn76489Srw(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, SN76489_SRW_OFFSET, SN76489_SRW_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, SN76489_SRW_OFFSET, SN76489_SRW_LENGTH);
         }
 
         protected byte[] getTotalNumOfSamples(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, TOTAL_NUM_SAMPLES_OFFSET, TOTAL_NUM_SAMPLES_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, TOTAL_NUM_SAMPLES_OFFSET, TOTAL_NUM_SAMPLES_LENGTH);
         }
 
         protected byte[] getVersion(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, VERSION_OFFSET, VERSION_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, VERSION_OFFSET, VERSION_LENGTH);
         }
 
         protected byte[] getVgmData(byte[] pBytes)
         {
             // NEED TO FIX
-            return ParseFile.parseSimpleOffset(pBytes, (VGM_DATA_OFFSET_OFFSET + BitConverter.ToInt32(this.getVgmDataOffset(pBytes), 0)), 4);
+            return ParseFile.ParseSimpleOffset(pBytes, (VGM_DATA_OFFSET_OFFSET + BitConverter.ToInt32(this.getVgmDataOffset(pBytes), 0)), 4);
         }
 
         protected byte[] getVgmDataOffset(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, VGM_DATA_OFFSET_OFFSET, VGM_DATA_OFFSET_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, VGM_DATA_OFFSET_OFFSET, VGM_DATA_OFFSET_LENGTH);
         }
 
         protected byte[] getYm2151Clock(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, YM2151_CLOCK_OFFSET, YM2151_CLOCK_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, YM2151_CLOCK_OFFSET, YM2151_CLOCK_LENGTH);
         }
 
         protected byte[] getYm2413Clock(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, YM2413_CLOCK_OFFSET, YM2413_CLOCK_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, YM2413_CLOCK_OFFSET, YM2413_CLOCK_LENGTH);
         }
 
         protected byte[] getYm2612Clock(byte[] pBytes)
         {
-            return ParseFile.parseSimpleOffset(pBytes, YM2612_CLOCK_OFFSET, YM2612_CLOCK_LENGTH);
+            return ParseFile.ParseSimpleOffset(pBytes, YM2612_CLOCK_OFFSET, YM2612_CLOCK_LENGTH);
         }
 
         /*
@@ -317,57 +317,57 @@ namespace VGMToolbox.format
         #region STREAM FUNCTIONS
         protected byte[] getEofOffset(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, EOF_OFFSET_OFFSET, EOF_OFFSET_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, EOF_OFFSET_OFFSET, EOF_OFFSET_LENGTH);
         }
 
         protected byte[] getGd3Offset(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, GD3_OFFSET_OFFSET, GD3_OFFSET_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, GD3_OFFSET_OFFSET, GD3_OFFSET_LENGTH);
         }
 
         protected byte[] getLoopNumOfSamples(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, LOOP_NUM_SAMPLES_OFFSET, LOOP_NUM_SAMPLES_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, LOOP_NUM_SAMPLES_OFFSET, LOOP_NUM_SAMPLES_LENGTH);
         }
 
         protected byte[] getLoopOffset(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, LOOP_OFFSET_OFFSET, LOOP_OFFSET_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, LOOP_OFFSET_OFFSET, LOOP_OFFSET_LENGTH);
         }
 
         protected byte[] getRate(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, RATE_OFFSET, RATE_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, RATE_OFFSET, RATE_LENGTH);
         }
 
         protected byte[] getSignatureTag(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
         }
 
         protected byte[] getSn76489Clock(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, SN76489_CLOCK_OFFSET, SN76489_CLOCK_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, SN76489_CLOCK_OFFSET, SN76489_CLOCK_LENGTH);
         }
 
         protected byte[] getSn76489Feedback(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, SN76489_FEEDBACK_OFFSET, SN76489_FEEDBACK_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, SN76489_FEEDBACK_OFFSET, SN76489_FEEDBACK_LENGTH);
         }
 
         protected byte[] getSn76489Srw(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, SN76489_SRW_OFFSET, SN76489_SRW_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, SN76489_SRW_OFFSET, SN76489_SRW_LENGTH);
         }
 
         protected byte[] getTotalNumOfSamples(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, TOTAL_NUM_SAMPLES_OFFSET, TOTAL_NUM_SAMPLES_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, TOTAL_NUM_SAMPLES_OFFSET, TOTAL_NUM_SAMPLES_LENGTH);
         }
 
         protected byte[] getVersion(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, VERSION_OFFSET, VERSION_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, VERSION_OFFSET, VERSION_LENGTH);
         }
 
         protected byte[] getVgmData(Stream pStream)
@@ -378,22 +378,22 @@ namespace VGMToolbox.format
 
         protected byte[] getVgmDataOffset(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, VGM_DATA_OFFSET_OFFSET, VGM_DATA_OFFSET_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, VGM_DATA_OFFSET_OFFSET, VGM_DATA_OFFSET_LENGTH);
         }
 
         protected byte[] getYm2151Clock(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, YM2151_CLOCK_OFFSET, YM2151_CLOCK_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, YM2151_CLOCK_OFFSET, YM2151_CLOCK_LENGTH);
         }
 
         protected byte[] getYm2413Clock(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, YM2413_CLOCK_OFFSET, YM2413_CLOCK_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, YM2413_CLOCK_OFFSET, YM2413_CLOCK_LENGTH);
         }
 
         protected byte[] getYm2612Clock(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, YM2612_CLOCK_OFFSET, YM2612_CLOCK_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, YM2612_CLOCK_OFFSET, YM2612_CLOCK_LENGTH);
         }
 
         private int getIntVersion()
@@ -772,14 +772,14 @@ namespace VGMToolbox.format
         {
             if (this.gd3AbsoluteOffset != 0)
             {
-                this.gd3Signature = ParseFile.parseSimpleOffset(pStream,
+                this.gd3Signature = ParseFile.ParseSimpleOffset(pStream,
                     this.gd3AbsoluteOffset + GD3_SIGNATURE_OFFSET, GD3_SIGNATURE_LENGTH);
-                this.gd3Version = ParseFile.parseSimpleOffset(pStream,
+                this.gd3Version = ParseFile.ParseSimpleOffset(pStream,
                     this.gd3AbsoluteOffset + GD3_VERSION_OFFSET, GD3_VERSION_LENGTH);
-                this.gd3DataLength = ParseFile.parseSimpleOffset(pStream,
+                this.gd3DataLength = ParseFile.ParseSimpleOffset(pStream,
                     this.gd3AbsoluteOffset + GD3_DATA_LENGTH_OFFSET, GD3_DATA_LENGTH_LENGTH);
 
-                byte[] tagBytes = ParseFile.parseSimpleOffset(pStream,
+                byte[] tagBytes = ParseFile.ParseSimpleOffset(pStream,
                     this.gd3AbsoluteOffset + GD3_SIGNATURE_LENGTH + GD3_VERSION_LENGTH + GD3_DATA_LENGTH_LENGTH,
                     BitConverter.ToInt32(this.gd3DataLength, 0));
 

@@ -4,28 +4,58 @@ using System.Text;
 
 namespace VGMToolbox.util
 {
-    public sealed class Encoding
+    /// <summary>
+    /// Class containing static text conversion functions.
+    /// </summary>
+    public class Encoding
     {
+        /// <summary>
+        /// Codepage value for Shift JIS (Jp)
+        /// </summary>
         public const int CODEPAGE_JP = 932;
+        /// <summary>
+        /// Codepage value for Cyrillic (US)
+        /// </summary>
         public const int CODEPAGE_US = 1251;
 
         private Encoding() { }
 
-        public static string getEncodedText(byte[] pBytes, int codePage)
+        /// <summary>
+        /// Get string from bytes.
+        /// </summary>
+        /// <param name="pBytes">Bytes to convert to a string.</param>
+        /// <param name="codePage">Codepage to use in converting bytes.</param>
+        /// <returns>String encoding using the input Codepage.</returns>
+        public static string GetEncodedText(byte[] pBytes, int codePage)
         {
             return System.Text.Encoding.GetEncoding(codePage).GetString(pBytes);
         }
 
-        public static string getJpEncodedText(byte[] pBytes)
+        /// <summary>
+        /// Get text encoded in Shift JIS
+        /// </summary>
+        /// <param name="pBytes">Bytes to decode.</param>
+        /// <returns>String encoded using the Shift JIS codepage.</returns>
+        public static string GetJpEncodedText(byte[] pBytes)
         {
-            return getEncodedText(pBytes, CODEPAGE_JP);
+            return GetEncodedText(pBytes, CODEPAGE_JP);
         }
-        public static string getUSEncodedText(byte[] pBytes)
+        /// <summary>
+        /// Get text encoded in Cyrillic
+        /// </summary>
+        /// <param name="pBytes">Bytes to decode.</param>
+        /// <returns>String encoded using the Cyrillic codepage.</returns>
+        public static string GetUSEncodedText(byte[] pBytes)
         {
-            return getEncodedText(pBytes, CODEPAGE_US);
+            return GetEncodedText(pBytes, CODEPAGE_US);
         }
 
-        public static long GetIntFromString(string pStringNumber)
+        /// <summary>
+        /// Convert input string to a long.  Works for Decimal and Hexidecimal (use 0x prefix).
+        /// </summary>
+        /// <param name="pStringNumber">String containing a Decimal and Hexidecimal number.</param>
+        /// <returns>Long representing the input string.</returns>
+        public static long GetLongFromString(string pStringNumber)
         {
             long ret;
 

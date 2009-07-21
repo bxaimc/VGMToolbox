@@ -150,7 +150,7 @@ namespace VGMToolbox.format
         #region METHODS
         public byte[] getAsciiSignature(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
         }
 
         public void getChunks(Stream pStream)
@@ -284,13 +284,13 @@ namespace VGMToolbox.format
             { 
                 if (ParseFile.CompareSegment(c.chunkIdentifier, 0, INFO_SIGNATURE))
                 {
-                    this.loadAddress = ParseFile.parseSimpleOffset(c.chunkData, LOAD_ADDRESS_OFFSET, LOAD_ADDRESS_LENGTH);
-                    this.initAddress = ParseFile.parseSimpleOffset(c.chunkData, INIT_ADDRESS_OFFSET, INIT_ADDRESS_LENGTH);
-                    this.playAddress = ParseFile.parseSimpleOffset(c.chunkData, PLAY_ADDRESS_OFFSET, PLAY_ADDRESS_LENGTH);
-                    this.palNtscBits = ParseFile.parseSimpleOffset(c.chunkData, PAL_NTSC_BITS_OFFSET, PAL_NTSC_BITS_LENGTH);
-                    this.extraChipsBits = ParseFile.parseSimpleOffset(c.chunkData, EXTRA_SOUND_BITS_OFFSET, EXTRA_SOUND_BITS_LENGTH);
-                    this.totalSongs = ParseFile.parseSimpleOffset(c.chunkData, TOTAL_SONGS_OFFSET, TOTAL_SONGS_LENGTH);
-                    this.startingSong = ParseFile.parseSimpleOffset(c.chunkData, STARTING_SONG_OFFSET, STARTING_SONG_LENGTH);
+                    this.loadAddress = ParseFile.ParseSimpleOffset(c.chunkData, LOAD_ADDRESS_OFFSET, LOAD_ADDRESS_LENGTH);
+                    this.initAddress = ParseFile.ParseSimpleOffset(c.chunkData, INIT_ADDRESS_OFFSET, INIT_ADDRESS_LENGTH);
+                    this.playAddress = ParseFile.ParseSimpleOffset(c.chunkData, PLAY_ADDRESS_OFFSET, PLAY_ADDRESS_LENGTH);
+                    this.palNtscBits = ParseFile.ParseSimpleOffset(c.chunkData, PAL_NTSC_BITS_OFFSET, PAL_NTSC_BITS_LENGTH);
+                    this.extraChipsBits = ParseFile.ParseSimpleOffset(c.chunkData, EXTRA_SOUND_BITS_OFFSET, EXTRA_SOUND_BITS_LENGTH);
+                    this.totalSongs = ParseFile.ParseSimpleOffset(c.chunkData, TOTAL_SONGS_OFFSET, TOTAL_SONGS_LENGTH);
+                    this.startingSong = ParseFile.ParseSimpleOffset(c.chunkData, STARTING_SONG_OFFSET, STARTING_SONG_LENGTH);
                 }
             }
         }
@@ -329,7 +329,7 @@ namespace VGMToolbox.format
 
                     for (int i = 0; i < c.chunkData.Length; i+=4)
                     {
-                        byte[] tempTime = ParseFile.parseSimpleOffset(c.chunkData, i, 4);
+                        byte[] tempTime = ParseFile.ParseSimpleOffset(c.chunkData, i, 4);
                         this.times[j] = BitConverter.ToInt32(tempTime, 0);
                         j++;
                     }
@@ -348,7 +348,7 @@ namespace VGMToolbox.format
                     
                     for (int i = 0; i < c.chunkData.Length; i+=4)
                     {
-                        byte[] tempTime = ParseFile.parseSimpleOffset(c.chunkData, i, 4);
+                        byte[] tempTime = ParseFile.ParseSimpleOffset(c.chunkData, i, 4);
                         this.fades[j] = BitConverter.ToInt32(tempTime, 0);
                         j++;
                     }
@@ -367,8 +367,8 @@ namespace VGMToolbox.format
     
                     while (offset < c.chunkData.Length)
                     {
-                        int labelLength = ParseFile.getSegmentLength(c.chunkData, offset, NULL_TERMINATOR);
-                        byte[] trackLabel = ParseFile.parseSimpleOffset(c.chunkData, offset, labelLength);
+                        int labelLength = ParseFile.GetSegmentLength(c.chunkData, offset, NULL_TERMINATOR);
+                        byte[] trackLabel = ParseFile.ParseSimpleOffset(c.chunkData, offset, labelLength);
                         this.trackLabels.Add(enc.GetString(trackLabel));
 
                         offset += labelLength + 1;
@@ -390,8 +390,8 @@ namespace VGMToolbox.format
 
                     if (offset < c.chunkData.Length)
                     { 
-                        labelLength = ParseFile.getSegmentLength(c.chunkData, offset, NULL_TERMINATOR);
-                        authBlock = ParseFile.parseSimpleOffset(c.chunkData, offset, labelLength);
+                        labelLength = ParseFile.GetSegmentLength(c.chunkData, offset, NULL_TERMINATOR);
+                        authBlock = ParseFile.ParseSimpleOffset(c.chunkData, offset, labelLength);
                         songName = enc.GetString(authBlock);
                         songNameBytes = authBlock;
                         offset += labelLength + 1;
@@ -399,8 +399,8 @@ namespace VGMToolbox.format
 
                     if (offset < c.chunkData.Length)
                     { 
-                        labelLength = ParseFile.getSegmentLength(c.chunkData, offset, NULL_TERMINATOR);
-                        authBlock = ParseFile.parseSimpleOffset(c.chunkData, offset, labelLength);
+                        labelLength = ParseFile.GetSegmentLength(c.chunkData, offset, NULL_TERMINATOR);
+                        authBlock = ParseFile.ParseSimpleOffset(c.chunkData, offset, labelLength);
                         songArtist = enc.GetString(authBlock);
                         songArtistBytes = authBlock;
                         offset += labelLength + 1;
@@ -408,8 +408,8 @@ namespace VGMToolbox.format
 
                     if (offset < c.chunkData.Length)
                     { 
-                        labelLength = ParseFile.getSegmentLength(c.chunkData, offset, NULL_TERMINATOR);
-                        authBlock = ParseFile.parseSimpleOffset(c.chunkData, offset, labelLength);
+                        labelLength = ParseFile.GetSegmentLength(c.chunkData, offset, NULL_TERMINATOR);
+                        authBlock = ParseFile.ParseSimpleOffset(c.chunkData, offset, labelLength);
                         songCopyright = enc.GetString(authBlock);
                         songCopyrightBytes = authBlock;
                         offset += labelLength + 1;
@@ -417,8 +417,8 @@ namespace VGMToolbox.format
 
                     if (offset < c.chunkData.Length)
                     { 
-                        labelLength = ParseFile.getSegmentLength(c.chunkData, offset, NULL_TERMINATOR);
-                        authBlock = ParseFile.parseSimpleOffset(c.chunkData, offset, labelLength);
+                        labelLength = ParseFile.GetSegmentLength(c.chunkData, offset, NULL_TERMINATOR);
+                        authBlock = ParseFile.ParseSimpleOffset(c.chunkData, offset, labelLength);
                         nsfRipper = enc.GetString(authBlock);
                         nsfRipperBytes = authBlock;
                         offset += labelLength + 1;

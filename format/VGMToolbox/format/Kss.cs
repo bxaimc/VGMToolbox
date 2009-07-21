@@ -98,52 +98,52 @@ namespace VGMToolbox.format
 
         public byte[] getAsciiSignature(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
         }
 
         public byte[] getZ80Load(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, Z80_LOAD_OFFSET, Z80_LOAD_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, Z80_LOAD_OFFSET, Z80_LOAD_LENGTH);
         }
 
         public byte[] getInitDataLength(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, INIT_DATA_LENGTH_OFFSET, INIT_DATA_LENGTH_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, INIT_DATA_LENGTH_OFFSET, INIT_DATA_LENGTH_LENGTH);
         }
 
         public byte[] getZ80Init(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, Z80_INIT_OFFSET, Z80_INIT_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, Z80_INIT_OFFSET, Z80_INIT_LENGTH);
         }
 
         public byte[] getZ80Play(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, Z80_PLAY_OFFSET, Z80_PLAY_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, Z80_PLAY_OFFSET, Z80_PLAY_LENGTH);
         }
 
         public byte[] getBankStartNo(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, BANK_START_NO_OFFSET, BANK_START_NO_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, BANK_START_NO_OFFSET, BANK_START_NO_LENGTH);
         }
 
         public byte[] getBankedExtraData(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, BANKED_EXTRA_DATA_OFFSET, BANKED_EXTRA_DATA_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, BANKED_EXTRA_DATA_OFFSET, BANKED_EXTRA_DATA_LENGTH);
         }
 
         public byte[] getReserved(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, RESERVED_OFFSET, RESERVED_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, RESERVED_OFFSET, RESERVED_LENGTH);
         }
 
         public byte[] getExtraChips(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, EXTRA_CHIP_OFFSET, EXTRA_CHIP_LENGTH);
+            return ParseFile.ParseSimpleOffset(pStream, EXTRA_CHIP_OFFSET, EXTRA_CHIP_LENGTH);
         }
 
         public byte[] getData(Stream pStream)
         {
-            return ParseFile.parseSimpleOffset(pStream, DATA_OFFSET, (int)(pStream.Length - DATA_OFFSET));
+            return ParseFile.ParseSimpleOffset(pStream, DATA_OFFSET, (int)(pStream.Length - DATA_OFFSET));
         }
 
         public void Initialize(Stream pStream, string pFilePath)

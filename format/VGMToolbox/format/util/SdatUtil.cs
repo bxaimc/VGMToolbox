@@ -101,7 +101,7 @@ namespace VGMToolbox.format.util
 
                     while ((sdatOffset = ParseFile.GetNextOffset(fs, previousOffset, Sdat.ASCII_SIGNATURE)) != -1)
                     {
-                        sdatSizeBytes = ParseFile.parseSimpleOffset(fs, sdatOffset + 8, 4);
+                        sdatSizeBytes = ParseFile.ParseSimpleOffset(fs, sdatOffset + 8, 4);
                         sdatSize = BitConverter.ToInt32(sdatSizeBytes, 0);
 
                         outputPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(pPath), Path.Combine(filePrefix,
@@ -157,8 +157,8 @@ namespace VGMToolbox.format.util
 
                         bw.Write(Swav.DATA_SIGNATURE);
                         bw.Write(BitConverter.GetBytes(fileSize + 0x08 + Swav.SWAV_INFO_SIZE));
-                        bw.Write(ParseFile.parseSimpleOffset(pStream, pSwar.SampleOffsets[i], (int)Swav.SWAV_INFO_SIZE));
-                        bw.Write(ParseFile.parseSimpleOffset(pStream, pSwar.SampleOffsets[i] + Swav.SWAV_INFO_SIZE, (int)fileSize));
+                        bw.Write(ParseFile.ParseSimpleOffset(pStream, pSwar.SampleOffsets[i], (int)Swav.SWAV_INFO_SIZE));
+                        bw.Write(ParseFile.ParseSimpleOffset(pStream, pSwar.SampleOffsets[i] + Swav.SWAV_INFO_SIZE, (int)fileSize));
                     }
 
                 }
