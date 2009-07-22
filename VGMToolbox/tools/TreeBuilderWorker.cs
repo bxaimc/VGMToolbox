@@ -152,9 +152,10 @@ namespace VGMToolbox.tools
             TreeNode ret = new TreeNode(Path.GetFileName(pFileName));            
             VGMToolbox.util.NodeTagStruct nodeTag = new VGMToolbox.util.NodeTagStruct();
             TreeNode tagNode;
+            string tagHashValue = String.Empty;
 
             using (FileStream fs = File.OpenRead(pFileName))
-            {
+            {                
                 try
                 {
                     Type dataType = FormatUtil.getObjectType(fs);
@@ -184,10 +185,21 @@ namespace VGMToolbox.tools
                         
                         foreach (string s in tagHash.Keys)
                         {
-                            tagNode = new TreeNode(s + ": " + tagHash[s]);
+                            tagHashValue = tagHash[s];
+
+                            if (!String.IsNullOrEmpty(tagHashValue))
+                            {
+                                tagHashValue = tagHashValue.TrimEnd(trimNull);
+                            }
+                            else
+                            {
+                                tagHashValue = String.Empty;
+                            }
+
+                            tagNode = new TreeNode(s + ": " + tagHashValue);
                             ret.Nodes.Add(tagNode);
 
-                            pOutputFileStream.WriteLine(s + ": " + tagHash[s].TrimEnd(trimNull));
+                            pOutputFileStream.WriteLine(s + ": " + tagHashValue);
                         }
 
                         pOutputFileStream.WriteLine(Environment.NewLine);

@@ -19,6 +19,8 @@ namespace VGMToolbox.forms
         {
             InitializeComponent();
 
+            this.lblTitle.Text = "MIDI Extractor";
+            this.tbOutput.Text = "Extract MIDI files embedded in other files.";
             this.grpSourceFiles.AllowDrop = true;
             this.btnDoTask.Hide();
         }

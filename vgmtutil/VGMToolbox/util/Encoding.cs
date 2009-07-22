@@ -51,6 +51,17 @@ namespace VGMToolbox.util
         }
 
         /// <summary>
+        /// Get text encoded in ASCII
+        /// </summary>
+        /// <param name="pBytes">Bytes to decode.</param>
+        /// <returns>String encoded using ASCII.</returns>
+        public static string GetAsciiText(byte[] pBytes)
+        {
+            System.Text.Encoding ascii = System.Text.Encoding.ASCII;
+            return ascii.GetString(pBytes);
+        }
+
+        /// <summary>
         /// Convert input string to a long.  Works for Decimal and Hexidecimal (use 0x prefix).
         /// </summary>
         /// <param name="pStringNumber">String containing a Decimal and Hexidecimal number.</param>
