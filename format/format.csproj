@@ -56,6 +56,7 @@
     <Compile Include="VGMToolbox\format\hoot\HootGameList.cs" />
     <Compile Include="VGMToolbox\format\IGd3TagFormat.cs" />
     <Compile Include="VGMToolbox\format\IXsfTagFormat.cs" />
+    <Compile Include="VGMToolbox\format\Midi.cs" />
     <Compile Include="VGMToolbox\format\PsxSequence.cs" />
     <Compile Include="VGMToolbox\format\S98V3.cs" />
     <Compile Include="VGMToolbox\format\sdat\Swar.cs" />

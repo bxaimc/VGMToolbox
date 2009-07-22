@@ -678,6 +678,18 @@ namespace VGMToolbox
             nodeTag.FormClass = extract_ExtractCdxaForm.GetType().Name;
             ext_ExtractCdxaNode.Tag = nodeTag;
 
+            // MIDI Extractor
+            TreeNode ext_ExtractMidiNode = new TreeNode("MIDI Extractor");
+
+            // Add Cdxa Extractor Form
+            Extract_MidiExtractorForm extract_MidiExtractorForm = new Extract_MidiExtractorForm(ext_ExtractMidiNode);
+            this.splitContainer1.Panel2.Controls.Add(extract_MidiExtractorForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = extract_MidiExtractorForm.GetType().Name;
+            ext_ExtractMidiNode.Tag = nodeTag;
+
+
             ///////
             // NDS
             ///////
@@ -728,6 +740,7 @@ namespace VGMToolbox
             ext_GenericNode.Nodes.Add(ext_SimpleCutterNode);
             ext_GenericNode.Nodes.Add(ext_OffsetFinderNode);
             ext_GenericNode.Nodes.Add(ext_ExtractCdxaNode);
+            ext_GenericNode.Nodes.Add(ext_ExtractMidiNode);
                                
             ext_RootNode.Nodes.Add(ext_GenericNode);
             
