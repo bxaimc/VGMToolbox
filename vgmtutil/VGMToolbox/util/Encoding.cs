@@ -71,5 +71,39 @@ namespace VGMToolbox.util
 
             return ret;
         }
+
+        /// <summary>
+        /// Get the UInt32 Value of the Incoming Byte Array, which is in Big Endian order.
+        /// </summary>
+        /// <param name="pBytes">Bytes to convert.</param>
+        /// <returns>The UInt32 Value of the Incoming Byte Array.</returns>
+        public static UInt32 GetUint32BigEndian(byte[] pBytes)
+        {
+            byte[] workingArray = new byte[pBytes.Length];
+            Array.Copy(pBytes, 0, workingArray, 0, pBytes.Length); 
+            
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(workingArray);
+            }
+            return BitConverter.ToUInt32(workingArray, 0);
+        }
+
+        /// <summary>
+        /// Get the UInt16 Value of the Incoming Byte Array, which is in Big Endian order.
+        /// </summary>
+        /// <param name="pBytes">Bytes to convert.</param>
+        /// <returns>The UInt16 Value of the Incoming Byte Array.</returns>
+        public static UInt16 GetUint16BigEndian(byte[] pBytes)
+        {
+            byte[] workingArray = new byte[pBytes.Length];
+            Array.Copy(pBytes, 0, workingArray, 0, pBytes.Length); 
+            
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(workingArray);
+            }
+            return BitConverter.ToUInt16(workingArray, 0);
+        }
     }
 }
