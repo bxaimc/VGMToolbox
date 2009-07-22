@@ -6,6 +6,7 @@ using System.Text;
 
 using ICSharpCode.SharpZipLib.Checksums;
 
+using VGMToolbox.format.util;
 using VGMToolbox.util;
 
 namespace VGMToolbox.format
@@ -16,12 +17,13 @@ namespace VGMToolbox.format
         public byte[] TrackHeader;
         public byte[] TrackLength;
     }
-    
-    class Midi : IFormat
+
+    public class Midi : IFormat, IExtractableFormat
     {
         public static readonly byte[] ASCII_SIGNATURE_MTHD = new byte[] { 0x4D, 0x54, 0x68, 0x64 }; // MThd
         public static readonly byte[] ASCII_SIGNATURE_MTRK = new byte[] { 0x4D, 0x54, 0x72, 0x6B }; // MTrk
         private const string FORMAT_ABBREVIATION = "MIDI";
+        private const string FILE_EXTENSION = ".mid";
 
         private const int HEADER_SIG_OFFSET = 0x00;
         private const int HEADER_SIG_LENGTH = 0x04;
@@ -46,13 +48,6 @@ namespace VGMToolbox.format
 
         private const int FIRST_TRACK_DATA_OFFSET = 0x16;
 
-        private string filePath;
-        public string FilePath
-        {
-            get { return filePath; }
-            set { filePath = value; }
-        }
-
         Dictionary<string, string> tagHash = new Dictionary<string, string>();
 
         private byte[] asciiSignature;
@@ -62,22 +57,45 @@ namespace VGMToolbox.format
         private byte[] deltaTicks;
         private MidiTrackInfo[] midiTracks;
 
+        private string filePath;        
+        private long fileStartOffset;
         private long totalFileLength;
+        
+        public string FilePath
+        {
+            get { return filePath; }
+            set { filePath = value; }
+        }
+        public long FileStartOffset
+        {
+            get { return fileStartOffset; }
+            set { fileStartOffset = value; }
+        }
+        public long TotalFileLength
+        {
+            get { return totalFileLength; }
+            set { totalFileLength = value; }
+        }
 
         #region METHODS
 
         public void Initialize(Stream pStream, string pFilePath)
         {
+            this.Initialize(pStream, pFilePath, 0);
+        }
+        public void Initialize(Stream pStream, string pFilePath, long pFileOffset)
+        {
             UInt16 numberOfTracks;
             long totalTrackLength;
             long offset;
-            
+                        
             this.filePath = pFilePath;
-            this.asciiSignature = ParseFile.ParseSimpleOffset(pStream, HEADER_SIG_OFFSET, HEADER_SIG_LENGTH);
-            this.headerSize = ParseFile.ParseSimpleOffset(pStream, HEADER_SIZE_OFFSET, HEADER_SIZE_LENGTH);
-            this.fileFormat = ParseFile.ParseSimpleOffset(pStream, FILE_FORMAT_OFFSET, FILE_FORMAT_LENGTH);
-            this.numberOfTracks = ParseFile.ParseSimpleOffset(pStream, NUMBER_OF_TRACKS_OFFSET, NUMBER_OF_TRACKS_LENGTH);
-            this.deltaTicks = ParseFile.ParseSimpleOffset(pStream, DELTA_TICKS_OFFSET, DELTA_TICKS_LENGTH);
+            this.fileStartOffset = pFileOffset;
+            this.asciiSignature = ParseFile.ParseSimpleOffset(pStream, pFileOffset + HEADER_SIG_OFFSET, HEADER_SIG_LENGTH);
+            this.headerSize = ParseFile.ParseSimpleOffset(pStream, pFileOffset + HEADER_SIZE_OFFSET, HEADER_SIZE_LENGTH);
+            this.fileFormat = ParseFile.ParseSimpleOffset(pStream, pFileOffset + FILE_FORMAT_OFFSET, FILE_FORMAT_LENGTH);
+            this.numberOfTracks = ParseFile.ParseSimpleOffset(pStream, pFileOffset + NUMBER_OF_TRACKS_OFFSET, NUMBER_OF_TRACKS_LENGTH);
+            this.deltaTicks = ParseFile.ParseSimpleOffset(pStream, pFileOffset + DELTA_TICKS_OFFSET, DELTA_TICKS_LENGTH);
 
             // get tracks
             this.totalFileLength = Midi.HEADER_SIG_LENGTH + Midi.HEADER_SIG_LENGTH + 
@@ -91,8 +109,8 @@ namespace VGMToolbox.format
             {
                 midiTracks[i] = new MidiTrackInfo();
                 midiTracks[i].StartOffset = offset;
-                midiTracks[i].TrackHeader = ParseFile.ParseSimpleOffset(pStream, offset, TRACK_HEADER_SIG_LENGTH);
-                midiTracks[i].TrackLength = ParseFile.ParseSimpleOffset(pStream, offset + RELATIVE_TRACK_LENGTH_OFFSET, TRACK_LENGTH_LENGTH);
+                midiTracks[i].TrackHeader = ParseFile.ParseSimpleOffset(pStream, pFileOffset + offset, TRACK_HEADER_SIG_LENGTH);
+                midiTracks[i].TrackLength = ParseFile.ParseSimpleOffset(pStream, pFileOffset + offset + RELATIVE_TRACK_LENGTH_OFFSET, TRACK_LENGTH_LENGTH);
 
                 totalTrackLength = (long)(TRACK_HEADER_SIG_LENGTH + TRACK_LENGTH_LENGTH + 
                    VGMToolbox.util.Encoding.GetUint32BigEndian(midiTracks[i].TrackLength));
@@ -146,6 +164,54 @@ namespace VGMToolbox.format
             ref CryptoStream pSha1CryptoStream)
         {
             throw new NotImplementedException();
+        }
+
+        public void ExtractToFile(Stream pStream, string pOutputDirectory)
+        { 
+            string outputFileName = Path.GetFileName(this.filePath);
+            int fileCount = 0;
+
+            if (!Directory.Exists(pOutputDirectory))
+            {
+                Directory.CreateDirectory(pOutputDirectory);
+            }
+            else
+            {
+                fileCount = Directory.GetFiles(pOutputDirectory, String.Format("{0}*", Path.GetFileNameWithoutExtension(outputFileName)), SearchOption.TopDirectoryOnly).Length;
+            }
+
+            outputFileName = String.Format("{0}_{1}{2}", Path.GetFileNameWithoutExtension(outputFileName), fileCount.ToString("X4"), Midi.FILE_EXTENSION);
+            outputFileName = Path.Combine(pOutputDirectory, outputFileName);
+
+            ParseFile.ExtractChunkToFile(pStream, this.fileStartOffset, (int) this.totalFileLength, outputFileName);
+        }
+
+        #endregion
+
+        # region STATIC METHODS
+
+        public static bool IsMidi(string pFilePath)
+        {
+            bool ret = false;
+
+            if (!String.IsNullOrEmpty(pFilePath))
+            {
+                string fullPath = Path.GetFullPath(pFilePath);
+
+                if (File.Exists(fullPath))
+                {
+                    using (FileStream fs = File.OpenRead(fullPath))
+                    {
+                        Type dataType = FormatUtil.getObjectType(fs);
+
+                        if ((dataType != null) && (dataType.Name.Equals("Midi")))
+                        {
+                            ret = true;
+                        }
+                    }
+                }
+            }
+            return ret;
         }
 
         #endregion

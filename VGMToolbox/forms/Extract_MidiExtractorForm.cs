@@ -7,10 +7,11 @@ using System.Text;
 using System.Windows.Forms;
 
 using VGMToolbox.plugin;
+using VGMToolbox.tools.extract;
 
 namespace VGMToolbox.forms
 {
-    public partial class Extract_MidiExtractorForm : VgmtForm
+    public partial class Extract_MidiExtractorForm : AVgmtForm
     {
         public Extract_MidiExtractorForm(TreeNode pTreeNode) : 
             base(pTreeNode)
@@ -26,13 +27,19 @@ namespace VGMToolbox.forms
         {
             base.doDragEnter(sender, e);
         }
-
         private void grpSourceFiles_DragDrop(object sender, DragEventArgs e)
         {
+            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
+            ExtractMidiWorker.ExtractMidiStruct bwStruct = new ExtractMidiWorker.ExtractMidiStruct();            
+            bwStruct.SourcePaths = s;
+            base.backgroundWorker_Execute(bwStruct);
         }
 
-        
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new ExtractMidiWorker();
+        }
         protected override string getCancelMessage()
         {
             return "Extracting MIDI Data...Cancelled";

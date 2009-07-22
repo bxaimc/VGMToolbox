@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{8A96D568-CB21-4E64-8FD2-849A8E2B2D4F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -489,6 +489,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\extract\ExtractCdxaWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tools\extract\ExtractMidiWorker.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\extract\GzipExtractorWorker.cs">
