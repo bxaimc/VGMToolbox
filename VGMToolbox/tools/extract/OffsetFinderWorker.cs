@@ -70,7 +70,7 @@ namespace VGMToolbox.tools.extract
             findOffsetStruct.IsCutSizeAnOffset = offsetFinderStruct.isCutSizeAnOffset;
             findOffsetStruct.OutputFileExtension = offsetFinderStruct.outputFileExtension;
             findOffsetStruct.IsLittleEndian = offsetFinderStruct.isLittleEndian;
-            findOffsetStruct.UseTerminatorForCutsize = offsetFinderStruct.useTerminatorForCutsize;
+            findOffsetStruct.UseTerminatorForCutSize = offsetFinderStruct.useTerminatorForCutsize;
             findOffsetStruct.TerminatorString = offsetFinderStruct.terminatorString;
             findOffsetStruct.TreatTerminatorStringAsHex = offsetFinderStruct.treatTerminatorStringAsHex;
             findOffsetStruct.IncludeTerminatorLength = offsetFinderStruct.includeTerminatorLength;
@@ -81,7 +81,7 @@ namespace VGMToolbox.tools.extract
 
             this.progressStruct.Clear();
             this.progressStruct.GenericMessage = output;
-            ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);            
+            ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);            
         }    
 
         protected override void OnDoWork(DoWorkEventArgs e)

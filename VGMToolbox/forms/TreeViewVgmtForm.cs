@@ -44,13 +44,13 @@ namespace VGMToolbox.forms
 
         protected override void backgroundWorker_ReportProgress(object sender, ProgressChangedEventArgs e)
         {
-            if (e.ProgressPercentage != Constants.IGNORE_PROGRESS &&
-                e.ProgressPercentage != Constants.PROGRESS_MSG_ONLY)
+            if (e.ProgressPercentage != Constants.IgnoreProgress &&
+                e.ProgressPercentage != Constants.ProgressMessageOnly)
             {
                 toolStripProgressBar.Value = e.ProgressPercentage;
             }
 
-            if ((e.ProgressPercentage == Constants.PROGRESS_MSG_ONLY) && e.UserState != null)
+            if ((e.ProgressPercentage == Constants.ProgressMessageOnly) && e.UserState != null)
             {
                 VGMToolbox.util.ProgressStruct vProgressStruct = (VGMToolbox.util.ProgressStruct)e.UserState;
                 tbOutput.Text += vProgressStruct.GenericMessage;
@@ -73,7 +73,7 @@ namespace VGMToolbox.forms
                     }
                 }
 
-                lblProgressLabel.Text = vProgressStruct.Filename == null ? String.Empty : vProgressStruct.Filename;
+                lblProgressLabel.Text = vProgressStruct.FileName ?? String.Empty;
 
                 if (!String.IsNullOrEmpty(vProgressStruct.ErrorMessage))
                 {

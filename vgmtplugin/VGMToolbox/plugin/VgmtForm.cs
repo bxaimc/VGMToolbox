@@ -152,8 +152,8 @@ namespace VGMToolbox.plugin
         {
             VGMToolbox.util.ProgressStruct vProgressStruct = (VGMToolbox.util.ProgressStruct)e.UserState;
             
-            if (e.ProgressPercentage != Constants.IGNORE_PROGRESS &&
-                e.ProgressPercentage != Constants.PROGRESS_MSG_ONLY)
+            if (e.ProgressPercentage != Constants.IgnoreProgress &&
+                e.ProgressPercentage != Constants.ProgressMessageOnly)
             {
                 this.toolStripProgressBar.Value = e.ProgressPercentage;                
                 this.Text = "VGMToolbox [" + e.ProgressPercentage + "%]";
@@ -164,13 +164,13 @@ namespace VGMToolbox.plugin
                 }
             }
 
-            if ((e.ProgressPercentage == Constants.PROGRESS_MSG_ONLY) && e.UserState != null)
+            if ((e.ProgressPercentage == Constants.ProgressMessageOnly) && e.UserState != null)
             {
                 tbOutput.Text += vProgressStruct.GenericMessage;
             }
             else if (e.UserState != null)
             {                
-                lblProgressLabel.Text = vProgressStruct.Filename == null ? String.Empty : vProgressStruct.Filename;
+                lblProgressLabel.Text = vProgressStruct.FileName ?? String.Empty;
 
                 if (!String.IsNullOrEmpty(vProgressStruct.ErrorMessage))
                 {

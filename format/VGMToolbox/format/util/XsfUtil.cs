@@ -16,16 +16,191 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.format.util
 {
+    public struct Time2sfStruct
+    {
+        private string mini2sfDirectory;
+        private string sdatPath;
+        private bool doSingleLoop;
+
+        public string Mini2sfDirectory
+        {
+            set { mini2sfDirectory = value; }
+            get { return mini2sfDirectory; }
+        }
+        public string SdatPath
+        {
+            set { sdatPath = value; }
+            get { return sdatPath; }
+        }
+        public bool DoSingleLoop
+        {
+            set { doSingleLoop = value; }
+            get { return doSingleLoop; }
+        }
+    }
+    public struct Xsf2ExeStruct
+    {
+        private bool includeExtension;
+        private bool stripGsfHeader;
+
+        public bool IncludeExtension
+        {
+            set { includeExtension = value; }
+            get { return includeExtension; }
+        }
+        public bool StripGsfHeader
+        {
+            set { stripGsfHeader = value; }
+            get { return stripGsfHeader; }
+        }
+    }
+    public struct XsfBasicTaggingStruct
+    {
+        private string tagArtist;
+        private string tagCopyright;
+        private string tagYear;
+        private string tagGame;
+        private string tagComment;
+        private string tagXsfByTagName;
+        private string tagXsfByTagValue;
+
+        public string TagArtist
+        {
+            set { tagArtist = value; }
+            get { return tagArtist; }
+        }
+        public string TagCopyright
+        {
+            set { tagCopyright = value; }
+            get { return tagCopyright; }
+        }
+        public string TagYear
+        {
+            set { tagYear = value; }
+            get { return tagYear; }
+        }
+        public string TagGame
+        {
+            set { tagGame = value; }
+            get { return tagGame; }
+        }
+        public string TagComment
+        {
+            set { tagComment = value; }
+            get { return tagComment; }
+        }
+        public string TagXsfByTagName
+        {
+            set { tagXsfByTagName = value; }
+            get { return tagXsfByTagName; }
+        }
+        public string TagXsfByTagValue
+        {
+            set { tagXsfByTagValue = value; }
+            get { return tagXsfByTagValue; }
+        }
+    }
+    public struct XsfRecompressStruct
+    {
+        private int compressionLevel;
+
+        public int CompressionLevel
+        {
+            set { compressionLevel = value; }
+            get { return compressionLevel; }
+        }
+    }
+    public struct XsfTagCopyStruct
+    {
+        private bool copyEmptyTags;
+        private bool updateTitleTag;
+        private bool updateArtistTag;
+        private bool updateGameTag;
+        private bool updateYearTag;
+        private bool updateGenreTag;
+        private bool updateCommentTag;
+        private bool updateCopyrightTag;
+        private bool updateXsfByTag;
+        private bool updateVolumeTag;
+        private bool updateLengthTag;
+        private bool updateFadeTag;
+        private bool updateSystemTag;
+
+        public bool CopyEmptyTags
+        {
+            set { copyEmptyTags = value; }
+            get { return copyEmptyTags; }
+        }
+        public bool UpdateTitleTag
+        {
+            set { updateTitleTag = value; }
+            get { return updateTitleTag; }
+        }
+        public bool UpdateArtistTag
+        {
+            set { updateArtistTag = value; }
+            get { return updateArtistTag; }
+        }
+        public bool UpdateGameTag
+        {
+            set { updateGameTag = value; }
+            get { return updateGameTag; }
+        }
+        public bool UpdateYearTag
+        {
+            set { updateYearTag = value; }
+            get { return updateYearTag; }
+        }
+        public bool UpdateGenreTag
+        {
+            set { updateGenreTag = value; }
+            get { return updateGenreTag; }
+        }
+        public bool UpdateCommentTag
+        {
+            set { updateCommentTag = value; }
+            get { return updateCommentTag; }
+        }
+        public bool UpdateCopyrightTag
+        {
+            set { updateCopyrightTag = value; }
+            get { return updateCopyrightTag; }
+        }
+        public bool UpdateXsfByTag
+        {
+            set { updateXsfByTag = value; }
+            get { return updateXsfByTag; }
+        }
+        public bool UpdateVolumeTag
+        {
+            set { updateVolumeTag = value; }
+            get { return updateVolumeTag; }
+        }
+        public bool UpdateLengthTag
+        {
+            set { updateLengthTag = value; }
+            get { return updateLengthTag; }
+        }
+        public bool UpdateFadeTag
+        {
+            set { updateFadeTag = value; }
+            get { return updateFadeTag; }
+        }
+        public bool UpdateSystemTag
+        {
+            set { updateSystemTag = value; }
+            get { return updateSystemTag; }
+        }
+    }
+
     public class XsfUtil
     {
         private delegate void XsfTagSetter(string pValue);
         private delegate string XsfTagGetter();
         
-        public const string RECOMPRESSED_SUBFOLDER_NAME = "recompressed";
-        public const int INVALID_DATA = -1;
+        public const string RecompressedSubfolderName = "recompressed";
+        public const int InvalidData = -1;
         
-        static readonly string UNPKPSF2_SOURCE_PATH =
-            Path.Combine(Path.Combine(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "external"), "psf2"), "unpkpsf2.exe");
         static readonly string BIN2PSF_SOURCE_PATH =
             Path.Combine(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "external"), "bin2psf.exe");
         static readonly string PSFPOINT_SOURCE_PATH =
@@ -44,60 +219,8 @@ namespace VGMToolbox.format.util
         static readonly byte[] MINI2SF_DATA_START = new byte[] { 0xC0, 0x0F, 0x0D, 0x00, 0x02, 0x00, 0x00, 0x00 };
         static readonly byte[] MINI2SF_SAVESTATE_ID = new byte[] { 0x53, 0x41, 0x56, 0x45 };
 
-
-        public struct Xsf2ExeStruct
-        {
-            public bool IncludeExtension;
-            public bool StripGsfHeader;        
-        }
-
-        public struct XsfBasicTaggingStruct
-        {
-            public string TagArtist;
-            public string TagCopyright;
-            public string TagYear;
-            public string TagGame;
-            public string TagComment;
-            public string TagXsfByTagName;
-            public string TagXsfByTagValue;
-        }
-
-        public struct TimePsf2Struct
-        {
-            public bool IncludeExtension;
-            public bool StripGsfHeader;
-        }
-
-        public struct Time2sfStruct
-        {
-            public string Mini2sfDirectory;
-            public string SdatPath;
-            public bool DoSingleLoop;
-        }
-
-        public struct XsfRecompressStruct
-        {
-            public int CompressionLevel;
-        }
-
-        public struct XsfTagCopyStruct
-        {
-            public bool CopyEmptyTags;
-
-            public bool UpdateTitleTag;
-            public bool UpdateArtistTag;
-            public bool UpdateGameTag;
-            public bool UpdateYearTag;
-            public bool UpdateGenreTag;
-            public bool UpdateCommentTag;
-            public bool UpdateCopyrightTag;
-            public bool UpdateXsfByTag;
-            public bool UpdateVolumeTag;
-            public bool UpdateLengthTag;
-            public bool UpdateFadeTag;
-            public bool UpdateSystemTag;
-        }
-
+        private XsfUtil() { }
+        
         public static bool IsPythonPresentInPath()
         {
             bool ret = false;
@@ -208,7 +331,7 @@ namespace VGMToolbox.format.util
 
         public static string ReCompressDataSection(string pPath, XsfRecompressStruct pXsfRecompressStruct)
         {
-            string outputFolder = Path.Combine(Path.GetDirectoryName(pPath), RECOMPRESSED_SUBFOLDER_NAME);
+            string outputFolder = Path.Combine(Path.GetDirectoryName(pPath), RecompressedSubfolderName);
             string outputPath = null;
 
             Xsf2ExeStruct xsf2ExeStruct = new Xsf2ExeStruct();
@@ -271,7 +394,7 @@ namespace VGMToolbox.format.util
                             {
                                 // crc32
                                 deflatedCrc32String = "0x" + ChecksumUtil.GetCrc32OfFullFile(outFs);
-                                bw.Write((uint)VGMToolbox.util.Encoding.GetLongFromString(deflatedCrc32String));
+                                bw.Write((uint)VGMToolbox.util.Encoding.GetLongValueFromString(deflatedCrc32String));
                                 // reserved section
                                 bw.Write(ParseFile.ParseSimpleOffset(vgmFs, Xsf.RESERVED_SECTION_OFFSET, (int)vgmData.ReservedSectionLength));
 
@@ -704,7 +827,7 @@ namespace VGMToolbox.format.util
         // 2SF
         public static int GetSongNumberForMini2sf(string pPath)
         {
-            int ret = INVALID_DATA;
+            int ret = InvalidData;
             
             string formatString = GetXsfFormatString(pPath);
             Xsf2ExeStruct xsf2ExeStruct;
@@ -737,7 +860,7 @@ namespace VGMToolbox.format.util
 
         public static int GetSongNumberForYoshiIslandMini2sf(string pPath)
         {
-            int ret = INVALID_DATA;
+            int ret = InvalidData;
 
             string formatString = GetXsfFormatString(pPath);
             Xsf2ExeStruct xsf2ExeStruct;
@@ -1143,7 +1266,7 @@ namespace VGMToolbox.format.util
             int pMinIndex, int pMaxIndex, string pOutputFolder)
         {
             int read;
-            byte[] data = new byte[Constants.FILE_READ_CHUNK_SIZE];
+            byte[] data = new byte[Constants.FileReadChunkSize];
             
             string sdatPrefix = Path.GetFileNameWithoutExtension(pSdatPath);
             string libOutputPath = Path.Combine(pOutputFolder, sdatPrefix + ".2sflib");
@@ -1205,7 +1328,7 @@ namespace VGMToolbox.format.util
                         bw.Write(new byte[] { 0x24 });
                         bw.Write(BitConverter.GetBytes((UInt32)0));          // reserved size
                         bw.Write(BitConverter.GetBytes(dataLength));         // data length
-                        bw.Write((UInt32)VGMToolbox.util.Encoding.GetLongFromString("0x" + dataCrc32)); // data crc32
+                        bw.Write((UInt32)VGMToolbox.util.Encoding.GetLongValueFromString("0x" + dataCrc32)); // data crc32
 
                         // data
                         dataFs.Seek(0, SeekOrigin.Begin);

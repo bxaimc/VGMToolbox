@@ -66,7 +66,7 @@ namespace VGMToolbox.format
 
             if (this.titleLength > 0)
             {
-                title = VGMToolbox.util.Encoding.GetJpEncodedText(ParseFile.ParseSimpleOffset(pBytes, 0,
+                title = VGMToolbox.util.Encoding.GetJapaneseEncodedText(ParseFile.ParseSimpleOffset(pBytes, 0,
                          this.titleLength));
             }
 
@@ -76,7 +76,7 @@ namespace VGMToolbox.format
                             (this.titleLength + TITLE_TERMINATOR.Length), PDX_TERMINATOR);
             if (this.pdxLength > 0)
             {
-                pdxFileName = VGMToolbox.util.Encoding.GetJpEncodedText(ParseFile.ParseSimpleOffset(pBytes,
+                pdxFileName = VGMToolbox.util.Encoding.GetJapaneseEncodedText(ParseFile.ParseSimpleOffset(pBytes,
                                 (this.titleLength + TITLE_TERMINATOR.Length), this.pdxLength));
             }
 
@@ -95,7 +95,7 @@ namespace VGMToolbox.format
             if (this.titleLength > 0)
             {
                 this.titleBytes = ParseFile.ParseSimpleOffset(pStream, 0, this.titleLength);
-                this.title = VGMToolbox.util.Encoding.GetJpEncodedText(this.titleBytes);
+                this.title = VGMToolbox.util.Encoding.GetJapaneseEncodedText(this.titleBytes);
             }
 
             // PDX
@@ -105,7 +105,7 @@ namespace VGMToolbox.format
             if (this.pdxLength > 0)
             {
                 this.pdxBytes = ParseFile.ParseSimpleOffset(pStream, this.pdxOffset, this.pdxLength);
-                this.pdxFileName = VGMToolbox.util.Encoding.GetJpEncodedText(this.pdxBytes);
+                this.pdxFileName = VGMToolbox.util.Encoding.GetJapaneseEncodedText(this.pdxBytes);
                 
                 string pdxExtension = Path.GetExtension(this.pdxFileName);
 
@@ -288,7 +288,7 @@ namespace VGMToolbox.format
                 new BinaryWriter(File.Open(tempFilePath, FileMode.Open, FileAccess.ReadWrite)))
             {
                 byte[] newTagBytes = 
-                    System.Text.Encoding.GetEncoding(VGMToolbox.util.Encoding.CODEPAGE_JP).GetBytes(pNewValue);
+                    System.Text.Encoding.GetEncoding(VGMToolbox.util.Encoding.CodePageJapan).GetBytes(pNewValue);
 
                 bw.Write(newTagBytes);
                 bw.Write(TITLE_TERMINATOR);

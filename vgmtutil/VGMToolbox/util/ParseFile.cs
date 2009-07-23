@@ -16,14 +16,14 @@ namespace VGMToolbox.util
         /// <param name="pOffset">Offset to begin cutting from.</param>
         /// <param name="pLength">Number of bytes to cut.</param>
         /// <returns>Byte array containing the extracted section.</returns>
-        public static byte[] ParseSimpleOffset(byte[] pBytes, int pOffset, int pLength)
+        public static byte[] ParseSimpleOffset(byte[] sourceArray, int offset, int length)
         {
-            byte[] ret = new byte[pLength];
+            byte[] ret = new byte[length];
             uint j = 0;
 
-            for (int i = pOffset; i < pOffset + pLength; i++)
+            for (int i = offset; i < offset + length; i++)
             {
-                ret[j] = pBytes[i];
+                ret[j] = sourceArray[i];
                 j++;
             }
 
@@ -172,7 +172,7 @@ namespace VGMToolbox.util
             bool itemFound = false;
             long absoluteOffset = pOffset;
             long relativeOffset;
-            byte[] checkBytes = new byte[Constants.FILE_READ_CHUNK_SIZE];
+            byte[] checkBytes = new byte[Constants.FileReadChunkSize];
             byte[] compareBytes;
 
             long ret = -1;
@@ -180,10 +180,10 @@ namespace VGMToolbox.util
             while (!itemFound && (absoluteOffset < pStream.Length))
             {
                 pStream.Position = absoluteOffset;
-                pStream.Read(checkBytes, 0, Constants.FILE_READ_CHUNK_SIZE);
+                pStream.Read(checkBytes, 0, Constants.FileReadChunkSize);
                 relativeOffset = 0;
 
-                while (!itemFound && (relativeOffset < Constants.FILE_READ_CHUNK_SIZE))
+                while (!itemFound && (relativeOffset < Constants.FileReadChunkSize))
                 {
                     if ((relativeOffset + pSearchBytes.Length) < checkBytes.Length)
                     {
@@ -201,7 +201,7 @@ namespace VGMToolbox.util
                     relativeOffset++;
                 }
 
-                absoluteOffset += (Constants.FILE_READ_CHUNK_SIZE - pSearchBytes.Length);
+                absoluteOffset += (Constants.FileReadChunkSize - pSearchBytes.Length);
             }
 
             // return stream to incoming position
@@ -217,21 +217,20 @@ namespace VGMToolbox.util
         /// <param name="pOffset">Offset to begin searching from.</param>
         /// <param name="pSearchBytes">Bytes to search for.</param>
         /// <returns>Returns the offset of the first instance of pSearchBytes after the input offset or -1 otherwise.</returns>
-        public static long GetNextOffset(byte[] pBufferToSearch, long pOffset, byte[] pSearchBytes)
+        public static long GetNextOffset(byte[] bufferToSearch, long offset, byte[] searchValue)
         {
             bool itemFound = false;
-            long absoluteOffset = pOffset;
+            long absoluteOffset = offset;
             byte[] compareBytes;
 
             long ret = -1;
 
-            while (!itemFound && (absoluteOffset < (pBufferToSearch.Length - pSearchBytes.Length)))
+            while (!itemFound && (absoluteOffset < (bufferToSearch.Length - searchValue.Length)))
             {
-                compareBytes = new byte[pSearchBytes.Length];
-                Array.Copy(pBufferToSearch, absoluteOffset,
-                    compareBytes, 0, pSearchBytes.Length);
+                compareBytes = new byte[searchValue.Length];
+                Array.Copy(bufferToSearch, absoluteOffset, compareBytes, 0, searchValue.Length);
 
-                if (CompareSegment(compareBytes, 0, pSearchBytes))
+                if (CompareSegment(compareBytes, 0, searchValue))
                 {
                     itemFound = true;
                     ret = absoluteOffset;
@@ -251,22 +250,22 @@ namespace VGMToolbox.util
         /// <param name="pOffset">Offset to begin searching from.</param>
         /// <param name="pSearchBytes">Bytes to search for.</param>
         /// <returns>Returns the offset of the first instance of pSearchBytes before the input offset or -1 otherwise.</returns>
-        public static long GetPreviousOffset(Stream pStream, long pOffset, byte[] pSearchBytes)
+        public static long GetPreviousOffset(Stream pStream, long offset, byte[] pSearchBytes)
         {
             long initialStreamPosition = pStream.Position;
 
             bool itemFound = false;
             long relativeOffset;
-            byte[] checkBytes = new byte[Constants.FILE_READ_CHUNK_SIZE];
+            byte[] checkBytes = new byte[Constants.FileReadChunkSize];
             byte[] compareBytes;
 
             long ret = -1;
 
-            long absoluteOffset = pOffset - (Constants.FILE_READ_CHUNK_SIZE) + pSearchBytes.Length;
+            long absoluteOffset = offset - (Constants.FileReadChunkSize) + pSearchBytes.Length;
             while (!itemFound && (absoluteOffset > -1))
             {
                 pStream.Position = absoluteOffset;
-                relativeOffset = pStream.Read(checkBytes, 0, Constants.FILE_READ_CHUNK_SIZE);
+                relativeOffset = pStream.Read(checkBytes, 0, Constants.FileReadChunkSize);
 
                 while (!itemFound && (relativeOffset > -1))
                 {
@@ -282,7 +281,7 @@ namespace VGMToolbox.util
                             // ret = absoluteOffset + relativeOffset - pSearchBytes.Length;
                             ret = absoluteOffset + relativeOffset;
 
-                            if (ret == pOffset)
+                            if (ret == offset)
                             {
                                 ret -= pSearchBytes.Length;
                             }
@@ -293,7 +292,7 @@ namespace VGMToolbox.util
                     relativeOffset--;
                 }
 
-                absoluteOffset = absoluteOffset - Constants.FILE_READ_CHUNK_SIZE + pSearchBytes.Length;
+                absoluteOffset = absoluteOffset - Constants.FileReadChunkSize + pSearchBytes.Length;
             }
 
             // return stream to incoming position
@@ -309,13 +308,13 @@ namespace VGMToolbox.util
         /// <param name="pOffset">Offset to begin comparison of pBytes to pTarget.</param>
         /// <param name="pTarget">Target bytes to compare.</param>
         /// <returns>True if the bytes at pOffset match the pTarget bytes.</returns>
-        public static bool CompareSegment(byte[] pBytes, int pOffset, byte[] pTarget)
+        public static bool CompareSegment(byte[] sourceArray, int offset, byte[] target)
         {
             Boolean ret = true;
             uint j = 0;
-            for (int i = pOffset; i < pTarget.Length; i++)
+            for (int i = offset; i < target.Length; i++)
             {
-                if (pBytes[i] != pTarget[j])
+                if (sourceArray[i] != target[j])
                 {
                     ret = false;
                     break;
@@ -333,13 +332,13 @@ namespace VGMToolbox.util
         /// <param name="pOffset">Offset to begin comparison of pBytes to pTarget.</param>
         /// <param name="pTarget">Target bytes to compare.</param>
         /// <returns>True if the bytes at pOffset match the pTarget bytes.</returns>
-        public static bool CompareSegment(byte[] pBytes, long pOffset, byte[] pTarget)
+        public static bool CompareSegment(byte[] sourceArray, long offset, byte[] target)
         {
             Boolean ret = true;
             uint j = 0;
-            for (long i = pOffset; i < pTarget.Length; i++)
+            for (long i = offset; i < target.Length; i++)
             {
-                if (pBytes[i] != pTarget[j])
+                if (sourceArray[i] != target[j])
                 {
                     ret = false;
                     break;
@@ -402,15 +401,15 @@ namespace VGMToolbox.util
         /// </summary>
         /// <param name="pBytes">Bytes to convert to a string.</param>
         /// <returns>String of hex values that represent the incoming byte array.</returns>
-        public static string ByteArrayToString(byte[] pBytes)
+        public static string ByteArrayToString(byte[] value)
         {
             StringBuilder sBuilder = new StringBuilder();
 
             // Loop through each byte of the hashed data 
             // and format each one as a hexadecimal string.
-            for (int i = 0; i < pBytes.Length; i++)
+            for (int i = 0; i < value.Length; i++)
             {
-                sBuilder.Append(pBytes[i].ToString("X2", CultureInfo.InvariantCulture));
+                sBuilder.Append(value[i].ToString("X2", CultureInfo.InvariantCulture));
             }
 
             return sBuilder.ToString();
@@ -423,7 +422,7 @@ namespace VGMToolbox.util
         /// <param name="pFindOffsetStruct">Struct containing search criteria.</param>
         /// <param name="pMessages">Output messages.</param>
         /// <returns>Directory that extracted files were output into.</returns>
-        public static string FindOffsetAndCutFile(string pPath, FindOffsetStruct pFindOffsetStruct, out string pMessages)
+        public static string FindOffsetAndCutFile(string sourcePath, FindOffsetStruct searchCriteria, out string pMessages)
         {
             int i;
             int j = 0;
@@ -449,68 +448,68 @@ namespace VGMToolbox.util
             StringBuilder ret = new StringBuilder();
 
             // create search bytes
-            if (pFindOffsetStruct.TreatSearchStringAsHex)
+            if (searchCriteria.TreatSearchStringAsHex)
             {
-                searchBytes = new byte[pFindOffsetStruct.SearchString.Length / 2];
+                searchBytes = new byte[searchCriteria.SearchString.Length / 2];
 
                 // convert the search string to bytes
-                for (i = 0; i < pFindOffsetStruct.SearchString.Length; i += 2)
+                for (i = 0; i < searchCriteria.SearchString.Length; i += 2)
                 {
-                    searchBytes[j] = BitConverter.GetBytes(Int16.Parse(pFindOffsetStruct.SearchString.Substring(i, 2), System.Globalization.NumberStyles.AllowHexSpecifier, CultureInfo.CurrentCulture))[0];
+                    searchBytes[j] = BitConverter.GetBytes(Int16.Parse(searchCriteria.SearchString.Substring(i, 2), System.Globalization.NumberStyles.AllowHexSpecifier, CultureInfo.CurrentCulture))[0];
                     j++;
                 }
             }
             else
             {
-                searchBytes = enc.GetBytes(pFindOffsetStruct.SearchString);
+                searchBytes = enc.GetBytes(searchCriteria.SearchString);
             }
 
             // create terminator bytes
             j = 0;
-            if (pFindOffsetStruct.TreatTerminatorStringAsHex)
+            if (searchCriteria.TreatTerminatorStringAsHex)
             {
-                terminatorBytes = new byte[pFindOffsetStruct.TerminatorString.Length / 2];
+                terminatorBytes = new byte[searchCriteria.TerminatorString.Length / 2];
 
                 // convert the search string to bytes
-                for (i = 0; i < pFindOffsetStruct.TerminatorString.Length; i += 2)
+                for (i = 0; i < searchCriteria.TerminatorString.Length; i += 2)
                 {
-                    terminatorBytes[j] = BitConverter.GetBytes(Int16.Parse(pFindOffsetStruct.TerminatorString.Substring(i, 2), System.Globalization.NumberStyles.AllowHexSpecifier, CultureInfo.CurrentCulture))[0];
+                    terminatorBytes[j] = BitConverter.GetBytes(Int16.Parse(searchCriteria.TerminatorString.Substring(i, 2), System.Globalization.NumberStyles.AllowHexSpecifier, CultureInfo.CurrentCulture))[0];
                     j++;
                 }
             }
-            else if (!String.IsNullOrEmpty(pFindOffsetStruct.TerminatorString))
+            else if (!String.IsNullOrEmpty(searchCriteria.TerminatorString))
             {
-                terminatorBytes = enc.GetBytes(pFindOffsetStruct.TerminatorString);
+                terminatorBytes = enc.GetBytes(searchCriteria.TerminatorString);
             }
-            
-            FileInfo fi = new FileInfo(pPath);
 
-            using (FileStream fs = File.Open(Path.GetFullPath(pPath), FileMode.Open, FileAccess.Read))
+            FileInfo fi = new FileInfo(sourcePath);
+
+            using (FileStream fs = File.Open(Path.GetFullPath(sourcePath), FileMode.Open, FileAccess.Read))
             {
-                ret.AppendFormat("[{0}]", pPath);
+                ret.AppendFormat("[{0}]", sourcePath);
                 ret.Append(Environment.NewLine);
 
                 previousOffset = 0;
-                outputFolder = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(pPath),
-                    Path.GetFileNameWithoutExtension(pPath) + "_CUT"));
+                outputFolder = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(sourcePath),
+                    Path.GetFileNameWithoutExtension(sourcePath) + "_CUT"));
 
                 while ((offset = ParseFile.GetNextOffset(fs, previousOffset, searchBytes)) != -1)
                 {
-                    if (pFindOffsetStruct.CutFile)
+                    if (searchCriteria.CutFile)
                     {
                         skipCut = false;
 
-                        cutStart = offset - VGMToolbox.util.Encoding.GetLongFromString(pFindOffsetStruct.SearchStringOffset);
+                        cutStart = offset - VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.SearchStringOffset);
 
-                        if (pFindOffsetStruct.IsCutSizeAnOffset)
+                        if (searchCriteria.IsCutSizeAnOffset)
                         {
-                            cutSizeOffset = cutStart + VGMToolbox.util.Encoding.GetLongFromString(pFindOffsetStruct.CutSize);
+                            cutSizeOffset = cutStart + VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.CutSize);
                             previousPosition = fs.Position;
                             cutSizeBytes = ParseFile.ParseSimpleOffset(fs, cutSizeOffset,
-                                (int)VGMToolbox.util.Encoding.GetLongFromString(pFindOffsetStruct.CutSizeOffsetSize));
+                                (int)VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.CutSizeOffsetSize));
                             fs.Position = previousPosition;
 
-                            if (!pFindOffsetStruct.IsLittleEndian)
+                            if (!searchCriteria.IsLittleEndian)
                             {
                                 Array.Reverse(cutSizeBytes);
                             }
@@ -531,13 +530,13 @@ namespace VGMToolbox.util
                                     break;
                             }
                         }
-                        else if (pFindOffsetStruct.UseTerminatorForCutsize)
+                        else if (searchCriteria.UseTerminatorForCutSize)
                         {
                             if (cutStart >= 0)
                             {
                                 cutSize = GetNextOffset(fs, offset + 1, terminatorBytes) - cutStart;
 
-                                if (pFindOffsetStruct.IncludeTerminatorLength)
+                                if (searchCriteria.IncludeTerminatorLength)
                                 {
                                     cutSize += terminatorBytes.Length;
                                 }
@@ -549,10 +548,10 @@ namespace VGMToolbox.util
                         }
                         else
                         {
-                            cutSize = VGMToolbox.util.Encoding.GetLongFromString(pFindOffsetStruct.CutSize);
+                            cutSize = VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.CutSize);
                         }
 
-                        outputFile = String.Format(CultureInfo.InvariantCulture, "{0}_{1}{2}", Path.GetFileNameWithoutExtension(pPath), chunkCount.ToString("X8", CultureInfo.InvariantCulture), pFindOffsetStruct.OutputFileExtension);
+                        outputFile = String.Format(CultureInfo.InvariantCulture, "{0}_{1}{2}", Path.GetFileNameWithoutExtension(sourcePath), chunkCount.ToString("X8", CultureInfo.InvariantCulture), searchCriteria.OutputFileExtension);
 
                         if (cutStart < 0)
                         {
@@ -583,9 +582,9 @@ namespace VGMToolbox.util
                         }
                         else
                         {
-                            if (!String.IsNullOrEmpty(pFindOffsetStruct.ExtraCutSizeBytes))
+                            if (!String.IsNullOrEmpty(searchCriteria.ExtraCutSizeBytes))
                             {
-                                cutSize += (long)VGMToolbox.util.Encoding.GetLongFromString(pFindOffsetStruct.ExtraCutSizeBytes);
+                                cutSize += (long)VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.ExtraCutSizeBytes);
                             }                            
                             
                             ParseFile.ExtractChunkToFile(fs, cutStart, (int)cutSize, Path.Combine(outputFolder, outputFile));

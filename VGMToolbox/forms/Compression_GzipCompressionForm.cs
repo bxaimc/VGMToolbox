@@ -70,7 +70,7 @@ namespace VGMToolbox.forms
 
             try
             {
-                long tempval = VGMToolbox.util.Encoding.GetLongFromString(this.tbOffset.Text);
+                long tempval = VGMToolbox.util.Encoding.GetLongValueFromString(this.tbOffset.Text);
             }
             catch
             {
@@ -91,7 +91,7 @@ namespace VGMToolbox.forms
                 GzipExtractorWorker.GzipExtractorStruct bwStruct = new GzipExtractorWorker.GzipExtractorStruct();
                 bwStruct.SourcePaths = s;
                 bwStruct.DoDecompress = this.rbDecompress.Checked;
-                bwStruct.StartingOffset = VGMToolbox.util.Encoding.GetLongFromString(this.tbOffset.Text);
+                bwStruct.StartingOffset = VGMToolbox.util.Encoding.GetLongValueFromString(this.tbOffset.Text);
 
                 base.backgroundWorker_Execute(bwStruct);
             }

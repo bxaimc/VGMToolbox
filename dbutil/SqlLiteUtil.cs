@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Data;
 using System.Data.Common;
 using System.Data.SQLite;
@@ -8,10 +9,12 @@ using System.Text;
 
 namespace VGMToolbox.dbutil
 {
-    public class SqlLiteUtil
+    public sealed class SqlLiteUtil
     {
-        public static DataTable GetSimpleDataTable(string pDbPath,
-            string pTableName, string pOrderByField)
+        private SqlLiteUtil() { }
+        
+        public static DataTable GetSimpleDataTable(string databasePath,
+            string tableName, string orderByField)
         {
             StringBuilder sqlCommand = new StringBuilder();
             
@@ -24,23 +27,27 @@ namespace VGMToolbox.dbutil
 
             try
             {
-                conn = new SQLiteConnection(String.Format("Data Source={0};Version=3;Read Only=True;UseUTF16Encoding=True;", pDbPath));
+                conn = new SQLiteConnection(String.Format(CultureInfo.InvariantCulture, "Data Source={0};Version=3;Read Only=True;UseUTF16Encoding=True;", databasePath));
                 conn.Open();
 
-                sqlCommand.AppendFormat("SELECT * FROM {0}", pTableName);
+                sqlCommand.AppendFormat(CultureInfo.InvariantCulture, "SELECT * FROM {0}", tableName);
 
-                if (!String.IsNullOrEmpty(pOrderByField))
+                if (!String.IsNullOrEmpty(orderByField))
                 {
-                    sqlCommand.AppendFormat(" ORDER BY {0}", pOrderByField);
+                    sqlCommand.AppendFormat(CultureInfo.InvariantCulture, " ORDER BY {0}", orderByField);
                 }
 
                 cmd.Connection = conn;
                 cmd.CommandText = sqlCommand.ToString();                
                                 
-                da = new SQLiteDataAdapter(cmd);
+                da = new SQLiteDataAdapter(cmd);                
+                
                 ds.Reset();
+                ds.Locale = CultureInfo.InvariantCulture;
                 da.Fill(ds);
+                
                 dt = ds.Tables[0];
+                dt.Locale = CultureInfo.InvariantCulture;
 
                 conn.Close();
 
@@ -52,8 +59,8 @@ namespace VGMToolbox.dbutil
             }
         }
 
-        public static DataTable GetSimpleDataItem(string pDbPath,
-            string pTableName, string pItemField, string pItemId)
+        public static DataTable GetSimpleDataItem(string databasePath,
+            string tableName, string itemField, string itemId)
         {
             SQLiteConnection conn;
             SQLiteCommand cmd = new SQLiteCommand();
@@ -64,17 +71,22 @@ namespace VGMToolbox.dbutil
 
             try
             {
-                conn = new SQLiteConnection(String.Format("Data Source={0};Version=3;Read Only=True;", pDbPath));
+                conn = new SQLiteConnection(String.Format(CultureInfo.InvariantCulture, 
+                    "Data Source={0};Version=3;Read Only=True;", databasePath));
                 conn.Open();
 
-                cmd.CommandText = String.Format("SELECT * FROM {0} WHERE {1} = '{2}'",
-                    pTableName, pItemField, pItemId);
+                cmd.CommandText = String.Format(CultureInfo.InvariantCulture, 
+                    "SELECT * FROM {0} WHERE {1} = '{2}'",
+                    tableName, itemField, itemId);
                 cmd.Connection = conn;
 
                 da = new SQLiteDataAdapter(cmd);
                 ds.Reset();
+                ds.Locale = CultureInfo.InvariantCulture;
                 da.Fill(ds);
+                
                 dt = ds.Tables[0];
+                dt.Locale = CultureInfo.InvariantCulture;
 
                 conn.Close();
 

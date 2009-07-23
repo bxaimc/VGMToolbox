@@ -78,7 +78,7 @@ namespace VGMToolbox.tools.xsf
             {
                 this.progressStruct = new VGMToolbox.util.ProgressStruct();
                 this.progressStruct.NewNode = null;
-                this.progressStruct.Filename = null;
+                this.progressStruct.FileName = null;
                 this.progressStruct.ErrorMessage =
                     String.Format("ERROR: Directory <{0}> Not Found.", pPsf2ToPsf2LibStruct.sourcePath);
                 ReportProgress(0, this.progressStruct);
@@ -99,7 +99,7 @@ namespace VGMToolbox.tools.xsf
                     int progress = (++this.fileCount * 100) / maxFiles;
                     this.progressStruct = new VGMToolbox.util.ProgressStruct();
                     this.progressStruct.NewNode = null;
-                    this.progressStruct.Filename = f;
+                    this.progressStruct.FileName = f;
                     ReportProgress(progress, this.progressStruct);                    
                                         
                     using (FileStream fs = File.OpenRead(f))

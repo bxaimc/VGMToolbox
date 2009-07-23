@@ -63,7 +63,7 @@ namespace VGMToolbox.tools.xsf
                 {                    
                     songNumber = XsfUtil.GetSongNumberForYoshiIslandMini2sf(f);
 
-                    if ((songNumber != XsfUtil.INVALID_DATA) &&
+                    if ((songNumber != XsfUtil.InvalidData) &&
                         (!sourceFiles.ContainsKey(songNumber)))
                     {
                         sourceFiles.Add(songNumber, f);
@@ -93,11 +93,11 @@ namespace VGMToolbox.tools.xsf
                         songNumber = XsfUtil.GetSongNumberForMini2sf(f);
 
                         // check for source
-                        if ((songNumber != XsfUtil.INVALID_DATA) &&
+                        if ((songNumber != XsfUtil.InvalidData) &&
                             (sourceFiles.ContainsKey(songNumber)))
                         {
                             // copy the tags
-                            XsfUtil.XsfTagCopyStruct xtcStruct = new XsfUtil.XsfTagCopyStruct();
+                            XsfTagCopyStruct xtcStruct = new XsfTagCopyStruct();
                             xtcStruct.CopyEmptyTags = pXsf2sfTagMigratorStruct.CopyEmptyTags;
                             xtcStruct.UpdateArtistTag = pXsf2sfTagMigratorStruct.UpdateArtistTag;
                             xtcStruct.UpdateCommentTag = pXsf2sfTagMigratorStruct.UpdateCommentTag;
@@ -136,13 +136,13 @@ namespace VGMToolbox.tools.xsf
                         }
 
                         this.progressStruct.Clear();
-                        this.progressStruct.Filename = f;
+                        this.progressStruct.FileName = f;
                         this.ReportProgress(this.progress, this.progressStruct);                                
                     }
                     catch (Exception _ex2)
                     {
                         this.progressStruct.Clear();
-                        this.progressStruct.Filename = f;
+                        this.progressStruct.FileName = f;
                         this.progressStruct.ErrorMessage = String.Format("Error updating <{0}>: {1}{2}", f, _ex2.Message, Environment.NewLine);
                         this.ReportProgress(this.progress, this.progressStruct);                                                    
                     }

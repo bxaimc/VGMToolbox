@@ -153,7 +153,7 @@ namespace VGMToolbox.tools.hoot
                     }
 
                     this.progressStruct.Clear();
-                    this.progressStruct.Filename = pPath;
+                    this.progressStruct.FileName = pPath;
                     this.progressStruct.NewNode = rootNode;
                     ReportProgress(this.progress, this.progressStruct);
 

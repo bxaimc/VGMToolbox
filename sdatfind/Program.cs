@@ -46,7 +46,7 @@ namespace sdatfind
 
         private static void usage()
         {
-            Console.WriteLine("sdatfind.exe filename");
+            Console.WriteLine("sdatfind.exe fileName");
         }
     }
 }

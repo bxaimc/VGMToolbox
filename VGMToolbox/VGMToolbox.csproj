@@ -661,6 +661,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Extract_MidiExtractorForm.resx">
       <DependentUpon>Extract_MidiExtractorForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Extract_SnakebiteGuiForm.resx">
       <DependentUpon>Extract_SnakebiteGuiForm.cs</DependentUpon>

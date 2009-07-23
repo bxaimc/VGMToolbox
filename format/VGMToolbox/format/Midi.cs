@@ -123,8 +123,8 @@ namespace VGMToolbox.format
 
             // get tracks
             this.totalFileLength = Midi.HEADER_SIG_LENGTH + Midi.HEADER_SIG_LENGTH + 
-                VGMToolbox.util.Encoding.GetUint32BigEndian(this.headerSize);
-            numberOfTracks = VGMToolbox.util.Encoding.GetUint16BigEndian(this.numberOfTracks);
+                VGMToolbox.util.Encoding.GetUInt32BigEndian(this.headerSize);
+            numberOfTracks = VGMToolbox.util.Encoding.GetUInt16BigEndian(this.numberOfTracks);
             
             this.midiTracks = new MidiTrackInfo[numberOfTracks];            
             offset = (long)FIRST_TRACK_HEADER_SIG_OFFSET;
@@ -137,17 +137,17 @@ namespace VGMToolbox.format
                 this.midiTracks[i].TrackLength = ParseFile.ParseSimpleOffset(pStream, pFileOffset + offset + RELATIVE_TRACK_LENGTH_OFFSET, TRACK_LENGTH_LENGTH);
 
                 totalTrackLength = (long)(TRACK_HEADER_SIG_LENGTH + TRACK_LENGTH_LENGTH +
-                   VGMToolbox.util.Encoding.GetUint32BigEndian(this.midiTracks[i].TrackLength));
+                   VGMToolbox.util.Encoding.GetUInt32BigEndian(this.midiTracks[i].TrackLength));
                 offset += totalTrackLength;
                 this.totalFileLength += totalTrackLength;
 
                 this.parseTextEvents(pStream, i,
                     (midiTracks[i].StartOffset + TRACK_HEADER_SIG_LENGTH + TRACK_LENGTH_LENGTH),
-                    VGMToolbox.util.Encoding.GetUint32BigEndian(this.midiTracks[i].TrackLength));
+                    VGMToolbox.util.Encoding.GetUInt32BigEndian(this.midiTracks[i].TrackLength));
             }
 
             tagHash.Add("MIDI Type", 
-                VGMToolbox.util.Encoding.GetUint16BigEndian(this.fileFormat).ToString());
+                VGMToolbox.util.Encoding.GetUInt16BigEndian(this.fileFormat).ToString());
             tagHash.Add("Total Tracks", numberOfTracks.ToString());
             tagHash.Add("Total File Size", this.totalFileLength.ToString());
 
@@ -155,7 +155,7 @@ namespace VGMToolbox.format
             {
                 tagHash.Add(String.Format("Track {0} - Offset [Length]", i.ToString()),
                     String.Format("0x{0} [0x{1}]", midiTracks[i].StartOffset.ToString("X8"), 
-                    VGMToolbox.util.Encoding.GetUint32BigEndian(this.midiTracks[i].TrackLength).ToString("X4")));
+                    VGMToolbox.util.Encoding.GetUInt32BigEndian(this.midiTracks[i].TrackLength).ToString("X4")));
 
                 if (!String.IsNullOrEmpty(this.midiTracks[i].TrackName))
                 {

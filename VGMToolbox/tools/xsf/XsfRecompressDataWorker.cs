@@ -52,7 +52,7 @@ namespace VGMToolbox.tools.xsf
                     // Report Progress
                     base.progress = (++base.fileCount * 100) / base.maxFiles;
                     base.progressStruct.Clear();
-                    base.progressStruct.Filename = f;
+                    base.progressStruct.FileName = f;
                     ReportProgress(base.progress, base.progressStruct);
 
                     // perform task
@@ -83,7 +83,7 @@ namespace VGMToolbox.tools.xsf
             if (xsfRecompressDataStruct.RecompressFolders &&
                 (((IList<string>)xsfRecompressDataStruct.SourcePaths)).Contains(pPath))
             {                
-                string recompressedFolder = Path.Combine(pPath, XsfUtil.RECOMPRESSED_SUBFOLDER_NAME);
+                string recompressedFolder = Path.Combine(pPath, XsfUtil.RecompressedSubfolderName);
 
                 if (Directory.Exists(recompressedFolder))
                 {
@@ -118,7 +118,7 @@ namespace VGMToolbox.tools.xsf
             XsfRecompressDataStruct xsfRecompressDataStruct =
                 (XsfRecompressDataStruct)pXsfRecompressDataStruct;
 
-            XsfUtil.XsfRecompressStruct xsfRecompressStruct = new XsfUtil.XsfRecompressStruct();
+            XsfRecompressStruct xsfRecompressStruct = new XsfRecompressStruct();
             xsfRecompressStruct.CompressionLevel = xsfRecompressDataStruct.CompressionLevel;
 
             string outputPath = XsfUtil.ReCompressDataSection(pPath, xsfRecompressStruct);

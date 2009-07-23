@@ -72,7 +72,7 @@ namespace VGMToolbox.auditing
             foreach (string k in keys)
             {
                 progress = (++totalItems * 100) / maxItems;
-                this.progressStruct.Filename = k;
+                this.progressStruct.FileName = k;
                 ReportProgress(progress, this.progressStruct);
                 
                 ArrayList gameList = (ArrayList)pAuditingUtil.ChecksumHash[k];

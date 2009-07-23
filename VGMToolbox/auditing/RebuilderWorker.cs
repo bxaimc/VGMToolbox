@@ -138,9 +138,9 @@ namespace VGMToolbox.auditing
             catch (Exception exception)
             {
                 this.progressStruct.Clear();
-                this.progressStruct.Filename = pSourceName;
+                this.progressStruct.FileName = pSourceName;
                 this.progressStruct.ErrorMessage = "Error rebuilding <" + pSourceName + "> to destination: " + exception.Message + Environment.NewLine;
-                ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
+                ReportProgress(Constants.IgnoreProgress, this.progressStruct);
                 isSuccess = false;
             }
 
@@ -223,9 +223,9 @@ namespace VGMToolbox.auditing
                         catch (EndOfStreamException e)
                         {
                             this.progressStruct.Clear();
-                            this.progressStruct.Filename = pFilePath;
+                            this.progressStruct.FileName = pFilePath;
                             this.progressStruct.ErrorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
-                            ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
+                            ReportProgress(Constants.IgnoreProgress, this.progressStruct);
 
                             crc32Generator.Reset();
                             // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
@@ -235,9 +235,9 @@ namespace VGMToolbox.auditing
                         catch (System.OutOfMemoryException e)
                         {
                             this.progressStruct.Clear();
-                            this.progressStruct.Filename = pFilePath;
+                            this.progressStruct.FileName = pFilePath;
                             this.progressStruct.ErrorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
-                            ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
+                            ReportProgress(Constants.IgnoreProgress, this.progressStruct);
 
                             crc32Generator.Reset();
                             // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
@@ -247,9 +247,9 @@ namespace VGMToolbox.auditing
                         catch (IOException e)
                         {
                             this.progressStruct.Clear();
-                            this.progressStruct.Filename = pFilePath;
+                            this.progressStruct.FileName = pFilePath;
                             this.progressStruct.ErrorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFilePath, formatType.Name, e.Message) + Environment.NewLine + Environment.NewLine;
-                            ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
+                            ReportProgress(Constants.IgnoreProgress, this.progressStruct);
 
                             crc32Generator.Reset();
                             // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
@@ -337,7 +337,7 @@ namespace VGMToolbox.auditing
                             
                             progress = (++fileCount * 100) / maxFiles;
                             this.progressStruct.Clear();
-                            this.progressStruct.Filename = f;
+                            this.progressStruct.FileName = f;
                             ReportProgress(progress, this.progressStruct);
                         }
                         else
@@ -370,15 +370,15 @@ namespace VGMToolbox.auditing
                                     
                                     progress = (++fileCount * 100) / maxFiles;
                                     this.progressStruct.Clear();
-                                    this.progressStruct.Filename = f;
+                                    this.progressStruct.FileName = f;
                                     ReportProgress(progress, this.progressStruct);
                                 }
                                 catch (Exception ex)
                                 {
                                     this.progressStruct.Clear();
-                                    this.progressStruct.Filename = f;
+                                    this.progressStruct.FileName = f;
                                     this.progressStruct.ErrorMessage = "[" + f + "] " + ex.Message;
-                                    ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
+                                    ReportProgress(Constants.IgnoreProgress, this.progressStruct);
                                 }
                             }
                             else
@@ -425,9 +425,9 @@ namespace VGMToolbox.auditing
             catch (Exception exception2)
             {
                 this.progressStruct.Clear();
-                this.progressStruct.Filename = null;
+                this.progressStruct.FileName = null;
                 this.progressStruct.ErrorMessage = exception2.Message;
-                ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
+                ReportProgress(Constants.IgnoreProgress, this.progressStruct);
             }
         }
 
@@ -465,7 +465,7 @@ namespace VGMToolbox.auditing
             {
                 this.progressStruct.Clear();
                 this.progressStruct.ErrorMessage = String.Format("Error while rebuilding sets: {0}{1}", ex.Message, Environment.NewLine);
-                ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
+                ReportProgress(Constants.IgnoreProgress, this.progressStruct);
             }
         }
 

@@ -85,7 +85,7 @@ namespace VGMToolbox.tools.xsf
                 this.progressStruct.Clear();
                 this.progressStruct.GenericMessage = String.Format("[SEQEXT - {0}]", Path.GetFileName(pPath)) +
                     Environment.NewLine + seekOutput;
-                this.ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
+                this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
 
 
                 // extract TONE
@@ -107,7 +107,7 @@ namespace VGMToolbox.tools.xsf
                 this.progressStruct.Clear();
                 this.progressStruct.GenericMessage = String.Format("[TONEXT - {0}]", Path.GetFileName(pPath)) +
                     Environment.NewLine + seekOutput + Environment.NewLine;
-                this.ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
+                this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
 
                 // delete the originals
                 File.Delete(destinationPath);

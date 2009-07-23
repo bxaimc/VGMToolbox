@@ -227,7 +227,7 @@ namespace VGMToolbox.tools.xsf
             {
                 this.progressStruct.Clear();
                 this.progressStruct.ErrorMessage = String.Format("ERROR: Directory {0} not found.", pSourceDirectory);
-                ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
+                ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
             }
             else
             {
@@ -310,7 +310,7 @@ namespace VGMToolbox.tools.xsf
                         // report progress
                         progress = (++this.fileCount * 100) / maxFiles;
                         this.progressStruct.Clear();
-                        this.progressStruct.Filename = f;
+                        this.progressStruct.FileName = f;
                         ReportProgress(progress, this.progressStruct);
 
                         filePrefix = Path.GetFileNameWithoutExtension(f);
@@ -340,7 +340,7 @@ namespace VGMToolbox.tools.xsf
                         else
                         {
                             this.progressStruct.Clear();
-                            this.progressStruct.Filename = f;
+                            this.progressStruct.FileName = f;
                             this.progressStruct.ErrorMessage = "[ERROR - NO SUITABLE MAP FILE FOUND]: " + f + Environment.NewLine;
                             ReportProgress(progress, this.progressStruct);                        
                         }
@@ -348,7 +348,7 @@ namespace VGMToolbox.tools.xsf
                     catch (Exception ex2)
                     {
                         this.progressStruct.Clear();
-                        this.progressStruct.Filename = f;
+                        this.progressStruct.FileName = f;
                         this.progressStruct.ErrorMessage = ex2.Message;
                         ReportProgress(progress, this.progressStruct);
                     }
@@ -611,7 +611,7 @@ namespace VGMToolbox.tools.xsf
 
                     this.progressStruct.Clear();
                     this.progressStruct.GenericMessage = ssfMakeOutput + Environment.NewLine;
-                    this.ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
+                    this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
 
                     ret = true && isSuccess;
                 }
@@ -620,7 +620,7 @@ namespace VGMToolbox.tools.xsf
                     ret = false;
                     this.progressStruct.Clear();
                     this.progressStruct.ErrorMessage = _e.Message;
-                    ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
+                    ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
                 }
                 finally
                 {
@@ -629,7 +629,7 @@ namespace VGMToolbox.tools.xsf
                         ret = false;
                         this.progressStruct.Clear();
                         this.progressStruct.ErrorMessage = "[ERROR - SSFMAKE]" + ssfMakeError + Environment.NewLine;
-                        ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);                    
+                        ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);                    
                     }
                 }
             }
@@ -726,7 +726,7 @@ namespace VGMToolbox.tools.xsf
                         this.progressStruct.Clear();
                         this.progressStruct.GenericMessage = String.Format("[SEQEXT - {0}]", Path.GetFileName(file)) +
                             Environment.NewLine + seekOutput;
-                        this.ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
+                        this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
 
 
                         // extract TONE
@@ -748,7 +748,7 @@ namespace VGMToolbox.tools.xsf
                         this.progressStruct.Clear();
                         this.progressStruct.GenericMessage = String.Format("[TONEXT - {0}]", Path.GetFileName(file)) +
                             Environment.NewLine + seekOutput + Environment.NewLine;
-                        this.ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
+                        this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
                        
                         // delete the original
                         File.Delete(destinationPath);
@@ -757,7 +757,7 @@ namespace VGMToolbox.tools.xsf
                     {
                         this.progressStruct.Clear();
                         this.progressStruct.ErrorMessage = _e.Message;
-                        ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
+                        ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
                     }
                     finally
                     {

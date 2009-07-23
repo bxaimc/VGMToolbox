@@ -86,7 +86,7 @@ namespace VGMToolbox.tools.xsf
             {
                 this.progressStruct.Clear();
                 this.progressStruct.ErrorMessage = String.Format("ERROR: Directory {0} not found.", pSourceDirectory);
-                ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
+                ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
             }
             else
             {
@@ -164,7 +164,7 @@ namespace VGMToolbox.tools.xsf
                     // report progress
                     progress = (++this.fileCount * 100) / maxFiles;
                     this.progressStruct.Clear();
-                    this.progressStruct.Filename = f;
+                    this.progressStruct.FileName = f;
                     ReportProgress(progress, this.progressStruct);
 
                     try
@@ -204,11 +204,11 @@ namespace VGMToolbox.tools.xsf
                                 textSectionOffsetValue = BitConverter.ToUInt32(textSectionOffset, 0);
 
                                 // calculate pc offsets
-                                pcOffsetSeq = VGMToolbox.util.Encoding.GetLongFromString(pBin2PsfStruct.seqOffset) -
+                                pcOffsetSeq = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.seqOffset) -
                                     textSectionOffsetValue + PC_OFFSET_CORRECTION;
-                                pcOffsetVb = VGMToolbox.util.Encoding.GetLongFromString(pBin2PsfStruct.vbOffset) -
+                                pcOffsetVb = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.vbOffset) -
                                     textSectionOffsetValue + PC_OFFSET_CORRECTION;
-                                pcOffsetVh = VGMToolbox.util.Encoding.GetLongFromString(pBin2PsfStruct.vhOffset) -
+                                pcOffsetVh = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.vhOffset) -
                                     textSectionOffsetValue + PC_OFFSET_CORRECTION;
                             }
 
@@ -256,7 +256,7 @@ namespace VGMToolbox.tools.xsf
                                 this.progressStruct.Clear();
                                 this.progressStruct.GenericMessage = String.Format("{0}.{1} created.", filePrefix, outputExtension) +
                                     Environment.NewLine;
-                                ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
+                                ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
 
                                 if (!Directory.Exists(ripOutputFolder))
                                 {
@@ -276,13 +276,13 @@ namespace VGMToolbox.tools.xsf
                             this.progressStruct.Clear();
                             this.progressStruct.GenericMessage = String.Format("WARNING: {0}.SEQ has ZERO length.  Skipping...", filePrefix) +
                                 Environment.NewLine;
-                            ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
+                            ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
                         }
                     }
                     catch (Exception ex2)
                     {
                         this.progressStruct.Clear();
-                        this.progressStruct.Filename = f;
+                        this.progressStruct.FileName = f;
                         this.progressStruct.ErrorMessage = ex2.Message;
                         ReportProgress(progress, this.progressStruct);
                     }

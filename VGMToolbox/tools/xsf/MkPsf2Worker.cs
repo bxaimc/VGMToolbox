@@ -92,7 +92,7 @@ namespace VGMToolbox.tools.xsf
                 vProgressStruct = new VGMToolbox.util.ProgressStruct();
                 vProgressStruct.NewNode = null;
                 vProgressStruct.ErrorMessage = String.Format("ERROR: Directory {0} not found.", pSourceDirectory);
-                ReportProgress(Constants.PROGRESS_MSG_ONLY, vProgressStruct);
+                ReportProgress(Constants.ProgressMessageOnly, vProgressStruct);
             }
             else
             {
@@ -142,7 +142,7 @@ namespace VGMToolbox.tools.xsf
             {
                 vProgressStruct = new VGMToolbox.util.ProgressStruct();
                 vProgressStruct.NewNode = null;
-                vProgressStruct.Filename = null;
+                vProgressStruct.FileName = null;
                 vProgressStruct.ErrorMessage = ex.Message;
                 ReportProgress(0, vProgressStruct);
 
@@ -160,7 +160,7 @@ namespace VGMToolbox.tools.xsf
                     int progress = (++this.fileCount * 100) / maxFiles;
                     vProgressStruct = new VGMToolbox.util.ProgressStruct();
                     vProgressStruct.NewNode = null;
-                    vProgressStruct.Filename = f;
+                    vProgressStruct.FileName = f;
                     ReportProgress(progress, vProgressStruct);
 
                     try
@@ -250,7 +250,7 @@ namespace VGMToolbox.tools.xsf
                                         vProgressStruct.NewNode = null;
                                         vProgressStruct.GenericMessage = String.Format("{0}.psf2 created.", outputFilePrefix) +
                                             Environment.NewLine;
-                                        ReportProgress(Constants.PROGRESS_MSG_ONLY, vProgressStruct);
+                                        ReportProgress(Constants.ProgressMessageOnly, vProgressStruct);
 
                                         if (!Directory.Exists(Path.Combine(OUTPUT_FOLDER, pMkPsf2Struct.outputFolder)))
                                         {
@@ -268,7 +268,7 @@ namespace VGMToolbox.tools.xsf
                                     vProgressStruct.NewNode = null;
                                     vProgressStruct.GenericMessage = String.Format("WARNING: {0}.SQ has only ONE sequence and it is INVALID.  Skipping...", filePrefix) +
                                         Environment.NewLine;
-                                    ReportProgress(Constants.PROGRESS_MSG_ONLY, vProgressStruct);                                                        
+                                    ReportProgress(Constants.ProgressMessageOnly, vProgressStruct);                                                        
                                 }
                             } // for (int i = 0; i < totalSequences; i++)
 
@@ -283,14 +283,14 @@ namespace VGMToolbox.tools.xsf
                             vProgressStruct.NewNode = null;
                             vProgressStruct.GenericMessage = String.Format("WARNING: {0}.SQ has ZERO length.  Skipping...", filePrefix) +
                                 Environment.NewLine;
-                            ReportProgress(Constants.PROGRESS_MSG_ONLY, vProgressStruct);                        
+                            ReportProgress(Constants.ProgressMessageOnly, vProgressStruct);                        
                         }                        
                     }
                     catch (Exception ex2)
                     {
                         vProgressStruct = new VGMToolbox.util.ProgressStruct();
                         vProgressStruct.NewNode = null;
-                        vProgressStruct.Filename = f;
+                        vProgressStruct.FileName = f;
                         vProgressStruct.ErrorMessage = ex2.Message;
                         ReportProgress(progress, vProgressStruct);
                     }
@@ -312,7 +312,7 @@ namespace VGMToolbox.tools.xsf
             {
                 vProgressStruct = new VGMToolbox.util.ProgressStruct();
                 vProgressStruct.NewNode = null;
-                vProgressStruct.Filename = null;
+                vProgressStruct.FileName = null;
                 vProgressStruct.ErrorMessage = ex3.Message;
                 ReportProgress(100, vProgressStruct);
             }

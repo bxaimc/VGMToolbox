@@ -558,14 +558,14 @@ namespace VGMToolbox
         #region BACKGROUND WORKER
         private void backgroundWorker_ReportProgress(object sender, ProgressChangedEventArgs e)
         {
-            if (e.ProgressPercentage != Constants.IGNORE_PROGRESS &&
-                e.ProgressPercentage != Constants.PROGRESS_MSG_ONLY)
+            if (e.ProgressPercentage != Constants.IgnoreProgress &&
+                e.ProgressPercentage != Constants.ProgressMessageOnly)
             {
                 toolStripProgressBar.Value = e.ProgressPercentage;
                 this.Text = "VGMToolbox [" + e.ProgressPercentage + "%]";
             }
 
-            if ((e.ProgressPercentage == Constants.PROGRESS_MSG_ONLY) && e.UserState != null)
+            if ((e.ProgressPercentage == Constants.ProgressMessageOnly) && e.UserState != null)
             {
                 VGMToolbox.util.ProgressStruct vProgressStruct = (VGMToolbox.util.ProgressStruct)e.UserState;
                 tbOutput.Text += vProgressStruct.GenericMessage;
@@ -580,8 +580,8 @@ namespace VGMToolbox
                 }
                 
                 
-                lblProgressLabel.Text = vProgressStruct.Filename == null ? String.Empty : vProgressStruct.Filename;
-                tbOutput.Text += vProgressStruct.ErrorMessage == null ? String.Empty : vProgressStruct.ErrorMessage;
+                lblProgressLabel.Text = vProgressStruct.FileName ?? String.Empty;
+                tbOutput.Text += vProgressStruct.ErrorMessage ?? String.Empty;
             }
 
             this.showElapsedTime();

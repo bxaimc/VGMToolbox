@@ -7,25 +7,37 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.format.util
 {
-    public class GbsUtil
+    public struct GbsM3uBuilderStruct
     {
+        public string path;
+        public bool onePlaylistPerFile;
 
-        public struct GbsM3uBuilderStruct
+        public string Path
         {
-            public string Path;
-            public bool OnePlaylistPerFile;
+            set { path = value; }
+            get { return path; }
         }
-
-        public static string BuildM3uTrackItem(int pIndex, Gbs pGbsData, string pPath)
+        public bool OnePlaylistPerFile
+        {
+            set { onePlaylistPerFile = value; }
+            get { return onePlaylistPerFile; }
+        }
+    }
+    
+    public sealed class GbsUtil
+    {
+        private GbsUtil() { }
+        
+        public static string BuildPlaylistTrackItem(int index, Gbs pGbsData, string pPath)
         {
             System.Text.Encoding enc = System.Text.Encoding.ASCII;
             string title = enc.GetString(FileUtil.ReplaceNullByteWithSpace(pGbsData.SongArtist)).Trim() + " - " +
                     enc.GetString(FileUtil.ReplaceNullByteWithSpace(pGbsData.SongName)).Trim() + " - " +
-                    "Track " + pIndex.ToString().PadLeft(2, '0'); ;
+                    "Track " + index.ToString().PadLeft(2, '0'); ;
 
             string entry = NezPlugUtil.BuildPlaylistEntry(NezPlugUtil.FORMAT_GBS,
                 Path.GetFileName(pPath),
-                (pIndex).ToString(),
+                (index).ToString(),
                 title,
                 String.Empty,
                 String.Empty,
@@ -34,7 +46,7 @@ namespace VGMToolbox.format.util
             return entry;
         }
 
-        public static void BuildM3uForFile(GbsM3uBuilderStruct pGbsM3uBuilderStruct)
+        public static void BuildPlaylistForFile(GbsM3uBuilderStruct pGbsM3uBuilderStruct)
         {
             using (FileStream fs = File.OpenRead(pGbsM3uBuilderStruct.Path))
             {
@@ -66,12 +78,12 @@ namespace VGMToolbox.format.util
 
                         for (int i = gbsData.StartingSong[0] - 1; i < gbsData.TotalSongs[0]; i++)
                         {
-                            trackItem = GbsUtil.BuildM3uTrackItem(i, gbsData, pGbsM3uBuilderStruct.Path);
+                            trackItem = GbsUtil.BuildPlaylistTrackItem(i, gbsData, pGbsM3uBuilderStruct.Path);
                             sw.WriteLine(trackItem);
 
                             if (pGbsM3uBuilderStruct.OnePlaylistPerFile)
                             {
-                                GbsUtil.BuildSingleFileM3u(pGbsM3uBuilderStruct.Path, gbsData, trackItem, i);
+                                GbsUtil.BuildSingleFilePlaylist(pGbsM3uBuilderStruct.Path, gbsData, trackItem, i);
                             }
                         }
                     }
@@ -79,11 +91,11 @@ namespace VGMToolbox.format.util
             }
         }
 
-        public static void BuildSingleFileM3u(string pPath, Gbs pGbsData, string pTrackData, int pIndex)
+        public static void BuildSingleFilePlaylist(string pPath, Gbs pGbsData, string pTrackData, int pIndex)
         {
             System.Text.Encoding enc = System.Text.Encoding.ASCII;
             string outputFileName = Path.GetFileNameWithoutExtension(pPath) + " - " + pIndex.ToString().PadLeft(2, '0') +
-                " - " + GbsUtil.CreateM3uTitle(pIndex) + ".m3u";
+                " - " + GbsUtil.CreatePlaylistTitle(pIndex) + ".m3u";
 
             foreach (char c in Path.GetInvalidFileNameChars())
             {
@@ -108,9 +120,9 @@ namespace VGMToolbox.format.util
             singleSW.Dispose();
         }
 
-        public static string CreateM3uTitle(int pIndex)
+        public static string CreatePlaylistTitle(int index)
         {
-            return "Track " + pIndex.ToString().PadLeft(2, '0');
+            return "Track " + index.ToString().PadLeft(2, '0');
         }
     }
 }

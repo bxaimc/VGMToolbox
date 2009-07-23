@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.IO;
 
+using VGMToolbox.format;
 using VGMToolbox.format.util;
 using VGMToolbox.plugin;
 
@@ -10,13 +11,6 @@ namespace VGMToolbox.tools.xsf
     class Time2sfWorker : BackgroundWorker, IVgmtBackgroundWorker
     {
         private VGMToolbox.util.ProgressStruct progressStruct;
-
-        public struct Time2sfStruct
-        {
-            public string PathTo2sf;
-            public string PathToSdat;
-            public bool DoSingleLoop;
-        }
 
         public Time2sfWorker()
         {
@@ -32,9 +26,9 @@ namespace VGMToolbox.tools.xsf
             {
                 string outputMessages;
                 
-                XsfUtil.Time2sfStruct t = new XsfUtil.Time2sfStruct();
-                t.Mini2sfDirectory = pTime2sfStruct.PathTo2sf;
-                t.SdatPath = pTime2sfStruct.PathToSdat;
+                Time2sfStruct t = new Time2sfStruct();
+                t.Mini2sfDirectory = pTime2sfStruct.Mini2sfDirectory;
+                t.SdatPath = pTime2sfStruct.SdatPath;
                 t.DoSingleLoop = pTime2sfStruct.DoSingleLoop;
 
                 try
@@ -69,8 +63,8 @@ namespace VGMToolbox.tools.xsf
         protected override void OnDoWork(DoWorkEventArgs e)
         {
             Time2sfStruct time2sfStruct = (Time2sfStruct) e.Argument;
-            time2sfStruct.PathTo2sf = Path.GetFullPath(time2sfStruct.PathTo2sf);
-            time2sfStruct.PathToSdat = Path.GetFullPath(time2sfStruct.PathToSdat);
+            time2sfStruct.Mini2sfDirectory = Path.GetFullPath(time2sfStruct.Mini2sfDirectory);
+            time2sfStruct.SdatPath = Path.GetFullPath(time2sfStruct.SdatPath);
             
             this.time2sfs(time2sfStruct, e);
         }    

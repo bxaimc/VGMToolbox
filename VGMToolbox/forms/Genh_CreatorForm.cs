@@ -179,10 +179,10 @@ namespace VGMToolbox.forms
             this.initializeProcessing();
             DataRowView drv = (DataRowView)this.comboFormat.SelectedItem;
 
-            GenhCreatorWorker.GenhCreatorStruct genhStruct = new GenhCreatorWorker.GenhCreatorStruct();
-            genhStruct.doCreation = this.rbCreate.Checked;
-            genhStruct.doEdit = this.rbEdit.Checked;
-            genhStruct.doExtract = this.rbExtract.Checked;
+            GenhCreatorStruct genhStruct = new GenhCreatorStruct();
+            genhStruct.DoCreation = this.rbCreate.Checked;
+            genhStruct.DoEdit = this.rbEdit.Checked;
+            genhStruct.DoExtract = this.rbExtract.Checked;
             genhStruct.Format = Convert.ToUInt16(drv.Row.ItemArray[0]).ToString();
             genhStruct.HeaderSkip = this.tbHeaderSkip.Text;
             genhStruct.Interleave = this.tbInterleave.Text;
@@ -217,7 +217,7 @@ namespace VGMToolbox.forms
             }
         }
 
-        public static bool ValidateInputs(GenhCreatorWorker.GenhCreatorStruct pGenhCreatorStruct,
+        public static bool ValidateInputs(GenhCreatorStruct pGenhCreatorStruct,
             out string pErrorMessages)
         {
             bool isValid = true;
@@ -274,7 +274,7 @@ namespace VGMToolbox.forms
             }
             else if (!pGenhCreatorStruct.NoLoops &&
                      !pGenhCreatorStruct.FindLoop &&
-                     VGMToolbox.util.Encoding.GetLongFromString(pGenhCreatorStruct.LoopStart.Trim()) < 0)
+                     VGMToolbox.util.Encoding.GetLongValueFromString(pGenhCreatorStruct.LoopStart.Trim()) < 0)
             {
                 isValid = false;
                 errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageLoopStart2"]);

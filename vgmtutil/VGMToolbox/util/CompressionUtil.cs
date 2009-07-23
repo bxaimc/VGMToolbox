@@ -269,7 +269,7 @@ namespace VGMToolbox.util
                     using (ZlibStream zs = new ZlibStream(pStream, CompressionMode.Decompress, true))
                     {
                         int read;
-                        byte[] data = new byte[Constants.FILE_READ_CHUNK_SIZE];
+                        byte[] data = new byte[Constants.FileReadChunkSize];
 
                         while ((read = zs.Read(data, 0, data.Length)) > 0)
                         {
@@ -296,7 +296,7 @@ namespace VGMToolbox.util
                     using (ZlibStream zs = new ZlibStream(outFs, CompressionMode.Compress, Ionic.Zlib.CompressionLevel.BestCompression, true))
                     {
                         int read;
-                        byte[] data = new byte[Constants.FILE_READ_CHUNK_SIZE];
+                        byte[] data = new byte[Constants.FileReadChunkSize];
 
                         while ((read = br.Read(data, 0, data.Length)) > 0)
                         {
@@ -329,7 +329,7 @@ namespace VGMToolbox.util
                             Ionic.Zlib.CompressionLevel.BestCompression))
                         {
                             int read;
-                            byte[] data = new byte[Constants.FILE_READ_CHUNK_SIZE];
+                            byte[] data = new byte[Constants.FileReadChunkSize];
 
                             while ((read = fs.Read(data, 0, data.Length)) > 0)
                             {
@@ -361,7 +361,7 @@ namespace VGMToolbox.util
                     using (GZipStream gs = new GZipStream(pStream, CompressionMode.Decompress, true))
                     {
                         int read;
-                        byte[] data = new byte[Constants.FILE_READ_CHUNK_SIZE];
+                        byte[] data = new byte[Constants.FileReadChunkSize];
 
                         while ((read = gs.Read(data, 0, data.Length)) > 0)
                         {
@@ -383,7 +383,7 @@ namespace VGMToolbox.util
                     using (GZipStream gs = new GZipStream(outFs, CompressionMode.Compress, Ionic.Zlib.CompressionLevel.BestCompression, true))
                     {
                         int read;
-                        byte[] data = new byte[Constants.FILE_READ_CHUNK_SIZE];
+                        byte[] data = new byte[Constants.FileReadChunkSize];
 
                         while ((read = br.Read(data, 0, data.Length)) > 0)
                         {

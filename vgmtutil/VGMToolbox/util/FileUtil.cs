@@ -119,7 +119,7 @@ namespace VGMToolbox.util
             int read = 0;
             long maxread;
             int totalBytes = 0;
-            byte[] bytes = new byte[Constants.FILE_READ_CHUNK_SIZE];
+            byte[] bytes = new byte[Constants.FileReadChunkSize];
 
             using (BinaryWriter bw =
                 new BinaryWriter(File.Open(pDestinationFilePath, FileMode.Open, FileAccess.ReadWrite)))
@@ -148,7 +148,7 @@ namespace VGMToolbox.util
             int bytesToWrite = pLength;
             byte[] bytes;
 
-            int maxWrite = bytesToWrite > Constants.FILE_READ_CHUNK_SIZE ? Constants.FILE_READ_CHUNK_SIZE : bytesToWrite;
+            int maxWrite = bytesToWrite > Constants.FileReadChunkSize ? Constants.FileReadChunkSize : bytesToWrite;
 
             using (BinaryWriter bw =
                 new BinaryWriter(File.Open(pPath, FileMode.Open, FileAccess.Write)))

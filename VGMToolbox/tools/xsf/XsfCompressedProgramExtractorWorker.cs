@@ -31,7 +31,7 @@ namespace VGMToolbox.tools.xsf
                 (XsfCompressedProgramExtractorStruct)pXsfCompressedProgramExtractorStruct;
             
             // Extract Compressed Data
-            XsfUtil.Xsf2ExeStruct xsf2ExeStruct = new XsfUtil.Xsf2ExeStruct();
+            Xsf2ExeStruct xsf2ExeStruct = new Xsf2ExeStruct();
             xsf2ExeStruct.IncludeExtension = xsfCompressedProgramExtractorStruct.includeExtension;
             xsf2ExeStruct.StripGsfHeader = xsfCompressedProgramExtractorStruct.stripGsfHeader;
             XsfUtil.ExtractCompressedDataSection(pPath, xsf2ExeStruct);

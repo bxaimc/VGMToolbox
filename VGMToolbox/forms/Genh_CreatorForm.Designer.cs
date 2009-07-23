@@ -134,7 +134,7 @@
             this.lblFilenameFilter.Name = "lblFilenameFilter";
             this.lblFilenameFilter.Size = new System.Drawing.Size(74, 13);
             this.lblFilenameFilter.TabIndex = 11;
-            this.lblFilenameFilter.Text = "Filename Filter";
+            this.lblFilenameFilter.Text = "FileName Filter";
             this.lblFilenameFilter.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // tbFilenameFilter

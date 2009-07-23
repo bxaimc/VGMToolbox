@@ -100,7 +100,7 @@ namespace VGMToolbox.tools.xsf
             // Copy STRMs
             this.progressStruct.Clear();
             this.progressStruct.GenericMessage = "Copying STRM files" + Environment.NewLine;
-            ReportProgress(Constants.PROGRESS_MSG_ONLY, progressStruct);
+            ReportProgress(Constants.ProgressMessageOnly, progressStruct);
             
             using (FileStream sdatStream = File.OpenRead(sdatDestinationPath))
             {
@@ -122,7 +122,7 @@ namespace VGMToolbox.tools.xsf
             // Optimize SDAT
             this.progressStruct.Clear();
             this.progressStruct.GenericMessage = "Optimizing SDAT" + Environment.NewLine;
-            ReportProgress(Constants.PROGRESS_MSG_ONLY, progressStruct);
+            ReportProgress(Constants.ProgressMessageOnly, progressStruct);
 
             using (FileStream sdatStream = File.OpenRead(sdatDestinationPath))
             {
@@ -143,7 +143,7 @@ namespace VGMToolbox.tools.xsf
             // Build 2SFs
             this.progressStruct.Clear();
             this.progressStruct.GenericMessage = "Build 2SFs" + Environment.NewLine;
-            ReportProgress(Constants.PROGRESS_MSG_ONLY, progressStruct);
+            ReportProgress(Constants.ProgressMessageOnly, progressStruct);
 
             XsfUtil.Make2sfSet(testpackDestinationPath, sdatDestinationPath,
                 GetMinAllowedSseq(pMk2sfStruct.AllowedSequences),
@@ -172,9 +172,9 @@ namespace VGMToolbox.tools.xsf
             // Add Tags            
             this.progressStruct.Clear();
             this.progressStruct.GenericMessage = "Tagging Output" + Environment.NewLine;
-            ReportProgress(Constants.PROGRESS_MSG_ONLY, progressStruct);
+            ReportProgress(Constants.ProgressMessageOnly, progressStruct);
             
-            XsfUtil.XsfBasicTaggingStruct tagStruct = new XsfUtil.XsfBasicTaggingStruct();
+            XsfBasicTaggingStruct tagStruct = new XsfBasicTaggingStruct();
             tagStruct.TagArtist = pMk2sfStruct.TagArtist;
             tagStruct.TagCopyright = pMk2sfStruct.TagCopyright;
             tagStruct.TagYear = pMk2sfStruct.TagYear;
@@ -189,11 +189,11 @@ namespace VGMToolbox.tools.xsf
             // Time 2SFs
             this.progressStruct.Clear();
             this.progressStruct.GenericMessage = "Timing Output" + Environment.NewLine;
-            ReportProgress(Constants.PROGRESS_MSG_ONLY, progressStruct);
+            ReportProgress(Constants.ProgressMessageOnly, progressStruct);
             
             string outputTimerMessages;
             
-            XsfUtil.Time2sfStruct timerStruct = new XsfUtil.Time2sfStruct();
+            Time2sfStruct timerStruct = new Time2sfStruct();
             timerStruct.DoSingleLoop = false;
             timerStruct.Mini2sfDirectory = TwoSFDestinationPath;
             timerStruct.SdatPath = pMk2sfStruct.SourcePath;
@@ -203,7 +203,7 @@ namespace VGMToolbox.tools.xsf
             // Delete Files
             this.progressStruct.Clear();
             this.progressStruct.GenericMessage = "Cleaning Up" + Environment.NewLine;
-            ReportProgress(Constants.PROGRESS_MSG_ONLY, progressStruct);
+            ReportProgress(Constants.ProgressMessageOnly, progressStruct);
             
             if (File.Exists(sdatDestinationPath))
             {

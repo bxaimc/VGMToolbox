@@ -28,7 +28,7 @@ namespace VGMToolbox.tools.extract
         {
             ExtractCdxaStruct extractCdxaStruct = (ExtractCdxaStruct) pExtractCdxaStruct;
             
-            CdxaUtil.ExtractXaStruct extStruct = new CdxaUtil.ExtractXaStruct();
+            ExtractXaStruct extStruct = new ExtractXaStruct();
             extStruct.Path = pPath;
             extStruct.AddRiffHeader = extractCdxaStruct.AddRiffHeader;
             extStruct.PatchByte0x11 = extractCdxaStruct.PatchByte0x11;

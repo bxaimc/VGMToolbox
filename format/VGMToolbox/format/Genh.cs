@@ -163,7 +163,7 @@ namespace VGMToolbox.format
                 {
                     br.BaseStream.Position = (long)BitConverter.ToUInt32(this.headerLength, 0);
 
-                    byte[] data = new byte[Constants.FILE_READ_CHUNK_SIZE];
+                    byte[] data = new byte[Constants.FileReadChunkSize];
                     int bytesRead;
 
                     while ((bytesRead = br.Read(data, 0, data.Length)) > 0)
@@ -185,7 +185,7 @@ namespace VGMToolbox.format
                 {
                     br.BaseStream.Position = (long)BitConverter.ToUInt32(this.headerLength, 0);
 
-                    byte[] data = new byte[Constants.FILE_READ_CHUNK_SIZE];
+                    byte[] data = new byte[Constants.FileReadChunkSize];
                     int bytesRead;
 
                     while ((bytesRead = br.Read(data, 0, data.Length)) > 0)

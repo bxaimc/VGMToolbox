@@ -8,16 +8,37 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.format.util
 {
+    public struct ExtractXaStruct
+    {
+        private string path;
+        private bool addRiffHeader;
+        private bool patchByte0x11;
+        private uint silentFramesCount;
+
+        public string Path
+        {
+            set { path = value; }
+            get { return path; }
+        }
+        public bool AddRiffHeader
+        {
+            set { addRiffHeader = value; }
+            get { return addRiffHeader; }
+        }
+        public bool PatchByte0x11
+        {
+            set { patchByte0x11 = value; }
+            get { return patchByte0x11; }
+        }
+        public uint SilentFramesCount
+        {
+            set { silentFramesCount = value; }
+            get { return silentFramesCount; }
+        }
+    }
+    
     public class CdxaUtil
     {
-        public struct ExtractXaStruct
-        {
-            public string Path;
-            public bool AddRiffHeader;
-            public bool PatchByte0x11;
-            public uint SilentFramesCount;
-        }
-
         public static void ExtractXaFiles(ExtractXaStruct pExtractXaStruct)
         { 
             Dictionary<UInt32, BinaryWriter> bwDictionary = new Dictionary<UInt32, BinaryWriter>();

@@ -33,13 +33,15 @@ namespace VGMToolbox.format.util
         public string[] SourcePaths;
     }
 
-    public class GenhUtil
+    public sealed class GenhUtil
     {
-        public static bool IsGenhFile(string pPath)
+        private GenhUtil() { }
+
+        public static bool IsGenhFile(string path)
         {
             bool ret = false;
 
-            using (FileStream typeFs = File.Open(pPath, FileMode.Open, FileAccess.Read))
+            using (FileStream typeFs = File.Open(path, FileMode.Open, FileAccess.Read))
             {
                 Type dataType = FormatUtil.getObjectType(typeFs);
 
@@ -99,35 +101,35 @@ namespace VGMToolbox.format.util
                 using (BinaryWriter bw = new BinaryWriter(outputFs))
                 {
                     bw.Write(Genh.ASCII_SIGNATURE);
-                    bw.Write((UInt32)VGMToolbox.util.Encoding.GetLongFromString(pGenhCreationStruct.Channels));
-                    bw.Write((Int32)VGMToolbox.util.Encoding.GetLongFromString(pGenhCreationStruct.Interleave));
-                    bw.Write((UInt32)VGMToolbox.util.Encoding.GetLongFromString(pGenhCreationStruct.Frequency));
-                    bw.Write((UInt32)VGMToolbox.util.Encoding.GetLongFromString(pGenhCreationStruct.LoopStart));
+                    bw.Write((UInt32)VGMToolbox.util.Encoding.GetLongValueFromString(pGenhCreationStruct.Channels));
+                    bw.Write((Int32)VGMToolbox.util.Encoding.GetLongValueFromString(pGenhCreationStruct.Interleave));
+                    bw.Write((UInt32)VGMToolbox.util.Encoding.GetLongValueFromString(pGenhCreationStruct.Frequency));
+                    bw.Write((UInt32)VGMToolbox.util.Encoding.GetLongValueFromString(pGenhCreationStruct.LoopStart));
 
                     if (!String.IsNullOrEmpty(pGenhCreationStruct.LoopEnd))
                     {
-                        bw.Write((UInt32)VGMToolbox.util.Encoding.GetLongFromString(pGenhCreationStruct.LoopEnd));
+                        bw.Write((UInt32)VGMToolbox.util.Encoding.GetLongValueFromString(pGenhCreationStruct.LoopEnd));
                     }
                     else
                     {
                         bw.Write(new byte[] {0x00, 0x00, 0x00, 0x00});
                     }
 
-                    bw.Write((UInt32)VGMToolbox.util.Encoding.GetLongFromString(pGenhCreationStruct.Format));
-                    bw.Write((UInt32)(VGMToolbox.util.Encoding.GetLongFromString(pGenhCreationStruct.HeaderSkip) + Genh.GENH_HEADER_SIZE));
+                    bw.Write((UInt32)VGMToolbox.util.Encoding.GetLongValueFromString(pGenhCreationStruct.Format));
+                    bw.Write((UInt32)(VGMToolbox.util.Encoding.GetLongValueFromString(pGenhCreationStruct.HeaderSkip) + Genh.GENH_HEADER_SIZE));
                     bw.Write((UInt32)Genh.GENH_HEADER_SIZE);
 
-                    if (VGMToolbox.util.Encoding.GetLongFromString(pGenhCreationStruct.Format) == 12)
+                    if (VGMToolbox.util.Encoding.GetLongValueFromString(pGenhCreationStruct.Format) == 12)
                     {
-                        bw.Write((UInt32)(VGMToolbox.util.Encoding.GetLongFromString(pGenhCreationStruct.CoefLeftChannel) + Genh.GENH_HEADER_SIZE));
-                        bw.Write((UInt32)(VGMToolbox.util.Encoding.GetLongFromString(pGenhCreationStruct.CoefRightChannel) + Genh.GENH_HEADER_SIZE));
+                        bw.Write((UInt32)(VGMToolbox.util.Encoding.GetLongValueFromString(pGenhCreationStruct.CoefLeftChannel) + Genh.GENH_HEADER_SIZE));
+                        bw.Write((UInt32)(VGMToolbox.util.Encoding.GetLongValueFromString(pGenhCreationStruct.CoefRightChannel) + Genh.GENH_HEADER_SIZE));
                         bw.Write((UInt32)dspInterleaveType);
 
                         if (pGenhCreationStruct.CapcomHack)
                         {
                             bw.Write(new byte[] { 0x01 });
-                            bw.Write((UInt32)(VGMToolbox.util.Encoding.GetLongFromString(pGenhCreationStruct.CoefLeftChannel) + Genh.GENH_HEADER_SIZE + 0x10));
-                            bw.Write((UInt32)(VGMToolbox.util.Encoding.GetLongFromString(pGenhCreationStruct.CoefRightChannel) + Genh.GENH_HEADER_SIZE + 0x10));
+                            bw.Write((UInt32)(VGMToolbox.util.Encoding.GetLongValueFromString(pGenhCreationStruct.CoefLeftChannel) + Genh.GENH_HEADER_SIZE + 0x10));
+                            bw.Write((UInt32)(VGMToolbox.util.Encoding.GetLongValueFromString(pGenhCreationStruct.CoefRightChannel) + Genh.GENH_HEADER_SIZE + 0x10));
                         }
                         else
                         {
@@ -153,7 +155,7 @@ namespace VGMToolbox.format.util
                         {
                             using (BinaryReader br = new BinaryReader(inputFs))
                             {
-                                byte[] data = new byte[Constants.FILE_READ_CHUNK_SIZE];
+                                byte[] data = new byte[Constants.FileReadChunkSize];
                                 int bytesRead = 0;
 
                                 while ((bytesRead = br.Read(data, 0, data.Length)) > 0)
@@ -174,8 +176,8 @@ namespace VGMToolbox.format.util
         public static int GetDspInterleave(string pGenhInterleave, string GenhChannels)
         {
             int dspInterleave = 0;
-            int genhInterleave = (int)VGMToolbox.util.Encoding.GetLongFromString(pGenhInterleave);
-            int genhChannels = (int)VGMToolbox.util.Encoding.GetLongFromString(GenhChannels);
+            int genhInterleave = (int)VGMToolbox.util.Encoding.GetLongValueFromString(pGenhInterleave);
+            int genhChannels = (int)VGMToolbox.util.Encoding.GetLongValueFromString(GenhChannels);
 
             // Calculating the Interleave Type for DSP
             if (genhInterleave >= 8)
@@ -198,10 +200,10 @@ namespace VGMToolbox.format.util
 
         public static string GetFileEndLoopEnd(string pSourcePath, GenhCreationStruct pGenhCreationStruct)
         {
-            int formatId = (int)VGMToolbox.util.Encoding.GetLongFromString(pGenhCreationStruct.Format);
-            int headerSkip = (int)VGMToolbox.util.Encoding.GetLongFromString(pGenhCreationStruct.HeaderSkip);
-            int channels = (int)VGMToolbox.util.Encoding.GetLongFromString(pGenhCreationStruct.Channels);
-            int interleave = (int)VGMToolbox.util.Encoding.GetLongFromString(pGenhCreationStruct.Interleave);
+            int formatId = (int)VGMToolbox.util.Encoding.GetLongValueFromString(pGenhCreationStruct.Format);
+            int headerSkip = (int)VGMToolbox.util.Encoding.GetLongValueFromString(pGenhCreationStruct.HeaderSkip);
+            int channels = (int)VGMToolbox.util.Encoding.GetLongValueFromString(pGenhCreationStruct.Channels);
+            int interleave = (int)VGMToolbox.util.Encoding.GetLongValueFromString(pGenhCreationStruct.Interleave);
             int loopEnd = -1;
 
             int frames;
@@ -282,8 +284,8 @@ namespace VGMToolbox.format.util
             long loopStart = -1;
             long loopEnd = -1;
 
-            long headerSkip = VGMToolbox.util.Encoding.GetLongFromString(pGenhCreationStruct.HeaderSkip);
-            int channels = (int)VGMToolbox.util.Encoding.GetLongFromString(pGenhCreationStruct.Channels);
+            long headerSkip = VGMToolbox.util.Encoding.GetLongValueFromString(pGenhCreationStruct.HeaderSkip);
+            int channels = (int)VGMToolbox.util.Encoding.GetLongValueFromString(pGenhCreationStruct.Channels);
             string fullIncomingPath = Path.GetFullPath(pSourcePath);
 
             byte[] checkByte = new byte[1];

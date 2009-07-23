@@ -21,13 +21,13 @@ namespace sdatopt
         {
             if ((args.Length > 3) || (args.Length < 2))
             {
-                Console.WriteLine("usage: sdatopt.exe filename start_sequence end_sequence");
-                Console.WriteLine("       sdatopt.exe filename ALL");
-                Console.WriteLine("       sdatopt.exe filename PREP");
-                Console.WriteLine("       sdatopt.exe filename MAP smap_file");
-                Console.WriteLine("       sdatopt.exe filename MAP");
+                Console.WriteLine("usage: sdatopt.exe fileName start_sequence end_sequence");
+                Console.WriteLine("       sdatopt.exe fileName ALL");
+                Console.WriteLine("       sdatopt.exe fileName PREP");
+                Console.WriteLine("       sdatopt.exe fileName MAP smap_file");
+                Console.WriteLine("       sdatopt.exe fileName MAP");
                 Console.WriteLine();
-                Console.WriteLine("filename: .sdat or .2sflib containing SDAT to optimize");
+                Console.WriteLine("fileName: .sdat or .2sflib containing SDAT to optimize");
                 Console.WriteLine("start_sequence: starting sequence number to keep");
                 Console.WriteLine("end_sequence: endinging sequence number to keep");
                 Console.WriteLine("ALL: use this if you wish to keep all sequences");
@@ -127,7 +127,7 @@ namespace sdatopt
                                     // unpack compressed section
                                     Console.WriteLine("Decompressing Compressed Data section of 2SF.");
 
-                                    XsfUtil.Xsf2ExeStruct xsf2ExeStruct = new XsfUtil.Xsf2ExeStruct();
+                                    Xsf2ExeStruct xsf2ExeStruct = new Xsf2ExeStruct();
                                     xsf2ExeStruct.IncludeExtension = true;
                                     xsf2ExeStruct.StripGsfHeader = false;
                                     decompressedDataPath = XsfUtil.ExtractCompressedDataSection(sdatOptimizingPath, xsf2ExeStruct);
@@ -146,7 +146,7 @@ namespace sdatopt
                                     findOffsetStruct.OutputFileExtension = ".sdat";
                                     findOffsetStruct.IsLittleEndian = true;
 
-                                    findOffsetStruct.UseTerminatorForCutsize = false;
+                                    findOffsetStruct.UseTerminatorForCutSize = false;
                                     findOffsetStruct.TerminatorString = null;
                                     findOffsetStruct.TreatTerminatorStringAsHex = false;
                                     findOffsetStruct.IncludeTerminatorLength = false;
@@ -209,12 +209,12 @@ namespace sdatopt
                             {
                                 if (!String.IsNullOrEmpty(args[1]))
                                 {
-                                    startSequence = (int)VGMToolbox.util.Encoding.GetLongFromString(args[1]);
+                                    startSequence = (int)VGMToolbox.util.Encoding.GetLongValueFromString(args[1]);
                                 }
 
                                 if (!String.IsNullOrEmpty(args[2]))
                                 {
-                                    endSequence = (int)VGMToolbox.util.Encoding.GetLongFromString(args[2]);
+                                    endSequence = (int)VGMToolbox.util.Encoding.GetLongValueFromString(args[2]);
                                 }
                             }
 

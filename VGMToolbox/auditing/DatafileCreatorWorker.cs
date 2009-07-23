@@ -97,9 +97,9 @@ namespace VGMToolbox.auditing
                 catch (EndOfStreamException _es)
                 {
                     this.progressStruct.Clear();
-                    this.progressStruct.Filename = pFileName;
+                    this.progressStruct.FileName = pFileName;
                     this.progressStruct.ErrorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFileName, formatType.Name, _es.Message) + Environment.NewLine;
-                    ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
+                    ReportProgress(Constants.IgnoreProgress, this.progressStruct);
 
                     crc32Generator.Reset();
                     // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator, 
@@ -109,9 +109,9 @@ namespace VGMToolbox.auditing
                 catch (System.OutOfMemoryException _es)
                 {
                     this.progressStruct.Clear();
-                    this.progressStruct.Filename = pFileName;
+                    this.progressStruct.FileName = pFileName;
                     this.progressStruct.ErrorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFileName, formatType.Name, _es.Message) + Environment.NewLine;
-                    ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
+                    ReportProgress(Constants.IgnoreProgress, this.progressStruct);
 
 
                     crc32Generator.Reset();
@@ -122,9 +122,9 @@ namespace VGMToolbox.auditing
                 catch (IOException _es)
                 {
                     this.progressStruct.Clear();
-                    this.progressStruct.Filename = pFileName;
+                    this.progressStruct.FileName = pFileName;
                     this.progressStruct.ErrorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFileName, formatType.Name, _es.Message) + Environment.NewLine;
-                    ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
+                    ReportProgress(Constants.IgnoreProgress, this.progressStruct);
 
                     crc32Generator.Reset();
                     // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
@@ -205,7 +205,7 @@ namespace VGMToolbox.auditing
                             {
                                 progress = (++fileCount * 100) / pGetGameParamsStruct.totalFiles;
                                 this.progressStruct.Clear();
-                                this.progressStruct.Filename = f;
+                                this.progressStruct.FileName = f;
                                 ReportProgress(progress, this.progressStruct);
 
                                 try
@@ -220,9 +220,9 @@ namespace VGMToolbox.auditing
                                 catch (Exception _ex)
                                 {
                                     this.progressStruct.Clear();
-                                    this.progressStruct.Filename = f;
+                                    this.progressStruct.FileName = f;
                                     this.progressStruct.ErrorMessage = "Error processing <" + f + "> (" + _ex.Message + ")" + "...Skipped" + Environment.NewLine;
-                                    ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
+                                    ReportProgress(Constants.IgnoreProgress, this.progressStruct);
                                 }
                             }
                             else
@@ -261,9 +261,9 @@ namespace VGMToolbox.auditing
             catch (Exception e1)
             {
                 this.progressStruct.Clear();
-                this.progressStruct.Filename = null;
+                this.progressStruct.FileName = null;
                 this.progressStruct.ErrorMessage = e1.Message;
-                ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);
+                ReportProgress(Constants.IgnoreProgress, this.progressStruct);
             }
             return gameArray;            
         }

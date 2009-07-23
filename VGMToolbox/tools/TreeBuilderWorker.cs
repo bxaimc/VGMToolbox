@@ -89,7 +89,7 @@ namespace VGMToolbox.tools
                 // Add node, but ignore progress
                 this.progressStruct.Clear();
                 this.progressStruct.NewNode = (TreeNode)t.Clone();
-                ReportProgress(Constants.IGNORE_PROGRESS, this.progressStruct);                
+                ReportProgress(Constants.IgnoreProgress, this.progressStruct);                
             }
 
             sw.Close();
@@ -146,7 +146,7 @@ namespace VGMToolbox.tools
         {
             int progress = (++fileCount * 100) / maxFiles;
             this.progressStruct.Clear();
-            this.progressStruct.Filename = pFileName;
+            this.progressStruct.FileName = pFileName;
             ReportProgress(progress, this.progressStruct);
 
             TreeNode ret = new TreeNode(Path.GetFileName(pFileName));            

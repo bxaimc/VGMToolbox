@@ -19,7 +19,7 @@ namespace VGMToolbox.util
         private bool isCutSizeAnOffset;
         private string outputFileExtension;
         private bool isLittleEndian;
-        private bool useTerminatorForCutsize;
+        private bool useTerminatorForCutSize;
         private string terminatorString;
         private bool treatTerminatorStringAsHex;
         private bool includeTerminatorLength;
@@ -101,10 +101,10 @@ namespace VGMToolbox.util
         /// <summary>
         /// Flag indicating that a terminator should be used to determine the cut size.
         /// </summary>
-        public bool UseTerminatorForCutsize
+        public bool UseTerminatorForCutSize
         {
-            get { return useTerminatorForCutsize; }
-            set { useTerminatorForCutsize = value; }
+            get { return useTerminatorForCutSize; }
+            set { useTerminatorForCutSize = value; }
         }
         /// <summary>
         /// Terminator string to search for.
@@ -145,7 +145,7 @@ namespace VGMToolbox.util
     /// </summary>
     public struct ProgressStruct
     {
-        private string filename;
+        private string fileName;
         private string errorMessage;
         private string genericMessage;
         private TreeNode newNode;
@@ -153,10 +153,10 @@ namespace VGMToolbox.util
         /// <summary>
         /// File name to display in progress bar.
         /// </summary>
-        public string Filename
+        public string FileName
         {
-            get { return filename; }
-            set { filename = value; }
+            get { return fileName; }
+            set { fileName = value; }
         }
         /// <summary>
         /// Error message to display in output window.
@@ -188,7 +188,7 @@ namespace VGMToolbox.util
         /// </summary>
         public void Clear()
         {
-            filename = String.Empty;
+            fileName = String.Empty;
             errorMessage = String.Empty;
             genericMessage = String.Empty;
             newNode = null;
@@ -239,16 +239,16 @@ namespace VGMToolbox.util
         /// Chunk size to use when reading from files.  Used to grab maximum buffer 
         /// size without using the large object heap which has poor collection.
         /// </summary>
-        public const int FILE_READ_CHUNK_SIZE = 71680;
+        public const int FileReadChunkSize = 71680;
                 
         /// <summary>
         /// Constant used to send an ignore the value message to the progress bar.
         /// </summary>
-        public const int IGNORE_PROGRESS = -1;
+        public const int IgnoreProgress = -1;
         /// <summary>
         /// Constant used to send a generic message to the progress bar.
         /// </summary>
-        public const int PROGRESS_MSG_ONLY = -2;
+        public const int ProgressMessageOnly = -2;
         
         // empty constructor
         private Constants() { }

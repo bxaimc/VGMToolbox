@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Windows.Forms;
 
+using VGMToolbox.format.util;
 using VGMToolbox.plugin;
 using VGMToolbox.tools.xsf;
 
@@ -37,9 +38,9 @@ namespace VGMToolbox.forms
 
         private void btnDoTask_Click(object sender, EventArgs e)
         {
-            Time2sfWorker.Time2sfStruct t2Struct = new Time2sfWorker.Time2sfStruct();
-            t2Struct.PathTo2sf = tbPathTo2sfs.Text;
-            t2Struct.PathToSdat = tbSdatPath.Text;
+            Time2sfStruct t2Struct = new Time2sfStruct();
+            t2Struct.Mini2sfDirectory = tbPathTo2sfs.Text;
+            t2Struct.SdatPath = tbSdatPath.Text;
             t2Struct.DoSingleLoop = cbOneLoop.Checked;
 
             base.backgroundWorker_Execute(t2Struct);
