@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using VGMToolbox.format;
+using VGMToolbox.format.util;
 using VGMToolbox.plugin;
 using VGMToolbox.util;
 
@@ -45,10 +46,7 @@ namespace VGMToolbox.tools.xsf
 
         public Bin2PsfWorker()
         {
-            fileCount = 0;
-            maxFiles = 0;
             progressStruct = new VGMToolbox.util.ProgressStruct();
-
             WorkerReportsProgress = true;
             WorkerSupportsCancellation = true;
         }
@@ -309,7 +307,7 @@ namespace VGMToolbox.tools.xsf
 
         protected override void OnDoWork(DoWorkEventArgs e)
         {
-            Bin2PsfStruct bin2PsfStruct = (Bin2PsfStruct)e.Argument;
+            Bin2PsfStruct bin2PsfStruct = (Bin2PsfStruct)e.Argument;            
             this.makePsfs(bin2PsfStruct, e);
         }            
     }

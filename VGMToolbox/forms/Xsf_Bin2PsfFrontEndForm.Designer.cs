@@ -56,30 +56,30 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 415);
-            this.pnlLabels.Size = new System.Drawing.Size(715, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 506);
+            this.pnlLabels.Size = new System.Drawing.Size(861, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(715, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(861, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 338);
-            this.tbOutput.Size = new System.Drawing.Size(715, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 429);
+            this.tbOutput.Size = new System.Drawing.Size(861, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 318);
-            this.pnlButtons.Size = new System.Drawing.Size(715, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 409);
+            this.pnlButtons.Size = new System.Drawing.Size(861, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(655, 0);
+            this.btnCancel.Location = new System.Drawing.Point(801, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(595, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(741, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpSource
@@ -98,7 +98,7 @@
             this.grpSource.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSource.Location = new System.Drawing.Point(0, 23);
             this.grpSource.Name = "grpSource";
-            this.grpSource.Size = new System.Drawing.Size(715, 132);
+            this.grpSource.Size = new System.Drawing.Size(861, 117);
             this.grpSource.TabIndex = 5;
             this.grpSource.TabStop = false;
             this.grpSource.Text = "Source";
@@ -106,7 +106,7 @@
             // cbMinipsf
             // 
             this.cbMinipsf.AutoSize = true;
-            this.cbMinipsf.Location = new System.Drawing.Point(310, 98);
+            this.cbMinipsf.Location = new System.Drawing.Point(310, 92);
             this.cbMinipsf.Name = "cbMinipsf";
             this.cbMinipsf.Size = new System.Drawing.Size(101, 17);
             this.cbMinipsf.TabIndex = 18;
@@ -117,7 +117,7 @@
             // lblPsfLibName
             // 
             this.lblPsfLibName.AutoSize = true;
-            this.lblPsfLibName.Location = new System.Drawing.Point(6, 99);
+            this.lblPsfLibName.Location = new System.Drawing.Point(3, 93);
             this.lblPsfLibName.Name = "lblPsfLibName";
             this.lblPsfLibName.Size = new System.Drawing.Size(72, 13);
             this.lblPsfLibName.TabIndex = 17;
@@ -125,7 +125,7 @@
             // 
             // tbPsflibName
             // 
-            this.tbPsflibName.Location = new System.Drawing.Point(86, 96);
+            this.tbPsflibName.Location = new System.Drawing.Point(86, 90);
             this.tbPsflibName.Name = "tbPsflibName";
             this.tbPsflibName.ReadOnly = true;
             this.tbPsflibName.Size = new System.Drawing.Size(218, 20);
@@ -133,7 +133,7 @@
             // 
             // tbOutputFolderName
             // 
-            this.tbOutputFolderName.Location = new System.Drawing.Point(86, 70);
+            this.tbOutputFolderName.Location = new System.Drawing.Point(86, 64);
             this.tbOutputFolderName.Name = "tbOutputFolderName";
             this.tbOutputFolderName.Size = new System.Drawing.Size(218, 20);
             this.tbOutputFolderName.TabIndex = 15;
@@ -141,7 +141,7 @@
             // lblOutputFolder
             // 
             this.lblOutputFolder.AutoSize = true;
-            this.lblOutputFolder.Location = new System.Drawing.Point(3, 73);
+            this.lblOutputFolder.Location = new System.Drawing.Point(3, 67);
             this.lblOutputFolder.Name = "lblOutputFolder";
             this.lblOutputFolder.Size = new System.Drawing.Size(71, 13);
             this.lblOutputFolder.TabIndex = 14;
@@ -149,7 +149,7 @@
             // 
             // btnExeBrowse
             // 
-            this.btnExeBrowse.Location = new System.Drawing.Point(310, 18);
+            this.btnExeBrowse.Location = new System.Drawing.Point(310, 12);
             this.btnExeBrowse.Name = "btnExeBrowse";
             this.btnExeBrowse.Size = new System.Drawing.Size(25, 20);
             this.btnExeBrowse.TabIndex = 13;
@@ -159,7 +159,7 @@
             // 
             // btnSourceDirectoryBrowse
             // 
-            this.btnSourceDirectoryBrowse.Location = new System.Drawing.Point(310, 44);
+            this.btnSourceDirectoryBrowse.Location = new System.Drawing.Point(310, 38);
             this.btnSourceDirectoryBrowse.Name = "btnSourceDirectoryBrowse";
             this.btnSourceDirectoryBrowse.Size = new System.Drawing.Size(25, 20);
             this.btnSourceDirectoryBrowse.TabIndex = 12;
@@ -170,7 +170,7 @@
             // lblSourceFiles
             // 
             this.lblSourceFiles.AutoSize = true;
-            this.lblSourceFiles.Location = new System.Drawing.Point(3, 48);
+            this.lblSourceFiles.Location = new System.Drawing.Point(3, 42);
             this.lblSourceFiles.Name = "lblSourceFiles";
             this.lblSourceFiles.Size = new System.Drawing.Size(65, 13);
             this.lblSourceFiles.TabIndex = 3;
@@ -178,7 +178,7 @@
             // 
             // tbSourceFilesPath
             // 
-            this.tbSourceFilesPath.Location = new System.Drawing.Point(86, 45);
+            this.tbSourceFilesPath.Location = new System.Drawing.Point(86, 39);
             this.tbSourceFilesPath.Name = "tbSourceFilesPath";
             this.tbSourceFilesPath.Size = new System.Drawing.Size(218, 20);
             this.tbSourceFilesPath.TabIndex = 2;
@@ -186,7 +186,7 @@
             // lblDriverPath
             // 
             this.lblDriverPath.AutoSize = true;
-            this.lblDriverPath.Location = new System.Drawing.Point(3, 22);
+            this.lblDriverPath.Location = new System.Drawing.Point(3, 16);
             this.lblDriverPath.Name = "lblDriverPath";
             this.lblDriverPath.Size = new System.Drawing.Size(60, 13);
             this.lblDriverPath.TabIndex = 1;
@@ -195,7 +195,7 @@
             // tbExePath
             // 
             this.tbExePath.AllowDrop = true;
-            this.tbExePath.Location = new System.Drawing.Point(86, 19);
+            this.tbExePath.Location = new System.Drawing.Point(86, 13);
             this.tbExePath.Name = "tbExePath";
             this.tbExePath.Size = new System.Drawing.Size(218, 20);
             this.tbExePath.TabIndex = 0;
@@ -209,9 +209,9 @@
             this.grpOptions.Controls.Add(this.lblSeqOffset);
             this.grpOptions.Controls.Add(this.tbSeqOffset);
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpOptions.Location = new System.Drawing.Point(0, 155);
+            this.grpOptions.Location = new System.Drawing.Point(0, 140);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(715, 100);
+            this.grpOptions.Size = new System.Drawing.Size(861, 100);
             this.grpOptions.TabIndex = 6;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
@@ -268,7 +268,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(715, 456);
+            this.ClientSize = new System.Drawing.Size(861, 547);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpSource);
             this.Name = "Xsf_Bin2PsfFrontEndForm";

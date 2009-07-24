@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -190,6 +191,143 @@ namespace VGMToolbox.format.util
         {
             set { updateSystemTag = value; }
             get { return updateSystemTag; }
+        }
+    }
+
+    public class PsfPsyQAddresses
+    {
+        // private
+        private string psfDrvLoadAddress;
+        private string driverTextString;
+        private string exeFileNameCrc;
+
+        private string resetCallback;
+        private string ssInit;
+        private string ssSeqOpen;
+        private string ssSeqPlay;
+        private string ssSetMVol;
+        private string ssStart;
+        private string ssSetTableSize;
+        private string ssSetTickMode;
+        private string ssSeqSetVol;
+        private string ssUtSetReverbType;
+        private string ssUtReverbOn;
+        private string ssVabOpenHead;
+        private string ssVabTransBodyPartly;
+        private string ssVabTransCompleted;
+        
+        private string spuSetReverb;
+        private string spuSetReverbModeParam;
+        private string spuSetReverbDepth;
+        private string spuSetReverbVoice;
+
+        // public
+        public string PsfDrvLoadAddress
+        {
+            set { psfDrvLoadAddress = value; }
+            get { return psfDrvLoadAddress; }
+        }
+        public string DriverTextString
+        {
+            set { driverTextString = value; }
+            get { return driverTextString; }        
+        }
+        public string ExeFileNameCrc
+        {
+            set { exeFileNameCrc = value; }
+            get { return exeFileNameCrc; }
+        }
+
+        public string ResetCallback
+        {
+            set { resetCallback = value; }
+            get { return resetCallback; }
+        }
+        public string SsInit
+        {
+            set { ssInit = value; }
+            get { return ssInit; }
+        }
+        public string SsSeqOpen
+        {
+            set { ssSeqOpen = value; }
+            get { return ssSeqOpen; }
+        }
+        public string SsSeqPlay
+        {
+            set { ssSeqPlay = value; }
+            get { return ssSeqPlay; }
+        }
+        public string SsSetMVol
+        {
+            set { ssSetMVol = value; }
+            get { return ssSetMVol; }
+        }
+        public string SsStart
+        {
+            set { ssStart = value; }
+            get { return ssStart; }
+        }
+        public string SsSetTableSize
+        {
+            set { ssSetTableSize = value; }
+            get { return ssSetTableSize; }
+        }
+        public string SsSetTickMode
+        {
+            set { ssSetTickMode = value; }
+            get { return ssSetTickMode; }
+        }
+        public string SsSeqSetVol
+        {
+            set { ssSeqSetVol = value; }
+            get { return ssSeqSetVol; }
+        }
+        public string SsUtSetReverbType
+        {
+            set { ssUtSetReverbType = value; }
+            get { return ssUtSetReverbType; }
+        }
+        public string SsUtReverbOn
+        {
+            set { ssUtReverbOn = value; }
+            get { return ssUtReverbOn; }
+        }
+        public string SsVabOpenHead
+        {
+            set { ssVabOpenHead = value; }
+            get { return ssVabOpenHead; }
+        }
+        public string SsVabTransBodyPartly
+        {
+            set { ssVabTransBodyPartly = value; }
+            get { return ssVabTransBodyPartly; }
+        }
+        public string SsVabTransCompleted
+        {
+            set { ssVabTransCompleted = value; }
+            get { return ssVabTransCompleted; }
+        }
+        
+        public string SpuSetReverb
+        {
+            set { spuSetReverb = value; }
+            get { return spuSetReverb; }
+        }
+        public string SpuSetReverbModeParam
+        {
+            set { spuSetReverbModeParam = value; }
+            get { return spuSetReverbModeParam; }
+        }
+        public string SpuSetReverbDepth
+        {
+            set { spuSetReverbDepth = value; }
+            get { return spuSetReverbDepth; }
+        }
+        public string SpuSetReverbVoice
+        {
+            set { spuSetReverbVoice = value; }
+            get { return spuSetReverbVoice; }
         }
     }
 
@@ -822,6 +960,170 @@ namespace VGMToolbox.format.util
             }
 
             return outputPath;
+        }
+
+        public static PsfPsyQAddresses GetSigFindItems(string logFilePath)
+        {
+            string fullPath = Path.GetFullPath(logFilePath);
+            PsfPsyQAddresses ret = new PsfPsyQAddresses();
+
+            string inputLine;
+            string[] splitInput;
+            string firstChunk;
+            char[] splitDelimeters = new char[] { ' ' };
+            ArrayList psyQFunctions;
+            string addressValue;
+            PropertyInfo psyQValue;
+
+            if (File.Exists(fullPath))
+            {
+                psyQFunctions = XsfUtil.getPsyQFunctionList();
+                
+                using (StreamReader logFileReader = new StreamReader(File.OpenRead(fullPath)))
+                {
+                    while ((inputLine = logFileReader.ReadLine()) != null)
+                    {
+                        if (inputLine.Contains("Text Start ="))
+                        {
+                            ret.PsfDrvLoadAddress = XsfUtil.getSigFindAddress(inputLine, false);
+                        }
+                        else
+                        {
+                            splitInput = inputLine.Split(splitDelimeters, StringSplitOptions.RemoveEmptyEntries);
+
+                            if (splitInput.Length > 0)
+                            {
+                                firstChunk = splitInput[0];
+
+                                if (psyQFunctions.Contains(firstChunk))
+                                {
+                                    addressValue = XsfUtil.getSigFindAddress(inputLine, false);
+                                    psyQValue = ret.GetType().GetProperty(firstChunk);
+                                    psyQValue.SetValue(ret, addressValue, null);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return ret;
+        }
+
+        private static string getSigFindAddress(string inputLine, bool addValues)
+        {
+            string ret = null;
+            int firstHexSpecifier = -1;
+            int secondHexSpecifier = -1;
+            uint firstHexValue;
+            uint secondHexValue;
+
+            firstHexSpecifier = inputLine.IndexOf("0x");
+            secondHexSpecifier = inputLine.LastIndexOf("0x");
+
+            if (addValues)
+            {
+                if ((firstHexSpecifier != -1) && (secondHexSpecifier != -1))
+                {
+                    firstHexValue = (uint)VGMToolbox.util.Encoding.GetLongValueFromString(inputLine.Substring(firstHexSpecifier, 10));
+                    secondHexValue = (uint)VGMToolbox.util.Encoding.GetLongValueFromString(inputLine.Substring(secondHexSpecifier, 10));
+
+                    ret = String.Format("0x{0}", (firstHexValue + secondHexValue).ToString("X8"));
+                }
+            }
+            else
+            {
+                ret = inputLine.Substring(firstHexSpecifier, 10);
+            }
+
+            return ret;
+        }
+
+        private static ArrayList getPsyQFunctionList()
+        { 
+            ArrayList psyQFunctionList = new ArrayList();    
+            
+            psyQFunctionList.Add("ResetCallback");
+            psyQFunctionList.Add("SsInit");
+            psyQFunctionList.Add("SsSeqOpen");
+            psyQFunctionList.Add("SsSeqPlay");
+            psyQFunctionList.Add("SsSetMVol");
+            psyQFunctionList.Add("SsStart");
+            psyQFunctionList.Add("SsSetTableSize");
+            psyQFunctionList.Add("SsSetTickMode");
+            psyQFunctionList.Add("SsSeqSetVol");
+            psyQFunctionList.Add("SsUtSetReverbType");
+            psyQFunctionList.Add("SsUtReverbOn");
+            psyQFunctionList.Add("SsVabOpenHead");
+            psyQFunctionList.Add("SsVabTransBodyPartly");
+            psyQFunctionList.Add("SsVabTransCompleted");
+            psyQFunctionList.Add("SpuSetReverb");
+            psyQFunctionList.Add("SpuSetReverbModeParam");
+            psyQFunctionList.Add("SpuSetReverbDepth");
+            psyQFunctionList.Add("SpuSetReverbVoice");
+
+            return psyQFunctionList;
+        }
+
+        private static Dictionary<string, string> getPsyQSourceCodeList()
+        {
+            Dictionary<string, string> list = new Dictionary<string, string>();
+
+            list.Add("PsfDrvLoadAddress", "#define PSFDRV_LOAD       ({0})");
+            list.Add("DriverTextString", "  (int)\"{0}\",");
+            
+            list.Add("ResetCallback", "  #define ResetCallback                          F0({0})");
+            list.Add("SsInit", "  #define SsInit                                 F0({0})");
+            list.Add("SsSeqOpen", "  #define SsSeqOpen(a,b)               ((short)( F2({0}) ((int)(a),(int)(b)) ))");
+            list.Add("SsSeqPlay", "  #define SsSeqPlay(a,b,c)                       F3({0}) ((int)(a),(int)(b),(int)(c))");
+            list.Add("SsSetMVol", "  #define SsSetMVol(a,b)                         F2({0}) ((int)(a),(int)(b))");
+            list.Add("SsStart", "  #define SsStart                                F0({0})");
+            list.Add("SsSetTableSize", "  #define SsSetTableSize(a,b,c)                  F3({0}) ((int)(a),(int)(b),(int)(c))");
+            list.Add("SsSetTickMode", "  #define SsSetTickMode(a)                       F1({0}) ((int)(a))");
+            list.Add("SsSeqSetVol", "  #define SsSeqSetVol(a,b,c)                     F3({0}) ((int)(a),(int)(b),(int)(c))");
+            list.Add("SsUtSetReverbType", "  #define SsUtSetReverbType(a)         ((short)( F1({0}) ((int)(a)) ))");
+            list.Add("SsUtReverbOn", "  #define SsUtReverbOn                           F0({0})");
+            list.Add("SsVabOpenHead", "  #define SsVabOpenHead(a,b)           ((short)( F2({0}) ((int)(a),(int)(b)) ))");
+            list.Add("SsVabTransBodyPartly", "  #define SsVabTransBodyPartly(a,b,c)  ((short)( F3({0}) ((int)(a),(int)(b),(int)(c)) ))");
+            list.Add("SsVabTransCompleted", "  #define SsVabTransCompleted(a)       ((short)( F1({0}) ((int)(a)) ))");
+
+            list.Add("SpuSetReverb", "  #define SpuSetReverb(a)                        F1({0}) ((int)(a))");
+            list.Add("SpuSetReverbModeParam", "  #define SpuSetReverbModeParam(a)               F1({0}) ((int)(a))");
+            list.Add("SpuSetReverbDepth", "  #define SpuSetReverbDepth(a)                   F1({0}) ((int)(a))");
+            list.Add("SpuSetReverbVoice", "  #define SpuSetReverbVoice(a,b)                 F2({0}) ((int)(a),(int)(b))");
+
+            return list;
+        }
+
+        private static Dictionary<int, string> getPsyQSourceCodeLineNumberList()
+        {
+            Dictionary<int, string> list = new Dictionary<int, string>();
+
+            list.Add(16, "PsfDrvLoadAddress");
+            list.Add(90, "DriverTextString");
+            list.Add(101, "ExeFileNameCrc");
+
+            list.Add(174, "ResetCallback");            
+            list.Add(176, "SsInit");
+            list.Add(177, "SsSeqOpen");
+            list.Add(178, "SsSeqPlay");
+            list.Add(179, "SsSetMVol");
+            list.Add(180, "SsStart");
+            list.Add(181, "SsSetTableSize");
+            list.Add(182, "SsSetTickMode");
+            list.Add(183, "SsSeqSetVol");
+            list.Add(184, "SsUtSetReverbType");
+            list.Add(185, "SsUtReverbOn");
+            list.Add(186, "SsVabOpenHead");
+            list.Add(187, "SsVabTransBodyPartly");
+            list.Add(188, "SsVabTransCompleted");
+            
+            list.Add(190, "SpuSetReverb");
+            list.Add(191, "SpuSetReverbModeParam");
+            list.Add(192, "SpuSetReverbDepth");
+            list.Add(193, "SpuSetReverbVoice");
+
+            return list;
         }
 
         // 2SF

@@ -226,6 +226,11 @@ namespace VGMToolbox.format
 
         public void ExtractToFile(Stream pStream, string pOutputDirectory)
         { 
+            ExtractToFile(pStream, pOutputDirectory, null);
+        }
+        
+        public void ExtractToFile(Stream pStream, string pOutputDirectory, object Options)
+        { 
             string outputFileName = Path.GetFileName(this.filePath);
             int fileCount = 0;
 

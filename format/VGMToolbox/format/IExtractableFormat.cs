@@ -13,5 +13,6 @@ namespace VGMToolbox.format
 
         void Initialize(Stream pStream, string pFilePath, long pFileOffset);
         void ExtractToFile(Stream pStream, string pOutputDirectory);
+        void ExtractToFile(Stream pStream, string pOutputDirectory, object Options);
     }
 }
