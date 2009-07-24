@@ -258,9 +258,9 @@ namespace VGMToolbox.format
             byte[] metaCommandDataBytes;
             UInt64 currentTicks;
 
-            pStream.Position = pOffset;
+            pStream.Position = this.fileStartOffset + pOffset;
 
-            while (pStream.Position < (pOffset + pLength))
+            while (pStream.Position < (this.fileStartOffset + pOffset + pLength))
             {
                 currentByte = pStream.ReadByte();
 
