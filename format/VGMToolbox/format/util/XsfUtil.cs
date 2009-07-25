@@ -200,6 +200,7 @@ namespace VGMToolbox.format.util
         private string psfDrvLoadAddress;
         private string driverTextString;
         private string exeFileNameCrc;
+        private string jumpPatchAddress;
 
         private string resetCallback;
         private string ssInit;
@@ -237,7 +238,12 @@ namespace VGMToolbox.format.util
             set { exeFileNameCrc = value; }
             get { return exeFileNameCrc; }
         }
-
+        public string JumpPatchAddress
+        {
+            set { jumpPatchAddress = value; }
+            get { return jumpPatchAddress; }
+        }
+        
         public string ResetCallback
         {
             set { resetCallback = value; }
@@ -1071,7 +1077,9 @@ namespace VGMToolbox.format.util
 
             list.Add("PsfDrvLoadAddress", "#define PSFDRV_LOAD       ({0})");
             list.Add("DriverTextString", "  (int)\"{0}\",");
-            
+            list.Add("ExeFileNameCrc", "  (int)\"SLUS_999.99\", 0x00000000,");
+            list.Add("JumpPatchAddress", "  {0},");
+
             list.Add("ResetCallback", "  #define ResetCallback                          F0({0})");
             list.Add("SsInit", "  #define SsInit                                 F0({0})");
             list.Add("SsSeqOpen", "  #define SsSeqOpen(a,b)               ((short)( F2({0}) ((int)(a),(int)(b)) ))");
@@ -1102,6 +1110,7 @@ namespace VGMToolbox.format.util
             list.Add(16, "PsfDrvLoadAddress");
             list.Add(90, "DriverTextString");
             list.Add(101, "ExeFileNameCrc");
+            list.Add(107, "JumpPatchAddress");
 
             list.Add(174, "ResetCallback");            
             list.Add(176, "SsInit");
@@ -1124,6 +1133,53 @@ namespace VGMToolbox.format.util
             list.Add(193, "SpuSetReverbVoice");
 
             return list;
+        }
+
+        public static bool IsPsyQSdkPresent()
+        {
+            string[] files;
+            bool isCcpsxPresent = false;
+            bool isPsyLinkPresent = false;
+
+            string pathVariable = Environment.GetEnvironmentVariable("PATH");
+            string[] paths = pathVariable.Split(new char[] { ';' });
+
+            foreach (string p in paths)
+            {
+                if (Directory.Exists(p))
+                {
+                    // CCPSX.EXE
+                    files = Directory.GetFiles(p, "CCPSX.EXE");
+
+                    if (files.Length > 0)
+                    {
+                        isCcpsxPresent = true;
+                    }
+
+                    // PSYLINK.EXE
+                    files = Directory.GetFiles(p, "PSYLINK.EXE");
+
+                    if (files.Length > 0)
+                    {
+                        isPsyLinkPresent = true;
+                    }
+                }
+            }
+
+            return (isCcpsxPresent && isPsyLinkPresent);        
+        }
+
+        public static bool IsPsyQPathVariablePresent()
+        {
+            bool ret = false;
+            string pathVariable = Environment.GetEnvironmentVariable("PSYQ_PATH");
+
+            if (!String.IsNullOrEmpty(pathVariable))
+            {
+                ret = true;
+            }
+
+            return ret;
         }
 
         // 2SF
