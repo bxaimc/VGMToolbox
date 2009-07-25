@@ -12,7 +12,7 @@ using VGMToolbox.tools.xsf;
 
 namespace VGMToolbox.forms
 {
-    public partial class PsfStubMakerForm : VgmtForm
+    public partial class PsfStubMakerForm : AVgmtForm
     {
         public PsfStubMakerForm(TreeNode pTreeNode): 
             base(pTreeNode)
@@ -53,11 +53,11 @@ namespace VGMToolbox.forms
             {
                 MessageBox.Show("PSYQ_PATH environment variable not found.", "ERROR");                           
             }            
-            else if (!XsfUtil.IsPsyQSdkPresent())
-            {
-                MessageBox.Show("PsyQ SDK not found in your PATH environment variable directories." +
-                    "  Please update the variable or install the PsyQ SDK.", "Error, cannot find PsyQ SDK");               
-            }
+            //else if (!XsfUtil.IsPsyQSdkPresent())
+            //{
+            //    MessageBox.Show("PsyQ SDK not found in your PATH environment variable directories." +
+            //        "  Please update the variable or install the PsyQ SDK.", "Error, cannot find PsyQ SDK");               
+            //}
             else
             {
                 string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);

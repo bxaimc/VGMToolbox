@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -163,6 +164,34 @@ namespace VGMToolbox.util
                     maxWrite = bytesToWrite > bytes.Length ? bytes.Length : bytesToWrite;
                 }
             }
+        }
+
+        public static bool ExecuteExternalProgram(string pathToExecuatable, string arguments, 
+            string workingDirectory, out string standardOut, out string standardError)
+        {
+            Process externalExecutable;
+            bool isSuccess = false;
+            
+            standardOut = String.Empty;
+            standardError = String.Empty;
+
+            using (externalExecutable = new Process())
+            {
+                externalExecutable.StartInfo = new ProcessStartInfo(pathToExecuatable, arguments);
+                externalExecutable.StartInfo.WorkingDirectory = workingDirectory;
+                externalExecutable.StartInfo.UseShellExecute = false;
+                externalExecutable.StartInfo.CreateNoWindow = true;
+                
+                externalExecutable.StartInfo.RedirectStandardOutput = true;
+                externalExecutable.StartInfo.RedirectStandardError = true;
+                isSuccess = externalExecutable.Start();
+
+                standardOut = externalExecutable.StandardOutput.ReadToEnd();
+                standardError = externalExecutable.StandardError.ReadToEnd();
+                externalExecutable.WaitForExit();
+            }
+            
+            return isSuccess;
         }
     }
 }

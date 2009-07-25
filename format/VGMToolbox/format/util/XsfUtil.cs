@@ -968,9 +968,8 @@ namespace VGMToolbox.format.util
             return outputPath;
         }
 
-        public static PsfPsyQAddresses GetSigFindItems(string logFilePath)
+        public static PsfPsyQAddresses GetSigFindItems(Stream sigFindOutputStream)
         {
-            string fullPath = Path.GetFullPath(logFilePath);
             PsfPsyQAddresses ret = new PsfPsyQAddresses();
 
             string inputLine;
@@ -981,32 +980,29 @@ namespace VGMToolbox.format.util
             string addressValue;
             PropertyInfo psyQValue;
 
-            if (File.Exists(fullPath))
+            psyQFunctions = XsfUtil.getPsyQFunctionList();
+
+            using (StreamReader logFileReader = new StreamReader(sigFindOutputStream))
             {
-                psyQFunctions = XsfUtil.getPsyQFunctionList();
-                
-                using (StreamReader logFileReader = new StreamReader(File.OpenRead(fullPath)))
+                while ((inputLine = logFileReader.ReadLine()) != null)
                 {
-                    while ((inputLine = logFileReader.ReadLine()) != null)
+                    if (inputLine.Contains("Text Start ="))
                     {
-                        if (inputLine.Contains("Text Start ="))
-                        {
-                            ret.PsfDrvLoadAddress = XsfUtil.getSigFindAddress(inputLine, false);
-                        }
-                        else
-                        {
-                            splitInput = inputLine.Split(splitDelimeters, StringSplitOptions.RemoveEmptyEntries);
+                        ret.PsfDrvLoadAddress = XsfUtil.getSigFindAddress(inputLine, false);
+                    }
+                    else
+                    {
+                        splitInput = inputLine.Split(splitDelimeters, StringSplitOptions.RemoveEmptyEntries);
 
-                            if (splitInput.Length > 0)
+                        if (splitInput.Length > 0)
+                        {
+                            firstChunk = splitInput[0];
+
+                            if (psyQFunctions.Contains(firstChunk))
                             {
-                                firstChunk = splitInput[0];
-
-                                if (psyQFunctions.Contains(firstChunk))
-                                {
-                                    addressValue = XsfUtil.getSigFindAddress(inputLine, false);
-                                    psyQValue = ret.GetType().GetProperty(firstChunk);
-                                    psyQValue.SetValue(ret, addressValue, null);
-                                }
+                                addressValue = XsfUtil.getSigFindAddress(inputLine, false);
+                                psyQValue = ret.GetType().GetProperty(firstChunk);
+                                psyQValue.SetValue(ret, addressValue, null);
                             }
                         }
                     }
