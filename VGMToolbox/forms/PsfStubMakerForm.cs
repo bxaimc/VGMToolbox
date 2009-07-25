@@ -52,18 +52,20 @@ namespace VGMToolbox.forms
             if (!XsfUtil.IsPsyQPathVariablePresent())
             {
                 MessageBox.Show("PSYQ_PATH environment variable not found.", "ERROR");                           
-            }            
-            //else if (!XsfUtil.IsPsyQSdkPresent())
-            //{
-            //    MessageBox.Show("PsyQ SDK not found in your PATH environment variable directories." +
-            //        "  Please update the variable or install the PsyQ SDK.", "Error, cannot find PsyQ SDK");               
-            //}
+            }
+            else if (!XsfUtil.IsPsyQSdkPresent())
+            {
+                MessageBox.Show("PsyQ SDK not found in the directory represented by the environment variable %PSYQ_PATH%\\BIN." +
+                    "  Please update the variable or install the PsyQ SDK.", "ERROR");
+            }
             else
             {
                 string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
                 PsfStubMakerStruct bwStruct = new PsfStubMakerStruct();
                 bwStruct.SourcePaths = s;
+                bwStruct.DriverText = this.tbDriverText.Text;
+
                 base.backgroundWorker_Execute(bwStruct);
             }
         }

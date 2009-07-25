@@ -970,8 +970,22 @@ namespace VGMToolbox.format.util
 
         public static PsfPsyQAddresses GetSigFindItems(Stream sigFindOutputStream)
         {
-            PsfPsyQAddresses ret = new PsfPsyQAddresses();
+            return GetSigFindItems(sigFindOutputStream, null);
+        }
+        
+        public static PsfPsyQAddresses GetSigFindItems(Stream sigFindOutputStream, PsfPsyQAddresses addressesToUpdate)
+        {
+            PsfPsyQAddresses ret;
 
+            if (addressesToUpdate == null)
+            {
+                ret = new PsfPsyQAddresses();
+            }
+            else
+            {
+                ret = addressesToUpdate;
+            }
+            
             string inputLine;
             string[] splitInput;
             string firstChunk;
@@ -986,7 +1000,7 @@ namespace VGMToolbox.format.util
             {
                 while ((inputLine = logFileReader.ReadLine()) != null)
                 {
-                    if (inputLine.Contains("Text Start ="))
+                    if ((inputLine.Contains("Text Start =")) && (addressesToUpdate == null))
                     {
                         ret.PsfDrvLoadAddress = XsfUtil.getSigFindAddress(inputLine, false);
                     }
@@ -1002,7 +1016,11 @@ namespace VGMToolbox.format.util
                             {
                                 addressValue = XsfUtil.getSigFindAddress(inputLine, false);
                                 psyQValue = ret.GetType().GetProperty(firstChunk);
-                                psyQValue.SetValue(ret, addressValue, null);
+
+                                if ((addressesToUpdate == null) || (psyQValue.GetValue(ret, null) == null))
+                                {
+                                    psyQValue.SetValue(ret, addressValue, null);
+                                }
                             }
                         }
                     }
@@ -1067,13 +1085,13 @@ namespace VGMToolbox.format.util
             return psyQFunctionList;
         }
 
-        private static Dictionary<string, string> getPsyQSourceCodeList()
+        public static Dictionary<string, string> getPsyQSourceCodeList()
         {
             Dictionary<string, string> list = new Dictionary<string, string>();
 
             list.Add("PsfDrvLoadAddress", "#define PSFDRV_LOAD       ({0})");
             list.Add("DriverTextString", "  (int)\"{0}\",");
-            list.Add("ExeFileNameCrc", "  (int)\"SLUS_999.99\", 0x00000000,");
+            list.Add("ExeFileNameCrc", "{0}"); // "  (int)\"{0}\", {1}," used in PsfStubMakerWorker
             list.Add("JumpPatchAddress", "  {0},");
 
             list.Add("ResetCallback", "  #define ResetCallback                          F0({0})");
@@ -1099,7 +1117,7 @@ namespace VGMToolbox.format.util
             return list;
         }
 
-        private static Dictionary<int, string> getPsyQSourceCodeLineNumberList()
+        public static Dictionary<int, string> getPsyQSourceCodeLineNumberList()
         {
             Dictionary<int, string> list = new Dictionary<int, string>();
 
@@ -1137,28 +1155,25 @@ namespace VGMToolbox.format.util
             bool isCcpsxPresent = false;
             bool isPsyLinkPresent = false;
 
-            string pathVariable = Environment.GetEnvironmentVariable("PATH");
-            string[] paths = pathVariable.Split(new char[] { ';' });
+            string pathVariable = Environment.GetEnvironmentVariable("PSYQ_PATH");
+            string psyQBinPath = Path.Combine(pathVariable, "BIN");
 
-            foreach (string p in paths)
+            if (Directory.Exists(psyQBinPath))
             {
-                if (Directory.Exists(p))
+                // CCPSX.EXE
+                files = Directory.GetFiles(psyQBinPath, "CCPSX.EXE");
+
+                if (files.Length > 0)
                 {
-                    // CCPSX.EXE
-                    files = Directory.GetFiles(p, "CCPSX.EXE");
+                    isCcpsxPresent = true;
+                }
 
-                    if (files.Length > 0)
-                    {
-                        isCcpsxPresent = true;
-                    }
+                // PSYLINK.EXE
+                files = Directory.GetFiles(psyQBinPath, "PSYLINK.EXE");
 
-                    // PSYLINK.EXE
-                    files = Directory.GetFiles(p, "PSYLINK.EXE");
-
-                    if (files.Length > 0)
-                    {
-                        isPsyLinkPresent = true;
-                    }
+                if (files.Length > 0)
+                {
+                    isPsyLinkPresent = true;
                 }
             }
 
