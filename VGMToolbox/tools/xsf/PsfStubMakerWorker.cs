@@ -185,7 +185,18 @@ namespace VGMToolbox.tools.xsf
                 // copy driver and source to source dir
                 ////////////////////////////////////////
                 psfdrvDestinationFileName = Path.Combine(Path.GetDirectoryName(pPath), Path.GetFileName(pPath) + ".stub.bin");
-                File.Copy(psfdrvBinFileName, psfdrvDestinationFileName, true);
+
+                if (!File.Exists(psfdrvBinFileName))
+                {
+                    this.progressStruct.Clear();
+                    this.progressStruct.GenericMessage = "[ERROR from VGMToolbox] Compiled output file not found.  Compilation has failed.  Stub file source code will be copied to your source directory for examination." + Environment.NewLine;
+                    ReportProgress(Constants.ProgressMessageOnly, progressStruct);
+                }
+                else
+                {
+                    File.Copy(psfdrvBinFileName, psfdrvDestinationFileName, true);
+                }                
+                                
                 File.Copy(psfOCycleSourceDestination, Path.Combine(Path.GetDirectoryName(pPath), Path.GetFileName(pPath) + ".stub.c"), true);
 
                 //////////////////////
