@@ -137,11 +137,13 @@ unsigned long driverinfo[] = {
 #define F2(x) (*((func2)(x)))
 #define F3(x) (*((func3)(x)))
 #define F4(x) (*((func4)(x)))
+#define F5(x) (*((func5)(x)))
 typedef int (*func0)(void);
 typedef int (*func1)(int);
 typedef int (*func2)(int,int);
 typedef int (*func3)(int,int,int);
 typedef int (*func4)(int,int,int,int);
+typedef int (*func5)(long);
 
 /*
 ** die() function - emits a break instruction.
@@ -170,7 +172,7 @@ unsigned long loopforever_data[] = {0x1000FFFF,0};
 **
 ** I left some numbers from a previous rip in here just to make the example
 ** look pretty.  Trust me, you will want to change these.
-*/
+*/  
   #define ResetCallback                          F0(0x80035440)
 
   #define SsInit                                 F0(0x80038838)
@@ -195,6 +197,7 @@ unsigned long loopforever_data[] = {0x1000FFFF,0};
   // alternatives
   #define SsVabOpenHeadSticky(a,b,c)   ((short)( F3(0x8009EEF8) ((int)(a),(int)(b),(int)(c)) ))
   #define SsVabTransBody(a,b)          ((short)( F2(0x8003A7C4) ((int)(a),(int)(b)) ))
+  #define SpuIsTransferComplete(a)     ((short)( F5(0x8003A920) ((long)(a)) ))
 
 /***************************************************************************/
 /*
@@ -282,7 +285,13 @@ int psfdrv(void) {
   ASSERT(r == vabid);
 #endif
 
+#ifdef SpuIsTransferComplete
+  r = SpuIsTransferComplete(1);
+#endif  
+#ifdef SsVabTransCompleted
   r = SsVabTransCompleted(1);
+#endif 
+
   ASSERT(r == 1);
 
   /*
