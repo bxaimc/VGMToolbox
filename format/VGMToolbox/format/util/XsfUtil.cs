@@ -214,7 +214,9 @@ namespace VGMToolbox.format.util
         private string ssUtSetReverbType;
         private string ssUtReverbOn;
         private string ssVabOpenHead;
+        private string ssVabOpenHeadSticky;
         private string ssVabTransBodyPartly;
+        private string ssVabTransBody;
         private string ssVabTransCompleted;
         
         private string spuSetReverb;
@@ -304,10 +306,20 @@ namespace VGMToolbox.format.util
             set { ssVabOpenHead = value; }
             get { return ssVabOpenHead; }
         }
+        public string SsVabOpenHeadSticky
+        {
+            set { ssVabOpenHeadSticky = value; }
+            get { return ssVabOpenHeadSticky; }
+        }
         public string SsVabTransBodyPartly
         {
             set { ssVabTransBodyPartly = value; }
             get { return ssVabTransBodyPartly; }
+        }
+        public string SsVabTransBody
+        {
+            set { ssVabTransBody = value; }
+            get { return ssVabTransBody; }
         }
         public string SsVabTransCompleted
         {
@@ -362,6 +374,9 @@ namespace VGMToolbox.format.util
 
         static readonly byte[] MINI2SF_DATA_START = new byte[] { 0xC0, 0x0F, 0x0D, 0x00, 0x02, 0x00, 0x00, 0x00 };
         static readonly byte[] MINI2SF_SAVESTATE_ID = new byte[] { 0x53, 0x41, 0x56, 0x45 };
+
+        // PSF
+        public const uint PSFDRV_LOAD_ADDRESS = 0x80100000;
 
         private XsfUtil() { }
         
@@ -1002,7 +1017,16 @@ namespace VGMToolbox.format.util
                 {
                     if ((inputLine.Contains("Text Start =")) && (addressesToUpdate == null))
                     {
-                        ret.PsfDrvLoadAddress = XsfUtil.getSigFindAddress(inputLine, false);
+                        ret.PsfDrvLoadAddress = XsfUtil.getSigFindAddress(inputLine, true);
+
+                        if ((uint)VGMToolbox.util.Encoding.GetLongValueFromString(ret.PsfDrvLoadAddress) > PSFDRV_LOAD_ADDRESS)
+                        {
+                            throw new ArgumentOutOfRangeException("PSFDRV_LOAD", PSFDRV_LOAD_ADDRESS.ToString("X8"), String.Format("Text Area + Size is greater than ox{0}, this is not supported.", PSFDRV_LOAD_ADDRESS.ToString("X8")));
+                        }
+                        else
+                        {
+                            ret.PsfDrvLoadAddress = String.Format("0x{0}", PSFDRV_LOAD_ADDRESS.ToString("X8"));
+                        }
                     }
                     else
                     {
@@ -1082,6 +1106,10 @@ namespace VGMToolbox.format.util
             psyQFunctionList.Add("SpuSetReverbDepth");
             psyQFunctionList.Add("SpuSetReverbVoice");
 
+            // alternatives
+            psyQFunctionList.Add("SsVabOpenHeadSticky");
+            psyQFunctionList.Add("SsVabTransBody");
+
             return psyQFunctionList;
         }
 
@@ -1113,6 +1141,10 @@ namespace VGMToolbox.format.util
             list.Add("SpuSetReverbModeParam", "  #define SpuSetReverbModeParam(a)               F1({0}) ((int)(a))");
             list.Add("SpuSetReverbDepth", "  #define SpuSetReverbDepth(a)                   F1({0}) ((int)(a))");
             list.Add("SpuSetReverbVoice", "  #define SpuSetReverbVoice(a,b)                 F2({0}) ((int)(a),(int)(b))");
+
+            // alternatives
+            list.Add("SsVabOpenHeadSticky", "  #define SsVabOpenHeadSticky(a,b,c)   ((short)( F3({0}) ((int)(a),(int)(b),(int)(c)) ))");
+            list.Add("SsVabTransBody", "  #define SsVabTransBody(a,b)          ((short)( F2({0}) ((int)(a),(int)(b)) ))");
 
             return list;
         }
@@ -1146,6 +1178,10 @@ namespace VGMToolbox.format.util
             list.Add(192, "SpuSetReverbDepth");
             list.Add(193, "SpuSetReverbVoice");
 
+            // alternatives
+            list.Add(196, "SsVabOpenHeadSticky");
+            list.Add(197, "SsVabTransBody");
+
             return list;
         }
 
@@ -1155,25 +1191,28 @@ namespace VGMToolbox.format.util
             bool isCcpsxPresent = false;
             bool isPsyLinkPresent = false;
 
-            string pathVariable = Environment.GetEnvironmentVariable("PSYQ_PATH");
-            string psyQBinPath = Path.Combine(pathVariable, "BIN");
+            string pathVariable = Environment.GetEnvironmentVariable("PATH");
+            string[] paths = pathVariable.Split(new char[] { ';' });
 
-            if (Directory.Exists(psyQBinPath))
+            foreach (string p in paths)
             {
-                // CCPSX.EXE
-                files = Directory.GetFiles(psyQBinPath, "CCPSX.EXE");
-
-                if (files.Length > 0)
+                if (Directory.Exists(p))
                 {
-                    isCcpsxPresent = true;
-                }
+                    // CCPSX.EXE
+                    files = Directory.GetFiles(p, "CCPSX.EXE", SearchOption.TopDirectoryOnly);
 
-                // PSYLINK.EXE
-                files = Directory.GetFiles(psyQBinPath, "PSYLINK.EXE");
+                    if (files.Length > 0)
+                    {
+                        isCcpsxPresent = true;
+                    }
 
-                if (files.Length > 0)
-                {
-                    isPsyLinkPresent = true;
+                    // PSYLINK.EXE
+                    files = Directory.GetFiles(p, "PSYLINK.EXE", SearchOption.TopDirectoryOnly);
+
+                    if (files.Length > 0)
+                    {
+                        isPsyLinkPresent = true;
+                    }
                 }
             }
 

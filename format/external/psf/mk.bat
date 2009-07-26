@@ -17,6 +17,6 @@ rem Link.
 rem /o 0x80xxxxxx - origin of output. again, remember to change
 rem /p            - pure binary output
 rem /z            - fill BSS with zeroes
-psylink /o 0x80080000 /p /z psfdrv.obj,psfdrv.bin
+psylink /o 0x80100000 /p /z psfdrv.obj,psfdrv.bin
 
 del psfdrv.obj

@@ -54,6 +54,7 @@ namespace VGMToolbox.tools.xsf
             string sigDatDestination;
             string driverDestination;
             string psfOCycleSourceDestination;
+            string psfOCycleMakeFileDestination;
 
             string arguments;
             string standardOutput;
@@ -75,12 +76,14 @@ namespace VGMToolbox.tools.xsf
             sigDatDestination = Path.Combine(PsfStubMakerWorker.WorkingFolderPath, Path.GetFileName(PsfStubMakerWorker.SigDatFilePath));
             driverDestination = Path.Combine(PsfStubMakerWorker.WorkingFolderPath, Path.GetFileName(pPath).Replace(" ", String.Empty));
             psfOCycleSourceDestination = Path.Combine(PsfStubMakerWorker.WorkingFolderPath, Path.GetFileName(PsfStubMakerWorker.PsfOCycleSourceCodeFilePath));
+            psfOCycleMakeFileDestination = Path.Combine(PsfStubMakerWorker.WorkingFolderPath, Path.GetFileName(PsfStubMakerWorker.PsfOCycleMakeFilePath));
 
             File.Copy(PsfStubMakerWorker.SigFindFilePath, sigFindDestination, true);
             File.Copy(PsfStubMakerWorker.SigFind2FilePath, sigFind2Destination, true);
             File.Copy(PsfStubMakerWorker.SigDatFilePath, sigDatDestination, true);
             File.Copy(pPath, driverDestination, true);
             File.Copy(PsfStubMakerWorker.PsfOCycleSourceCodeFilePath, psfOCycleSourceDestination, true);
+            File.Copy(PsfStubMakerWorker.PsfOCycleMakeFilePath, psfOCycleMakeFileDestination, true);
 
             ////////////////////
             // call sigfind.exe
@@ -120,7 +123,13 @@ namespace VGMToolbox.tools.xsf
             // rewrite driver source code
             this.rewritePsfOCycleDriverSource(psfOCycleSourceDestination, sigFindAddresses);
 
+            // rewrite make file
+            this.rewritePsfOCycleMakeFile(psfOCycleMakeFileDestination, sigFindAddresses);
+
             // compile stub
+            arguments = String.Empty;
+            isProcessSuccessful = FileUtil.ExecuteExternalProgram(psfOCycleMakeFileDestination, arguments,
+                PsfStubMakerWorker.WorkingFolderPath, out standardOutput, out standardError);
         }
 
         private PsfPsyQAddresses getAdditionalDriverInfo(PsfPsyQAddresses existingValues, PsfStubMakerStruct stubMakerParameters, 
@@ -198,6 +207,44 @@ namespace VGMToolbox.tools.xsf
 
             // overwrite original
             File.Copy(tempFilePath, driverSourceCodePath, true);
+        }
+
+        private void rewritePsfOCycleMakeFile(string makeFilePath, PsfPsyQAddresses addresses)
+        {
+
+            int lineNumber;
+            string inputLine;
+            string tempFilePath = Path.GetTempFileName();
+
+            // open reader
+            using (StreamReader reader =
+                new StreamReader(File.Open(makeFilePath, FileMode.Open, FileAccess.Read)))
+            {
+                // open writer for temp file
+                using (StreamWriter writer =
+                    new StreamWriter(File.Open(tempFilePath, FileMode.Create, FileAccess.Write)))
+                {
+                    lineNumber = 1;
+
+                    while ((inputLine = reader.ReadLine()) != null)
+                    {
+                        switch (lineNumber)
+                        { 
+                            case 20:
+                                writer.WriteLine(String.Format("psylink /o {0} /p /z psfdrv.obj,psfdrv.bin", addresses.PsfDrvLoadAddress));
+                                break;
+                            default:
+                                writer.WriteLine(inputLine);
+                                break;
+                        }                        
+
+                        lineNumber++;
+                    }
+                } // using (StreamWriter writer...
+            } // using (StreamReader reader...
+
+            // overwrite original
+            File.Copy(tempFilePath, makeFilePath, true);
         }
     }
 }

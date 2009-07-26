@@ -55,8 +55,8 @@ namespace VGMToolbox.forms
             }
             else if (!XsfUtil.IsPsyQSdkPresent())
             {
-                MessageBox.Show("PsyQ SDK not found in the directory represented by the environment variable %PSYQ_PATH%\\BIN." +
-                    "  Please update the variable or install the PsyQ SDK.", "ERROR");
+                MessageBox.Show("Required PsyQ SDK executables (CCPSX.EXE, PSYLINK.EXE) not found in any of the directories listed in your PATH environment variable." +
+                    "  Please update your PATH environment variables or install the PsyQ SDK.", "ERROR");
             }
             else
             {

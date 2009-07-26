@@ -13,18 +13,18 @@
 ** You should define this to somewhere safe where there's no useful data and
 ** which will not get overwritten by the BSS clear loop.
 */
-#define PSFDRV_LOAD       (0x80080000)
-#define PSFDRV_SIZE       (0x00010000)
-#define PSFDRV_PARAM      (0x80090000)
+#define PSFDRV_LOAD       (0x80100000)
+#define PSFDRV_SIZE       (0x00001000)
+#define PSFDRV_PARAM      (0x80101000)
 #define PSFDRV_PARAM_SIZE (0x00000100)
 
 /*
 ** You can also define locations of game-specific data here.
 */
-#define MY_SEQ      (0x80100000)
-#define MY_SEQ_SIZE (0x00020000)
-#define MY_VH       (0x80120000)
-#define MY_VH_SIZE  (0x00020000)
+#define MY_SEQ      (0x80120000)
+#define MY_SEQ_SIZE (0x00010000)
+#define MY_VH       (0x80130000)
+#define MY_VH_SIZE  (0x00010000)
 #define MY_VB       (0x80140000)
 #define MY_VB_SIZE  (0x00070000)
 
@@ -192,6 +192,10 @@ unsigned long loopforever_data[] = {0x1000FFFF,0};
   #define SpuSetReverbDepth(a)                   F1(0x8004244C) ((int)(a))
   #define SpuSetReverbVoice(a,b)                 F2(0x800424C4) ((int)(a),(int)(b))
 
+  // alternatives
+  #define SsVabOpenHeadSticky(a,b,c)   ((short)( F3(0x8009EEF8) ((int)(a),(int)(b),(int)(c)) ))
+  #define SsVabTransBody(a,b)          ((short)( F2(0x8003A7C4) ((int)(a),(int)(b)) ))
+
 /***************************************************************************/
 /*
 ** PSF driver main() replacement
@@ -235,10 +239,21 @@ int psfdrv(void) {
   { unsigned reverb_attr[5] = {7,0x100,0,0,0};
     reverb_attr[1] |= rtype;
     reverb_attr[2] = (rdepth << 8) | (rdepth << 24);
+#ifdef SpuSetReverbModeParam
     SpuSetReverbModeParam(reverb_attr);
+#endif
+    
+#ifdef SpuSetReverbDepth    
     SpuSetReverbDepth(reverb_attr);
+#endif    
+    
+#ifdef SpuSetReverbVoice    
     SpuSetReverbVoice(1,0xFFFFFF);
+#endif    
+    
+#ifdef SpuSetReverb   
     SpuSetReverb(1);
+#endif    
   }
   /*
   ** Start sound engine
@@ -248,11 +263,25 @@ int psfdrv(void) {
   /*
   ** Open/transfer the VAB data
   */
+#ifdef SsVabOpenHead  
   vabid = SsVabOpenHead(vh, -1);
   ASSERT(vabid >= 0);
+#endif
 
+#ifdef SsVabOpenHeadSticky  
+  vabid = SsVabOpenHeadSticky(vh, 0, 0x1010);
+  ASSERT(vabid >= 0);
+#endif
+
+#ifdef SsVabTransBodyPartly
   r = SsVabTransBodyPartly(vb, MY_VB_SIZE, vabid);
   ASSERT(r == vabid);
+#endif
+
+#ifdef SsVabTransBody
+  r = SsVabTransBody(vb, vabid);
+  ASSERT(r == vabid);
+#endif
 
   r = SsVabTransCompleted(1);
   ASSERT(r == 1);
