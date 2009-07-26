@@ -377,6 +377,7 @@ namespace VGMToolbox.format.util
 
         // PSF
         public const uint PSFDRV_LOAD_ADDRESS = 0x80100000;
+        public static readonly byte[] PlayStationExecutableSignature = new byte[] { 0x50, 0x53, 0x2D, 0x58, 0x20, 0x45, 0x58, 0x45};
 
         private XsfUtil() { }
         
@@ -1009,7 +1010,7 @@ namespace VGMToolbox.format.util
             string addressValue;
             PropertyInfo psyQValue;
 
-            psyQFunctions = XsfUtil.getPsyQFunctionList();
+            psyQFunctions = XsfUtil.GetPsyQFunctionList();
 
             using (StreamReader logFileReader = new StreamReader(sigFindOutputStream))
             {
@@ -1083,7 +1084,7 @@ namespace VGMToolbox.format.util
             return ret;
         }
 
-        private static ArrayList getPsyQFunctionList()
+        public static ArrayList GetPsyQFunctionList()
         { 
             ArrayList psyQFunctionList = new ArrayList();    
             
@@ -1229,6 +1230,20 @@ namespace VGMToolbox.format.util
                 ret = true;
             }
 
+            return ret;
+        }
+
+        public static bool IsPsxExe(string pPath)
+        { 
+            bool ret = false;
+            byte[] checkArray;
+
+            using (FileStream fs = File.OpenRead(pPath))
+            {
+                checkArray = ParseFile.ParseSimpleOffset(fs, 0, XsfUtil.PlayStationExecutableSignature.Length);
+                ret = ParseFile.CompareSegment(checkArray, 0, XsfUtil.PlayStationExecutableSignature);
+            }
+                        
             return ret;
         }
 

@@ -21,6 +21,10 @@ namespace VGMToolbox.forms
 
             this.grpSourceFiles.AllowDrop = true;
             this.lblTitle.Text = "PSF Driver Stub Creator";
+            this.tbOutput.Text = "PsyQ SDK must be installed." + Environment.NewLine;
+            this.tbOutput.Text += "Be sure to add your PSYQ and PSYQ\\BIN folders to your PATH environment variable." + Environment.NewLine;
+            this.tbOutput.Text += "Also please create a PSYQ_PATH environment variable pointing to the top level PSYQ folder." + Environment.NewLine;
+            
             this.btnDoTask.Hide();
         }
 

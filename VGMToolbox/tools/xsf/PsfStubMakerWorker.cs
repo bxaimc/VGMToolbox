@@ -47,140 +47,167 @@ namespace VGMToolbox.tools.xsf
 
         protected override void DoTaskForFile(string pPath, IVgmtWorkerStruct pPsfStubMakerStruct, DoWorkEventArgs e)
         {
-            this.progressStruct.Clear();
-            this.progressStruct.GenericMessage = String.Format("[{0}]", pPath) + Environment.NewLine;
-            ReportProgress(Constants.ProgressMessageOnly, progressStruct);
-            
-            PsfStubMakerStruct stubMakerParameters = (PsfStubMakerStruct)pPsfStubMakerStruct;
-            
-            string sigFindDestination;
-            string sigFind2Destination;
-            string sigDatDestination;
-            string driverDestination;
-            string psfOCycleSourceDestination;
-            string psfOCycleMakeFileDestination;
-
-            string arguments;
-            string standardOutput;
-            string standardError;
-            bool isProcessSuccessful;
-                        
-            PsfPsyQAddresses sigFindAddresses = null;
-
-            string psfdrvObjFileName;
-            string psfdrvBinFileName;
-            string psfdrvDestinationFileName;
-
-            //////////////////////////
-            // prepare working folder
-            //////////////////////////
-            this.progressStruct.Clear();
-            this.progressStruct.GenericMessage = "    Preparing working folder." + Environment.NewLine;
-            ReportProgress(Constants.ProgressMessageOnly, progressStruct);
-            
-            if (!Directory.Exists(PsfStubMakerWorker.WorkingFolderPath))
+            if (XsfUtil.IsPsxExe(pPath))
             {
-                Directory.CreateDirectory(PsfStubMakerWorker.WorkingFolderPath);
+                this.progressStruct.Clear();
+                this.progressStruct.GenericMessage = String.Format("[{0}]", pPath) + Environment.NewLine;
+                ReportProgress(Constants.ProgressMessageOnly, progressStruct);
+
+                PsfStubMakerStruct stubMakerParameters = (PsfStubMakerStruct)pPsfStubMakerStruct;
+
+                string sigFindDestination;
+                string sigFind2Destination;
+                string sigDatDestination;
+                string driverDestination;
+                string psfOCycleSourceDestination;
+                string psfOCycleMakeFileDestination;
+
+                string arguments;
+                string standardOutput;
+                string standardError;
+                bool isProcessSuccessful;
+
+                PsfPsyQAddresses sigFindAddresses = null;
+
+                string psfdrvObjFileName;
+                string psfdrvBinFileName;
+                string psfdrvDestinationFileName;
+
+                //////////////////////////
+                // prepare working folder
+                //////////////////////////
+                this.progressStruct.Clear();
+                this.progressStruct.GenericMessage = "    - Preparing working folder." + Environment.NewLine;
+                ReportProgress(Constants.ProgressMessageOnly, progressStruct);
+
+                if (!Directory.Exists(PsfStubMakerWorker.WorkingFolderPath))
+                {
+                    Directory.CreateDirectory(PsfStubMakerWorker.WorkingFolderPath);
+                }
+
+                sigFindDestination = Path.Combine(PsfStubMakerWorker.WorkingFolderPath, Path.GetFileName(PsfStubMakerWorker.SigFindFilePath));
+                sigFind2Destination = Path.Combine(PsfStubMakerWorker.WorkingFolderPath, Path.GetFileName(PsfStubMakerWorker.SigFind2FilePath));
+                sigDatDestination = Path.Combine(PsfStubMakerWorker.WorkingFolderPath, Path.GetFileName(PsfStubMakerWorker.SigDatFilePath));
+                driverDestination = Path.Combine(PsfStubMakerWorker.WorkingFolderPath, Path.GetFileName(pPath).Replace(" ", String.Empty));
+                psfOCycleSourceDestination = Path.Combine(PsfStubMakerWorker.WorkingFolderPath, Path.GetFileName(PsfStubMakerWorker.PsfOCycleSourceCodeFilePath));
+                psfOCycleMakeFileDestination = Path.Combine(PsfStubMakerWorker.WorkingFolderPath, Path.GetFileName(PsfStubMakerWorker.PsfOCycleMakeFilePath));
+
+                File.Copy(PsfStubMakerWorker.SigFindFilePath, sigFindDestination, true);
+                File.Copy(PsfStubMakerWorker.SigFind2FilePath, sigFind2Destination, true);
+                File.Copy(PsfStubMakerWorker.SigDatFilePath, sigDatDestination, true);
+                File.Copy(pPath, driverDestination, true);
+                File.Copy(PsfStubMakerWorker.PsfOCycleSourceCodeFilePath, psfOCycleSourceDestination, true);
+                File.Copy(PsfStubMakerWorker.PsfOCycleMakeFilePath, psfOCycleMakeFileDestination, true);
+
+                ////////////////////
+                // call sigfind.exe
+                ////////////////////            
+                this.progressStruct.Clear();
+                this.progressStruct.GenericMessage = "    - Execute sigfind/sigfind2." + Environment.NewLine;
+                ReportProgress(Constants.ProgressMessageOnly, progressStruct);
+
+                arguments = String.Format("{0}", Path.GetFileName(driverDestination));
+                isProcessSuccessful = FileUtil.ExecuteExternalProgram(sigFindDestination, arguments,
+                    PsfStubMakerWorker.WorkingFolderPath, out standardOutput, out standardError);
+
+                /////////////////////
+                // get psyQAddresses
+                /////////////////////
+                if ((isProcessSuccessful) && (String.IsNullOrEmpty(standardError)) &&
+                    (!standardOutput.Contains("ERROR")))
+                {
+                    sigFindAddresses = XsfUtil.GetSigFindItems(new MemoryStream(System.Text.Encoding.ASCII.GetBytes(standardOutput)));
+                }
+
+                /////////////////
+                // call sigfind2
+                /////////////////
+                arguments = String.Format("{0}", Path.GetFileName(driverDestination));
+                isProcessSuccessful = FileUtil.ExecuteExternalProgram(sigFind2Destination, arguments,
+                    PsfStubMakerWorker.WorkingFolderPath, out standardOutput, out standardError);
+
+                /////////////////////
+                // get psyQAddresses
+                /////////////////////
+                if ((isProcessSuccessful) && (String.IsNullOrEmpty(standardError)) &&
+                    (!standardOutput.Contains("ERROR")))
+                {
+                    sigFindAddresses = XsfUtil.GetSigFindItems(new MemoryStream(System.Text.Encoding.ASCII.GetBytes(standardOutput)), sigFindAddresses);
+                }
+
+                /////////////////////////
+                // get additional values
+                /////////////////////////
+                sigFindAddresses = this.getAdditionalDriverInfo(sigFindAddresses, stubMakerParameters, driverDestination);
+
+                //////////////////////////////
+                // rewrite driver source code
+                //////////////////////////////
+                this.progressStruct.Clear();
+                this.progressStruct.GenericMessage = "    - Rewriting driver source and batch file." + Environment.NewLine;
+                ReportProgress(Constants.ProgressMessageOnly, progressStruct);
+
+                this.rewritePsfOCycleDriverSource(psfOCycleSourceDestination, sigFindAddresses);
+
+                /////////////////////
+                // rewrite make file
+                /////////////////////
+                this.rewritePsfOCycleMakeFile(psfOCycleMakeFileDestination, sigFindAddresses);
+
+                //////////////////////////////////
+                // delete old files if they exist
+                //////////////////////////////////
+                psfdrvObjFileName = Path.Combine(PsfStubMakerWorker.WorkingFolderPath, "psfdrv.obj");
+                psfdrvBinFileName = Path.Combine(PsfStubMakerWorker.WorkingFolderPath, "psfdrv.bin");
+
+                if (File.Exists(psfdrvObjFileName)) { File.Delete(psfdrvObjFileName); }
+                if (File.Exists(psfdrvBinFileName)) { File.Delete(psfdrvBinFileName); }
+
+                ////////////////
+                // compile stub
+                ////////////////
+                this.progressStruct.Clear();
+                this.progressStruct.GenericMessage = "    - Compiling stub." + Environment.NewLine;
+                ReportProgress(Constants.ProgressMessageOnly, progressStruct);
+
+                arguments = String.Empty;
+                isProcessSuccessful = FileUtil.ExecuteExternalProgram(psfOCycleMakeFileDestination, arguments,
+                    PsfStubMakerWorker.WorkingFolderPath, out standardOutput, out standardError);
+
+                this.progressStruct.Clear();
+                this.progressStruct.GenericMessage = String.Format("        STDOUT: {0}{1}", standardOutput, Environment.NewLine);
+                ReportProgress(Constants.ProgressMessageOnly, progressStruct);
+                this.progressStruct.Clear();
+                this.progressStruct.GenericMessage = String.Format("        STDERR: {0}{1}", standardError, Environment.NewLine);
+                ReportProgress(Constants.ProgressMessageOnly, progressStruct);
+
+                ////////////////////////////////////////
+                // copy driver and source to source dir
+                ////////////////////////////////////////
+                psfdrvDestinationFileName = Path.Combine(Path.GetDirectoryName(pPath), Path.GetFileName(pPath) + ".stub.bin");
+                File.Copy(psfdrvBinFileName, psfdrvDestinationFileName, true);
+                File.Copy(psfOCycleSourceDestination, Path.Combine(Path.GetDirectoryName(pPath), Path.GetFileName(pPath) + ".stub.c"), true);
+
+                //////////////////////
+                // remove working dir
+                //////////////////////
+                this.progressStruct.Clear();
+                this.progressStruct.GenericMessage = "    - Delete working folder." + Environment.NewLine;
+                ReportProgress(Constants.ProgressMessageOnly, progressStruct);
+
+                if (Directory.Exists(PsfStubMakerWorker.WorkingFolderPath)) { Directory.Delete(PsfStubMakerWorker.WorkingFolderPath, true); }
+
+                // output warnings
+                this.progressStruct.Clear();
+                this.progressStruct.GenericMessage = getWarnings(sigFindAddresses);
+                ReportProgress(Constants.ProgressMessageOnly, progressStruct);
             }
-
-            sigFindDestination = Path.Combine(PsfStubMakerWorker.WorkingFolderPath, Path.GetFileName(PsfStubMakerWorker.SigFindFilePath));
-            sigFind2Destination = Path.Combine(PsfStubMakerWorker.WorkingFolderPath, Path.GetFileName(PsfStubMakerWorker.SigFind2FilePath));
-            sigDatDestination = Path.Combine(PsfStubMakerWorker.WorkingFolderPath, Path.GetFileName(PsfStubMakerWorker.SigDatFilePath));
-            driverDestination = Path.Combine(PsfStubMakerWorker.WorkingFolderPath, Path.GetFileName(pPath).Replace(" ", String.Empty));
-            psfOCycleSourceDestination = Path.Combine(PsfStubMakerWorker.WorkingFolderPath, Path.GetFileName(PsfStubMakerWorker.PsfOCycleSourceCodeFilePath));
-            psfOCycleMakeFileDestination = Path.Combine(PsfStubMakerWorker.WorkingFolderPath, Path.GetFileName(PsfStubMakerWorker.PsfOCycleMakeFilePath));
-
-            File.Copy(PsfStubMakerWorker.SigFindFilePath, sigFindDestination, true);
-            File.Copy(PsfStubMakerWorker.SigFind2FilePath, sigFind2Destination, true);
-            File.Copy(PsfStubMakerWorker.SigDatFilePath, sigDatDestination, true);
-            File.Copy(pPath, driverDestination, true);
-            File.Copy(PsfStubMakerWorker.PsfOCycleSourceCodeFilePath, psfOCycleSourceDestination, true);
-            File.Copy(PsfStubMakerWorker.PsfOCycleMakeFilePath, psfOCycleMakeFileDestination, true);
-
-            ////////////////////
-            // call sigfind.exe
-            ////////////////////            
-            this.progressStruct.Clear();
-            this.progressStruct.GenericMessage = "    Execute sigfind/sigfind2." + Environment.NewLine;
-            ReportProgress(Constants.ProgressMessageOnly, progressStruct);
-            
-            arguments = String.Format("{0}", Path.GetFileName(driverDestination));            
-            isProcessSuccessful = FileUtil.ExecuteExternalProgram(sigFindDestination, arguments,
-                PsfStubMakerWorker.WorkingFolderPath, out standardOutput, out standardError);
-
-            /////////////////////
-            // get psyQAddresses
-            /////////////////////
-            if ((isProcessSuccessful) && (String.IsNullOrEmpty(standardError)) && 
-                (!standardOutput.Contains("ERROR")))
+            else
             {
-                sigFindAddresses = XsfUtil.GetSigFindItems(new MemoryStream(System.Text.Encoding.ASCII.GetBytes(standardOutput)));            
+                this.progressStruct.Clear();
+                this.progressStruct.GenericMessage = String.Format("[{0}] Skipped.  Does not have a valid PS-X EXE signature.", pPath) + Environment.NewLine;
+                ReportProgress(Constants.ProgressMessageOnly, progressStruct);
             }
-
-            /////////////////
-            // call sigfind2
-            /////////////////
-            arguments = String.Format("{0}", Path.GetFileName(driverDestination));
-            isProcessSuccessful = FileUtil.ExecuteExternalProgram(sigFind2Destination, arguments,
-                PsfStubMakerWorker.WorkingFolderPath, out standardOutput, out standardError);
-
-            /////////////////////
-            // get psyQAddresses
-            /////////////////////
-            if ((isProcessSuccessful) && (String.IsNullOrEmpty(standardError)) &&
-                (!standardOutput.Contains("ERROR")))
-            {
-                sigFindAddresses = XsfUtil.GetSigFindItems(new MemoryStream(System.Text.Encoding.ASCII.GetBytes(standardOutput)), sigFindAddresses);
-            }
-
-            /////////////////////////
-            // get additional values
-            /////////////////////////
-            sigFindAddresses = this.getAdditionalDriverInfo(sigFindAddresses, stubMakerParameters, driverDestination);
-
-            //////////////////////////////
-            // rewrite driver source code
-            //////////////////////////////
-            this.progressStruct.Clear();
-            this.progressStruct.GenericMessage = "    Rewriting driver source and batch file." + Environment.NewLine;
-            ReportProgress(Constants.ProgressMessageOnly, progressStruct);
-            
-            this.rewritePsfOCycleDriverSource(psfOCycleSourceDestination, sigFindAddresses);
-
-            /////////////////////
-            // rewrite make file
-            /////////////////////
-            this.rewritePsfOCycleMakeFile(psfOCycleMakeFileDestination, sigFindAddresses);
-
-            //////////////////////////////////
-            // delete old files if they exist
-            //////////////////////////////////
-            psfdrvObjFileName = Path.Combine(PsfStubMakerWorker.WorkingFolderPath, "psfdrv.obj");
-            psfdrvBinFileName = Path.Combine(PsfStubMakerWorker.WorkingFolderPath, "psfdrv.bin");
-
-            if (File.Exists(psfdrvObjFileName)) { File.Delete(psfdrvObjFileName); }
-            if (File.Exists(psfdrvBinFileName)) { File.Delete(psfdrvBinFileName); }
-
-            ////////////////
-            // compile stub
-            ////////////////
-            arguments = String.Empty;
-            isProcessSuccessful = FileUtil.ExecuteExternalProgram(psfOCycleMakeFileDestination, arguments,
-                PsfStubMakerWorker.WorkingFolderPath, out standardOutput, out standardError);
-
-            ////////////////////////////////////////
-            // copy driver and source to source dir
-            ////////////////////////////////////////
-            psfdrvDestinationFileName = Path.Combine(Path.GetDirectoryName(pPath), Path.GetFileName(pPath) + ".stub.bin");
-            File.Copy(psfdrvBinFileName, psfdrvDestinationFileName, true);
-            File.Copy(psfOCycleSourceDestination, Path.Combine(Path.GetDirectoryName(pPath), Path.GetFileName(pPath) + ".stub.c"), true);
-
-            // remove working dir
-            this.progressStruct.Clear();
-            this.progressStruct.GenericMessage = "    Delete working folder." + Environment.NewLine;
-            ReportProgress(Constants.ProgressMessageOnly, progressStruct);
-            
-            if (Directory.Exists(PsfStubMakerWorker.WorkingFolderPath)) { Directory.Delete(PsfStubMakerWorker.WorkingFolderPath, true); }
         }
 
         private PsfPsyQAddresses getAdditionalDriverInfo(PsfPsyQAddresses existingValues, PsfStubMakerStruct stubMakerParameters, 
@@ -296,6 +323,26 @@ namespace VGMToolbox.tools.xsf
 
             // overwrite original
             File.Copy(tempFilePath, makeFilePath, true);
+        }
+
+        private string getWarnings(PsfPsyQAddresses addresses)
+        {
+            PropertyInfo psyQValue;
+            string lineValue;
+            StringBuilder warnings = new StringBuilder();
+            
+            foreach (string label in XsfUtil.GetPsyQFunctionList())            
+            {
+                psyQValue = addresses.GetType().GetProperty(label);
+                lineValue = (string)psyQValue.GetValue(addresses, null);
+
+                if (String.IsNullOrEmpty(lineValue))
+                {
+                    warnings.AppendFormat("    Warning: {0} function not found.{1}", label, Environment.NewLine);
+                }
+            }
+
+            return warnings.ToString();
         }
     }
 }
