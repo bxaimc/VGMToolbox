@@ -6,9 +6,6 @@ rem You MUST change the "/o 0x80xxxxxx" option under psylink to the actual
 rem address where you want your stub.
 rem
 
-del psfdrv.bin
-del psfdrv.obj
-
 rem Compile.
 rem Note that -G 0 is crucial here to avoid using $gp.
 ccpsx -G 0 -O2 -Wall -c psfdrv.c

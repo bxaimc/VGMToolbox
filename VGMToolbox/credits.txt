@@ -8,5 +8,13 @@ ssfmake.py is courtesy of kingshriek (http://snesmusic.org/hoot/kingshriek/ssf/)
 unpkpsf2.exe is courtesty of CaitSith2 (http://www.caitsith2.com/).
 zlib1.dll is courtesy of the zlib team (http://www.zlib.net/).
 
+listsig.exe is courtesy of someone42 (http://www.angelfire.com/tx5/someone42/).
+sigfind.exe is courtesy of someone42 (http://www.angelfire.com/tx5/someone42/).
+sigfind2.exe is courtesy of someone42 (http://www.angelfire.com/tx5/someone42/).
+sig.dat is courtesy of someone42 (http://www.angelfire.com/tx5/someone42/).
+
+mk.bat, psfdrv.c were originally written by Neill Corlett (http://www.neillcorlett.com/psfpoint/).
+  I have made minor modifications thanks to the help of manakoAT.
+
 SevenZipSharp.dll is written by markhor (http://www.codeplex.com/sevenzipsharp).
 7z.dll is courtesy of the 7zip team (http://7-zip.org/).  7-Zip is licensed under the GNU LGPL license.
