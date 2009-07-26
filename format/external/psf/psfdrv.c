@@ -263,21 +263,20 @@ int psfdrv(void) {
   /*
   ** Open/transfer the VAB data
   */
+#ifdef SsVabOpenHeadSticky  
+  vabid = SsVabOpenHeadSticky(vh, 0, 0x1010);
+  ASSERT(vabid >= 0);
+#endif
 #ifdef SsVabOpenHead  
   vabid = SsVabOpenHead(vh, -1);
   ASSERT(vabid >= 0);
 #endif
 
-#ifdef SsVabOpenHeadSticky  
-  vabid = SsVabOpenHeadSticky(vh, 0, 0x1010);
-  ASSERT(vabid >= 0);
-#endif
 
 #ifdef SsVabTransBodyPartly
   r = SsVabTransBodyPartly(vb, MY_VB_SIZE, vabid);
   ASSERT(r == vabid);
 #endif
-
 #ifdef SsVabTransBody
   r = SsVabTransBody(vb, vabid);
   ASSERT(r == vabid);
