@@ -143,7 +143,7 @@ typedef int (*func1)(int);
 typedef int (*func2)(int,int);
 typedef int (*func3)(int,int,int);
 typedef int (*func4)(int,int,int,int);
-typedef int (*func5)(long);
+typedef long (*func5)(long);
 
 /*
 ** die() function - emits a break instruction.
@@ -197,7 +197,9 @@ unsigned long loopforever_data[] = {0x1000FFFF,0};
   // alternatives
   #define SsVabOpenHeadSticky(a,b,c)   ((short)( F3(0x8009EEF8) ((int)(a),(int)(b),(int)(c)) ))
   #define SsVabTransBody(a,b)          ((short)( F2(0x8003A7C4) ((int)(a),(int)(b)) ))
-  #define SpuIsTransferComplete(a)     ((short)( F5(0x8003A920) ((long)(a)) ))
+  #define SpuIsTransferCompleted(a)    ((short)( F5(0x8003A920) ((long)(a)) ))
+  #define SpuInit                                F0(0x80038838)
+  #define SsStart2                               F0(0x80038B9C)
 
 /***************************************************************************/
 /*
@@ -229,7 +231,13 @@ int psfdrv(void) {
   ** Initialize stuff
   */
   ResetCallback();
+
+#ifdef SsInit
   SsInit();
+#elif defined SpuInit
+  SpuInit();
+#endif  
+  
   /* If the game originally used a predefined address for the SEQ table,
   ** you might want to set it here */
 #define SSTABLE (0x801F0000)
@@ -261,32 +269,33 @@ int psfdrv(void) {
   /*
   ** Start sound engine
   */
+#ifdef SsStart
   SsStart();
-
+#elif defined SsStart2
+  SsStart2();
+#endif
   /*
   ** Open/transfer the VAB data
   */
 #ifdef SsVabOpenHeadSticky  
   vabid = SsVabOpenHeadSticky(vh, 0, 0x1010);
-  ASSERT(vabid >= 0);
 #endif
 #ifdef SsVabOpenHead  
   vabid = SsVabOpenHead(vh, -1);
-  ASSERT(vabid >= 0);
 #endif
+  ASSERT(vabid >= 0);
 
 
 #ifdef SsVabTransBodyPartly
   r = SsVabTransBodyPartly(vb, MY_VB_SIZE, vabid);
-  ASSERT(r == vabid);
 #endif
 #ifdef SsVabTransBody
   r = SsVabTransBody(vb, vabid);
-  ASSERT(r == vabid);
 #endif
+  ASSERT(r == vabid);
 
-#ifdef SpuIsTransferComplete
-  r = SpuIsTransferComplete(1);
+#ifdef SpuIsTransferCompleted
+  r = SpuIsTransferCompleted(1);
 #endif  
 #ifdef SsVabTransCompleted
   r = SsVabTransCompleted(1);

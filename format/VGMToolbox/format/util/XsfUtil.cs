@@ -203,11 +203,12 @@ namespace VGMToolbox.format.util
         private string jumpPatchAddress;
 
         private string resetCallback;
-        private string ssInit;
+        private string ssInit;        
         private string ssSeqOpen;
         private string ssSeqPlay;
         private string ssSetMVol;
         private string ssStart;
+        private string ssStart2;
         private string ssSetTableSize;
         private string ssSetTickMode;
         private string ssSeqSetVol;
@@ -218,7 +219,9 @@ namespace VGMToolbox.format.util
         private string ssVabTransBodyPartly;
         private string ssVabTransBody;
         private string ssVabTransCompleted;
-        private string spuIsTransferComplete;
+
+        private string spuInit;
+        private string spuIsTransferCompleted;
         
         private string spuSetReverb;
         private string spuSetReverbModeParam;
@@ -277,6 +280,11 @@ namespace VGMToolbox.format.util
             set { ssStart = value; }
             get { return ssStart; }
         }
+        public string SsStart2
+        {
+            set { ssStart2 = value; }
+            get { return ssStart2; }
+        }
         public string SsSetTableSize
         {
             set { ssSetTableSize = value; }
@@ -327,10 +335,16 @@ namespace VGMToolbox.format.util
             set { ssVabTransCompleted = value; }
             get { return ssVabTransCompleted; }
         }
-        public string SpuIsTransferComplete
+
+        public string SpuInit
         {
-            set { spuIsTransferComplete = value; }
-            get { return spuIsTransferComplete; }
+            set { spuInit = value; }
+            get { return spuInit; }
+        }
+        public string SpuIsTransferCompleted
+        {
+            set { spuIsTransferCompleted = value; }
+            get { return spuIsTransferCompleted; }
         }
 
         public string SpuSetReverb
@@ -1116,7 +1130,9 @@ namespace VGMToolbox.format.util
             // alternatives
             psyQFunctionList.Add("SsVabOpenHeadSticky");
             psyQFunctionList.Add("SsVabTransBody");
-            psyQFunctionList.Add("SpuIsTransferComplete");
+            psyQFunctionList.Add("SpuIsTransferCompleted");
+            psyQFunctionList.Add("SpuInit");
+            psyQFunctionList.Add("SsStart2");
 
             return psyQFunctionList;
         }
@@ -1153,7 +1169,9 @@ namespace VGMToolbox.format.util
             // alternatives
             list.Add("SsVabOpenHeadSticky", "  #define SsVabOpenHeadSticky(a,b,c)   ((short)( F3({0}) ((int)(a),(int)(b),(int)(c)) ))");
             list.Add("SsVabTransBody", "  #define SsVabTransBody(a,b)          ((short)( F2({0}) ((int)(a),(int)(b)) ))");
-            list.Add("SpuIsTransferComplete", "  #define SpuIsTransferComplete(a)     ((short)( F5({0}) ((long)(a)) ))");
+            list.Add("SpuIsTransferCompleted", "  #define SpuIsTransferComplete(a)     ((short)( F5({0}) ((long)(a)) ))");
+            list.Add("SpuInit", "  #define SpuInit                                F0({0})");
+            list.Add("SsStart2", "  #define SsStart2                               F0({0})");
 
             return list;
         }
@@ -1190,7 +1208,9 @@ namespace VGMToolbox.format.util
             // alternatives
             list.Add(198, "SsVabOpenHeadSticky");
             list.Add(199, "SsVabTransBody");
-            list.Add(200, "SpuIsTransferComplete");
+            list.Add(200, "SpuIsTransferCompleted");
+            list.Add(201, "SpuInit");
+            list.Add(202, "SsStart2");
 
             return list;
         }

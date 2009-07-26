@@ -189,8 +189,8 @@ namespace VGMToolbox.tools.xsf
                 if (!File.Exists(psfdrvBinFileName))
                 {
                     this.progressStruct.Clear();
-                    this.progressStruct.GenericMessage = "[ERROR from VGMToolbox] Compiled output file not found.  Compilation has failed.  Stub file source code will be copied to your source directory for examination." + Environment.NewLine;
-                    ReportProgress(Constants.ProgressMessageOnly, progressStruct);
+                    this.progressStruct.ErrorMessage = "[ERROR from VGMToolbox] Compiled output file not found.  Compilation has failed.  Stub file source code will be copied to your source directory for examination." + Environment.NewLine;
+                    ReportProgress(this.progress, progressStruct);
                 }
                 else
                 {
