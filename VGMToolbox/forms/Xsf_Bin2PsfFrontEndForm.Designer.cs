@@ -41,18 +41,22 @@
             this.lblDriverPath = new System.Windows.Forms.Label();
             this.tbExePath = new System.Windows.Forms.TextBox();
             this.grpOptions = new System.Windows.Forms.GroupBox();
+            this.cbAllowZeroLengthSequences = new System.Windows.Forms.CheckBox();
             this.lblVbOffset = new System.Windows.Forms.Label();
             this.tbVbOffset = new System.Windows.Forms.TextBox();
             this.lblVhOffset = new System.Windows.Forms.Label();
             this.tbVhOffset = new System.Windows.Forms.TextBox();
             this.lblSeqOffset = new System.Windows.Forms.Label();
             this.tbSeqOffset = new System.Windows.Forms.TextBox();
-            this.cbAllowZeroLengthSequences = new System.Windows.Forms.CheckBox();
+            this.grpGenericDrivers = new System.Windows.Forms.GroupBox();
+            this.lblGenericDriver = new System.Windows.Forms.Label();
+            this.genericDriver = new System.Windows.Forms.ComboBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
             this.grpSource.SuspendLayout();
             this.grpOptions.SuspendLayout();
+            this.grpGenericDrivers.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
@@ -97,7 +101,7 @@
             this.grpSource.Controls.Add(this.lblDriverPath);
             this.grpSource.Controls.Add(this.tbExePath);
             this.grpSource.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpSource.Location = new System.Drawing.Point(0, 23);
+            this.grpSource.Location = new System.Drawing.Point(0, 70);
             this.grpSource.Name = "grpSource";
             this.grpSource.Size = new System.Drawing.Size(832, 117);
             this.grpSource.TabIndex = 5;
@@ -211,12 +215,22 @@
             this.grpOptions.Controls.Add(this.lblSeqOffset);
             this.grpOptions.Controls.Add(this.tbSeqOffset);
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpOptions.Location = new System.Drawing.Point(0, 140);
+            this.grpOptions.Location = new System.Drawing.Point(0, 187);
             this.grpOptions.Name = "grpOptions";
             this.grpOptions.Size = new System.Drawing.Size(832, 137);
             this.grpOptions.TabIndex = 6;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
+            // 
+            // cbAllowZeroLengthSequences
+            // 
+            this.cbAllowZeroLengthSequences.AutoSize = true;
+            this.cbAllowZeroLengthSequences.Location = new System.Drawing.Point(6, 113);
+            this.cbAllowZeroLengthSequences.Name = "cbAllowZeroLengthSequences";
+            this.cbAllowZeroLengthSequences.Size = new System.Drawing.Size(169, 17);
+            this.cbAllowZeroLengthSequences.TabIndex = 6;
+            this.cbAllowZeroLengthSequences.Text = "Allow Zero Length Sequences";
+            this.cbAllowZeroLengthSequences.UseVisualStyleBackColor = true;
             // 
             // lblVbOffset
             // 
@@ -266,15 +280,37 @@
             this.tbSeqOffset.Size = new System.Drawing.Size(218, 20);
             this.tbSeqOffset.TabIndex = 0;
             // 
-            // cbAllowZeroLengthSequences
+            // grpGenericDrivers
             // 
-            this.cbAllowZeroLengthSequences.AutoSize = true;
-            this.cbAllowZeroLengthSequences.Location = new System.Drawing.Point(6, 113);
-            this.cbAllowZeroLengthSequences.Name = "cbAllowZeroLengthSequences";
-            this.cbAllowZeroLengthSequences.Size = new System.Drawing.Size(169, 17);
-            this.cbAllowZeroLengthSequences.TabIndex = 6;
-            this.cbAllowZeroLengthSequences.Text = "Allow Zero Length Sequences";
-            this.cbAllowZeroLengthSequences.UseVisualStyleBackColor = true;
+            this.grpGenericDrivers.Controls.Add(this.lblGenericDriver);
+            this.grpGenericDrivers.Controls.Add(this.genericDriver);
+            this.grpGenericDrivers.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpGenericDrivers.Location = new System.Drawing.Point(0, 23);
+            this.grpGenericDrivers.Name = "grpGenericDrivers";
+            this.grpGenericDrivers.Size = new System.Drawing.Size(832, 47);
+            this.grpGenericDrivers.TabIndex = 7;
+            this.grpGenericDrivers.TabStop = false;
+            this.grpGenericDrivers.Text = "Generic Driver Presets";
+            // 
+            // lblGenericDriver
+            // 
+            this.lblGenericDriver.AutoSize = true;
+            this.lblGenericDriver.Location = new System.Drawing.Point(3, 22);
+            this.lblGenericDriver.Name = "lblGenericDriver";
+            this.lblGenericDriver.Size = new System.Drawing.Size(75, 13);
+            this.lblGenericDriver.TabIndex = 1;
+            this.lblGenericDriver.Text = "Generic Driver";
+            // 
+            // genericDriver
+            // 
+            this.genericDriver.FormattingEnabled = true;
+            this.genericDriver.Location = new System.Drawing.Point(86, 19);
+            this.genericDriver.Name = "genericDriver";
+            this.genericDriver.Size = new System.Drawing.Size(249, 21);
+            this.genericDriver.TabIndex = 0;
+            this.genericDriver.SelectedIndexChanged += new System.EventHandler(this.genericDriver_SelectedIndexChanged);
+            this.genericDriver.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.genericDriver_KeyPress);
+            this.genericDriver.KeyDown += new System.Windows.Forms.KeyEventHandler(this.genericDriver_KeyDown);
             // 
             // Xsf_Bin2PsfFrontEndForm
             // 
@@ -283,12 +319,14 @@
             this.ClientSize = new System.Drawing.Size(832, 563);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpSource);
+            this.Controls.Add(this.grpGenericDrivers);
             this.Name = "Xsf_Bin2PsfFrontEndForm";
             this.Text = "Xsf_Bin2PsfFrontEndForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);
             this.Controls.SetChildIndex(this.pnlButtons, 0);
+            this.Controls.SetChildIndex(this.grpGenericDrivers, 0);
             this.Controls.SetChildIndex(this.grpSource, 0);
             this.Controls.SetChildIndex(this.grpOptions, 0);
             this.pnlLabels.ResumeLayout(false);
@@ -301,6 +339,8 @@
             this.grpSource.PerformLayout();
             this.grpOptions.ResumeLayout(false);
             this.grpOptions.PerformLayout();
+            this.grpGenericDrivers.ResumeLayout(false);
+            this.grpGenericDrivers.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -328,5 +368,8 @@
         private System.Windows.Forms.Label lblPsfLibName;
         private System.Windows.Forms.TextBox tbPsflibName;
         private System.Windows.Forms.CheckBox cbAllowZeroLengthSequences;
+        private System.Windows.Forms.GroupBox grpGenericDrivers;
+        private System.Windows.Forms.ComboBox genericDriver;
+        private System.Windows.Forms.Label lblGenericDriver;
     }
 }

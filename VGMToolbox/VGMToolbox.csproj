@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{8A96D568-CB21-4E64-8FD2-849A8E2B2D4F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -690,6 +690,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="forms\PsfStubMakerForm.resx">
       <DependentUpon>PsfStubMakerForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\TreeViewVgmtForm.resx">
       <DependentUpon>TreeViewVgmtForm.cs</DependentUpon>
@@ -748,6 +749,18 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="external\psf2\modules\sq.irx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="external\psf\DV_DRIVER_014.null.minipsf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="external\psf\DV_DRIVER_014.psflib">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="external\psf\MG_DRIVER_V21.data.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="external\psf\MG_DRIVER_V21.PSF">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="external\ssf\ssfmake\GEN_DSP10040.MAP">

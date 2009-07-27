@@ -19,13 +19,21 @@ namespace VGMToolbox.tools.xsf
         private const uint MIN_TEXT_SECTION_OFFSET = 0x80010000;
         private const uint PC_OFFSET_CORRECTION = 0x800;
 
-        private readonly string WORKING_FOLDER =
+        private static readonly string WORKING_FOLDER =
             Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "working_psf"));
-        private readonly string PROGRAMS_FOLDER =
+        private static readonly string PROGRAMS_FOLDER =
             Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"));
-        private readonly string OUTPUT_FOLDER =
+        private static readonly string PSF_PROGRAMS_FOLDER = Path.Combine(PROGRAMS_FOLDER, "psf");
+        private static readonly string OUTPUT_FOLDER =
             Path.GetFullPath(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "rips"), "psfs"));
 
+        public const string GENERIC_DRIVER_MGRASS = "Mark Grass/CaitSith2's Generic Driver v2.1";
+        public const string GENERIC_DRIVER_DAVIRONICA = "Davironica's Easy PSF Driver v0.1.4";
+
+        // public static readonly string MGRASS_EXE_PATH = Path.Combine(PSF_PROGRAMS_FOLDER, "MG_DRIVER_V21.PSF");
+        public static readonly string MGRASS_EXE_PATH = Path.Combine(PSF_PROGRAMS_FOLDER, "MG_DRIVER_V21.data.bin");
+        public static readonly string DAVIRONICA_EXE_PATH = Path.Combine(PSF_PROGRAMS_FOLDER, "DV_DRIVER_014.psflib");
+        public static readonly string DAVIRONICA_MINIPSF_PATH = Path.Combine(PSF_PROGRAMS_FOLDER, "DV_DRIVER_014.null.minipsf");
 
         private int fileCount = 0;
         private int maxFiles = 0;
@@ -44,6 +52,7 @@ namespace VGMToolbox.tools.xsf
             public string psflibName;
 
             public bool AllowZeroLengthSequences;
+            public string DriverName;
         }
 
         public Bin2PsfWorker()
@@ -203,7 +212,7 @@ namespace VGMToolbox.tools.xsf
                                 // get offset of text section
                                 textSectionOffset = ParseFile.ParseSimpleOffset(fs, 0x18, 4);
                                 textSectionOffsetValue = BitConverter.ToUInt32(textSectionOffset, 0);
-
+                                
                                 // calculate pc offsets
                                 pcOffsetSeq = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.seqOffset) -
                                     textSectionOffsetValue + PC_OFFSET_CORRECTION;
