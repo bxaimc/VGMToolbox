@@ -1042,7 +1042,7 @@ namespace VGMToolbox.format.util
 
                         if ((uint)VGMToolbox.util.Encoding.GetLongValueFromString(ret.PsfDrvLoadAddress) > PSFDRV_LOAD_ADDRESS)
                         {
-                            throw new ArgumentOutOfRangeException("PSFDRV_LOAD", PSFDRV_LOAD_ADDRESS.ToString("X8"), String.Format("Text Area + Size is greater than ox{0}, this is not supported.", PSFDRV_LOAD_ADDRESS.ToString("X8")));
+                            throw new ArgumentOutOfRangeException("PSFDRV_LOAD", ret.PsfDrvLoadAddress, String.Format("Text Area + Size is greater than 0x{0}, this is not supported.", PSFDRV_LOAD_ADDRESS.ToString("X8")));
                         }
                         else
                         {
