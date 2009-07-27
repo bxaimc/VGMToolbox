@@ -32,7 +32,8 @@ namespace VGMToolbox.tools.xsf
 
         // public static readonly string MGRASS_EXE_PATH = Path.Combine(PSF_PROGRAMS_FOLDER, "MG_DRIVER_V21.PSF");
         public static readonly string MGRASS_EXE_PATH = Path.Combine(PSF_PROGRAMS_FOLDER, "MG_DRIVER_V21.data.bin");
-        public static readonly string DAVIRONICA_EXE_PATH = Path.Combine(PSF_PROGRAMS_FOLDER, "DV_DRIVER_014.psflib");
+        // public static readonly string DAVIRONICA_EXE_PATH = Path.Combine(PSF_PROGRAMS_FOLDER, "DV_DRIVER_014.psflib");
+        public static readonly string DAVIRONICA_EXE_PATH = Path.Combine(PSF_PROGRAMS_FOLDER, "DV_DRIVER_014.data.bin");
         public static readonly string DAVIRONICA_MINIPSF_PATH = Path.Combine(PSF_PROGRAMS_FOLDER, "DV_DRIVER_014.null.minipsf");
 
         private int fileCount = 0;
@@ -213,13 +214,24 @@ namespace VGMToolbox.tools.xsf
                                 textSectionOffset = ParseFile.ParseSimpleOffset(fs, 0x18, 4);
                                 textSectionOffsetValue = BitConverter.ToUInt32(textSectionOffset, 0);
                                 
-                                // calculate pc offsets
-                                pcOffsetSeq = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.seqOffset) -
-                                    textSectionOffsetValue + PC_OFFSET_CORRECTION;
-                                pcOffsetVb = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.vbOffset) -
-                                    textSectionOffsetValue + PC_OFFSET_CORRECTION;
-                                pcOffsetVh = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.vhOffset) -
-                                    textSectionOffsetValue + PC_OFFSET_CORRECTION;
+                                switch (pBin2PsfStruct.DriverName)
+                                {
+                                    case GENERIC_DRIVER_DAVIRONICA:
+                                        pcOffsetSeq = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.seqOffset) -
+                                            textSectionOffsetValue + PC_OFFSET_CORRECTION;
+                                        pcOffsetVb = pcOffsetSeq + fi.Length;
+                                        pcOffsetVh = pcOffsetVb + new FileInfo(sourceVbFile).Length;                                        
+                                        break;
+                                    default:                                
+                                        // calculate pc offsets
+                                        pcOffsetSeq = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.seqOffset) -
+                                            textSectionOffsetValue + PC_OFFSET_CORRECTION;
+                                        pcOffsetVb = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.vbOffset) -
+                                            textSectionOffsetValue + PC_OFFSET_CORRECTION;
+                                        pcOffsetVh = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.vhOffset) -
+                                            textSectionOffsetValue + PC_OFFSET_CORRECTION;
+                                        break;
+                                }
                             }
 
                             // insert the data
@@ -232,6 +244,21 @@ namespace VGMToolbox.tools.xsf
                             fi = new FileInfo(destinationVhFile);
                             FileUtil.ReplaceFileChunk(destinationVhFile, 0, fi.Length,
                                 destinationExeFile, pcOffsetVh);
+
+                            // patch addresses for Davironica
+                            if (pBin2PsfStruct.DriverName.Equals(GENERIC_DRIVER_DAVIRONICA))
+                            {
+                                using (FileStream fs = File.OpenWrite(destinationExeFile))
+                                {
+                                    fs.Position = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.vbOffset)
+                                        - textSectionOffsetValue + PC_OFFSET_CORRECTION;
+                                    fs.Write(BitConverter.GetBytes((uint)(pcOffsetVb + textSectionOffsetValue - PC_OFFSET_CORRECTION)), 0, 4);
+
+                                    fs.Position = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.vhOffset)
+                                        - textSectionOffsetValue + PC_OFFSET_CORRECTION;
+                                    fs.Write(BitConverter.GetBytes((uint)(pcOffsetVh + textSectionOffsetValue - PC_OFFSET_CORRECTION)), 0, 4);                                    
+                                }
+                            }
 
                             // build bin2psf arguments                    
                             bin2PsfArguments.Append(String.Format(" {0} 1 {1}.bin", outputExtension, filePrefix));                                                        

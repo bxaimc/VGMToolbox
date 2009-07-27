@@ -751,6 +751,9 @@
     <None Include="external\psf2\modules\sq.irx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="external\psf\DV_DRIVER_014.data.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="external\psf\DV_DRIVER_014.null.minipsf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
