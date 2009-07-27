@@ -42,6 +42,8 @@ namespace VGMToolbox.tools.xsf
             public string outputFolder;
             public bool makeMiniPsfs;
             public string psflibName;
+
+            public bool AllowZeroLengthSequences;
         }
 
         public Bin2PsfWorker()
@@ -187,7 +189,8 @@ namespace VGMToolbox.tools.xsf
 
                         fi = new FileInfo(sourceSeqFile);
 
-                        if (fi.Length > 0) // only make for nonempty SEQ files
+                        // check for empty SEQ files
+                        if ((fi.Length > 0) || pBin2PsfStruct.AllowZeroLengthSequences)
                         {
                             File.Copy(pBin2PsfStruct.exePath, destinationExeFile);
                             File.Copy(sourceSeqFile, destinationSeqFile);

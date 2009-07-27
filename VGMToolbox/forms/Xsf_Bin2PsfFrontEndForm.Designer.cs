@@ -47,6 +47,7 @@
             this.tbVhOffset = new System.Windows.Forms.TextBox();
             this.lblSeqOffset = new System.Windows.Forms.Label();
             this.tbSeqOffset = new System.Windows.Forms.TextBox();
+            this.cbAllowZeroLengthSequences = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -56,30 +57,30 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 506);
-            this.pnlLabels.Size = new System.Drawing.Size(861, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 522);
+            this.pnlLabels.Size = new System.Drawing.Size(832, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(861, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(832, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 429);
-            this.tbOutput.Size = new System.Drawing.Size(861, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 445);
+            this.tbOutput.Size = new System.Drawing.Size(832, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 409);
-            this.pnlButtons.Size = new System.Drawing.Size(861, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 425);
+            this.pnlButtons.Size = new System.Drawing.Size(832, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(801, 0);
+            this.btnCancel.Location = new System.Drawing.Point(772, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(741, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(712, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpSource
@@ -98,7 +99,7 @@
             this.grpSource.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSource.Location = new System.Drawing.Point(0, 23);
             this.grpSource.Name = "grpSource";
-            this.grpSource.Size = new System.Drawing.Size(861, 117);
+            this.grpSource.Size = new System.Drawing.Size(832, 117);
             this.grpSource.TabIndex = 5;
             this.grpSource.TabStop = false;
             this.grpSource.Text = "Source";
@@ -202,6 +203,7 @@
             // 
             // grpOptions
             // 
+            this.grpOptions.Controls.Add(this.cbAllowZeroLengthSequences);
             this.grpOptions.Controls.Add(this.lblVbOffset);
             this.grpOptions.Controls.Add(this.tbVbOffset);
             this.grpOptions.Controls.Add(this.lblVhOffset);
@@ -211,7 +213,7 @@
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpOptions.Location = new System.Drawing.Point(0, 140);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(861, 100);
+            this.grpOptions.Size = new System.Drawing.Size(832, 137);
             this.grpOptions.TabIndex = 6;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
@@ -264,11 +266,21 @@
             this.tbSeqOffset.Size = new System.Drawing.Size(218, 20);
             this.tbSeqOffset.TabIndex = 0;
             // 
+            // cbAllowZeroLengthSequences
+            // 
+            this.cbAllowZeroLengthSequences.AutoSize = true;
+            this.cbAllowZeroLengthSequences.Location = new System.Drawing.Point(6, 113);
+            this.cbAllowZeroLengthSequences.Name = "cbAllowZeroLengthSequences";
+            this.cbAllowZeroLengthSequences.Size = new System.Drawing.Size(169, 17);
+            this.cbAllowZeroLengthSequences.TabIndex = 6;
+            this.cbAllowZeroLengthSequences.Text = "Allow Zero Length Sequences";
+            this.cbAllowZeroLengthSequences.UseVisualStyleBackColor = true;
+            // 
             // Xsf_Bin2PsfFrontEndForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(861, 547);
+            this.ClientSize = new System.Drawing.Size(832, 563);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpSource);
             this.Name = "Xsf_Bin2PsfFrontEndForm";
@@ -315,5 +327,6 @@
         private System.Windows.Forms.CheckBox cbMinipsf;
         private System.Windows.Forms.Label lblPsfLibName;
         private System.Windows.Forms.TextBox tbPsflibName;
+        private System.Windows.Forms.CheckBox cbAllowZeroLengthSequences;
     }
 }

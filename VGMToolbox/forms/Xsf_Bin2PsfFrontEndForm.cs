@@ -40,6 +40,8 @@ namespace VGMToolbox.forms
                 ConfigurationSettings.AppSettings["Form_Bin2PsfFE_LblVhOffset"];
             this.lblVbOffset.Text =
                 ConfigurationSettings.AppSettings["Form_Bin2PsfFE_LblVbOffset"];
+
+            this.cbAllowZeroLengthSequences.Text = "Allow Zero Length Sequences";
         }
 
         private void btnDoTask_Click(object sender, EventArgs e)
@@ -53,6 +55,7 @@ namespace VGMToolbox.forms
             bpStruct.outputFolder = tbOutputFolderName.Text;
             bpStruct.makeMiniPsfs = cbMinipsf.Checked;
             bpStruct.psflibName = tbPsflibName.Text;
+            bpStruct.AllowZeroLengthSequences = this.cbAllowZeroLengthSequences.Checked;
 
             base.backgroundWorker_Execute(bpStruct);
         }
