@@ -28,78 +28,56 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tbSourcePaths = new System.Windows.Forms.TextBox();
             this.gbSource = new System.Windows.Forms.GroupBox();
-            this.lblDragNDrop = new System.Windows.Forms.Label();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
-            this.gbSource.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 523);
-            this.pnlLabels.Size = new System.Drawing.Size(771, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 522);
+            this.pnlLabels.Size = new System.Drawing.Size(895, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(771, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(895, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 446);
-            this.tbOutput.Size = new System.Drawing.Size(771, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 445);
+            this.tbOutput.Size = new System.Drawing.Size(895, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 426);
-            this.pnlButtons.Size = new System.Drawing.Size(771, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 425);
+            this.pnlButtons.Size = new System.Drawing.Size(895, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(711, 0);
+            this.btnCancel.Location = new System.Drawing.Point(835, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(651, 0);
-            // 
-            // tbSourcePaths
-            // 
-            this.tbSourcePaths.AllowDrop = true;
-            this.tbSourcePaths.Location = new System.Drawing.Point(6, 19);
-            this.tbSourcePaths.Name = "tbSourcePaths";
-            this.tbSourcePaths.Size = new System.Drawing.Size(197, 20);
-            this.tbSourcePaths.TabIndex = 5;
-            this.tbSourcePaths.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbSourcePaths_DragDrop);
-            this.tbSourcePaths.DragEnter += new System.Windows.Forms.DragEventHandler(this.doDragEnter);
+            this.btnDoTask.Location = new System.Drawing.Point(775, 0);
             // 
             // gbSource
             // 
-            this.gbSource.Controls.Add(this.lblDragNDrop);
-            this.gbSource.Controls.Add(this.tbSourcePaths);
-            this.gbSource.Dock = System.Windows.Forms.DockStyle.Top;
+            this.gbSource.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gbSource.Location = new System.Drawing.Point(0, 23);
             this.gbSource.Name = "gbSource";
-            this.gbSource.Size = new System.Drawing.Size(771, 62);
+            this.gbSource.Size = new System.Drawing.Size(895, 402);
             this.gbSource.TabIndex = 6;
             this.gbSource.TabStop = false;
             this.gbSource.Text = "Source Files";
-            // 
-            // lblDragNDrop
-            // 
-            this.lblDragNDrop.AutoSize = true;
-            this.lblDragNDrop.Location = new System.Drawing.Point(6, 42);
-            this.lblDragNDrop.Name = "lblDragNDrop";
-            this.lblDragNDrop.Size = new System.Drawing.Size(310, 13);
-            this.lblDragNDrop.TabIndex = 6;
-            this.lblDragNDrop.Text = "Drag and Drop PSF2s (or folders containing PSF2s) to time here.";
+            this.gbSource.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbSourcePaths_DragDrop);
+            this.gbSource.DragEnter += new System.Windows.Forms.DragEventHandler(this.doDragEnter);
             // 
             // Xsf_Psf2TimerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(771, 564);
+            this.ClientSize = new System.Drawing.Size(895, 563);
             this.Controls.Add(this.gbSource);
             this.Name = "Xsf_Psf2TimerForm";
             this.Text = "Xsf_Psf2TimerForm";
@@ -114,8 +92,6 @@
             this.pnlTitle.PerformLayout();
             this.pnlButtons.ResumeLayout(false);
             this.pnlButtons.PerformLayout();
-            this.gbSource.ResumeLayout(false);
-            this.gbSource.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -123,8 +99,6 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox tbSourcePaths;
         private System.Windows.Forms.GroupBox gbSource;
-        private System.Windows.Forms.Label lblDragNDrop;
     }
 }

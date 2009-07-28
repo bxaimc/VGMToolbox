@@ -18,13 +18,11 @@ namespace VGMToolbox.forms
             this.btnDoTask.Hide();
 
             InitializeComponent();
-
+            this.grpSource.AllowDrop = true;
             this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_Psf2SqExtractor_IntroText"];
 
             this.grpSource.Text =
-                ConfigurationSettings.AppSettings["Form_Psf2SqExtractor_GroupSource"];
-            this.lblDragNDrop.Text =
-                ConfigurationSettings.AppSettings["Form_Psf2SqExtractor_LblDragNDrop"];
+                ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)

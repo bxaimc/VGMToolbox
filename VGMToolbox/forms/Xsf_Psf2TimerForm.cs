@@ -25,10 +25,9 @@ namespace VGMToolbox.forms
             
             InitializeComponent();
 
+            this.gbSource.AllowDrop = true;
             this.gbSource.Text =
-                ConfigurationSettings.AppSettings["Form_Psf2Timer_GroupSource"];
-            this.lblDragNDrop.Text =
-                ConfigurationSettings.AppSettings["Form_Psf2Timer_LblDragNDrop"];
+                ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)

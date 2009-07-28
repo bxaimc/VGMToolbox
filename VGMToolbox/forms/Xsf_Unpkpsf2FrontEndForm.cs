@@ -20,9 +20,8 @@ namespace VGMToolbox.forms
 
             InitializeComponent();
 
-            this.grpSource.Text = ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_GroupSource"];
-            this.lblDragNDrop.Text = ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_LblDragNDrop"];
-            this.lblAuthor.Text = ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_LblAuthor"];
+            this.grpSource.AllowDrop = true;
+            this.grpSource.Text = ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
         }
 
         private void tbPsf2Source_DragDrop(object sender, DragEventArgs e)
