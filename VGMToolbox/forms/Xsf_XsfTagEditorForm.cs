@@ -20,7 +20,6 @@ namespace VGMToolbox.forms
         IXsfTagFormat vgmData;
         bool isBatchMode;
         
-
         public Xsf_XsfTagEditorForm(TreeNode pTreeNode)
             : base(pTreeNode)
         {

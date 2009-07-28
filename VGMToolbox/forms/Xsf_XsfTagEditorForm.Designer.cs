@@ -75,30 +75,30 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 523);
-            this.pnlLabels.Size = new System.Drawing.Size(687, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 522);
+            this.pnlLabels.Size = new System.Drawing.Size(743, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(687, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(743, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 446);
-            this.tbOutput.Size = new System.Drawing.Size(687, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 445);
+            this.tbOutput.Size = new System.Drawing.Size(743, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 426);
-            this.pnlButtons.Size = new System.Drawing.Size(687, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 425);
+            this.pnlButtons.Size = new System.Drawing.Size(743, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(627, 0);
+            this.btnCancel.Location = new System.Drawing.Point(683, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(567, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(623, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpSourceFiles
@@ -364,7 +364,7 @@
             this.cbGenerateTitleFromFilename.AutoSize = true;
             this.cbGenerateTitleFromFilename.Location = new System.Drawing.Point(238, 338);
             this.cbGenerateTitleFromFilename.Name = "cbGenerateTitleFromFilename";
-            this.cbGenerateTitleFromFilename.Size = new System.Drawing.Size(161, 17);
+            this.cbGenerateTitleFromFilename.Size = new System.Drawing.Size(163, 17);
             this.cbGenerateTitleFromFilename.TabIndex = 19;
             this.cbGenerateTitleFromFilename.Text = "Generate Title from FileName";
             this.cbGenerateTitleFromFilename.UseVisualStyleBackColor = true;
@@ -405,7 +405,7 @@
             this.contextMenuRefresh.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.refreshFileListToolStripMenuItem});
             this.contextMenuRefresh.Name = "contextMenuStrip1";
-            this.contextMenuRefresh.Size = new System.Drawing.Size(162, 26);
+            this.contextMenuRefresh.Size = new System.Drawing.Size(162, 48);
             // 
             // refreshFileListToolStripMenuItem
             // 
@@ -418,7 +418,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(687, 564);
+            this.ClientSize = new System.Drawing.Size(743, 563);
             this.Controls.Add(this.cbGenerateTitleFromFilename);
             this.Controls.Add(this.cbDeleteEmpty);
             this.Controls.Add(this.grpComments);

@@ -24,7 +24,7 @@ namespace VGMToolbox.forms
             this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_Title_IntroText"];
 
             this.lblV1Folder.Text = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_LblV1Folder"];
-            this.lblV2Folder.Text = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_LblV1Folder"];
+            this.lblV2Folder.Text = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_LblV2Folder"];
             this.btnDefault.Text = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_BtnDefault"];
             this.btnCheckAll.Text = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_BtnCheckAll"];
             this.btnCheckNone.Text = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_BtnCheckNone"];
