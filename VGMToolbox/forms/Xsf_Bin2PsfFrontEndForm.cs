@@ -125,7 +125,7 @@ namespace VGMToolbox.forms
             {
                 case Bin2PsfWorker.GENERIC_DRIVER_MGRASS:
                     this.disablePresetFields();
-                    this.loadMarkGrassGenericV21Presets();
+                    this.loadMarkGrassGenericPresets();
                     break;
                 
                 case Bin2PsfWorker.GENERIC_DRIVER_DAVIRONICA:                   
@@ -138,9 +138,9 @@ namespace VGMToolbox.forms
                     break;
             }
         }
-        private void loadMarkGrassGenericV21Presets()
+        private void loadMarkGrassGenericPresets()
         {            
-            this.tbExePath.Text = Bin2PsfWorker.MGRASS_EXE_PATH;
+            // this.tbExePath.Text = Bin2PsfWorker.MGRASS_EXE_PATH;
             this.tbPsflibName.Text = String.Empty;
             this.cbMinipsf.Enabled = false;
             
@@ -161,9 +161,9 @@ namespace VGMToolbox.forms
 
         private void disablePresetFields()
         {
-            this.tbExePath.Enabled = false;
-            this.tbExePath.ReadOnly = true;
-            this.btnExeBrowse.Enabled = false;
+            // this.tbExePath.Enabled = false;
+            // this.tbExePath.ReadOnly = true;
+            // this.btnExeBrowse.Enabled = false;
             this.tbPsflibName.Enabled = false;
             this.tbPsflibName.ReadOnly = true;            
 
@@ -176,10 +176,10 @@ namespace VGMToolbox.forms
         }
         private void enablePresetFields()
         {            
-            this.tbExePath.Enabled = true;
-            this.tbExePath.ReadOnly = false;
-            this.tbExePath.Text = String.Empty;
-            this.btnExeBrowse.Enabled = true;
+            // this.tbExePath.Enabled = true;
+            // this.tbExePath.ReadOnly = false;
+            // this.tbExePath.Text = String.Empty;
+            // this.btnExeBrowse.Enabled = true;
             this.tbPsflibName.Enabled = true;
             this.tbPsflibName.ReadOnly = false;
             this.cbMinipsf.Enabled = true;
