@@ -61,30 +61,30 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 522);
-            this.pnlLabels.Size = new System.Drawing.Size(832, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 501);
+            this.pnlLabels.Size = new System.Drawing.Size(857, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(832, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(857, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 445);
-            this.tbOutput.Size = new System.Drawing.Size(832, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 424);
+            this.tbOutput.Size = new System.Drawing.Size(857, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 425);
-            this.pnlButtons.Size = new System.Drawing.Size(832, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 404);
+            this.pnlButtons.Size = new System.Drawing.Size(857, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(772, 0);
+            this.btnCancel.Location = new System.Drawing.Point(797, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(712, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(737, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpSource
@@ -103,7 +103,7 @@
             this.grpSource.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSource.Location = new System.Drawing.Point(0, 70);
             this.grpSource.Name = "grpSource";
-            this.grpSource.Size = new System.Drawing.Size(832, 117);
+            this.grpSource.Size = new System.Drawing.Size(857, 117);
             this.grpSource.TabIndex = 5;
             this.grpSource.TabStop = false;
             this.grpSource.Text = "Source";
@@ -217,7 +217,7 @@
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpOptions.Location = new System.Drawing.Point(0, 187);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(832, 137);
+            this.grpOptions.Size = new System.Drawing.Size(857, 137);
             this.grpOptions.TabIndex = 6;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
@@ -287,19 +287,19 @@
             this.grpGenericDrivers.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpGenericDrivers.Location = new System.Drawing.Point(0, 23);
             this.grpGenericDrivers.Name = "grpGenericDrivers";
-            this.grpGenericDrivers.Size = new System.Drawing.Size(832, 47);
+            this.grpGenericDrivers.Size = new System.Drawing.Size(857, 47);
             this.grpGenericDrivers.TabIndex = 7;
             this.grpGenericDrivers.TabStop = false;
-            this.grpGenericDrivers.Text = "Generic Driver Presets";
+            this.grpGenericDrivers.Text = "Presets";
             // 
             // lblGenericDriver
             // 
             this.lblGenericDriver.AutoSize = true;
             this.lblGenericDriver.Location = new System.Drawing.Point(3, 22);
             this.lblGenericDriver.Name = "lblGenericDriver";
-            this.lblGenericDriver.Size = new System.Drawing.Size(75, 13);
+            this.lblGenericDriver.Size = new System.Drawing.Size(35, 13);
             this.lblGenericDriver.TabIndex = 1;
-            this.lblGenericDriver.Text = "Generic Driver";
+            this.lblGenericDriver.Text = "Driver";
             // 
             // genericDriver
             // 
@@ -316,7 +316,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(832, 563);
+            this.ClientSize = new System.Drawing.Size(857, 542);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpSource);
             this.Controls.Add(this.grpGenericDrivers);

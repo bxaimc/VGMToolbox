@@ -10,6 +10,8 @@ namespace VGMToolbox.forms
 {
     public partial class Xsf_Bin2PsfFrontEndForm : AVgmtForm
     {
+        private const string STUB_BUILDER = "PSF Stub Builder Defaults";
+        
         public Xsf_Bin2PsfFrontEndForm(TreeNode pTreeNode)
             : base(pTreeNode)
         {
@@ -114,6 +116,9 @@ namespace VGMToolbox.forms
         private void loadGenericDriversList()
         {
             this.genericDriver.Items.Add(String.Empty);
+
+            this.genericDriver.Items.Add(STUB_BUILDER);
+            
             this.genericDriver.Items.Add(Bin2PsfWorker.GENERIC_DRIVER_MGRASS);
             // this.genericDriver.Items.Add(Bin2PsfWorker.GENERIC_DRIVER_DAVIRONICA);
         }
@@ -123,6 +128,9 @@ namespace VGMToolbox.forms
 
             switch (selectedItem)
             {
+                case STUB_BUILDER:
+                    loadStubBuilderPresets();
+                    break;
                 case Bin2PsfWorker.GENERIC_DRIVER_MGRASS:
                     this.disablePresetFields();
                     this.loadMarkGrassGenericPresets();
@@ -133,10 +141,17 @@ namespace VGMToolbox.forms
                     this.loadDavironicaGenericV014Presets();
                     break;
                 
+                
                 default:
                     this.enablePresetFields();
                     break;
             }
+        }
+        private void loadStubBuilderPresets()
+        {
+            this.tbSeqOffset.Text = "0x80120000";
+            this.tbVhOffset.Text = "0x80130000";
+            this.tbVbOffset.Text = "0x80140000";
         }
         private void loadMarkGrassGenericPresets()
         {            
