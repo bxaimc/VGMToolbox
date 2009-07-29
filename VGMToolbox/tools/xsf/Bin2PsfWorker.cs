@@ -245,7 +245,7 @@ namespace VGMToolbox.tools.xsf
                                 destinationExeFile, pcOffsetVh);
 
                             // patch addresses for Davironica
-                            if (pBin2PsfStruct.DriverName.Equals(GENERIC_DRIVER_DAVIRONICA))
+                            if ((!String.IsNullOrEmpty(pBin2PsfStruct.DriverName)) && (pBin2PsfStruct.DriverName.Equals(GENERIC_DRIVER_DAVIRONICA)))
                             {
                                 using (FileStream fs = File.OpenWrite(destinationExeFile))
                                 {
