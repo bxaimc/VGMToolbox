@@ -1,19 +1,24 @@
-﻿using System;
-using System.Globalization;
-using System.IO;
-using System.Security.Cryptography;
-
-using ICSharpCode.SharpZipLib.Checksums;
-using Ionic.Zlib;
-
-namespace VGMToolbox.util
+﻿namespace VGMToolbox.util
 {
+    using System;
+    using System.Globalization;
+    using System.IO;
+    using System.Security.Cryptography;
+
+    using ICSharpCode.SharpZipLib.Checksums;
+    using Ionic.Zlib;    
+            
     /// <summary>
     /// Class containing static functions related to checksum generation.
     /// </summary>
     public sealed class ChecksumUtil
     {
-        private ChecksumUtil() { }
+        /// <summary>
+        /// Prevents a default instance of the ChecksumUtil class from being created.
+        /// </summary>
+        private ChecksumUtil() 
+        { 
+        }
 
         /// <summary>
         /// Get the CRC32 checksum of the input stream.
@@ -73,8 +78,7 @@ namespace VGMToolbox.util
         /// <param name="pOffset">Offset to begin reading from.</param>
         /// <param name="pLength">Number of bytes to read.</param>
         /// <param name="pCrc32">CRC32 generator.</param>
-        public static void AddChunkToChecksum(Stream pStream, int pOffset, int pLength,
-            ref Crc32 pCrc32)
+        public static void AddChunkToChecksum(Stream pStream, int pOffset, int pLength, ref Crc32 pCrc32)
         {
             int remaining = pLength;
             byte[] data = new byte[4096];
@@ -95,9 +99,14 @@ namespace VGMToolbox.util
                 }
 
                 if (read <= 0)
-                    throw new EndOfStreamException
-                        (String.Format(CultureInfo.CurrentCulture, "End of stream reached with {0} bytes left to read", remaining));
-
+                {
+                    throw new EndOfStreamException(
+                        String.Format(
+                            CultureInfo.CurrentCulture, 
+                            "End of stream reached with {0} bytes left to read", 
+                            remaining));
+                }
+                
                 pCrc32.Update(data, 0, read);
                 remaining -= read;
                 offset += read;
@@ -107,36 +116,46 @@ namespace VGMToolbox.util
         /// <summary>
         /// Adds a chunk of data to the input CRC32/MD5/SHA1 generator.
         /// </summary>
-        /// <param name="pStream">Stream to read data from.</param>
+        /// <param name="sourceStream">Stream to read data from.</param>
         /// <param name="pOffset">Offset to begin reading from.</param>
         /// <param name="pLength">Number of bytes to read.</param>
         /// <param name="pCrc32">CRC32 generator.</param>
         /// <param name="pMd5CryptoStream">MD5 generator.</param>
         /// <param name="pSha1CryptoStream">SHA1 generator.</param>
-        public static void AddChunkToChecksum(Stream pStream, int pOffset, int pLength,
-            ref Crc32 pCrc32, ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream)
+        public static void AddChunkToChecksum(
+            Stream sourceStream, 
+            int pOffset, 
+            int pLength,
+            ref Crc32 pCrc32, 
+            ref CryptoStream pMd5CryptoStream, 
+            ref CryptoStream pSha1CryptoStream)
         {
             int remaining = pLength;
             byte[] data = new byte[4096];
             int read;
             int offset = pOffset;
 
-            pStream.Seek((long)pOffset, SeekOrigin.Begin);
+            sourceStream.Seek((long)pOffset, SeekOrigin.Begin);
 
             while (remaining > 0)
             {
                 if (remaining < 4096)
                 {
-                    read = pStream.Read(data, 0, remaining);
+                    read = sourceStream.Read(data, 0, remaining);
                 }
                 else
                 {
-                    read = pStream.Read(data, 0, 4096);
+                    read = sourceStream.Read(data, 0, 4096);
                 }
 
                 if (read <= 0)
-                    throw new EndOfStreamException
-                        (String.Format(CultureInfo.CurrentCulture, "End of stream reached with {0} bytes left to read", remaining));
+                {
+                    throw new EndOfStreamException(
+                        String.Format(
+                            CultureInfo.CurrentCulture, 
+                            "End of stream reached with {0} bytes left to read", 
+                            remaining));
+                }
 
                 pCrc32.Update(data, 0, read);
                 pMd5CryptoStream.Write(data, 0, read);

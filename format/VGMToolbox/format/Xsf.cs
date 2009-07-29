@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Security.Cryptography;
-
-using ICSharpCode.SharpZipLib.Checksums;
-using ICSharpCode.SharpZipLib.Zip.Compression;
-using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
-
-using VGMToolbox.format.util;
-using VGMToolbox.util;
-
-namespace VGMToolbox.format
+﻿namespace VGMToolbox.format
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Security.Cryptography;
+
+    using ICSharpCode.SharpZipLib.Checksums;
+    using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
+
+    using VGMToolbox.format.util;
+    using VGMToolbox.util;
+    
     public class Xsf : IFormat, IXsfTagFormat
     {
         // Fields
@@ -21,20 +20,20 @@ namespace VGMToolbox.format
 
         private const int READ_CHUNK_SIZE = 71680;
 
-        public const ushort VERSION_2SF = 0x24;
-        public const ushort VERSION_DSF = 0x12;
-        public const ushort VERSION_GSF = 0x22;
-        public const ushort VERSION_MDSF = 0x13;
-        public const ushort VERSION_PSF1 = 0x01;
-        public const ushort VERSION_PSF2 = 0x02;
-        public const ushort VERSION_QSF = 0x41;
-        public const ushort VERSION_SNSF = 0x23;
-        public const ushort VERSION_SSF = 0x11;
-        public const ushort VERSION_USF = 0x21;
+        public const ushort Version2sf = 0x24;
+        public const ushort VersionDsf = 0x12;
+        public const ushort VersionGsf = 0x22;
+        public const ushort VersionMdsf = 0x13;
+        public const ushort VersionPsf1 = 0x01;
+        public const ushort VersionPsf2 = 0x02;
+        public const ushort VersionQsf = 0x41;
+        public const ushort VersionSnsf = 0x23;
+        public const ushort VersionSsf = 0x11;
+        public const ushort VersionUsf = 0x21;
 
-        public const string FORMAT_NAME_PSF = "PSF";
-        public const string FORMAT_NAME_PSF2 = "PSF2";
-        public const string FORMAT_NAME_2SF = "2SF";
+        public const string FormatNamePsf = "PSF";
+        public const string FormatNamePsf2 = "PSF2";
+        public const string FormatName2sf = "2SF";
 
         private const int SIG_OFFSET = 0x00;
         private const int SIG_LENGTH = 0x03;
@@ -59,8 +58,8 @@ namespace VGMToolbox.format
         private string filePath;
         public string FilePath 
         {
-            get { return filePath; }
-            set { filePath = value; }
+            get { return this.filePath; }
+            set { this.filePath = value; }
         }
 
         protected byte[] asciiSignature;
@@ -70,9 +69,6 @@ namespace VGMToolbox.format
         protected byte[] compressedProgramCrc32;
         protected byte[] reservedSection;
         protected byte[] compressedProgram;
-
-        protected Dictionary<string, string> tagHash;
-        protected Hashtable formatHash;
 
         // Properties
         public byte[] AsciiSignature { get { return this.asciiSignature; } }
@@ -84,8 +80,14 @@ namespace VGMToolbox.format
         public byte[] VersionByte { get { return this.versionByte; } }
         public Dictionary<string, string> TagHash { get { return this.tagHash; } }
 
+        protected Dictionary<string, string> tagHash;
+        protected Hashtable formatHash;
+
+
         // Methods
-        public Xsf() {}
+        public Xsf() 
+        {
+        }
         
         public Xsf(byte[] pBytes)
         {
@@ -104,7 +106,7 @@ namespace VGMToolbox.format
 
         protected byte[] getCompressedProgram(byte[] pBytes)
         {
-            return ParseFile.ParseSimpleOffset(pBytes, (int) (RESERVED_SECTION_OFFSET + this.getReservedSectionLength(pBytes)), (int) this.getCompressedProgramLength(pBytes));
+            return ParseFile.ParseSimpleOffset(pBytes, (int)(RESERVED_SECTION_OFFSET + this.getReservedSectionLength(pBytes)), (int)this.getCompressedProgramLength(pBytes));
         }
 
         private byte[] getCompressedProgramCrc32(byte[] pBytes)
@@ -132,11 +134,14 @@ namespace VGMToolbox.format
             using (FileStream fs = File.OpenRead(this.filePath))
             {
                 // Reserved Section
-                ChecksumUtil.AddChunkToChecksum(fs, (int)RESERVED_SECTION_OFFSET,
-                    (int)this.reservedSectionLength, ref pChecksum);
+                ChecksumUtil.AddChunkToChecksum(
+                    fs, 
+                    (int)RESERVED_SECTION_OFFSET,
+                    (int)this.reservedSectionLength, 
+                    ref pChecksum);
 
                 // Compressed Program
-                addDecompressedProgramChecksum(fs, ref pChecksum);
+                this.addDecompressedProgramChecksum(fs, ref pChecksum);
             }
 
             // Libs
@@ -154,19 +159,24 @@ namespace VGMToolbox.format
             }
         }
 
-        public void GetDatFileChecksums(ref Crc32 pChecksum,
-            ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream)
+        public void GetDatFileChecksums(
+            ref Crc32 pChecksum,
+            ref CryptoStream pMd5CryptoStream, 
+            ref CryptoStream pSha1CryptoStream)
         {
             using (FileStream fs = File.OpenRead(this.filePath))
             {
                 // Reserved Section
-                ChecksumUtil.AddChunkToChecksum(fs, (int)RESERVED_SECTION_OFFSET,
-                    (int)this.reservedSectionLength, ref pChecksum, ref pMd5CryptoStream,
+                ChecksumUtil.AddChunkToChecksum(
+                    fs, 
+                    (int)RESERVED_SECTION_OFFSET,
+                    (int)this.reservedSectionLength,
+                    ref pChecksum, 
+                    ref pMd5CryptoStream,
                     ref pSha1CryptoStream);
 
                 // Compressed Program
-                addDecompressedProgramChecksum(fs, ref pChecksum, ref pMd5CryptoStream,
-                    ref pSha1CryptoStream);
+                this.addDecompressedProgramChecksum(fs, ref pChecksum, ref pMd5CryptoStream, ref pSha1CryptoStream);
             }
 
             // Libs
@@ -178,8 +188,7 @@ namespace VGMToolbox.format
                 {
                     Xsf libXsf = new Xsf();
                     libXsf.Initialize(lfs, f);
-                    libXsf.GetDatFileChecksums(ref pChecksum, ref pMd5CryptoStream,
-                        ref pSha1CryptoStream);
+                    libXsf.GetDatFileChecksums(ref pChecksum, ref pMd5CryptoStream, ref pSha1CryptoStream);
                     libXsf = null;
                 }
             }
@@ -206,8 +215,11 @@ namespace VGMToolbox.format
             }
         }
         
-        protected void addDecompressedProgramChecksum(FileStream pFileStream, ref Crc32 pChecksum, 
-            ref CryptoStream pMd5CryptoStream, ref CryptoStream pSha1CryptoStream)
+        protected void addDecompressedProgramChecksum(
+            FileStream pFileStream, 
+            ref Crc32 pChecksum, 
+            ref CryptoStream pMd5CryptoStream, 
+            ref CryptoStream pSha1CryptoStream)
         { 
             if (this.compressedProgramLength > 0)
             {
@@ -262,7 +274,7 @@ namespace VGMToolbox.format
             }
         }
         */
-        public string getFormat()
+        public string GetFormat()
         {
             return this.formatHash[(ushort)this.versionByte[0]].ToString();
         }
@@ -281,16 +293,16 @@ namespace VGMToolbox.format
             int i = 2;
 
             // Grab the _lib files from the tags.  Sort them and get the checksum bytes of each one.
-            if (tagHash.ContainsKey("_lib"))
+            if (this.tagHash.ContainsKey("_lib"))
             {
-                libPath = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(this.filePath)), tagHash["_lib"]);
+                libPath = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(this.filePath)), this.tagHash["_lib"]);
                 libPaths.Add(libPath.Trim().ToUpper());
 
                 while (libsFound)
                 {
-                    if (tagHash.ContainsKey("_lib" + i.ToString()))
+                    if (this.tagHash.ContainsKey("_lib" + i.ToString()))
                     {
-                        libPaths.Add(Path.Combine(Path.GetDirectoryName(Path.GetFullPath(this.filePath)), tagHash["_lib" + i.ToString()]));
+                        libPaths.Add(Path.Combine(Path.GetDirectoryName(Path.GetFullPath(this.filePath)), this.tagHash["_lib" + i.ToString()]));
                         i++;
                     }
                     else
@@ -344,8 +356,8 @@ namespace VGMToolbox.format
 
         protected Dictionary<string, string> getTags(byte[] pBytes)
         {
-            int tagOffset = (int) (RESERVED_SECTION_OFFSET + this.reservedSectionLength + this.compressedProgramLength + ASCII_TAG.Length);
-            return getTags(pBytes, tagOffset, pBytes.Length);
+            int tagOffset = (int)(RESERVED_SECTION_OFFSET + this.reservedSectionLength + this.compressedProgramLength + ASCII_TAG.Length);
+            return this.getTags(pBytes, tagOffset, pBytes.Length);
         }
 
         /*
@@ -359,13 +371,13 @@ namespace VGMToolbox.format
         {
             Dictionary<string, string> ret = new Dictionary<string, string>();
 
-            int tagOffset = (int) (RESERVED_SECTION_OFFSET + this.reservedSectionLength + this.compressedProgramLength + ASCII_TAG.Length);
+            int tagOffset = (int)(RESERVED_SECTION_OFFSET + this.reservedSectionLength + this.compressedProgramLength + ASCII_TAG.Length);
             int tagLength = (int) pStream.Length - tagOffset;
 
             if ((tagLength > 0))
             {
                 byte[] tagBytes = ParseFile.ParseSimpleOffset(pStream, tagOffset, tagLength);
-                ret = getTags(tagBytes, 0, (int)tagLength);
+                ret = this.getTags(tagBytes, 0, (int)tagLength);
             }
 
             return ret;
@@ -426,7 +438,7 @@ namespace VGMToolbox.format
                             tags.Add(tag[0], oldTag + tag[1]);
                         }
                     }
-                } //foreach (string s in splitTags)
+                } // foreach (string s in splitTags)
             }
             return tags;
         }
@@ -438,7 +450,7 @@ namespace VGMToolbox.format
             this.reservedSectionLength = this.getReservedSectionLength(pBytes);
             this.compressedProgramLength = this.getCompressedProgramLength(pBytes);
             this.compressedProgramCrc32 = this.getCompressedProgramCrc32(pBytes);
-            this.populateFormatHash();
+            this.PopulateFormatHash();
             this.tagHash = this.getTags(pBytes);         
         }
 
@@ -450,15 +462,15 @@ namespace VGMToolbox.format
             this.reservedSectionLength = this.getReservedSectionLength(pStream);
             this.compressedProgramLength = this.getCompressedProgramLength(pStream);
             this.compressedProgramCrc32 = this.getCompressedProgramCrc32(pStream);
-            this.populateFormatHash();
+            this.PopulateFormatHash();
             this.tagHash = this.getTags(pStream);
         }
 
-        protected void populateFormatHash()
+        protected void PopulateFormatHash()
         {
             this.formatHash = new Hashtable();
-            this.formatHash.Add((ushort)1, FORMAT_NAME_PSF);
-            this.formatHash.Add((ushort)2, FORMAT_NAME_PSF2);
+            this.formatHash.Add((ushort)1, FormatNamePsf);
+            this.formatHash.Add((ushort)2, FormatNamePsf2);
             this.formatHash.Add((ushort)0x11, "SSF");
             this.formatHash.Add((ushort)0x12, "DSF");
             this.formatHash.Add((ushort)0x13, "MDSF");
@@ -469,7 +481,7 @@ namespace VGMToolbox.format
             this.formatHash.Add((ushort)0x41, "QSF");
         }
 
-        public bool verifyChecksum()
+        public bool VerifyChecksum()
         {
             bool flag = false;
             if (this.compressedProgram != null)
@@ -565,31 +577,31 @@ namespace VGMToolbox.format
 
             if (this.tagHash.ContainsKey(pTagKey))
             {
-                ret = tagHash[pTagKey];
+                ret = this.tagHash[pTagKey];
             }
             return ret;
         }
-        public string GetTitleTag() { return GetSimpleTag("title"); }
-        public string GetArtistTag() { return GetSimpleTag("artist"); }
-        public string GetGameTag() { return GetSimpleTag("game"); }
-        public string GetYearTag() { return GetSimpleTag("year"); }
-        public string GetGenreTag() { return GetSimpleTag("genre"); }
-        public string GetCommentTag() { return GetSimpleTag("comment"); }
-        public string GetCopyrightTag() { return GetSimpleTag("copyright"); }        
-        public string GetVolumeTag() { return GetSimpleTag("volume"); }
-        public string GetLengthTag() { return GetSimpleTag("length"); }
-        public string GetFadeTag() { return GetSimpleTag("fade"); }
-        public string GetSystemTag() { return GetSimpleTag("system"); }
+        public string GetTitleTag() { return this.GetSimpleTag("title"); }
+        public string GetArtistTag() { return this.GetSimpleTag("artist"); }
+        public string GetGameTag() { return this.GetSimpleTag("game"); }
+        public string GetYearTag() { return this.GetSimpleTag("year"); }
+        public string GetGenreTag() { return this.GetSimpleTag("genre"); }
+        public string GetCommentTag() { return this.GetSimpleTag("comment"); }
+        public string GetCopyrightTag() { return this.GetSimpleTag("copyright"); }
+        public string GetVolumeTag() { return this.GetSimpleTag("volume"); }
+        public string GetLengthTag() { return this.GetSimpleTag("length"); }
+        public string GetFadeTag() { return this.GetSimpleTag("fade"); }
+        public string GetSystemTag() { return this.GetSimpleTag("system"); }
         public string GetXsfByTag() 
         {
-            string format = this.getFormat();
+            string format = this.GetFormat();
 
-            if (format.Equals(FORMAT_NAME_PSF2))
+            if (format.Equals(FormatNamePsf2))
             {
-                format = FORMAT_NAME_PSF;
+                format = FormatNamePsf;
             }
 
-            return GetSimpleTag(format + "by");         
+            return this.GetSimpleTag(format + "by");         
         }
 
         private void SetSimpleTag(string pKey, string pNewValue)
@@ -598,32 +610,32 @@ namespace VGMToolbox.format
             {
                 this.tagHash[pKey] = pNewValue.Trim();
             }
-            else if (tagHash.ContainsKey(pKey))
+            else if (this.tagHash.ContainsKey(pKey))
             {
-                tagHash.Remove(pKey);
+                this.tagHash.Remove(pKey);
             }
         }
-        public void SetTitleTag(string pNewValue) { SetSimpleTag("title", pNewValue); }
-        public void SetArtistTag(string pNewValue) { SetSimpleTag("artist", pNewValue); }
-        public void SetGameTag(string pNewValue) { SetSimpleTag("game", pNewValue); }
-        public void SetYearTag(string pNewValue) { SetSimpleTag("year", pNewValue); }
-        public void SetGenreTag(string pNewValue) { SetSimpleTag("genre", pNewValue); }
-        public void SetCommentTag(string pNewValue) { SetSimpleTag("comment", pNewValue); }
-        public void SetCopyrightTag(string pNewValue) { SetSimpleTag("copyright", pNewValue); }        
-        public void SetVolumeTag(string pNewValue) { SetSimpleTag("volume", pNewValue); }
-        public void SetLengthTag(string pNewValue) { SetSimpleTag("length", pNewValue); }
-        public void SetFadeTag(string pNewValue) { SetSimpleTag("fade", pNewValue); }
-        public void SetSystemTag(string pNewValue) { SetSimpleTag("system", pNewValue); }
+        public void SetTitleTag(string pNewValue) { this.SetSimpleTag("title", pNewValue); }
+        public void SetArtistTag(string pNewValue) { this.SetSimpleTag("artist", pNewValue); }
+        public void SetGameTag(string pNewValue) { this.SetSimpleTag("game", pNewValue); }
+        public void SetYearTag(string pNewValue) { this.SetSimpleTag("year", pNewValue); }
+        public void SetGenreTag(string pNewValue) { this.SetSimpleTag("genre", pNewValue); }
+        public void SetCommentTag(string pNewValue) { this.SetSimpleTag("comment", pNewValue); }
+        public void SetCopyrightTag(string pNewValue) { this.SetSimpleTag("copyright", pNewValue); }
+        public void SetVolumeTag(string pNewValue) { this.SetSimpleTag("volume", pNewValue); }
+        public void SetLengthTag(string pNewValue) { this.SetSimpleTag("length", pNewValue); }
+        public void SetFadeTag(string pNewValue) { this.SetSimpleTag("fade", pNewValue); }
+        public void SetSystemTag(string pNewValue) { this.SetSimpleTag("system", pNewValue); }
         public void SetXsfByTag(string pNewValue) 
         { 
-            string format = this.getFormat();
+            string format = this.GetFormat();
 
-            if (format.Equals(FORMAT_NAME_PSF2))
+            if (format.Equals(FormatNamePsf2))
             {
-                format = FORMAT_NAME_PSF;
+                format = FormatNamePsf;
             }
 
-            SetSimpleTag(format.ToLower() + "by", pNewValue); 
+            this.SetSimpleTag(format.ToLower() + "by", pNewValue); 
         }
 
         public void UpdateTags()
@@ -636,8 +648,13 @@ namespace VGMToolbox.format
             try
             {
                 actualFileEnd = (int)(RESERVED_SECTION_OFFSET + this.reservedSectionLength + this.compressedProgramLength);
-                retaggingFilePath = Path.Combine(Path.GetDirectoryName(this.filePath),
-                    String.Format("{0}_RETAG_{1}{2}", Path.GetFileNameWithoutExtension(this.filePath), new Random().Next().ToString(), Path.GetExtension(this.filePath)));
+                retaggingFilePath = Path.Combine(
+                    Path.GetDirectoryName(this.filePath),
+                    String.Format(
+                        "{0}_RETAG_{1}{2}", 
+                        Path.GetFileNameWithoutExtension(this.filePath), 
+                        new Random().Next().ToString(), 
+                        Path.GetExtension(this.filePath)));
 
                 // extract file without tags
                 using (FileStream fs = File.OpenRead(this.filePath))
@@ -661,9 +678,9 @@ namespace VGMToolbox.format
                     // add or update utf8=1 tag
                     this.tagHash["utf8"] = "1";
                     
-                    foreach (string key in tagHash.Keys)
+                    foreach (string key in this.tagHash.Keys)
                     {
-                        splitValue = tagHash[key].Split(splitParam, StringSplitOptions.None);
+                        splitValue = this.tagHash[key].Split(splitParam, StringSplitOptions.None);
 
                         foreach (string valueItem in splitValue)
                         {

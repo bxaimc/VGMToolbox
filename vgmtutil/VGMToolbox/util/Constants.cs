@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
-
-namespace VGMToolbox.util
+﻿namespace VGMToolbox.util
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using System.Windows.Forms;
+    
     /// <summary>
     /// Struct containing criteria used to find offsets.
     /// </summary>
@@ -25,81 +25,87 @@ namespace VGMToolbox.util
         private bool treatTerminatorStringAsHex;
         private bool includeTerminatorLength;
         private string extraCutSizeBytes;
-
-        /// <summary>
-        /// String to search for.
-        /// </summary>
+        
         public string SearchString
         {
             get { return searchString; }
             set { searchString = value; }
         }
+
         /// <summary>
-        /// Offset to being searching at
+        /// Gets or sets offset to being searching at
         /// </summary>
         public string StartingOffset
         {
             set { startingOffset = value; }
             get { return startingOffset; }
         }        
+
         /// <summary>
-        /// Flag to indicate search string is a hex value.
+        /// Gets or sets flag to indicate search string is a hex value.
         /// </summary>
         public bool TreatSearchStringAsHex
         {
             get { return treatSearchStringAsHex; }
             set { treatSearchStringAsHex = value; }
         }
+        
         /// <summary>
-        /// Flag to cut the file when the offset is found.
+        /// Gets or sets flag to cut the file when the offset is found.
         /// </summary>
         public bool CutFile
         {
             get { return cutFile; }
             set { cutFile = value; }
         }
+        
         /// <summary>
-        /// Offset within destination file Search String would reside.
+        /// Gets or sets offset within destination file Search String would reside.
         /// </summary>
         public string SearchStringOffset
         {
             get { return searchStringOffset; }
             set { searchStringOffset = value; }
         }
+        
         /// <summary>
-        /// Size to cut from file
+        /// Gets or sets size to cut from file
         /// </summary>
         public string CutSize
         {
             get { return cutSize; }
             set { cutSize = value; }
         }
+        
         /// <summary>
-        /// Size of offset holding cut size
+        /// Gets or sets size of offset holding cut size
         /// </summary>
         public string CutSizeOffsetSize
         {
             get { return cutSizeOffsetSize; }
             set { cutSizeOffsetSize = value; }
         }
+        
         /// <summary>
-        /// Flag indicating that cut size is an offset.
+        /// Gets or sets flag indicating that cut size is an offset.
         /// </summary>
         public bool IsCutSizeAnOffset
         {
             get { return isCutSizeAnOffset; }
             set { isCutSizeAnOffset = value; }
         }
+        
         /// <summary>
-        /// File extension to use for cut files.
+        /// Gets or sets file extension to use for cut files.
         /// </summary>
         public string OutputFileExtension
         {
             get { return outputFileExtension; }
             set { outputFileExtension = value; }
         }
+        
         /// <summary>
-        /// Flag indicating that offset based cut size is stored in Little Endian byte order.
+        /// Gets or sets flag indicating that offset based cut size is stored in Little Endian byte order.
         /// </summary>
         public bool IsLittleEndian
         {
@@ -108,39 +114,43 @@ namespace VGMToolbox.util
         }
 
         /// <summary>
-        /// Flag indicating that a terminator should be used to determine the cut size.
+        /// Gets or sets flag indicating that a terminator should be used to determine the cut size.
         /// </summary>
         public bool UseTerminatorForCutSize
         {
             get { return useTerminatorForCutSize; }
             set { useTerminatorForCutSize = value; }
         }
+        
         /// <summary>
-        /// Terminator string to search for.
+        /// Gets or sets terminator string to search for.
         /// </summary>
         public string TerminatorString
         {
             get { return terminatorString; }
             set { terminatorString = value; }
         }
+        
         /// <summary>
-        /// Flag indicating that Terminator String is hex.
+        /// Gets or sets flag indicating that Terminator String is hex.
         /// </summary>
         public bool TreatTerminatorStringAsHex
         {
             get { return treatTerminatorStringAsHex; }
             set { treatTerminatorStringAsHex = value; }
         }
+        
         /// <summary>
-        /// Flag indicating that the length of the terminator should be included in the cut size.
+        /// Gets or sets flag indicating that the length of the terminator should be included in the cut size.
         /// </summary>
         public bool IncludeTerminatorLength
         {
             get { return includeTerminatorLength; }
             set { includeTerminatorLength = value; }
         }
+        
         /// <summary>
-        /// Additional bytes to include in the cut size.
+        /// Gets or sets additional bytes to include in the cut size.
         /// </summary>
         public string ExtraCutSizeBytes
         {
@@ -154,37 +164,55 @@ namespace VGMToolbox.util
     /// </summary>
     public struct ProgressStruct
     {
+        /// <summary>
+        /// File name to display in progress bar.
+        /// </summary>
         private string fileName;
+
+        /// <summary>
+        /// Error message to display in output window.
+        /// </summary>
         private string errorMessage;
+
+        /// <summary>
+        /// Generic message to display in output window.
+        /// </summary>
         private string genericMessage;
+
+        /// <summary>
+        /// New tree node to add to a TreeView.
+        /// </summary>
         private TreeNode newNode;
 
         /// <summary>
-        /// File name to display in progress bar.
+        /// Gets or sets fileName.
         /// </summary>
         public string FileName
         {
             get { return fileName; }
             set { fileName = value; }
         }
+        
         /// <summary>
-        /// Error message to display in output window.
+        /// Gets or sets errorMessage.
         /// </summary>
         public string ErrorMessage
         {
             get { return errorMessage; }
             set { errorMessage = value; }
         }
+        
         /// <summary>
-        /// Generic message to display in output window.
+        /// Gets or sets genericMessage.
         /// </summary>
         public string GenericMessage
         {
             get { return genericMessage; }
             set { genericMessage = value; }
         }
+        
         /// <summary>
-        /// New tree node to add to a TreeView.
+        /// Gets or sets newNode.
         /// </summary>
         public TreeNode NewNode
         {
@@ -209,28 +237,41 @@ namespace VGMToolbox.util
     /// </summary>
     public struct NodeTagStruct
     {
+        /// <summary>
+        /// Class name of the Form this node will bring to focus.
+        /// </summary>
         private string formClass;
+
+        /// <summary>
+        /// Object type this node represents.  
+        /// </summary>
         private string objectType;
+
+        /// <summary>
+        /// File path of the file this node represents.
+        /// </summary>
         private string filePath;
 
         /// <summary>
-        /// Class name of the Form this node will bring to focus.
+        /// Gets or sets formClass
         /// </summary>
         public string FormClass
         {
             get { return formClass; }
             set { formClass = value; }
         }
+
         /// <summary>
-        /// Object type this node represents.  
+        /// Gets or sets objectType
         /// </summary>
         public string ObjectType
         {
             get { return objectType; }
             set { objectType = value; }
         }
+
         /// <summary>
-        /// File path of the file this node represents.
+        /// Gets or sets filePath
         /// </summary>
         public string FilePath
         {
@@ -254,6 +295,7 @@ namespace VGMToolbox.util
         /// Constant used to send an ignore the value message to the progress bar.
         /// </summary>
         public const int IgnoreProgress = -1;
+        
         /// <summary>
         /// Constant used to send a generic message to the progress bar.
         /// </summary>

@@ -1,58 +1,65 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
-using SevenZip;
-
-using Ionic.Zip;
-using Ionic.Zlib;
-
-namespace VGMToolbox.util
+﻿namespace VGMToolbox.util
 {
+    using System;
+    using System.IO;
+    using System.Reflection;
+    using Ionic.Zip;
+    using Ionic.Zlib;
+    using SevenZip;    
+    
     /// <summary>
     /// Class containing static functions for compresson related tasks
     /// </summary>
-    public class CompressionUtil
-    {
+    public sealed class CompressionUtil
+    {        
         /// <summary>
         /// File extension used to output decompressed zlib data.
         /// </summary>
-        public static string ZLIB_DECOMPRESS_OUTPUT_EXTENSION = ".zlibx";
+        public const string ZlibDecompressOutputExtension = ".zlibx";
+        
         /// <summary>
         /// File extension used to output compressed zlib data.
         /// </summary>
-        public static string ZLIB_COMPRESS_OUTPUT_EXTENSION = ".zlib";
+        public const string ZlibCompressOutputExtension = ".zlib";
 
         /// <summary>
         /// File extension used to output decompressed gzip data.
         /// </summary>
-        public static string GZIP_DECOMPRESS_OUTPUT_EXTENSION = ".gzipx";
+        public const string GzipDecompressOutputExtension = ".gzipx";
+        
         /// <summary>
         /// File extension used to output compressed gzip data.
         /// </summary>
-        public static string GZIP_COMPRESS_OUTPUT_EXTENSION = ".gz";
+        public const string GzipCompressOutputExtension = ".gz";
         
         /// <summary>
         /// Path to the included 7z.dll file.
         /// </summary>
-        public static readonly string SEVEN_ZIP_DLL = 
+        public static readonly string SevenZipDll = 
             Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "7z.dll");
-        
+
+        /// <summary>
+        /// Prevents a default instance of the CompressionUtil class from being created
+        /// </summary>
+        private CompressionUtil()
+        {
+        }
+
         /// <summary>
         /// Get a list of files inside an archive file.
         /// </summary>
-        /// <param name="pPath">Path to the archive file.</param>
+        /// <param name="path">Path to the archive file.</param>
         /// <returns>An array of strings containing a list of files inside the archive.</returns>
         /// <remarks>Must be an archive supported by 7z.dll.</remarks>
-        public static string[] GetFileList(string pPath)
+        public static string[] GetFileList(string path)
         {
-            string archivePath = Path.GetFullPath(pPath);
+            string archivePath = Path.GetFullPath(path);
             string[] filenames = null;
             SevenZipExtractor sevenZipExtractor = null;
 
-
             if (File.Exists(archivePath))
             {
-                SevenZipExtractor.SetLibraryPath(SEVEN_ZIP_DLL);
+                SevenZipExtractor.SetLibraryPath(SevenZipDll);
 
                 try
                 {
@@ -84,18 +91,18 @@ namespace VGMToolbox.util
         /// <summary>
         /// Get an uppercase list of files inside an archive file.  Must be an archive supported by 7z.dll.
         /// </summary>
-        /// <param name="pPath">Path to the archive file.</param>
+        /// <param name="path">Path to the archive file.</param>
         /// <returns>An array of strings containing an uppercase list of files inside the archive.</returns>
         /// <remarks>Must be an archive supported by 7z.dll.</remarks>
-        public static string[] GetUpperCaseFileList(string pPath)
+        public static string[] GetUpperCaseFileList(string path)
         {
-            string archivePath = Path.GetFullPath(pPath);
+            string archivePath = Path.GetFullPath(path);
             string[] filenames = null;
             SevenZipExtractor sevenZipExtractor = null;
 
             if (File.Exists(archivePath))
             {
-                SevenZipExtractor.SetLibraryPath(SEVEN_ZIP_DLL);
+                SevenZipExtractor.SetLibraryPath(SevenZipDll);
 
                 try
                 {
@@ -128,12 +135,12 @@ namespace VGMToolbox.util
         /// Extracts a file from an archive.  The file will be output to a subfolder in the archive's directory; 
         /// named with the original archive name.
         /// </summary>
-        /// <param name="pArchivePath">Path to the archive file.</param>
-        /// <param name="pFileName">Name of file to extract.</param>
+        /// <param name="archivePath">Path to the archive file.</param>
+        /// <param name="fileName">Name of file to extract.</param>
         /// <remarks>Must be an archive supported by 7z.dll.</remarks>
-        public static void ExtractFileFromArchive(string pArchivePath, string pFileName)
+        public static void ExtractFileFromArchive(string archivePath, string fileName)
         { 
-            ExtractFileFromArchive(pArchivePath, pFileName, String.Empty);
+            ExtractFileFromArchive(archivePath, fileName, String.Empty);
         }
 
         /// <summary>
@@ -169,7 +176,7 @@ namespace VGMToolbox.util
                         Directory.CreateDirectory(outputDir);
                     }
 
-                    SevenZipExtractor.SetLibraryPath(SEVEN_ZIP_DLL);
+                    SevenZipExtractor.SetLibraryPath(SevenZipDll);
                     sevenZipExtractor = new SevenZipExtractor(archivePath);
                     sevenZipExtractor.ExtractFile(pFileName, outputDir, true);
                 }
@@ -194,7 +201,7 @@ namespace VGMToolbox.util
         /// <param name="pArchiveName">Fully rooted output archive name.</param>
         public static void CompressFolderWith7zip(string pSourcePath, string pArchiveName)
         {
-            SevenZipCompressor.SetLibraryPath(SEVEN_ZIP_DLL);
+            SevenZipCompressor.SetLibraryPath(SevenZipDll);
             SevenZipCompressor compressor = new SevenZipCompressor();
             compressor.CompressionLevel = SevenZip.CompressionLevel.Ultra;
             compressor.CompressDirectory(pSourcePath, pArchiveName, true);
@@ -280,11 +287,22 @@ namespace VGMToolbox.util
             }
         }
         
+        /// <summary>
+        /// Compress the incoming stream to a file using zlib compression.
+        /// </summary>
+        /// <param name="pStream">Stream to compress.</param>
+        /// <param name="pOutputFilePath">Path to the file to output.</param>
         public static void CompressStreamToZlibFile(Stream pStream, string pOutputFilePath)
         { 
             CompressStreamToZlibFile(pStream, pOutputFilePath, 0);
         }
         
+        /// <summary>
+        /// Compress the incoming stream to a file using zlib compression starting at the incoming offset.
+        /// </summary>
+        /// <param name="pStream">Stream to compress.</param>
+        /// <param name="pOutputFilePath">Path to the file to output.</param>
+        /// <param name="pStartingOffset">Offset within the stream to start compressing.</param>
         public static void CompressStreamToZlibFile(Stream pStream, string pOutputFilePath, long pStartingOffset)
         {
             using (FileStream outFs = new FileStream(pOutputFilePath, FileMode.Create, FileAccess.Write))
@@ -325,8 +343,7 @@ namespace VGMToolbox.util
 
                     using (FileStream outFs = File.OpenWrite(tempFileName))
                     {
-                        using (GZipStream gs = new GZipStream(outFs, CompressionMode.Compress, 
-                            Ionic.Zlib.CompressionLevel.BestCompression))
+                        using (GZipStream gs = new GZipStream(outFs, CompressionMode.Compress, Ionic.Zlib.CompressionLevel.BestCompression))
                         {
                             int read;
                             byte[] data = new byte[Constants.FileReadChunkSize];
@@ -372,6 +389,12 @@ namespace VGMToolbox.util
             }
         }
 
+        /// <summary>
+        /// Compress the incoming stream to a file using gzip compression starting at the incoming offset.
+        /// </summary>
+        /// <param name="pStream">Stream to compress.</param>
+        /// <param name="pOutputFilePath">Path to the file to output.</param>
+        /// <param name="pStartingOffset">Offset within the stream to start compressing.</param>
         public static void CompressStreamToGzipFile(Stream pStream, string pOutputFilePath, long pStartingOffset)
         {
             using (FileStream outFs = new FileStream(pOutputFilePath, FileMode.Create, FileAccess.Write))

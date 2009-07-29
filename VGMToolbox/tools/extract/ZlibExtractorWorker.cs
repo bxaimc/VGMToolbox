@@ -50,11 +50,11 @@ namespace VGMToolbox.tools.extract
                 
                 if (zlibExtractorStruct.DoDecompress)
                 {
-                    outputFileName = Path.ChangeExtension(pPath, CompressionUtil.ZLIB_DECOMPRESS_OUTPUT_EXTENSION);
+                    outputFileName = Path.ChangeExtension(pPath, CompressionUtil.ZlibDecompressOutputExtension);
                 }
                 else
                 {
-                    outputFileName = Path.ChangeExtension(pPath, CompressionUtil.ZLIB_COMPRESS_OUTPUT_EXTENSION);
+                    outputFileName = Path.ChangeExtension(pPath, CompressionUtil.ZlibCompressOutputExtension);
                 }
                 
                 using (FileStream fs = File.OpenRead(pPath))

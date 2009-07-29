@@ -649,7 +649,7 @@ namespace VGMToolbox.format.util
                     Xsf xsfFile = new Xsf();
                     xsfFile.Initialize(typeFs, pPath);
 
-                    ret = xsfFile.getFormat();
+                    ret = xsfFile.GetFormat();
                 }
             }
             
@@ -875,7 +875,7 @@ namespace VGMToolbox.format.util
             string outputDir = null;
             string formatString = GetXsfFormatString(pPath);
 
-            if (!String.IsNullOrEmpty(formatString) && formatString.Equals(Xsf.FORMAT_NAME_PSF2))
+            if (!String.IsNullOrEmpty(formatString) && formatString.Equals(Xsf.FormatNamePsf2))
             {
                 Psf2 vgmData = new Psf2();
                 
@@ -924,7 +924,7 @@ namespace VGMToolbox.format.util
                     Xsf xsfFile = new Xsf();
                     xsfFile.Initialize(typeFs, pPath);
 
-                    if (xsfFile.getFormat().Equals(Xsf.FORMAT_NAME_PSF))
+                    if (xsfFile.GetFormat().Equals(Xsf.FormatNamePsf))
                     {
                         typeFs.Close();
                         typeFs.Dispose();
@@ -1307,7 +1307,7 @@ namespace VGMToolbox.format.util
             Xsf2ExeStruct xsf2ExeStruct;
             string decompressedDataSectionPath;
 
-            if (!String.IsNullOrEmpty(formatString) && formatString.Equals(Xsf.FORMAT_NAME_2SF))
+            if (!String.IsNullOrEmpty(formatString) && formatString.Equals(Xsf.FormatName2sf))
             {
                 // extract data section
                 xsf2ExeStruct = new Xsf2ExeStruct();
@@ -1341,7 +1341,7 @@ namespace VGMToolbox.format.util
             string decompressedReservedSectionPath;
             string decompressedSaveStatePath;
 
-            if (!String.IsNullOrEmpty(formatString) && formatString.Equals(Xsf.FORMAT_NAME_2SF))
+            if (!String.IsNullOrEmpty(formatString) && formatString.Equals(Xsf.FormatName2sf))
             {
                 // extract reserved section
                 xsf2ExeStruct = new Xsf2ExeStruct();
@@ -1360,7 +1360,7 @@ namespace VGMToolbox.format.util
                         if (ParseFile.CompareSegment(savestateCheckbytes, 0, MINI2SF_SAVESTATE_ID))
                         {                            
                             decompressedSaveStatePath =
-                                Path.ChangeExtension(decompressedReservedSectionPath, CompressionUtil.ZLIB_DECOMPRESS_OUTPUT_EXTENSION);
+                                Path.ChangeExtension(decompressedReservedSectionPath, CompressionUtil.ZlibDecompressOutputExtension);
                             fs.Position = 0x0C;  // move to zlib section
 
                             // decompress save state

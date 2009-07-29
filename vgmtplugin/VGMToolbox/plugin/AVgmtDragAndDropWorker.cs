@@ -4,11 +4,10 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Text;
-
 using VGMToolbox.util;
 
 namespace VGMToolbox.plugin
-{
+{    
     public abstract class AVgmtDragAndDropWorker : BackgroundWorker, IVgmtBackgroundWorker
     {
         protected int fileCount;
@@ -44,8 +43,7 @@ namespace VGMToolbox.plugin
                         this.progressStruct.Clear();
                         this.progressStruct.FileName = path;
                         ReportProgress(progress, progressStruct);
-                        
-                        
+                                                
                         // perform task
                         try
                         {
@@ -80,6 +78,7 @@ namespace VGMToolbox.plugin
                     }
                 }
             }            
+            
             return;
         }
 
@@ -98,6 +97,7 @@ namespace VGMToolbox.plugin
                     break;
                 }
             }
+            
             foreach (string f in Directory.GetFiles(pPath))
             {
                 if (!CancellationPending)
@@ -138,6 +138,7 @@ namespace VGMToolbox.plugin
         {
             this.DoTask((IVgmtWorkerStruct)e.Argument, e);
         }
+        
         protected virtual void DoFinally() { }
 
         // abstract methods

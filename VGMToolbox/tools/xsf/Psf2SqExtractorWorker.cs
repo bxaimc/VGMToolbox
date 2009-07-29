@@ -46,7 +46,7 @@ namespace VGMToolbox.tools.xsf
 
             string formatString = XsfUtil.GetXsfFormatString(pPath);
 
-            if (!String.IsNullOrEmpty(formatString) && (formatString.Equals(Xsf.FORMAT_NAME_PSF2)))
+            if (!String.IsNullOrEmpty(formatString) && (formatString.Equals(Xsf.FormatNamePsf2)))
             {                                
                 filePath = Path.GetFullPath(pPath);
                 fileDir = Path.GetDirectoryName(filePath);

@@ -267,10 +267,10 @@ namespace VGMToolbox.plugin
         }
         protected virtual void backgroundWorker_Cancel(object sender, EventArgs e)
         {
-            if (backgroundWorker != null && backgroundWorker.IsBusy)
+            if (this.backgroundWorker != null && this.backgroundWorker.IsBusy)
             {
                 tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
-                backgroundWorker.CancelAsync();
+                this.backgroundWorker.CancelAsync();
                 this.errorFound = true;
             }
         }
@@ -278,16 +278,16 @@ namespace VGMToolbox.plugin
         {
             try
             {
-                initializeProcessing();
-                backgroundWorker.ProgressChanged += backgroundWorker_ReportProgress;
-                backgroundWorker.RunWorkerCompleted += backgroundWorker_WorkComplete;
+                this.initializeProcessing();
+                this.backgroundWorker.ProgressChanged += backgroundWorker_ReportProgress;
+                this.backgroundWorker.RunWorkerCompleted += backgroundWorker_WorkComplete;
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error preparing background worker: " + ex.Message);
             }
 
-            backgroundWorker.RunWorkerAsync(argument);
+            this.backgroundWorker.RunWorkerAsync(argument);
         }
 
         // to be abstract

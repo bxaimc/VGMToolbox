@@ -114,8 +114,12 @@ namespace VGMToolbox.util
             }
         }
 
-        public static void ReplaceFileChunk(string pSourceFilePath, long pSourceOffset,
-            long pLength, string pDestinationFilePath, long pDestinationOffset)
+        public static void ReplaceFileChunk(
+            string pSourceFilePath, 
+            long pSourceOffset,
+            long pLength, 
+            string pDestinationFilePath, 
+            long pDestinationOffset)
         {
             int read = 0;
             long maxread;

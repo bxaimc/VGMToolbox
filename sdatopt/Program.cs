@@ -114,7 +114,7 @@ namespace sdatopt
                                 Xsf libFile = new Xsf();
                                 libFile.Initialize(fs, sdatOptimizingPath);
 
-                                if (libFile.getFormat().Equals(Xsf.FORMAT_NAME_2SF))
+                                if (libFile.GetFormat().Equals(Xsf.FormatName2sf))
                                 {
                                     Console.WriteLine("Input file is a 2SF.");
 
@@ -244,7 +244,7 @@ namespace sdatopt
                             string bin2PsfStdOut = String.Empty;
                             string bin2PsfStdErr = String.Empty;
                             
-                            XsfUtil.Bin2Psf(Path.GetExtension(filename).Substring(1), (int)Xsf.VERSION_2SF,
+                            XsfUtil.Bin2Psf(Path.GetExtension(filename).Substring(1), (int)Xsf.Version2sf,
                                 decompressedDataPath, ref bin2PsfStdOut, ref bin2PsfStdErr);
                             
                             Console.WriteLine("Cleaning up intermediate files.");

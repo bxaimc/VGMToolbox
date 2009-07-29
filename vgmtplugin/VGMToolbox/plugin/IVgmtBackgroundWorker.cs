@@ -1,15 +1,18 @@
-﻿using System;
-using System.ComponentModel;
-
-namespace VGMToolbox.plugin
+﻿namespace VGMToolbox.plugin
 {
+    using System;
+    using System.ComponentModel;
+    
     public interface IVgmtBackgroundWorker
     {
-        bool IsBusy { get; }
         event ProgressChangedEventHandler ProgressChanged;
-        event RunWorkerCompletedEventHandler RunWorkerCompleted;
 
+        event RunWorkerCompletedEventHandler RunWorkerCompleted;
+        
+        bool IsBusy { get; }
+        
         void RunWorkerAsync(object argument);
+        
         void CancelAsync();
     }
 }

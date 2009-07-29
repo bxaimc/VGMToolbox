@@ -112,7 +112,7 @@ namespace VGMToolbox.tools.xsf
                             Xsf psf2File = new Xsf();
                             psf2File.Initialize(fs, f);
 
-                            if (psf2File.getFormat().Equals(Xsf.FORMAT_NAME_PSF2))
+                            if (psf2File.GetFormat().Equals(Xsf.FormatNamePsf2))
                             {
                                 // copy tags
                                 Dictionary<string, string> tagHash = psf2File.GetTagHash();

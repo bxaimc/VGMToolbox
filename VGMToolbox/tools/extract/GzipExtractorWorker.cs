@@ -48,11 +48,11 @@ namespace VGMToolbox.tools.extract
 
                 if (gzipExtractorStruct.DoDecompress)
                 {
-                    outputFileName = Path.ChangeExtension(pPath, CompressionUtil.GZIP_DECOMPRESS_OUTPUT_EXTENSION);
+                    outputFileName = Path.ChangeExtension(pPath, CompressionUtil.GzipDecompressOutputExtension);
                 }
                 else
                 {
-                    outputFileName = Path.ChangeExtension(pPath, CompressionUtil.GZIP_COMPRESS_OUTPUT_EXTENSION);
+                    outputFileName = Path.ChangeExtension(pPath, CompressionUtil.GzipCompressOutputExtension);
                 }
                 
                 using (FileStream fs = File.OpenRead(pPath))

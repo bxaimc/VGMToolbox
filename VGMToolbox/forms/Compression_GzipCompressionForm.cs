@@ -25,9 +25,9 @@ namespace VGMToolbox.forms
 
             this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_GzipCompress_Title"];
             this.tbOutput.Text = String.Format(ConfigurationSettings.AppSettings["Form_GzipCompress_IntroText1"],
-                            CompressionUtil.GZIP_DECOMPRESS_OUTPUT_EXTENSION, Environment.NewLine);
+                            CompressionUtil.GzipDecompressOutputExtension, Environment.NewLine);
             this.tbOutput.Text += String.Format(ConfigurationSettings.AppSettings["Form_GzipCompress_IntroText2"],
-                CompressionUtil.GZIP_COMPRESS_OUTPUT_EXTENSION, Environment.NewLine);
+                CompressionUtil.GzipCompressOutputExtension, Environment.NewLine);
 
             this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
             this.grpOptions.Text = ConfigurationSettings.AppSettings["Form_GzipCompress_GrpOptions"];

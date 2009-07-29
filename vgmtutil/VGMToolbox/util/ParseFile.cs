@@ -1,12 +1,15 @@
-﻿using System;
-using System.Globalization;
-using System.IO;
-using System.Text;
-
-namespace VGMToolbox.util
-{        
+﻿namespace VGMToolbox.util
+{
+    using System;
+    using System.Globalization;
+    using System.IO;
+    using System.Text;
+    
     public sealed class ParseFile
     {
+        /// <summary>
+        /// 
+        /// </summary>
         private ParseFile() { }
                 
         /// <summary>
@@ -82,12 +85,13 @@ namespace VGMToolbox.util
         public static int GetSegmentLength(byte[] pBytes, int pOffset, byte[] pTerminator)
         {
             int ret;
-            Boolean terminatorFound = false;
+            bool terminatorFound = false;
             int i = pOffset;
 
             while (i < pBytes.Length)
             {
-                if (pBytes[i] == pTerminator[0])    // first char match
+                // first char match
+                if (pBytes[i] == pTerminator[0])
                 {
                     if (CompareSegment(pBytes, i, pTerminator))
                     {
@@ -95,6 +99,7 @@ namespace VGMToolbox.util
                         break;
                     }
                 }
+                
                 i++;
             } // while (!terminatorFound)
 
@@ -104,7 +109,6 @@ namespace VGMToolbox.util
             }
             else
             {
-                //ret = pOffset;
                 ret = 0;
             }
             
@@ -121,7 +125,7 @@ namespace VGMToolbox.util
         public static int GetSegmentLength(Stream pStream, int pOffset, byte[] pTerminator)
         {
             int ret;
-            Boolean terminatorFound = false;
+            bool terminatorFound = false;
             int i = pOffset;
             byte[] checkBytes = new byte[pTerminator.Length];
 
@@ -130,9 +134,9 @@ namespace VGMToolbox.util
                 pStream.Seek(i, SeekOrigin.Begin);
                 pStream.Read(checkBytes, 0, 1);
 
-                if (checkBytes[0] == pTerminator[0])    // first char match
+                // first char match
+                if (checkBytes[0] == pTerminator[0])
                 {
-
                     pStream.Seek(i, SeekOrigin.Begin);
                     pStream.Read(checkBytes, 0, pTerminator.Length);
                     
@@ -142,6 +146,7 @@ namespace VGMToolbox.util
                         break;
                     }
                 }
+                
                 i++;
             } // while (!terminatorFound)
 
@@ -151,7 +156,6 @@ namespace VGMToolbox.util
             }
             else
             {
-                //ret = pOffset;
                 ret = 0;
             }
 
@@ -188,8 +192,7 @@ namespace VGMToolbox.util
                     if ((relativeOffset + pSearchBytes.Length) < checkBytes.Length)
                     {
                         compareBytes = new byte[pSearchBytes.Length];
-                        Array.Copy(checkBytes, relativeOffset,
-                            compareBytes, 0, pSearchBytes.Length);
+                        Array.Copy(checkBytes, relativeOffset, compareBytes, 0, pSearchBytes.Length);
 
                         if (CompareSegment(compareBytes, 0, pSearchBytes))
                         {
@@ -198,6 +201,7 @@ namespace VGMToolbox.util
                             break;
                         }
                     }
+                    
                     relativeOffset++;
                 }
 
@@ -272,8 +276,7 @@ namespace VGMToolbox.util
                     if ((relativeOffset + pSearchBytes.Length) <= checkBytes.Length)
                     {
                         compareBytes = new byte[pSearchBytes.Length];
-                        Array.Copy(checkBytes, relativeOffset,
-                            compareBytes, 0, pSearchBytes.Length);
+                        Array.Copy(checkBytes, relativeOffset, compareBytes, 0, pSearchBytes.Length);
 
                         if (CompareSegment(compareBytes, 0, pSearchBytes))
                         {
@@ -289,6 +292,7 @@ namespace VGMToolbox.util
                             break;
                         }
                     }
+                    
                     relativeOffset--;
                 }
 
@@ -310,7 +314,7 @@ namespace VGMToolbox.util
         /// <returns>True if the bytes at pOffset match the pTarget bytes.</returns>
         public static bool CompareSegment(byte[] sourceArray, int offset, byte[] target)
         {
-            Boolean ret = true;
+            bool ret = true;
             uint j = 0;
             for (int i = offset; i < target.Length; i++)
             {
@@ -319,6 +323,7 @@ namespace VGMToolbox.util
                     ret = false;
                     break;
                 }
+                
                 j++;
             }
 
@@ -334,7 +339,7 @@ namespace VGMToolbox.util
         /// <returns>True if the bytes at pOffset match the pTarget bytes.</returns>
         public static bool CompareSegment(byte[] sourceArray, long offset, byte[] target)
         {
-            Boolean ret = true;
+            bool ret = true;
             uint j = 0;
             for (long i = offset; i < target.Length; i++)
             {
@@ -343,6 +348,7 @@ namespace VGMToolbox.util
                     ret = false;
                     break;
                 }
+                
                 j++;
             }
 
@@ -393,7 +399,6 @@ namespace VGMToolbox.util
                     bw.Close();
                 }
             }
-
         }
 
         /// <summary>
@@ -507,7 +512,9 @@ namespace VGMToolbox.util
                         {
                             cutSizeOffset = cutStart + VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.CutSize);
                             previousPosition = fs.Position;
-                            cutSizeBytes = ParseFile.ParseSimpleOffset(fs, cutSizeOffset,
+                            cutSizeBytes = ParseFile.ParseSimpleOffset(
+                                fs, 
+                                cutSizeOffset,
                                 (int)VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.CutSizeOffsetSize));
                             fs.Position = previousPosition;
 
@@ -557,24 +564,33 @@ namespace VGMToolbox.util
 
                         if (cutStart < 0)
                         {
-                            ret.AppendFormat(CultureInfo.CurrentCulture, "  Warning: For string found at: 0x{0}, cut begin is less than 0 ({1})...Skipping",
-                                offset.ToString("X8", CultureInfo.InvariantCulture), cutStart.ToString("X8", CultureInfo.InvariantCulture));
+                            ret.AppendFormat(
+                                CultureInfo.CurrentCulture, 
+                                "  Warning: For string found at: 0x{0}, cut begin is less than 0 ({1})...Skipping",
+                                offset.ToString("X8", CultureInfo.InvariantCulture), 
+                                cutStart.ToString("X8", CultureInfo.InvariantCulture));
                             ret.Append(Environment.NewLine);
 
                             skipCut = true;
                         }
                         else if (cutSize < 1)
                         {
-                            ret.AppendFormat(CultureInfo.CurrentCulture, "  Warning: For string found at: 0x{0}, cut size is less than 1 ({1})...Skipping",
-                                offset.ToString("X8", CultureInfo.InvariantCulture), cutSize.ToString("X8", CultureInfo.InvariantCulture));
+                            ret.AppendFormat(
+                                CultureInfo.CurrentCulture, 
+                                "  Warning: For string found at: 0x{0}, cut size is less than 1 ({1})...Skipping",
+                                offset.ToString("X8", CultureInfo.InvariantCulture), 
+                                cutSize.ToString("X8", CultureInfo.InvariantCulture));
                             ret.Append(Environment.NewLine);
 
                             skipCut = true;
                         }
                         else if ((cutStart + cutSize) > fi.Length)
                         {
-                            ret.AppendFormat(CultureInfo.CurrentCulture, "  Warning: For string found at: 0x{0}, total file end will go past the end of the file ({1})",
-                                offset.ToString("X8", CultureInfo.InvariantCulture), (cutStart + cutSize).ToString("X8", CultureInfo.InvariantCulture));
+                            ret.AppendFormat(
+                                CultureInfo.CurrentCulture, 
+                                "  Warning: For string found at: 0x{0}, total file end will go past the end of the file ({1})",
+                                offset.ToString("X8", CultureInfo.InvariantCulture), 
+                                (cutStart + cutSize).ToString("X8", CultureInfo.InvariantCulture));
                             ret.Append(Environment.NewLine);
                         }
 
@@ -591,8 +607,13 @@ namespace VGMToolbox.util
                             
                             ParseFile.ExtractChunkToFile(fs, cutStart, (int)cutSize, Path.Combine(outputFolder, outputFile));
                             
-                            ret.AppendFormat(CultureInfo.CurrentCulture, "  Extracted [{3}] begining at 0x{0}, for string found at: 0x{1}, with size 0x{2}",
-                                cutStart.ToString("X8", CultureInfo.InvariantCulture), offset.ToString("X8", CultureInfo.InvariantCulture), cutSize.ToString("X8", CultureInfo.InvariantCulture), outputFile);
+                            ret.AppendFormat(
+                                CultureInfo.CurrentCulture, 
+                                "  Extracted [{3}] begining at 0x{0}, for string found at: 0x{1}, with size 0x{2}",
+                                cutStart.ToString("X8", CultureInfo.InvariantCulture), 
+                                offset.ToString("X8", CultureInfo.InvariantCulture), 
+                                cutSize.ToString("X8", CultureInfo.InvariantCulture), 
+                                outputFile);
                             ret.Append(Environment.NewLine);
 
                             previousOffset = cutStart + cutSize;

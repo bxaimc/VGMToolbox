@@ -20,9 +20,9 @@ namespace VGMToolbox.forms
 
             this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_ZlibCompress_Title"];
             this.tbOutput.Text = String.Format(ConfigurationSettings.AppSettings["Form_ZlibCompress_IntroText1"],
-                            CompressionUtil.ZLIB_DECOMPRESS_OUTPUT_EXTENSION, Environment.NewLine);
+                            CompressionUtil.ZlibDecompressOutputExtension, Environment.NewLine);
             this.tbOutput.Text += String.Format(ConfigurationSettings.AppSettings["Form_ZlibCompress_IntroText2"],
-                CompressionUtil.ZLIB_COMPRESS_OUTPUT_EXTENSION, Environment.NewLine);
+                CompressionUtil.ZlibCompressOutputExtension, Environment.NewLine);
 
             this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
             this.grpOptions.Text = ConfigurationSettings.AppSettings["Form_ZlibCompress_GrpOptions"];
