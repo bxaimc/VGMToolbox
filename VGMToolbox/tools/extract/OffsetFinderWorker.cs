@@ -15,6 +15,7 @@ namespace VGMToolbox.tools.extract
         public struct OffsetFinderStruct : IVgmtWorkerStruct
         {
             public string searchString;
+            public string startingOffset;
             public bool treatSearchStringAsHex;
 
             public bool cutFile;
@@ -65,6 +66,7 @@ namespace VGMToolbox.tools.extract
 
             findOffsetStruct.CutFile = offsetFinderStruct.cutFile;
             findOffsetStruct.SearchStringOffset = offsetFinderStruct.searchStringOffset;
+            findOffsetStruct.StartingOffset = offsetFinderStruct.startingOffset;
             findOffsetStruct.CutSize = offsetFinderStruct.cutSize;
             findOffsetStruct.CutSizeOffsetSize = offsetFinderStruct.cutSizeOffsetSize;
             findOffsetStruct.IsCutSizeAnOffset = offsetFinderStruct.isCutSizeAnOffset;

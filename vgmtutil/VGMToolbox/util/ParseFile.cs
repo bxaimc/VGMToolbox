@@ -420,6 +420,7 @@ namespace VGMToolbox.util
         /// </summary>
         /// <param name="pPath">Path of file to search.</param>
         /// <param name="pFindOffsetStruct">Struct containing search criteria.</param>
+        /// <param name="pStartingOffset">Offset to begin search.</param>
         /// <param name="pMessages">Output messages.</param>
         /// <returns>Directory that extracted files were output into.</returns>
         public static string FindOffsetAndCutFile(string sourcePath, FindOffsetStruct searchCriteria, out string pMessages)
@@ -489,7 +490,8 @@ namespace VGMToolbox.util
                 ret.AppendFormat("[{0}]", sourcePath);
                 ret.Append(Environment.NewLine);
 
-                previousOffset = 0;
+                previousOffset = 
+                    String.IsNullOrEmpty(searchCriteria.StartingOffset) ? 0 : VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.StartingOffset);
                 outputFolder = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(sourcePath),
                     Path.GetFileNameWithoutExtension(sourcePath) + "_CUT"));
 

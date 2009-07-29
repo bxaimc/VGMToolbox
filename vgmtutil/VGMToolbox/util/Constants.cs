@@ -11,6 +11,7 @@ namespace VGMToolbox.util
     public struct FindOffsetStruct
     {
         private string searchString;
+        private string startingOffset;
         private bool treatSearchStringAsHex;
         private bool cutFile;
         private string searchStringOffset;
@@ -33,6 +34,14 @@ namespace VGMToolbox.util
             get { return searchString; }
             set { searchString = value; }
         }
+        /// <summary>
+        /// Offset to being searching at
+        /// </summary>
+        public string StartingOffset
+        {
+            set { startingOffset = value; }
+            get { return startingOffset; }
+        }        
         /// <summary>
         /// Flag to indicate search string is a hex value.
         /// </summary>

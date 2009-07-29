@@ -70,6 +70,8 @@ namespace VGMToolbox.forms
             this.cbAddExtraBytes.Text =
                 ConfigurationSettings.AppSettings["Form_SimpleCutter_CheckBoxExtracCutSizeBytes"];
 
+            // this.lblStartingOffset.Text
+
             this.createEndianList();
             this.createOffsetSizeList();
             this.resetCutSection();
@@ -86,6 +88,8 @@ namespace VGMToolbox.forms
                 OffsetFinderWorker.OffsetFinderStruct ofStruct = new OffsetFinderWorker.OffsetFinderStruct();
                 ofStruct.SourcePaths = s;
                 ofStruct.searchString = tbSearchString.Text;
+                ofStruct.startingOffset = 
+                    String.IsNullOrEmpty(tbStartingOffset.Text) ? "0" : tbStartingOffset.Text;
                 ofStruct.treatSearchStringAsHex = cbSearchAsHex.Checked;
 
                 if (cbDoCut.Checked)
