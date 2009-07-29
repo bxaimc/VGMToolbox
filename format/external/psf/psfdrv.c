@@ -279,8 +279,7 @@ int psfdrv(void) {
   */
 #ifdef SsVabOpenHeadSticky  
   vabid = SsVabOpenHeadSticky(vh, 0, 0x1010);
-#endif
-#ifdef SsVabOpenHead  
+#elif defined SsVabOpenHead  
   vabid = SsVabOpenHead(vh, -1);
 #endif
   ASSERT(vabid >= 0);
@@ -288,16 +287,14 @@ int psfdrv(void) {
 
 #ifdef SsVabTransBodyPartly
   r = SsVabTransBodyPartly(vb, MY_VB_SIZE, vabid);
-#endif
-#ifdef SsVabTransBody
+#elif defined SsVabTransBody
   r = SsVabTransBody(vb, vabid);
 #endif
   ASSERT(r == vabid);
 
 #ifdef SpuIsTransferCompleted
-  r = SpuIsTransferCompleted(1);
-#endif  
-#ifdef SsVabTransCompleted
+  r = SpuIsTransferCompleted(1);  
+#elif defined SsVabTransCompleted
   r = SsVabTransCompleted(1);
 #endif 
 

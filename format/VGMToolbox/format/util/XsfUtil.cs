@@ -1169,7 +1169,7 @@ namespace VGMToolbox.format.util
             // alternatives
             list.Add("SsVabOpenHeadSticky", "  #define SsVabOpenHeadSticky(a,b,c)   ((short)( F3({0}) ((int)(a),(int)(b),(int)(c)) ))");
             list.Add("SsVabTransBody", "  #define SsVabTransBody(a,b)          ((short)( F2({0}) ((int)(a),(int)(b)) ))");
-            list.Add("SpuIsTransferCompleted", "  #define SpuIsTransferComplete(a)     ((short)( F5({0}) ((long)(a)) ))");
+            list.Add("SpuIsTransferCompleted", "  #define SpuIsTransferCompleted(a)     ((short)( F5({0}) ((long)(a)) ))");
             list.Add("SpuInit", "  #define SpuInit                                F0({0})");
             list.Add("SsStart2", "  #define SsStart2                               F0({0})");
 
