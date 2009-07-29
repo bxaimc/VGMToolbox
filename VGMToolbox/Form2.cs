@@ -498,7 +498,20 @@ namespace VGMToolbox
             // Set Tag for displaying the Form
             nodeTag.FormClass = xsf_Bin2PsfFrontEndForm.GetType().Name;
             xsf_Bin2PsfFENode.Tag = nodeTag;
-            
+
+            ////////////////
+            // VAB SPLITTER
+            ////////////////
+            TreeNode vabSplitterNode = new TreeNode("VAB Splitter");
+
+            // Add Form
+            VabSplitterForm vabSplitterForm = new VabSplitterForm(vabSplitterNode);
+            this.splitContainer1.Panel2.Controls.Add(vabSplitterForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = vabSplitterForm.GetType().Name;
+            vabSplitterNode.Tag = nodeTag;
+
             //////////////////
             // PSF STUB MAKER
             //////////////////
@@ -511,7 +524,6 @@ namespace VGMToolbox
             // Set Tag for displaying the Form
             nodeTag.FormClass = psfStubMakerForm.GetType().Name;
             psfStubCreatorNode.Tag = nodeTag;
-
 
             //////////////////////
             // PSF SEQ Extractor
@@ -616,6 +628,7 @@ namespace VGMToolbox
             psf_RootNode.Nodes.Add(xsf_Bin2PsfFENode);
             psf_RootNode.Nodes.Add(psfStubCreatorNode);
             psf_RootNode.Nodes.Add(xsf_SeqExtractNode);
+            psf_RootNode.Nodes.Add(vabSplitterNode);
             xsf_RootNode.Nodes.Add(psf_RootNode);
 
             psf2_RootNode.NodeFont = this.treeviewBoldFont;

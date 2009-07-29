@@ -398,6 +398,7 @@ namespace VGMToolbox.format.util
         // PSF
         public const uint PSFDRV_LOAD_ADDRESS = 0x80100000;
         public static readonly byte[] PlayStationExecutableSignature = new byte[] { 0x50, 0x53, 0x2D, 0x58, 0x20, 0x45, 0x58, 0x45};
+        public static readonly byte[] VAB_SIGNATURE = new byte[] { 0x70, 0x42, 0x41, 0x56 }; // "pBAV"
 
         private XsfUtil() { }
         
@@ -1274,6 +1275,27 @@ namespace VGMToolbox.format.util
             }
                         
             return ret;
+        }
+
+        public static void SplitVab(string sourceFilePath)
+        {
+            using (FileStream fs = File.OpenRead(sourceFilePath))
+            { 
+                byte[] checkBytes;
+                UInt16 programCount;
+                int vabHeaderSize;
+                checkBytes = ParseFile.ParseSimpleOffset(fs, 0, 4);
+
+                if (ParseFile.CompareSegment(checkBytes, 0, XsfUtil.VAB_SIGNATURE))
+                {
+                    programCount = 
+                        BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(fs, 0x12, 2), 0);
+                    vabHeaderSize = 2592 + (512 * programCount);
+                    
+                    ParseFile.ExtractChunkToFile(fs, 0, vabHeaderSize, Path.ChangeExtension(sourceFilePath, ".vh"));
+                    ParseFile.ExtractChunkToFile(fs, (long)vabHeaderSize, (int)(fs.Length - (long)vabHeaderSize), Path.ChangeExtension(sourceFilePath, ".vb"));
+                }
+            }            
         }
 
         // 2SF
