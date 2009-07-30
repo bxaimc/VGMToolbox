@@ -244,12 +244,14 @@ int psfdrv(void) {
   SsSetTableSize(SSTABLE, 2, 1);
   SsSetTickMode(1);
   SsSetMVol(127,127);
+  
   /*
   ** Reverb setup
   */
   { unsigned reverb_attr[5] = {7,0x100,0,0,0};
     reverb_attr[1] |= rtype;
     reverb_attr[2] = (rdepth << 8) | (rdepth << 24);
+
 #ifdef SpuSetReverbModeParam
     SpuSetReverbModeParam(reverb_attr);
 #endif
@@ -259,11 +261,13 @@ int psfdrv(void) {
 #endif    
     
 #ifdef SpuSetReverbVoice    
-    SpuSetReverbVoice(1,0xFFFFFF);
+    SpuSetReverbVoice(1,0xFFFFFF); // turn all reverb voices on
 #endif    
     
 #ifdef SpuSetReverb   
     SpuSetReverb(1);
+#elif defined SsUtReverbOn
+    SsUtReverbOn();
 #endif    
   }
   /*
