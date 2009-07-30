@@ -1,12 +1,12 @@
-﻿namespace VGMToolbox.util
-{
-    using System;
-    using System.IO;
-    using System.Reflection;
-    using Ionic.Zip;
-    using Ionic.Zlib;
-    using SevenZip;    
-    
+﻿using System;
+using System.IO;
+using System.Reflection;
+using Ionic.Zip;
+using Ionic.Zlib;
+using SevenZip; 
+
+namespace VGMToolbox.util
+{      
     /// <summary>
     /// Class containing static functions for compresson related tasks
     /// </summary>

@@ -33,36 +33,49 @@ namespace VGMToolbox.util
             {
                 int read = stream.Read(data, offset, remaining);
                 if (read <= 0)
-                    throw new EndOfStreamException
-                        (String.Format(CultureInfo.CurrentCulture, "End of stream reached with {0} bytes left to read", remaining));
+                {
+                    throw new EndOfStreamException(
+                        String.Format(CultureInfo.CurrentCulture, "End of stream reached with {0} bytes left to read", remaining));
+                }
+                
                 remaining -= read;
                 offset += read;
             }
         }
         
-        public static byte[] ReplaceNullByteWithSpace(byte[] pBytes)
+        /// <summary>
+        /// Replaces 0x00 with 0x20 in an array of bytes.
+        /// </summary>
+        /// <param name="value">Array of bytes to alter.</param>
+        /// <returns>Original array with 0x00 replaced by 0x20.</returns>
+        public static byte[] ReplaceNullByteWithSpace(byte[] value)
         {
-            for (int i = 0; i < pBytes.Length; i++)
+            for (int i = 0; i < value.Length; i++)
             {
-                if (pBytes[i] == 0x00)
+                if (value[i] == 0x00)
                 {
-                    pBytes[i] = 0x20;
+                    value[i] = 0x20;
                 }
             }
 
-            return pBytes;
+            return value;
         }
 
-        public static int GetFileCount(string[] pPaths)
+        /// <summary>
+        /// Returns the count of files contained in the input directories and their subdirectories.
+        /// </summary>
+        /// <param name="paths">Paths to count files within.</param>
+        /// <returns>Number of files in the incoming directories and their subdirectories.</returns>
+        public static int GetFileCount(string[] paths)
         { 
-            return GetFileCount(pPaths, true);
+            return GetFileCount(paths, true);
         }
 
-        public static int GetFileCount(string[] pPaths, bool pIncludeSubdirs)
+        public static int GetFileCount(string[] paths, bool includeSubdirs)
         {
             int totalFileCount = 0;
             
-            foreach (string path in pPaths)
+            foreach (string path in paths)
             {
                 if (File.Exists(path))
                 {
@@ -70,7 +83,7 @@ namespace VGMToolbox.util
                 }
                 else if (Directory.Exists(path))
                 {
-                    if (pIncludeSubdirs)
+                    if (includeSubdirs)
                     {
                         totalFileCount += Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
                     }
@@ -94,7 +107,10 @@ namespace VGMToolbox.util
             return pDirtyFileName;
         }
 
-        public static void UpdateTextField(string pFilePath, string pFieldValue, int pOffset,
+        public static void UpdateTextField(
+            string pFilePath, 
+            string pFieldValue, 
+            int pOffset,
             int pMaxLength)
         {
             System.Text.Encoding enc = System.Text.Encoding.ASCII;
@@ -170,8 +186,12 @@ namespace VGMToolbox.util
             }
         }
 
-        public static bool ExecuteExternalProgram(string pathToExecuatable, string arguments, 
-            string workingDirectory, out string standardOut, out string standardError)
+        public static bool ExecuteExternalProgram(
+            string pathToExecuatable, 
+            string arguments, 
+            string workingDirectory, 
+            out string standardOut, 
+            out string standardError)
         {
             Process externalExecutable;
             bool isSuccess = false;

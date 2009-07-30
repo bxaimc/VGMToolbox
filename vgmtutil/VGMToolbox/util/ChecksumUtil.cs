@@ -1,13 +1,20 @@
-﻿namespace VGMToolbox.util
-{
-    using System;
-    using System.Globalization;
-    using System.IO;
-    using System.Security.Cryptography;
+﻿// <copyright file="ChecksumUtil.cs" company="N/A">
+// Copyright (c) 2008 All Rights Reserved
+// </copyright>
+// <author></author>
+// <email></email>
+// <date></date>
+// <summary>Contains the ChecksumUtil class.</summary>
+using System;
+using System.Globalization;
+using System.IO;
+using System.Security.Cryptography;
 
-    using ICSharpCode.SharpZipLib.Checksums;
-    using Ionic.Zlib;    
-            
+using ICSharpCode.SharpZipLib.Checksums;
+using Ionic.Zlib; 
+
+namespace VGMToolbox.util
+{              
     /// <summary>
     /// Class containing static functions related to checksum generation.
     /// </summary>
@@ -23,22 +30,22 @@
         /// <summary>
         /// Get the CRC32 checksum of the input stream.
         /// </summary>
-        /// <param name="pFileStream">File Stream for which to generate the checksum.</param>
+        /// <param name="stream">File Stream for which to generate the checksum.</param>
         /// <returns>String containing the hexidecimal representation of the CRC32 of the input stream.</returns>
-        public static string GetCrc32OfFullFile(FileStream pFileStream)
+        public static string GetCrc32OfFullFile(FileStream stream)
         {
             // get incoming stream position
-            long initialStreamPosition = pFileStream.Position;
+            long initialStreamPosition = stream.Position;
             
             // move to zero position
-            pFileStream.Seek(0, SeekOrigin.Begin);
+            stream.Seek(0, SeekOrigin.Begin);
             
             // calculate CRC32
             CRC32 crc32 = new CRC32();
-            int ret = crc32.GetCrc32(pFileStream);
+            int ret = crc32.GetCrc32(stream);
 
             // return stream to incoming position
-            pFileStream.Position = initialStreamPosition;
+            stream.Position = initialStreamPosition;
 
             return ret.ToString("X8", CultureInfo.InvariantCulture);
         }
@@ -46,56 +53,56 @@
         /// <summary>
         /// Get the MD5 checksum of the input stream.
         /// </summary>
-        /// <param name="pFileStream">File Stream for which to generate the checksum.</param>
+        /// <param name="stream">File Stream for which to generate the checksum.</param>
         /// <returns>String containing the hexidecimal representation of the MD5 of the input stream.</returns>
-        public static string GetMd5OfFullFile(FileStream pFileStream)
+        public static string GetMd5OfFullFile(FileStream stream)
         {
-            MD5CryptoServiceProvider md5Hash = new MD5CryptoServiceProvider();
+            MD5CryptoServiceProvider hashMd5 = new MD5CryptoServiceProvider();
 
-            pFileStream.Seek(0, SeekOrigin.Begin);
-            md5Hash.ComputeHash(pFileStream);
-            return ParseFile.ByteArrayToString(md5Hash.Hash);
+            stream.Seek(0, SeekOrigin.Begin);
+            hashMd5.ComputeHash(stream);
+            return ParseFile.ByteArrayToString(hashMd5.Hash);
         }
 
         /// <summary>
         /// Get the SHA1 checksum of the input stream.
         /// </summary>
-        /// <param name="pFileStream">File Stream for which to generate the checksum.</param>
+        /// <param name="stream">File Stream for which to generate the checksum.</param>
         /// <returns>String containing the hexidecimal representation of the SHA1 of the input stream.</returns>
-        public static string GetSha1OfFullFile(FileStream pFileStream)
+        public static string GetSha1OfFullFile(FileStream stream)
         {
             SHA1CryptoServiceProvider sha1Hash = new SHA1CryptoServiceProvider();
 
-            pFileStream.Seek(0, SeekOrigin.Begin);
-            sha1Hash.ComputeHash(pFileStream);
+            stream.Seek(0, SeekOrigin.Begin);
+            sha1Hash.ComputeHash(stream);
             return ParseFile.ByteArrayToString(sha1Hash.Hash);
         }
 
         /// <summary>
         /// Adds a chunk of data to the input CRC32 generator.
         /// </summary>
-        /// <param name="pStream">Stream to read data from.</param>
-        /// <param name="pOffset">Offset to begin reading from.</param>
-        /// <param name="pLength">Number of bytes to read.</param>
-        /// <param name="pCrc32">CRC32 generator.</param>
-        public static void AddChunkToChecksum(Stream pStream, int pOffset, int pLength, ref Crc32 pCrc32)
+        /// <param name="stream">Stream to read data from.</param>
+        /// <param name="startingOffset">Offset to begin reading from.</param>
+        /// <param name="length">Number of bytes to read.</param>
+        /// <param name="checksumGenerator">CRC32 generator.</param>
+        public static void AddChunkToChecksum(Stream stream, int startingOffset, int length, ref Crc32 checksumGenerator)
         {
-            int remaining = pLength;
+            int remaining = length;
             byte[] data = new byte[4096];
             int read;
-            int offset = pOffset;
+            int offset = startingOffset;
 
-            pStream.Seek((long)pOffset, SeekOrigin.Begin);
+            stream.Seek((long)startingOffset, SeekOrigin.Begin);
 
             while (remaining > 0)
             {
                 if (remaining < 4096)
                 {
-                    read = pStream.Read(data, 0, remaining);
+                    read = stream.Read(data, 0, remaining);
                 }
                 else
                 {
-                    read = pStream.Read(data, 0, 4096);
+                    read = stream.Read(data, 0, 4096);
                 }
 
                 if (read <= 0)
@@ -106,8 +113,8 @@
                             "End of stream reached with {0} bytes left to read", 
                             remaining));
                 }
-                
-                pCrc32.Update(data, 0, read);
+
+                checksumGenerator.Update(data, 0, read);
                 remaining -= read;
                 offset += read;
             }
@@ -117,25 +124,25 @@
         /// Adds a chunk of data to the input CRC32/MD5/SHA1 generator.
         /// </summary>
         /// <param name="sourceStream">Stream to read data from.</param>
-        /// <param name="pOffset">Offset to begin reading from.</param>
-        /// <param name="pLength">Number of bytes to read.</param>
-        /// <param name="pCrc32">CRC32 generator.</param>
-        /// <param name="pMd5CryptoStream">MD5 generator.</param>
-        /// <param name="pSha1CryptoStream">SHA1 generator.</param>
+        /// <param name="startingOffset">Offset to begin reading from.</param>
+        /// <param name="length">Number of bytes to read.</param>
+        /// <param name="checksumGeneratorCrc32">CRC32 generator.</param>
+        /// <param name="checksumStreamMd5">MD5 generator.</param>
+        /// <param name="checksumStreamSha1">SHA1 generator.</param>
         public static void AddChunkToChecksum(
             Stream sourceStream, 
-            int pOffset, 
-            int pLength,
-            ref Crc32 pCrc32, 
-            ref CryptoStream pMd5CryptoStream, 
-            ref CryptoStream pSha1CryptoStream)
+            int startingOffset, 
+            int length,
+            ref Crc32 checksumGeneratorCrc32,
+            ref CryptoStream checksumStreamMd5,
+            ref CryptoStream checksumStreamSha1)
         {
-            int remaining = pLength;
+            int remaining = length;
             byte[] data = new byte[4096];
             int read;
-            int offset = pOffset;
+            int offset = startingOffset;
 
-            sourceStream.Seek((long)pOffset, SeekOrigin.Begin);
+            sourceStream.Seek((long)startingOffset, SeekOrigin.Begin);
 
             while (remaining > 0)
             {
@@ -157,9 +164,9 @@
                             remaining));
                 }
 
-                pCrc32.Update(data, 0, read);
-                pMd5CryptoStream.Write(data, 0, read);
-                pSha1CryptoStream.Write(data, 0, read);
+                checksumGeneratorCrc32.Update(data, 0, read);
+                checksumStreamMd5.Write(data, 0, read);
+                checksumStreamSha1.Write(data, 0, read);
                 remaining -= read;
                 offset += read;
             }

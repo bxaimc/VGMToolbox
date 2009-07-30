@@ -1,17 +1,17 @@
-﻿namespace VGMToolbox.format
-{
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Security.Cryptography;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Security.Cryptography;
 
-    using ICSharpCode.SharpZipLib.Checksums;
-    using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
+using ICSharpCode.SharpZipLib.Checksums;
+using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 
-    using VGMToolbox.format.util;
-    using VGMToolbox.util;
-    
+using VGMToolbox.format.util;
+using VGMToolbox.util;
+
+namespace VGMToolbox.format
+{    
     public class Xsf : IFormat, IXsfTagFormat
     {
         // Fields

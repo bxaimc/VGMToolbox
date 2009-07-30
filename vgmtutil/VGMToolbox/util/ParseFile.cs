@@ -1,30 +1,35 @@
-﻿namespace VGMToolbox.util
-{
-    using System;
-    using System.Globalization;
-    using System.IO;
-    using System.Text;
-    
+﻿using System;
+using System.Globalization;
+using System.IO;
+using System.Text;
+
+namespace VGMToolbox.util
+{    
+    /// <summary>
+    /// Class for Parsing Files.
+    /// </summary>
     public sealed class ParseFile
     {
         /// <summary>
-        /// 
+        /// Prevents a default instance of the ParseFile class from being created.
         /// </summary>
-        private ParseFile() { }
+        private ParseFile() 
+        { 
+        }
                 
         /// <summary>
         /// Extract a section from the incoming byte array.
         /// </summary>
-        /// <param name="pBytes">Bytes to extract from.</param>
-        /// <param name="pOffset">Offset to begin cutting from.</param>
-        /// <param name="pLength">Number of bytes to cut.</param>
+        /// <param name="sourceArray">Bytes to extract from.</param>
+        /// <param name="startingOffset">Offset to begin cutting from.</param>
+        /// <param name="lengthToCut">Number of bytes to cut.</param>
         /// <returns>Byte array containing the extracted section.</returns>
-        public static byte[] ParseSimpleOffset(byte[] sourceArray, int offset, int length)
+        public static byte[] ParseSimpleOffset(byte[] sourceArray, int startingOffset, int lengthToCut)
         {
-            byte[] ret = new byte[length];
+            byte[] ret = new byte[lengthToCut];
             uint j = 0;
 
-            for (int i = offset; i < offset + length; i++)
+            for (int i = startingOffset; i < startingOffset + lengthToCut; i++)
             {
                 ret[j] = sourceArray[i];
                 j++;
@@ -36,20 +41,20 @@
         /// <summary>
         /// Extract a section from the incoming stream.
         /// </summary>
-        /// <param name="pFileStream">Stream to extract the chunk from.</param>
-        /// <param name="pOffset">Offset to begin cutting from.</param>
-        /// <param name="pLength">Number of bytes to cut.</param>
+        /// <param name="stream">Stream to extract the chunk from.</param>
+        /// <param name="startingOffset">Offset to begin cutting from.</param>
+        /// <param name="lengthToCut">Number of bytes to cut.</param>
         /// <returns>Byte array containing the extracted section.</returns>
-        public static byte[] ParseSimpleOffset(Stream pFileStream, int pOffset, int pLength)
+        public static byte[] ParseSimpleOffset(Stream stream, int startingOffset, int lengthToCut)
         {
-            byte[] ret = new byte[pLength];
-            long currentStreamPosition = pFileStream.Position;
+            byte[] ret = new byte[lengthToCut];
+            long currentStreamPosition = stream.Position;
 
-            pFileStream.Seek((long)pOffset, SeekOrigin.Begin);
-            BinaryReader br = new BinaryReader(pFileStream);
-            ret = br.ReadBytes((int)pLength);
+            stream.Seek((long)startingOffset, SeekOrigin.Begin);
+            BinaryReader br = new BinaryReader(stream);
+            ret = br.ReadBytes((int)lengthToCut);
 
-            pFileStream.Position = currentStreamPosition;
+            stream.Position = currentStreamPosition;
 
             return ret;
         }
@@ -57,20 +62,20 @@
         /// <summary>
         /// Extract a section from the incoming stream.
         /// </summary>
-        /// <param name="pFileStream">Stream to extract the chunk from.</param>
-        /// <param name="pOffset">Offset to begin cutting from.</param>
-        /// <param name="pLength">Number of bytes to cut.</param>
+        /// <param name="stream">Stream to extract the chunk from.</param>
+        /// <param name="startingOffset">Offset to begin cutting from.</param>
+        /// <param name="lengthToCut">Number of bytes to cut.</param>
         /// <returns>Byte array containing the extracted section.</returns>
-        public static byte[] ParseSimpleOffset(Stream pFileStream, long pOffset, int pLength)
+        public static byte[] ParseSimpleOffset(Stream stream, long startingOffset, int lengthToCut)
         {
-            byte[] ret = new byte[pLength];
-            long currentStreamPosition = pFileStream.Position;
+            byte[] ret = new byte[lengthToCut];
+            long currentStreamPosition = stream.Position;
 
-            pFileStream.Seek(pOffset, SeekOrigin.Begin);
-            BinaryReader br = new BinaryReader(pFileStream);
-            ret = br.ReadBytes(pLength);
+            stream.Seek(startingOffset, SeekOrigin.Begin);
+            BinaryReader br = new BinaryReader(stream);
+            ret = br.ReadBytes(lengthToCut);
 
-            pFileStream.Position = currentStreamPosition;
+            stream.Position = currentStreamPosition;
 
             return ret;
         }
@@ -78,22 +83,22 @@
         /// <summary>
         /// Get the length from the input offset to the location of the input terminator bytes or zero.
         /// </summary>
-        /// <param name="pBytes">Bytes to check.</param>
-        /// <param name="pOffset">Offset at which to begin searching for the terminator bytes.</param>
-        /// <param name="pTerminator">Bytes to search for.</param>
+        /// <param name="sourceBytes">Bytes to check.</param>
+        /// <param name="searchOffset">Offset at which to begin searching for the terminator bytes.</param>
+        /// <param name="terminatorBytes">Bytes to search for.</param>
         /// <returns>Length of distance between offset and terminator or zero if not found.</returns>
-        public static int GetSegmentLength(byte[] pBytes, int pOffset, byte[] pTerminator)
+        public static int GetSegmentLength(byte[] sourceBytes, int searchOffset, byte[] terminatorBytes)
         {
             int ret;
             bool terminatorFound = false;
-            int i = pOffset;
+            int i = searchOffset;
 
-            while (i < pBytes.Length)
+            while (i < sourceBytes.Length)
             {
                 // first char match
-                if (pBytes[i] == pTerminator[0])
+                if (sourceBytes[i] == terminatorBytes[0])
                 {
-                    if (CompareSegment(pBytes, i, pTerminator))
+                    if (CompareSegment(sourceBytes, i, terminatorBytes))
                     {
                         terminatorFound = true;
                         break;
@@ -105,7 +110,7 @@
 
             if (terminatorFound)
             {
-                ret = i - pOffset;
+                ret = i - searchOffset;
             }
             else
             {
@@ -118,29 +123,29 @@
         /// <summary>
         /// Get the length from the input offset to the location of the input terminator bytes or zero.
         /// </summary>
-        /// <param name="pStream">Stream to check.</param>
-        /// <param name="pOffset">Offset at which to begin searching for the terminator bytes.</param>
-        /// <param name="pTerminator">Bytes to search for.</param>
+        /// <param name="stream">Stream to check.</param>
+        /// <param name="searchOffset">Offset at which to begin searching for the terminator bytes.</param>
+        /// <param name="terminatorBytes">Bytes to search for.</param>
         /// <returns>Length of distance between offset and terminator or zero if not found.</returns>
-        public static int GetSegmentLength(Stream pStream, int pOffset, byte[] pTerminator)
+        public static int GetSegmentLength(Stream stream, int searchOffset, byte[] terminatorBytes)
         {
             int ret;
             bool terminatorFound = false;
-            int i = pOffset;
-            byte[] checkBytes = new byte[pTerminator.Length];
+            int i = searchOffset;
+            byte[] checkBytes = new byte[terminatorBytes.Length];
 
-            while (i < pStream.Length)
+            while (i < stream.Length)
             {
-                pStream.Seek(i, SeekOrigin.Begin);
-                pStream.Read(checkBytes, 0, 1);
+                stream.Seek(i, SeekOrigin.Begin);
+                stream.Read(checkBytes, 0, 1);
 
                 // first char match
-                if (checkBytes[0] == pTerminator[0])
+                if (checkBytes[0] == terminatorBytes[0])
                 {
-                    pStream.Seek(i, SeekOrigin.Begin);
-                    pStream.Read(checkBytes, 0, pTerminator.Length);
+                    stream.Seek(i, SeekOrigin.Begin);
+                    stream.Read(checkBytes, 0, terminatorBytes.Length);
                     
-                    if (CompareSegment(checkBytes, 0, pTerminator))
+                    if (CompareSegment(checkBytes, 0, terminatorBytes))
                     {
                         terminatorFound = true;
                         break;
@@ -152,7 +157,7 @@
 
             if (terminatorFound)
             {
-                ret = i - pOffset;
+                ret = i - searchOffset;
             }
             else
             {
@@ -165,36 +170,36 @@
         /// <summary>
         /// Get the offset of the first instance of pSearchBytes after the input offset.
         /// </summary>
-        /// <param name="pStream">Stream to search.</param>
-        /// <param name="pOffset">Offset to begin searching from.</param>
-        /// <param name="pSearchBytes">Bytes to search for.</param>
+        /// <param name="stream">Stream to search.</param>
+        /// <param name="startingOffset">Offset to begin searching from.</param>
+        /// <param name="searchBytes">Bytes to search for.</param>
         /// <returns>Returns the offset of the first instance of pSearchBytes after the input offset or -1 otherwise.</returns>
-        public static long GetNextOffset(Stream pStream, long pOffset, byte[] pSearchBytes)
+        public static long GetNextOffset(Stream stream, long startingOffset, byte[] searchBytes)
         {
-            long initialStreamPosition = pStream.Position;
+            long initialStreamPosition = stream.Position;
 
             bool itemFound = false;
-            long absoluteOffset = pOffset;
+            long absoluteOffset = startingOffset;
             long relativeOffset;
             byte[] checkBytes = new byte[Constants.FileReadChunkSize];
             byte[] compareBytes;
 
             long ret = -1;
 
-            while (!itemFound && (absoluteOffset < pStream.Length))
+            while (!itemFound && (absoluteOffset < stream.Length))
             {
-                pStream.Position = absoluteOffset;
-                pStream.Read(checkBytes, 0, Constants.FileReadChunkSize);
+                stream.Position = absoluteOffset;
+                stream.Read(checkBytes, 0, Constants.FileReadChunkSize);
                 relativeOffset = 0;
 
                 while (!itemFound && (relativeOffset < Constants.FileReadChunkSize))
                 {
-                    if ((relativeOffset + pSearchBytes.Length) < checkBytes.Length)
+                    if ((relativeOffset + searchBytes.Length) < checkBytes.Length)
                     {
-                        compareBytes = new byte[pSearchBytes.Length];
-                        Array.Copy(checkBytes, relativeOffset, compareBytes, 0, pSearchBytes.Length);
+                        compareBytes = new byte[searchBytes.Length];
+                        Array.Copy(checkBytes, relativeOffset, compareBytes, 0, searchBytes.Length);
 
-                        if (CompareSegment(compareBytes, 0, pSearchBytes))
+                        if (CompareSegment(compareBytes, 0, searchBytes))
                         {
                             itemFound = true;
                             ret = absoluteOffset + relativeOffset;
@@ -205,11 +210,11 @@
                     relativeOffset++;
                 }
 
-                absoluteOffset += (Constants.FileReadChunkSize - pSearchBytes.Length);
+                absoluteOffset += Constants.FileReadChunkSize - searchBytes.Length;
             }
 
             // return stream to incoming position
-            pStream.Position = initialStreamPosition;
+            stream.Position = initialStreamPosition;
 
             return ret;
         }
@@ -217,9 +222,9 @@
         /// <summary>
         /// Get the offset of the first instance of pSearchBytes after the input offset.
         /// </summary>
-        /// <param name="pBufferToSearch">Byte array to search.</param>
-        /// <param name="pOffset">Offset to begin searching from.</param>
-        /// <param name="pSearchBytes">Bytes to search for.</param>
+        /// <param name="bufferToSearch">Byte array to search.</param>
+        /// <param name="offset">Offset to begin searching from.</param>
+        /// <param name="searchValue">Bytes to search for.</param>
         /// <returns>Returns the offset of the first instance of pSearchBytes after the input offset or -1 otherwise.</returns>
         public static long GetNextOffset(byte[] bufferToSearch, long offset, byte[] searchValue)
         {
@@ -250,13 +255,13 @@
         /// <summary>
         /// Get the offset of the first instance of pSearchBytes before the input offset.
         /// </summary>
-        /// <param name="pStream">Stream to search.</param>
-        /// <param name="pOffset">Offset to begin searching from.</param>
-        /// <param name="pSearchBytes">Bytes to search for.</param>
+        /// <param name="stream">Stream to search.</param>
+        /// <param name="offset">Offset to begin searching from.</param>
+        /// <param name="searchBytes">Bytes to search for.</param>
         /// <returns>Returns the offset of the first instance of pSearchBytes before the input offset or -1 otherwise.</returns>
-        public static long GetPreviousOffset(Stream pStream, long offset, byte[] pSearchBytes)
+        public static long GetPreviousOffset(Stream stream, long offset, byte[] searchBytes)
         {
-            long initialStreamPosition = pStream.Position;
+            long initialStreamPosition = stream.Position;
 
             bool itemFound = false;
             long relativeOffset;
@@ -265,28 +270,27 @@
 
             long ret = -1;
 
-            long absoluteOffset = offset - (Constants.FileReadChunkSize) + pSearchBytes.Length;
+            long absoluteOffset = offset - Constants.FileReadChunkSize + searchBytes.Length;
             while (!itemFound && (absoluteOffset > -1))
             {
-                pStream.Position = absoluteOffset;
-                relativeOffset = pStream.Read(checkBytes, 0, Constants.FileReadChunkSize);
+                stream.Position = absoluteOffset;
+                relativeOffset = stream.Read(checkBytes, 0, Constants.FileReadChunkSize);
 
                 while (!itemFound && (relativeOffset > -1))
                 {
-                    if ((relativeOffset + pSearchBytes.Length) <= checkBytes.Length)
+                    if ((relativeOffset + searchBytes.Length) <= checkBytes.Length)
                     {
-                        compareBytes = new byte[pSearchBytes.Length];
-                        Array.Copy(checkBytes, relativeOffset, compareBytes, 0, pSearchBytes.Length);
+                        compareBytes = new byte[searchBytes.Length];
+                        Array.Copy(checkBytes, relativeOffset, compareBytes, 0, searchBytes.Length);
 
-                        if (CompareSegment(compareBytes, 0, pSearchBytes))
+                        if (CompareSegment(compareBytes, 0, searchBytes))
                         {
                             itemFound = true;
-                            // ret = absoluteOffset + relativeOffset - pSearchBytes.Length;
                             ret = absoluteOffset + relativeOffset;
 
                             if (ret == offset)
                             {
-                                ret -= pSearchBytes.Length;
+                                ret -= searchBytes.Length;
                             }
 
                             break;
@@ -296,11 +300,11 @@
                     relativeOffset--;
                 }
 
-                absoluteOffset = absoluteOffset - Constants.FileReadChunkSize + pSearchBytes.Length;
+                absoluteOffset = absoluteOffset - Constants.FileReadChunkSize + searchBytes.Length;
             }
 
             // return stream to incoming position
-            pStream.Position = initialStreamPosition;
+            stream.Position = initialStreamPosition;
 
             return ret;
         }
@@ -308,9 +312,9 @@
         /// <summary>
         /// Compare bytes at input offset to target bytes.
         /// </summary>
-        /// <param name="pBytes">Bytes to compare.</param>
-        /// <param name="pOffset">Offset to begin comparison of pBytes to pTarget.</param>
-        /// <param name="pTarget">Target bytes to compare.</param>
+        /// <param name="sourceArray">Bytes to compare.</param>
+        /// <param name="offset">Offset to begin comparison of pBytes to pTarget.</param>
+        /// <param name="target">Target bytes to compare.</param>
         /// <returns>True if the bytes at pOffset match the pTarget bytes.</returns>
         public static bool CompareSegment(byte[] sourceArray, int offset, byte[] target)
         {
@@ -333,9 +337,9 @@
         /// <summary>
         /// Compare bytes at input offset to target bytes.
         /// </summary>
-        /// <param name="pBytes">Bytes to compare.</param>
-        /// <param name="pOffset">Offset to begin comparison of pBytes to pTarget.</param>
-        /// <param name="pTarget">Target bytes to compare.</param>
+        /// <param name="sourceArray">Bytes to compare.</param>
+        /// <param name="offset">Offset to begin comparison of pBytes to pTarget.</param>
+        /// <param name="target">Target bytes to compare.</param>
         /// <returns>True if the bytes at pOffset match the pTarget bytes.</returns>
         public static bool CompareSegment(byte[] sourceArray, long offset, byte[] target)
         {
@@ -358,14 +362,14 @@
         /// <summary>
         /// Extracts a section of the incoming stream to a file.
         /// </summary>
-        /// <param name="pStream">Stream to extract from.</param>
-        /// <param name="pOffset">Offset to begin the cut.</param>
-        /// <param name="pLength">Number of bytes to cut.</param>
-        /// <param name="pFilePath">File path to output the extracted chunk to.</param>
-        public static void ExtractChunkToFile(Stream pStream, long pOffset, int pLength, string pFilePath)
+        /// <param name="stream">Stream to extract from.</param>
+        /// <param name="startingOffset">Offset to begin the cut.</param>
+        /// <param name="length">Number of bytes to cut.</param>
+        /// <param name="filePath">File path to output the extracted chunk to.</param>
+        public static void ExtractChunkToFile(Stream stream, long startingOffset, int length, string filePath)
         {
             BinaryWriter bw = null;
-            string fullOutputDirectory = Path.GetDirectoryName(Path.GetFullPath(pFilePath));
+            string fullOutputDirectory = Path.GetDirectoryName(Path.GetFullPath(filePath));
 
             // create output folder if needed
             if (!Directory.Exists(fullOutputDirectory))
@@ -375,21 +379,21 @@
 
             try
             {
-                bw = new BinaryWriter(File.Open(pFilePath, FileMode.Create, FileAccess.Write));
+                bw = new BinaryWriter(File.Open(filePath, FileMode.Create, FileAccess.Write));
 
                 int read = 0;
                 int totalBytes = 0;
                 byte[] bytes = new byte[4096];
-                pStream.Seek((long)pOffset, SeekOrigin.Begin);
+                stream.Seek((long)startingOffset, SeekOrigin.Begin);
 
-                int maxread = pLength > bytes.Length ? bytes.Length : pLength;
+                int maxread = length > bytes.Length ? bytes.Length : length;
 
-                while ((read = pStream.Read(bytes, 0, maxread)) > 0)
+                while ((read = stream.Read(bytes, 0, maxread)) > 0)
                 {
                     bw.Write(bytes, 0, read);
                     totalBytes += read;
 
-                    maxread = (pLength - totalBytes) > bytes.Length ? bytes.Length : (pLength - totalBytes);
+                    maxread = (length - totalBytes) > bytes.Length ? bytes.Length : (length - totalBytes);
                 }
             }
             finally
@@ -404,31 +408,30 @@
         /// <summary>
         /// Convert the input bytes to a string containing the hex values.
         /// </summary>
-        /// <param name="pBytes">Bytes to convert to a string.</param>
+        /// <param name="value">Bytes to convert to a string.</param>
         /// <returns>String of hex values that represent the incoming byte array.</returns>
         public static string ByteArrayToString(byte[] value)
         {
-            StringBuilder sBuilder = new StringBuilder();
+            StringBuilder checksum = new StringBuilder();
 
             // Loop through each byte of the hashed data 
             // and format each one as a hexadecimal string.
             for (int i = 0; i < value.Length; i++)
             {
-                sBuilder.Append(value[i].ToString("X2", CultureInfo.InvariantCulture));
+                checksum.Append(value[i].ToString("X2", CultureInfo.InvariantCulture));
             }
 
-            return sBuilder.ToString();
+            return checksum.ToString();
         }
 
         /// <summary>
         /// Find an offset and cut the file based on incoming criteria.
         /// </summary>
-        /// <param name="pPath">Path of file to search.</param>
-        /// <param name="pFindOffsetStruct">Struct containing search criteria.</param>
-        /// <param name="pStartingOffset">Offset to begin search.</param>
-        /// <param name="pMessages">Output messages.</param>
+        /// <param name="sourcePath">Path of file to search.</param>
+        /// <param name="searchCriteria">Struct containing search criteria.</param>
+        /// <param name="messages">Output messages.</param>
         /// <returns>Directory that extracted files were output into.</returns>
-        public static string FindOffsetAndCutFile(string sourcePath, FindOffsetStruct searchCriteria, out string pMessages)
+        public static string FindOffsetAndCutFile(string sourcePath, FindOffsetStruct searchCriteria, out string messages)
         {
             int i;
             int j = 0;
@@ -497,8 +500,10 @@
 
                 previousOffset = 
                     String.IsNullOrEmpty(searchCriteria.StartingOffset) ? 0 : VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.StartingOffset);
-                outputFolder = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(sourcePath),
-                    Path.GetFileNameWithoutExtension(sourcePath) + "_CUT"));
+                outputFolder = Path.GetFullPath(
+                    Path.Combine(
+                        Path.GetDirectoryName(sourcePath),
+                        Path.GetFileNameWithoutExtension(sourcePath) + "_CUT"));
 
                 while ((offset = ParseFile.GetNextOffset(fs, previousOffset, searchBytes)) != -1)
                 {
@@ -631,7 +636,7 @@
                 }
             }
 
-            pMessages = ret.ToString();
+            messages = ret.ToString();
             return outputFolder;
         }
     }

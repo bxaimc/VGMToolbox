@@ -1,9 +1,9 @@
-﻿namespace VGMToolbox.util
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-    
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace VGMToolbox.util
+{    
     /// <summary>
     /// Class containing static text conversion functions.
     /// </summary>

@@ -1,10 +1,10 @@
-﻿namespace VGMToolbox.util
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-    using System.Windows.Forms;
-    
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Windows.Forms;
+
+namespace VGMToolbox.util
+{   
     /// <summary>
     /// Struct containing criteria used to find offsets.
     /// </summary>
