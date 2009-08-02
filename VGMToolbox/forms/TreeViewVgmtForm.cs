@@ -10,6 +10,7 @@ using System.Windows.Forms;
 
 using VGMToolbox.format;
 using VGMToolbox.format.util;
+using VGMToolbox.forms.examine;
 using VGMToolbox.plugin;
 using VGMToolbox.util;
 using VGMToolbox.tools;

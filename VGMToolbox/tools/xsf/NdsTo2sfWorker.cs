@@ -21,8 +21,6 @@ namespace VGMToolbox.tools.xsf
         public const string TESTPACK_CRC32 = "FB16DF0E";
         public readonly string TESTPACK_FULL_PATH = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), TESTPACK_PATH);
 
-        VGMToolbox.util.ProgressStruct progressStruct = new VGMToolbox.util.ProgressStruct();
-
         public struct NdsTo2sfStruct : IVgmtWorkerStruct
         {
             private string[] sourcePaths;

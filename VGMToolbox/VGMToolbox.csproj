@@ -79,40 +79,40 @@
     <Compile Include="Form2.Designer.cs">
       <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Auditing_DatafileCheckerForm.cs">
+    <Compile Include="forms\audit\DatafileCheckerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Auditing_DatafileCheckerForm.Designer.cs">
-      <DependentUpon>Auditing_DatafileCheckerForm.cs</DependentUpon>
+    <Compile Include="forms\audit\DatafileCheckerForm.Designer.cs">
+      <DependentUpon>DatafileCheckerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Auditing_DatafileCreatorForm.cs">
+    <Compile Include="forms\audit\DatafileCreatorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Auditing_DatafileCreatorForm.Designer.cs">
-      <DependentUpon>Auditing_DatafileCreatorForm.cs</DependentUpon>
+    <Compile Include="forms\audit\DatafileCreatorForm.Designer.cs">
+      <DependentUpon>DatafileCreatorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Auditing_RebuilderForm.cs">
+    <Compile Include="forms\audit\RebuilderForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Auditing_RebuilderForm.Designer.cs">
-      <DependentUpon>Auditing_RebuilderForm.cs</DependentUpon>
+    <Compile Include="forms\audit\RebuilderForm.Designer.cs">
+      <DependentUpon>RebuilderForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Auditing_CollectionBuilderForm.cs">
+    <Compile Include="forms\audit\CollectionBuilderForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Auditing_CollectionBuilderForm.Designer.cs">
-      <DependentUpon>Auditing_CollectionBuilderForm.cs</DependentUpon>
+    <Compile Include="forms\audit\CollectionBuilderForm.Designer.cs">
+      <DependentUpon>CollectionBuilderForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Compression_GzipCompressionForm.cs">
+    <Compile Include="forms\compression\GzipCompressionForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Compression_GzipCompressionForm.Designer.cs">
-      <DependentUpon>Compression_GzipCompressionForm.cs</DependentUpon>
+    <Compile Include="forms\compression\GzipCompressionForm.Designer.cs">
+      <DependentUpon>GzipCompressionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\EmbeddedTagsUpdateForm.cs">
+    <Compile Include="forms\examine\EmbeddedTagsUpdateForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\EmbeddedTagsUpdateForm.Designer.cs">
+    <Compile Include="forms\examine\EmbeddedTagsUpdateForm.Designer.cs">
       <DependentUpon>EmbeddedTagsUpdateForm.cs</DependentUpon>
     </Compile>
     <Compile Include="forms\EmptyForm.cs">
@@ -121,47 +121,47 @@
     <Compile Include="forms\EmptyForm.Designer.cs">
       <DependentUpon>EmptyForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Examine_CrcCalculatorForm.cs">
+    <Compile Include="forms\examine\CrcCalculatorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Examine_CrcCalculatorForm.Designer.cs">
-      <DependentUpon>Examine_CrcCalculatorForm.cs</DependentUpon>
+    <Compile Include="forms\examine\CrcCalculatorForm.Designer.cs">
+      <DependentUpon>CrcCalculatorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Examine_SearchForFileForm.cs">
+    <Compile Include="forms\examine\SearchForFileForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Examine_SearchForFileForm.Designer.cs">
-      <DependentUpon>Examine_SearchForFileForm.cs</DependentUpon>
+    <Compile Include="forms\examine\SearchForFileForm.Designer.cs">
+      <DependentUpon>SearchForFileForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Examine_TagViewerForm.cs">
+    <Compile Include="forms\examine\TagViewerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Examine_TagViewerForm.Designer.cs">
-      <DependentUpon>Examine_TagViewerForm.cs</DependentUpon>
+    <Compile Include="forms\examine\TagViewerForm.Designer.cs">
+      <DependentUpon>TagViewerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Extract_ExtractCdxaForm.cs">
+    <Compile Include="forms\extraction\ExtractCdxaForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Extract_ExtractCdxaForm.Designer.cs">
-      <DependentUpon>Extract_ExtractCdxaForm.cs</DependentUpon>
+    <Compile Include="forms\extraction\ExtractCdxaForm.Designer.cs">
+      <DependentUpon>ExtractCdxaForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Extract_MidiExtractorForm.cs">
+    <Compile Include="forms\extraction\MidiExtractorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Extract_MidiExtractorForm.Designer.cs">
-      <DependentUpon>Extract_MidiExtractorForm.cs</DependentUpon>
+    <Compile Include="forms\extraction\MidiExtractorForm.Designer.cs">
+      <DependentUpon>MidiExtractorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Extract_OffsetFinderForm.cs">
+    <Compile Include="forms\extraction\OffsetFinderForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Extract_OffsetFinderForm.Designer.cs">
-      <DependentUpon>Extract_OffsetFinderForm.cs</DependentUpon>
+    <Compile Include="forms\extraction\OffsetFinderForm.Designer.cs">
+      <DependentUpon>OffsetFinderForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Extract_ZlibExtractForm.cs">
+    <Compile Include="forms\compression\ZlibCompressionForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Extract_ZlibExtractForm.Designer.cs">
-      <DependentUpon>Extract_ZlibExtractForm.cs</DependentUpon>
+    <Compile Include="forms\compression\ZlibCompressionForm.Designer.cs">
+      <DependentUpon>ZlibCompressionForm.cs</DependentUpon>
     </Compile>
     <Compile Include="forms\Gbs_GbsToM3uForm.cs">
       <SubType>Form</SubType>
@@ -175,17 +175,17 @@
     <Compile Include="forms\Genh_CreatorForm.Designer.cs">
       <DependentUpon>Genh_CreatorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Hoot_AuditorForm.cs">
+    <Compile Include="forms\hoot\HootAuditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Hoot_AuditorForm.Designer.cs">
-      <DependentUpon>Hoot_AuditorForm.cs</DependentUpon>
+    <Compile Include="forms\hoot\HootAuditorForm.Designer.cs">
+      <DependentUpon>HootAuditorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Hoot_XmlBuilderForm.cs">
+    <Compile Include="forms\hoot\XmlBuilderForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Hoot_XmlBuilderForm.Designer.cs">
-      <DependentUpon>Hoot_XmlBuilderForm.cs</DependentUpon>
+    <Compile Include="forms\hoot\XmlBuilderForm.Designer.cs">
+      <DependentUpon>XmlBuilderForm.cs</DependentUpon>
     </Compile>
     <Compile Include="forms\Nsf_Nsfe2NsfM3uForm.cs">
       <SubType>Form</SubType>
@@ -193,23 +193,23 @@
     <Compile Include="forms\Nsf_Nsfe2NsfM3uForm.Designer.cs">
       <DependentUpon>Nsf_Nsfe2NsfM3uForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\PsfStubMakerForm.cs">
+    <Compile Include="forms\xsf\PsfStubMakerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\PsfStubMakerForm.Designer.cs">
+    <Compile Include="forms\xsf\PsfStubMakerForm.Designer.cs">
       <DependentUpon>PsfStubMakerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\SingleTagUpdateForm.cs">
+    <Compile Include="forms\examine\SingleTagUpdateForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\SingleTagUpdateForm.Designer.cs">
+    <Compile Include="forms\examine\SingleTagUpdateForm.Designer.cs">
       <DependentUpon>SingleTagUpdateForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Extract_SnakebiteGuiForm.cs">
+    <Compile Include="forms\extraction\SnakebiteGuiForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Extract_SnakebiteGuiForm.Designer.cs">
-      <DependentUpon>Extract_SnakebiteGuiForm.cs</DependentUpon>
+    <Compile Include="forms\extraction\SnakebiteGuiForm.Designer.cs">
+      <DependentUpon>SnakebiteGuiForm.cs</DependentUpon>
     </Compile>
     <Compile Include="forms\TreeViewVgmtForm.cs">
       <SubType>Form</SubType>
@@ -217,16 +217,16 @@
     <Compile Include="forms\TreeViewVgmtForm.Designer.cs">
       <DependentUpon>TreeViewVgmtForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\VabSplitterForm.cs">
+    <Compile Include="forms\xsf\VabSplitterForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\VabSplitterForm.Designer.cs">
+    <Compile Include="forms\xsf\VabSplitterForm.Designer.cs">
       <DependentUpon>VabSplitterForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\VgmTagsUpdateForm.cs">
+    <Compile Include="forms\examine\VgmTagsUpdateForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\VgmTagsUpdateForm.Designer.cs">
+    <Compile Include="forms\examine\VgmTagsUpdateForm.Designer.cs">
       <DependentUpon>VgmTagsUpdateForm.cs</DependentUpon>
     </Compile>
     <Compile Include="forms\Vgm_VgmTagEditorForm.cs">
@@ -241,119 +241,119 @@
     <Compile Include="forms\xsf\NdsTo2sfForm.Designer.cs">
       <DependentUpon>NdsTo2sfForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Xsf_2sfTagsMigratorForm.cs">
+    <Compile Include="forms\xsf\TwoSfTagsMigratorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Xsf_2sfTagsMigratorForm.Designer.cs">
-      <DependentUpon>Xsf_2sfTagsMigratorForm.cs</DependentUpon>
+    <Compile Include="forms\xsf\TwoSfTagsMigratorForm.Designer.cs">
+      <DependentUpon>TwoSfTagsMigratorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Xsf_XsfTagEditorForm.cs">
+    <Compile Include="forms\xsf\XsfTagEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Xsf_XsfTagEditorForm.Designer.cs">
-      <DependentUpon>Xsf_XsfTagEditorForm.cs</DependentUpon>
+    <Compile Include="forms\xsf\XsfTagEditorForm.Designer.cs">
+      <DependentUpon>XsfTagEditorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\XsfTagsUpdateForm.cs">
+    <Compile Include="forms\examine\XsfTagsUpdateForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\XsfTagsUpdateForm.Designer.cs">
+    <Compile Include="forms\examine\XsfTagsUpdateForm.Designer.cs">
       <DependentUpon>XsfTagsUpdateForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Xsf_Mk2sfForm.cs">
+    <Compile Include="forms\xsf\Make2sfForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Xsf_Mk2sfForm.Designer.cs">
-      <DependentUpon>Xsf_Mk2sfForm.cs</DependentUpon>
+    <Compile Include="forms\xsf\Make2sfForm.Designer.cs">
+      <DependentUpon>Make2sfForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Xsf_RecompressDataForm.cs">
+    <Compile Include="forms\xsf\RecompressDataForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Xsf_RecompressDataForm.Designer.cs">
-      <DependentUpon>Xsf_RecompressDataForm.cs</DependentUpon>
+    <Compile Include="forms\xsf\RecompressDataForm.Designer.cs">
+      <DependentUpon>RecompressDataForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Xsf_2sfSdatOptimizerForm.cs">
+    <Compile Include="forms\xsf\SdatOptimizerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Xsf_2sfSdatOptimizerForm.Designer.cs">
-      <DependentUpon>Xsf_2sfSdatOptimizerForm.cs</DependentUpon>
+    <Compile Include="forms\xsf\SdatOptimizerForm.Designer.cs">
+      <DependentUpon>SdatOptimizerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Xsf_2sfTimerForm.cs">
+    <Compile Include="forms\xsf\TwoSfTimerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Xsf_2sfTimerForm.Designer.cs">
-      <DependentUpon>Xsf_2sfTimerForm.cs</DependentUpon>
+    <Compile Include="forms\xsf\TwoSfTimerForm.Designer.cs">
+      <DependentUpon>TwoSfTimerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Xsf_Bin2PsfFrontEndForm.cs">
+    <Compile Include="forms\xsf\Bin2PsfFrontEndForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Xsf_Bin2PsfFrontEndForm.Designer.cs">
-      <DependentUpon>Xsf_Bin2PsfFrontEndForm.cs</DependentUpon>
+    <Compile Include="forms\xsf\Bin2PsfFrontEndForm.Designer.cs">
+      <DependentUpon>Bin2PsfFrontEndForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Xsf_Mkpsf2FrontEndForm.cs">
+    <Compile Include="forms\xsf\Mkpsf2FrontEndForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Xsf_Mkpsf2FrontEndForm.Designer.cs">
-      <DependentUpon>Xsf_Mkpsf2FrontEndForm.cs</DependentUpon>
+    <Compile Include="forms\xsf\Mkpsf2FrontEndForm.Designer.cs">
+      <DependentUpon>Mkpsf2FrontEndForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Xsf_Psf2SqExtractorForm.cs">
+    <Compile Include="forms\xsf\Psf2SqExtractorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Xsf_Psf2SqExtractorForm.Designer.cs">
-      <DependentUpon>Xsf_Psf2SqExtractorForm.cs</DependentUpon>
+    <Compile Include="forms\xsf\Psf2SqExtractorForm.Designer.cs">
+      <DependentUpon>Psf2SqExtractorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Xsf_Psf2TimerForm.cs">
+    <Compile Include="forms\xsf\Psf2TimerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Xsf_Psf2TimerForm.Designer.cs">
-      <DependentUpon>Xsf_Psf2TimerForm.cs</DependentUpon>
+    <Compile Include="forms\xsf\Psf2TimerForm.Designer.cs">
+      <DependentUpon>Psf2TimerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Xsf_Psf2ToPsf2LibForm.cs">
+    <Compile Include="forms\xsf\Psf2ToPsf2LibForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Xsf_Psf2ToPsf2LibForm.Designer.cs">
-      <DependentUpon>Xsf_Psf2ToPsf2LibForm.cs</DependentUpon>
+    <Compile Include="forms\xsf\Psf2ToPsf2LibForm.Designer.cs">
+      <DependentUpon>Psf2ToPsf2LibForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Xsf_PsxSeqExtractForm.cs">
+    <Compile Include="forms\xsf\PsfTimerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Xsf_PsxSeqExtractForm.Designer.cs">
-      <DependentUpon>Xsf_PsxSeqExtractForm.cs</DependentUpon>
+    <Compile Include="forms\xsf\PsfTimerForm.Designer.cs">
+      <DependentUpon>PsfTimerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Xsf_SdatExtractorForm.cs">
+    <Compile Include="forms\extraction\SdatExtractorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Xsf_SdatExtractorForm.Designer.cs">
-      <DependentUpon>Xsf_SdatExtractorForm.cs</DependentUpon>
+    <Compile Include="forms\extraction\SdatExtractorForm.Designer.cs">
+      <DependentUpon>SdatExtractorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Xsf_SdatFinderForm.cs">
+    <Compile Include="forms\extraction\SdatFinderForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Xsf_SdatFinderForm.Designer.cs">
-      <DependentUpon>Xsf_SdatFinderForm.cs</DependentUpon>
+    <Compile Include="forms\extraction\SdatFinderForm.Designer.cs">
+      <DependentUpon>SdatFinderForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Xsf_SsfMakeFrontEndForm.cs">
+    <Compile Include="forms\xsf\SsfMakeFrontEndForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Xsf_SsfMakeFrontEndForm.Designer.cs">
-      <DependentUpon>Xsf_SsfMakeFrontEndForm.cs</DependentUpon>
+    <Compile Include="forms\xsf\SsfMakeFrontEndForm.Designer.cs">
+      <DependentUpon>SsfMakeFrontEndForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Xsf_SsfSeqTonExtForm.cs">
+    <Compile Include="forms\xsf\SsfSeqTonExtForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Xsf_SsfSeqTonExtForm.Designer.cs">
-      <DependentUpon>Xsf_SsfSeqTonExtForm.cs</DependentUpon>
+    <Compile Include="forms\xsf\SsfSeqTonExtForm.Designer.cs">
+      <DependentUpon>SsfSeqTonExtForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Xsf_Unpkpsf2FrontEndForm.cs">
+    <Compile Include="forms\xsf\UnpackPsf2Form.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Xsf_Unpkpsf2FrontEndForm.Designer.cs">
-      <DependentUpon>Xsf_Unpkpsf2FrontEndForm.cs</DependentUpon>
+    <Compile Include="forms\xsf\UnpackPsf2Form.Designer.cs">
+      <DependentUpon>UnpackPsf2Form.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Xsf_Xsf2ExeForm.cs">
+    <Compile Include="forms\xsf\Xsf2ExeForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Xsf_Xsf2ExeForm.Designer.cs">
-      <DependentUpon>Xsf_Xsf2ExeForm.cs</DependentUpon>
+    <Compile Include="forms\xsf\Xsf2ExeForm.Designer.cs">
+      <DependentUpon>Xsf2ExeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="forms\ZZZ_NotYetImplemented.cs">
       <SubType>Form</SubType>
@@ -371,100 +371,100 @@
       <DependentUpon>Form2.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Auditing_CollectionBuilderForm.resx">
-      <DependentUpon>Auditing_CollectionBuilderForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\audit\CollectionBuilderForm.resx">
+      <DependentUpon>CollectionBuilderForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Auditing_DatafileCheckerForm.resx">
-      <DependentUpon>Auditing_DatafileCheckerForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\audit\DatafileCheckerForm.resx">
+      <DependentUpon>DatafileCheckerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Auditing_DatafileCreatorForm.resx">
-      <DependentUpon>Auditing_DatafileCreatorForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\audit\DatafileCreatorForm.resx">
+      <DependentUpon>DatafileCreatorForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Auditing_RebuilderForm.resx">
-      <DependentUpon>Auditing_RebuilderForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\audit\RebuilderForm.resx">
+      <DependentUpon>RebuilderForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\EmbeddedTagsUpdateForm.resx">
+    <EmbeddedResource Include="forms\examine\EmbeddedTagsUpdateForm.resx">
       <DependentUpon>EmbeddedTagsUpdateForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Examine_TagViewerForm.resx">
-      <DependentUpon>Examine_TagViewerForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\examine\TagViewerForm.resx">
+      <DependentUpon>TagViewerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Extract_OffsetFinderForm.resx">
-      <DependentUpon>Extract_OffsetFinderForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\extraction\OffsetFinderForm.resx">
+      <DependentUpon>OffsetFinderForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Gbs_GbsToM3uForm.resx">
       <DependentUpon>Gbs_GbsToM3uForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Hoot_XmlBuilderForm.resx">
-      <DependentUpon>Hoot_XmlBuilderForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\hoot\XmlBuilderForm.resx">
+      <DependentUpon>XmlBuilderForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Nsf_Nsfe2NsfM3uForm.resx">
       <DependentUpon>Nsf_Nsfe2NsfM3uForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\SingleTagUpdateForm.resx">
+    <EmbeddedResource Include="forms\examine\SingleTagUpdateForm.resx">
       <DependentUpon>SingleTagUpdateForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Xsf_2sfSdatOptimizerForm.resx">
-      <DependentUpon>Xsf_2sfSdatOptimizerForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\xsf\SdatOptimizerForm.resx">
+      <DependentUpon>SdatOptimizerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Xsf_2sfTimerForm.resx">
-      <DependentUpon>Xsf_2sfTimerForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\xsf\TwoSfTimerForm.resx">
+      <DependentUpon>TwoSfTimerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Xsf_Bin2PsfFrontEndForm.resx">
-      <DependentUpon>Xsf_Bin2PsfFrontEndForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\xsf\Bin2PsfFrontEndForm.resx">
+      <DependentUpon>Bin2PsfFrontEndForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Xsf_Mkpsf2FrontEndForm.resx">
-      <DependentUpon>Xsf_Mkpsf2FrontEndForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\xsf\Mkpsf2FrontEndForm.resx">
+      <DependentUpon>Mkpsf2FrontEndForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Xsf_Psf2SqExtractorForm.resx">
-      <DependentUpon>Xsf_Psf2SqExtractorForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\xsf\Psf2SqExtractorForm.resx">
+      <DependentUpon>Psf2SqExtractorForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Xsf_Psf2TimerForm.resx">
-      <DependentUpon>Xsf_Psf2TimerForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\xsf\Psf2TimerForm.resx">
+      <DependentUpon>Psf2TimerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Xsf_Psf2ToPsf2LibForm.resx">
-      <DependentUpon>Xsf_Psf2ToPsf2LibForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\xsf\Psf2ToPsf2LibForm.resx">
+      <DependentUpon>Psf2ToPsf2LibForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Xsf_SdatExtractorForm.resx">
-      <DependentUpon>Xsf_SdatExtractorForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\extraction\SdatExtractorForm.resx">
+      <DependentUpon>SdatExtractorForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Xsf_SdatFinderForm.resx">
-      <DependentUpon>Xsf_SdatFinderForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\extraction\SdatFinderForm.resx">
+      <DependentUpon>SdatFinderForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Xsf_SsfMakeFrontEndForm.resx">
-      <DependentUpon>Xsf_SsfMakeFrontEndForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\xsf\SsfMakeFrontEndForm.resx">
+      <DependentUpon>SsfMakeFrontEndForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Xsf_SsfSeqTonExtForm.resx">
-      <DependentUpon>Xsf_SsfSeqTonExtForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\xsf\SsfSeqTonExtForm.resx">
+      <DependentUpon>SsfSeqTonExtForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Xsf_Unpkpsf2FrontEndForm.resx">
-      <DependentUpon>Xsf_Unpkpsf2FrontEndForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\xsf\UnpackPsf2Form.resx">
+      <DependentUpon>UnpackPsf2Form.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Xsf_Xsf2ExeForm.resx">
-      <DependentUpon>Xsf_Xsf2ExeForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\xsf\Xsf2ExeForm.resx">
+      <DependentUpon>Xsf2ExeForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\ZZZ_NotYetImplemented.resx">
@@ -670,43 +670,43 @@
     <Content Include="readme.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <EmbeddedResource Include="forms\Compression_GzipCompressionForm.resx">
-      <DependentUpon>Compression_GzipCompressionForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\compression\GzipCompressionForm.resx">
+      <DependentUpon>GzipCompressionForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Examine_CrcCalculatorForm.resx">
-      <DependentUpon>Examine_CrcCalculatorForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\examine\CrcCalculatorForm.resx">
+      <DependentUpon>CrcCalculatorForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Examine_SearchForFileForm.resx">
-      <DependentUpon>Examine_SearchForFileForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\examine\SearchForFileForm.resx">
+      <DependentUpon>SearchForFileForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Extract_ExtractCdxaForm.resx">
-      <DependentUpon>Extract_ExtractCdxaForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\extraction\ExtractCdxaForm.resx">
+      <DependentUpon>ExtractCdxaForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Extract_MidiExtractorForm.resx">
-      <DependentUpon>Extract_MidiExtractorForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\extraction\MidiExtractorForm.resx">
+      <DependentUpon>MidiExtractorForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Extract_SnakebiteGuiForm.resx">
-      <DependentUpon>Extract_SnakebiteGuiForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\extraction\SnakebiteGuiForm.resx">
+      <DependentUpon>SnakebiteGuiForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Extract_ZlibExtractForm.resx">
-      <DependentUpon>Extract_ZlibExtractForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\compression\ZlibCompressionForm.resx">
+      <DependentUpon>ZlibCompressionForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Genh_CreatorForm.resx">
       <DependentUpon>Genh_CreatorForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Hoot_AuditorForm.resx">
-      <DependentUpon>Hoot_AuditorForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\hoot\HootAuditorForm.resx">
+      <DependentUpon>HootAuditorForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\PsfStubMakerForm.resx">
+    <EmbeddedResource Include="forms\xsf\PsfStubMakerForm.resx">
       <DependentUpon>PsfStubMakerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -714,11 +714,11 @@
       <DependentUpon>TreeViewVgmtForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\VabSplitterForm.resx">
+    <EmbeddedResource Include="forms\xsf\VabSplitterForm.resx">
       <DependentUpon>VabSplitterForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\VgmTagsUpdateForm.resx">
+    <EmbeddedResource Include="forms\examine\VgmTagsUpdateForm.resx">
       <DependentUpon>VgmTagsUpdateForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -726,31 +726,31 @@
       <DependentUpon>Vgm_VgmTagEditorForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\XsfTagsUpdateForm.resx">
+    <EmbeddedResource Include="forms\examine\XsfTagsUpdateForm.resx">
       <DependentUpon>XsfTagsUpdateForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\xsf\NdsTo2sfForm.resx">
       <DependentUpon>NdsTo2sfForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Xsf_2sfTagsMigratorForm.resx">
-      <DependentUpon>Xsf_2sfTagsMigratorForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\xsf\TwoSfTagsMigratorForm.resx">
+      <DependentUpon>TwoSfTagsMigratorForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Xsf_Mk2sfForm.resx">
-      <DependentUpon>Xsf_Mk2sfForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\xsf\Make2sfForm.resx">
+      <DependentUpon>Make2sfForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Xsf_PsxSeqExtractForm.resx">
-      <DependentUpon>Xsf_PsxSeqExtractForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\xsf\PsfTimerForm.resx">
+      <DependentUpon>PsfTimerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Xsf_RecompressDataForm.resx">
-      <DependentUpon>Xsf_RecompressDataForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\xsf\RecompressDataForm.resx">
+      <DependentUpon>RecompressDataForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Xsf_XsfTagEditorForm.resx">
-      <DependentUpon>Xsf_XsfTagEditorForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\xsf\XsfTagEditorForm.resx">
+      <DependentUpon>XsfTagEditorForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\bolo2.gif" />

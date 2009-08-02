@@ -4,6 +4,11 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using VGMToolbox.forms;
+using VGMToolbox.forms.audit;
+using VGMToolbox.forms.compression;
+using VGMToolbox.forms.examine;
+using VGMToolbox.forms.extraction;
+using VGMToolbox.forms.hoot;
 using VGMToolbox.forms.xsf;
 using VGMToolbox.util;
 
@@ -132,8 +137,8 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_DatafileCreatorNode"]);
 
             // add form
-            Auditing_DatafileCreatorForm auditing_DatafileCreatorForm = 
-                new Auditing_DatafileCreatorForm(auditing_DatafileCreatorNode);
+            DatafileCreatorForm auditing_DatafileCreatorForm = 
+                new DatafileCreatorForm(auditing_DatafileCreatorNode);
             this.splitContainer1.Panel2.Controls.Add(auditing_DatafileCreatorForm);
 
             // set tag for displaying the form
@@ -147,8 +152,8 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_RebuilderNode"]);
 
             // add form
-            Auditing_RebuilderForm auditing_RebuilderForm =
-                new Auditing_RebuilderForm(auditing_RebuilderNode);
+            RebuilderForm auditing_RebuilderForm =
+                new RebuilderForm(auditing_RebuilderNode);
             this.splitContainer1.Panel2.Controls.Add(auditing_RebuilderForm);
 
             // set tag for displaying the form
@@ -162,8 +167,8 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_DatafileCheckerNode"]);
 
             // add form
-            Auditing_DatafileCheckerForm auditing_DatafileCheckerForm =
-                new Auditing_DatafileCheckerForm(auditing_DatafileCheckerNode);
+            DatafileCheckerForm auditing_DatafileCheckerForm =
+                new DatafileCheckerForm(auditing_DatafileCheckerNode);
             this.splitContainer1.Panel2.Controls.Add(auditing_DatafileCheckerForm);
 
             // set tag for displaying the form
@@ -207,8 +212,8 @@ namespace VGMToolbox
             // Tag Viewer
             TreeNode examine_TagViewerNode =
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_TagViewerNode"]);
-            Examine_TagViewerForm examine_TagViewerForm = 
-                new Examine_TagViewerForm(examine_TagViewerNode);
+            TagViewerForm examine_TagViewerForm = 
+                new TagViewerForm(examine_TagViewerNode);
             this.splitContainer1.Panel2.Controls.Add(examine_TagViewerForm);
 
             nodeTag.FormClass = examine_TagViewerForm.GetType().Name;
@@ -217,8 +222,8 @@ namespace VGMToolbox
             // Crc Calculator
             TreeNode examine_CrcCalculatorNode =
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_ChecksumNode"]);
-            Examine_CrcCalculatorForm examine_CrcCalculatorForm =
-                new Examine_CrcCalculatorForm(examine_CrcCalculatorNode);
+            CrcCalculatorForm examine_CrcCalculatorForm =
+                new CrcCalculatorForm(examine_CrcCalculatorNode);
             this.splitContainer1.Panel2.Controls.Add(examine_CrcCalculatorForm);
 
             nodeTag.FormClass = examine_CrcCalculatorForm.GetType().Name;
@@ -226,8 +231,8 @@ namespace VGMToolbox
 
             // Search for Files
             TreeNode examine_SearchForFilesNode = new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SearchForFilesNode"]);
-            Examine_SearchForFileForm examine_SearchForFileForm =
-                new Examine_SearchForFileForm(examine_SearchForFilesNode);
+            SearchForFileForm examine_SearchForFileForm =
+                new SearchForFileForm(examine_SearchForFilesNode);
             this.splitContainer1.Panel2.Controls.Add(examine_SearchForFileForm);
 
             nodeTag.FormClass = examine_SearchForFileForm.GetType().Name;
@@ -257,7 +262,7 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_XmlBuilderNode"]);
 
             // add form
-            Hoot_XmlBuilderForm hoot_XmlBuilderForm = new Hoot_XmlBuilderForm(hoot_XmlBuilderNode);
+            XmlBuilderForm hoot_XmlBuilderForm = new XmlBuilderForm(hoot_XmlBuilderNode);
             this.splitContainer1.Panel2.Controls.Add(hoot_XmlBuilderForm);
 
             // set tag for displaying the form
@@ -271,7 +276,7 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_HootAuditorNode"]);
 
             // add form
-            Hoot_AuditorForm hoot_AuditorForm = new Hoot_AuditorForm(hoot_AuditorNode);
+            HootAuditorForm hoot_AuditorForm = new HootAuditorForm(hoot_AuditorNode);
             this.splitContainer1.Panel2.Controls.Add(hoot_AuditorForm);
 
             // set tag for displaying the form
@@ -378,7 +383,7 @@ namespace VGMToolbox
             TreeNode xsf_Make2sfNode = new TreeNode(ConfigurationSettings.AppSettings["MenuTree_Make2sfNode"]);
 
             // Add Make 2SF Form
-            Xsf_Mk2sfForm xsf_Mk2sfForm = new Xsf_Mk2sfForm(xsf_Make2sfNode);
+            Make2sfForm xsf_Mk2sfForm = new Make2sfForm(xsf_Make2sfNode);
             this.splitContainer1.Panel2.Controls.Add(xsf_Mk2sfForm);
 
             // Set Tag for displaying the Form
@@ -392,7 +397,7 @@ namespace VGMToolbox
             TreeNode xsf_2sfTimerNode = 
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_2sfTimerNode"]);
 
-            Xsf_2sfTimerForm xsf_2sfTimerForm = new Xsf_2sfTimerForm(xsf_2sfTimerNode);
+            TwoSfTimerForm xsf_2sfTimerForm = new TwoSfTimerForm(xsf_2sfTimerNode);
             this.splitContainer1.Panel2.Controls.Add(xsf_2sfTimerForm);
 
             nodeTag.FormClass = xsf_2sfTimerForm.GetType().Name;
@@ -404,7 +409,7 @@ namespace VGMToolbox
             TreeNode xsf_SdatOptimizerNode =
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SdatOptimizerNode"]);
 
-            Xsf_2sfSdatOptimizerForm xsf_2sfSdatOptimizerForm = new Xsf_2sfSdatOptimizerForm(xsf_SdatOptimizerNode);
+            SdatOptimizerForm xsf_2sfSdatOptimizerForm = new SdatOptimizerForm(xsf_SdatOptimizerNode);
             this.splitContainer1.Panel2.Controls.Add(xsf_2sfSdatOptimizerForm);
 
             nodeTag.FormClass = xsf_2sfSdatOptimizerForm.GetType().Name;
@@ -416,7 +421,7 @@ namespace VGMToolbox
             TreeNode xsf_2sfTagMigratorNode =
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_V1toV2CopyNode"]);
 
-            Xsf_2sfTagsMigratorForm xsf_2sfTagsMigratorForm = new Xsf_2sfTagsMigratorForm(xsf_2sfTagMigratorNode);
+            TwoSfTagsMigratorForm xsf_2sfTagsMigratorForm = new TwoSfTagsMigratorForm(xsf_2sfTagMigratorNode);
             this.splitContainer1.Panel2.Controls.Add(xsf_2sfTagsMigratorForm);
 
             nodeTag.FormClass = xsf_2sfTagsMigratorForm.GetType().Name;
@@ -429,8 +434,8 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_MkPsf2FENode"]);
 
             // Add UnpkPsf2 Ripper Form
-            Xsf_Mkpsf2FrontEndForm xsf_Mkpsf2FrontEndForm =
-                new Xsf_Mkpsf2FrontEndForm(xsf_MkPsf2FENode);
+            Mkpsf2FrontEndForm xsf_Mkpsf2FrontEndForm =
+                new Mkpsf2FrontEndForm(xsf_MkPsf2FENode);
             this.splitContainer1.Panel2.Controls.Add(xsf_Mkpsf2FrontEndForm);
 
             // Set Tag for displaying the Form
@@ -444,8 +449,8 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_UnPkPsf2FENode"]);
 
             // Add UnpkPsf2 Ripper Form
-            Xsf_Unpkpsf2FrontEndForm xsf_Unpkpsf2FrontEndForm =
-                new Xsf_Unpkpsf2FrontEndForm(xsf_UnPsf2FENode);
+            UnpackPsf2Form xsf_Unpkpsf2FrontEndForm =
+                new UnpackPsf2Form(xsf_UnPsf2FENode);
             this.splitContainer1.Panel2.Controls.Add(xsf_Unpkpsf2FrontEndForm);
 
             // Set Tag for displaying the Form
@@ -459,8 +464,8 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_Psf2ToPsf2LibNode"]);
 
             // Add UnpkPsf2 Ripper Form
-            Xsf_Psf2ToPsf2LibForm xsf_Psf2ToPsf2LibForm =
-                new Xsf_Psf2ToPsf2LibForm(xsf_Psf2ToPsf2LibNode);
+            Psf2ToPsf2LibForm xsf_Psf2ToPsf2LibForm =
+                new Psf2ToPsf2LibForm(xsf_Psf2ToPsf2LibNode);
             this.splitContainer1.Panel2.Controls.Add(xsf_Psf2ToPsf2LibForm);
 
             // Set Tag for displaying the Form
@@ -474,8 +479,8 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_Psf2SqExtractorNode"]);
 
             // Add UnpkPsf2 Ripper Form
-            Xsf_Psf2SqExtractorForm xsf_Psf2SqExtractorForm =
-                new Xsf_Psf2SqExtractorForm(xsf_Psf2SqExtractorNode);
+            Psf2SqExtractorForm xsf_Psf2SqExtractorForm =
+                new Psf2SqExtractorForm(xsf_Psf2SqExtractorNode);
             this.splitContainer1.Panel2.Controls.Add(xsf_Psf2SqExtractorForm);
 
             // Set Tag for displaying the Form
@@ -489,7 +494,7 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_Psf2TimerNode"]);
 
             // Add UnpkPsf2 Ripper Form
-            Xsf_Psf2TimerForm xsf_Psf2TimerForm = new Xsf_Psf2TimerForm(xsf_Psf2TimerNode);
+            Psf2TimerForm xsf_Psf2TimerForm = new Psf2TimerForm(xsf_Psf2TimerNode);
             this.splitContainer1.Panel2.Controls.Add(xsf_Psf2TimerForm);
 
             // Set Tag for displaying the Form
@@ -503,8 +508,8 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_Bin2PsfFENode"]);
 
             // Add UnpkPsf2 Ripper Form
-            Xsf_Bin2PsfFrontEndForm xsf_Bin2PsfFrontEndForm =
-                new Xsf_Bin2PsfFrontEndForm(xsf_Bin2PsfFENode);
+            Bin2PsfFrontEndForm xsf_Bin2PsfFrontEndForm =
+                new Bin2PsfFrontEndForm(xsf_Bin2PsfFENode);
             this.splitContainer1.Panel2.Controls.Add(xsf_Bin2PsfFrontEndForm);
 
             // Set Tag for displaying the Form
@@ -544,8 +549,8 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SeqExtractorNode"]);
 
             // Add Form
-            Xsf_PsxSeqExtractForm xsf_PsxSeqExtractForm =
-                new Xsf_PsxSeqExtractForm(xsf_SeqExtractNode);
+            PsfTimerForm xsf_PsxSeqExtractForm =
+                new PsfTimerForm(xsf_SeqExtractNode);
             this.splitContainer1.Panel2.Controls.Add(xsf_PsxSeqExtractForm);
 
             // Set Tag for displaying the Form
@@ -557,8 +562,8 @@ namespace VGMToolbox
             TreeNode xsf_SsfMakeFENode = 
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SsfMakeFENode"]);
             
-            Xsf_SsfMakeFrontEndForm xsf_SsfMakeFrontEndForm = 
-                new Xsf_SsfMakeFrontEndForm(xsf_SsfMakeFENode);
+            SsfMakeFrontEndForm xsf_SsfMakeFrontEndForm = 
+                new SsfMakeFrontEndForm(xsf_SsfMakeFENode);
             this.splitContainer1.Panel2.Controls.Add(xsf_SsfMakeFrontEndForm);
 
             nodeTag.FormClass = xsf_SsfMakeFrontEndForm.GetType().Name;
@@ -568,8 +573,8 @@ namespace VGMToolbox
             TreeNode xsf_SsfSeqTonExtFENode = 
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SsfSeqTonExtFENode"]);
 
-            Xsf_SsfSeqTonExtForm xsf_SsfSeqTonExtForm =
-                new Xsf_SsfSeqTonExtForm(xsf_SsfSeqTonExtFENode);
+            SsfSeqTonExtForm xsf_SsfSeqTonExtForm =
+                new SsfSeqTonExtForm(xsf_SsfSeqTonExtFENode);
             this.splitContainer1.Panel2.Controls.Add(xsf_SsfSeqTonExtForm);
 
             nodeTag.FormClass = xsf_SsfSeqTonExtForm.GetType().Name;
@@ -583,7 +588,7 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_Xsf2ExeNode"]);
 
             // Add Xsf2Exe Form
-            Xsf_Xsf2ExeForm xsf_Xsf2ExeForm = new Xsf_Xsf2ExeForm(xsf_xsf2ExeNode);
+            Xsf2ExeForm xsf_Xsf2ExeForm = new Xsf2ExeForm(xsf_xsf2ExeNode);
             this.splitContainer1.Panel2.Controls.Add(xsf_Xsf2ExeForm);
 
             // Set Tag for displaying the Form
@@ -597,7 +602,7 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_XsfRecompressNode"]);
 
             // Add XsfRecompress Form
-            Xsf_RecompressDataForm xsf_RecompressDataForm = new Xsf_RecompressDataForm(xsf_xsfRecompressNode);
+            RecompressDataForm xsf_RecompressDataForm = new RecompressDataForm(xsf_xsfRecompressNode);
             this.splitContainer1.Panel2.Controls.Add(xsf_RecompressDataForm);
 
             // Set Tag for displaying the Form
@@ -611,7 +616,7 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_XsfTagEditorNode"]);
 
             // Add XsfRecompress Form
-            Xsf_XsfTagEditorForm xsf_XsfTagEditorForm = new Xsf_XsfTagEditorForm(xsf_xsfTagEditorNode);
+            XsfTagEditorForm xsf_XsfTagEditorForm = new XsfTagEditorForm(xsf_xsfTagEditorNode);
             this.splitContainer1.Panel2.Controls.Add(xsf_XsfTagEditorForm);
 
             // Set Tag for displaying the Form
@@ -686,7 +691,7 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SimpleCutterNode"]);
 
             // Add Offset Finder Form
-            Extract_SnakebiteGuiForm extract_SnakebiteGuiForm = new Extract_SnakebiteGuiForm(ext_SimpleCutterNode);
+            SnakebiteGuiForm extract_SnakebiteGuiForm = new SnakebiteGuiForm(ext_SimpleCutterNode);
             this.splitContainer1.Panel2.Controls.Add(extract_SnakebiteGuiForm);
 
             // Set Tag for displaying the Form
@@ -699,7 +704,7 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_OffsetFinderNode"]);
 
             // Add Offset Finder Form
-            Extract_OffsetFinderForm extract_OffsetFinderForm = new Extract_OffsetFinderForm(ext_OffsetFinderNode);
+            OffsetFinderForm extract_OffsetFinderForm = new OffsetFinderForm(ext_OffsetFinderNode);
             this.splitContainer1.Panel2.Controls.Add(extract_OffsetFinderForm);
 
             // Set Tag for displaying the Form
@@ -712,7 +717,7 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_ExtractCdxaNode"]);
 
             // Add Cdxa Extractor Form
-            Extract_ExtractCdxaForm extract_ExtractCdxaForm = new Extract_ExtractCdxaForm(ext_ExtractCdxaNode);
+            ExtractCdxaForm extract_ExtractCdxaForm = new ExtractCdxaForm(ext_ExtractCdxaNode);
             this.splitContainer1.Panel2.Controls.Add(extract_ExtractCdxaForm);
 
             // Set Tag for displaying the Form
@@ -723,7 +728,7 @@ namespace VGMToolbox
             TreeNode ext_ExtractMidiNode = new TreeNode("MIDI Extractor");
 
             // Add Cdxa Extractor Form
-            Extract_MidiExtractorForm extract_MidiExtractorForm = new Extract_MidiExtractorForm(ext_ExtractMidiNode);
+            MidiExtractorForm extract_MidiExtractorForm = new MidiExtractorForm(ext_ExtractMidiNode);
             this.splitContainer1.Panel2.Controls.Add(extract_MidiExtractorForm);
 
             // Set Tag for displaying the Form
@@ -747,7 +752,7 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SdatExtractorNode"]);            
 
             // Add SDAT Extractor Form
-            Xsf_SdatExtractorForm xsf_SdatExtractorForm = new Xsf_SdatExtractorForm(ext_SdatExtractorNode);
+            SdatExtractorForm xsf_SdatExtractorForm = new SdatExtractorForm(ext_SdatExtractorNode);
             this.splitContainer1.Panel2.Controls.Add(xsf_SdatExtractorForm);
 
             // Set Tag for displaying the Form
@@ -759,7 +764,7 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SdatFinderNode"]);
 
             // Add SDAT Extractor Form
-            Xsf_SdatFinderForm xsf_SdatFinderForm = new Xsf_SdatFinderForm(ext_SdatFinderNode);
+            SdatFinderForm xsf_SdatFinderForm = new SdatFinderForm(ext_SdatFinderNode);
             this.splitContainer1.Panel2.Controls.Add(xsf_SdatFinderForm);
 
             // Set Tag for displaying the Form
@@ -857,8 +862,8 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_ExtractGzipNode"]);
 
             // Add Form
-            Compression_GzipCompressionForm compression_GzipCompressionForm =
-                new Compression_GzipCompressionForm(ext_ExtractGzipNode);
+            GzipCompressionForm compression_GzipCompressionForm =
+                new GzipCompressionForm(ext_ExtractGzipNode);
             this.splitContainer1.Panel2.Controls.Add(compression_GzipCompressionForm);
 
             // Set Tag for displaying the Form
@@ -870,7 +875,7 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_ExtractZlibNode"]);
 
             // Add Form
-            Extract_ZlibExtractForm extract_ZlibExtractForm = new Extract_ZlibExtractForm(ext_ExtractZlibNode);
+            ZlibCompressionForm extract_ZlibExtractForm = new ZlibCompressionForm(ext_ExtractZlibNode);
             this.splitContainer1.Panel2.Controls.Add(extract_ZlibExtractForm);
 
             // Set Tag for displaying the Form
