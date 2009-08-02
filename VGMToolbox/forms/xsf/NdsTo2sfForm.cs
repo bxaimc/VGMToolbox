@@ -10,6 +10,7 @@ using System.Windows.Forms;
 
 using VGMToolbox.plugin;
 using VGMToolbox.tools.xsf;
+using VGMToolbox.util;
 
 namespace VGMToolbox.forms.xsf
 {
@@ -55,14 +56,48 @@ namespace VGMToolbox.forms.xsf
             return "NDSTo2SF...Begin";
         }
 
+        private static bool CheckForTestPackNds()
+        {
+            bool ret = true;
+            string testpackPath =
+                Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), NdsTo2sfWorker.TESTPACK_PATH);
+
+            if (!File.Exists(testpackPath))
+            {
+                ret = false;
+                MessageBox.Show(String.Format(ConfigurationSettings.AppSettings["Form_Make2sf_ErrorMessageTestpackMissing"],
+                    Path.GetFileName(testpackPath), Path.GetDirectoryName(testpackPath)),
+                    String.Format(ConfigurationSettings.AppSettings["Form_Make2sf_ErrorMessageTestpackMissingHeader"], Path.GetFileName(testpackPath)));
+            }
+            else
+            {
+                using (FileStream fs = File.OpenRead(testpackPath))
+                {
+                    if (!ChecksumUtil.GetCrc32OfFullFile(fs).Equals(Mk2sfWorker.TESTPACK_CRC32))
+                    {
+                        ret = false;
+                        MessageBox.Show(String.Format(ConfigurationSettings.AppSettings["Form_Make2sf_ErrorMessageTestpackCrc32"],
+                            Path.GetFileName(testpackPath), Path.GetDirectoryName(testpackPath), NdsTo2sfWorker.TESTPACK_CRC32),
+                            String.Format(ConfigurationSettings.AppSettings["Form_Make2sf_ErrorMessageTestpackCrc32Header"], Path.GetFileName(testpackPath)));
+                    }
+                }
+            }
+
+            return ret;
+        }
+
         private void grpSourceFiles_DragDrop(object sender, DragEventArgs e)
         {
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-            NdsTo2sfWorker.NdsTo2sfStruct bwStruct = new NdsTo2sfWorker.NdsTo2sfStruct();
-            bwStruct.SourcePaths = s;
+            if (CheckForTestPackNds())
+            {
+                NdsTo2sfWorker.NdsTo2sfStruct bwStruct = new NdsTo2sfWorker.NdsTo2sfStruct();
+                bwStruct.SourcePaths = s;
 
-            base.backgroundWorker_Execute(bwStruct);
+                base.backgroundWorker_Execute(bwStruct);
+            }
+            
         }
     }
 }
