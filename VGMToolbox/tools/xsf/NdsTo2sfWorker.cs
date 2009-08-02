@@ -43,6 +43,10 @@ namespace VGMToolbox.tools.xsf
 
         protected override void DoTaskForFile(string pPath, IVgmtWorkerStruct pMk2sfStruct, DoWorkEventArgs e)
         {
+            this.progressStruct.Clear();
+            this.progressStruct.GenericMessage = String.Format("Processing: [{0}]{1}", pPath, Environment.NewLine);
+            this.ReportProgress(this.progress, this.progressStruct);
+
             XsfUtil.NdsTo2sf(pPath, TESTPACK_FULL_PATH);
         }
     }
