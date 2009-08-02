@@ -1878,5 +1878,313 @@ namespace VGMToolbox.format.util
                 }
             }    
         }
+
+        public static void Make2sfSet(string pRomPath, string pSdatPath,
+            int[] allowedSequences, string pOutputFolder)
+        {
+            int read;
+            byte[] data = new byte[Constants.FileReadChunkSize];
+
+            string sdatPrefix = Path.GetFileNameWithoutExtension(pSdatPath);
+            string libOutputPath = Path.Combine(pOutputFolder, sdatPrefix + ".2sflib");
+            string compressedDataSectionPath = Path.Combine(pOutputFolder, sdatPrefix + ".data.bin");
+
+            string dataCrc32 = String.Empty;
+            UInt32 dataLength = 0;
+            long totalRomSize;
+            FileInfo fi;
+
+            System.Text.Encoding enc = System.Text.Encoding.ASCII;
+            byte[] tagData;
+
+            // write compressed section to temp file
+            using (FileStream dataFs = File.Open(compressedDataSectionPath, FileMode.Create, FileAccess.ReadWrite))
+            {
+                using (ZlibStream zs = new ZlibStream(dataFs, Ionic.Zlib.CompressionMode.Compress, CompressionLevel.BestCompression, true))
+                {
+                    fi = new FileInfo(pRomPath);
+                    totalRomSize = fi.Length;
+                    fi = new FileInfo(pSdatPath);
+                    totalRomSize += fi.Length;
+
+                    zs.Write(new byte[] { 0, 0, 0, 0 }, 0, 4);
+                    zs.Write(BitConverter.GetBytes((UInt32)totalRomSize), 0, 4);
+
+                    // write rom file
+                    using (FileStream romStream = File.OpenRead(pRomPath))
+                    {
+                        while ((read = romStream.Read(data, 0, data.Length)) > 0)
+                        {
+                            zs.Write(data, 0, read);
+                        }
+                    }
+
+                    // write SDAT                                        
+                    using (FileStream sdatStream = File.OpenRead(pSdatPath))
+                    {
+                        while ((read = sdatStream.Read(data, 0, data.Length)) > 0)
+                        {
+                            zs.Write(data, 0, read);
+                        }
+                        zs.Flush();
+                    }
+                }
+
+                // output 2sflib file
+                dataFs.Seek(0, SeekOrigin.Begin);
+                dataLength = (UInt32)dataFs.Length;
+                dataCrc32 = ChecksumUtil.GetCrc32OfFullFile(dataFs);
+
+                using (FileStream libStream = File.OpenWrite(libOutputPath))
+                {
+                    using (BinaryWriter bw = new BinaryWriter(libStream))
+                    {
+                        bw.Write('P');
+                        bw.Write('S');
+                        bw.Write('F');
+                        bw.Write(new byte[] { 0x24 });
+                        bw.Write(BitConverter.GetBytes((UInt32)0));          // reserved size
+                        bw.Write(BitConverter.GetBytes(dataLength));         // data length
+                        bw.Write((UInt32)VGMToolbox.util.Encoding.GetLongValueFromString("0x" + dataCrc32)); // data crc32
+
+                        // data
+                        dataFs.Seek(0, SeekOrigin.Begin);
+                        while ((read = dataFs.Read(data, 0, data.Length)) > 0)
+                        {
+                            bw.Write(data, 0, read);
+                        }
+                    }
+                }
+            }
+
+            // delete compressed data section
+            if (File.Exists(compressedDataSectionPath))
+            {
+                File.Delete(compressedDataSectionPath);
+            }
+
+            // write .mini2sfs
+            string mini2sfFileName;
+            int mini2sfCrc32;
+
+            byte[] mini2sfData = new byte[MINI2SF_DATA_START.Length + 2];
+            Array.ConstrainedCopy(MINI2SF_DATA_START, 0, mini2sfData, 0, MINI2SF_DATA_START.Length);
+
+
+            foreach (int i in allowedSequences)
+            {
+                using (MemoryStream mini2sfMs = new MemoryStream(mini2sfData, true))
+                {
+                    // build data section
+                    Array.ConstrainedCopy(BitConverter.GetBytes((UInt16)i), 0, mini2sfData, mini2sfData.Length - 2, 2);
+
+                    // create compressed Stream
+                    using (MemoryStream compressedMs = new MemoryStream())
+                    {
+                        using (ZlibStream zs = new ZlibStream(compressedMs, Ionic.Zlib.CompressionMode.Compress, CompressionLevel.None, true))
+                        {
+                            zs.Write(mini2sfMs.ToArray(), 0, (int)mini2sfMs.Length);
+                            zs.Flush();
+                        }
+
+                        // get CRC32
+                        CRC32 crc32Calc = new CRC32();
+                        mini2sfCrc32 = crc32Calc.GetCrc32(new System.IO.MemoryStream(compressedMs.ToArray()));
+
+                        // write mini2sf to disk
+                        mini2sfFileName = Path.Combine(pOutputFolder, String.Format("{0}-{1}.mini2sf", sdatPrefix, i.ToString("x4")));
+
+                        using (FileStream mini2sfFs = File.Open(mini2sfFileName, FileMode.Create, FileAccess.Write))
+                        {
+                            using (BinaryWriter bw = new BinaryWriter(mini2sfFs))
+                            {
+                                bw.Write('P');
+                                bw.Write('S');
+                                bw.Write('F');
+                                bw.Write(new byte[] { 0x24 });
+                                bw.Write(BitConverter.GetBytes((UInt32)0));                  // reserved size
+                                bw.Write(BitConverter.GetBytes((UInt32)compressedMs.Length)); // data length                        
+                                bw.Write(BitConverter.GetBytes((UInt32)mini2sfCrc32));       // data crc32    
+                                bw.Write(compressedMs.ToArray());                            // data
+
+                                // add [TAG]
+                                tagData = enc.GetBytes(Xsf.ASCII_TAG);
+                                bw.Write(tagData, 0, tagData.Length);
+
+                                tagData = enc.GetBytes(String.Format("_lib={0}", Path.GetFileName(libOutputPath)));
+                                bw.Write(tagData, 0, tagData.Length);
+                                bw.Write(0x0A);
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void NdsTo2sf(string ndsPath, string testPackPath)
+        {
+            if (Path.GetExtension(ndsPath).ToUpper().Equals(Nds.FileExtension))
+            {
+                Nds ndsFile = new Nds();
+
+                string[] sdatPaths;
+                int validSdatCount;
+                int currentSdatNumber = 0;
+
+                Sdat sdatToRip;
+
+                string sdatPrefix;
+                string ripOutputPath;
+                string sdatDestinationPath;
+                string testpackDestinationPath;
+
+                ArrayList optimizationList;
+                Time2sfStruct timerStruct;
+                string outputTimerMessages;
+
+                // Build Nds object
+                using (FileStream ndsStream = File.OpenRead(ndsPath))
+                {
+                    ndsFile.Initialize(ndsStream, ndsPath);
+                }
+
+                // Get the Sdat Paths
+                sdatPaths = SdatUtil.ExtractSdatsFromFile(ndsPath, null);
+
+                // Get count of valid Sdats
+                validSdatCount = GetCountOfValidSdats(sdatPaths);
+
+                // Loop over the extracted Sdats
+                foreach (string extractedSdatPath in sdatPaths)
+                {
+                    // rename sdat file
+                    sdatPrefix = GetSdatPrefix(ndsPath, validSdatCount, ndsFile.GameSerial, currentSdatNumber);
+                    sdatDestinationPath = Path.Combine(Path.GetDirectoryName(extractedSdatPath), Path.ChangeExtension(sdatPrefix, Sdat.SDAT_FILE_EXTENSION));
+                    File.Move(extractedSdatPath, sdatDestinationPath);
+                    
+                    // build sdat object
+                    if (Sdat.TryParse(sdatDestinationPath, out sdatToRip))
+                    {
+                        ripOutputPath = Path.Combine(
+                            Path.GetDirectoryName(sdatDestinationPath),
+                            Path.GetFileNameWithoutExtension(sdatDestinationPath));
+
+                        if (!Directory.Exists(ripOutputPath))
+                        {
+                            Directory.CreateDirectory(ripOutputPath);
+                        }
+
+                        using (Stream sdatStream = File.OpenRead(sdatDestinationPath))
+                        {
+                            // extract Strms
+                            sdatToRip.ExtractStrms(sdatStream, ripOutputPath);
+                        }
+
+                        // build optimization list
+                        optimizationList = GetDefaultOptimizationList(sdatDestinationPath);                        
+                        
+                        // optimize Sdat
+                        sdatToRip.OptimizeForZlib(optimizationList);
+
+                        // Copy testpack.nds
+                        testpackDestinationPath = Path.Combine(Path.GetDirectoryName(sdatDestinationPath), Path.GetFileName(testPackPath));                        
+                        File.Copy(testPackPath, testpackDestinationPath, true);
+                        
+                        // make 2SFs
+                        Make2sfSet(
+                            testpackDestinationPath,
+                            sdatDestinationPath,
+                            (int[])optimizationList.ToArray(typeof(int)),
+                            ripOutputPath);
+
+                        // delete testpack
+                        File.Delete(testpackDestinationPath);
+
+                        // time files
+                        timerStruct = new Time2sfStruct();
+                        timerStruct.DoSingleLoop = false;
+                        timerStruct.Mini2sfDirectory = ripOutputPath;
+                        timerStruct.SdatPath = sdatDestinationPath;
+                        Time2sfFolder(timerStruct, out outputTimerMessages);
+                        
+                        // cleanup timer folder
+                        if (Directory.Exists(Path.Combine(ripOutputPath, "text")))
+                        {
+                            Directory.Delete(Path.Combine(ripOutputPath, "text"), true);
+                        }
+                    }
+
+                    // delete sdat
+                    File.Delete(sdatDestinationPath);
+                                        
+                    // increment naming counter
+                    currentSdatNumber++;
+                }
+            }        
+        }
+
+        private static int GetCountOfValidSdats(string[] sdatPaths)
+        {
+            int ret = 0;
+            Sdat temporarySdat;
+
+            foreach (string path in sdatPaths)
+            {
+                if (Sdat.TryParse(path, out temporarySdat))
+                {
+                    ret++;
+                }
+            }
+
+            return ret;
+        }
+
+        private static string GetSdatPrefix(string ndsPath, int validSdatCount, string gameSerial, int currentIndexNumber)
+        {
+            string sdatPrefix = String.Empty;
+
+            if (String.IsNullOrEmpty(gameSerial))
+            {
+                sdatPrefix = Path.GetFileNameWithoutExtension(ndsPath);
+            }
+            else
+            {
+                sdatPrefix = gameSerial;
+            }
+
+            if (validSdatCount > 0)
+            {
+                sdatPrefix = String.Format("{0}_{1}", sdatPrefix, currentIndexNumber.ToString("X2"));
+            }
+
+            return sdatPrefix;
+        }
+
+        private static ArrayList GetDefaultOptimizationList(string sdatPath)
+        {
+            ArrayList sequencesToAllow = new ArrayList();
+            Smap.SmapSeqStruct s;
+
+            // get Smap
+            Smap smap = SdatUtil.GetSmapFromSdat(sdatPath);
+            
+            // get List of duplicates
+            ArrayList duplicatesList = SdatUtil.GetDuplicateSseqsList(sdatPath);
+            
+            // loop through smap, removing duplicates
+            for (int i = 0; i < smap.SseqSection.Length; i++)
+            {
+                s = smap.SseqSection[i];
+
+                if (!duplicatesList.Contains(i) &&
+                    !String.IsNullOrEmpty(s.name))
+                {
+                    sequencesToAllow.Add(i);
+                }                    
+            }
+            
+            return sequencesToAllow;
+        }
     }
 }

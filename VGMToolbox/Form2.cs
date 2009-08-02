@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using VGMToolbox.forms;
+using VGMToolbox.forms.xsf;
 using VGMToolbox.util;
 
 namespace VGMToolbox
@@ -349,6 +350,17 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SsfRootNode"]);
 
 
+            // NDS to 2SF
+            TreeNode ndsTo2sfNode = new TreeNode("NDSTo2SF");
+
+            // Add Form
+            NdsTo2sfForm ndsTo2sfForm = new NdsTo2sfForm(ndsTo2sfNode);
+            this.splitContainer1.Panel2.Controls.Add(ndsTo2sfForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = ndsTo2sfForm.GetType().Name;
+            ndsTo2sfNode.Tag = nodeTag;
+
             //////////////
             // 2SF Ripper
             //////////////
@@ -616,7 +628,8 @@ namespace VGMToolbox
             _2sf_RootNode.NodeFont = this.treeviewBoldFont;
             _2sf_RootNode.Tag = nodeTag;
             //_2sf_RootNode.Nodes.Add(xsf_2sfRipperNode);
-            _2sf_RootNode.Nodes.Add(xsf_Make2sfNode);            
+            _2sf_RootNode.Nodes.Add(xsf_Make2sfNode);
+            _2sf_RootNode.Nodes.Add(ndsTo2sfNode);
             _2sf_RootNode.Nodes.Add(xsf_2sfTimerNode);
             _2sf_RootNode.Nodes.Add(xsf_SdatOptimizerNode);
             _2sf_RootNode.Nodes.Add(xsf_2sfTagMigratorNode);

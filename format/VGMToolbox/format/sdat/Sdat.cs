@@ -1410,6 +1410,36 @@ namespace VGMToolbox.format.sdat
             return ret;
         }
 
+        public static bool TryParse(string filePath, out Sdat newSdat)
+        {
+            bool ret = false;            
+            newSdat = null;
+
+            string fullPath;
+
+            try
+            {
+                fullPath = Path.GetFullPath(filePath);
+                
+                if (Sdat.IsSdat(fullPath))
+                {
+                    using (FileStream fs = File.OpenRead(fullPath))
+                    {
+                        newSdat = new Sdat();
+                        newSdat.Initialize(fs, fullPath);
+                        ret = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ret = false;
+                newSdat = null;
+            }
+            
+            return ret;        
+        }
+
         #endregion
 
     }        

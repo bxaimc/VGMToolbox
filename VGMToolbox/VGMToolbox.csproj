@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{8A96D568-CB21-4E64-8FD2-849A8E2B2D4F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -234,6 +234,12 @@
     </Compile>
     <Compile Include="forms\Vgm_VgmTagEditorForm.Designer.cs">
       <DependentUpon>Vgm_VgmTagEditorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="forms\xsf\NdsTo2sfForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\xsf\NdsTo2sfForm.Designer.cs">
+      <DependentUpon>NdsTo2sfForm.cs</DependentUpon>
     </Compile>
     <Compile Include="forms\Xsf_2sfTagsMigratorForm.cs">
       <SubType>Form</SubType>
@@ -555,6 +561,9 @@
     <Compile Include="tools\xsf\MkPsf2Worker.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\xsf\NdsTo2sfWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\xsf\Psf2SqExtractorWorker.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -720,6 +729,9 @@
     <EmbeddedResource Include="forms\XsfTagsUpdateForm.resx">
       <DependentUpon>XsfTagsUpdateForm.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\xsf\NdsTo2sfForm.resx">
+      <DependentUpon>NdsTo2sfForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Xsf_2sfTagsMigratorForm.resx">
       <DependentUpon>Xsf_2sfTagsMigratorForm.cs</DependentUpon>

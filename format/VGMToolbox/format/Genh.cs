@@ -14,7 +14,9 @@ namespace VGMToolbox.format
     {
         public static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x47, 0x45, 0x4E, 0x48 };
         private const string FORMAT_ABBREVIATION = "GENH";
-        public static readonly byte[] CURRENT_VERSION = new byte[] { 0x34, 0x30, 0x43, 0x23 };
+        
+        public static readonly byte[] CURRENT_VERSION = new byte[] { 0x56, 0x47, 0x30, 0x31 };
+        
         public const UInt32 GENH_HEADER_SIZE = 0x1000;
         public const string FILE_EXTENSION = ".genh";
         public const string EMPTY_SAMPLE_COUNT = "-1";
