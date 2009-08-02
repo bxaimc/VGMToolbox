@@ -63,7 +63,15 @@ namespace VGMToolbox.format
 
             this.tagHash.Add("Game Title", VGMToolbox.util.Encoding.GetAsciiText(this.GameTitle));
             this.tagHash.Add("Game Serial", this.GameSerial);
-            this.tagHash.Add("Maker Code", String.Format("{0} ({1})", makerCode, this.makerCodeHash[makerCode]));            
+
+            if (this.makerCodeHash.ContainsKey(makerCode))
+            {
+                this.tagHash.Add("Maker Code", String.Format("{0} ({1})", makerCode, this.makerCodeHash[makerCode]));
+            }
+            else
+            {
+                this.tagHash.Add("Maker Code", String.Format("{0}", makerCode));
+            }
         }
 
         public string GetFormatAbbreviation()
