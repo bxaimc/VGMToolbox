@@ -148,8 +148,8 @@
             this.ClientSize = new System.Drawing.Size(846, 456);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpSource);
-            this.Name = "Xsf_Psf2ToPsf2LibForm";
-            this.Text = "Xsf_Psf2ToPsf2Lib";
+            this.Name = "Psf2ToPsf2LibForm";
+            this.Text = "Psf2ToPsf2Lib";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);

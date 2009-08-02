@@ -129,8 +129,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(779, 414);
             this.Controls.Add(this.grpXsfPsf2Exe_Source);
-            this.Name = "Xsf_Xsf2ExeForm";
-            this.Text = "Xsf_Xsf2ExeForm";
+            this.Name = "Xsf2ExeForm";
+            this.Text = "Xsf2ExeForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);

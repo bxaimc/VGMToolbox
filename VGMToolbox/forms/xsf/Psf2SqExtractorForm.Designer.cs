@@ -79,8 +79,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(895, 563);
             this.Controls.Add(this.grpSource);
-            this.Name = "Xsf_Psf2SqExtractorForm";
-            this.Text = "Xsf_Psf2SqExtractorForm";
+            this.Name = "Psf2SqExtractorForm";
+            this.Text = "Psf2SqExtractorForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);

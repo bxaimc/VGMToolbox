@@ -79,8 +79,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(832, 563);
             this.Controls.Add(this.grpSourceFiles);
-            this.Name = "Extract_MidiExtractorForm";
-            this.Text = "Extract_MidiExtractorForm";
+            this.Name = "MidiExtractorForm";
+            this.Text = "MidiExtractorForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);

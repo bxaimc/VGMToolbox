@@ -79,8 +79,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(779, 414);
             this.Controls.Add(this.grpSource);
-            this.Name = "Xsf_SdatFinderForm";
-            this.Text = "Xsf_SdatFinderForm";
+            this.Name = "SdatFinderForm";
+            this.Text = "SdatFinderForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);

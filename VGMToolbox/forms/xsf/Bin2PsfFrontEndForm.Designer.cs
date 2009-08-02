@@ -320,8 +320,8 @@
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpSource);
             this.Controls.Add(this.grpGenericDrivers);
-            this.Name = "Xsf_Bin2PsfFrontEndForm";
-            this.Text = "Xsf_Bin2PsfFrontEndForm";
+            this.Name = "Bin2PsfFrontEndForm";
+            this.Text = "Bin2PsfFrontEndForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);

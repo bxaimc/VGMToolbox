@@ -210,8 +210,8 @@
             this.ClientSize = new System.Drawing.Size(771, 564);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpSource);
-            this.Name = "Examine_SearchForFileForm";
-            this.Text = "Examine_SearchForFileForm";
+            this.Name = "SearchForFileForm";
+            this.Text = "SearchForFileForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);

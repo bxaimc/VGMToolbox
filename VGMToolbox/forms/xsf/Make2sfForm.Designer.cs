@@ -376,8 +376,8 @@
             this.Controls.Add(this.dataGridSseq);
             this.Controls.Add(this.grpSetInformation);
             this.Controls.Add(this.grpSourcePaths);
-            this.Name = "Xsf_Mk2sfForm";
-            this.Text = "Xsf_Mk2sfForm";
+            this.Name = "Make2sfForm";
+            this.Text = "Make2sfForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);

@@ -313,7 +313,7 @@
             this.ClientSize = new System.Drawing.Size(830, 547);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpFiles);
-            this.Name = "Extract_SnakebiteGuiForm";
+            this.Name = "SnakebiteGuiForm";
             this.Text = "SnakebiteGuiForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);

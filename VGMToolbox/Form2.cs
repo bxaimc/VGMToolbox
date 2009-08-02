@@ -137,12 +137,12 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_DatafileCreatorNode"]);
 
             // add form
-            DatafileCreatorForm auditing_DatafileCreatorForm = 
+            DatafileCreatorForm datafileCreatorForm = 
                 new DatafileCreatorForm(auditing_DatafileCreatorNode);
-            this.splitContainer1.Panel2.Controls.Add(auditing_DatafileCreatorForm);
+            this.splitContainer1.Panel2.Controls.Add(datafileCreatorForm);
 
             // set tag for displaying the form
-            nodeTag.FormClass = auditing_DatafileCreatorForm.GetType().Name;
+            nodeTag.FormClass = datafileCreatorForm.GetType().Name;
             auditing_DatafileCreatorNode.Tag = nodeTag;
 
             /////////////

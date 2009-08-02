@@ -140,8 +140,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(903, 547);
             this.Controls.Add(this.grpSourceFiles);
-            this.Name = "Extract_ZlibExtractForm";
-            this.Text = "Extract_ZlibExtractForm";
+            this.Name = "ZlibCompressionForm";
+            this.Text = "ZlibCompressionForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);

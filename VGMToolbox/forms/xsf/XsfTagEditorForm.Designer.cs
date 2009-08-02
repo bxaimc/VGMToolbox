@@ -425,7 +425,7 @@
             this.Controls.Add(this.grpTrackTags);
             this.Controls.Add(this.grpSetTags);
             this.Controls.Add(this.grpSourceFiles);
-            this.Name = "Xsf_XsfTagEditorForm";
+            this.Name = "XsfTagEditorForm";
             this.Text = "XsfTagEditorForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);

@@ -105,8 +105,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(771, 564);
             this.Controls.Add(this.grpSourceFiles);
-            this.Name = "Examine_CrcCalculatorForm";
-            this.Text = "Examine_CrcCalculatorForm";
+            this.Name = "CrcCalculatorForm";
+            this.Text = "CrcCalculatorForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);

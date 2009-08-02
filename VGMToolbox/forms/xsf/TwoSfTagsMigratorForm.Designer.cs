@@ -360,8 +360,8 @@
             this.ClientSize = new System.Drawing.Size(903, 547);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpSource);
-            this.Name = "Xsf_2sfTagsMigratorForm";
-            this.Text = "Xsf_2sfTagsMigratorForm";
+            this.Name = "TwoSfTagsMigratorForm";
+            this.Text = "TwoSfTagsMigratorForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);

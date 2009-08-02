@@ -79,8 +79,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(779, 414);
             this.Controls.Add(this.groupSource);
-            this.Name = "Xsf_SdatExtractorForm";
-            this.Text = "Xsf_SdatExtractorForm";
+            this.Name = "SdatExtractorForm";
+            this.Text = "SdatExtractorForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);

@@ -129,8 +129,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(779, 414);
             this.Controls.Add(this.gbHootXML_Source);
-            this.Name = "Hoot_XmlBuilderForm";
-            this.Text = "Hoot_XmlBuilder";
+            this.Name = "XmlBuilderForm";
+            this.Text = "XmlBuilder";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);

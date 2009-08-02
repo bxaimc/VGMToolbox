@@ -306,8 +306,8 @@
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpDirectory);
-            this.Name = "Xsf_Mkpsf2FrontEndForm";
-            this.Text = "Xsf_Mkpsf2FrontEndForm";
+            this.Name = "Mkpsf2FrontEndForm";
+            this.Text = "Mkpsf2FrontEndForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);

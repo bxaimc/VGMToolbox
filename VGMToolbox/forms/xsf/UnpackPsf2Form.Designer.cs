@@ -79,8 +79,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(895, 563);
             this.Controls.Add(this.grpSource);
-            this.Name = "Xsf_Unpkpsf2FrontEndForm";
-            this.Text = "Xsf_Unpkpsf2FrontEndForm";
+            this.Name = "UnpackPsf2Form";
+            this.Text = "UnpackPsf2Form";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);

@@ -79,8 +79,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(895, 563);
             this.Controls.Add(this.gbSource);
-            this.Name = "Xsf_Psf2TimerForm";
-            this.Text = "Xsf_Psf2TimerForm";
+            this.Name = "Psf2TimerForm";
+            this.Text = "Psf2TimerForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);

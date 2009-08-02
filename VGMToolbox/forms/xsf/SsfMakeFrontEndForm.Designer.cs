@@ -391,8 +391,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1006, 456);
             this.Controls.Add(this.panel1);
-            this.Name = "Xsf_SsfMakeFrontEndForm";
-            this.Text = "Xsf_SsfMakeFrontEndForm";
+            this.Name = "SsfMakeFrontEndForm";
+            this.Text = "SsfMakeFrontEndForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);

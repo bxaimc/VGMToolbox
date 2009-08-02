@@ -168,8 +168,8 @@
             this.ClientSize = new System.Drawing.Size(1179, 459);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpSourcePaths);
-            this.Name = "Xsf_2sfTimerForm";
-            this.Text = "Xsf_2sfTimerForm";
+            this.Name = "TwoSfTimerForm";
+            this.Text = "TwoSfTimerForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);

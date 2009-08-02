@@ -75,7 +75,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1262, 622);
             this.Controls.Add(this.comboBox1);
-            this.Name = "Auditing_CollectionBuilderForm";
+            this.Name = "CollectionBuilderForm";
             this.Text = "CollectionBuilderForm";
             this.Controls.SetChildIndex(this.comboBox1, 0);
             this.Controls.SetChildIndex(this.pnlLabels, 0);

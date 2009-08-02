@@ -157,8 +157,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(903, 547);
             this.Controls.Add(this.grpSource);
-            this.Name = "Extract_ExtractCdxaForm";
-            this.Text = "Extract_ExtractCdxaForm";
+            this.Name = "ExtractCdxaForm";
+            this.Text = "ExtractCdxaForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);

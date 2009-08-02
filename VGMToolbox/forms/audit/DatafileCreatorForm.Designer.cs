@@ -358,8 +358,8 @@
             this.ClientSize = new System.Drawing.Size(868, 570);
             this.Controls.Add(this.gbSourceDestPaths);
             this.Controls.Add(this.gbHeader);
-            this.Name = "Auditing_DatafileCreatorForm";
-            this.Text = "Auditing_DatafileCreatorForm";
+            this.Name = "DatafileCreatorForm";
+            this.Text = "DatafileCreatorForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);

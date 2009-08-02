@@ -242,8 +242,8 @@
             this.Controls.Add(this.grpRebuilder_Options);
             this.Controls.Add(this.grpRebuilder_Datafile);
             this.Controls.Add(this.grpRebuilder_Directories);
-            this.Name = "Auditing_RebuilderForm";
-            this.Text = "Auditing_RebuilderForm";
+            this.Name = "RebuilderForm";
+            this.Text = "RebuilderForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);

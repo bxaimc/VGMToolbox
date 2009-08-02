@@ -138,8 +138,8 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.lblAuthor);
             this.Controls.Add(this.grpSource);
-            this.Name = "Xsf_SsfSeqTonExtForm";
-            this.Text = "Xsf_SsfSeqTonExtForm";
+            this.Name = "SsfSeqTonExtForm";
+            this.Text = "SsfSeqTonExtForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);

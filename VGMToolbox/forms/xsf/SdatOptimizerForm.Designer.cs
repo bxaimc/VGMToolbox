@@ -171,8 +171,8 @@
             this.ClientSize = new System.Drawing.Size(716, 456);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpSource);
-            this.Name = "Xsf_2sfSdatOptimizerForm";
-            this.Text = "Xsf_2sfSdatOptimizer";
+            this.Name = "SdatOptimizerForm";
+            this.Text = "SdatOptimizer";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);

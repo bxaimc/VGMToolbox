@@ -484,8 +484,8 @@
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.grpCriteria);
             this.Controls.Add(this.grpFiles);
-            this.Name = "Extract_OffsetFinderForm";
-            this.Text = "Extract_OffsetFinderForm";
+            this.Name = "OffsetFinderForm";
+            this.Text = "OffsetFinderForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);

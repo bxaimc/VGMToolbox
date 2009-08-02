@@ -143,8 +143,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(868, 528);
             this.Controls.Add(this.gbSourceDestination);
-            this.Name = "Auditing_DatafileCheckerForm";
-            this.Text = "Auditing_DatafileCheckerForm";
+            this.Name = "DatafileCheckerForm";
+            this.Text = "DatafileCheckerForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);
