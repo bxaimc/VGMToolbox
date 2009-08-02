@@ -36,37 +36,37 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 522);
-            this.pnlLabels.Size = new System.Drawing.Size(768, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 501);
+            this.pnlLabels.Size = new System.Drawing.Size(857, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(768, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(857, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 445);
-            this.tbOutput.Size = new System.Drawing.Size(768, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 424);
+            this.tbOutput.Size = new System.Drawing.Size(857, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 425);
-            this.pnlButtons.Size = new System.Drawing.Size(768, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 404);
+            this.pnlButtons.Size = new System.Drawing.Size(857, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(708, 0);
+            this.btnCancel.Location = new System.Drawing.Point(797, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(648, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(737, 0);
             // 
             // grpSourceFiles
             // 
             this.grpSourceFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpSourceFiles.Location = new System.Drawing.Point(0, 23);
             this.grpSourceFiles.Name = "grpSourceFiles";
-            this.grpSourceFiles.Size = new System.Drawing.Size(768, 402);
+            this.grpSourceFiles.Size = new System.Drawing.Size(857, 381);
             this.grpSourceFiles.TabIndex = 5;
             this.grpSourceFiles.TabStop = false;
             this.grpSourceFiles.Text = "groupBox1";
@@ -77,7 +77,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(768, 563);
+            this.ClientSize = new System.Drawing.Size(857, 542);
             this.Controls.Add(this.grpSourceFiles);
             this.Name = "VabSplitterForm";
             this.Text = "VabSplitterForm";

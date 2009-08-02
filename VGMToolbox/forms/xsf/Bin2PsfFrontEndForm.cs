@@ -43,9 +43,9 @@ namespace VGMToolbox.forms.xsf
             this.lblVbOffset.Text =
                 ConfigurationSettings.AppSettings["Form_Bin2PsfFE_LblVbOffset"];
 
-            this.cbAllowZeroLengthSequences.Text = "Allow Zero Length Sequences";
-            this.grpGenericDrivers.Text = "Generic Driver Presets";
-            this.lblGenericDriver.Text = "Generic Driver";
+            this.cbAllowZeroLengthSequences.Text = ConfigurationSettings.AppSettings["Form_Bin2PsfFE_CbZeroLengthSeq"];
+            this.grpGenericDrivers.Text = ConfigurationSettings.AppSettings["Form_Bin2PsfFE_GrpGenericDrivers"];
+            this.lblGenericDriver.Text = ConfigurationSettings.AppSettings["Form_Bin2PsfFE_LblGenericDriver"];
 
             this.loadGenericDriversList();
 

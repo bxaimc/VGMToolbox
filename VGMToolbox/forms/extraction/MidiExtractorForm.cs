@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
+﻿using System.Configuration;
 using System.Windows.Forms;
 
 using VGMToolbox.plugin;
@@ -19,8 +14,10 @@ namespace VGMToolbox.forms.extraction
         {
             InitializeComponent();
 
-            this.lblTitle.Text = "MIDI Extractor";
-            this.tbOutput.Text = "Extract MIDI files embedded in other files.";
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_MidiExtractor_Title"];
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_MidiExtractor_IntroText"];
+            this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
+            
             this.grpSourceFiles.AllowDrop = true;
             this.btnDoTask.Hide();
         }
@@ -44,15 +41,15 @@ namespace VGMToolbox.forms.extraction
         }
         protected override string getCancelMessage()
         {
-            return "Extracting MIDI Data...Cancelled";
+            return ConfigurationSettings.AppSettings["Form_MidiExtractor_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return "Extracting MIDI Data...Complete";
+            return ConfigurationSettings.AppSettings["Form_MidiExtractor_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return "Extracting MIDI Data...Begin";
+            return ConfigurationSettings.AppSettings["Form_MidiExtractor_MessageBegin"];
         }
     }
 }

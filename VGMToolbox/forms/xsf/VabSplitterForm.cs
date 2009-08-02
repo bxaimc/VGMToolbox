@@ -11,12 +11,14 @@ namespace VGMToolbox.forms.xsf
         public VabSplitterForm(TreeNode pTreeNode)
             : base(pTreeNode)
         {
-            this.lblTitle.Text = "PSF VAB Splitter";
-            
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_VabSplitter_Title"];
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_VabSplitter_IntroText"];
+
             InitializeComponent();
 
             this.grpSourceFiles.AllowDrop = true;
             this.btnDoTask.Hide();
+            
             this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
         }
 
@@ -31,15 +33,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return "Splitting VAB Files...Cancelled";
+            return ConfigurationSettings.AppSettings["Form_VabSplitter_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return "Splitting VAB Files...Complete";
+            return ConfigurationSettings.AppSettings["Form_VabSplitter_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return "Splitting VAB Files...Begin";
+            return ConfigurationSettings.AppSettings["Form_VabSplitter_MessageBegin"];
         }
 
         private void grpSourceFiles_DragDrop(object sender, DragEventArgs e)

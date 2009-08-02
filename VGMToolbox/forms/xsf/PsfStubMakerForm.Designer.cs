@@ -30,8 +30,8 @@
         {
             this.grpSourceFiles = new System.Windows.Forms.GroupBox();
             this.grpOptions = new System.Windows.Forms.GroupBox();
-            this.lblDriverText = new System.Windows.Forms.Label();
             this.tbDriverText = new System.Windows.Forms.TextBox();
+            this.lblDriverText = new System.Windows.Forms.Label();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -42,29 +42,29 @@
             // pnlLabels
             // 
             this.pnlLabels.Location = new System.Drawing.Point(0, 501);
-            this.pnlLabels.Size = new System.Drawing.Size(830, 19);
+            this.pnlLabels.Size = new System.Drawing.Size(857, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(830, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(857, 20);
             // 
             // tbOutput
             // 
             this.tbOutput.Location = new System.Drawing.Point(0, 424);
-            this.tbOutput.Size = new System.Drawing.Size(830, 77);
+            this.tbOutput.Size = new System.Drawing.Size(857, 77);
             // 
             // pnlButtons
             // 
             this.pnlButtons.Location = new System.Drawing.Point(0, 404);
-            this.pnlButtons.Size = new System.Drawing.Size(830, 20);
+            this.pnlButtons.Size = new System.Drawing.Size(857, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(770, 0);
+            this.btnCancel.Location = new System.Drawing.Point(797, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(710, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(737, 0);
             // 
             // grpSourceFiles
             // 
@@ -72,7 +72,7 @@
             this.grpSourceFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpSourceFiles.Location = new System.Drawing.Point(0, 23);
             this.grpSourceFiles.Name = "grpSourceFiles";
-            this.grpSourceFiles.Size = new System.Drawing.Size(830, 381);
+            this.grpSourceFiles.Size = new System.Drawing.Size(857, 381);
             this.grpSourceFiles.TabIndex = 5;
             this.grpSourceFiles.TabStop = false;
             this.grpSourceFiles.Text = "Drop Files Here";
@@ -86,10 +86,17 @@
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.grpOptions.Location = new System.Drawing.Point(3, 337);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(824, 41);
+            this.grpOptions.Size = new System.Drawing.Size(851, 41);
             this.grpOptions.TabIndex = 0;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
+            // 
+            // tbDriverText
+            // 
+            this.tbDriverText.Location = new System.Drawing.Point(101, 13);
+            this.tbDriverText.Name = "tbDriverText";
+            this.tbDriverText.Size = new System.Drawing.Size(260, 20);
+            this.tbDriverText.TabIndex = 1;
             // 
             // lblDriverText
             // 
@@ -100,18 +107,11 @@
             this.lblDriverText.TabIndex = 0;
             this.lblDriverText.Text = "Driver Text String";
             // 
-            // tbDriverText
-            // 
-            this.tbDriverText.Location = new System.Drawing.Point(101, 13);
-            this.tbDriverText.Name = "tbDriverText";
-            this.tbDriverText.Size = new System.Drawing.Size(260, 20);
-            this.tbDriverText.TabIndex = 1;
-            // 
             // PsfStubMakerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(830, 542);
+            this.ClientSize = new System.Drawing.Size(857, 542);
             this.Controls.Add(this.grpSourceFiles);
             this.Name = "PsfStubMakerForm";
             this.Text = "PsfStubMakerForm";

@@ -27,12 +27,13 @@ namespace VGMToolbox.forms.xsf
 
             this.grpSourceFiles.AllowDrop = true;
             this.btnDoTask.Hide();
-            
-            this.lblTitle.Text = "NDS To 2SF (Fully Automated 2SF Creation)";
-            this.tbOutput.Text = "- Create 2SFs directly from NDS rom images -" + Environment.NewLine;
+
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_NdsTo2sf_Title"];
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_NdsTo2sf_IntroText"] + Environment.NewLine;
             this.tbOutput.Text += ConfigurationSettings.AppSettings["Form_Make2sf_IntroText1"] + Environment.NewLine;            
             this.tbOutput.Text +=
                 String.Format(ConfigurationSettings.AppSettings["Form_Make2sf_IntroText2"], Path.GetDirectoryName(testpackPath)) + Environment.NewLine;
+            this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -45,15 +46,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return "NDSTo2SF...Cancelled";
+            return ConfigurationSettings.AppSettings["Form_NdsTo2sf_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return "NDSTo2SF...Complete";
+            return ConfigurationSettings.AppSettings["Form_NdsTo2sf_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return "NDSTo2SF...Begin";
+            return ConfigurationSettings.AppSettings["Form_NdsTo2sf_MessageBegin"];
         }
 
         private static bool CheckForTestPackNds()

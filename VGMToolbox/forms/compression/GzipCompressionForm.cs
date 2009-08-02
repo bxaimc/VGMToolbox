@@ -74,7 +74,7 @@ namespace VGMToolbox.forms.compression
             }
             catch
             {
-                MessageBox.Show("Cannot parse Offset, please enter an integer.  Be sure to prefix hex values with 0x",
+                MessageBox.Show(ConfigurationSettings.AppSettings["Form_GzipCompress_ErrorIntParse"],
                     ConfigurationSettings.AppSettings["Form_Global_ErrorWindowTitle"]);
                 ret = false;
             }

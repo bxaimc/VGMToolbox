@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
+﻿using System.Configuration;
 using System.Windows.Forms;
 
 using VGMToolbox.format.util;
@@ -20,10 +15,12 @@ namespace VGMToolbox.forms.xsf
             InitializeComponent();
 
             this.grpSourceFiles.AllowDrop = true;
-            this.lblTitle.Text = "PSF Driver Stub Creator";
-            this.tbOutput.Text = "PsyQ SDK must be installed." + Environment.NewLine;
-            this.tbOutput.Text += "Be sure to add your PSYQ and PSYQ\\BIN folders to your PATH environment variable." + Environment.NewLine;
-            this.tbOutput.Text += "Also please create a PSYQ_PATH environment variable pointing to the top level PSYQ folder." + Environment.NewLine;
+
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_PsfStubCreator_Title"];
+            this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
+            this.grpOptions.Text = ConfigurationSettings.AppSettings["Form_PsfStubCreator_GroupOptions"];
+            this.lblDriverText.Text = ConfigurationSettings.AppSettings["Form_PsfStubCreator_LblDriverText"];
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_PsfStubCreator_IntroText"];
             
             this.btnDoTask.Hide();
         }
@@ -39,15 +36,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return "Building PSF Driver Stub...Cancelled";
+            return ConfigurationSettings.AppSettings["Form_PsfStubCreator_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return "Building PSF Driver Stub...Complete";
+            return ConfigurationSettings.AppSettings["Form_PsfStubCreator_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return "Building PSF Driver Stub...Begin";
+            return ConfigurationSettings.AppSettings["Form_PsfStubCreator_MessageBegin"];
         }
 
         private void grpSourceFiles_DragDrop(object sender, DragEventArgs e)
@@ -55,12 +52,15 @@ namespace VGMToolbox.forms.xsf
             // check for PsyQ in PATH
             if (!XsfUtil.IsPsyQPathVariablePresent())
             {
-                MessageBox.Show("PSYQ_PATH environment variable not found.", "ERROR");                           
+                MessageBox.Show(
+                    ConfigurationSettings.AppSettings["Form_PsfStubCreator_ErrPsyQPath"],
+                    ConfigurationSettings.AppSettings["Form_Global_ErrorWindowTitle"]);                           
             }
             else if (!XsfUtil.IsPsyQSdkPresent())
             {
-                MessageBox.Show("Required PsyQ SDK executables (CCPSX.EXE, PSYLINK.EXE) not found in any of the directories listed in your PATH environment variable." +
-                    "  Please update your PATH environment variables or install the PsyQ SDK.", "ERROR");
+                MessageBox.Show(
+                    ConfigurationSettings.AppSettings["Form_PsfStubCreator_IntroText"],
+                    ConfigurationSettings.AppSettings["Form_Global_ErrorWindowTitle"]);
             }
             else
             {

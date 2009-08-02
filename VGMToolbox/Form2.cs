@@ -356,7 +356,7 @@ namespace VGMToolbox
 
 
             // NDS to 2SF
-            TreeNode ndsTo2sfNode = new TreeNode("NDSTo2SF");
+            TreeNode ndsTo2sfNode = new TreeNode(ConfigurationSettings.AppSettings["MenuTree_NdsTo2sfNode"]);
 
             // Add Form
             NdsTo2sfForm ndsTo2sfForm = new NdsTo2sfForm(ndsTo2sfNode);
@@ -519,7 +519,7 @@ namespace VGMToolbox
             ////////////////
             // VAB SPLITTER
             ////////////////
-            TreeNode vabSplitterNode = new TreeNode("VAB Splitter");
+            TreeNode vabSplitterNode = new TreeNode(ConfigurationSettings.AppSettings["MenuTree_VabSplitterNode"]);
 
             // Add Form
             VabSplitterForm vabSplitterForm = new VabSplitterForm(vabSplitterNode);
@@ -532,7 +532,7 @@ namespace VGMToolbox
             //////////////////
             // PSF STUB MAKER
             //////////////////
-            TreeNode psfStubCreatorNode = new TreeNode("PSF Stub Creator");
+            TreeNode psfStubCreatorNode = new TreeNode(ConfigurationSettings.AppSettings["MenuTree_PsfStubCreatorNode"]);
 
             // Add UnpkPsf2 Ripper Form
             PsfStubMakerForm psfStubMakerForm = new PsfStubMakerForm(psfStubCreatorNode);
@@ -725,7 +725,7 @@ namespace VGMToolbox
             ext_ExtractCdxaNode.Tag = nodeTag;
 
             // MIDI Extractor
-            TreeNode ext_ExtractMidiNode = new TreeNode("MIDI Extractor");
+            TreeNode ext_ExtractMidiNode = new TreeNode(ConfigurationSettings.AppSettings["MenuTree_ExtractMidiNode"]);
 
             // Add Cdxa Extractor Form
             MidiExtractorForm extract_MidiExtractorForm = new MidiExtractorForm(ext_ExtractMidiNode);
