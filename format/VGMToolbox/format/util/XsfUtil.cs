@@ -2165,7 +2165,7 @@ namespace VGMToolbox.format.util
                 sdatPrefix = gameSerial;
             }
 
-            if (validSdatCount > 0)
+            if (validSdatCount > 1)
             {
                 sdatPrefix = String.Format("{0}_{1}", sdatPrefix, currentIndexNumber.ToString("X2"));
             }
