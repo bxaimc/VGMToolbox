@@ -2022,10 +2022,12 @@ namespace VGMToolbox.format.util
             }
         }
 
-        public static void NdsTo2sf(string ndsPath, string testPackPath)
+        public static bool NdsTo2sf(string ndsPath, string testPackPath)
         {
+            bool filesWereRipped = false;
+            
             if (Path.GetExtension(ndsPath).ToUpper().Equals(Nds.FileExtension))
-            {
+            {                
                 Nds ndsFile = new Nds();
 
                 string[] sdatPaths;
@@ -2043,6 +2045,8 @@ namespace VGMToolbox.format.util
                 Time2sfStruct timerStruct;
                 string outputTimerMessages;
 
+                string topMostFolder;
+
                 // Build Nds object
                 using (FileStream ndsStream = File.OpenRead(ndsPath))
                 {
@@ -2050,7 +2054,7 @@ namespace VGMToolbox.format.util
                 }
 
                 // Get the Sdat Paths
-                sdatPaths = SdatUtil.ExtractSdatsFromFile(ndsPath, null);
+                sdatPaths = SdatUtil.ExtractSdatsFromFile(ndsPath, "_NDSto2SF");
 
                 // Get count of valid Sdats
                 validSdatCount = GetCountOfValidSdats(sdatPaths);
@@ -2058,6 +2062,9 @@ namespace VGMToolbox.format.util
                 // Loop over the extracted Sdats
                 foreach (string extractedSdatPath in sdatPaths)
                 {
+                    // assume rip goes ok, set to false in directory check
+                    filesWereRipped = true;
+                    
                     // rename sdat file
                     sdatPrefix = GetSdatPrefix(ndsPath, validSdatCount, ndsFile.GameSerial, currentSdatNumber);
                     sdatDestinationPath = Path.Combine(Path.GetDirectoryName(extractedSdatPath), Path.ChangeExtension(sdatPrefix, Sdat.SDAT_FILE_EXTENSION));
@@ -2129,11 +2136,23 @@ namespace VGMToolbox.format.util
 
                     // delete sdat
                     File.Delete(sdatDestinationPath);
-                                        
+                    
+                    // delete top most folder if nothing was found
+                    topMostFolder = Path.GetDirectoryName(extractedSdatPath);
+
+                    if ((Directory.Exists(topMostFolder)) &&
+                        (Directory.GetFiles(topMostFolder, "*.*", SearchOption.AllDirectories).Length == 0))
+                    {
+                        filesWereRipped = false;
+                        Directory.Delete(topMostFolder, true);
+                    }                            
+
                     // increment naming counter
                     currentSdatNumber++;
                 }
-            }        
+            }
+
+            return filesWereRipped;
         }
 
         private static int GetCountOfValidSdats(string[] sdatPaths)

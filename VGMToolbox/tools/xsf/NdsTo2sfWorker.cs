@@ -45,7 +45,21 @@ namespace VGMToolbox.tools.xsf
             this.progressStruct.GenericMessage = String.Format("Processing: [{0}]{1}", pPath, Environment.NewLine);
             this.ReportProgress(this.progress, this.progressStruct);
 
-            XsfUtil.NdsTo2sf(pPath, TESTPACK_FULL_PATH);
+            bool filesWereRipped = XsfUtil.NdsTo2sf(pPath, TESTPACK_FULL_PATH);
+
+            // output info
+            this.progressStruct.Clear();
+            
+            if (!filesWereRipped)
+            {                
+                this.progressStruct.GenericMessage = String.Format("  No extractable data found.{0}", Environment.NewLine);                
+            }
+            else
+            {
+                this.progressStruct.GenericMessage = String.Format("  Data extracted.{0}", Environment.NewLine);            
+            }
+
+            this.ReportProgress(this.progress, this.progressStruct);
         }
     }
 }
