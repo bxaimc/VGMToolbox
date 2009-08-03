@@ -31,6 +31,12 @@ namespace VGMToolbox.forms
             
             InitializeComponent();
 
+            // messages
+            this.BackgroundWorker = new VgmTagUpdaterWorker();
+            this.BeginMessage = ConfigurationSettings.AppSettings["Form_VgmTagEditor_MessageBegin"];
+            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_VgmTagEditor_MessageComplete"];
+            this.CancelMessage = ConfigurationSettings.AppSettings["Form_VgmTagEditor_MessageCancel"];
+
             this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_Title"];
             this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_DoTaskButton"];
             this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_Info"];
@@ -172,23 +178,6 @@ namespace VGMToolbox.forms
                     }
                 }
             }
-        }
-
-        protected override IVgmtBackgroundWorker getBackgroundWorker()
-        {
-            return new VgmTagUpdaterWorker();
-        }
-        protected override string getCancelMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_VgmTagEditor_MessageCancel"];
-        }
-        protected override string getCompleteMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_VgmTagEditor_MessageComplete"];
-        }
-        protected override string getBeginMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_VgmTagEditor_MessageBegin"];
         }
 
         private void btnDoTask_Click(object sender, EventArgs e)

@@ -21,6 +21,12 @@ namespace VGMToolbox.forms
             
             InitializeComponent();
 
+            // messages
+            this.BackgroundWorker = new GbsM3uBuilderWorker();
+            this.BeginMessage = ConfigurationSettings.AppSettings["Form_GbsM3u_MessageBegin"];
+            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_GbsM3u_MessageComplete"];
+            this.CancelMessage = ConfigurationSettings.AppSettings["Form_GbsM3u_MessageCancel"];
+
             this.grpSource.AllowDrop = true;
 
             this.grpSource.Text =
@@ -44,23 +50,6 @@ namespace VGMToolbox.forms
         protected override void doDragEnter(object sender, DragEventArgs e)
         {
             base.doDragEnter(sender, e);
-        }
-
-        protected override IVgmtBackgroundWorker getBackgroundWorker()
-        {
-            return new GbsM3uBuilderWorker();
-        }
-        protected override string getCancelMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_GbsM3u_MessageCancel"];
-        }
-        protected override string getCompleteMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_GbsM3u_MessageComplete"];
-        }
-        protected override string getBeginMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_GbsM3u_MessageBegin"];
         }
     }
 }

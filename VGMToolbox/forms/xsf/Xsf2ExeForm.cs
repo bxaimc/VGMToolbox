@@ -21,6 +21,12 @@ namespace VGMToolbox.forms.xsf
             
             InitializeComponent();
 
+            // messages
+            this.BackgroundWorker = new XsfCompressedProgramExtractorWorker();
+            this.BeginMessage = ConfigurationSettings.AppSettings["Form_Xsf2Exe_MessageBegin"];
+            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_Xsf2Exe_MessageComplete"];
+            this.CancelMessage = ConfigurationSettings.AppSettings["Form_Xsf2Exe_MessageCancel"];
+
             this.grpXsfPsf2Exe_Source.AllowDrop = true;
 
             this.grpXsfPsf2Exe_Source.Text =
@@ -52,23 +58,6 @@ namespace VGMToolbox.forms.xsf
         protected override void doDragEnter(object sender, DragEventArgs e)
         {
             base.doDragEnter(sender, e);
-        }
-
-        protected override IVgmtBackgroundWorker getBackgroundWorker()
-        {
-            return new XsfCompressedProgramExtractorWorker();
-        }
-        protected override string getCancelMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_Xsf2Exe_MessageCancel"];
-        }
-        protected override string getCompleteMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_Xsf2Exe_MessageComplete"];
-        }
-        protected override string getBeginMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_Xsf2Exe_MessageBegin"];
         }
     }
 }

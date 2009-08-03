@@ -43,7 +43,7 @@ namespace VGMToolbox.tools.xsf
         {
             this.progressStruct.Clear();
             this.progressStruct.GenericMessage = String.Format("Processing: [{0}]{1}", pPath, Environment.NewLine);
-            this.ReportProgress(this.progress, this.progressStruct);
+            this.ReportProgress(this.Progress, this.progressStruct);
 
             bool filesWereRipped = XsfUtil.NdsTo2sf(pPath, TESTPACK_FULL_PATH);
 
@@ -59,7 +59,7 @@ namespace VGMToolbox.tools.xsf
                 this.progressStruct.GenericMessage = String.Format("  Data extracted.{0}", Environment.NewLine);            
             }
 
-            this.ReportProgress(this.progress, this.progressStruct);
+            this.ReportProgress(this.Progress, this.progressStruct);
         }
     }
 }

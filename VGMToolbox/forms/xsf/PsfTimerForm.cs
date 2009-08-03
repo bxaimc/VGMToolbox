@@ -20,6 +20,12 @@ namespace VGMToolbox.forms.xsf
             
             InitializeComponent();
 
+            // messages
+            this.BackgroundWorker = new PsxSeqExtractWorker();
+            this.BeginMessage = ConfigurationSettings.AppSettings["Form_SeqExtractor_MessageBegin"];
+            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_SeqExtractor_MessageComplete"];
+            this.CancelMessage = ConfigurationSettings.AppSettings["Form_SeqExtractor_MessageCancel"];
+
             this.grpSource.Text =
                 ConfigurationSettings.AppSettings["Form_SeqExtractor_GroupSource"];
             this.lblDragNDrop.Text =
@@ -71,23 +77,6 @@ namespace VGMToolbox.forms.xsf
                 this.rbForceSepType.Checked = false;
                 this.rbForceSeqType.Checked = false;
             }
-        }
-
-        protected override IVgmtBackgroundWorker getBackgroundWorker()
-        {
-            return new PsxSeqExtractWorker();
-        }
-        protected override string getCancelMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_SeqExtractor_MessageCancel"];
-        }
-        protected override string getCompleteMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_SeqExtractor_MessageComplete"];
-        }
-        protected override string getBeginMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_SeqExtractor_MessageBegin"];
         }
     }
 }

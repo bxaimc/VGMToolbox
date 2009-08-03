@@ -24,6 +24,12 @@ namespace VGMToolbox.forms.examine
 
             InitializeComponent();
 
+            // messages
+            this.BackgroundWorker = new TreeBuilderWorker();
+            this.BeginMessage = ConfigurationSettings.AppSettings["Form_ExamineTags_MessageBegin"];
+            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_ExamineTags_MessageComplete"];
+            this.CancelMessage = ConfigurationSettings.AppSettings["Form_ExamineTags_MessageCancel"];
+
             this.cbCheckForLibs.Text =
                 ConfigurationSettings.AppSettings["Form_ExamineTags_CheckBoxCheckForLibs"];
         }
@@ -48,23 +54,6 @@ namespace VGMToolbox.forms.examine
         private void btnDoTask_Click(object sender, EventArgs e)
         {
             this.treeViewTools.ExpandAll();
-        }
-
-        protected override IVgmtBackgroundWorker getBackgroundWorker()
-        {
-            return new TreeBuilderWorker();
-        }
-        protected override string getCancelMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_ExamineTags_MessageCancel"];
-        }
-        protected override string getCompleteMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_ExamineTags_MessageComplete"];
-        }
-        protected override string getBeginMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_ExamineTags_MessageBegin"];
         }
     }
 }

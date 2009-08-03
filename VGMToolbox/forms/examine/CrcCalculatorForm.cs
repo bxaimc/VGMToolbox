@@ -19,6 +19,12 @@ namespace VGMToolbox.forms.examine
         {
             InitializeComponent();
 
+            // messages
+            this.BackgroundWorker = new ExamineChecksumGeneratorWorker();
+            this.BeginMessage = ConfigurationSettings.AppSettings["Form_ChecksumCalculator_MessageBegin"];
+            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_ChecksumCalculator_MessageComplete"];
+            this.CancelMessage = ConfigurationSettings.AppSettings["Form_ChecksumCalculator_MessageCancel"];
+
             this.grpSourceFiles.AllowDrop = true;
             
             this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_ChecksumCalculator_Title"];
@@ -45,23 +51,6 @@ namespace VGMToolbox.forms.examine
         protected override void doDragEnter(object sender, DragEventArgs e)
         {
             base.doDragEnter(sender, e);
-        }
-
-        protected override IVgmtBackgroundWorker getBackgroundWorker()
-        {
-            return new ExamineChecksumGeneratorWorker();
-        }
-        protected override string getCancelMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_ChecksumCalculator_MessageCancel"];
-        }
-        protected override string getCompleteMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_ChecksumCalculator_MessageComplete"];
-        }
-        protected override string getBeginMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_ChecksumCalculator_MessageBegin"];
         }
     }
 }

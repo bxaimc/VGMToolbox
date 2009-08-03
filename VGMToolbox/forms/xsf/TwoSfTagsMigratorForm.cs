@@ -19,6 +19,12 @@ namespace VGMToolbox.forms.xsf
         {
             InitializeComponent();
 
+            // messages
+            this.BackgroundWorker = new Xsf2sfTagMigratorWorker();
+            this.BeginMessage = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_MessageBegin"];
+            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_MessageComplete"];
+            this.CancelMessage = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_MessageCancel"];
+
             this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_Title"];
             this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_DoTaskButton"];
             this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_Title_IntroText"];
@@ -39,23 +45,6 @@ namespace VGMToolbox.forms.xsf
         private void btnBrowseV2Source_Click(object sender, EventArgs e)
         {
             this.tbV2Source.Text = base.browseForFolder(sender, e);
-        }
-
-        protected override IVgmtBackgroundWorker getBackgroundWorker()
-        {
-            return new Xsf2sfTagMigratorWorker();
-        }
-        protected override string getCancelMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_Title_MessageCancel"];
-        }
-        protected override string getCompleteMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_Title_MessageComplete"];
-        }
-        protected override string getBeginMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_Title_MessageBegin"];
         }
 
         private void btnDoTask_Click(object sender, EventArgs e)

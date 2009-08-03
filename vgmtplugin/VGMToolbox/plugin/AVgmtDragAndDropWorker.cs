@@ -8,19 +8,34 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.plugin
 {    
+    /// <summary>
+    /// Abstract class used as a skeleton for Drag and Drop forms.
+    /// </summary>
     public abstract class AVgmtDragAndDropWorker : BackgroundWorker, IVgmtBackgroundWorker
-    {
-        protected int fileCount;
-        protected int maxFiles;
-        protected int progress;
+    {        
+        /// <summary>
+        /// Field used to send progress information to the parent form.
+        /// </summary>
         protected VGMToolbox.util.ProgressStruct progressStruct;
 
-        protected int Progress
-        {
-            get { return progress; }
-            set { progress = value; }
-        }
+        /// <summary>
+        /// Holds count of file currently being processed.
+        /// </summary>
+        private int fileCount;
+        
+        /// <summary>
+        /// Holds count of total files droppped.
+        /// </summary>
+        private int maxFiles;
+        
+        /// <summary>
+        /// Holds the percentage of files processed versus the total number of files to process.
+        /// </summary>
+        private int progress;
 
+        /// <summary>
+        /// Initializes a new instance of the AVgmtDragAndDropWorker class.
+        /// </summary>
         protected AVgmtDragAndDropWorker()
         {
             this.progressStruct = new VGMToolbox.util.ProgressStruct();
@@ -28,32 +43,59 @@ namespace VGMToolbox.plugin
             this.WorkerSupportsCancellation = true;
         }
 
-        protected void DoTask(IVgmtWorkerStruct pTaskStruct, DoWorkEventArgs e)
+        /// <summary>
+        /// Gets or sets fileCount.
+        /// </summary>
+        protected int FileCount
         {
-            this.maxFiles = FileUtil.GetFileCount(pTaskStruct.SourcePaths);
+            get { return this.fileCount; }
+            set { this.fileCount = value; }
+        }
+        
+        /// <summary>
+        /// Gets or sets maxFiles.
+        /// </summary>
+        protected int MaxFiles
+        {
+            get { return this.maxFiles; }
+            set { this.maxFiles = value; }
+        }
+        
+        /// <summary>
+        /// Gets or sets progress.
+        /// </summary>
+        protected int Progress
+        {
+            get { return this.progress; }
+            set { this.progress = value; }
+        }
+        
+        protected void DoTask(IVgmtWorkerStruct taskParameters, DoWorkEventArgs e)
+        {
+            this.maxFiles = FileUtil.GetFileCount(taskParameters.SourcePaths);
 
-            foreach (string path in pTaskStruct.SourcePaths)
+            foreach (string path in taskParameters.SourcePaths)
             {
                 if (File.Exists(path))
                 {
                     if (!CancellationPending)
                     {
                         // Report Progress
-                        this.progress = (++fileCount * 100) / maxFiles;
+                        this.progress = (++this.fileCount * 100) / this.maxFiles;
                         this.progressStruct.Clear();
                         this.progressStruct.FileName = path;
-                        ReportProgress(progress, progressStruct);
+                        ReportProgress(this.progress, this.progressStruct);
                                                 
                         // perform task
                         try
                         {
-                            this.DoTaskForFile(path, pTaskStruct, e);
+                            this.DoTaskForFile(path, taskParameters, e);
                         }
                         catch (Exception ex)
                         {
                             this.progressStruct.Clear();
                             this.progressStruct.ErrorMessage = 
-                                String.Format(CultureInfo.CurrentCulture,"Error processing <{0}>.  Error received: ", path) + ex.Message + Environment.NewLine;
+                                String.Format(CultureInfo.CurrentCulture, "Error processing <{0}>.  Error received: ", path) + ex.Message + Environment.NewLine;
                             ReportProgress(this.progress, this.progressStruct);
                         }
                         finally
@@ -69,7 +111,7 @@ namespace VGMToolbox.plugin
                 }
                 else if (Directory.Exists(path))
                 {
-                    this.DoTaskForDirectory(path, pTaskStruct, e);
+                    this.DoTaskForDirectory(path, taskParameters, e);
 
                     if (CancellationPending)
                     {
@@ -82,14 +124,16 @@ namespace VGMToolbox.plugin
             return;
         }
 
-        protected virtual void DoTaskForDirectory(string pPath, IVgmtWorkerStruct pTaskStruct,
+        protected virtual void DoTaskForDirectory(
+            string directoryPath,
+            IVgmtWorkerStruct taskParameters,
             DoWorkEventArgs e)
-        {            
-            foreach (string d in Directory.GetDirectories(pPath))
+        {
+            foreach (string d in Directory.GetDirectories(directoryPath))
             {
                 if (!CancellationPending)
                 {
-                    this.DoTaskForDirectory(d, pTaskStruct, e);
+                    this.DoTaskForDirectory(d, taskParameters, e);
                 }
                 else
                 {
@@ -97,28 +141,28 @@ namespace VGMToolbox.plugin
                     break;
                 }
             }
-            
-            foreach (string f in Directory.GetFiles(pPath))
+
+            foreach (string f in Directory.GetFiles(directoryPath))
             {
                 if (!CancellationPending)
                 {
                     // Report Progress
-                    this.progress = (++fileCount * 100) / maxFiles;
+                    this.progress = (++this.fileCount * 100) / this.maxFiles;
                     this.progressStruct.Clear();
                     this.progressStruct.FileName = f;
-                    ReportProgress(this.progress, progressStruct);
+                    ReportProgress(this.progress, this.progressStruct);
                     
                     // perform task
                     try
                     {
-                        this.DoTaskForFile(f, pTaskStruct, e);
+                        this.DoTaskForFile(f, taskParameters, e);
                     }
                     catch (Exception ex)
                     {
                         this.progressStruct.Clear();
                         this.progressStruct.ErrorMessage = 
                             String.Format(CultureInfo.CurrentCulture, "Error processing <{0}>.  Error received: ", f) + ex.Message + Environment.NewLine;
-                        ReportProgress(progress, this.progressStruct);
+                        ReportProgress(this.progress, this.progressStruct);
                     }
                     finally
                     {
@@ -139,9 +183,14 @@ namespace VGMToolbox.plugin
             this.DoTask((IVgmtWorkerStruct)e.Argument, e);
         }
         
-        protected virtual void DoFinally() { }
+        /// <summary>
+        /// Method to call after completing processing of each file.
+        /// </summary>
+        protected virtual void DoFinally() 
+        { 
+        }
 
         // abstract methods
-        protected abstract void DoTaskForFile(string pPath, IVgmtWorkerStruct pTaskStruct, DoWorkEventArgs e);
+        protected abstract void DoTaskForFile(string filePath, IVgmtWorkerStruct pTaskStruct, DoWorkEventArgs e);
     }
 }

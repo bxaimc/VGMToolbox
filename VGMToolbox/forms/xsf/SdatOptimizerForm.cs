@@ -20,6 +20,12 @@ namespace VGMToolbox.forms.xsf
 
             InitializeComponent();
 
+            // messages
+            this.BackgroundWorker = new SdatOptimizerWorker();
+            this.BeginMessage = ConfigurationSettings.AppSettings["Form_SdatOptimizer_MessageBegin"];
+            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_SdatOptimizer_MessageComplete"];
+            this.CancelMessage = ConfigurationSettings.AppSettings["Form_SdatOptimizer_MessageCancel"];
+
             this.grpSource.Text =
                 ConfigurationSettings.AppSettings["Form_SdatOptimizer_GroupSource"];
             this.lblDragNDrop.Text =
@@ -66,23 +72,6 @@ namespace VGMToolbox.forms.xsf
                 tbStartSequence.ReadOnly = false;
                 tbEndSequence.ReadOnly = false;            
             }
-        }
-
-        protected override IVgmtBackgroundWorker getBackgroundWorker()
-        {
-            return new SdatOptimizerWorker();
-        }
-        protected override string getCancelMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_SdatOptimizer_MessageCancel"];
-        }
-        protected override string getCompleteMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_SdatOptimizer_MessageComplete"];
-        }
-        protected override string getBeginMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_SdatOptimizer_MessageBegin"];
         }
     }
 }

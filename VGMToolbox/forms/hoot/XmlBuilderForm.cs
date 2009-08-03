@@ -23,6 +23,12 @@ namespace VGMToolbox.forms.hoot
 
             InitializeComponent();
 
+            // messages
+            this.BackgroundWorker = new HootXmlBuilderWorker();
+            this.BeginMessage = ConfigurationSettings.AppSettings["Form_HootXmlBuilder_MessageBegin"];
+            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_HootXmlBuilder_MessageComplete"];
+            this.CancelMessage = ConfigurationSettings.AppSettings["Form_HootXmlBuilder_MessageCancel"];
+
             this.gbHootXML_Source.AllowDrop = true;
 
             this.gbHootXML_Source.Text =
@@ -50,23 +56,6 @@ namespace VGMToolbox.forms.hoot
         protected override void doDragEnter(object sender, DragEventArgs e)
         {
             base.doDragEnter(sender, e);
-        }
-
-        protected override IVgmtBackgroundWorker getBackgroundWorker()
-        {
-            return new HootXmlBuilderWorker();
-        }
-        protected override string getCancelMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_HootXmlBuilder_MessageCancel"];
-        }
-        protected override string getCompleteMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_HootXmlBuilder_MessageComplete"];
-        }
-        protected override string getBeginMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_HootXmlBuilder_MessageBegin"];
         }
     }
 }

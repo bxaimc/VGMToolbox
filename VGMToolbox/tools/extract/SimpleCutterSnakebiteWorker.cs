@@ -60,7 +60,7 @@ namespace VGMToolbox.tools.extract
                     this.progressStruct.Clear();
                     this.progressStruct.ErrorMessage =
                         String.Format("ERROR: Cut size is too big, the maximum cut size on your computer is {0} ({1})", int.MaxValue.ToString("X8"), int.MaxValue.ToString());
-                    ReportProgress(this.progress, this.progressStruct);
+                    ReportProgress(this.Progress, this.progressStruct);
                 }
                 else
                 {
@@ -89,7 +89,7 @@ namespace VGMToolbox.tools.extract
 
                     this.progressStruct.Clear();
                     this.progressStruct.GenericMessage = String.Format("File <{0}>, extracted.{1}", simpleCutterSnakebiteStruct.OutputFile, Environment.NewLine);
-                    ReportProgress(this.progress, this.progressStruct);
+                    ReportProgress(this.Progress, this.progressStruct);
                 }
             }
         }

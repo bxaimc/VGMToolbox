@@ -190,7 +190,7 @@ namespace VGMToolbox.tools.xsf
                 {
                     this.progressStruct.Clear();
                     this.progressStruct.ErrorMessage = "[ERROR from VGMToolbox] Compiled output file not found.  Compilation has failed.  Stub file source code will be copied to your source directory for examination." + Environment.NewLine;
-                    ReportProgress(this.progress, progressStruct);
+                    ReportProgress(this.Progress, progressStruct);
                 }
                 else
                 {

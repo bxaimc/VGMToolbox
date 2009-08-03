@@ -20,6 +20,12 @@ namespace VGMToolbox.forms.extraction
 
             InitializeComponent();
 
+            // messages
+            this.BackgroundWorker = new SdatFinderWorker();
+            this.BeginMessage = ConfigurationSettings.AppSettings["Form_SdatFinder_MessageBegin"];
+            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_SdatFinder_MessageComplete"];
+            this.CancelMessage = ConfigurationSettings.AppSettings["Form_SdatFinder_MessageCancel"];
+
             this.grpSource.AllowDrop = true;
 
             this.grpSource.Text =
@@ -38,23 +44,6 @@ namespace VGMToolbox.forms.extraction
             sfStruct.SourcePaths = s;
 
             base.backgroundWorker_Execute(sfStruct);
-        }
-
-        protected override IVgmtBackgroundWorker getBackgroundWorker()
-        {
-            return new SdatFinderWorker();
-        }
-        protected override string getCancelMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_SdatFinder_MessageCancel"];
-        }
-        protected override string getCompleteMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_SdatFinder_MessageComplete"];
-        }
-        protected override string getBeginMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_SdatFinder_MessageBegin"];
         }
     }
 }

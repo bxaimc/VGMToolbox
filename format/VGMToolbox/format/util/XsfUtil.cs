@@ -369,7 +369,7 @@ namespace VGMToolbox.format.util
         }
     }
 
-    public class XsfUtil
+    public sealed class XsfUtil
     {
         private delegate void XsfTagSetter(string pValue);
         private delegate string XsfTagGetter();
@@ -392,13 +392,13 @@ namespace VGMToolbox.format.util
         static readonly string SSEQ2MID_SOURCE_PATH =
             Path.Combine(Path.Combine(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "external"), "2sf"), "sseq2mid.exe");
 
-        static readonly byte[] MINI2SF_DATA_START = new byte[] { 0xC0, 0x0F, 0x0D, 0x00, 0x02, 0x00, 0x00, 0x00 };
+        static readonly byte[] Mini2sfDataStart = new byte[] { 0xC0, 0x0F, 0x0D, 0x00, 0x02, 0x00, 0x00, 0x00 };
         static readonly byte[] MINI2SF_SAVESTATE_ID = new byte[] { 0x53, 0x41, 0x56, 0x45 };
 
         // PSF
         public const uint PSFDRV_LOAD_ADDRESS = 0x80100000;
         public static readonly byte[] PlayStationExecutableSignature = new byte[] { 0x50, 0x53, 0x2D, 0x58, 0x20, 0x45, 0x58, 0x45};
-        public static readonly byte[] VAB_SIGNATURE = new byte[] { 0x70, 0x42, 0x41, 0x56 }; // "pBAV"
+        public static readonly byte[] VabSignature = new byte[] { 0x70, 0x42, 0x41, 0x56 }; // "pBAV"
 
         private XsfUtil() { }
         
@@ -1286,7 +1286,7 @@ namespace VGMToolbox.format.util
                 int vabHeaderSize;
                 checkBytes = ParseFile.ParseSimpleOffset(fs, 0, 4);
 
-                if (ParseFile.CompareSegment(checkBytes, 0, XsfUtil.VAB_SIGNATURE))
+                if (ParseFile.CompareSegment(checkBytes, 0, XsfUtil.VabSignature))
                 {
                     programCount = 
                         BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(fs, 0x12, 2), 0);
@@ -1824,8 +1824,8 @@ namespace VGMToolbox.format.util
             string mini2sfFileName;
             int mini2sfCrc32;
             
-            byte[] mini2sfData = new byte[MINI2SF_DATA_START.Length + 2];
-            Array.ConstrainedCopy(MINI2SF_DATA_START, 0, mini2sfData, 0, MINI2SF_DATA_START.Length);
+            byte[] mini2sfData = new byte[Mini2sfDataStart.Length + 2];
+            Array.ConstrainedCopy(Mini2sfDataStart, 0, mini2sfData, 0, Mini2sfDataStart.Length);
 
 
             for (int i = pMinIndex; i <= pMaxIndex; i++)
@@ -1967,8 +1967,8 @@ namespace VGMToolbox.format.util
             string mini2sfFileName;
             int mini2sfCrc32;
 
-            byte[] mini2sfData = new byte[MINI2SF_DATA_START.Length + 2];
-            Array.ConstrainedCopy(MINI2SF_DATA_START, 0, mini2sfData, 0, MINI2SF_DATA_START.Length);
+            byte[] mini2sfData = new byte[Mini2sfDataStart.Length + 2];
+            Array.ConstrainedCopy(Mini2sfDataStart, 0, mini2sfData, 0, Mini2sfDataStart.Length);
 
 
             foreach (int i in allowedSequences)

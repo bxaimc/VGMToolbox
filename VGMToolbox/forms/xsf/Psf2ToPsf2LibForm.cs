@@ -20,6 +20,12 @@ namespace VGMToolbox.forms.xsf
 
             InitializeComponent();
 
+            // messages
+            this.BackgroundWorker = new Psf2toPsf2LibWorker();
+            this.BeginMessage = ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_MessageBegin"];
+            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_MessageComplete"];
+            this.CancelMessage = ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_MessageCancel"];
+
             this.grpSource.Text =
                 ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_GroupSource"];
             this.grpOptions.Text =
@@ -40,23 +46,6 @@ namespace VGMToolbox.forms.xsf
         private void btnSourceDirBrowse_Click(object sender, EventArgs e)
         {
             tbSourceDirectory.Text = base.browseForFolder(sender, e);
-        }
-
-        protected override IVgmtBackgroundWorker getBackgroundWorker()
-        {
-            return new Psf2toPsf2LibWorker();
-        }
-        protected override string getCancelMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_MessageCancel"];
-        }
-        protected override string getCompleteMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_MessageComplete"];
-        }
-        protected override string getBeginMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_MessageBegin"];
         }
     }
 }

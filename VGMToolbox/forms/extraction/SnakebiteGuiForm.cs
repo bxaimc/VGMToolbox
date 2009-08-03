@@ -21,6 +21,12 @@ namespace VGMToolbox.forms.extraction
         {
             InitializeComponent();
 
+            // messages
+            this.BackgroundWorker = new SimpleCutterSnakebiteWorker();
+            this.BeginMessage = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_MessageBegin"];
+            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_MessageComplete"];
+            this.CancelMessage = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_MessageCancel"];
+
             this.grpFiles.AllowDrop = true;
             this.doDrag = false;
 
@@ -98,23 +104,6 @@ namespace VGMToolbox.forms.extraction
         {
             base.doDragEnter(sender, e);
         } 
-
-        protected override IVgmtBackgroundWorker getBackgroundWorker()
-        {
-            return new SimpleCutterSnakebiteWorker();
-        }
-        protected override string getCancelMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_SnakebiteGUI_MessageCancel"];
-        }
-        protected override string getCompleteMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_SnakebiteGUI_MessageComplete"];
-        }
-        protected override string getBeginMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_SnakebiteGUI_MessageBegin"];
-        }
 
         private void tbSourceFiles_DragDrop(object sender, DragEventArgs e)
         {

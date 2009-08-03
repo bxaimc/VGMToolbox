@@ -25,6 +25,12 @@ namespace VGMToolbox.forms.xsf
             
             InitializeComponent();
 
+            // messages
+            this.BackgroundWorker = new Psf2TimerWorker();
+            this.BeginMessage = ConfigurationSettings.AppSettings["Form_Psf2Timer_MessageBegin"];
+            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_Psf2Timer_MessageComplete"];
+            this.CancelMessage = ConfigurationSettings.AppSettings["Form_Psf2Timer_MessageCancel"];
+
             this.gbSource.AllowDrop = true;
             this.gbSource.Text =
                 ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
@@ -42,23 +48,6 @@ namespace VGMToolbox.forms.xsf
             timeStruct.SourcePaths = s;
 
             base.backgroundWorker_Execute(timeStruct);
-        }
-
-        protected override IVgmtBackgroundWorker getBackgroundWorker()
-        {
-            return new Psf2TimerWorker();
-        }
-        protected override string getCancelMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_Psf2Timer_MessageCancel"];
-        }
-        protected override string getCompleteMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_Psf2Timer_MessageComplete"];
-        }
-        protected override string getBeginMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_Psf2Timer_MessageBegin"];
         }
     }
 }

@@ -30,6 +30,12 @@ namespace VGMToolbox.forms.xsf
             
             InitializeComponent();
 
+            // messages
+            this.BackgroundWorker = new Mk2sfWorker();
+            this.BeginMessage = ConfigurationSettings.AppSettings["Form_Make2sf_MessageBegin"];
+            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_Make2sf_MessageComplete"];
+            this.CancelMessage = ConfigurationSettings.AppSettings["Form_Make2sf_MessageCancel"];
+
             this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_Make2sf_Title"];
             this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_Make2sf_DoTaskButton"];
             this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_Make2sf_IntroText1"] + Environment.NewLine;
@@ -218,23 +224,6 @@ namespace VGMToolbox.forms.xsf
         private void btnBrowseOutput_Click(object sender, EventArgs e)
         {
             this.tbOutputPath.Text = base.browseForFolder(sender, e);
-        }
-
-        protected override IVgmtBackgroundWorker getBackgroundWorker()
-        {
-            return new Mk2sfWorker();
-        }
-        protected override string getCancelMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_Make2sf_MessageCancel"];
-        }
-        protected override string getCompleteMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_Make2sf_MessageComplete"];
-        }
-        protected override string getBeginMessage()
-        {
-            return ConfigurationSettings.AppSettings["Form_Make2sf_MessageBegin"];
         }
 
         private bool CheckSdatPathAndOutputDir()
