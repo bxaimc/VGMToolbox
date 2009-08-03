@@ -2056,100 +2056,103 @@ namespace VGMToolbox.format.util
                 // Get the Sdat Paths
                 sdatPaths = SdatUtil.ExtractSdatsFromFile(ndsPath, "_NDSto2SF");
 
-                // Get count of valid Sdats
-                validSdatCount = GetCountOfValidSdats(sdatPaths);
-
-                // Loop over the extracted Sdats
-                foreach (string extractedSdatPath in sdatPaths)
+                if (sdatPaths != null)
                 {
-                    // assume rip goes ok, set to false in directory check
-                    filesWereRipped = true;
-                    
-                    // rename sdat file
-                    sdatPrefix = GetSdatPrefix(ndsPath, validSdatCount, ndsFile.GameSerial, currentSdatNumber);
-                    sdatDestinationPath = Path.Combine(Path.GetDirectoryName(extractedSdatPath), Path.ChangeExtension(sdatPrefix, Sdat.SDAT_FILE_EXTENSION));
-                    File.Move(extractedSdatPath, sdatDestinationPath);
-                    
-                    // build sdat object
-                    if (Sdat.TryParse(sdatDestinationPath, out sdatToRip))
+                    // Get count of valid Sdats
+                    validSdatCount = GetCountOfValidSdats(sdatPaths);
+
+                    // Loop over the extracted Sdats
+                    foreach (string extractedSdatPath in sdatPaths)
                     {
-                        ripOutputPath = Path.Combine(
-                            Path.GetDirectoryName(sdatDestinationPath),
-                            Path.GetFileNameWithoutExtension(sdatDestinationPath));
+                        // assume rip goes ok, set to false in directory check
+                        filesWereRipped = true;
 
-                        if (!Directory.Exists(ripOutputPath))
+                        // rename sdat file
+                        sdatPrefix = GetSdatPrefix(ndsPath, validSdatCount, ndsFile.GameSerial, currentSdatNumber);
+                        sdatDestinationPath = Path.Combine(Path.GetDirectoryName(extractedSdatPath), Path.ChangeExtension(sdatPrefix, Sdat.SDAT_FILE_EXTENSION));
+                        File.Move(extractedSdatPath, sdatDestinationPath);
+
+                        // build sdat object
+                        if (Sdat.TryParse(sdatDestinationPath, out sdatToRip))
                         {
-                            Directory.CreateDirectory(ripOutputPath);
-                        }
+                            ripOutputPath = Path.Combine(
+                                Path.GetDirectoryName(sdatDestinationPath),
+                                Path.GetFileNameWithoutExtension(sdatDestinationPath));
 
-                        using (Stream sdatStream = File.OpenRead(sdatDestinationPath))
-                        {
-                            // extract Strms
-                            sdatToRip.ExtractStrms(sdatStream, ripOutputPath);
-                        }
-
-                        // build optimization list
-                        optimizationList = GetDefaultOptimizationList(sdatDestinationPath);
-
-                        if (optimizationList.Count > 0)
-                        {
-                            // optimize Sdat
-                            sdatToRip.OptimizeForZlib(optimizationList);
-
-                            // Copy testpack.nds
-                            testpackDestinationPath = Path.Combine(Path.GetDirectoryName(sdatDestinationPath), Path.GetFileName(testPackPath));
-                            File.Copy(testPackPath, testpackDestinationPath, true);
-
-                            // make 2SFs
-                            Make2sfSet(
-                                testpackDestinationPath,
-                                sdatDestinationPath,
-                                (int[])optimizationList.ToArray(typeof(int)),
-                                ripOutputPath);
-
-                            // delete testpack
-                            File.Delete(testpackDestinationPath);
-
-                            // time files
-                            timerStruct = new Time2sfStruct();
-                            timerStruct.DoSingleLoop = false;
-                            timerStruct.Mini2sfDirectory = ripOutputPath;
-                            timerStruct.SdatPath = sdatDestinationPath;
-                            Time2sfFolder(timerStruct, out outputTimerMessages);
-
-                            // cleanup timer folder
-                            if (Directory.Exists(Path.Combine(ripOutputPath, "text")))
+                            if (!Directory.Exists(ripOutputPath))
                             {
-                                Directory.Delete(Path.Combine(ripOutputPath, "text"), true);
+                                Directory.CreateDirectory(ripOutputPath);
                             }
-                        }
-                        else
+
+                            using (Stream sdatStream = File.OpenRead(sdatDestinationPath))
+                            {
+                                // extract Strms
+                                sdatToRip.ExtractStrms(sdatStream, ripOutputPath);
+                            }
+
+                            // build optimization list
+                            optimizationList = GetDefaultOptimizationList(sdatDestinationPath);
+
+                            if (optimizationList.Count > 0)
+                            {
+                                // optimize Sdat
+                                sdatToRip.OptimizeForZlib(optimizationList);
+
+                                // Copy testpack.nds
+                                testpackDestinationPath = Path.Combine(Path.GetDirectoryName(sdatDestinationPath), Path.GetFileName(testPackPath));
+                                File.Copy(testPackPath, testpackDestinationPath, true);
+
+                                // make 2SFs
+                                Make2sfSet(
+                                    testpackDestinationPath,
+                                    sdatDestinationPath,
+                                    (int[])optimizationList.ToArray(typeof(int)),
+                                    ripOutputPath);
+
+                                // delete testpack
+                                File.Delete(testpackDestinationPath);
+
+                                // time files
+                                timerStruct = new Time2sfStruct();
+                                timerStruct.DoSingleLoop = false;
+                                timerStruct.Mini2sfDirectory = ripOutputPath;
+                                timerStruct.SdatPath = sdatDestinationPath;
+                                Time2sfFolder(timerStruct, out outputTimerMessages);
+
+                                // cleanup timer folder
+                                if (Directory.Exists(Path.Combine(ripOutputPath, "text")))
+                                {
+                                    Directory.Delete(Path.Combine(ripOutputPath, "text"), true);
+                                }
+                            }
+                            else
+                            {
+                                if ((Directory.Exists(ripOutputPath)) &&
+                                    (Directory.GetFiles(ripOutputPath, "*.*", SearchOption.AllDirectories).Length == 0))
+                                {
+                                    Directory.Delete(ripOutputPath, true);
+                                }
+
+                            } // if (optimizationList.Count > 0)
+                        } // if (Sdat.TryParse(sdatDestinationPath, out sdatToRip))
+
+                        // delete sdat
+                        File.Delete(sdatDestinationPath);
+
+                        // delete top most folder if nothing was found
+                        topMostFolder = Path.GetDirectoryName(extractedSdatPath);
+
+                        if ((Directory.Exists(topMostFolder)) &&
+                            (Directory.GetFiles(topMostFolder, "*.*", SearchOption.AllDirectories).Length == 0))
                         {
-                            if ((Directory.Exists(ripOutputPath)) &&
-                                (Directory.GetFiles(ripOutputPath, "*.*", SearchOption.AllDirectories).Length == 0))
-                            {                                                                
-                                Directory.Delete(ripOutputPath, true);
-                            }                            
-                                                    
-                        } // if (optimizationList.Count > 0)
-                    } // if (Sdat.TryParse(sdatDestinationPath, out sdatToRip))
+                            filesWereRipped = false;
+                            Directory.Delete(topMostFolder, true);
+                        }
 
-                    // delete sdat
-                    File.Delete(sdatDestinationPath);
-                    
-                    // delete top most folder if nothing was found
-                    topMostFolder = Path.GetDirectoryName(extractedSdatPath);
-
-                    if ((Directory.Exists(topMostFolder)) &&
-                        (Directory.GetFiles(topMostFolder, "*.*", SearchOption.AllDirectories).Length == 0))
-                    {
-                        filesWereRipped = false;
-                        Directory.Delete(topMostFolder, true);
-                    }                            
-
-                    // increment naming counter
-                    currentSdatNumber++;
-                }
+                        // increment naming counter
+                        currentSdatNumber++;
+                    } // foreach (string extractedSdatPath in sdatPaths)
+                } // if (sdatPaths != null)
             }
 
             return filesWereRipped;
