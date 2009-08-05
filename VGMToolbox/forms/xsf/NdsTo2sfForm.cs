@@ -25,12 +25,6 @@ namespace VGMToolbox.forms.xsf
             
             InitializeComponent();
 
-            // messages
-            this.BackgroundWorker = new NdsTo2sfWorker();
-            this.BeginMessage = ConfigurationSettings.AppSettings["Form_NdsTo2sf_MessageBegin"];
-            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_NdsTo2sf_MessageComplete"];
-            this.CancelMessage = ConfigurationSettings.AppSettings["Form_NdsTo2sf_MessageCancel"];
-
             this.grpSourceFiles.AllowDrop = true;
             this.btnDoTask.Hide();
 
@@ -45,6 +39,22 @@ namespace VGMToolbox.forms.xsf
         protected override void doDragEnter(object sender, DragEventArgs e)
         {
             base.doDragEnter(sender, e);
+        }
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new NdsTo2sfWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_NdsTo2sf_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_NdsTo2sf_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_NdsTo2sf_MessageBegin"];
         }
 
         private static bool CheckForTestPackNds()

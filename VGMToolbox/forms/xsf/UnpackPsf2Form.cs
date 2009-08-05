@@ -20,12 +20,6 @@ namespace VGMToolbox.forms.xsf
 
             InitializeComponent();
 
-            // messages
-            this.BackgroundWorker = new UnpkPsf2Worker();
-            this.BeginMessage = ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_MessageBegin"];
-            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_MessageComplete"];
-            this.CancelMessage = ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_MessageCancel"];
-
             this.grpSource.AllowDrop = true;
             this.grpSource.Text = ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
         }
@@ -42,6 +36,23 @@ namespace VGMToolbox.forms.xsf
         protected override void doDragEnter(object sender, DragEventArgs e)
         {
             base.doDragEnter(sender, e);
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new UnpkPsf2Worker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_MessageBegin"];
         }
     }
 }

@@ -14,12 +14,6 @@ namespace VGMToolbox.forms.extraction
         {
             InitializeComponent();
 
-            // messages
-            this.BackgroundWorker = new ExtractMidiWorker();
-            this.BeginMessage = ConfigurationSettings.AppSettings["Form_MidiExtractor_MessageBegin"];
-            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_MidiExtractor_MessageComplete"];
-            this.CancelMessage = ConfigurationSettings.AppSettings["Form_MidiExtractor_MessageCancel"];
-
             this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_MidiExtractor_Title"];
             this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_MidiExtractor_IntroText"];
             this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
@@ -39,6 +33,23 @@ namespace VGMToolbox.forms.extraction
             ExtractMidiWorker.ExtractMidiStruct bwStruct = new ExtractMidiWorker.ExtractMidiStruct();            
             bwStruct.SourcePaths = s;
             base.backgroundWorker_Execute(bwStruct);
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new ExtractMidiWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_MidiExtractor_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_MidiExtractor_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_MidiExtractor_MessageBegin"];
         }
     }
 }

@@ -21,12 +21,6 @@ namespace VGMToolbox.forms
             
             InitializeComponent();
 
-            // messages
-            this.BackgroundWorker = new NsfeM3uBuilderWorker();
-            this.BeginMessage = ConfigurationSettings.AppSettings["Form_Nsfe2M3u_MessageBegin"];
-            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_Nsfe2M3u_MessageComplete"];
-            this.CancelMessage = ConfigurationSettings.AppSettings["Form_Nsfe2M3u_MessageCancel"];
-
             this.grpSourceFiles.AllowDrop = true;
 
             this.grpSourceFiles.Text =
@@ -50,6 +44,23 @@ namespace VGMToolbox.forms
         protected override void doDragEnter(object sender, DragEventArgs e)
         {
             base.doDragEnter(sender, e);
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new NsfeM3uBuilderWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_Nsfe2M3u_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_Nsfe2M3u_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_Nsfe2M3u_MessageBegin"];
         }
     }
 }

@@ -24,12 +24,6 @@ namespace VGMToolbox.forms.xsf
 
             InitializeComponent();
 
-            // messages
-            this.BackgroundWorker = new Time2sfWorker();
-            this.BeginMessage = ConfigurationSettings.AppSettings["Form_2sfTimer_MessageBegin"];
-            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_2sfTimer_MessageComplete"];
-            this.CancelMessage = ConfigurationSettings.AppSettings["Form_2sfTimer_MessageCancel"];
-
             this.grpSourcePaths.Text =
                 ConfigurationSettings.AppSettings["Form_2sfTimer_GroupSourcePaths"];
             this.lblPathTo2sfFiles.Text =
@@ -59,6 +53,23 @@ namespace VGMToolbox.forms.xsf
         private void btnSdatBrowse_Click(object sender, EventArgs e)
         {
             tbSdatPath.Text = base.browseForFile(sender, e);
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new Time2sfWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_2sfTimer_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_2sfTimer_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_2sfTimer_MessageBegin"];
         }
     }
 }

@@ -34,12 +34,6 @@ namespace VGMToolbox.forms.hoot
 
             InitializeComponent();
 
-            // messages
-            this.BackgroundWorker = new HootAuditorWorker();
-            this.BeginMessage = ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_MessageBegin"];
-            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_MessageComplete"];
-            this.CancelMessage = ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_MessageCancel"];
-
             this.grpOptions.Text = ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_GrpOptions"];
             this.lblFolder.Text = ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_LblFolder"];
             this.lblArchiveFolders.Text = ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_LblArchiveFolders"];
@@ -48,6 +42,23 @@ namespace VGMToolbox.forms.hoot
             this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_Title"];
             this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_BtnDoTask"];
             this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_Intro"];
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new HootAuditorWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_MessageBegin"];
         }
 
         private void btnDoTask_Click(object sender, EventArgs e)

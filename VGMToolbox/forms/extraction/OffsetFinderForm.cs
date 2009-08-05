@@ -31,12 +31,6 @@ namespace VGMToolbox.forms.extraction
 
             InitializeComponent();
 
-            // messages
-            this.BackgroundWorker = new OffsetFinderWorker();
-            this.BeginMessage = ConfigurationSettings.AppSettings["Form_SimpleCutter_MessageBegin"];
-            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_SimpleCutter_MessageComplete"];
-            this.CancelMessage = ConfigurationSettings.AppSettings["Form_SimpleCutter_MessageCancel"];
-
             this.grpFiles.Text =
                 ConfigurationSettings.AppSettings["Form_SimpleCutter_GroupFiles"];
             this.lblDragNDrop.Text =
@@ -338,6 +332,23 @@ namespace VGMToolbox.forms.extraction
             }
         }
         
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new OffsetFinderWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SimpleCutter_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SimpleCutter_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SimpleCutter_MessageBegin"];
+        }
+
         private void loadPresetsComboBox()
         {
             this.comboPresets.Items.Add(String.Empty);

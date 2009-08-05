@@ -19,12 +19,6 @@ namespace VGMToolbox.forms.examine
         {
             InitializeComponent();
 
-            // messages
-            this.BackgroundWorker = new ExamineSearchForFileWorker();
-            this.BeginMessage = ConfigurationSettings.AppSettings["Form_SearchForFile_MessageBegin"];
-            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_SearchForFile_MessageComplete"];
-            this.CancelMessage = ConfigurationSettings.AppSettings["Form_SearchForFile_MessageCancel"];
-
             this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_SearchForFile_Title"];
             this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_SearchForFile_IntroText"];
             this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_SearchForFile_DoTaskButton"];
@@ -41,6 +35,23 @@ namespace VGMToolbox.forms.examine
         protected override void doDragEnter(object sender, DragEventArgs e)
         {
             base.doDragEnter(sender, e);
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new ExamineSearchForFileWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SearchForFile_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SearchForFile_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SearchForFile_MessageBegin"];
         }
 
         private void tbSource_DragDrop(object sender, DragEventArgs e)

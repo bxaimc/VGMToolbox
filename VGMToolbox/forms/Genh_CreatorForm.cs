@@ -26,12 +26,6 @@ namespace VGMToolbox.forms
         {
             InitializeComponent();
 
-            // messages
-            this.BackgroundWorker = new GenhCreatorWorker();
-            this.BeginMessage = ConfigurationSettings.AppSettings["Form_GenhCreator_MessageBegin"];
-            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_GenhCreator_MessageComplete"];
-            this.CancelMessage = ConfigurationSettings.AppSettings["Form_GenhCreator_MessageCancel"];
-
             this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_Title"];            
             this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_IntroText"];
             
@@ -326,6 +320,23 @@ namespace VGMToolbox.forms
 
             pErrorMessages = errorBuffer.ToString();
             return isValid;
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new GenhCreatorWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_GenhCreator_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_GenhCreator_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_GenhCreator_MessageBegin"];
         }
 
         private void reloadFiles()

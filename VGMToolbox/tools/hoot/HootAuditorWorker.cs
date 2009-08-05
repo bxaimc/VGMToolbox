@@ -155,7 +155,7 @@ namespace VGMToolbox.tools.hoot
                     this.progressStruct.Clear();
                     this.progressStruct.FileName = pPath;
                     this.progressStruct.NewNode = rootNode;
-                    ReportProgress(this.Progress, this.progressStruct);
+                    ReportProgress(this.progress, this.progressStruct);
 
                 }
                 catch (Exception ex)
@@ -191,7 +191,7 @@ namespace VGMToolbox.tools.hoot
                     {
                         this.progressStruct.Clear();
                         this.progressStruct.GenericMessage = String.Format("WARNING: Multiple copies of {0} found, results may be inaccurate", pSetArchiveName);
-                        ReportProgress(this.Progress, this.progressStruct);
+                        ReportProgress(this.progress, this.progressStruct);
                     }
                     
                     foreach (string file in archiveFiles)

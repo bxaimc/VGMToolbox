@@ -50,10 +50,10 @@ namespace VGMToolbox.tools.xsf
                 if (!CancellationPending)
                 {
                     // Report Progress
-                    base.Progress = (++base.FileCount * 100) / base.MaxFiles;
+                    base.progress = (++base.fileCount * 100) / base.maxFiles;
                     base.progressStruct.Clear();
                     base.progressStruct.FileName = f;
-                    ReportProgress(base.Progress, base.progressStruct);
+                    ReportProgress(base.progress, base.progressStruct);
 
                     // perform task
                     try
@@ -65,7 +65,7 @@ namespace VGMToolbox.tools.xsf
                         base.progressStruct.Clear();
                         base.progressStruct.ErrorMessage =
                             String.Format(CultureInfo.CurrentCulture, "Error processing <{0}>.  Error received: ", f) + ex.Message + Environment.NewLine;
-                        ReportProgress(base.Progress, base.progressStruct);
+                        ReportProgress(base.progress, base.progressStruct);
                     }
                     finally
                     {

@@ -26,12 +26,6 @@ namespace VGMToolbox.forms.xsf
 
             InitializeComponent();
 
-            // messages
-            this.BackgroundWorker = new SsfSeqTonExtractorWorker();
-            this.BeginMessage = ConfigurationSettings.AppSettings["Form_SeqextTonextFE_MessageBegin"];
-            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_SeqextTonextFE_MessageComplete"];
-            this.CancelMessage = ConfigurationSettings.AppSettings["Form_SeqextTonextFE_MessageCancel"];
-
             this.grpSource.Text =
                 ConfigurationSettings.AppSettings["Form_SeqextTonextFE_GroupSource"];
             this.lblDragNDrop.Text =
@@ -55,6 +49,23 @@ namespace VGMToolbox.forms.xsf
         protected override void doDragEnter(object sender, DragEventArgs e)
         {
             base.doDragEnter(sender, e);
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new SsfSeqTonExtractorWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SeqextTonextFE_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SeqextTonextFE_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_SeqextTonextFE_MessageBegin"];
         }
     }
 }

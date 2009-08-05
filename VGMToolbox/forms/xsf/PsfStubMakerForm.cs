@@ -14,12 +14,6 @@ namespace VGMToolbox.forms.xsf
         {
             InitializeComponent();
 
-            // messages
-            this.BackgroundWorker = new PsfStubMakerWorker();
-            this.BeginMessage = ConfigurationSettings.AppSettings["Form_PsfStubCreator_MessageBegin"];
-            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_PsfStubCreator_MessageComplete"];
-            this.CancelMessage = ConfigurationSettings.AppSettings["Form_PsfStubCreator_MessageCancel"];
-
             this.grpSourceFiles.AllowDrop = true;
 
             this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_PsfStubCreator_Title"];
@@ -34,6 +28,23 @@ namespace VGMToolbox.forms.xsf
         protected override void doDragEnter(object sender, DragEventArgs e)
         {
             base.doDragEnter(sender, e);
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new PsfStubMakerWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_PsfStubCreator_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_PsfStubCreator_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_PsfStubCreator_MessageBegin"];
         }
 
         private void grpSourceFiles_DragDrop(object sender, DragEventArgs e)

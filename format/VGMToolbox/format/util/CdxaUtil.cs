@@ -37,12 +37,8 @@ namespace VGMToolbox.format.util
         }
     }
     
-    public sealed class CdxaUtil
+    public class CdxaUtil
     {
-        private CdxaUtil()
-        { 
-        }
-
         public static void ExtractXaFiles(ExtractXaStruct pExtractXaStruct)
         { 
             Dictionary<UInt32, BinaryWriter> bwDictionary = new Dictionary<UInt32, BinaryWriter>();

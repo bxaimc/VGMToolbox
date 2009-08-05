@@ -15,12 +15,6 @@ namespace VGMToolbox.forms.compression
         {
             InitializeComponent();
 
-            // messages
-            this.BackgroundWorker = new ZlibExtractorWorker();
-            this.BeginMessage = ConfigurationSettings.AppSettings["Form_ZlibCompress_MessageBegin"];
-            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_ZlibCompress_MessageComplete"];
-            this.CancelMessage = ConfigurationSettings.AppSettings["Form_ZlibCompress_MessageCancel"];
-
             this.grpSourceFiles.AllowDrop = true;
             this.btnDoTask.Hide();
 
@@ -40,6 +34,23 @@ namespace VGMToolbox.forms.compression
         protected override void doDragEnter(object sender, DragEventArgs e)
         {
             base.doDragEnter(sender, e);
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new ZlibExtractorWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_ZlibCompress_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_ZlibCompress_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_ZlibCompress_MessageBegin"];
         }
 
         private void grpSourceFiles_DragDrop(object sender, DragEventArgs e)

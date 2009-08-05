@@ -18,13 +18,6 @@ namespace VGMToolbox.forms.xsf
             this.btnDoTask.Hide();
 
             InitializeComponent();
-
-            // messages
-            this.BackgroundWorker = new Psf2SqExtractorWorker();
-            this.BeginMessage = ConfigurationSettings.AppSettings["Form_Psf2SqExtractor_MessageBegin"];
-            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_Psf2SqExtractor_MessageComplete"];
-            this.CancelMessage = ConfigurationSettings.AppSettings["Form_Psf2SqExtractor_MessageCancel"];
-            
             this.grpSource.AllowDrop = true;
             this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_Psf2SqExtractor_IntroText"];
 
@@ -45,6 +38,23 @@ namespace VGMToolbox.forms.xsf
             sqExtStruct.SourcePaths = s;
 
             base.backgroundWorker_Execute(sqExtStruct);
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new Psf2SqExtractorWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_Psf2SqExtractor_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_Psf2SqExtractor_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_Psf2SqExtractor_MessageBegin"];
         }
     }
 }

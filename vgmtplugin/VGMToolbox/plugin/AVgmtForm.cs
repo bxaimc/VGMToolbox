@@ -18,32 +18,11 @@ namespace VGMToolbox.plugin
         protected TreeNode menuTreeNode;
         protected bool errorFound;
 
-        private IVgmtBackgroundWorker backgroundWorker;
-        private string beginMessage;        
-        private string cancelMessage;        
-        private string completeMessage;
+        protected IVgmtBackgroundWorker backgroundWorker;
+        protected string beginMessage;
+        protected string cancelMessage;
+        protected string completeMessage;
 
-        protected IVgmtBackgroundWorker BackgroundWorker
-        {
-            get { return backgroundWorker; }
-            set { backgroundWorker = value; }
-        }        
-        protected string BeginMessage
-        {
-            get { return beginMessage; }
-            set { beginMessage = value; }
-        }        
-        protected string CancelMessage
-        {
-            get { return cancelMessage; }
-            set { cancelMessage = value; }
-        }        
-        protected string CompleteMessage
-        {
-            get { return completeMessage; }
-            set { completeMessage = value; }
-        }
-        
         protected AVgmtForm()
         {
             menuTreeNode = null;
@@ -54,7 +33,6 @@ namespace VGMToolbox.plugin
 
             InitializeComponent();
         }
-        
         protected AVgmtForm(TreeNode pTreeNode)
         {
             menuTreeNode = pTreeNode;
@@ -72,7 +50,6 @@ namespace VGMToolbox.plugin
             pTreeNode.BackColor = Color.White;
             pTreeNode.ForeColor = Color.Black;
         }
-        
         protected void setNodeAsWorking()
         {
             // set colors to indicate a working status
@@ -82,7 +59,6 @@ namespace VGMToolbox.plugin
                 menuTreeNode.ForeColor = Color.Black;
             }
         }
-        
         protected void setNodeAsComplete()
         {
             if (errorFound)
@@ -99,7 +75,6 @@ namespace VGMToolbox.plugin
                 }
             }
         }
-        
         protected void setNodeAsError()
         {
             // set colors to indicate a error status
@@ -109,7 +84,6 @@ namespace VGMToolbox.plugin
                 menuTreeNode.ForeColor = Color.White;
             }
         }
-        
         protected void showElapsedTime()
         {
             this.elapsedTimeEnd = DateTime.Now;
@@ -260,6 +234,11 @@ namespace VGMToolbox.plugin
         {
             errorFound = false;
 
+            this.backgroundWorker = getBackgroundWorker();
+            this.cancelMessage = getCancelMessage();
+            this.completeMessage = getCompleteMessage();
+            this.beginMessage = getBeginMessage();
+
             this.toolStripStatusLabel1.Text = this.beginMessage;
             this.tbOutput.Clear();
 
@@ -268,7 +247,6 @@ namespace VGMToolbox.plugin
             this.elapsedTimeStart = DateTime.Now;
             this.showElapsedTime();
         }
-        
         protected virtual void backgroundWorker_WorkComplete(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Cancelled)
@@ -285,7 +263,6 @@ namespace VGMToolbox.plugin
             // update node color
             this.setNodeAsComplete();
         }
-        
         protected virtual void backgroundWorker_Cancel(object sender, EventArgs e)
         {
             if (backgroundWorker != null && backgroundWorker.IsBusy)
@@ -295,7 +272,6 @@ namespace VGMToolbox.plugin
                 this.errorFound = true;
             }
         }
-        
         protected void backgroundWorker_Execute(object argument)
         {
             try
@@ -311,5 +287,11 @@ namespace VGMToolbox.plugin
 
             backgroundWorker.RunWorkerAsync(argument);
         }
+
+        // to be abstract
+        protected abstract IVgmtBackgroundWorker getBackgroundWorker();
+        protected abstract string getCancelMessage();
+        protected abstract string getCompleteMessage();
+        protected abstract string getBeginMessage();
     }
 }

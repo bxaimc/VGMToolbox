@@ -21,14 +21,7 @@ namespace VGMToolbox.forms.audit
                 ConfigurationSettings.AppSettings["Form_AuditRebuilder_DoTaskButton"];
             this.tbOutput.Text =
                 ConfigurationSettings.AppSettings["Form_AuditRebuilder_IntroText"];
-            
             InitializeComponent();
-
-            // messages
-            this.BackgroundWorker = new RebuilderWorker();
-            this.BeginMessage = ConfigurationSettings.AppSettings["Form_AuditRebuilder_MessageBegin"];
-            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_AuditRebuilder_MessageComplete"];
-            this.CancelMessage = ConfigurationSettings.AppSettings["Form_AuditRebuilder_MessageCancel"];
 
             grpRebuilder_Directories.Text =
                 ConfigurationSettings.AppSettings["Form_AuditRebuilder_GroupDirectories"];
@@ -151,6 +144,23 @@ namespace VGMToolbox.forms.audit
                 cbRebuilder_Overwrite.Checked = false;
                 cbRebuilder_CompressOutput.Checked = false;
             }
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new RebuilderWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_AuditRebuilder_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_AuditRebuilder_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_AuditRebuilder_MessageBegin"];
         }
     }
 }

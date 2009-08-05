@@ -22,12 +22,6 @@ namespace VGMToolbox.forms.xsf
 
             InitializeComponent();
 
-            // messages
-            this.BackgroundWorker = new Bin2PsfWorker();
-            this.BeginMessage = ConfigurationSettings.AppSettings["Form_Bin2PsfFE_MessageBegin"];
-            this.CompleteMessage = ConfigurationSettings.AppSettings["Form_Bin2PsfFE_MessageComplete"];
-            this.CancelMessage = ConfigurationSettings.AppSettings["Form_Bin2PsfFE_MessageCancel"];
-
             this.grpSource.Text =
                 ConfigurationSettings.AppSettings["Form_Bin2PsfFE_GroupSource"];
             this.lblDriverPath.Text =
@@ -100,6 +94,23 @@ namespace VGMToolbox.forms.xsf
                 tbPsflibName.ReadOnly = true;
                 tbPsflibName.Clear();
             }
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            return new Bin2PsfWorker();
+        }
+        protected override string getCancelMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_Bin2PsfFE_MessageCancel"];
+        }
+        protected override string getCompleteMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_Bin2PsfFE_MessageComplete"];
+        }
+        protected override string getBeginMessage()
+        {
+            return ConfigurationSettings.AppSettings["Form_Bin2PsfFE_MessageBegin"];
         }
 
         private void loadGenericDriversList()
