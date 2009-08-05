@@ -560,7 +560,7 @@ namespace VGMToolbox
             /////////////////////////
             // EASY DRIVER EXTRACTOR
             /////////////////////////
-            TreeNode easyDriverExtractorNode = new TreeNode("Easy Driver Data Extractor");
+            TreeNode easyDriverExtractorNode = new TreeNode("Easy PSF Driver Extractor");
 
             // Add Form
             EasyPsfDriverExtractorForm easyPsfDriverExtractorForm = 
