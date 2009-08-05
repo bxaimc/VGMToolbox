@@ -557,6 +557,19 @@ namespace VGMToolbox
             nodeTag.FormClass = xsf_PsxSeqExtractForm.GetType().Name;
             xsf_SeqExtractNode.Tag = nodeTag;
 
+            /////////////////////////
+            // EASY DRIVER EXTRACTOR
+            /////////////////////////
+            TreeNode easyDriverExtractorNode = new TreeNode("Easy Driver Data Extractor");
+
+            // Add Form
+            EasyPsfDriverExtractorForm easyPsfDriverExtractorForm = 
+                new EasyPsfDriverExtractorForm(easyDriverExtractorNode);
+            this.splitContainer1.Panel2.Controls.Add(easyPsfDriverExtractorForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = easyPsfDriverExtractorForm.GetType().Name;
+            easyDriverExtractorNode.Tag = nodeTag;
 
             // SSFMAKE
             TreeNode xsf_SsfMakeFENode = 
@@ -647,6 +660,7 @@ namespace VGMToolbox
             psf_RootNode.Nodes.Add(psfStubCreatorNode);
             psf_RootNode.Nodes.Add(xsf_SeqExtractNode);
             psf_RootNode.Nodes.Add(vabSplitterNode);
+            psf_RootNode.Nodes.Add(easyDriverExtractorNode);
             xsf_RootNode.Nodes.Add(psf_RootNode);
 
             psf2_RootNode.NodeFont = this.treeviewBoldFont;
