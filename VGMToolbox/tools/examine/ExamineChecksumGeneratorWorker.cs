@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -16,10 +17,14 @@ namespace VGMToolbox.tools.examine
 {
     class ExamineChecksumGeneratorWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
+        private Dictionary<string, string[]> duplicateCheckHashStandard;
+        private Dictionary<string, string[]> duplicateCheckHashVgmt;
+        
         public struct ExamineChecksumGeneratorStruct : IVgmtWorkerStruct
         {
             public bool DoVgmtChecksums;
-            
+            public bool CheckForDuplicates;
+
             private string[] sourcePaths;
             public string[] SourcePaths
             {
@@ -28,7 +33,12 @@ namespace VGMToolbox.tools.examine
             }
         }
 
-        public ExamineChecksumGeneratorWorker() : base() { }
+        public ExamineChecksumGeneratorWorker() : 
+            base() 
+        { 
+            duplicateCheckHashStandard = new Dictionary<string,string[]>(StringComparer.InvariantCultureIgnoreCase);
+            duplicateCheckHashVgmt = new Dictionary<string, string[]>(StringComparer.InvariantCultureIgnoreCase);
+        }
 
         protected override void DoTaskForFile(string pPath,
             IVgmtWorkerStruct pExamineChecksumGeneratorStruct, DoWorkEventArgs e)
@@ -43,7 +53,9 @@ namespace VGMToolbox.tools.examine
             string vgmtCrc32 = "Not implemented for this format.";
             string vgmtMd5 = "Not implemented for this format.";
             string vgmtSha1 = "Not implemented for this format.";
-            
+
+            string checksumKey;
+
             Type formatType = null;
             IFormat vgmData = null;
 
@@ -52,6 +64,12 @@ namespace VGMToolbox.tools.examine
                 crc32 = ChecksumUtil.GetCrc32OfFullFile(fs);
                 md5 = ChecksumUtil.GetMd5OfFullFile(fs);
                 sha1 = ChecksumUtil.GetSha1OfFullFile(fs);
+
+                if (examineChecksumGeneratorStruct.CheckForDuplicates)
+                {
+                    checksumKey = String.Format("{0}/{1}/{2}", crc32, md5, sha1);
+                    this.addChecksumToHash(checksumKey, pPath, true);
+                }
 
                 formatType = FormatUtil.getObjectType(fs);
                 if (formatType != null)
@@ -82,6 +100,12 @@ namespace VGMToolbox.tools.examine
                 vgmtMd5 = ParseFile.ByteArrayToString(md5Hash.Hash);
                 vgmtSha1 = ParseFile.ByteArrayToString(sha1Hash.Hash);
 
+                if (examineChecksumGeneratorStruct.CheckForDuplicates)
+                {
+                    checksumKey = String.Format("{0}/{1}/{2}", vgmtCrc32, vgmtMd5, vgmtSha1);
+                    this.addChecksumToHash(checksumKey, pPath, false);
+                }
+
                 md5FileStream.Close();
                 md5FileStream.Dispose();
                 sha1FileStream.Close();
@@ -109,6 +133,85 @@ namespace VGMToolbox.tools.examine
             progressStruct.GenericMessage += Environment.NewLine;
 
             ReportProgress(this.Progress, progressStruct);
+        }
+
+        protected override void DoFinalTask(IVgmtWorkerStruct pExamineChecksumGeneratorStruct) 
+        {
+            ExamineChecksumGeneratorStruct examineChecksumGeneratorStruct =
+                (ExamineChecksumGeneratorStruct)pExamineChecksumGeneratorStruct;
+
+            string headerFormat = "The following duplicates were found using {0} checksums." + Environment.NewLine +
+                "(CRC32/MD5/SHA1)";
+
+            if (examineChecksumGeneratorStruct.CheckForDuplicates)
+            {
+                this.outputDuplicatesForDictionary(
+                    this.duplicateCheckHashStandard, String.Format(headerFormat, "standard"));
+
+                if (examineChecksumGeneratorStruct.DoVgmtChecksums)
+                {
+                    this.outputDuplicatesForDictionary(
+                        this.duplicateCheckHashVgmt, String.Format(headerFormat, "VGMToolbox method"));                
+                }
+            
+            }
+        }
+
+        private void outputDuplicatesForDictionary(Dictionary<string,string[]> hashList, string hashLabel)
+        { 
+            StringBuilder duplicateList = new StringBuilder();
+            string[] paths;
+
+            duplicateList.AppendFormat("{0}:{1}", hashLabel, Environment.NewLine);
+            
+            foreach (string key in hashList.Keys)
+            {
+                paths = hashList[key];
+
+                if (paths.Length > 1)
+                {
+                    duplicateList.AppendFormat("{0}:{1}", key, Environment.NewLine);
+                    
+                    foreach (string s in paths)
+                    {
+                        duplicateList.AppendFormat("  {0}{1}", s, Environment.NewLine);
+                    }
+                }
+            }
+
+            this.progressStruct.Clear();
+            progressStruct.GenericMessage = duplicateList.ToString();
+            ReportProgress(Constants.ProgressMessageOnly, progressStruct);
+        }
+
+
+        private void addChecksumToHash(string checksum, string path, bool isStandardChecksum)
+        {
+            ArrayList paths = new ArrayList();
+            
+            if (isStandardChecksum)
+            {
+                if (this.duplicateCheckHashStandard.ContainsKey(checksum))
+                {
+                    paths = new ArrayList(this.duplicateCheckHashStandard[checksum]);
+                    
+                }
+
+                paths.Add(path);
+                this.duplicateCheckHashStandard[checksum] = (string[])paths.ToArray(typeof(string));
+            }
+            else
+            {
+                // do VGMT checksums
+                if (this.duplicateCheckHashVgmt.ContainsKey(checksum))
+                {
+                    paths = new ArrayList(this.duplicateCheckHashVgmt[checksum]);
+
+                }
+
+                paths.Add(path);
+                this.duplicateCheckHashVgmt[checksum] = (string[])paths.ToArray(typeof(string));            
+            }
         }
     }
 }

@@ -27,6 +27,7 @@ namespace VGMToolbox.forms.examine
             this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_ChecksumCalculator_GroupSourceFiles"];
             this.grpOptions.Text = ConfigurationSettings.AppSettings["Form_ChecksumCalculator_GroupOptions"];
             this.cbDoVgmtChecksums.Text = ConfigurationSettings.AppSettings["Form_ChecksumCalculator_CheckBoxDoVgmtChecksums"];
+            this.checkForDuplicatesFlag.Text = ConfigurationSettings.AppSettings["Form_ChecksumCalculator_CheckBoxCheckForDuplicates"];
 
             this.btnDoTask.Hide();
         }
@@ -39,6 +40,7 @@ namespace VGMToolbox.forms.examine
                 new ExamineChecksumGeneratorWorker.ExamineChecksumGeneratorStruct();
             crcStruct.SourcePaths = s;
             crcStruct.DoVgmtChecksums = cbDoVgmtChecksums.Checked;
+            crcStruct.CheckForDuplicates = checkForDuplicatesFlag.Checked;
 
             base.backgroundWorker_Execute(crcStruct);
         }

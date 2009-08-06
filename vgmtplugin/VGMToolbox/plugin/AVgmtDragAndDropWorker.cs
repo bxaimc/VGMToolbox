@@ -77,8 +77,20 @@ namespace VGMToolbox.plugin
                         return;
                     }
                 }
-            }            
-            
+            }
+
+            try
+            {
+                DoFinalTask(pTaskStruct);
+            }
+            catch (Exception ex2)
+            {
+                this.progressStruct.Clear();
+                this.progressStruct.ErrorMessage =
+                    String.Format(CultureInfo.CurrentCulture, "Error performing final task.  Error received: {0}{1}", ex2.Message, Environment.NewLine);
+                ReportProgress(this.progress, this.progressStruct);
+            }
+
             return;
         }
 
@@ -140,6 +152,11 @@ namespace VGMToolbox.plugin
         }
         
         protected virtual void DoFinally() { }
+
+        /// <summary>
+        /// Performs a final task for the worker.  Outputting a report, for example.
+        /// </summary>
+        protected virtual void DoFinalTask(IVgmtWorkerStruct pTaskStruct) { }
 
         // abstract methods
         protected abstract void DoTaskForFile(string pPath, IVgmtWorkerStruct pTaskStruct, DoWorkEventArgs e);
