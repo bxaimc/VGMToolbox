@@ -27,8 +27,12 @@ namespace VGMToolbox.forms.audit
 
             this.gbHeader.Text = ConfigurationSettings.AppSettings["Form_AuditDatafileCreator_GroupHeader"];
             this.gbSourceDestPaths.Text = ConfigurationSettings.AppSettings["Form_AuditDatafileCreator_GroupSourceDestination"];
-
             this.lblHeaderName.Text = ConfigurationSettings.AppSettings["Form_AuditDatafileCreator_LblHeaderName"];
+
+            this.grpOptions.Text = "Options";
+            this.cbUseNormalChecksum.Text = "Use normal checksums and sizes (No VGMToolbox methods used).";
+            this.cbMd5Sha1.Text = "Include MD5/SHA1";
+            this.cbMd5Sha1.Hide();
         }
 
         private void btnDatCreator_BuildDat_Click(object sender, EventArgs e)
@@ -44,6 +48,8 @@ namespace VGMToolbox.forms.audit
                 vGetGameParamsStruct.pDir = tbDatCreator_SourceFolder.Text;
                 vGetGameParamsStruct.pOutputMessage = "";
                 vGetGameParamsStruct.totalFiles = Directory.GetFiles(tbDatCreator_SourceFolder.Text, "*.*", SearchOption.AllDirectories).Length;
+                vGetGameParamsStruct.UseNormalChecksums = this.cbUseNormalChecksum.Checked;
+                vGetGameParamsStruct.AddMd5Sha1 = this.cbMd5Sha1.Checked;
 
                 datCreator = new DatafileCreatorWorker();
                 datCreator.ProgressChanged += backgroundWorker_ReportProgress;

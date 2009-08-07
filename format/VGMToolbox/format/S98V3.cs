@@ -70,7 +70,7 @@ namespace VGMToolbox.format
 
             // check this
             this.data = ParseFile.ParseSimpleOffset(pStream, V3_DEVICE_INFO_OFFSET, tagOffset - V3_DEVICE_INFO_OFFSET);
-            
+
             this.parseTagData();
             this.addDevicesToHash();
         }
@@ -83,14 +83,14 @@ namespace VGMToolbox.format
             {
                 this.v3Tags = FileUtil.ReplaceNullByteWithSpace(this.v3Tags);
 
-                System.Text.Encoding enc = System.Text.Encoding.ASCII;
-                tagsString = enc.GetString(this.v3Tags);
+                tagsString = VGMToolbox.util.Encoding.GetEncodedText(
+                    this.v3Tags, 
+                    VGMToolbox.util.Encoding.GetPredictedCodePageForTags(this.v3Tags));
 
                 // check for utf8 tag and reencode bytes if needed
                 if (tagsString.IndexOf(TAG_UTF8_INDICATOR) > -1)
                 {
-                    enc = System.Text.Encoding.UTF8;
-                    tagsString = enc.GetString(this.v3Tags);
+                    tagsString = System.Text.Encoding.UTF8.GetString(this.v3Tags);
                 }
 
                 string[] splitTags = tagsString.Trim().Split((char)0x0A);
@@ -216,8 +216,8 @@ namespace VGMToolbox.format
         public string GetXsfByTag() { return GetSimpleTag("s98by"); }
         public string GetSystemTag() { return GetSimpleTag("system"); }
 
-        private void SetSimpleTag(string pKey, string pNewValue)
-        {
+        private void SetSimpleTag(string pKey, string pNewValue, bool AddActionToBatchFile)
+        {            
             if (!String.IsNullOrEmpty(pNewValue) && !String.IsNullOrEmpty(pNewValue.Trim()))
             {
                 this.tagHash[pKey] = pNewValue.Trim();
@@ -228,19 +228,21 @@ namespace VGMToolbox.format
                 tagHash.Remove(pKey);
                 v3TagHash.Remove(pKey);
             }
+
+
         }
-        public void SetTitleTag(string pNewValue) { SetSimpleTag("title", pNewValue); }
-        public void SetArtistTag(string pNewValue) { SetSimpleTag("artist", pNewValue); }
-        public void SetGameTag(string pNewValue) { SetSimpleTag("game", pNewValue); }
-        public void SetYearTag(string pNewValue) { SetSimpleTag("year", pNewValue); }
-        public void SetGenreTag(string pNewValue) { SetSimpleTag("genre", pNewValue); }
-        public void SetCommentTag(string pNewValue) { SetSimpleTag("comment", pNewValue); }
-        public void SetCopyrightTag(string pNewValue) { SetSimpleTag("copyright", pNewValue); }
-        public void SetVolumeTag(string pNewValue) { SetSimpleTag("volume", pNewValue); }
-        public void SetLengthTag(string pNewValue) { SetSimpleTag("length", pNewValue); }
-        public void SetFadeTag(string pNewValue) { SetSimpleTag("fade", pNewValue); }
-        public void SetXsfByTag(string pNewValue) { SetSimpleTag("s98by", pNewValue); }
-        public void SetSystemTag(string pNewValue) { SetSimpleTag("system", pNewValue); }
+        public void SetTitleTag(string pNewValue, bool AddActionToBatchFile) { SetSimpleTag("title", pNewValue, AddActionToBatchFile); }
+        public void SetArtistTag(string pNewValue, bool AddActionToBatchFile) { SetSimpleTag("artist", pNewValue, AddActionToBatchFile); }
+        public void SetGameTag(string pNewValue, bool AddActionToBatchFile) { SetSimpleTag("game", pNewValue, AddActionToBatchFile); }
+        public void SetYearTag(string pNewValue, bool AddActionToBatchFile) { SetSimpleTag("year", pNewValue, AddActionToBatchFile); }
+        public void SetGenreTag(string pNewValue, bool AddActionToBatchFile) { SetSimpleTag("genre", pNewValue, AddActionToBatchFile); }
+        public void SetCommentTag(string pNewValue, bool AddActionToBatchFile) { SetSimpleTag("comment", pNewValue, AddActionToBatchFile); }
+        public void SetCopyrightTag(string pNewValue, bool AddActionToBatchFile) { SetSimpleTag("copyright", pNewValue, AddActionToBatchFile); }
+        public void SetVolumeTag(string pNewValue, bool AddActionToBatchFile) { SetSimpleTag("volume", pNewValue, AddActionToBatchFile); }
+        public void SetLengthTag(string pNewValue, bool AddActionToBatchFile) { SetSimpleTag("length", pNewValue, AddActionToBatchFile); }
+        public void SetFadeTag(string pNewValue, bool AddActionToBatchFile) { SetSimpleTag("fade", pNewValue, AddActionToBatchFile); }
+        public void SetXsfByTag(string pNewValue, bool AddActionToBatchFile) { SetSimpleTag("s98by", pNewValue, AddActionToBatchFile); }
+        public void SetSystemTag(string pNewValue, bool AddActionToBatchFile) { SetSimpleTag("system", pNewValue, AddActionToBatchFile); }
 
         public void UpdateTags()
         {
@@ -264,15 +266,11 @@ namespace VGMToolbox.format
                 // add new tags
                 using (FileStream fs = File.Open(retaggingFilePath, FileMode.Append, FileAccess.Write))
                 {
-                    System.Text.Encoding enc = System.Text.Encoding.ASCII;
                     byte[] dataToWrite;
 
                     // write [S98]
-                    dataToWrite = enc.GetBytes(ASCII_TAG);
+                    dataToWrite = System.Text.Encoding.ASCII.GetBytes(ASCII_TAG);
                     fs.Write(dataToWrite, 0, dataToWrite.Length);
-
-                    // change to UTF8 encoding
-                    enc = System.Text.Encoding.UTF8;
 
                     // add or update utf8=1 tag
                     this.tagHash["utf8"] = "1";
@@ -284,7 +282,7 @@ namespace VGMToolbox.format
 
                         foreach (string valueItem in splitValue)
                         {
-                            dataToWrite = enc.GetBytes(String.Format("{0}={1}", key, valueItem));
+                            dataToWrite = System.Text.Encoding.UTF8.GetBytes(String.Format("{0}={1}", key, valueItem));
                             fs.Write(dataToWrite, 0, dataToWrite.Length);
                             fs.WriteByte(0x0A);
                         }

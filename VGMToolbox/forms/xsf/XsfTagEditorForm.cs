@@ -47,6 +47,7 @@ namespace VGMToolbox.forms.xsf
             this.lblVolume.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblVolume"];
             this.grpComments.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_GrpComments"];
             this.cbDeleteEmpty.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_CbDeleteEmpty"];
+            this.cbAddToBatchFile.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_CheckboxCreateBatch"];
         }
 
         private void btnBrowseDirectory_Click(object sender, EventArgs e)
@@ -197,6 +198,7 @@ namespace VGMToolbox.forms.xsf
             xtUpdateStruct.RemoveEmptyTags = cbDeleteEmpty.Checked;
             xtUpdateStruct.IsBatchMode = this.isBatchMode;
             xtUpdateStruct.GenerateTitleFromFilename = this.cbGenerateTitleFromFilename.Checked;
+            xtUpdateStruct.AddToBatchFile = this.cbAddToBatchFile.Checked;
 
             xtUpdateStruct.TitleTag = this.tbTitle.Text;
             xtUpdateStruct.ArtistTag = this.tbArtist.Text;

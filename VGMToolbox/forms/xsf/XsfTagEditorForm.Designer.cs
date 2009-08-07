@@ -63,6 +63,7 @@
             this.cbDeleteEmpty = new System.Windows.Forms.CheckBox();
             this.contextMenuRefresh = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.refreshFileListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cbAddToBatchFile = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -75,30 +76,30 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 522);
-            this.pnlLabels.Size = new System.Drawing.Size(743, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 500);
+            this.pnlLabels.Size = new System.Drawing.Size(879, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(743, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(879, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 445);
-            this.tbOutput.Size = new System.Drawing.Size(743, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 423);
+            this.tbOutput.Size = new System.Drawing.Size(879, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 425);
-            this.pnlButtons.Size = new System.Drawing.Size(743, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 403);
+            this.pnlButtons.Size = new System.Drawing.Size(879, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(683, 0);
+            this.btnCancel.Location = new System.Drawing.Point(819, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(623, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(759, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpSourceFiles
@@ -108,7 +109,7 @@
             this.grpSourceFiles.Controls.Add(this.btnBrowseDirectory);
             this.grpSourceFiles.Location = new System.Drawing.Point(3, 29);
             this.grpSourceFiles.Name = "grpSourceFiles";
-            this.grpSourceFiles.Size = new System.Drawing.Size(229, 352);
+            this.grpSourceFiles.Size = new System.Drawing.Size(229, 303);
             this.grpSourceFiles.TabIndex = 7;
             this.grpSourceFiles.TabStop = false;
             this.grpSourceFiles.Text = "Source Files";
@@ -128,7 +129,7 @@
             this.lbFiles.Location = new System.Drawing.Point(6, 43);
             this.lbFiles.Name = "lbFiles";
             this.lbFiles.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lbFiles.Size = new System.Drawing.Size(215, 303);
+            this.lbFiles.Size = new System.Drawing.Size(215, 251);
             this.lbFiles.TabIndex = 5;
             this.lbFiles.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lbFiles_MouseUp);
             this.lbFiles.SelectedIndexChanged += new System.EventHandler(this.lbFiles_SelectedIndexChanged);
@@ -362,7 +363,7 @@
             // cbGenerateTitleFromFilename
             // 
             this.cbGenerateTitleFromFilename.AutoSize = true;
-            this.cbGenerateTitleFromFilename.Location = new System.Drawing.Point(238, 338);
+            this.cbGenerateTitleFromFilename.Location = new System.Drawing.Point(9, 338);
             this.cbGenerateTitleFromFilename.Name = "cbGenerateTitleFromFilename";
             this.cbGenerateTitleFromFilename.Size = new System.Drawing.Size(163, 17);
             this.cbGenerateTitleFromFilename.TabIndex = 19;
@@ -393,7 +394,7 @@
             // cbDeleteEmpty
             // 
             this.cbDeleteEmpty.AutoSize = true;
-            this.cbDeleteEmpty.Location = new System.Drawing.Point(238, 358);
+            this.cbDeleteEmpty.Location = new System.Drawing.Point(238, 338);
             this.cbDeleteEmpty.Name = "cbDeleteEmpty";
             this.cbDeleteEmpty.Size = new System.Drawing.Size(265, 17);
             this.cbDeleteEmpty.TabIndex = 23;
@@ -405,20 +406,32 @@
             this.contextMenuRefresh.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.refreshFileListToolStripMenuItem});
             this.contextMenuRefresh.Name = "contextMenuStrip1";
-            this.contextMenuRefresh.Size = new System.Drawing.Size(162, 48);
+            this.contextMenuRefresh.Size = new System.Drawing.Size(151, 26);
             // 
             // refreshFileListToolStripMenuItem
             // 
             this.refreshFileListToolStripMenuItem.Name = "refreshFileListToolStripMenuItem";
-            this.refreshFileListToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.refreshFileListToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.refreshFileListToolStripMenuItem.Text = "Refresh File List";
             this.refreshFileListToolStripMenuItem.Click += new System.EventHandler(this.refreshFileListToolStripMenuItem_Click);
             // 
-            // Xsf_XsfTagEditorForm
+            // cbAddToBatchFile
+            // 
+            this.cbAddToBatchFile.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.cbAddToBatchFile.Location = new System.Drawing.Point(238, 361);
+            this.cbAddToBatchFile.Name = "cbAddToBatchFile";
+            this.cbAddToBatchFile.Size = new System.Drawing.Size(278, 36);
+            this.cbAddToBatchFile.TabIndex = 24;
+            this.cbAddToBatchFile.Text = "Build psfpoint.exe batch file for all values in changed files (S98v3 not supporte" +
+                "d).";
+            this.cbAddToBatchFile.UseVisualStyleBackColor = true;
+            // 
+            // XsfTagEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(743, 563);
+            this.ClientSize = new System.Drawing.Size(879, 541);
+            this.Controls.Add(this.cbAddToBatchFile);
             this.Controls.Add(this.cbGenerateTitleFromFilename);
             this.Controls.Add(this.cbDeleteEmpty);
             this.Controls.Add(this.grpComments);
@@ -437,6 +450,7 @@
             this.Controls.SetChildIndex(this.grpComments, 0);
             this.Controls.SetChildIndex(this.cbDeleteEmpty, 0);
             this.Controls.SetChildIndex(this.cbGenerateTitleFromFilename, 0);
+            this.Controls.SetChildIndex(this.cbAddToBatchFile, 0);
             this.pnlLabels.ResumeLayout(false);
             this.pnlLabels.PerformLayout();
             this.pnlTitle.ResumeLayout(false);
@@ -493,5 +507,6 @@
         private System.Windows.Forms.CheckBox cbGenerateTitleFromFilename;
         private System.Windows.Forms.ContextMenuStrip contextMenuRefresh;
         private System.Windows.Forms.ToolStripMenuItem refreshFileListToolStripMenuItem;
+        private System.Windows.Forms.CheckBox cbAddToBatchFile;
     }
 }

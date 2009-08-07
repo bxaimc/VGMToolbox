@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace VGMToolbox.format
@@ -19,18 +20,18 @@ namespace VGMToolbox.format
         string GetFadeTag();
         string GetSystemTag();
 
-        void SetTitleTag(string pNewValue);
-        void SetArtistTag(string pNewValue);
-        void SetGameTag(string pNewValue);
-        void SetYearTag(string pNewValue);
-        void SetGenreTag(string pNewValue);
-        void SetCommentTag(string pNewValue);
-        void SetCopyrightTag(string pNewValue);
-        void SetXsfByTag(string pNewValue);
-        void SetVolumeTag(string pNewValue);
-        void SetLengthTag(string pNewValue);
-        void SetFadeTag(string pNewValue);
-        void SetSystemTag(string pNewValue);
+        void SetTitleTag(string pNewValue, bool AddActionToBatchFile);
+        void SetArtistTag(string pNewValue, bool AddActionToBatchFile);
+        void SetGameTag(string pNewValue, bool AddActionToBatchFile);
+        void SetYearTag(string pNewValue, bool AddActionToBatchFile);
+        void SetGenreTag(string pNewValue, bool AddActionToBatchFile);
+        void SetCommentTag(string pNewValue, bool AddActionToBatchFile);
+        void SetCopyrightTag(string pNewValue, bool AddActionToBatchFile);
+        void SetXsfByTag(string pNewValue, bool AddActionToBatchFile);
+        void SetVolumeTag(string pNewValue, bool AddActionToBatchFile);
+        void SetLengthTag(string pNewValue, bool AddActionToBatchFile);
+        void SetFadeTag(string pNewValue, bool AddActionToBatchFile);
+        void SetSystemTag(string pNewValue, bool AddActionToBatchFile);
 
         void UpdateTags();
     }

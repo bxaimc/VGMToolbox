@@ -26,6 +26,9 @@ namespace VGMToolbox.auditing
             public string pDir; 
             public string pOutputMessage; 
             public int totalFiles;
+
+            public bool UseNormalChecksums;
+            public bool AddMd5Sha1;
         }
         
         public DatafileCreatorWorker()
@@ -56,7 +59,7 @@ namespace VGMToolbox.auditing
             return datHeader;
         }
 
-        public rom buildRom(string pDirectory, string pFileName)
+        public rom buildRom(string pDirectory, string pFileName, GetGameParamsStruct pGetGameParamsStruct)
         {
             string path = pFileName.Substring((pDirectory.LastIndexOf(this.dir) + this.dir.Length));
             FileStream fs = File.OpenRead(pFileName);
@@ -80,7 +83,7 @@ namespace VGMToolbox.auditing
             fs.Seek(0, SeekOrigin.Begin);                  // Return to start of stream
             rom romfile = new rom();
 
-            if (formatType != null)
+            if (!pGetGameParamsStruct.UseNormalChecksums && (formatType != null))
             {
                 try
                 {
@@ -132,12 +135,13 @@ namespace VGMToolbox.auditing
                     ChecksumUtil.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
                 }
             }
-
             else
             {
                 // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
                 //    ref md5CryptoStream, ref sha1CryptoStream);
+                
                 ChecksumUtil.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
+                romfile.size = fs.Length.ToString();
             }
 
             /*
@@ -210,7 +214,7 @@ namespace VGMToolbox.auditing
 
                                 try
                                 {
-                                    romfile = buildRom(d, f);
+                                    romfile = buildRom(d, f, pGetGameParamsStruct);
                                     if (romfile.name != null)
                                     {
                                         // Convert to use Array of rom?

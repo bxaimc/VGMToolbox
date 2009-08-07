@@ -19,6 +19,7 @@ namespace VGMToolbox.format
         private const string FORMAT_ABBREVIATION = "PSF";
 
         private const int READ_CHUNK_SIZE = 71680;
+        public const string PSF_POINT_BATCH_FILENAME = "psfpoint_batch_vgmt.bat";
 
         public const ushort Version2sf = 0x24;
         public const ushort VersionDsf = 0x12;
@@ -407,15 +408,15 @@ namespace VGMToolbox.format
                 /* This is a hack for improper tags, see Lost Vikings II SNSF set.  Official spec
                  *   does not allow null values (0x00) */
                 tagBytes = FileUtil.ReplaceNullByteWithSpace(tagBytes);
-                
-                System.Text.Encoding enc = System.Text.Encoding.ASCII;
-                tagsString = enc.GetString(tagBytes);
-                
+
+                tagsString = VGMToolbox.util.Encoding.GetEncodedText(
+                    tagBytes,
+                    VGMToolbox.util.Encoding.GetPredictedCodePageForTags(tagBytes));
+                                
                 // check for utf8 tag and reencode bytes if needed
                 if (tagsString.IndexOf(TAG_UTF8_INDICATOR) > -1)
                 {
-                    enc = System.Text.Encoding.UTF8;
-                    tagsString = enc.GetString(tagBytes);
+                    tagsString = System.Text.Encoding.UTF8.GetString(tagBytes);
                 }
 
                 string[] splitTags = tagsString.Trim().Split((char)0x0A);
@@ -454,7 +455,7 @@ namespace VGMToolbox.format
             this.tagHash = this.getTags(pBytes);         
         }
 
-        public virtual void Initialize(Stream pStream, string pFilePath)                 
+        public virtual void Initialize(Stream pStream, string pFilePath)
         {
             this.filePath = pFilePath;
             this.asciiSignature = this.getSignatureTag(pStream);
@@ -604,29 +605,96 @@ namespace VGMToolbox.format
             return this.GetSimpleTag(format + "by");         
         }
 
-        private void SetSimpleTag(string pKey, string pNewValue)
+        private void SetSimpleTag(string pKey, string pNewValue, bool AddActionToBatchFile)
         {
+            string batchFilePath;
+            string batchFileLine;
+            string batchValue = String.Empty;            
+            
             if (!String.IsNullOrEmpty(pNewValue) && !String.IsNullOrEmpty(pNewValue.Trim()))
             {
-                this.tagHash[pKey] = pNewValue.Trim();
+                batchValue = pNewValue.Trim();
+                this.tagHash[pKey] = batchValue;
+                
             }
             else if (this.tagHash.ContainsKey(pKey))
             {
                 this.tagHash.Remove(pKey);
             }
+
+            if (AddActionToBatchFile)
+            {
+                // add to output batch file
+                batchFilePath = Path.Combine(Path.GetDirectoryName(this.filePath), Xsf.PSF_POINT_BATCH_FILENAME);
+                batchFileLine = String.Format("psfpoint.exe -{0}=\"{1}\" \"{2}\"", pKey, batchValue, Path.GetFileName(this.filePath));
+
+                using (FileStream fs = File.Open(batchFilePath, FileMode.Append, FileAccess.Write))
+                {
+                    using (StreamWriter sw = new StreamWriter(fs, System.Text.Encoding.UTF8))
+                    {
+                        sw.WriteLine(batchFileLine);
+                    }
+                }
+            }
         }
-        public void SetTitleTag(string pNewValue) { this.SetSimpleTag("title", pNewValue); }
-        public void SetArtistTag(string pNewValue) { this.SetSimpleTag("artist", pNewValue); }
-        public void SetGameTag(string pNewValue) { this.SetSimpleTag("game", pNewValue); }
-        public void SetYearTag(string pNewValue) { this.SetSimpleTag("year", pNewValue); }
-        public void SetGenreTag(string pNewValue) { this.SetSimpleTag("genre", pNewValue); }
-        public void SetCommentTag(string pNewValue) { this.SetSimpleTag("comment", pNewValue); }
-        public void SetCopyrightTag(string pNewValue) { this.SetSimpleTag("copyright", pNewValue); }
-        public void SetVolumeTag(string pNewValue) { this.SetSimpleTag("volume", pNewValue); }
-        public void SetLengthTag(string pNewValue) { this.SetSimpleTag("length", pNewValue); }
-        public void SetFadeTag(string pNewValue) { this.SetSimpleTag("fade", pNewValue); }
-        public void SetSystemTag(string pNewValue) { this.SetSimpleTag("system", pNewValue); }
-        public void SetXsfByTag(string pNewValue) 
+        
+        // Set Tags Methods
+        public void SetTitleTag(string pNewValue, bool AddActionToBatchFile) 
+        {
+            this.SetSimpleTag("title", pNewValue, AddActionToBatchFile); 
+        }
+        
+        public void SetArtistTag(string pNewValue, bool AddActionToBatchFile) 
+        {
+            this.SetSimpleTag("artist", pNewValue, AddActionToBatchFile); 
+        }
+        
+        public void SetGameTag(string pNewValue, bool AddActionToBatchFile) 
+        {
+            this.SetSimpleTag("game", pNewValue, AddActionToBatchFile); 
+        }
+        
+        public void SetYearTag(string pNewValue, bool AddActionToBatchFile) 
+        {
+            this.SetSimpleTag("year", pNewValue, AddActionToBatchFile);
+        }
+        
+        public void SetGenreTag(string pNewValue, bool AddActionToBatchFile) 
+        {
+            this.SetSimpleTag("genre", pNewValue, AddActionToBatchFile);
+        }
+        
+        public void SetCommentTag(string pNewValue, bool AddActionToBatchFile)
+        { 
+            this.SetSimpleTag("comment", pNewValue, AddActionToBatchFile); 
+        }
+        
+        public void SetCopyrightTag(string pNewValue, bool AddActionToBatchFile) 
+        {
+            this.SetSimpleTag("copyright", pNewValue, AddActionToBatchFile);
+        }
+        
+        public void SetVolumeTag(string pNewValue, bool AddActionToBatchFile) 
+        {
+            this.SetSimpleTag("volume", pNewValue, AddActionToBatchFile);
+        }
+        
+        public void SetLengthTag(string pNewValue, bool AddActionToBatchFile) 
+        {
+            this.SetSimpleTag("length", pNewValue, AddActionToBatchFile); 
+        }
+        
+        public void SetFadeTag(string pNewValue, bool AddActionToBatchFile) 
+        {
+            this.SetSimpleTag("fade", pNewValue, AddActionToBatchFile);
+        }
+        
+        public void SetSystemTag(string pNewValue, bool AddActionToBatchFile) 
+        {
+            this.SetSimpleTag("system", pNewValue, AddActionToBatchFile);
+        }
+        
+        public void SetXsfByTag(string pNewValue, bool AddActionToBatchFile) 
         { 
             string format = this.GetFormat();
 
@@ -635,7 +703,7 @@ namespace VGMToolbox.format
                 format = FormatNamePsf;
             }
 
-            this.SetSimpleTag(format.ToLower() + "by", pNewValue); 
+            this.SetSimpleTag(format.ToLower() + "by", pNewValue, AddActionToBatchFile); 
         }
 
         public void UpdateTags()
@@ -665,16 +733,12 @@ namespace VGMToolbox.format
                 // add new tags
                 using (FileStream fs = File.Open(retaggingFilePath, FileMode.Append, FileAccess.Write))
                 {
-                    System.Text.Encoding enc = System.Text.Encoding.ASCII;
                     byte[] dataToWrite;
 
                     // write [TAG]
-                    dataToWrite = enc.GetBytes(ASCII_TAG);
+                    dataToWrite = System.Text.Encoding.ASCII.GetBytes(ASCII_TAG);
                     fs.Write(dataToWrite, 0, dataToWrite.Length);
-                    
-                    // change to UTF8 encoding
-                    enc = System.Text.Encoding.UTF8;
-                    
+                                        
                     // add or update utf8=1 tag
                     this.tagHash["utf8"] = "1";
                     
@@ -684,7 +748,7 @@ namespace VGMToolbox.format
 
                         foreach (string valueItem in splitValue)
                         {
-                            dataToWrite = enc.GetBytes(String.Format("{0}={1}", key, valueItem));
+                            dataToWrite = System.Text.Encoding.UTF8.GetBytes(String.Format("{0}={1}", key, valueItem));
                             fs.Write(dataToWrite, 0, dataToWrite.Length);
                             fs.WriteByte(0x0A);
                         }

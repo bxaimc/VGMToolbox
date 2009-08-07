@@ -116,5 +116,26 @@ namespace VGMToolbox.util
             }
             return BitConverter.ToUInt16(workingArray, 0);
         }
+
+        /// <summary>
+        /// Predicts Code Page between Cyrillic and Shift-JIS based on whether high ASCII is included or not.
+        /// </summary>
+        /// <param name="tagBytes">Bytes containing the tags in an unknown language.</param>
+        /// <returns>Integer representing the predicted code page.</returns>
+        public static int GetPredictedCodePageForTags(byte[] tagBytes)
+        {
+            int predictedCodePage = CodePageUnitedStates;
+
+            foreach (byte b in tagBytes)
+            {
+                if ((int)b > 0x7F)
+                {
+                    predictedCodePage = CodePageJapan;
+                    break;
+                }
+            }
+
+            return predictedCodePage;
+        }
     }
 }

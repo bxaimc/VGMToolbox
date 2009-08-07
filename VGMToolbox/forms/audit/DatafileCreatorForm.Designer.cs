@@ -57,40 +57,44 @@
             this.lblDatCreator_SourceFolder = new System.Windows.Forms.Label();
             this.tbDatCreator_SourceFolder = new System.Windows.Forms.TextBox();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.grpOptions = new System.Windows.Forms.GroupBox();
+            this.cbUseNormalChecksum = new System.Windows.Forms.CheckBox();
+            this.cbMd5Sha1 = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
             this.gbHeader.SuspendLayout();
             this.gbSourceDestPaths.SuspendLayout();
+            this.grpOptions.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 529);
-            this.pnlLabels.Size = new System.Drawing.Size(868, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 501);
+            this.pnlLabels.Size = new System.Drawing.Size(645, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(868, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(645, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 452);
-            this.tbOutput.Size = new System.Drawing.Size(868, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 424);
+            this.tbOutput.Size = new System.Drawing.Size(645, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 432);
-            this.pnlButtons.Size = new System.Drawing.Size(868, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 404);
+            this.pnlButtons.Size = new System.Drawing.Size(645, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(808, 0);
+            this.btnCancel.Location = new System.Drawing.Point(585, 0);
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(748, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(525, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDatCreator_BuildDat_Click);
             // 
             // gbHeader
@@ -118,7 +122,7 @@
             this.gbHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.gbHeader.Location = new System.Drawing.Point(0, 23);
             this.gbHeader.Name = "gbHeader";
-            this.gbHeader.Size = new System.Drawing.Size(868, 140);
+            this.gbHeader.Size = new System.Drawing.Size(645, 140);
             this.gbHeader.TabIndex = 5;
             this.gbHeader.TabStop = false;
             this.gbHeader.Text = "Header Information";
@@ -294,7 +298,7 @@
             this.gbSourceDestPaths.Dock = System.Windows.Forms.DockStyle.Top;
             this.gbSourceDestPaths.Location = new System.Drawing.Point(0, 163);
             this.gbSourceDestPaths.Name = "gbSourceDestPaths";
-            this.gbSourceDestPaths.Size = new System.Drawing.Size(868, 94);
+            this.gbSourceDestPaths.Size = new System.Drawing.Size(645, 94);
             this.gbSourceDestPaths.TabIndex = 6;
             this.gbSourceDestPaths.TabStop = false;
             this.gbSourceDestPaths.Text = "Source/Destination";
@@ -351,11 +355,44 @@
             this.tbDatCreator_SourceFolder.Size = new System.Drawing.Size(259, 20);
             this.tbDatCreator_SourceFolder.TabIndex = 9;
             // 
-            // Auditing_DatafileCreatorForm
+            // grpOptions
+            // 
+            this.grpOptions.Controls.Add(this.cbMd5Sha1);
+            this.grpOptions.Controls.Add(this.cbUseNormalChecksum);
+            this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpOptions.Location = new System.Drawing.Point(0, 257);
+            this.grpOptions.Name = "grpOptions";
+            this.grpOptions.Size = new System.Drawing.Size(645, 62);
+            this.grpOptions.TabIndex = 7;
+            this.grpOptions.TabStop = false;
+            this.grpOptions.Text = "Options";
+            // 
+            // cbUseNormalChecksum
+            // 
+            this.cbUseNormalChecksum.AutoSize = true;
+            this.cbUseNormalChecksum.Location = new System.Drawing.Point(3, 42);
+            this.cbUseNormalChecksum.Name = "cbUseNormalChecksum";
+            this.cbUseNormalChecksum.Size = new System.Drawing.Size(343, 17);
+            this.cbUseNormalChecksum.TabIndex = 0;
+            this.cbUseNormalChecksum.Text = "Use normal checksums and sizes (No VGMToolbox methods used).";
+            this.cbUseNormalChecksum.UseVisualStyleBackColor = true;
+            // 
+            // cbMd5Sha1
+            // 
+            this.cbMd5Sha1.AutoSize = true;
+            this.cbMd5Sha1.Location = new System.Drawing.Point(3, 19);
+            this.cbMd5Sha1.Name = "cbMd5Sha1";
+            this.cbMd5Sha1.Size = new System.Drawing.Size(120, 17);
+            this.cbMd5Sha1.TabIndex = 1;
+            this.cbMd5Sha1.Text = "Include MD5/SHA1";
+            this.cbMd5Sha1.UseVisualStyleBackColor = true;
+            // 
+            // DatafileCreatorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(868, 570);
+            this.ClientSize = new System.Drawing.Size(645, 542);
+            this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.gbSourceDestPaths);
             this.Controls.Add(this.gbHeader);
             this.Name = "DatafileCreatorForm";
@@ -366,6 +403,7 @@
             this.Controls.SetChildIndex(this.pnlButtons, 0);
             this.Controls.SetChildIndex(this.gbHeader, 0);
             this.Controls.SetChildIndex(this.gbSourceDestPaths, 0);
+            this.Controls.SetChildIndex(this.grpOptions, 0);
             this.pnlLabels.ResumeLayout(false);
             this.pnlLabels.PerformLayout();
             this.pnlTitle.ResumeLayout(false);
@@ -376,6 +414,8 @@
             this.gbHeader.PerformLayout();
             this.gbSourceDestPaths.ResumeLayout(false);
             this.gbSourceDestPaths.PerformLayout();
+            this.grpOptions.ResumeLayout(false);
+            this.grpOptions.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -412,5 +452,8 @@
         private System.Windows.Forms.Label lblHeaderName;
         private System.Windows.Forms.TextBox tbDatCreator_Name;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        private System.Windows.Forms.GroupBox grpOptions;
+        private System.Windows.Forms.CheckBox cbUseNormalChecksum;
+        private System.Windows.Forms.CheckBox cbMd5Sha1;
     }
 }

@@ -62,20 +62,20 @@ namespace VGMToolbox.forms.examine
         {
             try
             {
-                this.vgmData.SetGameTag(this.tbGame.Text);
-                this.vgmData.SetArtistTag(this.tbArtist.Text);
-                this.vgmData.SetCopyrightTag(this.tbCopyright.Text);
-                this.vgmData.SetGenreTag(this.tbGenre.Text);
-                this.vgmData.SetYearTag(this.tbYear.Text);
-                this.vgmData.SetXsfByTag(this.tbXsfBy.Text);
-                this.vgmData.SetSystemTag(this.tbSystem.Text);
+                this.vgmData.SetGameTag(this.tbGame.Text, false);
+                this.vgmData.SetArtistTag(this.tbArtist.Text, false);
+                this.vgmData.SetCopyrightTag(this.tbCopyright.Text, false);
+                this.vgmData.SetGenreTag(this.tbGenre.Text, false);
+                this.vgmData.SetYearTag(this.tbYear.Text, false);
+                this.vgmData.SetXsfByTag(this.tbXsfBy.Text, false);
+                this.vgmData.SetSystemTag(this.tbSystem.Text, false);
 
-                this.vgmData.SetTitleTag(this.tbTitle.Text);
-                this.vgmData.SetLengthTag(this.tbLength.Text);
-                this.vgmData.SetFadeTag(this.tbFade.Text);
-                this.vgmData.SetVolumeTag(this.tbVolume.Text);
+                this.vgmData.SetTitleTag(this.tbTitle.Text, false);
+                this.vgmData.SetLengthTag(this.tbLength.Text, false);
+                this.vgmData.SetFadeTag(this.tbFade.Text, false);
+                this.vgmData.SetVolumeTag(this.tbVolume.Text, false);
 
-                this.vgmData.SetCommentTag(this.tbComments.Text);
+                this.vgmData.SetCommentTag(this.tbComments.Text, false);
 
                 this.vgmData.UpdateTags();
 

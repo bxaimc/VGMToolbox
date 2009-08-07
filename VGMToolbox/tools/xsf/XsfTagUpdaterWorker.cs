@@ -12,13 +12,14 @@ namespace VGMToolbox.tools.xsf
 {
     public class XsfTagUpdaterWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
-        private delegate void XsfTagSetter(string pValue);
+        private delegate void XsfTagSetter(string pValue, bool flag);
         
         public struct XsfTagUpdaterStruct : IVgmtWorkerStruct
         {
             public bool RemoveEmptyTags;
             public bool IsBatchMode;
             public bool GenerateTitleFromFilename;
+            public bool AddToBatchFile;
 
             public string TitleTag;
             public string ArtistTag;
@@ -66,39 +67,51 @@ namespace VGMToolbox.tools.xsf
                 XsfTagSetter xts;
 
                 xts = new XsfTagSetter(vgmData.SetArtistTag);
-                updateXsfTag(xts, xsfTagUpdaterStruct.ArtistTag, xsfTagUpdaterStruct.RemoveEmptyTags);
+                updateXsfTag(xts, xsfTagUpdaterStruct.ArtistTag, xsfTagUpdaterStruct.RemoveEmptyTags, xsfTagUpdaterStruct.AddToBatchFile);
                 xts = new XsfTagSetter(vgmData.SetGameTag);
-                updateXsfTag(xts, xsfTagUpdaterStruct.GameTag, xsfTagUpdaterStruct.RemoveEmptyTags);
+                updateXsfTag(xts, xsfTagUpdaterStruct.GameTag, xsfTagUpdaterStruct.RemoveEmptyTags, xsfTagUpdaterStruct.AddToBatchFile);
                 xts = new XsfTagSetter(vgmData.SetYearTag);
-                updateXsfTag(xts, xsfTagUpdaterStruct.YearTag, xsfTagUpdaterStruct.RemoveEmptyTags);
+                updateXsfTag(xts, xsfTagUpdaterStruct.YearTag, xsfTagUpdaterStruct.RemoveEmptyTags, xsfTagUpdaterStruct.AddToBatchFile);
                 xts = new XsfTagSetter(vgmData.SetGenreTag);
-                updateXsfTag(xts, xsfTagUpdaterStruct.GenreTag, xsfTagUpdaterStruct.RemoveEmptyTags);
+                updateXsfTag(xts, xsfTagUpdaterStruct.GenreTag, xsfTagUpdaterStruct.RemoveEmptyTags, xsfTagUpdaterStruct.AddToBatchFile);
                 xts = new XsfTagSetter(vgmData.SetCommentTag);
-                updateXsfTag(xts, xsfTagUpdaterStruct.CommentTag, xsfTagUpdaterStruct.RemoveEmptyTags);
+                updateXsfTag(xts, xsfTagUpdaterStruct.CommentTag, xsfTagUpdaterStruct.RemoveEmptyTags, xsfTagUpdaterStruct.AddToBatchFile);
                 xts = new XsfTagSetter(vgmData.SetCopyrightTag);
-                updateXsfTag(xts, xsfTagUpdaterStruct.CopyrightTag, xsfTagUpdaterStruct.RemoveEmptyTags);
+                updateXsfTag(xts, xsfTagUpdaterStruct.CopyrightTag, xsfTagUpdaterStruct.RemoveEmptyTags, xsfTagUpdaterStruct.AddToBatchFile);
                 xts = new XsfTagSetter(vgmData.SetXsfByTag);
-                updateXsfTag(xts, xsfTagUpdaterStruct.XsfByTag, xsfTagUpdaterStruct.RemoveEmptyTags);
+                updateXsfTag(xts, xsfTagUpdaterStruct.XsfByTag, xsfTagUpdaterStruct.RemoveEmptyTags, xsfTagUpdaterStruct.AddToBatchFile);
                 xts = new XsfTagSetter(vgmData.SetSystemTag);
-                updateXsfTag(xts, xsfTagUpdaterStruct.SystemTag, xsfTagUpdaterStruct.RemoveEmptyTags);
+                updateXsfTag(xts, xsfTagUpdaterStruct.SystemTag, xsfTagUpdaterStruct.RemoveEmptyTags, xsfTagUpdaterStruct.AddToBatchFile);
 
                 if (xsfTagUpdaterStruct.GenerateTitleFromFilename)
                 {
                     xsfTagUpdaterStruct.TitleTag = XsfUtil.GetTitleForFileName(pPath);
                     xts = new XsfTagSetter(vgmData.SetTitleTag);
-                    updateXsfTag(xts, xsfTagUpdaterStruct.TitleTag, xsfTagUpdaterStruct.RemoveEmptyTags);
+                    updateXsfTag(xts, xsfTagUpdaterStruct.TitleTag, xsfTagUpdaterStruct.RemoveEmptyTags, xsfTagUpdaterStruct.AddToBatchFile);
                 }
 
                 if (!xsfTagUpdaterStruct.IsBatchMode)
                 {
                     xts = new XsfTagSetter(vgmData.SetVolumeTag);
-                    updateXsfTag(xts, xsfTagUpdaterStruct.VolumeTag, xsfTagUpdaterStruct.RemoveEmptyTags);
+                    updateXsfTag(xts, xsfTagUpdaterStruct.VolumeTag, xsfTagUpdaterStruct.RemoveEmptyTags, xsfTagUpdaterStruct.AddToBatchFile);
                     xts = new XsfTagSetter(vgmData.SetLengthTag);
-                    updateXsfTag(xts, xsfTagUpdaterStruct.LengthTag, xsfTagUpdaterStruct.RemoveEmptyTags);
+                    updateXsfTag(xts, xsfTagUpdaterStruct.LengthTag, xsfTagUpdaterStruct.RemoveEmptyTags, xsfTagUpdaterStruct.AddToBatchFile);
                     xts = new XsfTagSetter(vgmData.SetFadeTag);
-                    updateXsfTag(xts, xsfTagUpdaterStruct.FadeTag, xsfTagUpdaterStruct.RemoveEmptyTags);                    
+                    updateXsfTag(xts, xsfTagUpdaterStruct.FadeTag, xsfTagUpdaterStruct.RemoveEmptyTags, xsfTagUpdaterStruct.AddToBatchFile);
                     xts = new XsfTagSetter(vgmData.SetTitleTag);
-                    updateXsfTag(xts, xsfTagUpdaterStruct.TitleTag, xsfTagUpdaterStruct.RemoveEmptyTags);
+                    updateXsfTag(xts, xsfTagUpdaterStruct.TitleTag, xsfTagUpdaterStruct.RemoveEmptyTags, xsfTagUpdaterStruct.AddToBatchFile);
+                }
+                else if (xsfTagUpdaterStruct.AddToBatchFile)
+                {
+                    // reset tags with existing values to add to batch script
+                    xts = new XsfTagSetter(vgmData.SetVolumeTag);
+                    updateXsfTag(xts, vgmData.GetVolumeTag(), xsfTagUpdaterStruct.RemoveEmptyTags, xsfTagUpdaterStruct.AddToBatchFile);
+                    xts = new XsfTagSetter(vgmData.SetLengthTag);
+                    updateXsfTag(xts, vgmData.GetLengthTag(), xsfTagUpdaterStruct.RemoveEmptyTags, xsfTagUpdaterStruct.AddToBatchFile);
+                    xts = new XsfTagSetter(vgmData.SetFadeTag);
+                    updateXsfTag(xts, vgmData.GetFadeTag(), xsfTagUpdaterStruct.RemoveEmptyTags, xsfTagUpdaterStruct.AddToBatchFile);
+                    xts = new XsfTagSetter(vgmData.SetTitleTag);
+                    updateXsfTag(xts, vgmData.GetTitleTag(), xsfTagUpdaterStruct.RemoveEmptyTags, xsfTagUpdaterStruct.AddToBatchFile);                
                 }
 
                 vgmData.UpdateTags();
@@ -106,15 +119,15 @@ namespace VGMToolbox.tools.xsf
         }
 
         private void updateXsfTag(XsfTagSetter pXsfTagSetter, string pValue, 
-            bool pRemoveEmptyTags)
+            bool pRemoveEmptyTags, bool addActionToBatchFile)
         {
             if (pRemoveEmptyTags)
             {
-                pXsfTagSetter(pValue);
+                pXsfTagSetter(pValue, addActionToBatchFile);
             }
             else if ((!String.IsNullOrEmpty(pValue)) && (!String.IsNullOrEmpty(pValue.Trim())))
             {
-                pXsfTagSetter(pValue);
+                pXsfTagSetter(pValue, addActionToBatchFile);
             }
         }
     }

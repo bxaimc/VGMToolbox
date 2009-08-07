@@ -371,7 +371,7 @@ namespace VGMToolbox.format.util
 
     public class XsfUtil
     {
-        private delegate void XsfTagSetter(string pValue);
+        private delegate void XsfTagSetter(string pValue, bool flag);
         private delegate string XsfTagGetter();
         
         public const string RecompressedSubfolderName = "recompressed";
@@ -834,7 +834,7 @@ namespace VGMToolbox.format.util
                 if ((pCopyEmptyTags) || 
                     ((!pCopyEmptyTags) && (!String.IsNullOrEmpty(tagData))))
                 {
-                    pXsfTagSetter(tagData);
+                    pXsfTagSetter(tagData, true);
                 }
             }
         }
