@@ -392,6 +392,98 @@ namespace VGMToolbox.auditing
             return ByteArrayToString(md5Hash.Hash);
         }
 
+        public static datafile DeleteItemFromDatafile(
+            datafile inputDatafile,
+            game sourceGame,
+            rom sourceRom)
+        {
+            datafile workingDatafile = inputDatafile;
+            ArrayList games;
+            ArrayList roms;
+
+            if (sourceGame != null)
+            {
+                games = new ArrayList(workingDatafile.game);
+
+                foreach (game g in games)
+                {
+                    if (CompareGames(g, sourceGame))
+                    {
+                        if (sourceRom != null)
+                        {
+                            roms = new ArrayList(g.rom);
+
+                            foreach (rom r in roms)
+                            {
+                                if (CompareRoms(r, sourceRom))
+                                {
+                                    roms.Remove(r);
+                                    g.rom = (rom[])roms.ToArray(typeof(rom));
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            games.Remove(g);
+                            workingDatafile.game = (game[])games.ToArray(typeof(game));
+                            break;
+                        }                                                            
+                    }
+                }
+            }
+
+            return workingDatafile;
+        }
+
+        public static bool CompareGames(game game1, game game2)
+        {
+            bool ret = false;
+
+            if ((game1.name.Equals(game2.name)) &&
+                (game1.description.Equals(game2.description)) &&
+                (game1.rom.Length == game2.rom.Length))
+            {
+                ret = true;
+            }
+
+            return ret;
+        }
+
+        public static bool CompareRoms(rom rom1, rom rom2)
+        {
+            bool ret = false;
+
+            if ((rom1.name.Equals(rom2.name)) &&
+                (rom1.crc.Equals(rom2.crc)) &&
+                (rom1.size.Equals(rom2.size)))
+            {
+                ret = true;
+                
+                // check md5
+                if (!String.IsNullOrEmpty(rom1.md5))
+                {
+                    ret = ret && (rom1.md5.Equals(rom2.md5));
+                }
+                else
+                {
+                    ret = ret && true;
+                }
+
+                // check sha1
+                if (!String.IsNullOrEmpty(rom1.sha1))
+                {
+                    ret = ret && (rom1.sha1.Equals(rom2.sha1));
+                }
+                else
+                {
+                    ret = ret && true;
+                }
+            }
+
+            return ret;
+        }
+
         # endregion
     }
 }

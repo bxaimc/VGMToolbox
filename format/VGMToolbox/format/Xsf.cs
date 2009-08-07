@@ -632,7 +632,7 @@ namespace VGMToolbox.format
                 {
                     using (StreamWriter sw = new StreamWriter(
                         fs, 
-                        System.Text.Encoding.GetEncoding(VGMToolbox.util.Encoding.CodePageOEM)))
+                        System.Text.Encoding.ASCII))
                     {
                         sw.WriteLine(batchFileLine);
                     }

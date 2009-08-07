@@ -174,7 +174,20 @@ namespace VGMToolbox
             // set tag for displaying the form
             nodeTag.FormClass = auditing_DatafileCheckerForm.GetType().Name;
             auditing_DatafileCheckerNode.Tag = nodeTag;            
-            
+
+            ///////////////////
+            // Datafile Editor
+            ///////////////////
+            TreeNode datafileEditorNode = new TreeNode("Datafile Editor");
+
+            // add form
+            DatafileEditorForm datafileEditorForm = new DatafileEditorForm(datafileEditorNode);
+            this.splitContainer1.Panel2.Controls.Add(datafileEditorForm);
+
+            // set tag for displaying the form
+            nodeTag.FormClass = datafileEditorForm.GetType().Name;
+            datafileEditorNode.Tag = nodeTag; 
+
             //////////////////////
             // Collection Builder
             //////////////////////
@@ -198,6 +211,7 @@ namespace VGMToolbox
             auditing_RootNode.Nodes.Add(auditing_DatafileCreatorNode);
             auditing_RootNode.Nodes.Add(auditing_RebuilderNode);
             auditing_RootNode.Nodes.Add(auditing_DatafileCheckerNode);
+            auditing_RootNode.Nodes.Add(datafileEditorNode);
             // auditing_RootNode.Nodes.Add(auditing_CollectionBuilderNode);
 
             return auditing_RootNode;

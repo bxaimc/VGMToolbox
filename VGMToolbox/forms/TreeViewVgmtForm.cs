@@ -17,10 +17,10 @@ using VGMToolbox.tools;
 
 namespace VGMToolbox.forms
 {
-    public abstract partial class TreeViewVgmtForm : AVgmtForm
+    public  partial class TreeViewVgmtForm : VgmtForm
     {
-        private TreeNode selectedNode;
-        private TreeNode oldNode;
+        protected TreeNode selectedNode;
+        protected TreeNode oldNode;
         
         protected bool outputToText;
         protected string outputTextFile;
@@ -92,7 +92,7 @@ namespace VGMToolbox.forms
             treeViewTools.Nodes.Clear();
         }
 
-        private void treeViewTools_MouseUp(object sender, MouseEventArgs e)
+        protected virtual void treeViewTools_MouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {

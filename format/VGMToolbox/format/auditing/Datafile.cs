@@ -1312,6 +1312,18 @@ namespace VGMToolbox.format.auditing
                 this.dateField = value;
             }
         }
+
+        public rom DeepCopy()
+        {
+            BinaryFormatter BF = new BinaryFormatter();
+            MemoryStream memStream = new MemoryStream();
+
+            BF.Serialize(memStream, this);
+            memStream.Flush();
+            memStream.Position = 0;
+
+            return (rom)BF.Deserialize(memStream);
+        }
     }
 
     /// <remarks/>

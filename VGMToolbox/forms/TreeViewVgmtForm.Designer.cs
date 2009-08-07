@@ -1,6 +1,6 @@
 ﻿namespace VGMToolbox.forms
 {
-    abstract partial class TreeViewVgmtForm
+     partial class TreeViewVgmtForm
     {
         /// <summary>
         /// Required designer variable.
@@ -43,30 +43,30 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 622);
-            this.pnlLabels.Size = new System.Drawing.Size(939, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 608);
+            this.pnlLabels.Size = new System.Drawing.Size(879, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(939, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(879, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 545);
-            this.tbOutput.Size = new System.Drawing.Size(939, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 531);
+            this.tbOutput.Size = new System.Drawing.Size(879, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 525);
-            this.pnlButtons.Size = new System.Drawing.Size(939, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 511);
+            this.pnlButtons.Size = new System.Drawing.Size(879, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(879, 0);
+            this.btnCancel.Location = new System.Drawing.Point(819, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(819, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(759, 0);
             // 
             // contextMenuStrip1
             // 
@@ -96,8 +96,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.AutoScroll = true;
-            this.splitContainer1.Size = new System.Drawing.Size(939, 502);
-            this.splitContainer1.SplitterDistance = 279;
+            this.splitContainer1.Size = new System.Drawing.Size(879, 488);
+            this.splitContainer1.SplitterDistance = 271;
             this.splitContainer1.TabIndex = 8;
             // 
             // treeViewTools
@@ -106,7 +106,7 @@
             this.treeViewTools.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeViewTools.Location = new System.Drawing.Point(0, 0);
             this.treeViewTools.Name = "treeViewTools";
-            this.treeViewTools.Size = new System.Drawing.Size(939, 279);
+            this.treeViewTools.Size = new System.Drawing.Size(879, 271);
             this.treeViewTools.TabIndex = 8;
             this.treeViewTools.MouseUp += new System.Windows.Forms.MouseEventHandler(this.treeViewTools_MouseUp);
             // 
@@ -114,7 +114,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(939, 663);
+            this.ClientSize = new System.Drawing.Size(879, 649);
             this.Controls.Add(this.splitContainer1);
             this.Name = "TreeViewVgmtForm";
             this.Text = "TreeViewVgmtForm";
