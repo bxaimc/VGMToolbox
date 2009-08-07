@@ -18,6 +18,11 @@ namespace VGMToolbox.util
         /// </summary>
         public const int CodePageUnitedStates = 1251;
 
+        /// <summary>
+        /// Codepage value for OEM DOS
+        /// </summary>
+        public const int CodePageOEM = 437;
+
         private Encoding() { }
 
         /// <summary>

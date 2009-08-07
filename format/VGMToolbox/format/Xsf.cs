@@ -630,7 +630,9 @@ namespace VGMToolbox.format
 
                 using (FileStream fs = File.Open(batchFilePath, FileMode.Append, FileAccess.Write))
                 {
-                    using (StreamWriter sw = new StreamWriter(fs, System.Text.Encoding.UTF8))
+                    using (StreamWriter sw = new StreamWriter(
+                        fs, 
+                        System.Text.Encoding.GetEncoding(VGMToolbox.util.Encoding.CodePageOEM)))
                     {
                         sw.WriteLine(batchFileLine);
                     }
