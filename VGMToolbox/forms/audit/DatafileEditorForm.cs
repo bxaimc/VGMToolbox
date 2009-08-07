@@ -24,7 +24,8 @@ namespace VGMToolbox.forms.audit
         {
             InitializeComponent();
 
-            btnDoTask.Text = "Save As";
+            this.btnDoTask.Text = "Save As";
+            
         }
 
         /// <summary>
@@ -170,7 +171,27 @@ namespace VGMToolbox.forms.audit
             }
         }
 
-        
+        private void addToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        protected override IVgmtBackgroundWorker getBackgroundWorker()
+        {
+            throw new NotImplementedException();
+        }
+        protected override string getCancelMessage()
+        {
+            throw new NotImplementedException();
+        }
+        protected override string getCompleteMessage()
+        {
+            throw new NotImplementedException();
+        }
+        protected override string getBeginMessage()
+        {
+            throw new NotImplementedException();
+        }
 
 
     }
