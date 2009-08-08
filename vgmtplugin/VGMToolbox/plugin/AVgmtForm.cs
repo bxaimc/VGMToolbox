@@ -104,7 +104,6 @@ namespace VGMToolbox.plugin
 
             return filename;
         }
-
         protected string browseForFileToSave(object sender, EventArgs e)
         {
             string filename = String.Empty;
@@ -117,7 +116,6 @@ namespace VGMToolbox.plugin
 
             return filename;
         }
-
         protected string browseForFolder(object sender, EventArgs e)
         {
             string foldername = String.Empty;
@@ -130,7 +128,6 @@ namespace VGMToolbox.plugin
 
             return foldername;
         }
-
         protected bool checkTextBox(string pText, string pFieldName)
         {
             bool ret = true;

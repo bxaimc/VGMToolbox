@@ -1361,10 +1361,9 @@ namespace VGMToolbox.format.util
                         {                            
                             decompressedSaveStatePath =
                                 Path.ChangeExtension(decompressedReservedSectionPath, CompressionUtil.ZlibDecompressOutputExtension);
-                            fs.Position = 0x0C;  // move to zlib section
 
                             // decompress save state
-                            CompressionUtil.DecompressZlibStreamToFile(fs, decompressedSaveStatePath);
+                            CompressionUtil.DecompressZlibStreamToFile(fs, decompressedSaveStatePath, 0x0C);
 
                             using (FileStream ssFs = File.OpenRead(decompressedSaveStatePath))
                             {
