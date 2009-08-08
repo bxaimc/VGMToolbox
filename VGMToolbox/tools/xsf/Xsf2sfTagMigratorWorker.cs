@@ -63,10 +63,22 @@ namespace VGMToolbox.tools.xsf
                 {                    
                     songNumber = XsfUtil.GetSongNumberForYoshiIslandMini2sf(f);
 
-                    if ((songNumber != XsfUtil.InvalidData) &&
-                        (!sourceFiles.ContainsKey(songNumber)))
+                    if (songNumber != XsfUtil.InvalidData)
                     {
-                        sourceFiles.Add(songNumber, f);
+                        if (!sourceFiles.ContainsKey(songNumber))
+                        {
+                            sourceFiles.Add(songNumber, f);
+                        }
+                        else
+                        {
+                            this.progress = 0;
+                            this.progressStruct.Clear();
+                            this.progressStruct.GenericMessage = String.Format(
+                                "Warning duplicate track ID for <{0}>.  Does the V1 set use 2 .2sflibs?  Skipping...{1}",
+                                f, 
+                                Environment.NewLine);
+                            this.ReportProgress(this.progress, this.progressStruct);                        
+                        }
                     }
                 }
             }
