@@ -521,7 +521,7 @@ namespace VGMToolbox
             TreeNode xsf_Bin2PsfFENode = 
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_Bin2PsfFENode"]);
 
-            // Add UnpkPsf2 Ripper Form
+            // Add Form
             Bin2PsfFrontEndForm xsf_Bin2PsfFrontEndForm =
                 new Bin2PsfFrontEndForm(xsf_Bin2PsfFENode);
             this.splitContainer1.Panel2.Controls.Add(xsf_Bin2PsfFrontEndForm);
@@ -557,7 +557,7 @@ namespace VGMToolbox
             psfStubCreatorNode.Tag = nodeTag;
 
             //////////////////////
-            // PSF SEQ Extractor
+            // PSF Timer
             //////////////////////
             TreeNode xsf_SeqExtractNode =
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SeqExtractorNode"]);
@@ -584,6 +584,19 @@ namespace VGMToolbox
             // Set Tag for displaying the Form
             nodeTag.FormClass = easyPsfDriverExtractorForm.GetType().Name;
             easyDriverExtractorNode.Tag = nodeTag;
+
+            //////////////////////
+            // PSF DATA EXTRACTOR
+            //////////////////////
+            TreeNode psfDataExtractorNode = new TreeNode("PSF Data Extractor");
+
+            // Add Form
+            PsfDataFinderForm psfDataFinderForm = new PsfDataFinderForm(psfDataExtractorNode);
+            this.splitContainer1.Panel2.Controls.Add(psfDataFinderForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = psfDataFinderForm.GetType().Name;
+            psfDataExtractorNode.Tag = nodeTag;
 
             // SSFMAKE
             TreeNode xsf_SsfMakeFENode = 
@@ -670,6 +683,7 @@ namespace VGMToolbox
 
             psf_RootNode.NodeFont = this.treeviewBoldFont;
             psf_RootNode.Tag = nodeTag;
+            psf_RootNode.Nodes.Add(psfDataExtractorNode);
             psf_RootNode.Nodes.Add(xsf_Bin2PsfFENode);
             psf_RootNode.Nodes.Add(psfStubCreatorNode);
             psf_RootNode.Nodes.Add(xsf_SeqExtractNode);
