@@ -52,7 +52,6 @@ namespace VGMToolbox.tools.xsf
 
             ArrayList emptyRowList = new ArrayList();
             byte[] vbRow = new byte[0x10];
-            int bytesRead;
 
             // improve algorithm later
             using (FileStream fs = File.OpenRead(pPath))
@@ -87,19 +86,22 @@ namespace VGMToolbox.tools.xsf
                 // get VB files
                 offset = 0;
 
-                while (fs.Position < fs.Length)
+                // build list of potential adpcm start indexes (VB_START_BYTES)
+                while ((offset = ParseFile.GetNextOffset(fs, offset, VB_START_BYTES)) > -1)
                 {
-                    bytesRead = fs.Read(vbRow, 0, 0x10);
-                    offset += bytesRead;
+                    vbRow = ParseFile.ParseSimpleOffset(fs, offset, vbRow.Length);
 
-                    if (ParseFile.CompareSegment(vbRow, 0, VB_START_BYTES))
+                    if (IsPotentialAdpcm(fs, offset + 0x10))
                     {
-                        if (IsPotentialAdpcm(fs, offset))
-                        {
-                            emptyRowList.Add(offset);
-                        }
+                        emptyRowList.Add(offset);
                     }
+
+                    offset += 1;
                 }
+
+                // compare VH sample sizes to potential adpcm sizes/indexes
+
+
             }
         }
 
