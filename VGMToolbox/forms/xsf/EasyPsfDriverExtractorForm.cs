@@ -23,7 +23,8 @@ namespace VGMToolbox.forms.xsf
             this.btnDoTask.Hide();
 
             this.lblTitle.Text = "Easy PSF Driver Data Extractor";
-            this.tbOutput.Text = "Extract SEQ/VH/VB from Easy PSF Driver sets for use with rebuilding with the original driver.";
+            this.tbOutput.Text = "- Extract SEQ/VH/VB from Easy PSF Driver sets for use with rebuilding with the original driver." + Environment.NewLine;
+            this.tbOutput.Text += "- If a set uses Davironica's Easy PSF Driver, this will extract data much faster than the PSF Data Extractor.";
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
