@@ -176,7 +176,18 @@ namespace VGMToolbox.util
         /// <returns>Returns the offset of the first instance of pSearchBytes after the input offset or -1 otherwise.</returns>
         public static long GetNextOffset(Stream stream, long startingOffset, byte[] searchBytes)
         {
-            long initialStreamPosition = stream.Position;
+            return GetNextOffset(stream, startingOffset, searchBytes, true);
+        }
+
+        public static long GetNextOffset(Stream stream, long startingOffset, 
+            byte[] searchBytes, bool returnStreamToIncomingPosition)
+        {
+            long initialStreamPosition = 0;
+
+            if (returnStreamToIncomingPosition)
+            {
+                initialStreamPosition = stream.Position;
+            }
 
             bool itemFound = false;
             long absoluteOffset = startingOffset;
@@ -206,7 +217,7 @@ namespace VGMToolbox.util
                             break;
                         }
                     }
-                    
+
                     relativeOffset++;
                 }
 
@@ -214,7 +225,10 @@ namespace VGMToolbox.util
             }
 
             // return stream to incoming position
-            stream.Position = initialStreamPosition;
+            if (returnStreamToIncomingPosition)
+            {
+                stream.Position = initialStreamPosition;
+            }
 
             return ret;
         }

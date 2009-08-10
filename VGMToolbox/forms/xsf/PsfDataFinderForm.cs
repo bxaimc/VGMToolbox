@@ -18,7 +18,13 @@ namespace VGMToolbox.forms.xsf
         {
             InitializeComponent();
 
+            this.btnDoTask.Hide();
             this.grpSource.AllowDrop = true;
+
+            this.lblTitle.Text = "PSF Data Extractor";
+            this.tbOutput.Text = "- Extract SEQ/VH/VB data from files." + Environment.NewLine;
+            this.tbOutput.Text += "- VH/VB should always be correctly paired." + Environment.NewLine;
+            this.tbOutput.Text += "- WARNING: VB DETECTION IS VERY SLOW, PLEASE BE PATIENT..." + Environment.NewLine;
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -46,9 +52,14 @@ namespace VGMToolbox.forms.xsf
         private void grpSource_DragDrop(object sender, DragEventArgs e)
         {
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
-
+            
             PsfDataFinderWorker.PsfDataFinderStruct bwStruct = new PsfDataFinderWorker.PsfDataFinderStruct();
             bwStruct.SourcePaths = s;
+            bwStruct.UseSeqMinimumSize = cbUseMinimum.Checked;            
+            if (cbUseMinimum.Checked)
+            {
+                bwStruct.MinimumSize = int.Parse(this.tbMinimumSize.Text);
+            }
 
             base.backgroundWorker_Execute(bwStruct);
         }
