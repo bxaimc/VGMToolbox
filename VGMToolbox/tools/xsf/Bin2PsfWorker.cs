@@ -52,6 +52,7 @@ namespace VGMToolbox.tools.xsf
             public string psflibName;
 
             public bool AllowZeroLengthSequences;
+            public bool TryCombinations;
             public string DriverName;
         }
 
@@ -65,15 +66,18 @@ namespace VGMToolbox.tools.xsf
         private void makePsfs(Bin2PsfStruct pBin2PsfStruct, DoWorkEventArgs e)
         {
             string[] uniqueSqFiles;
+            string[] uniqueVhFiles;
 
             if (!CancellationPending)
             {
                 // get list of unique files
-                uniqueSqFiles = this.getUniqueFileNames(pBin2PsfStruct.sourcePath);
+                uniqueSqFiles = this.getUniqueFileNames(pBin2PsfStruct.sourcePath, "*.SEQ");
+                uniqueVhFiles = this.getUniqueFileNames(pBin2PsfStruct.sourcePath, "*.VH");
+                
                 if (uniqueSqFiles != null)
                 {
                     this.maxFiles = uniqueSqFiles.Length;
-                    this.buildPsfs(uniqueSqFiles, pBin2PsfStruct, e);
+                    this.buildPsfs(uniqueSqFiles, uniqueVhFiles, pBin2PsfStruct, e);
                 }
             }
             else
@@ -85,7 +89,7 @@ namespace VGMToolbox.tools.xsf
             return;
         }
 
-        private string[] getUniqueFileNames(string pSourceDirectory)
+        private string[] getUniqueFileNames(string pSourceDirectory, string mask)
         {
             int fileCount = 0;
             int i = 0;
@@ -99,14 +103,14 @@ namespace VGMToolbox.tools.xsf
             }
             else
             {
-                fileCount = Directory.GetFiles(pSourceDirectory, "*.SEQ").Length;
+                fileCount = Directory.GetFiles(pSourceDirectory, mask).Length;
 
                 if (fileCount > 0)
                 {
                     ret = new string[fileCount];
                 }
 
-                foreach (string f in Directory.GetFiles(pSourceDirectory, "*.SEQ"))
+                foreach (string f in Directory.GetFiles(pSourceDirectory, mask))
                 {
                     ret[i] = f;
                     i++;
@@ -116,7 +120,7 @@ namespace VGMToolbox.tools.xsf
             return ret;
         }
 
-        private void buildPsfs(string[] pUniqueSqFiles, Bin2PsfStruct pBin2PsfStruct,
+        private void buildPsfs(string[] pUniqueSqFiles, string[] pUniqueVhFiles, Bin2PsfStruct pBin2PsfStruct,
             DoWorkEventArgs e)
         {
             Process bin2PsfProcess;

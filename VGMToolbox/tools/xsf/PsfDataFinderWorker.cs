@@ -190,15 +190,15 @@ namespace VGMToolbox.tools.xsf
                 string vhName;
 
                 for (int i = 0; i < vhArrayList.Count; i++)
-                {                    
-                    vh = (VhStruct)vhArrayList[i];
+                {
+                    vhObject = (VhStruct)vhArrayList[i];
                     
                     for (int j = 0; j < potentialVbList.Length; j++)
                     {
                         // we have a potential match
-                        if (vh.vbSampleSizes[0] == potentialVbList[j].length)
+                        if (vhObject.vbSampleSizes[0] == potentialVbList[j].length)
                         {
-                            vhObject = PopulateVbOffsetLength(fs, potentialVbList, j, vh);                            
+                            vhObject = PopulateVbOffsetLength(fs, potentialVbList, j, vhObject);                            
 
                             if (vhObject.vbLength > 0)
                             {

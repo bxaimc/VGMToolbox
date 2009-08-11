@@ -64,6 +64,7 @@ namespace VGMToolbox.forms.xsf
             bpStruct.makeMiniPsfs = cbMinipsf.Checked;
             bpStruct.psflibName = tbPsflibName.Text;
             bpStruct.AllowZeroLengthSequences = this.cbAllowZeroLengthSequences.Checked;
+            bpStruct.TryCombinations = this.cbTryMixing.Checked;
             bpStruct.DriverName = (string)this.genericDriver.SelectedItem;
 
             base.backgroundWorker_Execute(bpStruct);

@@ -41,6 +41,7 @@
             this.lblDriverPath = new System.Windows.Forms.Label();
             this.tbExePath = new System.Windows.Forms.TextBox();
             this.grpOptions = new System.Windows.Forms.GroupBox();
+            this.cbTryMixing = new System.Windows.Forms.CheckBox();
             this.cbAllowZeroLengthSequences = new System.Windows.Forms.CheckBox();
             this.lblVbOffset = new System.Windows.Forms.Label();
             this.tbVbOffset = new System.Windows.Forms.TextBox();
@@ -61,7 +62,7 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 501);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 650);
             this.pnlLabels.Size = new System.Drawing.Size(857, 19);
             // 
             // pnlTitle
@@ -70,12 +71,12 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 424);
+            this.tbOutput.Location = new System.Drawing.Point(0, 573);
             this.tbOutput.Size = new System.Drawing.Size(857, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 404);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 553);
             this.pnlButtons.Size = new System.Drawing.Size(857, 20);
             // 
             // btnCancel
@@ -207,6 +208,7 @@
             // 
             // grpOptions
             // 
+            this.grpOptions.Controls.Add(this.cbTryMixing);
             this.grpOptions.Controls.Add(this.cbAllowZeroLengthSequences);
             this.grpOptions.Controls.Add(this.lblVbOffset);
             this.grpOptions.Controls.Add(this.tbVbOffset);
@@ -217,10 +219,21 @@
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpOptions.Location = new System.Drawing.Point(0, 187);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(857, 137);
+            this.grpOptions.Size = new System.Drawing.Size(857, 200);
             this.grpOptions.TabIndex = 6;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
+            // 
+            // cbTryMixing
+            // 
+            this.cbTryMixing.AutoSize = true;
+            this.cbTryMixing.Location = new System.Drawing.Point(6, 136);
+            this.cbTryMixing.Name = "cbTryMixing";
+            this.cbTryMixing.Size = new System.Drawing.Size(502, 17);
+            this.cbTryMixing.TabIndex = 7;
+            this.cbTryMixing.Text = "[NOT WORKING] If there are more VH/VB than SEQ, try all combinations (Good for fi" +
+                "nding matches).";
+            this.cbTryMixing.UseVisualStyleBackColor = true;
             // 
             // cbAllowZeroLengthSequences
             // 
@@ -316,7 +329,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(857, 542);
+            this.ClientSize = new System.Drawing.Size(857, 691);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpSource);
             this.Controls.Add(this.grpGenericDrivers);
@@ -371,5 +384,6 @@
         private System.Windows.Forms.GroupBox grpGenericDrivers;
         private System.Windows.Forms.ComboBox genericDriver;
         private System.Windows.Forms.Label lblGenericDriver;
+        private System.Windows.Forms.CheckBox cbTryMixing;
     }
 }
