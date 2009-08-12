@@ -10,6 +10,9 @@ namespace VGMToolbox.format
 {
     public class Ps2SequenceData
     {
+        public static readonly byte[] SIGNATURE_BYTES = new byte[] { 0x49, 0x45, 0x43, 0x53,
+                                                                     0x75, 0x71, 0x65, 0x53 };
+        
         private const int HEADER_CHUNK_OFFSET = 0x10;
         private const int MIDI_CHUNK_OFFSET = 0x30;
 
