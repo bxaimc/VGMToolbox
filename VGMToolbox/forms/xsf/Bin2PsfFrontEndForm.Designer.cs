@@ -62,7 +62,7 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 650);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 431);
             this.pnlLabels.Size = new System.Drawing.Size(857, 19);
             // 
             // pnlTitle
@@ -71,12 +71,12 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 573);
+            this.tbOutput.Location = new System.Drawing.Point(0, 354);
             this.tbOutput.Size = new System.Drawing.Size(857, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 553);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 334);
             this.pnlButtons.Size = new System.Drawing.Size(857, 20);
             // 
             // btnCancel
@@ -226,13 +226,12 @@
             // 
             // cbTryMixing
             // 
-            this.cbTryMixing.AutoSize = true;
             this.cbTryMixing.Location = new System.Drawing.Point(6, 136);
             this.cbTryMixing.Name = "cbTryMixing";
-            this.cbTryMixing.Size = new System.Drawing.Size(502, 17);
+            this.cbTryMixing.Size = new System.Drawing.Size(501, 31);
             this.cbTryMixing.TabIndex = 7;
-            this.cbTryMixing.Text = "[NOT WORKING] If there are more VH/VB than SEQ, try all combinations (Good for fi" +
-                "nding matches).";
+            this.cbTryMixing.Text = "[BETA] Try all possible combinations of SEQ and VH (Good for finding matches in u" +
+                "nmatched data) [Need to fix Progress Meter].";
             this.cbTryMixing.UseVisualStyleBackColor = true;
             // 
             // cbAllowZeroLengthSequences
@@ -329,7 +328,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(857, 691);
+            this.ClientSize = new System.Drawing.Size(857, 472);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpSource);
             this.Controls.Add(this.grpGenericDrivers);

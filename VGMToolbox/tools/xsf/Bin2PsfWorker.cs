@@ -35,6 +35,7 @@ namespace VGMToolbox.tools.xsf
         public static readonly string DAVIRONICA_EXE_PATH = Path.Combine(PSF_PROGRAMS_FOLDER, "DV_DRIVER_014.data.bin");
         public static readonly string DAVIRONICA_MINIPSF_PATH = Path.Combine(PSF_PROGRAMS_FOLDER, "DV_DRIVER_014.null.minipsf");
 
+        private int progress = 0;
         private int fileCount = 0;
         private int maxFiles = 0;
         VGMToolbox.util.ProgressStruct progressStruct;
@@ -76,7 +77,15 @@ namespace VGMToolbox.tools.xsf
                 
                 if (uniqueSqFiles != null)
                 {
-                    this.maxFiles = uniqueSqFiles.Length;
+                    if (pBin2PsfStruct.TryCombinations)
+                    {
+                        this.maxFiles = uniqueSqFiles.Length * uniqueSqFiles.Length;
+                    }
+                    else
+                    {
+                        this.maxFiles = uniqueSqFiles.Length;
+                    }
+                    
                     this.buildPsfs(uniqueSqFiles, uniqueVhFiles, pBin2PsfStruct, e);
                 }
             }
@@ -123,22 +132,9 @@ namespace VGMToolbox.tools.xsf
         private void buildPsfs(string[] pUniqueSqFiles, string[] pUniqueVhFiles, Bin2PsfStruct pBin2PsfStruct,
             DoWorkEventArgs e)
         {
-            Process bin2PsfProcess;
-            int progress;
-            StringBuilder bin2PsfArguments = new StringBuilder();
-            bool isSuccess;
-            string builtFilePath;
             string outputExtension;
             string ripOutputFolder = Path.Combine(OUTPUT_FOLDER, pBin2PsfStruct.outputFolder);
             
-            byte[] textSectionOffset;
-            long textSectionOffsetValue;
-            long pcOffsetSeq;
-            long pcOffsetVb;
-            long pcOffsetVh;
-
-            FileInfo fi;
-
             string bin2PsfSourcePath = Path.Combine(PROGRAMS_FOLDER, "bin2psf.exe");
             string bin2PsfDestinationPath = Path.Combine(WORKING_FOLDER, "bin2psf.exe");
 
@@ -168,163 +164,32 @@ namespace VGMToolbox.tools.xsf
                 outputExtension = "psf";
             }
 
-            foreach (string f in pUniqueSqFiles)
+            foreach (string seqFile in pUniqueSqFiles)
             {
                 if (!CancellationPending)
                 {
-                    bin2PsfArguments.Length = 0;
-
-                    // report progress
-                    progress = (++this.fileCount * 100) / maxFiles;
-                    this.progressStruct.Clear();
-                    this.progressStruct.FileName = f;
-                    ReportProgress(progress, this.progressStruct);
-
                     try
                     {
-                        // copy data files to working directory                    
-                        string filePrefix = Path.GetFileNameWithoutExtension(f);
-                        string sourceDirectory = Path.GetDirectoryName(f);
-
-                        string seqFileName = filePrefix + ".seq";
-                        string vbFileName = filePrefix + ".vb";
-                        string vhFileName = filePrefix + ".vh";
-
-                        string sourceSeqFile = Path.Combine(sourceDirectory, seqFileName);
-                        string sourceVbFile = Path.Combine(sourceDirectory, vbFileName);
-                        string sourceVhFile = Path.Combine(sourceDirectory, vhFileName);
-
-                        string destinationExeFile = Path.Combine(WORKING_FOLDER, filePrefix + ".BIN");
-                        string destinationSeqFile = Path.Combine(WORKING_FOLDER, seqFileName);
-                        string destinationVbFile = Path.Combine(WORKING_FOLDER, vbFileName);
-                        string destinationVhFile = Path.Combine(WORKING_FOLDER, vhFileName);
-                        builtFilePath = Path.Combine(WORKING_FOLDER, filePrefix + "." + outputExtension);
-
-                        fi = new FileInfo(sourceSeqFile);
-
-                        // check for empty SEQ files
-                        if ((fi.Length > 0) || pBin2PsfStruct.AllowZeroLengthSequences)
+                        if (pBin2PsfStruct.TryCombinations)
                         {
-                            File.Copy(pBin2PsfStruct.exePath, destinationExeFile);
-                            File.Copy(sourceSeqFile, destinationSeqFile);
-                            File.Copy(sourceVbFile, destinationVbFile);
-                            File.Copy(sourceVhFile, destinationVhFile);
-                                                        
-                            // determine offsets
-                            using (FileStream fs = File.OpenRead(destinationExeFile))
+                            foreach (string vhFile in pUniqueVhFiles)
                             {
-                                // get offset of text section
-                                textSectionOffset = ParseFile.ParseSimpleOffset(fs, 0x18, 4);
-                                textSectionOffsetValue = BitConverter.ToUInt32(textSectionOffset, 0);
-                                
-                                switch (pBin2PsfStruct.DriverName)
-                                {
-                                    case GENERIC_DRIVER_DAVIRONICA:
-                                        pcOffsetSeq = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.seqOffset) -
-                                            textSectionOffsetValue + PC_OFFSET_CORRECTION;
-                                        pcOffsetVb = pcOffsetSeq + fi.Length;
-                                        pcOffsetVh = pcOffsetVb + new FileInfo(sourceVbFile).Length;                                        
-                                        break;
-                                    default:                                
-                                        // calculate pc offsets
-                                        pcOffsetSeq = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.seqOffset) -
-                                            textSectionOffsetValue + PC_OFFSET_CORRECTION;
-                                        pcOffsetVb = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.vbOffset) -
-                                            textSectionOffsetValue + PC_OFFSET_CORRECTION;
-                                        pcOffsetVh = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.vhOffset) -
-                                            textSectionOffsetValue + PC_OFFSET_CORRECTION;
-                                        break;
-                                }
+                                this.makePsfFile(pBin2PsfStruct, seqFile, vhFile, Path.ChangeExtension(vhFile, ".vb"),
+                                    outputExtension, bin2PsfDestinationPath, ripOutputFolder);
                             }
-
-                            // insert the data
-                            fi = new FileInfo(destinationSeqFile);
-                            FileUtil.ReplaceFileChunk(destinationSeqFile, 0, fi.Length, 
-                                destinationExeFile, pcOffsetSeq);
-                            fi = new FileInfo(destinationVbFile);
-                            FileUtil.ReplaceFileChunk(destinationVbFile, 0, fi.Length,
-                                destinationExeFile, pcOffsetVb);
-                            fi = new FileInfo(destinationVhFile);
-                            FileUtil.ReplaceFileChunk(destinationVhFile, 0, fi.Length,
-                                destinationExeFile, pcOffsetVh);
-
-                            // patch addresses for Davironica
-                            if ((!String.IsNullOrEmpty(pBin2PsfStruct.DriverName)) && (pBin2PsfStruct.DriverName.Equals(GENERIC_DRIVER_DAVIRONICA)))
-                            {
-                                using (FileStream fs = File.OpenWrite(destinationExeFile))
-                                {
-                                    fs.Position = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.vbOffset)
-                                        - textSectionOffsetValue + PC_OFFSET_CORRECTION;
-                                    fs.Write(BitConverter.GetBytes((uint)(pcOffsetVb + textSectionOffsetValue - PC_OFFSET_CORRECTION)), 0, 4);
-
-                                    fs.Position = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.vhOffset)
-                                        - textSectionOffsetValue + PC_OFFSET_CORRECTION;
-                                    fs.Write(BitConverter.GetBytes((uint)(pcOffsetVh + textSectionOffsetValue - PC_OFFSET_CORRECTION)), 0, 4);                                    
-                                }
-                            }
-
-                            // build bin2psf arguments                    
-                            bin2PsfArguments.Append(String.Format(" {0} 1 {1}.bin", outputExtension, filePrefix));                                                        
-
-                            // run bin2psf                
-                            bin2PsfProcess = new Process();
-                            bin2PsfProcess.StartInfo = new ProcessStartInfo(bin2PsfDestinationPath, bin2PsfArguments.ToString());
-                            bin2PsfProcess.StartInfo.WorkingDirectory = WORKING_FOLDER;
-                            bin2PsfProcess.StartInfo.UseShellExecute = false;
-                            bin2PsfProcess.StartInfo.CreateNoWindow = true;
-                            isSuccess = bin2PsfProcess.Start();
-                            bin2PsfProcess.WaitForExit();
-
-                            if (isSuccess)
-                            {
-                                // add lib tag
-                                if (pBin2PsfStruct.makeMiniPsfs)
-                                {
-                                    using (FileStream ofs = File.Open(builtFilePath, FileMode.Open, FileAccess.Write))
-                                    {
-                                        ofs.Seek(0, SeekOrigin.End);
-                                        using (BinaryWriter bw = new BinaryWriter(ofs))
-                                        {
-                                            System.Text.Encoding enc = System.Text.Encoding.ASCII;
-                                            
-                                            bw.Write(enc.GetBytes(Xsf.ASCII_TAG)); // [TAG]
-                                            bw.Write(enc.GetBytes(String.Format("_lib={0}", pBin2PsfStruct.psflibName)));
-                                            bw.Write(new byte[] { 0x0A });
-                                        }
-                                    }
-                                }
-                                this.progressStruct.Clear();
-                                this.progressStruct.GenericMessage = String.Format("{0}.{1} created.", filePrefix, outputExtension) +
-                                    Environment.NewLine;
-                                ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
-
-                                if (!Directory.Exists(ripOutputFolder))
-                                {
-                                    Directory.CreateDirectory(Path.Combine(OUTPUT_FOLDER, pBin2PsfStruct.outputFolder));
-                                }
-                                File.Move(builtFilePath, Path.Combine(ripOutputFolder, Path.GetFileName(builtFilePath)));
-                            }
-
-                            File.Delete(destinationExeFile);
-                            File.Delete(destinationSeqFile);
-                            File.Delete(destinationVbFile);
-                            File.Delete(destinationVhFile);
-
-                        } // if (fi.Length > 0)
+                        }
                         else
                         {
-                            this.progressStruct.Clear();
-                            this.progressStruct.GenericMessage = String.Format("WARNING: {0}.SEQ has ZERO length.  Skipping...", filePrefix) +
-                                Environment.NewLine;
-                            ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
+                            this.makePsfFile(pBin2PsfStruct, seqFile, Path.ChangeExtension(seqFile, ".vh"), Path.ChangeExtension(seqFile, ".vb"),
+                                outputExtension, bin2PsfDestinationPath, ripOutputFolder);                    
                         }
-                    }
-                    catch (Exception ex2)
+                    }                
+                    catch (Exception ex)
                     {
                         this.progressStruct.Clear();
-                        this.progressStruct.FileName = f;
-                        this.progressStruct.ErrorMessage = ex2.Message;
-                        ReportProgress(progress, this.progressStruct);
+                        this.progressStruct.FileName = seqFile;
+                        this.progressStruct.ErrorMessage = ex.Message;
+                        ReportProgress(this.progress, this.progressStruct);
                     }
                 }
                 else
@@ -333,18 +198,190 @@ namespace VGMToolbox.tools.xsf
                     return;
                 } // if (!CancellationPending)
 
-            } // foreach (string f in pUniqueSqFiles)
+            } // foreach (string seqFile in pUniqueSqFiles)
 
             try
             {
                 Directory.Delete(WORKING_FOLDER, true);
             }
-            catch (Exception ex3)
+            catch (Exception ex2)
             {
                 this.progressStruct.Clear();
-                this.progressStruct.ErrorMessage = ex3.Message;
+                this.progressStruct.ErrorMessage = ex2.Message;
                 ReportProgress(100, this.progressStruct);
             }
+        }
+
+        /// <summary>
+        /// Make a single PSF file.
+        /// </summary>
+        /// <param name="pBin2PsfStruct"></param>
+        /// <param name="seqFile"></param>
+        /// <param name="vhFile"></param>
+        /// <param name="vbFile"></param>
+        /// <param name="outputExtension"></param>
+        /// <param name="bin2PsfDestinationPath"></param>
+        /// <param name="ripOutputFolder"></param>
+        private void makePsfFile(
+            Bin2PsfStruct pBin2PsfStruct, 
+            string seqFile, 
+            string vhFile, 
+            string vbFile, 
+            string outputExtension,
+            string bin2PsfDestinationPath,
+            string ripOutputFolder)
+        {
+
+            long pcOffsetSeq;
+            long pcOffsetVh;
+            long pcOffsetVb;
+            long textSectionOffsetValue;
+
+            // report progress
+            this.progress = (++this.fileCount * 100) / maxFiles;
+            this.progressStruct.Clear();
+            this.progressStruct.FileName = seqFile;
+            ReportProgress(this.progress, this.progressStruct);
+                        
+            // copy data files to working directory                    
+            string sourceDirectory = pBin2PsfStruct.sourcePath;
+
+            string filePrefix;
+
+            if (pBin2PsfStruct.TryCombinations)
+            {
+                filePrefix = String.Format("S[{0}]_V[{1}]", Path.GetFileNameWithoutExtension(seqFile), Path.GetFileNameWithoutExtension(vhFile));
+            }
+            else
+            {
+                filePrefix = Path.GetFileNameWithoutExtension(seqFile);
+            }
+
+            string destinationExeFile = Path.Combine(WORKING_FOLDER, filePrefix + ".BIN");
+            string destinationSeqFile = Path.Combine(WORKING_FOLDER, Path.GetFileName(seqFile));
+            string destinationVbFile = Path.Combine(WORKING_FOLDER, Path.GetFileName(vbFile));
+            string destinationVhFile = Path.Combine(WORKING_FOLDER, Path.GetFileName(vhFile));
+            string builtFilePath = Path.Combine(WORKING_FOLDER, filePrefix + "." + outputExtension);
+
+            FileInfo fi = new FileInfo(seqFile);
+
+            // check for empty SEQ files
+            if ((fi.Length > 0) || pBin2PsfStruct.AllowZeroLengthSequences)
+            {
+                File.Copy(pBin2PsfStruct.exePath, destinationExeFile);
+                File.Copy(seqFile, destinationSeqFile);
+                File.Copy(vbFile, destinationVbFile);
+                File.Copy(vhFile, destinationVhFile);
+
+                // determine offsets
+                using (FileStream fs = File.OpenRead(destinationExeFile))
+                {
+                    // get offset of text section
+                    byte[] textSectionOffset = ParseFile.ParseSimpleOffset(fs, 0x18, 4);
+                    textSectionOffsetValue = BitConverter.ToUInt32(textSectionOffset, 0);
+
+                    switch (pBin2PsfStruct.DriverName)
+                    {
+                        case GENERIC_DRIVER_DAVIRONICA:
+                            pcOffsetSeq = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.seqOffset) -
+                                textSectionOffsetValue + PC_OFFSET_CORRECTION;
+                            pcOffsetVb = pcOffsetSeq + fi.Length;
+                            pcOffsetVh = pcOffsetVb + new FileInfo(vbFile).Length;
+                            break;
+                        default:
+                            // calculate pc offsets
+                            pcOffsetSeq = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.seqOffset) -
+                                textSectionOffsetValue + PC_OFFSET_CORRECTION;
+                            pcOffsetVb = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.vbOffset) -
+                                textSectionOffsetValue + PC_OFFSET_CORRECTION;
+                            pcOffsetVh = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.vhOffset) -
+                                textSectionOffsetValue + PC_OFFSET_CORRECTION;
+                            break;
+                    }
+                }
+
+                // insert the data
+                fi = new FileInfo(destinationSeqFile);
+                FileUtil.ReplaceFileChunk(destinationSeqFile, 0, fi.Length,
+                    destinationExeFile, pcOffsetSeq);
+                fi = new FileInfo(destinationVbFile);
+                FileUtil.ReplaceFileChunk(destinationVbFile, 0, fi.Length,
+                    destinationExeFile, pcOffsetVb);
+                fi = new FileInfo(destinationVhFile);
+                FileUtil.ReplaceFileChunk(destinationVhFile, 0, fi.Length,
+                    destinationExeFile, pcOffsetVh);
+
+                // patch addresses for Davironica
+                if ((!String.IsNullOrEmpty(pBin2PsfStruct.DriverName)) && (pBin2PsfStruct.DriverName.Equals(GENERIC_DRIVER_DAVIRONICA)))
+                {
+                    using (FileStream fs = File.OpenWrite(destinationExeFile))
+                    {
+                        fs.Position = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.vbOffset)
+                            - textSectionOffsetValue + PC_OFFSET_CORRECTION;
+                        fs.Write(BitConverter.GetBytes((uint)(pcOffsetVb + textSectionOffsetValue - PC_OFFSET_CORRECTION)), 0, 4);
+
+                        fs.Position = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.vhOffset)
+                            - textSectionOffsetValue + PC_OFFSET_CORRECTION;
+                        fs.Write(BitConverter.GetBytes((uint)(pcOffsetVh + textSectionOffsetValue - PC_OFFSET_CORRECTION)), 0, 4);
+                    }
+                }
+
+                // build bin2psf arguments                    
+                StringBuilder bin2PsfArguments = new StringBuilder();
+                bin2PsfArguments.Append(String.Format(" {0} 1 {1}.bin", outputExtension, filePrefix));
+
+                // run bin2psf                
+                Process bin2PsfProcess = new Process();
+                bin2PsfProcess.StartInfo = new ProcessStartInfo(bin2PsfDestinationPath, bin2PsfArguments.ToString());
+                bin2PsfProcess.StartInfo.WorkingDirectory = WORKING_FOLDER;
+                bin2PsfProcess.StartInfo.UseShellExecute = false;
+                bin2PsfProcess.StartInfo.CreateNoWindow = true;
+                bool isSuccess = bin2PsfProcess.Start();
+                bin2PsfProcess.WaitForExit();
+
+                if (isSuccess)
+                {
+                    // add lib tag
+                    if (pBin2PsfStruct.makeMiniPsfs)
+                    {
+                        using (FileStream ofs = File.Open(builtFilePath, FileMode.Open, FileAccess.Write))
+                        {
+                            ofs.Seek(0, SeekOrigin.End);
+                            using (BinaryWriter bw = new BinaryWriter(ofs))
+                            {
+                                System.Text.Encoding enc = System.Text.Encoding.ASCII;
+
+                                bw.Write(enc.GetBytes(Xsf.ASCII_TAG)); // [TAG]
+                                bw.Write(enc.GetBytes(String.Format("_lib={0}", pBin2PsfStruct.psflibName)));
+                                bw.Write(new byte[] { 0x0A });
+                            }
+                        }
+                    }
+                    this.progressStruct.Clear();
+                    this.progressStruct.GenericMessage = String.Format("{0}.{1} created.", filePrefix, outputExtension) +
+                        Environment.NewLine;
+                    ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
+
+                    if (!Directory.Exists(ripOutputFolder))
+                    {
+                        Directory.CreateDirectory(Path.Combine(OUTPUT_FOLDER, pBin2PsfStruct.outputFolder));
+                    }
+                    File.Move(builtFilePath, Path.Combine(ripOutputFolder, Path.GetFileName(builtFilePath)));
+                }
+
+                File.Delete(destinationExeFile);
+                File.Delete(destinationSeqFile);
+                File.Delete(destinationVbFile);
+                File.Delete(destinationVhFile);
+
+            } // if (fi.Length > 0)
+            else
+            {
+                this.progressStruct.Clear();
+                this.progressStruct.GenericMessage = String.Format("WARNING: {0}.SEQ has ZERO length.  Skipping...", filePrefix) +
+                    Environment.NewLine;
+                ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
+            }        
         }
 
         protected override void OnDoWork(DoWorkEventArgs e)
