@@ -205,6 +205,12 @@
     <Compile Include="forms\xsf\EasyPsfDriverExtractorForm.Designer.cs">
       <DependentUpon>EasyPsfDriverExtractorForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\xsf\Psf2DataFinderForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\xsf\Psf2DataFinderForm.Designer.cs">
+      <DependentUpon>Psf2DataFinderForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\xsf\PsfDataFinderForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -738,6 +744,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="forms\xsf\EasyPsfDriverExtractorForm.resx">
       <DependentUpon>EasyPsfDriverExtractorForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\xsf\Psf2DataFinderForm.resx">
+      <DependentUpon>Psf2DataFinderForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\xsf\PsfDataFinderForm.resx">

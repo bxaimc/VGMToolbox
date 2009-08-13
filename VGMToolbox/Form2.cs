@@ -441,6 +441,19 @@ namespace VGMToolbox
             nodeTag.FormClass = xsf_2sfTagsMigratorForm.GetType().Name;
             xsf_2sfTagMigratorNode.Tag = nodeTag;
 
+            //////////////////////
+            // PSF2 DATA EXTRACTOR
+            //////////////////////
+            TreeNode psf2DataExtractorNode = new TreeNode("PSF2 Data Extractor");
+
+            // Add Form
+            Psf2DataFinderForm psf2DataFinderForm = new Psf2DataFinderForm(psf2DataExtractorNode);
+            this.splitContainer1.Panel2.Controls.Add(psf2DataFinderForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = psf2DataFinderForm.GetType().Name;
+            psf2DataExtractorNode.Tag = nodeTag;
+
             ////////////
             // MKPSF2FE
             ////////////
@@ -693,6 +706,7 @@ namespace VGMToolbox
 
             psf2_RootNode.NodeFont = this.treeviewBoldFont;
             psf2_RootNode.Tag = nodeTag;
+            psf2_RootNode.Nodes.Add(psf2DataExtractorNode);
             psf2_RootNode.Nodes.Add(xsf_MkPsf2FENode);
             psf2_RootNode.Nodes.Add(xsf_UnPsf2FENode);
             psf2_RootNode.Nodes.Add(xsf_Psf2ToPsf2LibNode);

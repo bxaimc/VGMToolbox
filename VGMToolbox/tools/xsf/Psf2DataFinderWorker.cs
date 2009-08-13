@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.ComponentModel;
 using System.IO;
-using System.Text;
 
 using VGMToolbox.format;
 using VGMToolbox.plugin;
@@ -44,10 +43,10 @@ namespace VGMToolbox.tools.xsf
 
         public struct HdStruct
         {
-            public UInt16 hdProgramCount;
-            public UInt16 hdSampleCount;
-            public uint[] hdSampleSizes;
-            public long offsetTableOffset;
+            public long vagSectionOffset;
+            public long maxVagInfoNumber;
+            public long[] vagInfoOffsetAddr;
+            public long[] vagOffset;
 
             public long startingOffset;
             public long length;
@@ -73,6 +72,13 @@ namespace VGMToolbox.tools.xsf
             uint sqLength;
             string sqName;
             int sqNumber = 0;
+
+            uint hdLength;
+            string hdName;
+            int hdNumber = 0;
+
+            HdStruct hdObject;
+            ArrayList hdArrayList = new ArrayList();
 
             // display file name
             this.progressStruct.Clear();
@@ -103,6 +109,43 @@ namespace VGMToolbox.tools.xsf
                     offset += 1;
                 }
 
+                // get HD Files
+                this.progressStruct.Clear();
+                this.progressStruct.GenericMessage = String.Format("  Extracting HD{0}", Environment.NewLine);
+                this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
+
+                offset = 0;
+
+                while ((offset = ParseFile.GetNextOffset(fs, offset, Psf2.HD_SIGNATURE)) > -1)
+                {
+                    hdLength = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, offset + 0xC, 4), 0);
+
+                    hdName = String.Format("{0}_{1}.HD", Path.GetFileNameWithoutExtension(pPath), hdNumber++.ToString("X4"));
+                    ParseFile.ExtractChunkToFile(fs, offset - 0x10, (int)hdLength,
+                        Path.Combine(Path.GetDirectoryName(pPath), hdName));
+
+                    // get info
+                    hdObject = new HdStruct();
+                    hdObject.startingOffset = offset - 0x10;
+                    hdObject.length = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, offset + 0xC, 4), 0);
+                    hdObject.vagSectionOffset = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, offset + 0x20, 4), 0);
+                    hdObject.maxVagInfoNumber = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, hdObject.vagSectionOffset + 0xC, 4), 0);
+
+                    hdObject.vagInfoOffsetAddr = new long[hdObject.maxVagInfoNumber + 1];
+                    hdObject.vagOffset = new long[hdObject.maxVagInfoNumber + 1];
+
+                    for (int i = 0; i < hdObject.maxVagInfoNumber; i++)
+                    {
+                        hdObject.vagInfoOffsetAddr[i] = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, hdObject.vagSectionOffset + 0x10 + (i * 4), 4), 0);
+                        hdObject.vagOffset[i] = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, hdObject.vagSectionOffset + hdObject.vagInfoOffsetAddr[i], 4), 0);
+                    }
+
+                    // add to array
+                    hdArrayList.Add(hdObject);
+                   
+                    // increment offset
+                    offset += 1;
+                }
             }
         }
 

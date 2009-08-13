@@ -18,6 +18,9 @@ namespace VGMToolbox.format
         public const string FILE_EXTENSION_HD = ".hd";
         public const string FILE_EXTENSION_SQ = ".sq";
 
+        public static readonly byte[] HD_SIGNATURE = new byte[] { 0x49, 0x45, 0x43, 0x53,
+                                                                  0x64, 0x61, 0x65, 0x48 };
+
         public struct Psf2IniSqIrxStruct
         {
             public string SqFileName;
