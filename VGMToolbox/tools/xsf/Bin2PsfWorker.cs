@@ -79,7 +79,7 @@ namespace VGMToolbox.tools.xsf
                 {
                     if (pBin2PsfStruct.TryCombinations)
                     {
-                        this.maxFiles = uniqueSqFiles.Length * uniqueSqFiles.Length;
+                        this.maxFiles = uniqueSqFiles.Length * uniqueVhFiles.Length;
                     }
                     else
                     {
@@ -112,7 +112,7 @@ namespace VGMToolbox.tools.xsf
             }
             else
             {
-                fileCount = Directory.GetFiles(pSourceDirectory, mask).Length;
+                fileCount = Directory.GetFiles(pSourceDirectory, mask, SearchOption.TopDirectoryOnly).Length;
 
                 if (fileCount > 0)
                 {
@@ -168,29 +168,41 @@ namespace VGMToolbox.tools.xsf
             {
                 if (!CancellationPending)
                 {
-                    try
+
+                    if (pBin2PsfStruct.TryCombinations)
                     {
-                        if (pBin2PsfStruct.TryCombinations)
+                        foreach (string vhFile in pUniqueVhFiles)
                         {
-                            foreach (string vhFile in pUniqueVhFiles)
+                            try
                             {
                                 this.makePsfFile(pBin2PsfStruct, seqFile, vhFile, Path.ChangeExtension(vhFile, ".vb"),
                                     outputExtension, bin2PsfDestinationPath, ripOutputFolder);
                             }
+                            catch (Exception ex)
+                            {
+                                this.progressStruct.Clear();
+                                this.progressStruct.FileName = seqFile;
+                                this.progressStruct.ErrorMessage = ex.Message;
+                                ReportProgress(this.progress, this.progressStruct);
+                            }
                         }
-                        else
+                    }
+                    else
+                    {
+                        try
                         {
                             this.makePsfFile(pBin2PsfStruct, seqFile, Path.ChangeExtension(seqFile, ".vh"), Path.ChangeExtension(seqFile, ".vb"),
-                                outputExtension, bin2PsfDestinationPath, ripOutputFolder);                    
+                                outputExtension, bin2PsfDestinationPath, ripOutputFolder);
                         }
-                    }                
-                    catch (Exception ex)
-                    {
-                        this.progressStruct.Clear();
-                        this.progressStruct.FileName = seqFile;
-                        this.progressStruct.ErrorMessage = ex.Message;
-                        ReportProgress(this.progress, this.progressStruct);
-                    }
+                        catch (Exception ex2)
+                        {
+                            this.progressStruct.Clear();
+                            this.progressStruct.FileName = seqFile;
+                            this.progressStruct.ErrorMessage = ex2.Message;
+                            ReportProgress(this.progress, this.progressStruct);
+                        }
+                    }            
+
                 }
                 else
                 {
@@ -268,10 +280,10 @@ namespace VGMToolbox.tools.xsf
             // check for empty SEQ files
             if ((fi.Length > 0) || pBin2PsfStruct.AllowZeroLengthSequences)
             {
-                File.Copy(pBin2PsfStruct.exePath, destinationExeFile);
-                File.Copy(seqFile, destinationSeqFile);
-                File.Copy(vbFile, destinationVbFile);
-                File.Copy(vhFile, destinationVhFile);
+                File.Copy(pBin2PsfStruct.exePath, destinationExeFile, true);
+                File.Copy(seqFile, destinationSeqFile, true);
+                File.Copy(vbFile, destinationVbFile, true);
+                File.Copy(vhFile, destinationVhFile, true);
 
                 // determine offsets
                 using (FileStream fs = File.OpenRead(destinationExeFile))
