@@ -25,6 +25,9 @@ namespace VGMToolbox.format
             public double TimeInSeconds;
             public int FadeInSeconds;
             public string Warnings;
+
+            public double LoopStartInSeconds;
+            public double LoopEndInSeconds;
         }
 
         struct SqHeaderStruct
@@ -114,6 +117,8 @@ namespace VGMToolbox.format
         {
             PsxSqTimingStruct ret = new PsxSqTimingStruct();
             ret.Warnings = String.Empty;
+            ret.LoopStartInSeconds = -1;
+            ret.LoopEndInSeconds = -1;
 
             long incomingStreamPosition = pStream.Position;
 
@@ -377,10 +382,12 @@ namespace VGMToolbox.format
                         // check for loop start
                         if ((((currentByte & 0xB0) == 0xB0) || ((runningCommand & 0xB0) == 0xB0)) &&
                              dataByte1 == 0x63 && dataByte2 == 0x14)
-                        {
+                        {                            
                             loopTimeStack.Push(0);
                             loopTickStack.Push(0);
                             loopsOpened++;
+
+                            ret.LoopStartInSeconds = ((totalTime) * Math.Pow(10, -6));
                         }
 
                         // check for loop end
@@ -427,6 +434,8 @@ namespace VGMToolbox.format
                                 totalTicks += loopTicks;
 
                                 timeSinceLastLoopEnd = 0;
+
+                                ret.LoopEndInSeconds = ((totalTime) * Math.Pow(10, -6));
                             }
 
                             loopEndFound = false;

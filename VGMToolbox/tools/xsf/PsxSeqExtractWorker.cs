@@ -40,6 +40,12 @@ namespace VGMToolbox.tools.xsf
             int minutes;
             double seconds;
 
+            int loopStartMinutes = 0;
+            double loopStartSeconds = 0;
+
+            int loopEndMinutes = 0;
+            double loopEndSeconds = 0;
+
             StringBuilder batchFile = new StringBuilder();
             string batchFilePath;
               
@@ -72,6 +78,8 @@ namespace VGMToolbox.tools.xsf
                 if (psxSeq != null)
                 {
                     double timingInfoSeconds = psxSeq.TimingInfo.TimeInSeconds;
+                    double loopStartInSeconds = psxSeq.TimingInfo.LoopStartInSeconds;
+                    double loopEndInSeconds = psxSeq.TimingInfo.LoopEndInSeconds;
                     int timingInfoFadeInSeconds = psxSeq.TimingInfo.FadeInSeconds;
 
                     // loop entire track
@@ -86,6 +94,18 @@ namespace VGMToolbox.tools.xsf
                     seconds = timingInfoSeconds - (minutes * 60);
                     // seconds = Math.Ceiling(seconds);
 
+                    if (loopStartInSeconds > -1)
+                    {
+                        loopStartMinutes = (int)(loopStartInSeconds / 60d);
+                        loopStartSeconds = loopStartInSeconds - (loopStartMinutes * 60);
+                    }
+
+                    if (loopEndInSeconds > -1)
+                    {
+                        loopEndMinutes = (int)(loopEndInSeconds / 60d);
+                        loopEndSeconds = loopEndInSeconds - (loopEndMinutes * 60);
+                    }                    
+
                     // shouldn't be needed without Math.Ceiling call, but whatever 
                     if (seconds >= 60)
                     {
@@ -93,10 +113,21 @@ namespace VGMToolbox.tools.xsf
                         seconds -= 60d;
                     }
 
+                    if ((loopStartInSeconds > -1) && (loopEndInSeconds > -1))
+                    {
+                        batchFile.AppendLine(
+                            String.Format(
+                                "REM {0}: Loop Start: {1}:{2}      Loop Finish: {3}:{4}", 
+                                Path.GetFileName(pPath),
+                                loopStartMinutes.ToString(), loopStartSeconds.ToString().PadLeft(2, '0'),
+                                loopEndMinutes.ToString(), loopEndSeconds.ToString().PadLeft(2, '0')));
+                    }
+
                     batchFile.AppendFormat("psfpoint.exe -length=\"{0}:{1}\" -fade=\"{2}\" \"{3}\"",
-                        minutes.ToString(), seconds.ToString().PadLeft(2, '0'),
-                        timingInfoFadeInSeconds.ToString(), Path.GetFileName(pPath));
-                    batchFile.Append(Environment.NewLine);
+                    minutes.ToString(), seconds.ToString().PadLeft(2, '0'),
+                    timingInfoFadeInSeconds.ToString(), Path.GetFileName(pPath));
+                    batchFile.AppendLine();
+                    batchFile.AppendLine();
 
                     batchFilePath = Path.Combine(Path.GetDirectoryName(pPath), BATCH_FILE_NAME);
 
