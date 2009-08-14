@@ -30,8 +30,9 @@
         {
             this.grpSource = new System.Windows.Forms.GroupBox();
             this.grpOptions = new System.Windows.Forms.GroupBox();
-            this.tbMinimumSize = new System.Windows.Forms.TextBox();
             this.cbUseMinimum = new System.Windows.Forms.CheckBox();
+            this.tbMinimumSize = new System.Windows.Forms.TextBox();
+            this.cbReorderSqFiles = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -41,30 +42,30 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 521);
-            this.pnlLabels.Size = new System.Drawing.Size(768, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 608);
+            this.pnlLabels.Size = new System.Drawing.Size(857, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(768, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(857, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 444);
-            this.tbOutput.Size = new System.Drawing.Size(768, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 531);
+            this.tbOutput.Size = new System.Drawing.Size(857, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 424);
-            this.pnlButtons.Size = new System.Drawing.Size(768, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 511);
+            this.pnlButtons.Size = new System.Drawing.Size(857, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(708, 0);
+            this.btnCancel.Location = new System.Drawing.Point(797, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(648, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(737, 0);
             // 
             // grpSource
             // 
@@ -72,7 +73,7 @@
             this.grpSource.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpSource.Location = new System.Drawing.Point(0, 23);
             this.grpSource.Name = "grpSource";
-            this.grpSource.Size = new System.Drawing.Size(768, 401);
+            this.grpSource.Size = new System.Drawing.Size(857, 488);
             this.grpSource.TabIndex = 5;
             this.grpSource.TabStop = false;
             this.grpSource.Text = "Drop Files Here";
@@ -81,22 +82,16 @@
             // 
             // grpOptions
             // 
+            this.grpOptions.Controls.Add(this.cbReorderSqFiles);
             this.grpOptions.Controls.Add(this.cbUseMinimum);
             this.grpOptions.Controls.Add(this.tbMinimumSize);
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.grpOptions.Location = new System.Drawing.Point(3, 354);
+            this.grpOptions.Location = new System.Drawing.Point(3, 425);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(762, 44);
+            this.grpOptions.Size = new System.Drawing.Size(851, 60);
             this.grpOptions.TabIndex = 0;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
-            // 
-            // tbMinimumSize
-            // 
-            this.tbMinimumSize.Location = new System.Drawing.Point(120, 13);
-            this.tbMinimumSize.Name = "tbMinimumSize";
-            this.tbMinimumSize.Size = new System.Drawing.Size(100, 20);
-            this.tbMinimumSize.TabIndex = 0;
             // 
             // cbUseMinimum
             // 
@@ -108,11 +103,28 @@
             this.cbUseMinimum.Text = "Minimum SQ Size";
             this.cbUseMinimum.UseVisualStyleBackColor = true;
             // 
+            // tbMinimumSize
+            // 
+            this.tbMinimumSize.Location = new System.Drawing.Point(120, 13);
+            this.tbMinimumSize.Name = "tbMinimumSize";
+            this.tbMinimumSize.Size = new System.Drawing.Size(100, 20);
+            this.tbMinimumSize.TabIndex = 0;
+            // 
+            // cbReorderSqFiles
+            // 
+            this.cbReorderSqFiles.AutoSize = true;
+            this.cbReorderSqFiles.Location = new System.Drawing.Point(6, 38);
+            this.cbReorderSqFiles.Name = "cbReorderSqFiles";
+            this.cbReorderSqFiles.Size = new System.Drawing.Size(275, 17);
+            this.cbReorderSqFiles.TabIndex = 3;
+            this.cbReorderSqFiles.Text = "Name SQ files to correspond to maximum HD values.";
+            this.cbReorderSqFiles.UseVisualStyleBackColor = true;
+            // 
             // Psf2DataFinderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(768, 562);
+            this.ClientSize = new System.Drawing.Size(857, 649);
             this.Controls.Add(this.grpSource);
             this.Name = "Psf2DataFinderForm";
             this.Text = "Psf2DataFinderForm";
@@ -141,5 +153,6 @@
         private System.Windows.Forms.GroupBox grpOptions;
         private System.Windows.Forms.TextBox tbMinimumSize;
         private System.Windows.Forms.CheckBox cbUseMinimum;
+        private System.Windows.Forms.CheckBox cbReorderSqFiles;
     }
 }

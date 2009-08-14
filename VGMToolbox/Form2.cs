@@ -444,7 +444,7 @@ namespace VGMToolbox
             //////////////////////
             // PSF2 DATA EXTRACTOR
             //////////////////////
-            TreeNode psf2DataExtractorNode = new TreeNode("PSF2 Data Extractor");
+            TreeNode psf2DataExtractorNode = new TreeNode("PSF2 Data Finder");
 
             // Add Form
             Psf2DataFinderForm psf2DataFinderForm = new Psf2DataFinderForm(psf2DataExtractorNode);
@@ -601,7 +601,7 @@ namespace VGMToolbox
             //////////////////////
             // PSF DATA EXTRACTOR
             //////////////////////
-            TreeNode psfDataExtractorNode = new TreeNode("PSF Data Extractor");
+            TreeNode psfDataExtractorNode = new TreeNode("PSF Data Finder");
 
             // Add Form
             PsfDataFinderForm psfDataFinderForm = new PsfDataFinderForm(psfDataExtractorNode);

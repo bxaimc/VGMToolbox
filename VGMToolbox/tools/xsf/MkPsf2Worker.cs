@@ -291,7 +291,7 @@ namespace VGMToolbox.tools.xsf
                         vProgressStruct = new VGMToolbox.util.ProgressStruct();
                         vProgressStruct.NewNode = null;
                         vProgressStruct.FileName = f;
-                        vProgressStruct.ErrorMessage = ex2.Message;
+                        vProgressStruct.ErrorMessage = String.Format("{0}{1}", ex2.Message, Environment.NewLine);
                         ReportProgress(progress, vProgressStruct);
                     }
                 }

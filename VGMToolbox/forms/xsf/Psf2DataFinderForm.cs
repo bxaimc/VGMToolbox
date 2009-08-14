@@ -24,7 +24,7 @@ namespace VGMToolbox.forms.xsf
             this.lblTitle.Text = "PSF2 Data Extractor";
             this.tbOutput.Text = "- Extract SQ/HD/BD data from files." + Environment.NewLine;
             this.tbOutput.Text += "- HD/BD should always be correctly paired." + Environment.NewLine;
-            this.tbOutput.Text += "- WARNING: BD DETECTION IS VERY SLOW, PLEASE BE PATIENT..." + Environment.NewLine;
+            this.tbOutput.Text += "- NOTICE: BD DETECTION CAN BE VERY SLOW, PLEASE BE PATIENT..." + Environment.NewLine;
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -55,6 +55,7 @@ namespace VGMToolbox.forms.xsf
 
             Psf2DataFinderWorker.Psf2DataFinderStruct bwStruct = new Psf2DataFinderWorker.Psf2DataFinderStruct();
             bwStruct.SourcePaths = s;
+            bwStruct.ReorderSqFiles = cbReorderSqFiles.Checked;
             bwStruct.UseSeqMinimumSize = cbUseMinimum.Checked;
             
             if (cbUseMinimum.Checked)

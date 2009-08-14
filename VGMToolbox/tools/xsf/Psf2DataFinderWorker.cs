@@ -32,6 +32,7 @@ namespace VGMToolbox.tools.xsf
         {
             public bool UseSeqMinimumSize;
             public int MinimumSize;
+            public bool ReorderSqFiles;
 
             private string[] sourcePaths;
             public string[] SourcePaths
@@ -49,6 +50,7 @@ namespace VGMToolbox.tools.xsf
             public long[] vagOffset;
             public long[] vagLengths;
 
+            public string FileName;
             public long startingOffset;
             public long length;
 
@@ -57,6 +59,12 @@ namespace VGMToolbox.tools.xsf
         }
 
         public struct ProbableBdStruct
+        {
+            public long offset;
+            public uint length;
+        }
+
+        public struct ProbableSqStruct
         {
             public long offset;
             public uint length;
@@ -73,6 +81,9 @@ namespace VGMToolbox.tools.xsf
             uint sqLength;
             string sqName;
             int sqNumber = 0;
+            ProbableSqStruct sqEntry;
+            ArrayList sqFiles = new ArrayList();
+            bool sqNamingMessageDisplayed = false;
 
             uint hdLength;
             string hdName;
@@ -93,30 +104,6 @@ namespace VGMToolbox.tools.xsf
 
             using (FileStream fs = File.OpenRead(pPath))
             {
-                // get SQ Files
-                #region SQ EXTRACT
-                this.progressStruct.Clear();
-                this.progressStruct.GenericMessage = String.Format("  Extracting SQ{0}", Environment.NewLine);
-                this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
-
-                offset = 0;
-
-                while ((offset = ParseFile.GetNextOffset(fs, offset, Ps2SequenceData.SIGNATURE_BYTES)) > -1)
-                {
-                    sqLength = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, offset + 0xC, 4), 0);
-                    
-                    if ((!psf2Struct.UseSeqMinimumSize) || ((psf2Struct.UseSeqMinimumSize) &&
-                        (sqLength >= psf2Struct.MinimumSize)))
-                    {
-                        sqName = String.Format("{0}_{1}.SQ", Path.GetFileNameWithoutExtension(pPath), sqNumber++.ToString("X4"));
-                        ParseFile.ExtractChunkToFile(fs, offset - 0x10, (int)sqLength,
-                            Path.Combine(Path.GetDirectoryName(pPath), sqName));
-                    }
-
-                    offset += 1;
-                }
-                #endregion
-
                 // get HD Files
                 #region HD EXTRACT
                 this.progressStruct.Clear();
@@ -135,6 +122,7 @@ namespace VGMToolbox.tools.xsf
 
                     // get info
                     hdObject = new HdStruct();
+                    hdObject.FileName = hdName;
                     hdObject.startingOffset = offset - 0x10;
                     hdObject.length = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, offset + 0xC, 4), 0);
                     hdObject.vagSectionOffset = hdObject.startingOffset + BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, offset + 0x20, 4), 0);
@@ -163,9 +151,69 @@ namespace VGMToolbox.tools.xsf
                 }
                 #endregion
 
-                // get BD files
+                // get SQ Files
+                #region SQ EXTRACT
                 this.progressStruct.Clear();
-                this.progressStruct.GenericMessage = String.Format("  Extracting BD...WARNING, THIS WILL TAKE A LONG TIME...{0}", Environment.NewLine);
+                this.progressStruct.GenericMessage = String.Format("  Extracting SQ{0}", Environment.NewLine);
+                this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
+
+                sqEntry = new ProbableSqStruct();
+                offset = 0;
+
+                // build file list
+                while ((offset = ParseFile.GetNextOffset(fs, offset, Ps2SequenceData.SIGNATURE_BYTES)) > -1)
+                {
+                    sqLength = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, offset + 0xC, 4), 0);
+
+                    if ((!psf2Struct.UseSeqMinimumSize) || ((psf2Struct.UseSeqMinimumSize) &&
+                        (sqLength >= psf2Struct.MinimumSize)))
+                    {
+                        sqEntry.offset = offset - 0x10;
+                        sqEntry.length = sqLength;
+                        sqFiles.Add(sqEntry);
+                    }                                                                           
+
+                    offset += 1;
+                }
+
+                foreach (ProbableSqStruct sq in sqFiles)
+                {
+                    if (psf2Struct.ReorderSqFiles)
+                    {
+                        if ((hdArrayList.Count < sqFiles.Count) && (!sqNamingMessageDisplayed))
+                        {
+                            this.progressStruct.Clear();
+                            this.progressStruct.ErrorMessage = String.Format(
+                                "Warning, cannot reorder SQ files, there are less HD files than SQ files.{0}", Environment.NewLine);
+                            this.ReportProgress(this.progress, this.progressStruct);
+
+                            sqNamingMessageDisplayed = true;
+                            sqName = String.Format("{0}_{1}.SQ", Path.GetFileNameWithoutExtension(pPath), sqNumber++.ToString("X4"));
+                        }
+                        else
+                        {
+                            hdObject = (HdStruct)hdArrayList[hdArrayList.Count - sqFiles.Count + sqNumber++];
+                            sqName = Path.ChangeExtension(hdObject.FileName, ".SQ");
+                        }
+                    }
+                    else
+                    {
+                        sqName = String.Format("{0}_{1}.SQ", Path.GetFileNameWithoutExtension(pPath), sqNumber++.ToString("X4"));
+                    }
+
+                    ParseFile.ExtractChunkToFile(fs, sq.offset, (int)sq.length,
+                        Path.Combine(Path.GetDirectoryName(pPath), sqName));
+
+
+                }
+                
+                
+                #endregion
+
+                // get BD files
+                #region BD EXTRACT
+                this.progressStruct.Clear();
+                this.progressStruct.GenericMessage = String.Format("  Extracting BD...WARNING, THIS CAN TAKE A LONG TIME...{0}", Environment.NewLine);
                 this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
 
                 offset = 0;
@@ -175,14 +223,24 @@ namespace VGMToolbox.tools.xsf
 
                 while ((offset = ParseFile.GetNextOffset(fs, offset, VB_START_BYTES, false)) > -1)
                 {
-                    bdRow = ParseFile.ParseSimpleOffset(fs, offset, bdRow.Length);
-
-                    if (IsPotentialAdpcm(fs, offset + 0x10))
+                    try
                     {
-                        potentialBd.offset = offset;
-                        emptyRowList.Add(potentialBd);
-                    }
+                        bdRow = ParseFile.ParseSimpleOffset(fs, offset, bdRow.Length);
 
+                        if (IsPotentialAdpcm(fs, offset + 0x10))
+                        {
+                            potentialBd.offset = offset;
+                            emptyRowList.Add(potentialBd);
+                        }
+
+                    }
+                    catch (Exception bdEx)
+                    {
+                        this.progressStruct.Clear();
+                        this.progressStruct.ErrorMessage = String.Format(" ERROR finding BD for <{0}> at Offset 0x{1}: {2}{3}", pPath, offset.ToString("X8"), bdEx.Message, Environment.NewLine);
+                        this.ReportProgress(this.progress, this.progressStruct);
+                    }
+                    
                     offset += 1;
                 }
 
@@ -203,30 +261,68 @@ namespace VGMToolbox.tools.xsf
                 hdObject.bdStartingOffset = 0;
                 hdObject.bdLength = 0;
 
-                string vbName;
-                string vhName;
+                string bdName;
+                string newFileName;
+                string[] dupeFileNames;
 
                 for (int i = 0; i < hdArrayList.Count; i++)
                 {
                     hdObject = (HdStruct)hdArrayList[i];
-
-                    for (int j = 0; j < potentialBdList.Length; j++)
+                    if (hdObject.vagLengths.Length < 1)
                     {
-                        // we have a potential match
-                        if (hdObject.vagLengths[0] == potentialBdList[j].length)
+                        this.progressStruct.Clear();
+                        this.progressStruct.ErrorMessage = String.Format(" ERROR building BD for <{0}>: {1} refers to a single VAG, cannot determine proper BD.  Skipping...{2}", pPath, hdObject.FileName, Environment.NewLine);
+                        this.ReportProgress(this.progress, this.progressStruct);
+                    }
+                    else
+                    {
+                        for (int j = 0; j < potentialBdList.Length; j++)
                         {
-                            hdObject = PopulateBdOffsetLength(fs, potentialBdList, j, hdObject);
-
-                            if (hdObject.bdLength > 0)
+                            // we have a potential match
+                            if (hdObject.vagLengths[0] == potentialBdList[j].length)
                             {
-                                vbName = String.Format("{0}_{1}.BD", Path.GetFileNameWithoutExtension(pPath), i.ToString("X4"));
+                                try
+                                {
+                                    hdObject = PopulateBdOffsetLength(fs, potentialBdList, j, hdObject);
 
-                                ParseFile.ExtractChunkToFile(fs, hdObject.bdStartingOffset, (int)hdObject.bdLength,
-                                    Path.Combine(Path.GetDirectoryName(pPath), vbName));
+                                    if (hdObject.bdLength > 0)
+                                    {
+                                        
+                                        // check for other BD files that matched and rename accordingly
+                                        dupeFileNames = Directory.GetFiles(Path.GetDirectoryName(pPath), Path.GetFileNameWithoutExtension(hdObject.FileName) + "*.BD");
+
+                                        if (dupeFileNames.Length >= 1)
+                                        {
+                                            bdName = String.Format("{0}_{1}.BD", Path.GetFileNameWithoutExtension(hdObject.FileName), (dupeFileNames.Length).ToString("X4"));
+
+                                            if (dupeFileNames.Length == 1)
+                                            {
+                                                // rename existing
+                                                newFileName = String.Format("{0}_{1}.BD", Path.GetFileNameWithoutExtension(hdObject.FileName), (dupeFileNames.Length - 1).ToString("X4"));
+                                                File.Move(dupeFileNames[0], Path.Combine(Path.GetDirectoryName(dupeFileNames[0]), newFileName));
+                                            }
+                                        }
+                                        else
+                                        {
+                                            bdName = Path.ChangeExtension(hdObject.FileName, ".BD");
+                                        }
+
+
+                                        ParseFile.ExtractChunkToFile(fs, hdObject.bdStartingOffset, (int)hdObject.bdLength,
+                                            Path.Combine(Path.GetDirectoryName(pPath), bdName));
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    this.progressStruct.Clear();
+                                    this.progressStruct.ErrorMessage = String.Format(" ERROR building BD for <{0}>: {1}{2}", pPath, ex.Message, Environment.NewLine);
+                                    this.ReportProgress(this.progress, this.progressStruct);
+                                }
                             }
                         }
                     }
                 }
+                #endregion
             }
         }
 
@@ -263,31 +359,44 @@ namespace VGMToolbox.tools.xsf
             HdStruct ret = hdObject;
             long totalLength = 0;
             byte[] lastLine = new byte[0x10];
+            string errorMessage;
 
             for (int i = 0; i < hdObject.vagLengths.Length; i++)
             {
-                totalLength += hdObject.vagLengths[i];
-
-                if (i == (hdObject.vagLengths.Length - 1))
+                if ((potentialBdStartIndex + i) >= potentialBdList.Length)
                 {
-                    // check last value
-                    searchStream.Position =
-                        potentialBdList[potentialBdStartIndex + i].offset + hdObject.vagLengths[i] - lastLine.Length;
-                    searchStream.Read(lastLine, 0, lastLine.Length);
-
-                    if (lastLine[1] == 3 ||
-                        ParseFile.CompareSegment(lastLine, 0, VB_END_BYTES_1) ||
-                        ParseFile.CompareSegment(lastLine, 0, VB_END_BYTES_2))
-                    {
-                        ret.bdStartingOffset = potentialBdList[potentialBdStartIndex].offset;
-                        ret.bdLength = totalLength;
-                    }
+                    errorMessage = String.Format("  Warning, a potential BD match for {0} found at 0x{1}, " + 
+                        "but index would exceed array bounds.  It is suggested that you check manually if a match " +
+                        "is not found at completion.{2}", hdObject.FileName, 
+                        potentialBdList[potentialBdStartIndex].offset.ToString("X8"), 
+                        Environment.NewLine);
+                    throw new IndexOutOfRangeException(errorMessage);
                 }
-                else if (hdObject.vagLengths[i] != potentialBdList[potentialBdStartIndex + i].length)
+                else
                 {
-                    ret.bdStartingOffset = -1;
-                    ret.bdLength = -1;
-                    break;
+                    totalLength += hdObject.vagLengths[i];
+
+                    if (i == (hdObject.vagLengths.Length - 1))
+                    {
+                        // check last value
+                        searchStream.Position =
+                            potentialBdList[potentialBdStartIndex + i].offset + hdObject.vagLengths[i] - lastLine.Length;
+                        searchStream.Read(lastLine, 0, lastLine.Length);
+
+                        if (lastLine[1] == 3 ||
+                            ParseFile.CompareSegment(lastLine, 0, VB_END_BYTES_1) ||
+                            ParseFile.CompareSegment(lastLine, 0, VB_END_BYTES_2))
+                        {
+                            ret.bdStartingOffset = potentialBdList[potentialBdStartIndex].offset;
+                            ret.bdLength = totalLength;
+                        }
+                    }
+                    else if (hdObject.vagLengths[i] != potentialBdList[potentialBdStartIndex + i].length)
+                    {
+                        ret.bdStartingOffset = -1;
+                        ret.bdLength = -1;
+                        break;
+                    }
                 }
             }
 
