@@ -10,6 +10,8 @@ namespace VGMToolbox.util
     /// </summary>
     public sealed class ParseFile
     {
+        public const string LogFileName = "vgmt_extraction_log.txt";
+        
         /// <summary>
         /// Prevents a default instance of the ParseFile class from being created.
         /// </summary>
@@ -382,6 +384,7 @@ namespace VGMToolbox.util
         /// <param name="filePath">File path to output the extracted chunk to.</param>
         public static void ExtractChunkToFile(Stream stream, long startingOffset, int length, string filePath)
         {
+            StringBuilder logInfo = new StringBuilder();
             BinaryWriter bw = null;
             string fullOutputDirectory = Path.GetDirectoryName(Path.GetFullPath(filePath));
 
@@ -389,6 +392,7 @@ namespace VGMToolbox.util
             if (!Directory.Exists(fullOutputDirectory))
             {
                 Directory.CreateDirectory(fullOutputDirectory);
+                logInfo.AppendLine("Created Directory: " + fullOutputDirectory);
             }
 
             try
@@ -408,6 +412,17 @@ namespace VGMToolbox.util
                     totalBytes += read;
 
                     maxread = (length - totalBytes) > bytes.Length ? bytes.Length : (length - totalBytes);
+                }
+
+                logInfo.AppendLine(
+                    String.Format("Extracted - Offset: 0x{0}    Length: 0x{1}    File: {2}",
+                        startingOffset.ToString("X8"), 
+                        length.ToString("X8"), 
+                        Path.GetFileName(filePath)));
+                
+                using (StreamWriter logWriter = new StreamWriter(Path.Combine(fullOutputDirectory, ParseFile.LogFileName), true))
+                {
+                    logWriter.Write(logInfo.ToString());
                 }
             }
             finally
