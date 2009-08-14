@@ -179,8 +179,6 @@ namespace VGMToolbox.tools.xsf
                 }
 
                 // compare VH sample sizes to potential adpcm sizes/indexes
-                //foreach (VhStruct vh in vhArrayList)
-                VhStruct vh;
                 vhObject.startingOffset = 0;                
                 vhObject.length = 0;
                 vhObject.vbStartingOffset = 0;
@@ -219,7 +217,6 @@ namespace VGMToolbox.tools.xsf
                             Path.Combine(Path.GetDirectoryName(pPath), vhName));
                     }                    
                 }
-
             }
         }
 
