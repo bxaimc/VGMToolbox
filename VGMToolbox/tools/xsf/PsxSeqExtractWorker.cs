@@ -117,7 +117,7 @@ namespace VGMToolbox.tools.xsf
                     {
                         batchFile.AppendLine(
                             String.Format(
-                                "REM {0}: Loop Start: {1}:{2}      Loop Finish: {3}:{4}", 
+                                "REM {0}: Loop Start: {1}:{2} Loop Finish: {3}:{4}", 
                                 Path.GetFileName(pPath),
                                 loopStartMinutes.ToString(), loopStartSeconds.ToString().PadLeft(2, '0'),
                                 loopEndMinutes.ToString(), loopEndSeconds.ToString().PadLeft(2, '0')));

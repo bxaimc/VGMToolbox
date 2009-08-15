@@ -111,7 +111,8 @@ namespace VGMToolbox.format.util
 
                         extractedSdatPaths.Add(outputPath);
 
-                        previousOffset = sdatOffset + sdatSize;
+                        // only increment by one since there can be fake or bad SDATs which will move us past proper ones.
+                        previousOffset = sdatOffset + 1;
                     }
                 }
             }
