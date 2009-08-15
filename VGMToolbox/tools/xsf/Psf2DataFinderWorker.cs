@@ -118,7 +118,7 @@ namespace VGMToolbox.tools.xsf
 
                     hdName = String.Format("{0}_{1}.HD", Path.GetFileNameWithoutExtension(pPath), hdNumber++.ToString("X4"));
                     ParseFile.ExtractChunkToFile(fs, offset - 0x10, (int)hdLength,
-                        Path.Combine(Path.GetDirectoryName(pPath), hdName));
+                        Path.Combine(Path.GetDirectoryName(pPath), hdName), true);
 
                     // get info
                     hdObject = new HdStruct();
@@ -202,7 +202,7 @@ namespace VGMToolbox.tools.xsf
                     }
 
                     ParseFile.ExtractChunkToFile(fs, sq.offset, (int)sq.length,
-                        Path.Combine(Path.GetDirectoryName(pPath), sqName));
+                        Path.Combine(Path.GetDirectoryName(pPath), sqName), true);
 
 
                 }
@@ -309,7 +309,7 @@ namespace VGMToolbox.tools.xsf
 
 
                                         ParseFile.ExtractChunkToFile(fs, hdObject.bdStartingOffset, (int)hdObject.bdLength,
-                                            Path.Combine(Path.GetDirectoryName(pPath), bdName));
+                                            Path.Combine(Path.GetDirectoryName(pPath), bdName), true);
                                     }
                                 }
                                 catch (Exception ex)

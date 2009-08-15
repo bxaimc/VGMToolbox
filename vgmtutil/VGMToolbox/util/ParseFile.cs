@@ -375,6 +375,11 @@ namespace VGMToolbox.util
             return ret;
         }
 
+        public static void ExtractChunkToFile(Stream stream, long startingOffset, int length, string filePath)
+        {
+            ExtractChunkToFile(stream, startingOffset, length, filePath, false);
+        }
+
         /// <summary>
         /// Extracts a section of the incoming stream to a file.
         /// </summary>
@@ -382,7 +387,12 @@ namespace VGMToolbox.util
         /// <param name="startingOffset">Offset to begin the cut.</param>
         /// <param name="length">Number of bytes to cut.</param>
         /// <param name="filePath">File path to output the extracted chunk to.</param>
-        public static void ExtractChunkToFile(Stream stream, long startingOffset, int length, string filePath)
+        public static void ExtractChunkToFile(
+            Stream stream, 
+            long startingOffset, 
+            int length, 
+            string filePath,
+            bool outputLogFile)
         {
             StringBuilder logInfo = new StringBuilder();
             BinaryWriter bw = null;
@@ -392,7 +402,11 @@ namespace VGMToolbox.util
             if (!Directory.Exists(fullOutputDirectory))
             {
                 Directory.CreateDirectory(fullOutputDirectory);
-                logInfo.AppendLine("Created Directory: " + fullOutputDirectory);
+
+                if (outputLogFile)
+                {
+                    logInfo.AppendLine("Created Directory: " + fullOutputDirectory);
+                }
             }
 
             try
@@ -414,15 +428,18 @@ namespace VGMToolbox.util
                     maxread = (length - totalBytes) > bytes.Length ? bytes.Length : (length - totalBytes);
                 }
 
-                logInfo.AppendLine(
-                    String.Format("Extracted - Offset: 0x{0}    Length: 0x{1}    File: {2}",
-                        startingOffset.ToString("X8"), 
-                        length.ToString("X8"), 
-                        Path.GetFileName(filePath)));
-                
-                using (StreamWriter logWriter = new StreamWriter(Path.Combine(fullOutputDirectory, ParseFile.LogFileName), true))
+                if (outputLogFile)
                 {
-                    logWriter.Write(logInfo.ToString());
+                    logInfo.AppendLine(
+                        String.Format("Extracted - Offset: 0x{0}    Length: 0x{1}    File: {2}",
+                            startingOffset.ToString("X8"),
+                            length.ToString("X8"),
+                            Path.GetFileName(filePath)));
+
+                    using (StreamWriter logWriter = new StreamWriter(Path.Combine(fullOutputDirectory, ParseFile.LogFileName), true))
+                    {
+                        logWriter.Write(logInfo.ToString());
+                    }
                 }
             }
             finally

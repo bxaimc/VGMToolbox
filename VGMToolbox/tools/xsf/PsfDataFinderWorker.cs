@@ -108,7 +108,7 @@ namespace VGMToolbox.tools.xsf
                     {
                         seqName = String.Format("{0}_{1}.SEQ", Path.GetFileNameWithoutExtension(pPath), seqNumber++.ToString("X4"));
                         ParseFile.ExtractChunkToFile(fs, offset, (int)(seqEof - offset + PsxSequence.END_SEQUENCE.Length),
-                            Path.Combine(Path.GetDirectoryName(pPath), seqName));
+                            Path.Combine(Path.GetDirectoryName(pPath), seqName), true);
                     }
 
                     offset += 1;
@@ -203,7 +203,7 @@ namespace VGMToolbox.tools.xsf
                                 vbName = String.Format("{0}_{1}.VB", Path.GetFileNameWithoutExtension(pPath), i.ToString("X4"));
                                 
                                 ParseFile.ExtractChunkToFile(fs, vhObject.vbStartingOffset, (int)vhObject.vbLength,
-                                    Path.Combine(Path.GetDirectoryName(pPath), vbName));
+                                    Path.Combine(Path.GetDirectoryName(pPath), vbName), true);
                             }
                         }
                     }
@@ -214,7 +214,7 @@ namespace VGMToolbox.tools.xsf
                         vhName = String.Format("{0}_{1}.VH", Path.GetFileNameWithoutExtension(pPath), i.ToString("X4"));
                         
                         ParseFile.ExtractChunkToFile(fs, vhObject.startingOffset, (int)vhObject.length,
-                            Path.Combine(Path.GetDirectoryName(pPath), vhName));
+                            Path.Combine(Path.GetDirectoryName(pPath), vhName), true);
                     }                    
                 }
             }

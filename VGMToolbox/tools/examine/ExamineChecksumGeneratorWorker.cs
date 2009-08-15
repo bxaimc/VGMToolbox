@@ -36,8 +36,10 @@ namespace VGMToolbox.tools.examine
         public ExamineChecksumGeneratorWorker() : 
             base() 
         { 
-            duplicateCheckHashStandard = new Dictionary<string,string[]>(StringComparer.InvariantCultureIgnoreCase);
-            duplicateCheckHashVgmt = new Dictionary<string, string[]>(StringComparer.InvariantCultureIgnoreCase);
+            this.duplicateCheckHashStandard = new Dictionary<string,string[]>(StringComparer.InvariantCultureIgnoreCase);
+            this.duplicateCheckHashVgmt = new Dictionary<string, string[]>(StringComparer.InvariantCultureIgnoreCase);
+
+            this.progressCounterIncrementer = 10;
         }
 
         protected override void DoTaskForFile(string pPath,
@@ -117,22 +119,18 @@ namespace VGMToolbox.tools.examine
                 sha1CryptoStream.Dispose();
             }
 
-            this.progressStruct.Clear();
-            progressStruct.GenericMessage = String.Format("<{0}>{1}", pPath, Environment.NewLine);
-            progressStruct.GenericMessage += String.Format("CRC32: {0}{1}", crc32, Environment.NewLine);
-            progressStruct.GenericMessage += String.Format("MD5: {0}{1}", md5, Environment.NewLine);
-            progressStruct.GenericMessage += String.Format("SHA1: {0}{1}", sha1, Environment.NewLine);
+            this.outputBuffer.AppendFormat("<{0}>{1}", pPath, Environment.NewLine);
+            this.outputBuffer.AppendFormat("CRC32: {0}{1}", crc32, Environment.NewLine);
+            this.outputBuffer.AppendFormat("MD5: {0}{1}", md5, Environment.NewLine);
+            this.outputBuffer.AppendFormat("SHA1: {0}{1}", sha1, Environment.NewLine);
 
             if (examineChecksumGeneratorStruct.DoVgmtChecksums)
             {
-                progressStruct.GenericMessage += String.Format("CRC32 (VGMT): {0}{1}", vgmtCrc32, Environment.NewLine);
-                progressStruct.GenericMessage += String.Format("MD5 (VGMT): {0}{1}", vgmtMd5, Environment.NewLine);
-                progressStruct.GenericMessage += String.Format("SHA1 (VGMT): {0}{1}", vgmtSha1, Environment.NewLine);
+                this.outputBuffer.AppendFormat("CRC32 (VGMT): {0}{1}", vgmtCrc32, Environment.NewLine);
+                this.outputBuffer.AppendFormat("MD5 (VGMT): {0}{1}", vgmtMd5, Environment.NewLine);
+                this.outputBuffer.AppendFormat("SHA1 (VGMT): {0}{1}", vgmtSha1, Environment.NewLine);
             }
-
-            progressStruct.GenericMessage += Environment.NewLine;
-
-            ReportProgress(this.Progress, progressStruct);
+            this.outputBuffer.AppendLine();
         }
 
         protected override void DoFinalTask(IVgmtWorkerStruct pExamineChecksumGeneratorStruct) 

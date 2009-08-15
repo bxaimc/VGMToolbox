@@ -10,10 +10,16 @@ namespace VGMToolbox.plugin
 {    
     public abstract class AVgmtDragAndDropWorker : BackgroundWorker, IVgmtBackgroundWorker
     {
+        protected const int DefaultProgressCounterIncrementValue = 1;
+        
         protected int fileCount;
-        protected int maxFiles;
+        protected int maxFiles;        
         protected int progress;
         protected VGMToolbox.util.ProgressStruct progressStruct;
+
+        protected int progressCounter;
+        protected int progressCounterIncrementer;
+        protected StringBuilder outputBuffer;
 
         protected int Progress
         {
@@ -23,11 +29,15 @@ namespace VGMToolbox.plugin
 
         protected AVgmtDragAndDropWorker()
         {
+            this.progressCounter = 0;
+            this.progressCounterIncrementer = AVgmtDragAndDropWorker.DefaultProgressCounterIncrementValue;
+            this.outputBuffer = new StringBuilder();
+
             this.progressStruct = new VGMToolbox.util.ProgressStruct();
             this.WorkerReportsProgress = true;
             this.WorkerSupportsCancellation = true;
         }
-
+        
         protected void DoTask(IVgmtWorkerStruct pTaskStruct, DoWorkEventArgs e)
         {
             this.maxFiles = FileUtil.GetFileCount(pTaskStruct.SourcePaths);
@@ -38,12 +48,33 @@ namespace VGMToolbox.plugin
                 {
                     if (!CancellationPending)
                     {
+                        fileCount += 1;
+
                         // Report Progress
-                        this.progress = (++fileCount * 100) / maxFiles;
-                        this.progressStruct.Clear();
-                        this.progressStruct.FileName = path;
-                        ReportProgress(progress, progressStruct);
-                                                
+                        if ((fileCount == maxFiles) ||
+                            (((fileCount * 100) / maxFiles) > this.progressCounter))
+                        {
+                            this.progressCounter += this.progressCounterIncrementer;
+                            
+                            // output info
+                            if (this.outputBuffer.Length > 0)
+                            {
+                                this.progressStruct.Clear();
+                                progressStruct.GenericMessage = this.outputBuffer.ToString();
+                                ReportProgress(this.Progress, progressStruct);
+
+                                // clear out old info
+                                this.outputBuffer.Length = 0;
+                            }
+
+                            // output progress
+                            this.progressStruct.Clear();
+                            this.progress = (fileCount * 100) / maxFiles;
+                            this.progressStruct.Clear();
+                            this.progressStruct.FileName = path;
+                            ReportProgress(progress, progressStruct);
+                        }
+                       
                         // perform task
                         try
                         {
@@ -114,12 +145,32 @@ namespace VGMToolbox.plugin
             {
                 if (!CancellationPending)
                 {
+                    fileCount += 1;
+
                     // Report Progress
-                    this.progress = (++fileCount * 100) / maxFiles;
-                    this.progressStruct.Clear();
-                    this.progressStruct.FileName = f;
-                    ReportProgress(this.progress, progressStruct);
-                    
+                    if ((fileCount == maxFiles) ||
+                        (((fileCount * 100) / maxFiles) > this.progressCounter))
+                    {
+                        this.progressCounter += this.progressCounterIncrementer;
+
+                        // output info
+                        if (this.outputBuffer.Length > 0)
+                        {
+                            this.progressStruct.Clear();
+                            progressStruct.GenericMessage = this.outputBuffer.ToString();
+                            ReportProgress(this.Progress, progressStruct);
+
+                            // clear out old info
+                            this.outputBuffer.Length = 0;
+                        }
+
+                        // output progress
+                        this.progress = (++fileCount * 100) / maxFiles;
+                        this.progressStruct.Clear();
+                        this.progressStruct.FileName = f;
+                        ReportProgress(this.progress, progressStruct);
+                    }
+
                     // perform task
                     try
                     {
