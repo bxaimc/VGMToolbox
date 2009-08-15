@@ -54,6 +54,7 @@ namespace VGMToolbox.tools.xsf
             public long startingOffset;
             public long length;
 
+            public long expectedBdLength;
             public long bdStartingOffset;
             public long bdLength;
         }
@@ -114,6 +115,11 @@ namespace VGMToolbox.tools.xsf
 
                 while ((offset = ParseFile.GetNextOffset(fs, offset, Psf2.HD_SIGNATURE)) > -1)
                 {
+                    if (offset >= 0x1CA730d0)
+                    {
+                        int x = 1;
+                    }
+                    
                     hdLength = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, offset + 0xC, 4), 0);
 
                     hdName = String.Format("{0}_{1}.HD", Path.GetFileNameWithoutExtension(pPath), hdNumber++.ToString("X4"));
@@ -125,6 +131,7 @@ namespace VGMToolbox.tools.xsf
                     hdObject.FileName = hdName;
                     hdObject.startingOffset = offset - 0x10;
                     hdObject.length = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, offset + 0xC, 4), 0);
+                    hdObject.expectedBdLength = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, offset + 0x10, 4), 0);
                     hdObject.vagSectionOffset = hdObject.startingOffset + BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, offset + 0x20, 4), 0);
                     hdObject.maxVagInfoNumber = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, hdObject.vagSectionOffset + 0xC, 4), 0);
 
@@ -361,6 +368,12 @@ namespace VGMToolbox.tools.xsf
             byte[] lastLine = new byte[0x10];
             string errorMessage;
 
+            if (hdObject.FileName.Equals("PACKDATA_0074.HD"))
+            {
+                int x = 1;
+            }
+
+
             for (int i = 0; i < hdObject.vagLengths.Length; i++)
             {
                 if ((potentialBdStartIndex + i) >= potentialBdList.Length)
@@ -377,18 +390,19 @@ namespace VGMToolbox.tools.xsf
                     totalLength += hdObject.vagLengths[i];
 
                     if (i == (hdObject.vagLengths.Length - 1))
-                    {
+                    {                        
                         // check last value
                         searchStream.Position =
-                            potentialBdList[potentialBdStartIndex + i].offset + hdObject.vagLengths[i] - lastLine.Length;
+                            potentialBdList[potentialBdStartIndex + i].offset + hdObject.vagLengths[i] + 
+                            (hdObject.expectedBdLength - totalLength) - lastLine.Length;
                         searchStream.Read(lastLine, 0, lastLine.Length);
 
                         if (lastLine[1] == 3 ||
                             ParseFile.CompareSegment(lastLine, 0, VB_END_BYTES_1) ||
                             ParseFile.CompareSegment(lastLine, 0, VB_END_BYTES_2))
                         {
-                            ret.bdStartingOffset = potentialBdList[potentialBdStartIndex].offset;
-                            ret.bdLength = totalLength;
+                            ret.bdStartingOffset = potentialBdList[potentialBdStartIndex].offset;                            
+                            ret.bdLength = hdObject.expectedBdLength;
                         }
                     }
                     else if (hdObject.vagLengths[i] != potentialBdList[potentialBdStartIndex + i].length)
