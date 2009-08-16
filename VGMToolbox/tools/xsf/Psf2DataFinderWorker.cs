@@ -26,13 +26,14 @@ namespace VGMToolbox.tools.xsf
                                                                   0x77, 0x77, 0x77, 0x77,
                                                                   0x77, 0x77, 0x77, 0x77};
 
-        private static int ADPCM_ROW_COUNT = 10;
+        private static int ADPCM_ROW_COUNT = 20;
 
         public struct Psf2DataFinderStruct : IVgmtWorkerStruct
         {
             public bool UseSeqMinimumSize;
             public int MinimumSize;
             public bool ReorderSqFiles;
+            public bool UseZeroOffsetForBd;
 
             private string[] sourcePaths;
             public string[] SourcePaths
@@ -98,6 +99,9 @@ namespace VGMToolbox.tools.xsf
             ProbableBdStruct[] potentialBdList;
             byte[] bdRow = new byte[0x10];
 
+            long tempOffset;
+            long tempRemainder;
+
             // display file name
             this.progressStruct.Clear();
             this.progressStruct.GenericMessage = String.Format("[{0}]{1}", pPath, Environment.NewLine);
@@ -114,12 +118,7 @@ namespace VGMToolbox.tools.xsf
                 offset = 0;
 
                 while ((offset = ParseFile.GetNextOffset(fs, offset, Psf2.HD_SIGNATURE)) > -1)
-                {
-                    if (offset >= 0x1CA730d0)
-                    {
-                        int x = 1;
-                    }
-                    
+                {                    
                     hdLength = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, offset + 0xC, 4), 0);
 
                     hdName = String.Format("{0}_{1}.HD", Path.GetFileNameWithoutExtension(pPath), hdNumber++.ToString("X4"));
@@ -230,22 +229,26 @@ namespace VGMToolbox.tools.xsf
 
                 while ((offset = ParseFile.GetNextOffset(fs, offset, VB_START_BYTES, false)) > -1)
                 {
-                    try
+                    if ((psf2Struct.UseZeroOffsetForBd) && (offset % 0x10 == 0) ||
+                        (!psf2Struct.UseZeroOffsetForBd))
                     {
-                        bdRow = ParseFile.ParseSimpleOffset(fs, offset, bdRow.Length);
-
-                        if (IsPotentialAdpcm(fs, offset + 0x10))
+                        try
                         {
-                            potentialBd.offset = offset;
-                            emptyRowList.Add(potentialBd);
-                        }
+                            bdRow = ParseFile.ParseSimpleOffset(fs, offset, bdRow.Length);
 
-                    }
-                    catch (Exception bdEx)
-                    {
-                        this.progressStruct.Clear();
-                        this.progressStruct.ErrorMessage = String.Format(" ERROR finding BD for <{0}> at Offset 0x{1}: {2}{3}", pPath, offset.ToString("X8"), bdEx.Message, Environment.NewLine);
-                        this.ReportProgress(this.progress, this.progressStruct);
+                            if (IsPotentialAdpcm(fs, offset + 0x10))
+                            {
+                                potentialBd.offset = offset;
+                                emptyRowList.Add(potentialBd);
+                            }
+
+                        }
+                        catch (Exception bdEx)
+                        {
+                            this.progressStruct.Clear();
+                            this.progressStruct.ErrorMessage = String.Format(" ERROR finding BD for <{0}> at Offset 0x{1}: {2}{3}", pPath, offset.ToString("X8"), bdEx.Message, Environment.NewLine);
+                            this.ReportProgress(this.progress, this.progressStruct);
+                        }
                     }
                     
                     offset += 1;
@@ -367,12 +370,6 @@ namespace VGMToolbox.tools.xsf
             long totalLength = 0;
             byte[] lastLine = new byte[0x10];
             string errorMessage;
-
-            if (hdObject.FileName.Equals("PACKDATA_0074.HD"))
-            {
-                int x = 1;
-            }
-
 
             for (int i = 0; i < hdObject.vagLengths.Length; i++)
             {

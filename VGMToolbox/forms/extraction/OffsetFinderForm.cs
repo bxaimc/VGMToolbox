@@ -75,8 +75,7 @@ namespace VGMToolbox.forms.extraction
             this.createEndianList();
             this.createOffsetSizeList();
             this.resetCutSection();
-
-            this.loadPresetsComboBox();
+            this.loadPresetsComboBox();            
         }
 
         private void tbSourcePaths_DragDrop(object sender, DragEventArgs e)
@@ -115,9 +114,14 @@ namespace VGMToolbox.forms.extraction
                         ofStruct.treatTerminatorStringAsHex = this.cbTreatTerminatorAsHex.Checked;
                         ofStruct.includeTerminatorLength = this.cbIncludeTerminatorInLength.Checked;
                     }
-                    else
+                    else if (this.rbStaticCutSize.Checked)
                     {
                         ofStruct.cutSize = this.tbStaticCutsize.Text;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please select a radio button indicating the Cut Size Options to use.");
+                        return; // hokey, but oh well
                     }
 
                     if (cbAddExtraBytes.Checked)
@@ -224,7 +228,7 @@ namespace VGMToolbox.forms.extraction
         }
         private void cbDoCut_CheckedChanged(object sender, EventArgs e)
         {
-            this.resetCutSection();
+            this.resetCutSection();            
         }
         private void resetCutSection()
         {

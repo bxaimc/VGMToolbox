@@ -57,7 +57,8 @@ namespace VGMToolbox.forms.xsf
             bwStruct.SourcePaths = s;
             bwStruct.ReorderSqFiles = cbReorderSqFiles.Checked;
             bwStruct.UseSeqMinimumSize = cbUseMinimum.Checked;
-            
+            bwStruct.UseZeroOffsetForBd = cb00ByteAligned.Checked;
+
             if (cbUseMinimum.Checked)
             {
                 bwStruct.MinimumSize = int.Parse(this.tbMinimumSize.Text);

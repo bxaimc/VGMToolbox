@@ -48,17 +48,6 @@ namespace VGMToolbox.tools.extract
             DoWorkEventArgs e)
         {
             OffsetFinderStruct offsetFinderStruct = (OffsetFinderStruct) pOffsetFinderStruct;
-
-            long lastLocation;
-            using (FileStream fs = File.OpenRead(pPath))
-            {
-                lastLocation = ParseFile.GetPreviousOffset(fs, fs.Length, new byte[] { 0x49, 0x45, 0x43, 0x53, 0x73, 0x72, 0x65, 0x56 });
-                lastLocation = ParseFile.GetPreviousOffset(fs, lastLocation - 1, new byte[] { 0x49, 0x45, 0x43, 0x53, 0x73, 0x72, 0x65, 0x56 });
-                lastLocation = ParseFile.GetPreviousOffset(fs, fs.Length, new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 });
-                lastLocation = ParseFile.GetPreviousOffset(fs, lastLocation + 7, new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 });
-                lastLocation = ParseFile.GetPreviousOffset(fs, lastLocation - 1, new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 });
-
-            }
             
             VGMToolbox.util.FindOffsetStruct findOffsetStruct = new VGMToolbox.util.FindOffsetStruct();
             findOffsetStruct.SearchString = offsetFinderStruct.searchString;
