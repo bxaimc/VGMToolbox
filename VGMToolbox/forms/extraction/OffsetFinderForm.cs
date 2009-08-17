@@ -413,5 +413,50 @@ namespace VGMToolbox.forms.extraction
         {
             loadSelectedItem();
         }
+
+        private void loadOffsetFinderPreset(OffsetFinderTemplate presets)
+        {           
+            this.cbDoCut.Checked = true;
+
+            this.tbSearchString.Text = presets.SearchParameters.SearchString;
+            this.cbSearchAsHex.Checked = presets.SearchParameters.TreatSearchStringAsHex;
+
+            this.tbSearchStringOffset.Text = presets.SearchParameters.SearchStringOffset;
+            this.tbOutputExtension.Text = presets.SearchParameters.OutputFileExtension;
+
+            switch (presets.SearchParameters.CutParameters.CutStyle)
+            {
+                case "static":
+                    this.tbStaticCutsize.Text = presets.SearchParameters.CutParameters.StaticCutSize;
+                    break;
+                case "offset":
+                    this.tbCutSizeOffset.Text = presets.SearchParameters.CutParameters.CutSizeAtOffset;
+                    this.cbOffsetSize.SelectedItem = presets.SearchParameters.CutParameters.CutSizeOffsetSize;
+                    switch (presets.SearchParameters.CutParameters.CutSizeOffsetEndianess)
+                        case Endianness.big:
+                            this.cbByteOrder.SelectedItem = "Big Endian";
+                            break;
+                        case Endianness.little:
+                            this.cbByteOrder.SelectedItem = "Little Endian";
+                            break;
+                    break;
+                case "terminator":
+                    this.tbTerminatorString.Text = presets.SearchParameters.CutParameters.TerminatorString;
+                    this.cbTreatTerminatorAsHex.Checked = presets.SearchParameters.CutParameters.TreatTerminatorStringAsHex;
+                    this.cbIncludeTerminatorInLength.Checked = presets.SearchParameters.CutParameters.IncludeTerminatorInSize;
+                    break;
+            }
+            
+            this.cbAddExtraBytes.Checked = presets.SearchParameters.AddExtraBytes;
+            this.tbExtraCutSizeBytes.Text = presets.SearchParameters.AddExtraByteSize;
+
+            warningString = presets.NotesOrWarnings;
+
+            if (!String.IsNullOrEmpty(warningString))
+            {
+                MessageBox.Show(warningString, "Notes/Warnings");
+            }        
+        }
+
     }
 }

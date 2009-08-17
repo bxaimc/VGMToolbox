@@ -539,6 +539,7 @@
     <Compile Include="tools\extract\GzipExtractorWorker.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\extract\OffsetFinder.cs" />
     <Compile Include="tools\extract\OffsetFinderWorker.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -705,6 +706,7 @@
     </Content>
     <EmbeddedResource Include="forms\audit\DatafileEditorForm.resx">
       <DependentUpon>DatafileEditorForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\compression\GzipCompressionForm.resx">
       <DependentUpon>GzipCompressionForm.cs</DependentUpon>
@@ -752,6 +754,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="forms\xsf\PsfDataFinderForm.resx">
       <DependentUpon>PsfDataFinderForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\xsf\PsfStubMakerForm.resx">
       <DependentUpon>PsfStubMakerForm.cs</DependentUpon>
@@ -779,6 +782,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="forms\xsf\NdsTo2sfForm.resx">
       <DependentUpon>NdsTo2sfForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\xsf\TwoSfTagsMigratorForm.resx">
       <DependentUpon>TwoSfTagsMigratorForm.cs</DependentUpon>
@@ -854,6 +858,10 @@
     <None Include="xsd\datafile.xsd" />
     <None Include="xsd\hoot.dtd" />
     <None Include="xsd\hoot.xsd" />
+    <None Include="xsd\OffsetFinder.xsd">
+      <SubType>
+      </SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\dbutil\dbutil.csproj">
