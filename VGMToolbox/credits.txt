@@ -18,3 +18,5 @@ mk.bat, psfdrv.c were originally written by Neill Corlett (http://www.neillcorle
 
 SevenZipSharp.dll is written by markhor (http://www.codeplex.com/sevenzipsharp).
 7z.dll is courtesy of the 7zip team (http://7-zip.org/).  7-Zip is licensed under the GNU LGPL license.
+
+Button-Refresh-16x16.png icon created by Deleket (Jojo Mendoza) and used under CC Attribution-Noncommercial-No Derivate 3.0 license (http://creativecommons.org/licenses/by-nc-nd/3.0/).

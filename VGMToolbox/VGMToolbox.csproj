@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{8A96D568-CB21-4E64-8FD2-849A8E2B2D4F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -168,6 +168,12 @@
     </Compile>
     <Compile Include="forms\compression\ZlibCompressionForm.Designer.cs">
       <DependentUpon>ZlibCompressionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="forms\extraction\SavePresetForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\extraction\SavePresetForm.Designer.cs">
+      <DependentUpon>SavePresetForm.cs</DependentUpon>
     </Compile>
     <Compile Include="forms\Gbs_GbsToM3uForm.cs">
       <SubType>Form</SubType>
@@ -749,6 +755,10 @@
       <DependentUpon>MidiExtractorForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="forms\extraction\SavePresetForm.resx">
+      <DependentUpon>SavePresetForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="forms\extraction\SnakebiteGuiForm.resx">
       <DependentUpon>SnakebiteGuiForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -826,6 +836,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\bolo2.gif" />
+    <Content Include="Resources\Button-Refresh-16x16.png" />
     <Content Include="rips\dir.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

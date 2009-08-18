@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Configuration;
 using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml;
@@ -13,7 +14,7 @@ using VGMToolbox.tools.extract;
 
 namespace VGMToolbox.forms.extraction
 {
-    public partial class OffsetFinderForm : VgmtForm
+    public partial class OffsetFinderForm : AVgmtForm
     {
         private static readonly string DB_PATH =
             Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "db"), "collection.s3db");
@@ -439,11 +440,18 @@ namespace VGMToolbox.forms.extraction
         {
             foreach (string f in Directory.GetFiles(PLUGIN_PATH, "*.xml", SearchOption.TopDirectoryOnly))
             {
-                OffsetFinderTemplate preset = getPresetFromFile(f);
-
-                if (preset != null)
+                try
                 {
-                    comboPresets.Items.Add(preset);
+                    OffsetFinderTemplate preset = getPresetFromFile(f);
+
+                    if ((preset != null) && (!String.IsNullOrEmpty(preset.Header.FormatName)))
+                    {
+                        comboPresets.Items.Add(preset);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(String.Format("Error loading preset file <{0}>", Path.GetFileName(f)), "Error");
                 }
             }
         }        
@@ -451,21 +459,14 @@ namespace VGMToolbox.forms.extraction
         {
             OffsetFinderTemplate preset = null;
             
-            try
+            preset = new OffsetFinderTemplate();
+            XmlSerializer serializer = new XmlSerializer(preset.GetType());
+            using (FileStream xmlFs = File.OpenRead(filePath))
             {
-                preset = new OffsetFinderTemplate();
-                XmlSerializer serializer = new XmlSerializer(preset.GetType());
-                using (FileStream xmlFs = File.OpenRead(filePath))
+                using (XmlTextReader textReader = new XmlTextReader(xmlFs))
                 {
-                    using (XmlTextReader textReader = new XmlTextReader(xmlFs))
-                    {
-                        preset = (OffsetFinderTemplate)serializer.Deserialize(textReader);
-                    }
+                    preset = (OffsetFinderTemplate)serializer.Deserialize(textReader);
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(String.Format("Error loading preset file <{0}>", Path.GetFileName(filePath)), "Error");
             }
 
             return preset;
@@ -558,24 +559,18 @@ namespace VGMToolbox.forms.extraction
         }
         private void btnSavePreset_Click(object sender, EventArgs e)
         {
-            string destinationFile = base.browseForFileToSave(sender, e);
+            OffsetFinderTemplate preset = getPresetForCurrentValues();
 
-            if (!String.IsNullOrEmpty(destinationFile))
+            if (preset != null)
             {
-                OffsetFinderTemplate preset = getPresetForCurrentValues();
-
-                preset.Header.FormatName = "Test Format";
-
-                if (preset != null)
-                {
-                    XmlSerializer serializer = new XmlSerializer(preset.GetType());
-
-                    TextWriter textWriter = new StreamWriter(destinationFile);
-                    serializer.Serialize(textWriter, preset);
-                    textWriter.Close();
-                    textWriter.Dispose();                
-                }
+                SavePresetForm saveForm = new SavePresetForm(preset);
+                saveForm.Show();
             }
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            this.loadOffsetPlugins();
         }
     }
 }
