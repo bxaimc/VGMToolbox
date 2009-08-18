@@ -4,6 +4,8 @@ using System.Configuration;
 using System.Data;
 using System.IO;
 using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Serialization;
 
 using VGMToolbox.dbutil;
 using VGMToolbox.plugin;
@@ -14,7 +16,9 @@ namespace VGMToolbox.forms.extraction
     public partial class OffsetFinderForm : AVgmtForm
     {
         private static readonly string DB_PATH =
-            Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "db"), "collection.s3db");        
+            Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "db"), "collection.s3db");
+        private static readonly string PLUGIN_PATH = 
+            Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "plugins"), "AdvancedCutter");        
         
         public OffsetFinderForm(TreeNode pTreeNode)
             : base(pTreeNode)
@@ -75,7 +79,9 @@ namespace VGMToolbox.forms.extraction
             this.createEndianList();
             this.createOffsetSizeList();
             this.resetCutSection();
-            this.loadPresetsComboBox();            
+            
+            //this.loadPresetsComboBox();
+            this.loadOffsetPlugins();
         }
 
         private void tbSourcePaths_DragDrop(object sender, DragEventArgs e)
@@ -360,8 +366,8 @@ namespace VGMToolbox.forms.extraction
             this.comboPresets.DataSource = SqlLiteUtil.GetSimpleDataTable(DB_PATH, "OffsetFinder", "OffsetFinderFormatName");
             this.comboPresets.DisplayMember = "OffsetFinderFormatName";
             this.comboPresets.ValueMember = "OffsetFinderId";
-        }
-        private void loadSelectedItem()
+        }        
+        private void loadSelectedItem2()
         {
             string warningString;
             DataRowView drv = (DataRowView)this.comboPresets.SelectedItem;
@@ -399,7 +405,18 @@ namespace VGMToolbox.forms.extraction
                 MessageBox.Show(warningString, "Notes/Warnings");
             }
         }
+        
+        private void loadSelectedItem()
+        {
+            OffsetFinderTemplate preset = (OffsetFinderTemplate)this.comboPresets.SelectedItem;
+            this.resetCutSection();
+            this.loadOffsetFinderPreset(preset);
 
+            if (!String.IsNullOrEmpty(preset.NotesOrWarnings))
+            {
+                MessageBox.Show(preset.NotesOrWarnings, "Notes/Warnings");
+            }
+        }
         private void comboPresets_KeyDown(object sender, KeyEventArgs e)
         {
             e.Handled = true;
@@ -414,6 +431,41 @@ namespace VGMToolbox.forms.extraction
             loadSelectedItem();
         }
 
+        private void loadOffsetPlugins()
+        {
+            foreach (string f in Directory.GetFiles(PLUGIN_PATH, "*.xml", SearchOption.TopDirectoryOnly))
+            {
+                OffsetFinderTemplate preset = getPresetFromFile(f);
+
+                if (preset != null)
+                {
+                    comboPresets.Items.Add(preset);
+                }
+            }
+        }        
+        private OffsetFinderTemplate getPresetFromFile(string filePath)
+        {
+            OffsetFinderTemplate preset = null;
+            
+            try
+            {
+                preset = new OffsetFinderTemplate();
+                XmlSerializer serializer = new XmlSerializer(preset.GetType());
+                using (FileStream xmlFs = File.OpenRead(filePath))
+                {
+                    using (XmlTextReader textReader = new XmlTextReader(xmlFs))
+                    {
+                        preset = (OffsetFinderTemplate)serializer.Deserialize(textReader);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(String.Format("Error loading preset file <{0}>", Path.GetFileName(filePath)), "Error");
+            }
+
+            return preset;
+        }
         private void loadOffsetFinderPreset(OffsetFinderTemplate presets)
         {           
             this.cbDoCut.Checked = true;
@@ -426,21 +478,26 @@ namespace VGMToolbox.forms.extraction
 
             switch (presets.SearchParameters.CutParameters.CutStyle)
             {
-                case "static":
+                case CutStyle.@static:
+                    this.rbStaticCutSize.Checked = true;
                     this.tbStaticCutsize.Text = presets.SearchParameters.CutParameters.StaticCutSize;
                     break;
-                case "offset":
+                case CutStyle.offset:
+                    this.rbOffsetBasedCutSize.Checked = true;
                     this.tbCutSizeOffset.Text = presets.SearchParameters.CutParameters.CutSizeAtOffset;
                     this.cbOffsetSize.SelectedItem = presets.SearchParameters.CutParameters.CutSizeOffsetSize;
                     switch (presets.SearchParameters.CutParameters.CutSizeOffsetEndianess)
+                    {
                         case Endianness.big:
                             this.cbByteOrder.SelectedItem = "Big Endian";
                             break;
                         case Endianness.little:
                             this.cbByteOrder.SelectedItem = "Little Endian";
                             break;
+                    }
                     break;
-                case "terminator":
+                case CutStyle.terminator:
+                    this.rbUseTerminator.Checked = true;
                     this.tbTerminatorString.Text = presets.SearchParameters.CutParameters.TerminatorString;
                     this.cbTreatTerminatorAsHex.Checked = presets.SearchParameters.CutParameters.TreatTerminatorStringAsHex;
                     this.cbIncludeTerminatorInLength.Checked = presets.SearchParameters.CutParameters.IncludeTerminatorInSize;
@@ -448,15 +505,7 @@ namespace VGMToolbox.forms.extraction
             }
             
             this.cbAddExtraBytes.Checked = presets.SearchParameters.AddExtraBytes;
-            this.tbExtraCutSizeBytes.Text = presets.SearchParameters.AddExtraByteSize;
-
-            warningString = presets.NotesOrWarnings;
-
-            if (!String.IsNullOrEmpty(warningString))
-            {
-                MessageBox.Show(warningString, "Notes/Warnings");
-            }        
+            this.tbExtraCutSizeBytes.Text = presets.SearchParameters.AddExtraByteSize;        
         }
-
     }
 }

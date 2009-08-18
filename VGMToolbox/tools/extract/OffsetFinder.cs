@@ -8,6 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System;
 using System.Xml.Serialization;
 
 namespace VGMToolbox.tools.extract
@@ -32,6 +33,8 @@ namespace VGMToolbox.tools.extract
         private SearchParameters searchParametersField;
 
         private string notesOrWarningsField;
+
+        public string FilePath { set; get; }
 
         /// <remarks/>
         public Header Header
@@ -70,6 +73,18 @@ namespace VGMToolbox.tools.extract
             {
                 this.notesOrWarningsField = value;
             }
+        }
+
+        public override string ToString()
+        {
+            string ret = null;
+            
+            if ((this.headerField != null) && (!String.IsNullOrEmpty(this.headerField.FormatName)))
+            {
+                ret = this.headerField.FormatName;
+            }
+
+            return ret;
         }
     }
 
