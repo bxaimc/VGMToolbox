@@ -13,7 +13,7 @@ using VGMToolbox.tools.extract;
 
 namespace VGMToolbox.forms.extraction
 {
-    public partial class OffsetFinderForm : AVgmtForm
+    public partial class OffsetFinderForm : VgmtForm
     {
         private static readonly string DB_PATH =
             Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "db"), "collection.s3db");
@@ -409,12 +409,16 @@ namespace VGMToolbox.forms.extraction
         private void loadSelectedItem()
         {
             OffsetFinderTemplate preset = (OffsetFinderTemplate)this.comboPresets.SelectedItem;
-            this.resetCutSection();
-            this.loadOffsetFinderPreset(preset);
 
-            if (!String.IsNullOrEmpty(preset.NotesOrWarnings))
+            if (preset != null)
             {
-                MessageBox.Show(preset.NotesOrWarnings, "Notes/Warnings");
+                this.resetCutSection();
+                this.loadOffsetFinderPreset(preset);
+
+                if (!String.IsNullOrEmpty(preset.NotesOrWarnings))
+                {
+                    MessageBox.Show(preset.NotesOrWarnings, "Notes/Warnings");
+                }
             }
         }
         private void comboPresets_KeyDown(object sender, KeyEventArgs e)
@@ -506,6 +510,72 @@ namespace VGMToolbox.forms.extraction
             
             this.cbAddExtraBytes.Checked = presets.SearchParameters.AddExtraBytes;
             this.tbExtraCutSizeBytes.Text = presets.SearchParameters.AddExtraByteSize;        
+        }
+
+        private OffsetFinderTemplate getPresetForCurrentValues()
+        { 
+            OffsetFinderTemplate preset = new OffsetFinderTemplate();
+
+            preset.SearchParameters.SearchString = this.tbSearchString.Text;
+            preset.SearchParameters.TreatSearchStringAsHex = this.cbSearchAsHex.Checked;
+
+            preset.SearchParameters.SearchStringOffset = this.tbSearchStringOffset.Text;
+            preset.SearchParameters.OutputFileExtension = this.tbOutputExtension.Text;
+
+            if (this.rbStaticCutSize.Checked)
+            {
+                preset.SearchParameters.CutParameters.CutStyle = CutStyle.@static;
+                preset.SearchParameters.CutParameters.StaticCutSize = this.tbStaticCutsize.Text;
+
+            }
+            else if (this.rbOffsetBasedCutSize.Checked)
+            {
+                preset.SearchParameters.CutParameters.CutStyle = CutStyle.offset;
+                preset.SearchParameters.CutParameters.CutSizeAtOffset = this.tbCutSizeOffset.Text;
+                preset.SearchParameters.CutParameters.CutSizeOffsetSize = this.cbOffsetSize.SelectedItem.ToString();
+
+                if (this.cbByteOrder.SelectedItem.Equals("Little Endian"))
+                {
+                    preset.SearchParameters.CutParameters.CutSizeOffsetEndianess = Endianness.little;
+                }
+                else if (this.cbByteOrder.SelectedItem.Equals("Big Endian"))
+                {
+                    preset.SearchParameters.CutParameters.CutSizeOffsetEndianess = Endianness.big;
+                }
+            }
+            else if (this.rbUseTerminator.Checked)
+            {
+                preset.SearchParameters.CutParameters.CutStyle = CutStyle.terminator;
+                preset.SearchParameters.CutParameters.TerminatorString = this.tbTerminatorString.Text;
+                preset.SearchParameters.CutParameters.TreatTerminatorStringAsHex = this.cbTreatTerminatorAsHex.Checked;
+                preset.SearchParameters.CutParameters.IncludeTerminatorInSize = this.cbIncludeTerminatorInLength.Checked;
+            }
+
+            preset.SearchParameters.AddExtraBytes = this.cbAddExtraBytes.Checked;
+            preset.SearchParameters.AddExtraByteSize = this.tbExtraCutSizeBytes.Text;
+
+            return preset;
+        }
+        private void btnSavePreset_Click(object sender, EventArgs e)
+        {
+            string destinationFile = base.browseForFileToSave(sender, e);
+
+            if (!String.IsNullOrEmpty(destinationFile))
+            {
+                OffsetFinderTemplate preset = getPresetForCurrentValues();
+
+                preset.Header.FormatName = "Test Format";
+
+                if (preset != null)
+                {
+                    XmlSerializer serializer = new XmlSerializer(preset.GetType());
+
+                    TextWriter textWriter = new StreamWriter(destinationFile);
+                    serializer.Serialize(textWriter, preset);
+                    textWriter.Close();
+                    textWriter.Dispose();                
+                }
+            }
         }
     }
 }

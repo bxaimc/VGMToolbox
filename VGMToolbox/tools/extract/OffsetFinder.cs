@@ -75,6 +75,12 @@ namespace VGMToolbox.tools.extract
             }
         }
 
+        public OffsetFinderTemplate()
+        {
+            this.headerField = new Header();
+            this.searchParametersField = new SearchParameters();
+        }
+
         public override string ToString()
         {
             string ret = null;
@@ -450,5 +456,11 @@ namespace VGMToolbox.tools.extract
                 this.addExtraByteSizeField = value;
             }
         }
+
+        public SearchParameters()
+        {
+            this.cutParametersField = new cutParameters();
+        }
+    
     }
 }
