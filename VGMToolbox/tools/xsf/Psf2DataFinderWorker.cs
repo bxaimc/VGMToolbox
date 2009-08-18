@@ -99,9 +99,6 @@ namespace VGMToolbox.tools.xsf
             ProbableBdStruct[] potentialBdList;
             byte[] bdRow = new byte[0x10];
 
-            long tempOffset;
-            long tempRemainder;
-
             // display file name
             this.progressStruct.Clear();
             this.progressStruct.GenericMessage = String.Format("[{0}]{1}", pPath, Environment.NewLine);
@@ -186,14 +183,17 @@ namespace VGMToolbox.tools.xsf
                 {
                     if (psf2Struct.ReorderSqFiles)
                     {
-                        if ((hdArrayList.Count < sqFiles.Count) && (!sqNamingMessageDisplayed))
+                        if (hdArrayList.Count < sqFiles.Count)
                         {
-                            this.progressStruct.Clear();
-                            this.progressStruct.ErrorMessage = String.Format(
-                                "Warning, cannot reorder SQ files, there are less HD files than SQ files.{0}", Environment.NewLine);
-                            this.ReportProgress(this.progress, this.progressStruct);
+                            if (!sqNamingMessageDisplayed)
+                            {
+                                this.progressStruct.Clear();
+                                this.progressStruct.ErrorMessage = String.Format(
+                                    "Warning, cannot reorder SQ files, there are less HD files than SQ files.{0}", Environment.NewLine);
+                                this.ReportProgress(this.progress, this.progressStruct);
+                                sqNamingMessageDisplayed = true;
+                            }
 
-                            sqNamingMessageDisplayed = true;
                             sqName = String.Format("{0}_{1}.SQ", Path.GetFileNameWithoutExtension(pPath), sqNumber++.ToString("X4"));
                         }
                         else
@@ -265,7 +265,7 @@ namespace VGMToolbox.tools.xsf
                     }
                 }
 
-                // compare VH sample sizes to potential adpcm sizes/indexes
+                // compare HD sample sizes to potential adpcm sizes/indexes
                 hdObject.startingOffset = 0;
                 hdObject.length = 0;
                 hdObject.bdStartingOffset = 0;

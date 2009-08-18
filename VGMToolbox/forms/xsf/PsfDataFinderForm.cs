@@ -55,7 +55,9 @@ namespace VGMToolbox.forms.xsf
             
             PsfDataFinderWorker.PsfDataFinderStruct bwStruct = new PsfDataFinderWorker.PsfDataFinderStruct();
             bwStruct.SourcePaths = s;
-            bwStruct.UseSeqMinimumSize = cbUseMinimum.Checked;            
+            bwStruct.UseSeqMinimumSize = cbUseMinimum.Checked;
+            bwStruct.ReorderSeqFiles = cbRenameSeq.Checked;
+
             if (cbUseMinimum.Checked)
             {
                 bwStruct.MinimumSize = int.Parse(this.tbMinimumSize.Text);
