@@ -96,6 +96,8 @@ namespace VGMToolbox.tools.xsf
             bool seqNamingMessageDisplayed = false;
 
             int vhNumber = 0;
+            int minSampleSize = -1;
+            int minRowLength;
 
             VhStruct vhObject;
             ArrayList vhArrayList = new ArrayList();
@@ -104,6 +106,8 @@ namespace VGMToolbox.tools.xsf
             ProbableVbStruct potentialVb;
             ProbableVbStruct[] potentialVbList;
             byte[] vbRow = new byte[0x10];
+
+            string outputFolder = Path.GetFileNameWithoutExtension(pPath);
 
             // improve algorithm later
             using (FileStream fs = File.OpenRead(pPath))
@@ -136,13 +140,18 @@ namespace VGMToolbox.tools.xsf
                     {
                         vhObject.vbSampleSizes[i] = (uint)BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(fs, vhObject.offsetTableOffset + (i * 2), 2), 0);
                         vhObject.vbSampleSizes[i] <<= 3;
+
+                        if ((minSampleSize < 0) || (vhObject.vbSampleSizes[i] < minSampleSize))
+                        {
+                            minSampleSize = (int)vhObject.vbSampleSizes[i];
+                        }
                     }
                     
                     vhArrayList.Add(vhObject);
 
                     // extract file
                     ParseFile.ExtractChunkToFile(fs, vhObject.startingOffset, (int)vhObject.length,
-                        Path.Combine(Path.GetDirectoryName(pPath), vhObject.FileName), true);
+                        Path.Combine(Path.Combine(Path.GetDirectoryName(pPath), outputFolder), vhObject.FileName), true);
 
                     offset += 1;
                 }
@@ -204,7 +213,7 @@ namespace VGMToolbox.tools.xsf
                     }
 
                     ParseFile.ExtractChunkToFile(fs, seq.offset, (int)seq.length,
-                        Path.Combine(Path.GetDirectoryName(pPath), seqName), true);
+                        Path.Combine(Path.Combine(Path.GetDirectoryName(pPath), outputFolder), seqName), true);
                 }
                 #endregion
 
@@ -219,6 +228,13 @@ namespace VGMToolbox.tools.xsf
                 // build list of potential adpcm start indexes (VB_START_BYTES)
                 potentialVb = new ProbableVbStruct();
 
+                // check for the smallest found size or use default
+                minRowLength = (minSampleSize / 0x10) - 1; // divide into rows
+                if ((minRowLength > 0) && (minRowLength > ADPCM_ROW_COUNT))
+                {
+                    minRowLength = ADPCM_ROW_COUNT;
+                }
+
                 while ((offset = ParseFile.GetNextOffset(fs, offset, VB_START_BYTES, false)) > -1)
                 {
                     if ((psfStruct.UseZeroOffsetForVb) && (offset % 0x10 == 0) ||
@@ -228,7 +244,7 @@ namespace VGMToolbox.tools.xsf
                         {
                             vbRow = ParseFile.ParseSimpleOffset(fs, offset, vbRow.Length);
 
-                            if (IsPotentialAdpcm(fs, offset + 0x10))
+                            if (IsPotentialAdpcm(fs, offset + 0x10, minRowLength))
                             {
                                 potentialVb.offset = offset;
                                 emptyRowList.Add(potentialVb);
@@ -312,7 +328,7 @@ namespace VGMToolbox.tools.xsf
 
 
                                         ParseFile.ExtractChunkToFile(fs, vhObject.vbStartingOffset, (int)vhObject.vbLength,
-                                            Path.Combine(Path.GetDirectoryName(pPath), vbName), true);
+                                            Path.Combine(Path.Combine(Path.GetDirectoryName(pPath), outputFolder), vbName), true);
                                     }
                                 }
                                 catch (Exception ex)
@@ -329,7 +345,7 @@ namespace VGMToolbox.tools.xsf
             }
         }
 
-        private bool IsPotentialAdpcm(Stream searchStream, long offset)
+        private bool IsPotentialAdpcm(Stream searchStream, long offset, int rowsToCheck)
         {
             bool ret = true;
             byte[] checkBytes = new byte[0x10];
@@ -337,8 +353,8 @@ namespace VGMToolbox.tools.xsf
 
             searchStream.Position = offset;
 
-            // check for 10 rows meeting criteria
-            for (int i = 0; i < ADPCM_ROW_COUNT; i++)
+            // check for rows meeting criteria
+            for (int i = 0; i < rowsToCheck; i++)
             {
                 bytesRead = searchStream.Read(checkBytes, 0, checkBytes.Length);
 
@@ -393,6 +409,10 @@ namespace VGMToolbox.tools.xsf
                             {
                                 ret.vbStartingOffset = potentialVbList[potentialVbStartIndex].offset;
                                 ret.vbLength = vhObject.expectedVbLength;
+                            }
+                            else
+                            {
+                                int x = 1;
                             }
                         }
                     }

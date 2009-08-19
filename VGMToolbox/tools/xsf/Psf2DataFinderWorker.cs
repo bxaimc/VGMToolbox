@@ -99,6 +99,8 @@ namespace VGMToolbox.tools.xsf
             ProbableBdStruct[] potentialBdList;
             byte[] bdRow = new byte[0x10];
 
+            string outputFolder = Path.GetFileNameWithoutExtension(pPath);
+
             // display file name
             this.progressStruct.Clear();
             this.progressStruct.GenericMessage = String.Format("[{0}]{1}", pPath, Environment.NewLine);
@@ -120,7 +122,7 @@ namespace VGMToolbox.tools.xsf
 
                     hdName = String.Format("{0}_{1}.HD", Path.GetFileNameWithoutExtension(pPath), hdNumber++.ToString("X4"));
                     ParseFile.ExtractChunkToFile(fs, offset - 0x10, (int)hdLength,
-                        Path.Combine(Path.GetDirectoryName(pPath), hdName), true);
+                        Path.Combine(Path.Combine(Path.GetDirectoryName(pPath), outputFolder), hdName), true);
 
                     // get info
                     hdObject = new HdStruct();
@@ -208,7 +210,7 @@ namespace VGMToolbox.tools.xsf
                     }
 
                     ParseFile.ExtractChunkToFile(fs, sq.offset, (int)sq.length,
-                        Path.Combine(Path.GetDirectoryName(pPath), sqName), true);
+                        Path.Combine(Path.Combine(Path.GetDirectoryName(pPath), outputFolder), sqName), true);
 
 
                 }
@@ -319,7 +321,7 @@ namespace VGMToolbox.tools.xsf
 
 
                                         ParseFile.ExtractChunkToFile(fs, hdObject.bdStartingOffset, (int)hdObject.bdLength,
-                                            Path.Combine(Path.GetDirectoryName(pPath), bdName), true);
+                                            Path.Combine(Path.Combine(Path.GetDirectoryName(pPath), outputFolder), bdName), true);
                                     }
                                 }
                                 catch (Exception ex)
