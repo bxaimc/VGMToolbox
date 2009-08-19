@@ -165,7 +165,7 @@ namespace VGMToolbox.plugin
                         }
 
                         // output progress
-                        this.progress = (++fileCount * 100) / maxFiles;
+                        this.progress = (fileCount * 100) / maxFiles;
                         this.progressStruct.Clear();
                         this.progressStruct.FileName = f;
                         ReportProgress(this.progress, progressStruct);

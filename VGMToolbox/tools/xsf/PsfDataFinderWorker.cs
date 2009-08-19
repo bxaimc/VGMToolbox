@@ -200,7 +200,7 @@ namespace VGMToolbox.tools.xsf
                     }
                     else
                     {
-                        seqName = String.Format("{0}_{1}.SQ", Path.GetFileNameWithoutExtension(pPath), seqNumber++.ToString("X4"));
+                        seqName = String.Format("{0}_{1}.SEQ", Path.GetFileNameWithoutExtension(pPath), seqNumber++.ToString("X4"));
                     }
 
                     ParseFile.ExtractChunkToFile(fs, seq.offset, (int)seq.length,
@@ -292,11 +292,11 @@ namespace VGMToolbox.tools.xsf
                                     {
 
                                         // check for other BD files that matched and rename accordingly
-                                        dupeFileNames = Directory.GetFiles(Path.GetDirectoryName(pPath), Path.GetFileNameWithoutExtension(vhObject.FileName) + "*.BD");
+                                        dupeFileNames = Directory.GetFiles(Path.GetDirectoryName(pPath), Path.GetFileNameWithoutExtension(vhObject.FileName) + "*.VB");
 
                                         if (dupeFileNames.Length >= 1)
                                         {
-                                            vbName = String.Format("{0}_{1}.BD", Path.GetFileNameWithoutExtension(vhObject.FileName), (dupeFileNames.Length).ToString("X4"));
+                                            vbName = String.Format("{0}_{1}.VB", Path.GetFileNameWithoutExtension(vhObject.FileName), (dupeFileNames.Length).ToString("X4"));
 
                                             if (dupeFileNames.Length == 1)
                                             {
@@ -307,7 +307,7 @@ namespace VGMToolbox.tools.xsf
                                         }
                                         else
                                         {
-                                            vbName = Path.ChangeExtension(vhObject.FileName, ".BD");
+                                            vbName = Path.ChangeExtension(vhObject.FileName, ".VB");
                                         }
 
 
