@@ -178,7 +178,7 @@ namespace VGMToolbox
             ///////////////////
             // Datafile Editor
             ///////////////////
-            TreeNode datafileEditorNode = new TreeNode("Datafile Editor");
+            TreeNode datafileEditorNode = new TreeNode(ConfigurationSettings.AppSettings["MenuTree_DatafileEditorNode"]);
 
             // add form
             DatafileEditorForm datafileEditorForm = new DatafileEditorForm(datafileEditorNode);
@@ -368,7 +368,6 @@ namespace VGMToolbox
             TreeNode ssf_RootNode = 
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SsfRootNode"]);
 
-
             // NDS to 2SF
             TreeNode ndsTo2sfNode = new TreeNode(ConfigurationSettings.AppSettings["MenuTree_NdsTo2sfNode"]);
 
@@ -403,7 +402,6 @@ namespace VGMToolbox
             // Set Tag for displaying the Form
             nodeTag.FormClass = xsf_Mk2sfForm.GetType().Name;
             xsf_Make2sfNode.Tag = nodeTag;
-
 
             //////////////
             // 2SF Timer
@@ -444,7 +442,7 @@ namespace VGMToolbox
             //////////////////////
             // PSF2 DATA EXTRACTOR
             //////////////////////
-            TreeNode psf2DataExtractorNode = new TreeNode("PSF2 Data Finder");
+            TreeNode psf2DataExtractorNode = new TreeNode(ConfigurationSettings.AppSettings["MenuTree_Psf2DataFinderNode"]);
 
             // Add Form
             Psf2DataFinderForm psf2DataFinderForm = new Psf2DataFinderForm(psf2DataExtractorNode);
@@ -587,7 +585,7 @@ namespace VGMToolbox
             /////////////////////////
             // EASY DRIVER EXTRACTOR
             /////////////////////////
-            TreeNode easyDriverExtractorNode = new TreeNode("Easy PSF Driver Extractor");
+            TreeNode easyDriverExtractorNode = new TreeNode(ConfigurationSettings.AppSettings["MenuTree_EasyPsfExtractorNode"]);
 
             // Add Form
             EasyPsfDriverExtractorForm easyPsfDriverExtractorForm = 
@@ -601,7 +599,7 @@ namespace VGMToolbox
             //////////////////////
             // PSF DATA EXTRACTOR
             //////////////////////
-            TreeNode psfDataExtractorNode = new TreeNode("PSF Data Finder");
+            TreeNode psfDataExtractorNode = new TreeNode(ConfigurationSettings.AppSettings["MenuTree_PsfDataFinderNode"]);
 
             // Add Form
             PsfDataFinderForm psfDataFinderForm = new PsfDataFinderForm(psfDataExtractorNode);

@@ -36,37 +36,37 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 371);
-            this.pnlLabels.Size = new System.Drawing.Size(768, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 479);
+            this.pnlLabels.Size = new System.Drawing.Size(757, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(768, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(757, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 294);
-            this.tbOutput.Size = new System.Drawing.Size(768, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 402);
+            this.tbOutput.Size = new System.Drawing.Size(757, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 274);
-            this.pnlButtons.Size = new System.Drawing.Size(768, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 382);
+            this.pnlButtons.Size = new System.Drawing.Size(757, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(708, 0);
+            this.btnCancel.Location = new System.Drawing.Point(697, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(648, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(637, 0);
             // 
             // grpSourceFiles
             // 
             this.grpSourceFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpSourceFiles.Location = new System.Drawing.Point(0, 23);
             this.grpSourceFiles.Name = "grpSourceFiles";
-            this.grpSourceFiles.Size = new System.Drawing.Size(768, 251);
+            this.grpSourceFiles.Size = new System.Drawing.Size(757, 359);
             this.grpSourceFiles.TabIndex = 5;
             this.grpSourceFiles.TabStop = false;
             this.grpSourceFiles.Text = "Drop files here.";
@@ -77,7 +77,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(768, 412);
+            this.ClientSize = new System.Drawing.Size(757, 520);
             this.Controls.Add(this.grpSourceFiles);
             this.Name = "EasyPsfDriverExtractorForm";
             this.Text = "EasyPsfDriverExtractorForm";

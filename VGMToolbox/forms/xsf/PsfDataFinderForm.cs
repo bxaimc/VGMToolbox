@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
+using System.Configuration;
 using System.Windows.Forms;
 
 using VGMToolbox.plugin;
@@ -21,10 +17,14 @@ namespace VGMToolbox.forms.xsf
             this.btnDoTask.Hide();
             this.grpSource.AllowDrop = true;
 
-            this.lblTitle.Text = "PSF Data Extractor";
-            this.tbOutput.Text = "- Extract SEQ/VH/VB data from files." + Environment.NewLine;
-            this.tbOutput.Text += "- VH/VB should always be correctly paired." + Environment.NewLine;
-            this.tbOutput.Text += "- WARNING: VB DETECTION IS VERY SLOW, PLEASE BE PATIENT..." + Environment.NewLine;
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_PsfDataFinder_Title"];
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_PsfDataFinder_IntroText"] + Environment.NewLine;
+
+            this.grpOptions.Text = ConfigurationSettings.AppSettings["Form_PsfDataFinder_GrpOptions"];
+            this.cbUseMinimum.Text = ConfigurationSettings.AppSettings["Form_PsfDataFinder_CbMinSqSize"];
+            this.cbRenameSeq.Text = ConfigurationSettings.AppSettings["Form_PsfDataFinder_CbReorderSq"];
+            this.cbVbStartAt0x00.Text = ConfigurationSettings.AppSettings["Form_PsfDataFinder_CbByteAlign"];
+            this.cbRelaxVbEof.Text = ConfigurationSettings.AppSettings["Form_PsfDataFinder_CbRelaxVbEof"];
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -38,15 +38,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return "Extracting PSF Data...Cancelled.";
+            return ConfigurationSettings.AppSettings["Form_PsfDataFinder_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return "Extracting PSF Data...Complete.";
+            return ConfigurationSettings.AppSettings["Form_PsfDataFinder_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return "Extracting PSF Data...Begin";
+            return ConfigurationSettings.AppSettings["Form_PsfDataFinder_MessageBegin"];
         }
 
         private void grpSource_DragDrop(object sender, DragEventArgs e)

@@ -1438,6 +1438,18 @@ namespace VGMToolbox.format.auditing
                 this.statusField = value;
             }
         }
+
+        public disk DeepCopy()
+        {
+            BinaryFormatter BF = new BinaryFormatter();
+            MemoryStream memStream = new MemoryStream();
+
+            BF.Serialize(memStream, this);
+            memStream.Flush();
+            memStream.Position = 0;
+
+            return (disk)BF.Deserialize(memStream);
+        }
     }
 
     /// <remarks/>

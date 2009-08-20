@@ -14,7 +14,7 @@ using VGMToolbox.tools.extract;
 
 namespace VGMToolbox.forms.extraction
 {
-    public partial class OffsetFinderForm : AVgmtForm
+    public partial class OffsetFinderForm : VgmtForm
     {
         private static readonly string DB_PATH =
             Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "db"), "collection.s3db");
@@ -30,11 +30,11 @@ namespace VGMToolbox.forms.extraction
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
 
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_SimpleCutter_IntroText1"] + Environment.NewLine;
-            this.tbOutput.Text += ConfigurationSettings.AppSettings["Form_SimpleCutter_IntroText2"] + Environment.NewLine;
-            this.tbOutput.Text += ConfigurationSettings.AppSettings["Form_SimpleCutter_IntroText3"] + Environment.NewLine;
+            this.tbOutput.Text = String.Format(ConfigurationSettings.AppSettings["Form_SimpleCutter_IntroText"], PLUGIN_PATH);
 
             InitializeComponent();
+
+            this.toolTip1.SetToolTip(this.btnRefresh, "Refresh Presets");
 
             this.grpFiles.Text =
                 ConfigurationSettings.AppSettings["Form_SimpleCutter_GroupFiles"];

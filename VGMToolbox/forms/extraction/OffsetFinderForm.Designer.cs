@@ -78,30 +78,30 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 521);
-            this.pnlLabels.Size = new System.Drawing.Size(757, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 479);
+            this.pnlLabels.Size = new System.Drawing.Size(917, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(757, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(917, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 444);
-            this.tbOutput.Size = new System.Drawing.Size(757, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 402);
+            this.tbOutput.Size = new System.Drawing.Size(917, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 424);
-            this.pnlButtons.Size = new System.Drawing.Size(757, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 382);
+            this.pnlButtons.Size = new System.Drawing.Size(917, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(697, 0);
+            this.btnCancel.Location = new System.Drawing.Point(857, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(637, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(797, 0);
             // 
             // grpFiles
             // 
@@ -115,7 +115,7 @@
             this.grpFiles.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFiles.Location = new System.Drawing.Point(0, 23);
             this.grpFiles.Name = "grpFiles";
-            this.grpFiles.Size = new System.Drawing.Size(757, 61);
+            this.grpFiles.Size = new System.Drawing.Size(917, 61);
             this.grpFiles.TabIndex = 5;
             this.grpFiles.TabStop = false;
             this.grpFiles.Text = "Files to Search";
@@ -198,7 +198,7 @@
             this.grpCriteria.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpCriteria.Location = new System.Drawing.Point(0, 84);
             this.grpCriteria.Name = "grpCriteria";
-            this.grpCriteria.Size = new System.Drawing.Size(757, 54);
+            this.grpCriteria.Size = new System.Drawing.Size(917, 54);
             this.grpCriteria.TabIndex = 6;
             this.grpCriteria.TabStop = false;
             this.grpCriteria.Text = "Criteria";
@@ -256,7 +256,7 @@
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox3.Location = new System.Drawing.Point(0, 138);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(757, 256);
+            this.groupBox3.Size = new System.Drawing.Size(917, 256);
             this.groupBox3.TabIndex = 7;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Cut Options (all values are relative to the location of the file to be cut)";
@@ -504,7 +504,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(757, 562);
+            this.ClientSize = new System.Drawing.Size(917, 520);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.grpCriteria);
             this.Controls.Add(this.grpFiles);

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
+using System.Configuration;
 using System.Windows.Forms;
 
 using VGMToolbox.plugin;
@@ -21,10 +17,13 @@ namespace VGMToolbox.forms.xsf
             this.btnDoTask.Hide();
             this.grpSource.AllowDrop = true;
 
-            this.lblTitle.Text = "PSF2 Data Extractor";
-            this.tbOutput.Text = "- Extract SQ/HD/BD data from files." + Environment.NewLine;
-            this.tbOutput.Text += "- HD/BD should always be correctly paired." + Environment.NewLine;
-            this.tbOutput.Text += "- NOTICE: BD DETECTION CAN BE VERY SLOW, PLEASE BE PATIENT..." + Environment.NewLine;
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_Psf2DataFinder_Title"];
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_Psf2DataFinder_IntroText"] + Environment.NewLine;
+
+            this.grpOptions.Text = ConfigurationSettings.AppSettings["Form_Psf2DataFinder_GrpOptions"];
+            this.cbUseMinimum.Text = ConfigurationSettings.AppSettings["Form_Psf2DataFinder_CbMinSqSize"];
+            this.cb00ByteAligned.Text = ConfigurationSettings.AppSettings["Form_Psf2DataFinder_CbByteAlign"];
+            this.cbReorderSqFiles.Text = ConfigurationSettings.AppSettings["Form_Psf2DataFinder_CbReorderSq"];
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -38,15 +37,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return "Extracting PSF2 Data...Cancelled.";
+            return ConfigurationSettings.AppSettings["Form_Psf2DataFinder_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return "Extracting PSF2 Data...Complete.";
+            return ConfigurationSettings.AppSettings["Form_Psf2DataFinder_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return "Extracting PSF2 Data...Begin";
+            return ConfigurationSettings.AppSettings["Form_Psf2DataFinder_MessageBegin"];
         }
 
         private void grpSource_DragDrop(object sender, DragEventArgs e)

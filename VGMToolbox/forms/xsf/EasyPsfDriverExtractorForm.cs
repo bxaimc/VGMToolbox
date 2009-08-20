@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Text;
@@ -22,9 +23,10 @@ namespace VGMToolbox.forms.xsf
             this.grpSourceFiles.AllowDrop = true;
             this.btnDoTask.Hide();
 
-            this.lblTitle.Text = "Easy PSF Driver Data Extractor";
-            this.tbOutput.Text = "- Extract SEQ/VH/VB from Easy PSF Driver sets for use with rebuilding with the original driver." + Environment.NewLine;
-            this.tbOutput.Text += "- If a set uses Davironica's Easy PSF Driver, this will extract data much faster than the PSF Data Extractor.";
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_EasyPsfExtractor_Title"];
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_EasyPsfExtractor_IntroText"];
+
+            this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -37,15 +39,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return "Extracting PSF Data...Cancel";
+            return ConfigurationSettings.AppSettings["Form_EasyPsfExtractor_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return "Extracting PSF Data...Complete";
+            return ConfigurationSettings.AppSettings["Form_EasyPsfExtractor_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return "Extracting PSF Data...Begin";
+            return ConfigurationSettings.AppSettings["Form_EasyPsfExtractor_MessageBegin"];
         }
 
         private void grpSourceFiles_DragDrop(object sender, DragEventArgs e)

@@ -30,10 +30,10 @@
         {
             this.grpSource = new System.Windows.Forms.GroupBox();
             this.grpOptions = new System.Windows.Forms.GroupBox();
+            this.cb00ByteAligned = new System.Windows.Forms.CheckBox();
             this.cbReorderSqFiles = new System.Windows.Forms.CheckBox();
             this.cbUseMinimum = new System.Windows.Forms.CheckBox();
             this.tbMinimumSize = new System.Windows.Forms.TextBox();
-            this.cb00ByteAligned = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -43,30 +43,30 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 507);
-            this.pnlLabels.Size = new System.Drawing.Size(857, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 479);
+            this.pnlLabels.Size = new System.Drawing.Size(757, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(857, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(757, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 430);
-            this.tbOutput.Size = new System.Drawing.Size(857, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 402);
+            this.tbOutput.Size = new System.Drawing.Size(757, 77);
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 410);
-            this.pnlButtons.Size = new System.Drawing.Size(857, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 382);
+            this.pnlButtons.Size = new System.Drawing.Size(757, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(797, 0);
+            this.btnCancel.Location = new System.Drawing.Point(697, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(737, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(637, 0);
             // 
             // grpSource
             // 
@@ -74,7 +74,7 @@
             this.grpSource.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpSource.Location = new System.Drawing.Point(0, 23);
             this.grpSource.Name = "grpSource";
-            this.grpSource.Size = new System.Drawing.Size(857, 387);
+            this.grpSource.Size = new System.Drawing.Size(757, 359);
             this.grpSource.TabIndex = 5;
             this.grpSource.TabStop = false;
             this.grpSource.Text = "Drop Files Here";
@@ -88,12 +88,22 @@
             this.grpOptions.Controls.Add(this.cbUseMinimum);
             this.grpOptions.Controls.Add(this.tbMinimumSize);
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.grpOptions.Location = new System.Drawing.Point(3, 295);
+            this.grpOptions.Location = new System.Drawing.Point(3, 267);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(851, 89);
+            this.grpOptions.Size = new System.Drawing.Size(751, 89);
             this.grpOptions.TabIndex = 0;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
+            // 
+            // cb00ByteAligned
+            // 
+            this.cb00ByteAligned.AutoSize = true;
+            this.cb00ByteAligned.Location = new System.Drawing.Point(6, 38);
+            this.cb00ByteAligned.Name = "cb00ByteAligned";
+            this.cb00ByteAligned.Size = new System.Drawing.Size(375, 17);
+            this.cb00ByteAligned.TabIndex = 4;
+            this.cb00ByteAligned.Text = "BD data always begins at 0x00 offset (faster, and can skip false positives).";
+            this.cb00ByteAligned.UseVisualStyleBackColor = true;
             // 
             // cbReorderSqFiles
             // 
@@ -122,21 +132,11 @@
             this.tbMinimumSize.Size = new System.Drawing.Size(100, 20);
             this.tbMinimumSize.TabIndex = 0;
             // 
-            // cb00ByteAligned
-            // 
-            this.cb00ByteAligned.AutoSize = true;
-            this.cb00ByteAligned.Location = new System.Drawing.Point(6, 38);
-            this.cb00ByteAligned.Name = "cb00ByteAligned";
-            this.cb00ByteAligned.Size = new System.Drawing.Size(375, 17);
-            this.cb00ByteAligned.TabIndex = 4;
-            this.cb00ByteAligned.Text = "BD data always begins at 0x00 offset (faster, and can skip false positives).";
-            this.cb00ByteAligned.UseVisualStyleBackColor = true;
-            // 
             // Psf2DataFinderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(857, 548);
+            this.ClientSize = new System.Drawing.Size(757, 520);
             this.Controls.Add(this.grpSource);
             this.Name = "Psf2DataFinderForm";
             this.Text = "Psf2DataFinderForm";

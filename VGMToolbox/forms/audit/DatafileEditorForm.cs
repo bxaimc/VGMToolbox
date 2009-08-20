@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
+using System.Configuration;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
@@ -24,8 +20,9 @@ namespace VGMToolbox.forms.audit
         {
             InitializeComponent();
 
-            this.btnDoTask.Text = "Save As";
-            
+            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_DatafileEditor_Title"];
+            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_DatafileEditor_DoTaskButton"];
+            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_DatafileEditor_IntroText"];
         }
 
         /// <summary>
@@ -37,7 +34,8 @@ namespace VGMToolbox.forms.audit
         {
             this.datafileSourcePath.Text = base.browseForFile(sender, e);
 
-            if (base.checkFileExists(this.datafileSourcePath.Text, this.grpSource.Text))
+            if ((!String.IsNullOrEmpty(this.datafileSourcePath.Text)) &&
+                (base.checkFileExists(this.datafileSourcePath.Text, this.grpSource.Text)))
             {
                 try
                 {
@@ -46,7 +44,8 @@ namespace VGMToolbox.forms.audit
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(String.Format("Error parsing data file: {0}{1}", ex.Message, Environment.NewLine), "Error");
+                    MessageBox.Show(
+                        String.Format(ConfigurationSettings.AppSettings["Form_DatafileEditor_ErrorDatafileParse"], ex.Message, Environment.NewLine), "Error");
                 }
             }
         }
@@ -80,12 +79,26 @@ namespace VGMToolbox.forms.audit
                 workingGameNode = new TreeNode(g.name);
                 workingGameNode.Tag = g.DeepCopy();
 
-                foreach (rom r in g.rom)
+                if (g.rom != null)
                 {
-                    workingRomNode = new TreeNode(r.name);
-                    workingRomNode.Tag = r.DeepCopy();
+                    foreach (rom r in g.rom)
+                    {
+                        workingRomNode = new TreeNode(r.name);
+                        workingRomNode.Tag = r.DeepCopy();
 
-                    workingGameNode.Nodes.Add(workingRomNode);
+                        workingGameNode.Nodes.Add(workingRomNode);
+                    }
+                }
+
+                if (g.disk != null)
+                {
+                    foreach (disk d in g.disk)
+                    {
+                        workingRomNode = new TreeNode(d.name);
+                        workingRomNode.Tag = d.DeepCopy();
+
+                        workingGameNode.Nodes.Add(workingRomNode);
+                    }
                 }
 
                 this.treeViewTools.Nodes.Add(workingGameNode);
@@ -102,7 +115,8 @@ namespace VGMToolbox.forms.audit
                 treeViewTools.LabelEdit = true;
 
                 if (this.selectedNode != null &&
-                    ((this.selectedNode.Tag is game) || (this.selectedNode.Tag is rom)))
+                    ((this.selectedNode.Tag is game) || (this.selectedNode.Tag is rom) ||
+                     (this.selectedNode.Tag is disk)))
                 {
                     this.treeNodeContextMenuStrip.Show(treeViewTools, e.X, e.Y);
                 }
@@ -122,7 +136,8 @@ namespace VGMToolbox.forms.audit
             }
             else
             {
-                MessageBox.Show("No tree node selected or selected node.", "Invalid selection");
+                MessageBox.Show(ConfigurationSettings.AppSettings["Form_DatafileEditor_ErrorDatafileSelectedNode"], 
+                    ConfigurationSettings.AppSettings["Form_DatafileEditor_ErrorDatafileSelectedNodeTitle"]);
             }
 
         }
@@ -151,7 +166,8 @@ namespace VGMToolbox.forms.audit
             }
             else
             {
-                MessageBox.Show("No tree node selected or selected node.", "Invalid selection");
+                MessageBox.Show(ConfigurationSettings.AppSettings["Form_DatafileEditor_ErrorDatafileSelectedNode"],
+                    ConfigurationSettings.AppSettings["Form_DatafileEditor_ErrorDatafileSelectedNodeTitle"]);
             }
         }
 
