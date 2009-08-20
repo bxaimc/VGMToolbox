@@ -58,6 +58,7 @@ namespace VGMToolbox.forms.xsf
             bwStruct.UseSeqMinimumSize = cbUseMinimum.Checked;
             bwStruct.ReorderSeqFiles = cbRenameSeq.Checked;
             bwStruct.UseZeroOffsetForVb = cbVbStartAt0x00.Checked;
+            bwStruct.RelaxVbEofRestrictions = cbRelaxVbEof.Checked;
 
             if (cbUseMinimum.Checked)
             {

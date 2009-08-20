@@ -38,6 +38,7 @@ namespace VGMToolbox.tools.xsf
             public int MinimumSize;
             public bool ReorderSeqFiles;
             public bool UseZeroOffsetForVb;
+            public bool RelaxVbEofRestrictions;
 
             private string[] sourcePaths;
             public string[] SourcePaths
@@ -302,7 +303,7 @@ namespace VGMToolbox.tools.xsf
                             {
                                 try
                                 {
-                                    vhObject = PopulateVbOffsetLength(fs, potentialVbList, j, vhObject);
+                                    vhObject = PopulateVbOffsetLength(fs, potentialVbList, j, vhObject, psfStruct.RelaxVbEofRestrictions);
 
                                     if (vhObject.vbLength > 0)
                                     {
@@ -372,7 +373,7 @@ namespace VGMToolbox.tools.xsf
 
         private VhStruct PopulateVbOffsetLength(Stream searchStream,
             ProbableVbStruct[] potentialVbList, int potentialVbStartIndex,
-            VhStruct vhObject)
+            VhStruct vhObject, bool RelaxVbEofRestrictions)
         {
             VhStruct ret = vhObject;
             long totalLength = 0;
@@ -396,25 +397,34 @@ namespace VGMToolbox.tools.xsf
 
                     if (i == (vhObject.vbSampleSizes.Length - 1))
                     {
-                        // check last value
-                        searchStream.Position =
-                            potentialVbList[potentialVbStartIndex + i].offset + vhObject.vbSampleSizes[i] - lastLine.Length;
-                        searchStream.Read(lastLine, 0, lastLine.Length);
-
-                        if (lastLine[1] == 3 ||
-                            ParseFile.CompareSegment(lastLine, 0, VB_END_BYTES_1) ||
-                            ParseFile.CompareSegment(lastLine, 0, VB_END_BYTES_2))
+                        // check if lengths match
+                        if (totalLength == vhObject.expectedVbLength)
                         {
-                            if (totalLength == vhObject.expectedVbLength)
+                            // check EOF conditions
+                            if (!RelaxVbEofRestrictions)
                             {
-                                ret.vbStartingOffset = potentialVbList[potentialVbStartIndex].offset;
-                                ret.vbLength = vhObject.expectedVbLength;
+                                // check last value
+                                searchStream.Position =
+                                    potentialVbList[potentialVbStartIndex + i].offset + vhObject.vbSampleSizes[i] - lastLine.Length;
+                                searchStream.Read(lastLine, 0, lastLine.Length);
+
+                                if (lastLine[1] == 3 ||
+                                    ParseFile.CompareSegment(lastLine, 0, VB_END_BYTES_1) ||
+                                    ParseFile.CompareSegment(lastLine, 0, VB_END_BYTES_2))
+                                {
+
+                                    {
+                                        ret.vbStartingOffset = potentialVbList[potentialVbStartIndex].offset;
+                                        ret.vbLength = vhObject.expectedVbLength;
+                                    }
+                                }
                             }
                             else
                             {
-                                int x = 1;
-                            }
-                        }
+                                ret.vbStartingOffset = potentialVbList[potentialVbStartIndex].offset;
+                                ret.vbLength = vhObject.expectedVbLength;                            
+                            }                       
+                        }                        
                     }
                     else if (vhObject.vbSampleSizes[i] != potentialVbList[potentialVbStartIndex + i].length)
                     {
