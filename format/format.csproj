@@ -120,6 +120,9 @@
     <Content Include="external\psf\listsig.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="external\psf\minipsf.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="external\psf\sigfind.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

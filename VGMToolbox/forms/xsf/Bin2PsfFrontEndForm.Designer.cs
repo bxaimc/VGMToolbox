@@ -42,7 +42,6 @@
             this.tbExePath = new System.Windows.Forms.TextBox();
             this.grpOptions = new System.Windows.Forms.GroupBox();
             this.cbTryMixing = new System.Windows.Forms.CheckBox();
-            this.cbAllowZeroLengthSequences = new System.Windows.Forms.CheckBox();
             this.lblVbOffset = new System.Windows.Forms.Label();
             this.tbVbOffset = new System.Windows.Forms.TextBox();
             this.lblVhOffset = new System.Windows.Forms.Label();
@@ -62,30 +61,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 431);
-            this.pnlLabels.Size = new System.Drawing.Size(857, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 507);
+            this.pnlLabels.Size = new System.Drawing.Size(850, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(857, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(850, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 354);
-            this.tbOutput.Size = new System.Drawing.Size(857, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 430);
+            this.tbOutput.Size = new System.Drawing.Size(850, 77);
+            this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 334);
-            this.pnlButtons.Size = new System.Drawing.Size(857, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 410);
+            this.pnlButtons.Size = new System.Drawing.Size(850, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(797, 0);
+            this.btnCancel.Location = new System.Drawing.Point(790, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(737, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(730, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpSource
@@ -104,7 +104,7 @@
             this.grpSource.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSource.Location = new System.Drawing.Point(0, 70);
             this.grpSource.Name = "grpSource";
-            this.grpSource.Size = new System.Drawing.Size(857, 117);
+            this.grpSource.Size = new System.Drawing.Size(850, 117);
             this.grpSource.TabIndex = 5;
             this.grpSource.TabStop = false;
             this.grpSource.Text = "Source";
@@ -209,7 +209,6 @@
             // grpOptions
             // 
             this.grpOptions.Controls.Add(this.cbTryMixing);
-            this.grpOptions.Controls.Add(this.cbAllowZeroLengthSequences);
             this.grpOptions.Controls.Add(this.lblVbOffset);
             this.grpOptions.Controls.Add(this.tbVbOffset);
             this.grpOptions.Controls.Add(this.lblVhOffset);
@@ -219,30 +218,20 @@
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpOptions.Location = new System.Drawing.Point(0, 187);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(857, 200);
+            this.grpOptions.Size = new System.Drawing.Size(850, 200);
             this.grpOptions.TabIndex = 6;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
             // 
             // cbTryMixing
             // 
-            this.cbTryMixing.Location = new System.Drawing.Point(6, 136);
+            this.cbTryMixing.Location = new System.Drawing.Point(6, 98);
             this.cbTryMixing.Name = "cbTryMixing";
             this.cbTryMixing.Size = new System.Drawing.Size(501, 31);
             this.cbTryMixing.TabIndex = 7;
-            this.cbTryMixing.Text = "[BETA] Try all possible combinations of SEQ and VH (Good for finding matches in u" +
-                "nmatched data) [Need to fix Progress Meter].";
+            this.cbTryMixing.Text = "Try all possible combinations of SEQ and VH (Good for finding matches in unmatche" +
+                "d data) ";
             this.cbTryMixing.UseVisualStyleBackColor = true;
-            // 
-            // cbAllowZeroLengthSequences
-            // 
-            this.cbAllowZeroLengthSequences.AutoSize = true;
-            this.cbAllowZeroLengthSequences.Location = new System.Drawing.Point(6, 113);
-            this.cbAllowZeroLengthSequences.Name = "cbAllowZeroLengthSequences";
-            this.cbAllowZeroLengthSequences.Size = new System.Drawing.Size(169, 17);
-            this.cbAllowZeroLengthSequences.TabIndex = 6;
-            this.cbAllowZeroLengthSequences.Text = "Allow Zero Length Sequences";
-            this.cbAllowZeroLengthSequences.UseVisualStyleBackColor = true;
             // 
             // lblVbOffset
             // 
@@ -299,7 +288,7 @@
             this.grpGenericDrivers.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpGenericDrivers.Location = new System.Drawing.Point(0, 23);
             this.grpGenericDrivers.Name = "grpGenericDrivers";
-            this.grpGenericDrivers.Size = new System.Drawing.Size(857, 47);
+            this.grpGenericDrivers.Size = new System.Drawing.Size(850, 47);
             this.grpGenericDrivers.TabIndex = 7;
             this.grpGenericDrivers.TabStop = false;
             this.grpGenericDrivers.Text = "Presets";
@@ -328,7 +317,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(857, 472);
+            this.ClientSize = new System.Drawing.Size(850, 548);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpSource);
             this.Controls.Add(this.grpGenericDrivers);
@@ -379,7 +368,6 @@
         private System.Windows.Forms.CheckBox cbMinipsf;
         private System.Windows.Forms.Label lblPsfLibName;
         private System.Windows.Forms.TextBox tbPsflibName;
-        private System.Windows.Forms.CheckBox cbAllowZeroLengthSequences;
         private System.Windows.Forms.GroupBox grpGenericDrivers;
         private System.Windows.Forms.ComboBox genericDriver;
         private System.Windows.Forms.Label lblGenericDriver;

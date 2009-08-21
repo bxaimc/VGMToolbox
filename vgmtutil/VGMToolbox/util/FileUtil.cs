@@ -130,6 +130,19 @@ namespace VGMToolbox.util
             }
         }
 
+        public static void UpdateChunk(
+            string pFilePath,
+            int pOffset,
+            byte[] value)
+        {
+            using (BinaryWriter bw =
+                new BinaryWriter(File.Open(pFilePath, FileMode.Open, FileAccess.ReadWrite)))
+            {
+                bw.Seek(pOffset, SeekOrigin.Begin);
+                bw.Write(value);
+            }
+        }
+
         public static void ReplaceFileChunk(
             string pSourceFilePath, 
             long pSourceOffset,

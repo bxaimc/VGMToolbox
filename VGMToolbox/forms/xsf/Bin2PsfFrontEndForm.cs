@@ -43,7 +43,6 @@ namespace VGMToolbox.forms.xsf
             this.lblVbOffset.Text =
                 ConfigurationSettings.AppSettings["Form_Bin2PsfFE_LblVbOffset"];
 
-            this.cbAllowZeroLengthSequences.Text = ConfigurationSettings.AppSettings["Form_Bin2PsfFE_CbZeroLengthSeq"];
             this.grpGenericDrivers.Text = ConfigurationSettings.AppSettings["Form_Bin2PsfFE_GrpGenericDrivers"];
             this.lblGenericDriver.Text = ConfigurationSettings.AppSettings["Form_Bin2PsfFE_LblGenericDriver"];
 
@@ -54,6 +53,11 @@ namespace VGMToolbox.forms.xsf
 
         private void btnDoTask_Click(object sender, EventArgs e)
         {
+            if ((cbMinipsf.Checked) && (!tbPsflibName.Text.EndsWith(Bin2PsfWorker.PSFLIB_FILE_EXTENSION)))
+            {
+                tbPsflibName.Text += Bin2PsfWorker.PSFLIB_FILE_EXTENSION;
+            }
+            
             Bin2PsfWorker.Bin2PsfStruct bpStruct = new Bin2PsfWorker.Bin2PsfStruct();
             bpStruct.sourcePath = tbSourceFilesPath.Text;
             bpStruct.seqOffset = tbSeqOffset.Text;
@@ -61,11 +65,10 @@ namespace VGMToolbox.forms.xsf
             bpStruct.vhOffset = tbVhOffset.Text;
             bpStruct.exePath = tbExePath.Text;
             bpStruct.outputFolder = tbOutputFolderName.Text;
-            bpStruct.makeMiniPsfs = cbMinipsf.Checked;
-            bpStruct.psflibName = tbPsflibName.Text;
-            bpStruct.AllowZeroLengthSequences = this.cbAllowZeroLengthSequences.Checked;
+            bpStruct.makeMiniPsfs = cbMinipsf.Checked;            
             bpStruct.TryCombinations = this.cbTryMixing.Checked;
             bpStruct.DriverName = (string)this.genericDriver.SelectedItem;
+            bpStruct.psflibName = tbPsflibName.Text;
 
             base.backgroundWorker_Execute(bpStruct);
         }
@@ -86,13 +89,20 @@ namespace VGMToolbox.forms.xsf
         {
             string selectedItem = (string)this.genericDriver.SelectedItem;
 
-            if ((!String.IsNullOrEmpty(selectedItem)) || (cbMinipsf.Checked))
+            if (cbMinipsf.Checked)
             {
-                tbPsflibName.ReadOnly = false;
+                if ((this.genericDriver.SelectedItem == null) || 
+                    (this.genericDriver.SelectedItem.Equals(STUB_BUILDER)))
+                {
+                    tbPsflibName.ReadOnly = false;
+                    this.cbTryMixing.Checked = false;
+                    this.cbTryMixing.Enabled = false;
+                }
             }
             else
             {
                 tbPsflibName.ReadOnly = true;
+                this.cbTryMixing.Enabled = true;
                 tbPsflibName.Clear();
             }
         }
@@ -153,13 +163,15 @@ namespace VGMToolbox.forms.xsf
             this.tbSeqOffset.Text = "0x80120000";
             this.tbVhOffset.Text = "0x80130000";
             this.tbVbOffset.Text = "0x80140000";
+            this.cbMinipsf.Enabled = true;
         }
         private void loadMarkGrassGenericPresets()
         {            
             // this.tbExePath.Text = Bin2PsfWorker.MGRASS_EXE_PATH;
             this.tbPsflibName.Text = String.Empty;
             this.cbMinipsf.Enabled = false;
-            
+            this.cbMinipsf.Checked = false;
+
             this.tbSeqOffset.Text = "0x800A0000";
             this.tbVhOffset.Text = "0x800E0000";
             this.tbVbOffset.Text = "0x80160000";
@@ -211,7 +223,14 @@ namespace VGMToolbox.forms.xsf
             this.tbVbOffset.ReadOnly = false;
             this.tbVbOffset.Text = String.Empty;
         }
-        
+
+        private bool validateInputs()
+        {
+            bool ret = true;
+
+            return ret;
+        }
+
         private void genericDriver_SelectedIndexChanged(object sender, EventArgs e)
         {
             loadGenericDriverPreset();

@@ -47,34 +47,7 @@ namespace VGMToolbox.plugin
                 if (File.Exists(path))
                 {
                     if (!CancellationPending)
-                    {
-                        fileCount += 1;
-
-                        // Report Progress
-                        if ((fileCount == maxFiles) ||
-                            (((fileCount * 100) / maxFiles) > this.progressCounter))
-                        {
-                            this.progressCounter += this.progressCounterIncrementer;
-                            
-                            // output info
-                            if (this.outputBuffer.Length > 0)
-                            {
-                                this.progressStruct.Clear();
-                                progressStruct.GenericMessage = this.outputBuffer.ToString();
-                                ReportProgress(this.Progress, progressStruct);
-
-                                // clear out old info
-                                this.outputBuffer.Length = 0;
-                            }
-
-                            // output progress
-                            this.progressStruct.Clear();
-                            this.progress = (fileCount * 100) / maxFiles;
-                            this.progressStruct.Clear();
-                            this.progressStruct.FileName = path;
-                            ReportProgress(progress, progressStruct);
-                        }
-                       
+                    {                       
                         // perform task
                         try
                         {
@@ -88,8 +61,35 @@ namespace VGMToolbox.plugin
                             ReportProgress(this.progress, this.progressStruct);
                         }
                         finally
-                        {
+                        {                                                        
                             this.DoFinally();
+
+                            fileCount += 1;
+
+                            // Report Progress
+                            if ((fileCount == maxFiles) ||
+                                (((fileCount * 100) / maxFiles) > this.progressCounter))
+                            {
+                                this.progressCounter += this.progressCounterIncrementer;
+
+                                // output info
+                                if (this.outputBuffer.Length > 0)
+                                {
+                                    this.progressStruct.Clear();
+                                    progressStruct.GenericMessage = this.outputBuffer.ToString();
+                                    ReportProgress(this.Progress, progressStruct);
+
+                                    // clear out old info
+                                    this.outputBuffer.Length = 0;
+                                }
+
+                                // output progress
+                                this.progressStruct.Clear();
+                                this.progress = (fileCount * 100) / maxFiles;
+                                this.progressStruct.Clear();
+                                this.progressStruct.FileName = path;
+                                ReportProgress(progress, progressStruct);
+                            }
                         }
                     }
                     else
@@ -145,32 +145,6 @@ namespace VGMToolbox.plugin
             {
                 if (!CancellationPending)
                 {
-                    fileCount += 1;
-
-                    // Report Progress
-                    if ((fileCount == maxFiles) ||
-                        (((fileCount * 100) / maxFiles) > this.progressCounter))
-                    {
-                        this.progressCounter += this.progressCounterIncrementer;
-
-                        // output info
-                        if (this.outputBuffer.Length > 0)
-                        {
-                            this.progressStruct.Clear();
-                            progressStruct.GenericMessage = this.outputBuffer.ToString();
-                            ReportProgress(this.Progress, progressStruct);
-
-                            // clear out old info
-                            this.outputBuffer.Length = 0;
-                        }
-
-                        // output progress
-                        this.progress = (fileCount * 100) / maxFiles;
-                        this.progressStruct.Clear();
-                        this.progressStruct.FileName = f;
-                        ReportProgress(this.progress, progressStruct);
-                    }
-
                     // perform task
                     try
                     {
@@ -186,6 +160,32 @@ namespace VGMToolbox.plugin
                     finally
                     {
                         this.DoFinally();
+
+                        fileCount += 1;
+
+                        // Report Progress
+                        if ((fileCount == maxFiles) ||
+                            (((fileCount * 100) / maxFiles) > this.progressCounter))
+                        {
+                            this.progressCounter += this.progressCounterIncrementer;
+
+                            // output info
+                            if (this.outputBuffer.Length > 0)
+                            {
+                                this.progressStruct.Clear();
+                                progressStruct.GenericMessage = this.outputBuffer.ToString();
+                                ReportProgress(this.Progress, progressStruct);
+
+                                // clear out old info
+                                this.outputBuffer.Length = 0;
+                            }
+
+                            // output progress
+                            this.progress = (fileCount * 100) / maxFiles;
+                            this.progressStruct.Clear();
+                            this.progressStruct.FileName = f;
+                            ReportProgress(this.progress, progressStruct);
+                        }
                     }
                 }
                 else
