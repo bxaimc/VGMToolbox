@@ -108,11 +108,11 @@ namespace VGMToolbox.tools.xsf
             ProbableVbStruct[] potentialVbList;
             byte[] vbRow = new byte[0x10];
 
-            string outputFolder = Path.GetFileNameWithoutExtension(pPath);
-
             // improve algorithm later
             using (FileStream fs = File.OpenRead(pPath))
             {
+                string destinationFolder = Path.Combine(Path.GetDirectoryName(pPath), Path.GetFileNameWithoutExtension(pPath));
+                
                 // get VH files
                 #region VH EXTRACT
                 this.progressStruct.Clear();
@@ -152,7 +152,7 @@ namespace VGMToolbox.tools.xsf
 
                     // extract file
                     ParseFile.ExtractChunkToFile(fs, vhObject.startingOffset, (int)vhObject.length,
-                        Path.Combine(Path.Combine(Path.GetDirectoryName(pPath), outputFolder), vhObject.FileName), true);
+                        Path.Combine(destinationFolder, vhObject.FileName), true);
 
                     offset += 1;
                 }
@@ -214,7 +214,7 @@ namespace VGMToolbox.tools.xsf
                     }
 
                     ParseFile.ExtractChunkToFile(fs, seq.offset, (int)seq.length,
-                        Path.Combine(Path.Combine(Path.GetDirectoryName(pPath), outputFolder), seqName), true);
+                        Path.Combine(destinationFolder, seqName), true);
                 }
                 #endregion
 
@@ -309,7 +309,7 @@ namespace VGMToolbox.tools.xsf
                                     {
 
                                         // check for other BD files that matched and rename accordingly
-                                        dupeFileNames = Directory.GetFiles(Path.GetDirectoryName(pPath), Path.GetFileNameWithoutExtension(vhObject.FileName) + "*.VB");
+                                        dupeFileNames = Directory.GetFiles(destinationFolder, Path.GetFileNameWithoutExtension(vhObject.FileName) + "*.VB");
 
                                         if (dupeFileNames.Length >= 1)
                                         {
@@ -329,7 +329,7 @@ namespace VGMToolbox.tools.xsf
 
 
                                         ParseFile.ExtractChunkToFile(fs, vhObject.vbStartingOffset, (int)vhObject.vbLength,
-                                            Path.Combine(Path.Combine(Path.GetDirectoryName(pPath), outputFolder), vbName), true);
+                                            Path.Combine(destinationFolder, vbName), true);
                                     }
                                 }
                                 catch (Exception ex)

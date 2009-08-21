@@ -49,6 +49,10 @@ namespace VGMToolbox.forms
             this.cbHeaderOnly.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_CheckBoxHeaderOnly"];
 
             this.loadFormats();
+            this.loadHeaderSkip();
+            this.loadInterleave();
+            this.loadChannels();
+            this.loadFrequencies();
 
             rbCreate.Checked = true;
             this.updateFormForTask();
@@ -61,6 +65,52 @@ namespace VGMToolbox.forms
             this.comboFormat.DataSource = SqlLiteUtil.GetSimpleDataTable(DB_PATH, "GenhFormats", "GenhFormatDescription");
             this.comboFormat.DisplayMember = "GenhFormatDescription";
             this.comboFormat.ValueMember = "GenhFormatId";
+        }
+        private void loadHeaderSkip()
+        {
+            cbHeaderSkip.Items.Add(String.Empty);
+
+            for (int i = 4; i < 15; i++)
+            {
+                cbHeaderSkip.Items.Add(
+                    String.Format("0x{0}", ((int)Math.Pow(2, i)).ToString("X2")));    
+            }
+        }
+        private void loadInterleave()
+        {
+            cbHeaderSkip.Items.Add(String.Empty);
+
+            for (int i = 4; i < 17; i++)
+            {
+                cbInterleave.Items.Add(
+                    String.Format("0x{0}", ((int)Math.Pow(2, i)).ToString("X2")));
+            }
+        }
+        private void loadChannels()
+        {
+            this.cbChannels.Items.Add(String.Empty);
+            
+            for (int i = 1; i < 9; i++)
+            {
+                this.cbChannels.Items.Add(i.ToString());
+
+            }
+        }
+        private void loadFrequencies()
+        {
+            this.cbFrequency.Items.Add(String.Empty);
+            this.cbFrequency.Items.Add("8000");
+            this.cbFrequency.Items.Add("11025");
+            this.cbFrequency.Items.Add("16000");
+            this.cbFrequency.Items.Add("18900");
+            this.cbFrequency.Items.Add("22050");
+            this.cbFrequency.Items.Add("24000");
+            this.cbFrequency.Items.Add("32000");
+            this.cbFrequency.Items.Add("32075");
+            this.cbFrequency.Items.Add("37800");
+            this.cbFrequency.Items.Add("44100");
+            this.cbFrequency.Items.Add("48000");
+
         }
 
         private void comboFormat_KeyDown(object sender, KeyEventArgs e)
@@ -184,10 +234,10 @@ namespace VGMToolbox.forms
             genhStruct.DoEdit = this.rbEdit.Checked;
             genhStruct.DoExtract = this.rbExtract.Checked;
             genhStruct.Format = Convert.ToUInt16(drv.Row.ItemArray[0]).ToString();
-            genhStruct.HeaderSkip = this.tbHeaderSkip.Text;
-            genhStruct.Interleave = this.tbInterleave.Text;
-            genhStruct.Channels = this.tbChannels.Text;
-            genhStruct.Frequency = this.tbFrequency.Text;
+            genhStruct.HeaderSkip = this.cbHeaderSkip.Text;
+            genhStruct.Interleave = this.cbInterleave.Text;
+            genhStruct.Channels = this.cbChannels.Text;
+            genhStruct.Frequency = this.cbFrequency.Text;
             genhStruct.LoopStart = this.tbLoopStart.Text;
             genhStruct.LoopEnd = this.tbLoopEnd.Text;
             genhStruct.NoLoops = this.cbNoLoops.Checked;

@@ -99,8 +99,6 @@ namespace VGMToolbox.tools.xsf
             ProbableBdStruct[] potentialBdList;
             byte[] bdRow = new byte[0x10];
 
-            string outputFolder = Path.GetFileNameWithoutExtension(pPath);
-
             // display file name
             this.progressStruct.Clear();
             this.progressStruct.GenericMessage = String.Format("[{0}]{1}", pPath, Environment.NewLine);
@@ -108,6 +106,8 @@ namespace VGMToolbox.tools.xsf
 
             using (FileStream fs = File.OpenRead(pPath))
             {
+                string destinationFolder = Path.Combine(Path.GetDirectoryName(pPath), Path.GetFileNameWithoutExtension(pPath));
+                
                 // get HD Files
                 #region HD EXTRACT
                 this.progressStruct.Clear();
@@ -122,7 +122,7 @@ namespace VGMToolbox.tools.xsf
 
                     hdName = String.Format("{0}_{1}.HD", Path.GetFileNameWithoutExtension(pPath), hdNumber++.ToString("X4"));
                     ParseFile.ExtractChunkToFile(fs, offset - 0x10, (int)hdLength,
-                        Path.Combine(Path.Combine(Path.GetDirectoryName(pPath), outputFolder), hdName), true);
+                        Path.Combine(destinationFolder, hdName), true);
 
                     // get info
                     hdObject = new HdStruct();
@@ -210,7 +210,7 @@ namespace VGMToolbox.tools.xsf
                     }
 
                     ParseFile.ExtractChunkToFile(fs, sq.offset, (int)sq.length,
-                        Path.Combine(Path.Combine(Path.GetDirectoryName(pPath), outputFolder), sqName), true);
+                        Path.Combine(destinationFolder, sqName), true);
 
 
                 }
@@ -301,7 +301,7 @@ namespace VGMToolbox.tools.xsf
                                     {
                                         
                                         // check for other BD files that matched and rename accordingly
-                                        dupeFileNames = Directory.GetFiles(Path.GetDirectoryName(pPath), Path.GetFileNameWithoutExtension(hdObject.FileName) + "*.BD");
+                                        dupeFileNames = Directory.GetFiles(destinationFolder, Path.GetFileNameWithoutExtension(hdObject.FileName) + "*.BD");
 
                                         if (dupeFileNames.Length >= 1)
                                         {
@@ -321,7 +321,7 @@ namespace VGMToolbox.tools.xsf
 
 
                                         ParseFile.ExtractChunkToFile(fs, hdObject.bdStartingOffset, (int)hdObject.bdLength,
-                                            Path.Combine(Path.Combine(Path.GetDirectoryName(pPath), outputFolder), bdName), true);
+                                            Path.Combine(destinationFolder, bdName), true);
                                     }
                                 }
                                 catch (Exception ex)

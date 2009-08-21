@@ -38,6 +38,9 @@
             this.grpFormat = new System.Windows.Forms.GroupBox();
             this.comboFormat = new System.Windows.Forms.ComboBox();
             this.grpOptions = new System.Windows.Forms.GroupBox();
+            this.cbChannels = new System.Windows.Forms.ComboBox();
+            this.cbInterleave = new System.Windows.Forms.ComboBox();
+            this.cbHeaderSkip = new System.Windows.Forms.ComboBox();
             this.cbNoLoops = new System.Windows.Forms.CheckBox();
             this.cbFindLoop = new System.Windows.Forms.CheckBox();
             this.cbCapcomHack = new System.Windows.Forms.CheckBox();
@@ -51,19 +54,16 @@
             this.lblLoopStart = new System.Windows.Forms.Label();
             this.tbLoopStart = new System.Windows.Forms.TextBox();
             this.lblFrequency = new System.Windows.Forms.Label();
-            this.tbFrequency = new System.Windows.Forms.TextBox();
             this.lblChannels = new System.Windows.Forms.Label();
-            this.tbChannels = new System.Windows.Forms.TextBox();
             this.lblInterleave = new System.Windows.Forms.Label();
-            this.tbInterleave = new System.Windows.Forms.TextBox();
             this.lblHeaderSkip = new System.Windows.Forms.Label();
-            this.tbHeaderSkip = new System.Windows.Forms.TextBox();
             this.cbHeaderOnly = new System.Windows.Forms.CheckBox();
             this.rbCreate = new System.Windows.Forms.RadioButton();
             this.rbEdit = new System.Windows.Forms.RadioButton();
             this.rbExtract = new System.Windows.Forms.RadioButton();
             this.contextMenuRefresh = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.refreshFileListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cbFrequency = new System.Windows.Forms.ComboBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -75,30 +75,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 561);
-            this.pnlLabels.Size = new System.Drawing.Size(665, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 562);
+            this.pnlLabels.Size = new System.Drawing.Size(638, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(665, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(638, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 484);
-            this.tbOutput.Size = new System.Drawing.Size(665, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 485);
+            this.tbOutput.Size = new System.Drawing.Size(638, 77);
+            this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 464);
-            this.pnlButtons.Size = new System.Drawing.Size(665, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 465);
+            this.pnlButtons.Size = new System.Drawing.Size(638, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(605, 0);
+            this.btnCancel.Location = new System.Drawing.Point(578, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(545, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(518, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // lbFiles
@@ -132,7 +133,7 @@
             this.lblFilenameFilter.AutoSize = true;
             this.lblFilenameFilter.Location = new System.Drawing.Point(186, 45);
             this.lblFilenameFilter.Name = "lblFilenameFilter";
-            this.lblFilenameFilter.Size = new System.Drawing.Size(74, 13);
+            this.lblFilenameFilter.Size = new System.Drawing.Size(76, 13);
             this.lblFilenameFilter.TabIndex = 11;
             this.lblFilenameFilter.Text = "FileName Filter";
             this.lblFilenameFilter.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -186,6 +187,10 @@
             // 
             // grpOptions
             // 
+            this.grpOptions.Controls.Add(this.cbFrequency);
+            this.grpOptions.Controls.Add(this.cbChannels);
+            this.grpOptions.Controls.Add(this.cbInterleave);
+            this.grpOptions.Controls.Add(this.cbHeaderSkip);
             this.grpOptions.Controls.Add(this.cbNoLoops);
             this.grpOptions.Controls.Add(this.cbFindLoop);
             this.grpOptions.Controls.Add(this.cbCapcomHack);
@@ -199,19 +204,40 @@
             this.grpOptions.Controls.Add(this.lblLoopStart);
             this.grpOptions.Controls.Add(this.tbLoopStart);
             this.grpOptions.Controls.Add(this.lblFrequency);
-            this.grpOptions.Controls.Add(this.tbFrequency);
             this.grpOptions.Controls.Add(this.lblChannels);
-            this.grpOptions.Controls.Add(this.tbChannels);
             this.grpOptions.Controls.Add(this.lblInterleave);
-            this.grpOptions.Controls.Add(this.tbInterleave);
             this.grpOptions.Controls.Add(this.lblHeaderSkip);
-            this.grpOptions.Controls.Add(this.tbHeaderSkip);
             this.grpOptions.Location = new System.Drawing.Point(275, 74);
             this.grpOptions.Name = "grpOptions";
             this.grpOptions.Size = new System.Drawing.Size(258, 287);
             this.grpOptions.TabIndex = 8;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
+            // 
+            // cbChannels
+            // 
+            this.cbChannels.FormattingEnabled = true;
+            this.cbChannels.Location = new System.Drawing.Point(152, 71);
+            this.cbChannels.Name = "cbChannels";
+            this.cbChannels.Size = new System.Drawing.Size(100, 21);
+            this.cbChannels.TabIndex = 23;
+            // 
+            // cbInterleave
+            // 
+            this.cbInterleave.FormattingEnabled = true;
+            this.cbInterleave.Location = new System.Drawing.Point(152, 45);
+            this.cbInterleave.Name = "cbInterleave";
+            this.cbInterleave.Size = new System.Drawing.Size(100, 21);
+            this.cbInterleave.TabIndex = 22;
+            this.cbInterleave.Text = "0";
+            // 
+            // cbHeaderSkip
+            // 
+            this.cbHeaderSkip.FormattingEnabled = true;
+            this.cbHeaderSkip.Location = new System.Drawing.Point(152, 19);
+            this.cbHeaderSkip.Name = "cbHeaderSkip";
+            this.cbHeaderSkip.Size = new System.Drawing.Size(100, 21);
+            this.cbHeaderSkip.TabIndex = 21;
             // 
             // cbNoLoops
             // 
@@ -330,13 +356,6 @@
             this.lblFrequency.TabIndex = 7;
             this.lblFrequency.Text = "Frequency";
             // 
-            // tbFrequency
-            // 
-            this.tbFrequency.Location = new System.Drawing.Point(152, 97);
-            this.tbFrequency.Name = "tbFrequency";
-            this.tbFrequency.Size = new System.Drawing.Size(100, 20);
-            this.tbFrequency.TabIndex = 6;
-            // 
             // lblChannels
             // 
             this.lblChannels.AutoSize = true;
@@ -345,13 +364,6 @@
             this.lblChannels.Size = new System.Drawing.Size(51, 13);
             this.lblChannels.TabIndex = 5;
             this.lblChannels.Text = "Channels";
-            // 
-            // tbChannels
-            // 
-            this.tbChannels.Location = new System.Drawing.Point(152, 71);
-            this.tbChannels.Name = "tbChannels";
-            this.tbChannels.Size = new System.Drawing.Size(100, 20);
-            this.tbChannels.TabIndex = 4;
             // 
             // lblInterleave
             // 
@@ -362,14 +374,6 @@
             this.lblInterleave.TabIndex = 3;
             this.lblInterleave.Text = "Interleave";
             // 
-            // tbInterleave
-            // 
-            this.tbInterleave.Location = new System.Drawing.Point(152, 45);
-            this.tbInterleave.Name = "tbInterleave";
-            this.tbInterleave.Size = new System.Drawing.Size(100, 20);
-            this.tbInterleave.TabIndex = 2;
-            this.tbInterleave.Text = "0";
-            // 
             // lblHeaderSkip
             // 
             this.lblHeaderSkip.AutoSize = true;
@@ -378,14 +382,6 @@
             this.lblHeaderSkip.Size = new System.Drawing.Size(66, 13);
             this.lblHeaderSkip.TabIndex = 1;
             this.lblHeaderSkip.Text = "Header Skip";
-            // 
-            // tbHeaderSkip
-            // 
-            this.tbHeaderSkip.Location = new System.Drawing.Point(152, 19);
-            this.tbHeaderSkip.Name = "tbHeaderSkip";
-            this.tbHeaderSkip.Size = new System.Drawing.Size(100, 20);
-            this.tbHeaderSkip.TabIndex = 0;
-            this.tbHeaderSkip.Text = "0";
             // 
             // cbHeaderOnly
             // 
@@ -447,11 +443,19 @@
             this.refreshFileListToolStripMenuItem.Text = "Refresh File List";
             this.refreshFileListToolStripMenuItem.Click += new System.EventHandler(this.refreshFileListToolStripMenuItem_Click);
             // 
+            // cbFrequency
+            // 
+            this.cbFrequency.FormattingEnabled = true;
+            this.cbFrequency.Location = new System.Drawing.Point(152, 97);
+            this.cbFrequency.Name = "cbFrequency";
+            this.cbFrequency.Size = new System.Drawing.Size(100, 21);
+            this.cbFrequency.TabIndex = 24;
+            // 
             // Genh_CreatorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(665, 602);
+            this.ClientSize = new System.Drawing.Size(638, 603);
             this.Controls.Add(this.grpFormat);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.cbHeaderOnly);
@@ -500,13 +504,9 @@
         private System.Windows.Forms.Button btnBrowseDirectory;
         private System.Windows.Forms.CheckBox cbHeaderOnly;
         private System.Windows.Forms.Label lblHeaderSkip;
-        private System.Windows.Forms.TextBox tbHeaderSkip;
         private System.Windows.Forms.Label lblInterleave;
-        private System.Windows.Forms.TextBox tbInterleave;
         private System.Windows.Forms.Label lblChannels;
-        private System.Windows.Forms.TextBox tbChannels;
         private System.Windows.Forms.Label lblFrequency;
-        private System.Windows.Forms.TextBox tbFrequency;
         private System.Windows.Forms.Label lblLoopStart;
         private System.Windows.Forms.TextBox tbLoopStart;
         private System.Windows.Forms.TextBox tbLoopEnd;
@@ -526,5 +526,9 @@
         private System.Windows.Forms.ToolStripMenuItem refreshFileListToolStripMenuItem;
         private System.Windows.Forms.Label lblFilenameFilter;
         private System.Windows.Forms.TextBox tbFilenameFilter;
+        private System.Windows.Forms.ComboBox cbHeaderSkip;
+        private System.Windows.Forms.ComboBox cbInterleave;
+        private System.Windows.Forms.ComboBox cbChannels;
+        private System.Windows.Forms.ComboBox cbFrequency;
     }
 }

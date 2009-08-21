@@ -65,6 +65,7 @@ namespace VGMToolbox.format.util
             if (pGenhCreationStruct.NoLoops)
             {
                 pGenhCreationStruct.LoopStart = Genh.EMPTY_SAMPLE_COUNT;
+                pGenhCreationStruct.LoopEnd = GetFileEndLoopEnd(pSourcePath, pGenhCreationStruct);
             }
 
             if (pGenhCreationStruct.UseFileEnd)
