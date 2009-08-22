@@ -97,6 +97,7 @@ namespace VGMToolbox.tools.xsf
                                 this.progressStruct.Clear();
                                 this.progressStruct.ErrorMessage = String.Format("ERROR: More than 1 VH/VB pair detected, please only include 1 VH/VB pair when making .minipsf files{0}", Environment.NewLine);
                                 ReportProgress(this.progress, this.progressStruct);
+                                return;
                             }
                         }                    
                     }
