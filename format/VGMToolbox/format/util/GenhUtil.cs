@@ -253,10 +253,10 @@ namespace VGMToolbox.format.util
                     loopEnd = ((fileLength - headerSkip) / channels * 2);
                     break;
 
-                case 0x0B:
+                case 0x0B: // 0x0B - Microsoft 4-bit ADPCM
                     frames = (fileLength - headerSkip) / interleave;
                     lastFrame = (fileLength - headerSkip) - (frames * interleave);
-                    loopEnd = (frames * (0x800 - (14 - 2))) + (lastFrame - (14 - 2));                    
+                    loopEnd = (frames * (interleave - (14 - 2))) + (lastFrame - (14 - 2));                    
                     break;
 
                 case 0x0C: // "0x0C - Nintendo GameCube DSP 4-bit ADPCM"
