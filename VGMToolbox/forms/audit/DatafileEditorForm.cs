@@ -53,8 +53,8 @@ namespace VGMToolbox.forms.audit
         private datafile getDataFileObject()
         {
             datafile datafileObject = new datafile();
-            XmlSerializer serializer = new XmlSerializer(typeof(datafile));
-            
+            XmlSerializer serializer = new XmlSerializer(typeof(datafile));            
+
             using (FileStream xmlFs = File.OpenRead(this.datafileSourcePath.Text))
             {
                 using (XmlTextReader textReader = new XmlTextReader(xmlFs))
@@ -71,13 +71,22 @@ namespace VGMToolbox.forms.audit
             TreeNode workingGameNode;
             TreeNode workingRomNode;
 
+            TreeNode workingGameNameNode;
+            TreeNode workingRomSizeNode;
+            TreeNode workingRomCrcNode;
+            TreeNode workingRomMd5Node;
+            TreeNode workingRomSha1Node;
+
             // clear tree
             this.treeViewTools.Nodes.Clear();
 
             foreach (game g in datafileObject.game)
             {
-                workingGameNode = new TreeNode(g.name);
+                workingGameNode = new TreeNode(g.description);
                 workingGameNode.Tag = g.DeepCopy();
+
+                workingGameNameNode = new TreeNode(String.Format("Folder: {0}", g.name));
+                workingGameNode.Nodes.Add(workingGameNameNode);
 
                 if (g.rom != null)
                 {
@@ -85,6 +94,16 @@ namespace VGMToolbox.forms.audit
                     {
                         workingRomNode = new TreeNode(r.name);
                         workingRomNode.Tag = r.DeepCopy();
+
+                        workingRomSizeNode = new TreeNode(String.Format("Size: {0}", r.size));
+                        workingRomCrcNode = new TreeNode(String.Format("CRC32: {0}", r.crc));
+                        workingRomMd5Node = new TreeNode(String.Format("MD5: {0}", r.md5));
+                        workingRomSha1Node = new TreeNode(String.Format("SHA1: {0}", r.sha1));
+
+                        workingRomNode.Nodes.Add(workingRomSizeNode);
+                        workingRomNode.Nodes.Add(workingRomCrcNode);
+                        workingRomNode.Nodes.Add(workingRomMd5Node);
+                        workingRomNode.Nodes.Add(workingRomSha1Node);
 
                         workingGameNode.Nodes.Add(workingRomNode);
                     }

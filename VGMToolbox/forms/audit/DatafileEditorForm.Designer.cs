@@ -49,7 +49,7 @@
             // treeViewTools
             // 
             this.treeViewTools.LineColor = System.Drawing.Color.Black;
-            this.treeViewTools.Size = new System.Drawing.Size(857, 218);
+            this.treeViewTools.Size = new System.Drawing.Size(850, 214);
             this.treeViewTools.MouseUp += new System.Windows.Forms.MouseEventHandler(this.treeViewTools_MouseUp);
             // 
             // splitContainer1
@@ -58,35 +58,36 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.grpSource);
-            this.splitContainer1.Size = new System.Drawing.Size(857, 394);
-            this.splitContainer1.SplitterDistance = 218;
+            this.splitContainer1.Size = new System.Drawing.Size(850, 387);
+            this.splitContainer1.SplitterDistance = 214;
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 514);
-            this.pnlLabels.Size = new System.Drawing.Size(857, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 507);
+            this.pnlLabels.Size = new System.Drawing.Size(850, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(857, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(850, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 437);
-            this.tbOutput.Size = new System.Drawing.Size(857, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 430);
+            this.tbOutput.Size = new System.Drawing.Size(850, 77);
+            this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 417);
-            this.pnlButtons.Size = new System.Drawing.Size(857, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 410);
+            this.pnlButtons.Size = new System.Drawing.Size(850, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(797, 0);
+            this.btnCancel.Location = new System.Drawing.Point(790, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(737, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(730, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpSource
@@ -96,14 +97,14 @@
             this.grpSource.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSource.Location = new System.Drawing.Point(0, 0);
             this.grpSource.Name = "grpSource";
-            this.grpSource.Size = new System.Drawing.Size(857, 80);
+            this.grpSource.Size = new System.Drawing.Size(850, 38);
             this.grpSource.TabIndex = 0;
             this.grpSource.TabStop = false;
             this.grpSource.Text = "Source";
             // 
             // browseSourceButton
             // 
-            this.browseSourceButton.Location = new System.Drawing.Point(282, 19);
+            this.browseSourceButton.Location = new System.Drawing.Point(282, 14);
             this.browseSourceButton.Name = "browseSourceButton";
             this.browseSourceButton.Size = new System.Drawing.Size(25, 20);
             this.browseSourceButton.TabIndex = 1;
@@ -113,7 +114,7 @@
             // 
             // datafileSourcePath
             // 
-            this.datafileSourcePath.Location = new System.Drawing.Point(6, 19);
+            this.datafileSourcePath.Location = new System.Drawing.Point(6, 14);
             this.datafileSourcePath.Name = "datafileSourcePath";
             this.datafileSourcePath.Size = new System.Drawing.Size(270, 20);
             this.datafileSourcePath.TabIndex = 0;
@@ -125,25 +126,25 @@
             this.editToolStripMenuItem,
             this.deleteToolStripMenuItem});
             this.treeNodeContextMenuStrip.Name = "treeNodeContextMenuStrip";
-            this.treeNodeContextMenuStrip.Size = new System.Drawing.Size(153, 92);
+            this.treeNodeContextMenuStrip.Size = new System.Drawing.Size(106, 70);
             // 
             // addToolStripMenuItem
             // 
             this.addToolStripMenuItem.Name = "addToolStripMenuItem";
-            this.addToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addToolStripMenuItem.Size = new System.Drawing.Size(105, 22);
             this.addToolStripMenuItem.Text = "Add";
             this.addToolStripMenuItem.Click += new System.EventHandler(this.addToolStripMenuItem_Click);
             // 
             // editToolStripMenuItem
             // 
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(105, 22);
             this.editToolStripMenuItem.Text = "Edit";
             // 
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(105, 22);
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
@@ -151,7 +152,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(857, 555);
+            this.ClientSize = new System.Drawing.Size(850, 548);
             this.Name = "DatafileEditorForm";
             this.Text = "DatafileEditorForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);

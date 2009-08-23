@@ -7,6 +7,7 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
@@ -976,6 +977,41 @@ namespace VGMToolbox.format.auditing
 
             return (game)BF.Deserialize(memStream);
         }
+
+        public bool Equals(game g)
+        {
+            bool ret = false;
+            
+            // If parameter is null return false:
+            if ((object)g == null)
+            {
+                ret = false;
+            }
+            else
+            {
+                if ((this.name.Equals(g.name)) &&
+                    (this.description.Equals(g.description)) &&
+                    (this.rom.Length == g.rom.Length))
+                {
+                    Array.Sort(this.rom);
+                    Array.Sort(g.rom);
+
+                    for (int i = 0; i < this.rom.Length; i++)
+                    {
+                        if (!this.rom[i].Equals(g.rom[i]))
+                        {
+                            ret = false;
+                            break;
+                        }
+                    }
+                }
+
+                return ret;            
+            }
+
+            return ret;
+        }
+
     }
 
     /// <remarks/>
@@ -1175,7 +1211,7 @@ namespace VGMToolbox.format.auditing
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class rom
+    public partial class rom : IComparable
     {
 
         private string nameField;
@@ -1323,6 +1359,85 @@ namespace VGMToolbox.format.auditing
             memStream.Position = 0;
 
             return (rom)BF.Deserialize(memStream);
+        }
+        
+        public bool Equals(rom r)
+        {
+            bool ret = false;
+
+            if ((object)r == null)
+            {
+                ret = false;
+            }
+            else
+            {
+                if ((this.name.Equals(r.name)) &&
+                    (this.crc.Equals(r.crc)) &&
+                    (this.size.Equals(r.size)))
+                {
+                    ret = true;
+
+                    // check md5
+                    if (!String.IsNullOrEmpty(this.md5) &&
+                        !String.IsNullOrEmpty(r.md5))
+                    {
+                        ret = ret && (this.md5.Equals(r.md5));
+                    }
+                    else
+                    {
+                        ret = ret && true;
+                    }
+
+                    // check sha1
+                    if (!String.IsNullOrEmpty(this.sha1) &&
+                        !String.IsNullOrEmpty(r.sha1))
+                    {
+                        ret = ret && (this.sha1.Equals(r.sha1));
+                    }
+                    else
+                    {
+                        ret = ret && true;
+                    }
+                }            
+            }
+
+            return ret;
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (obj is rom)
+            {
+                rom r = (rom)obj;
+
+                return this.name.CompareTo(r.name);
+            }
+
+            throw new ArgumentException("object is not a Temperature");
+        }
+
+        public override bool Equals(System.Object obj)
+        {
+            // If parameter is null return false.
+            if (obj == null)
+            {
+                return false;
+            }
+
+            // If parameter cannot be cast to rom return false.
+            rom r = obj as rom;
+            if ((System.Object)r == null)
+            {
+                return false;
+            }
+
+            // Return using our Equals function
+            return this.Equals(r);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 

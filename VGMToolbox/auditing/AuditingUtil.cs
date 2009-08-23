@@ -415,7 +415,7 @@ namespace VGMToolbox.auditing
 
                             foreach (rom r in roms)
                             {
-                                if (CompareRoms(r, sourceRom))
+                                if (r.Equals(sourceRom))
                                 {
                                     roms.Remove(r);
                                     g.rom = (rom[])roms.ToArray(typeof(rom));
@@ -445,40 +445,6 @@ namespace VGMToolbox.auditing
                 (game1.rom.Length == game2.rom.Length))
             {
                 ret = true;
-            }
-
-            return ret;
-        }
-
-        public static bool CompareRoms(rom rom1, rom rom2)
-        {
-            bool ret = false;
-
-            if ((rom1.name.Equals(rom2.name)) &&
-                (rom1.crc.Equals(rom2.crc)) &&
-                (rom1.size.Equals(rom2.size)))
-            {
-                ret = true;
-                
-                // check md5
-                if (!String.IsNullOrEmpty(rom1.md5))
-                {
-                    ret = ret && (rom1.md5.Equals(rom2.md5));
-                }
-                else
-                {
-                    ret = ret && true;
-                }
-
-                // check sha1
-                if (!String.IsNullOrEmpty(rom1.sha1))
-                {
-                    ret = ret && (rom1.sha1.Equals(rom2.sha1));
-                }
-                else
-                {
-                    ret = ret && true;
-                }
             }
 
             return ret;

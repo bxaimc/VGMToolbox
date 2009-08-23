@@ -46,6 +46,8 @@ namespace VGMToolbox.forms.xsf
             this.lblAuthor.Text =
                 ConfigurationSettings.AppSettings["Form_MkPsf2FE_LblAuthor"];
 
+            this.cbTryCombinations.Text = "Try all combinations of SQ and HD/BD (good for finding matching pairs).";
+
         }
 
         private void btnExecute_Click(object sender, EventArgs e)
@@ -60,6 +62,8 @@ namespace VGMToolbox.forms.xsf
             mkStruct.tempo = tbTempo.Text;
             mkStruct.tickInterval = tbTickInterval.Text;
             mkStruct.volume = tbVolume.Text;
+
+            mkStruct.TryCombinations = cbTryCombinations.Checked;
 
             base.backgroundWorker_Execute(mkStruct);
         }

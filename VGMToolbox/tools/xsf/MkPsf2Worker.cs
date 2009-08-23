@@ -28,6 +28,8 @@ namespace VGMToolbox.tools.xsf
         private const long PSF2_CSL_SEQ_COUNT_OFFSET = 0x3C;
         private const long PSF2_CSL_SEQ_OFFSET_BEGIN = 0x40;
 
+        private ProgressStruct progressStruct;
+        private int progress = 0;
         private int fileCount = 0;
         private int maxFiles = 0;
 
@@ -44,10 +46,13 @@ namespace VGMToolbox.tools.xsf
             public string depth;
             public string tempo;
             public string volume;
+
+            public bool TryCombinations;
         }
 
         public MkPsf2Worker()
         {
+            progressStruct = new ProgressStruct();
             fileCount = 0;
             maxFiles = 0;
             
@@ -59,15 +64,26 @@ namespace VGMToolbox.tools.xsf
         private void makePsf2s(MkPsf2Struct pMkPsf2Struct, DoWorkEventArgs e)
         {
             string[] uniqueSqFiles;
+            string[] uniqueHdFiles;
 
             if (!CancellationPending)
             {
                 // get list of unique files
-                uniqueSqFiles = this.getUniqueFileNames(pMkPsf2Struct.sourcePath);
+                uniqueSqFiles = this.getUniqueFileNames(pMkPsf2Struct.sourcePath, "*.SQ");
+                uniqueHdFiles = this.getUniqueFileNames(pMkPsf2Struct.sourcePath, "*.HD");
+
                 if (uniqueSqFiles != null)
                 {
-                    this.maxFiles = uniqueSqFiles.Length;
-                    this.buildPsf2s(uniqueSqFiles, pMkPsf2Struct, e);
+                    if (pMkPsf2Struct.TryCombinations)
+                    {
+                        this.maxFiles = uniqueSqFiles.Length * uniqueHdFiles.Length;
+                    }
+                    else
+                    {
+                        this.maxFiles = uniqueSqFiles.Length;
+                    }
+
+                    this.buildPsf2s(uniqueSqFiles, uniqueHdFiles, pMkPsf2Struct, e);
                 }
             }
             else
@@ -79,31 +95,28 @@ namespace VGMToolbox.tools.xsf
             return;
         }
 
-        private string[] getUniqueFileNames(string pSourceDirectory)
+        private string[] getUniqueFileNames(string pSourceDirectory, string mask)
         {
             int fileCount = 0;
             int i = 0;
             string[] ret = null;
 
-            VGMToolbox.util.ProgressStruct vProgressStruct = new VGMToolbox.util.ProgressStruct();
-
             if (!Directory.Exists(pSourceDirectory))
             {
-                vProgressStruct = new VGMToolbox.util.ProgressStruct();
-                vProgressStruct.NewNode = null;
-                vProgressStruct.ErrorMessage = String.Format("ERROR: Directory {0} not found.", pSourceDirectory);
-                ReportProgress(Constants.ProgressMessageOnly, vProgressStruct);
+                this.progressStruct.Clear();
+                this.progressStruct.ErrorMessage = String.Format("ERROR: Directory {0} not found.", pSourceDirectory);
+                ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
             }
             else
             {
-                fileCount = Directory.GetFiles(pSourceDirectory, "*.SQ").Length;
+                fileCount = Directory.GetFiles(pSourceDirectory, mask, SearchOption.TopDirectoryOnly).Length;
 
                 if (fileCount > 0)
                 {
                     ret = new string[fileCount];
                 }
 
-                foreach (string f in Directory.GetFiles(pSourceDirectory, "*.SQ"))
+                foreach (string f in Directory.GetFiles(pSourceDirectory, mask))
                 {
                     ret[i] = f;
                     i++;
@@ -113,15 +126,13 @@ namespace VGMToolbox.tools.xsf
             return ret;
         }
 
-        private void buildPsf2s(string[] pUniqueSqFiles, MkPsf2Struct pMkPsf2Struct, 
+        private void buildPsf2s(string[] pUniqueSqFiles, string[] pUniqueHdFiles, MkPsf2Struct pMkPsf2Struct, 
             DoWorkEventArgs e)
         {
-            Process makePsf2Process;
-            VGMToolbox.util.ProgressStruct vProgressStruct = new VGMToolbox.util.ProgressStruct();
-
             string makePsf2SourcePath = Path.Combine(PROGRAMS_FOLDER, "mkpsf2.exe");
             string makePsf2DestinationPath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "mkpsf2.exe");
 
+            // setup working directory
             try
             {
                 Directory.CreateDirectory(WORKING_FOLDER);
@@ -140,11 +151,9 @@ namespace VGMToolbox.tools.xsf
             }
             catch (Exception ex)
             {
-                vProgressStruct = new VGMToolbox.util.ProgressStruct();
-                vProgressStruct.NewNode = null;
-                vProgressStruct.FileName = null;
-                vProgressStruct.ErrorMessage = ex.Message;
-                ReportProgress(0, vProgressStruct);
+                this.progressStruct.Clear();
+                this.progressStruct.ErrorMessage = ex.Message;
+                ReportProgress(0, this.progressStruct);
 
                 return;
             }
@@ -153,146 +162,38 @@ namespace VGMToolbox.tools.xsf
             {
                 if (!CancellationPending)
                 {
-                    StringBuilder sqArguments = new StringBuilder();
-                    int totalSequences;
-
-                    // report progress
-                    int progress = (++this.fileCount * 100) / maxFiles;
-                    vProgressStruct = new VGMToolbox.util.ProgressStruct();
-                    vProgressStruct.NewNode = null;
-                    vProgressStruct.FileName = f;
-                    ReportProgress(progress, vProgressStruct);
-
-                    try
+                    if (pMkPsf2Struct.TryCombinations)
                     {
-                        // copy data files to working directory                    
-                        string filePrefix = Path.GetFileNameWithoutExtension(f);
-                        string sourceDirectory = Path.GetDirectoryName(f);
-                        string outputFilePrefix;
-
-                        string bdFileName = filePrefix + ".bd";
-                        string hdFileName = filePrefix + ".hd";
-                        string sqFileName = filePrefix + ".sq";
-
-                        string sourceBdFile = Path.Combine(sourceDirectory, bdFileName);
-                        string sourceHdFile = Path.Combine(sourceDirectory, hdFileName);
-                        string sourceSqFile = Path.Combine(sourceDirectory, sqFileName);
-
-                        string destinationBdFile = Path.Combine(WORKING_FOLDER, bdFileName);
-                        string destinationHdFile = Path.Combine(WORKING_FOLDER, hdFileName);
-                        string destinationSqFile = Path.Combine(WORKING_FOLDER, sqFileName);
-
-                        FileInfo fi = new FileInfo(sourceSqFile);
-
-                        if (fi.Length > 0) // only make for nonempty SQ files
+                        foreach (string hdFile in pUniqueHdFiles)
                         {
-                            File.Copy(sourceBdFile, destinationBdFile);
-                            File.Copy(sourceHdFile, destinationHdFile);
-                            File.Copy(sourceSqFile, destinationSqFile);
-
-                            totalSequences = getTotalSequenceCount(destinationSqFile);
-
-                            for (int i = 0; i < totalSequences; i++)
+                            try
                             {
-                                if (validSequenceArray[i])
-                                {
-                                    sqArguments = new StringBuilder();
-
-                                    if (totalSequences > 1)
-                                    {
-                                        outputFilePrefix = filePrefix + "_" + i.ToString("X2");
-                                        sqArguments.Append(String.Format(" -n={0}", i));
-                                    }
-                                    else
-                                    {
-                                        outputFilePrefix = filePrefix;
-                                    }
-
-                                    // write ini file
-                                    string iniPath = Path.Combine(WORKING_FOLDER, "psf2.ini");
-                                    StreamWriter sw = File.CreateText(iniPath);
-                                    sw.WriteLine("libsd.irx");
-                                    sw.WriteLine("modhsyn.irx");
-                                    sw.WriteLine("modmidi.irx");
-
-                                    // build sq.irx arguments                    
-                                    sqArguments.Append(String.IsNullOrEmpty(pMkPsf2Struct.reverb.Trim()) ?
-                                        " -r=5" : String.Format(" -r={0}", pMkPsf2Struct.reverb.Trim()));
-                                    sqArguments.Append(String.IsNullOrEmpty(pMkPsf2Struct.depth.Trim()) ?
-                                        " -d=16383" : String.Format(" -d={0}", pMkPsf2Struct.depth.Trim()));
-
-                                    sqArguments.Append(String.IsNullOrEmpty(pMkPsf2Struct.tickInterval.Trim()) ?
-                                        String.Empty : String.Format(" -u={0}", pMkPsf2Struct.tickInterval.Trim()));
-                                    sqArguments.Append(String.IsNullOrEmpty(pMkPsf2Struct.tempo.Trim()) ?
-                                        String.Empty : String.Format(" -t={0}", pMkPsf2Struct.tempo.Trim()));
-                                    sqArguments.Append(String.IsNullOrEmpty(pMkPsf2Struct.volume.Trim()) ?
-                                        String.Empty : String.Format(" -v={0}", pMkPsf2Struct.volume.Trim()));
-
-                                    sqArguments.Append(String.Format(" -s={0} -h={1} -b={2}",
-                                        sqFileName, hdFileName, bdFileName));
-
-                                    sw.WriteLine(String.Format("sq.irx {0}", sqArguments.ToString()));
-                                    sw.Close();
-                                    sw.Dispose();
-
-                                    // run makepsf2                
-                                    string arguments = String.Format(" {0}.psf2 {1}", outputFilePrefix, WORKING_FOLDER);
-                                    makePsf2Process = new Process();
-                                    makePsf2Process.StartInfo = new ProcessStartInfo(makePsf2DestinationPath, arguments);
-                                    makePsf2Process.StartInfo.UseShellExecute = false;
-                                    makePsf2Process.StartInfo.CreateNoWindow = true;
-                                    bool isSuccess = makePsf2Process.Start();
-                                    makePsf2Process.WaitForExit();
-
-                                    if (isSuccess)
-                                    {
-                                        vProgressStruct = new VGMToolbox.util.ProgressStruct();
-                                        vProgressStruct.NewNode = null;
-                                        vProgressStruct.GenericMessage = String.Format("{0}.psf2 created.", outputFilePrefix) +
-                                            Environment.NewLine;
-                                        ReportProgress(Constants.ProgressMessageOnly, vProgressStruct);
-
-                                        if (!Directory.Exists(Path.Combine(OUTPUT_FOLDER, pMkPsf2Struct.outputFolder)))
-                                        {
-                                            Directory.CreateDirectory(Path.Combine(OUTPUT_FOLDER, pMkPsf2Struct.outputFolder));
-                                        }
-
-                                        File.Move(outputFilePrefix + ".psf2", Path.Combine(Path.Combine(OUTPUT_FOLDER, pMkPsf2Struct.outputFolder), outputFilePrefix + ".psf2"));
-                                    }
-
-                                    File.Delete(iniPath);
-                                } // if (validSequenceArray[i])                                
-                                else if (totalSequences == 1)
-                                {
-                                    vProgressStruct = new VGMToolbox.util.ProgressStruct();
-                                    vProgressStruct.NewNode = null;
-                                    vProgressStruct.GenericMessage = String.Format("WARNING: {0}.SQ has only ONE sequence and it is INVALID.  Skipping...", filePrefix) +
-                                        Environment.NewLine;
-                                    ReportProgress(Constants.ProgressMessageOnly, vProgressStruct);                                                        
-                                }
-                            } // for (int i = 0; i < totalSequences; i++)
-
-                            File.Delete(destinationBdFile);
-                            File.Delete(destinationHdFile);
-                            File.Delete(destinationSqFile);
-
-                        } // if (fi.Length > 0)
-                        else
-                        {
-                            vProgressStruct = new VGMToolbox.util.ProgressStruct();
-                            vProgressStruct.NewNode = null;
-                            vProgressStruct.GenericMessage = String.Format("WARNING: {0}.SQ has ZERO length.  Skipping...", filePrefix) +
-                                Environment.NewLine;
-                            ReportProgress(Constants.ProgressMessageOnly, vProgressStruct);                        
-                        }                        
+                                this.makePsf2File(pMkPsf2Struct, f, hdFile, Path.ChangeExtension(hdFile, ".bd"),
+                                    makePsf2DestinationPath);
+                            }
+                            catch (Exception ex)
+                            {
+                                this.progressStruct.Clear();
+                                this.progressStruct.FileName = String.Format("S({0})_H({1})", Path.GetFileNameWithoutExtension(f), Path.GetFileNameWithoutExtension(hdFile));
+                                this.progressStruct.ErrorMessage = ex.Message;
+                                ReportProgress(this.progress, this.progressStruct);
+                            }
+                        }
                     }
-                    catch (Exception ex2)
+                    else
                     {
-                        vProgressStruct = new VGMToolbox.util.ProgressStruct();
-                        vProgressStruct.NewNode = null;
-                        vProgressStruct.FileName = f;
-                        vProgressStruct.ErrorMessage = String.Format("{0}{1}", ex2.Message, Environment.NewLine);
-                        ReportProgress(progress, vProgressStruct);
+                        try
+                        {
+                            this.makePsf2File(pMkPsf2Struct, f, Path.ChangeExtension(f, ".hd"), Path.ChangeExtension(f, ".bd"),
+                                makePsf2DestinationPath);
+                        }
+                        catch (Exception ex)
+                        {
+                            this.progressStruct.Clear();
+                            this.progressStruct.FileName = f;
+                            this.progressStruct.ErrorMessage = ex.Message;
+                            ReportProgress(this.progress, this.progressStruct);
+                        }
                     }
                 }
                 else
@@ -302,7 +203,8 @@ namespace VGMToolbox.tools.xsf
                 } // if (!CancellationPending)
 
             } // foreach (string f in pUniqueSqFiles)
-
+            
+            // cleanup working folder
             try
             {
                 Directory.Delete(WORKING_FOLDER, true);
@@ -310,12 +212,157 @@ namespace VGMToolbox.tools.xsf
             }
             catch (Exception ex3)
             {
-                vProgressStruct = new VGMToolbox.util.ProgressStruct();
-                vProgressStruct.NewNode = null;
-                vProgressStruct.FileName = null;
-                vProgressStruct.ErrorMessage = ex3.Message;
-                ReportProgress(100, vProgressStruct);
+                this.progressStruct.Clear();
+                this.progressStruct.ErrorMessage = ex3.Message;
+                ReportProgress(100, this.progressStruct);
             }
+        }
+
+        private void makePsf2File(MkPsf2Struct pMkPsf2Struct, string sqName, string hdName, string bdName,
+            string makePsf2DestinationPath)
+        {
+            Process makePsf2Process;
+            StringBuilder sqArguments = new StringBuilder();
+            int totalSequences;
+
+            // report progress
+            this.progress = (++this.fileCount * 100) / maxFiles;
+            this.progressStruct.Clear();
+            this.progressStruct.NewNode = null;
+            this.progressStruct.FileName = sqName;
+            ReportProgress(progress, this.progressStruct);
+
+            try
+            {                                
+                // copy data files to working directory                    
+                string filePrefix;
+                string outputFilePrefix;
+
+                if (pMkPsf2Struct.TryCombinations)
+                {
+                    filePrefix = String.Format("S({0})_H({1})", Path.GetFileNameWithoutExtension(sqName), Path.GetFileNameWithoutExtension(hdName));
+                }
+                else
+                {
+                    filePrefix = Path.GetFileNameWithoutExtension(sqName);
+                }
+                                
+                string bdFileName = Path.GetFileName(bdName);
+                string hdFileName = Path.GetFileName(hdName);
+                string sqFileName = Path.GetFileName(sqName);
+
+                string destinationBdFile = Path.Combine(WORKING_FOLDER, bdFileName);
+                string destinationHdFile = Path.Combine(WORKING_FOLDER, hdFileName);
+                string destinationSqFile = Path.Combine(WORKING_FOLDER, sqFileName);
+
+                FileInfo fi = new FileInfo(sqName);
+
+                if (fi.Length > 0) // only make for nonempty SQ files
+                {
+                    File.Copy(bdName, destinationBdFile);
+                    File.Copy(hdName, destinationHdFile);
+                    File.Copy(sqName, destinationSqFile);
+
+                    totalSequences = getTotalSequenceCount(destinationSqFile);
+
+                    for (int i = 0; i < totalSequences; i++)
+                    {
+                        if (validSequenceArray[i])
+                        {
+                            sqArguments = new StringBuilder();
+
+                            if (totalSequences > 1)
+                            {
+                                outputFilePrefix = filePrefix + "_" + i.ToString("X2");
+                                sqArguments.Append(String.Format(" -n={0}", i));
+                            }
+                            else
+                            {
+                                outputFilePrefix = filePrefix;
+                            }
+
+                            // write ini file
+                            string iniPath = Path.Combine(WORKING_FOLDER, "psf2.ini");
+                            StreamWriter sw = File.CreateText(iniPath);
+                            sw.WriteLine("libsd.irx");
+                            sw.WriteLine("modhsyn.irx");
+                            sw.WriteLine("modmidi.irx");
+
+                            // build sq.irx arguments                    
+                            sqArguments.Append(String.IsNullOrEmpty(pMkPsf2Struct.reverb.Trim()) ?
+                                " -r=5" : String.Format(" -r={0}", pMkPsf2Struct.reverb.Trim()));
+                            sqArguments.Append(String.IsNullOrEmpty(pMkPsf2Struct.depth.Trim()) ?
+                                " -d=16383" : String.Format(" -d={0}", pMkPsf2Struct.depth.Trim()));
+
+                            sqArguments.Append(String.IsNullOrEmpty(pMkPsf2Struct.tickInterval.Trim()) ?
+                                String.Empty : String.Format(" -u={0}", pMkPsf2Struct.tickInterval.Trim()));
+                            sqArguments.Append(String.IsNullOrEmpty(pMkPsf2Struct.tempo.Trim()) ?
+                                String.Empty : String.Format(" -t={0}", pMkPsf2Struct.tempo.Trim()));
+                            sqArguments.Append(String.IsNullOrEmpty(pMkPsf2Struct.volume.Trim()) ?
+                                String.Empty : String.Format(" -v={0}", pMkPsf2Struct.volume.Trim()));
+
+                            sqArguments.Append(String.Format(" -s={0} -h={1} -b={2}",
+                                sqFileName, hdFileName, bdFileName));
+
+                            sw.WriteLine(String.Format("sq.irx {0}", sqArguments.ToString()));
+                            sw.Close();
+                            sw.Dispose();
+
+                            // run makepsf2                
+                            string arguments = String.Format(" {0}.psf2 {1}", outputFilePrefix, WORKING_FOLDER);
+                            makePsf2Process = new Process();
+                            makePsf2Process.StartInfo = new ProcessStartInfo(makePsf2DestinationPath, arguments);
+                            makePsf2Process.StartInfo.UseShellExecute = false;
+                            makePsf2Process.StartInfo.CreateNoWindow = true;
+                            bool isSuccess = makePsf2Process.Start();
+                            makePsf2Process.WaitForExit();
+
+                            if (isSuccess)
+                            {
+                                this.progressStruct.Clear();
+                                this.progressStruct.GenericMessage = String.Format("{0}.psf2 created.", outputFilePrefix) +
+                                    Environment.NewLine;
+                                ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
+
+                                if (!Directory.Exists(Path.Combine(OUTPUT_FOLDER, pMkPsf2Struct.outputFolder)))
+                                {
+                                    Directory.CreateDirectory(Path.Combine(OUTPUT_FOLDER, pMkPsf2Struct.outputFolder));
+                                }
+
+                                File.Move(outputFilePrefix + ".psf2", Path.Combine(Path.Combine(OUTPUT_FOLDER, pMkPsf2Struct.outputFolder), outputFilePrefix + ".psf2"));
+                            }
+
+                            File.Delete(iniPath);
+                        } // if (validSequenceArray[i])                                
+                        else if (totalSequences == 1)
+                        {
+                            this.progressStruct.Clear();
+                            this.progressStruct.GenericMessage = String.Format("WARNING: {0}.SQ has only ONE sequence and it is INVALID.  Skipping...", filePrefix) +
+                                Environment.NewLine;
+                            ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);                                                        
+                        }
+                    } // for (int i = 0; i < totalSequences; i++)
+
+                    File.Delete(destinationBdFile);
+                    File.Delete(destinationHdFile);
+                    File.Delete(destinationSqFile);
+
+                } // if (fi.Length > 0)
+                else
+                {
+                    this.progressStruct.Clear();
+                    this.progressStruct.GenericMessage = String.Format("WARNING: {0}.SQ has ZERO length.  Skipping...", filePrefix) +
+                        Environment.NewLine;
+                    ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);                        
+                }                        
+            }
+            catch (Exception ex2)
+            {
+                this.progressStruct.Clear();
+                this.progressStruct.FileName = sqName;
+                this.progressStruct.ErrorMessage = String.Format("{0}{1}", ex2.Message, Environment.NewLine);
+                ReportProgress(progress, this.progressStruct);
+            }                   
         }
 
         private int getTotalSequenceCount(string pFileName)
