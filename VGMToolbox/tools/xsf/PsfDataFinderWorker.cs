@@ -73,7 +73,7 @@ namespace VGMToolbox.tools.xsf
         public struct ProbableSeqStruct
         {
             public long offset;
-            public uint length;
+            public int length;
         }
 
         public PsfDataFinderWorker() { }
@@ -173,48 +173,60 @@ namespace VGMToolbox.tools.xsf
                 while ((offset = ParseFile.GetNextOffset(fs, offset, PsxSequence.ASCII_SIGNATURE)) > -1)
                 {
                     seqEof = ParseFile.GetNextOffset(fs, offset, PsxSequence.END_SEQUENCE);
-                    seqLength = (int)(seqEof - offset + PsxSequence.END_SEQUENCE.Length);
 
-                    if ((!psfStruct.UseSeqMinimumSize) || ((psfStruct.UseSeqMinimumSize) &&
-                        (seqLength >= psfStruct.MinimumSize)))
+                    if (seqEof > 0)
                     {
-                        seqEntry.offset = offset;
-                        seqEntry.length = (uint)(seqEof - offset + PsxSequence.END_SEQUENCE.Length);
-                        seqFiles.Add(seqEntry);
-                    }
+                        seqLength = (int)(seqEof - offset + PsxSequence.END_SEQUENCE.Length);
 
+                        if ((!psfStruct.UseSeqMinimumSize) || ((psfStruct.UseSeqMinimumSize) &&
+                            (seqLength >= psfStruct.MinimumSize)))
+                        {
+                            seqEntry.offset = offset;
+                            seqEntry.length = (int)(seqEof - offset + PsxSequence.END_SEQUENCE.Length);
+                            seqFiles.Add(seqEntry);
+                        }
+                    }
                     offset += 1;
                 }
 
                 foreach (ProbableSeqStruct seq in seqFiles)
                 {
-                    if (psfStruct.ReorderSeqFiles)
+                    if (seq.length > 0)
                     {
-                        if ((vhArrayList.Count < seqFiles.Count))
+                        if (psfStruct.ReorderSeqFiles)
                         {
-                            if (!seqNamingMessageDisplayed)
+                            if ((vhArrayList.Count < seqFiles.Count))
                             {
-                                this.progressStruct.Clear();
-                                this.progressStruct.ErrorMessage = String.Format(
-                                    "Warning, cannot reorder SEQ files, there are less VH files than SEQ files.{0}", Environment.NewLine);
-                                this.ReportProgress(this.progress, this.progressStruct);
-                                seqNamingMessageDisplayed = true;
+                                if (!seqNamingMessageDisplayed)
+                                {
+                                    this.progressStruct.Clear();
+                                    this.progressStruct.ErrorMessage = String.Format(
+                                        "Warning, cannot reorder SEQ files, there are less VH files than SEQ files.{0}", Environment.NewLine);
+                                    this.ReportProgress(this.progress, this.progressStruct);
+                                    seqNamingMessageDisplayed = true;
+                                }
+                                seqName = String.Format("{0}_{1}.SEQ", Path.GetFileNameWithoutExtension(pPath), seqNumber++.ToString("X4"));
                             }
-                            seqName = String.Format("{0}_{1}.SEQ", Path.GetFileNameWithoutExtension(pPath), seqNumber++.ToString("X4"));
+                            else
+                            {
+                                vhObject = (VhStruct)vhArrayList[vhArrayList.Count - seqFiles.Count + seqNumber++];
+                                seqName = Path.ChangeExtension(vhObject.FileName, ".SEQ");
+                            }
                         }
                         else
                         {
-                            vhObject = (VhStruct)vhArrayList[vhArrayList.Count - seqFiles.Count + seqNumber++];
-                            seqName = Path.ChangeExtension(vhObject.FileName, ".SEQ");
+                            seqName = String.Format("{0}_{1}.SEQ", Path.GetFileNameWithoutExtension(pPath), seqNumber++.ToString("X4"));
                         }
+
+                        ParseFile.ExtractChunkToFile(fs, seq.offset, (int)seq.length,
+                            Path.Combine(destinationFolder, seqName), true);
                     }
                     else
-                    {
-                        seqName = String.Format("{0}_{1}.SEQ", Path.GetFileNameWithoutExtension(pPath), seqNumber++.ToString("X4"));
+                    { 
+                        this.progressStruct.Clear();
+                        this.progressStruct.ErrorMessage = String.Format(" Warning SEQ found with length less than 0,  at Offset 0x{1}: {2}{3}", seq.offset.ToString("X8"), seq.length.ToString("X8"), Environment.NewLine);
+                        this.ReportProgress(this.progress, this.progressStruct);
                     }
-
-                    ParseFile.ExtractChunkToFile(fs, seq.offset, (int)seq.length,
-                        Path.Combine(destinationFolder, seqName), true);
                 }
                 #endregion
 

@@ -78,30 +78,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 479);
-            this.pnlLabels.Size = new System.Drawing.Size(917, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 507);
+            this.pnlLabels.Size = new System.Drawing.Size(850, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(917, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(850, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 402);
-            this.tbOutput.Size = new System.Drawing.Size(917, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 430);
+            this.tbOutput.Size = new System.Drawing.Size(850, 77);
+            this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 382);
-            this.pnlButtons.Size = new System.Drawing.Size(917, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 410);
+            this.pnlButtons.Size = new System.Drawing.Size(850, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(857, 0);
+            this.btnCancel.Location = new System.Drawing.Point(790, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(797, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(730, 0);
             // 
             // grpFiles
             // 
@@ -115,7 +116,7 @@
             this.grpFiles.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFiles.Location = new System.Drawing.Point(0, 23);
             this.grpFiles.Name = "grpFiles";
-            this.grpFiles.Size = new System.Drawing.Size(917, 61);
+            this.grpFiles.Size = new System.Drawing.Size(850, 64);
             this.grpFiles.TabIndex = 5;
             this.grpFiles.TabStop = false;
             this.grpFiles.Text = "Files to Search";
@@ -123,7 +124,7 @@
             // btnRefresh
             // 
             this.btnRefresh.Image = global::VGMToolbox.Properties.Resources.Button_Refresh_16x16;
-            this.btnRefresh.Location = new System.Drawing.Point(531, 19);
+            this.btnRefresh.Location = new System.Drawing.Point(538, 42);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(20, 20);
             this.btnRefresh.TabIndex = 6;
@@ -132,7 +133,7 @@
             // 
             // btnSavePreset
             // 
-            this.btnSavePreset.Location = new System.Drawing.Point(485, 38);
+            this.btnSavePreset.Location = new System.Drawing.Point(497, 42);
             this.btnSavePreset.Name = "btnSavePreset";
             this.btnSavePreset.Size = new System.Drawing.Size(40, 20);
             this.btnSavePreset.TabIndex = 5;
@@ -143,7 +144,7 @@
             // lblPresets
             // 
             this.lblPresets.AutoSize = true;
-            this.lblPresets.Location = new System.Drawing.Point(315, 42);
+            this.lblPresets.Location = new System.Drawing.Point(291, 46);
             this.lblPresets.Name = "lblPresets";
             this.lblPresets.Size = new System.Drawing.Size(42, 13);
             this.lblPresets.TabIndex = 4;
@@ -151,7 +152,7 @@
             // 
             // btnLoadPreset
             // 
-            this.btnLoadPreset.Location = new System.Drawing.Point(485, 19);
+            this.btnLoadPreset.Location = new System.Drawing.Point(456, 42);
             this.btnLoadPreset.Name = "btnLoadPreset";
             this.btnLoadPreset.Size = new System.Drawing.Size(40, 20);
             this.btnLoadPreset.TabIndex = 3;
@@ -181,9 +182,10 @@
             // comboPresets
             // 
             this.comboPresets.FormattingEnabled = true;
-            this.comboPresets.Location = new System.Drawing.Point(318, 19);
+            this.comboPresets.Location = new System.Drawing.Point(294, 19);
             this.comboPresets.Name = "comboPresets";
-            this.comboPresets.Size = new System.Drawing.Size(161, 21);
+            this.comboPresets.Size = new System.Drawing.Size(264, 21);
+            this.comboPresets.Sorted = true;
             this.comboPresets.TabIndex = 2;
             this.comboPresets.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.comboPresets_KeyPress);
             this.comboPresets.KeyDown += new System.Windows.Forms.KeyEventHandler(this.comboPresets_KeyDown);
@@ -196,9 +198,9 @@
             this.grpCriteria.Controls.Add(this.label2);
             this.grpCriteria.Controls.Add(this.tbSearchString);
             this.grpCriteria.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpCriteria.Location = new System.Drawing.Point(0, 84);
+            this.grpCriteria.Location = new System.Drawing.Point(0, 87);
             this.grpCriteria.Name = "grpCriteria";
-            this.grpCriteria.Size = new System.Drawing.Size(917, 54);
+            this.grpCriteria.Size = new System.Drawing.Size(850, 54);
             this.grpCriteria.TabIndex = 6;
             this.grpCriteria.TabStop = false;
             this.grpCriteria.Text = "Criteria";
@@ -254,9 +256,9 @@
             this.groupBox3.Controls.Add(this.lblStringAtOffset);
             this.groupBox3.Controls.Add(this.tbSearchStringOffset);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox3.Location = new System.Drawing.Point(0, 138);
+            this.groupBox3.Location = new System.Drawing.Point(0, 141);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(917, 256);
+            this.groupBox3.Size = new System.Drawing.Size(850, 256);
             this.groupBox3.TabIndex = 7;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Cut Options (all values are relative to the location of the file to be cut)";
@@ -504,7 +506,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(917, 520);
+            this.ClientSize = new System.Drawing.Size(850, 548);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.grpCriteria);
             this.Controls.Add(this.grpFiles);
