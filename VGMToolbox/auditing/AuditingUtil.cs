@@ -407,7 +407,7 @@ namespace VGMToolbox.auditing
 
                 foreach (game g in games)
                 {
-                    if (CompareGames(g, sourceGame))
+                    if (g.Equals(sourceGame))
                     {
                         if (sourceRom != null)
                         {
@@ -434,20 +434,6 @@ namespace VGMToolbox.auditing
             }
 
             return workingDatafile;
-        }
-
-        public static bool CompareGames(game game1, game game2)
-        {
-            bool ret = false;
-
-            if ((game1.name.Equals(game2.name)) &&
-                (game1.description.Equals(game2.description)) &&
-                (game1.rom.Length == game2.rom.Length))
-            {
-                ret = true;
-            }
-
-            return ret;
         }
 
         # endregion

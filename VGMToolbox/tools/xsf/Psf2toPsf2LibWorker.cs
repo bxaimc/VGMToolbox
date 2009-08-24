@@ -264,8 +264,7 @@ namespace VGMToolbox.tools.xsf
                         isSuccess = false;
 
                         int progress = (fileCount * 100) / maxFiles;
-                        this.progressStruct = new VGMToolbox.util.ProgressStruct();
-                        this.progressStruct.NewNode = null;
+                        this.progressStruct.Clear();
                         this.progressStruct.ErrorMessage = String.Format("Error processing <{0}>.  Error received: ", f) + _e.Message;
                         ReportProgress(progress, this.progressStruct);
 
@@ -322,8 +321,7 @@ namespace VGMToolbox.tools.xsf
                 }
 
                 int progress = (fileCount * 100) / maxFiles;
-                this.progressStruct = new VGMToolbox.util.ProgressStruct();
-                this.progressStruct.NewNode = null;
+                this.progressStruct.Clear();
                 this.progressStruct.ErrorMessage = String.Format("Error creating <{0}.minipsf2>.  Error received: ", outputFilePrefix) + ex.Message;
                 ReportProgress(progress, this.progressStruct);            
             }
@@ -380,8 +378,7 @@ namespace VGMToolbox.tools.xsf
                 }
 
                 int progress = (fileCount * 100) / maxFiles;
-                this.progressStruct = new VGMToolbox.util.ProgressStruct();
-                this.progressStruct.NewNode = null;
+                this.progressStruct.Clear();
                 this.progressStruct.ErrorMessage = 
                     String.Format("Error creating <{0}>.  Error received: ", pOutputFileName) + ex.Message +
                     Environment.NewLine;
@@ -399,7 +396,6 @@ namespace VGMToolbox.tools.xsf
 
             try
             {
-
                 using (StreamWriter sw = new StreamWriter(File.Open(batchFilePath, FileMode.Append, FileAccess.Write)))
                 {
                     foreach (string k in pTagHash.Keys)
@@ -530,7 +526,6 @@ namespace VGMToolbox.tools.xsf
         protected override void OnDoWork(DoWorkEventArgs e)
         {
             Psf2ToPsf2LibStruct psf2ToPsf2LibStruct = (Psf2ToPsf2LibStruct)e.Argument;
-
             this.buildPsf2Lib(psf2ToPsf2LibStruct, e);
         }
     }

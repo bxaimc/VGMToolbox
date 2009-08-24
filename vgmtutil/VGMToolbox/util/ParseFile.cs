@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -230,6 +232,80 @@ namespace VGMToolbox.util
             if (returnStreamToIncomingPosition)
             {
                 stream.Position = initialStreamPosition;
+            }
+
+            return ret;
+        }
+
+        public static Dictionary<byte[], long[]> GetAllOffsets(Stream stream, long startingOffset,
+            byte[][] searchByteArrays, bool returnStreamToIncomingPosition)
+        {
+            long initialStreamPosition = 0;
+            
+            if (returnStreamToIncomingPosition)
+            {
+                initialStreamPosition = stream.Position;
+            }
+
+            int maxSearchBytesLength = 0;
+            long absoluteOffset = startingOffset;
+            long relativeOffset;
+            byte[] checkBytes = new byte[Constants.FileReadChunkSize];
+            byte[] compareBytes;
+
+            Dictionary<byte[], ArrayList> tempOutput = new Dictionary<byte[], ArrayList>();
+            Dictionary<byte[], long[]> ret = new Dictionary<byte[], long[]>();
+
+            foreach (byte[] b in searchByteArrays)
+            {
+                tempOutput.Add(b, new ArrayList());
+
+                if (b.Length > maxSearchBytesLength)
+                {
+                    maxSearchBytesLength = b.Length;
+                }
+            }
+
+            while (absoluteOffset < stream.Length)
+            {
+                stream.Position = absoluteOffset;
+                stream.Read(checkBytes, 0, Constants.FileReadChunkSize);
+                relativeOffset = 0;
+
+                while (relativeOffset < Constants.FileReadChunkSize)
+                {
+                    foreach (byte[] searchBytes in searchByteArrays)
+                    {
+                        if ((relativeOffset + searchBytes.Length) < checkBytes.Length)
+                        {
+                            compareBytes = new byte[searchBytes.Length];
+                            Array.Copy(checkBytes, relativeOffset, compareBytes, 0, searchBytes.Length);
+
+                            if (CompareSegment(compareBytes, 0, searchBytes))
+                            {
+                                tempOutput[searchBytes].Add(absoluteOffset + relativeOffset);
+                                break;
+                            }
+                        }
+                    } // foreach (byte[] searchBytes in searchByteArrays)
+
+                    relativeOffset++;
+                }
+
+                absoluteOffset += Constants.FileReadChunkSize - maxSearchBytesLength;
+            }
+
+            // return stream to incoming position
+            if (returnStreamToIncomingPosition)
+            {
+                stream.Position = initialStreamPosition;
+            }
+
+            // sort offsets and add to output
+            foreach (byte[] key in tempOutput.Keys)
+            {
+                tempOutput[key].Sort();
+                ret.Add(key, (long[])tempOutput[key].ToArray(typeof(long)));
             }
 
             return ret;
