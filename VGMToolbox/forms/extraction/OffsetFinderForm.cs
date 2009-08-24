@@ -454,6 +454,8 @@ namespace VGMToolbox.forms.extraction
                     MessageBox.Show(String.Format("Error loading preset file <{0}>", Path.GetFileName(f)), "Error");
                 }
             }
+
+            comboPresets.Sorted = true;           
         }        
         private OffsetFinderTemplate getPresetFromFile(string filePath)
         {

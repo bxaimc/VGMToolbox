@@ -185,7 +185,6 @@
             this.comboPresets.Location = new System.Drawing.Point(294, 19);
             this.comboPresets.Name = "comboPresets";
             this.comboPresets.Size = new System.Drawing.Size(264, 21);
-            this.comboPresets.Sorted = true;
             this.comboPresets.TabIndex = 2;
             this.comboPresets.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.comboPresets_KeyPress);
             this.comboPresets.KeyDown += new System.Windows.Forms.KeyEventHandler(this.comboPresets_KeyDown);
