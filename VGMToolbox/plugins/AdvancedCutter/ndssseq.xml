@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <OffsetFinderTemplate>
   <Header>
-    <FormatName>Nintendo Wii - RWAR Streams</FormatName>
+    <FormatName>Nintendo DS - SSEQ Files</FormatName>
     <Author>bxaimc</Author>
   </Header>
   <SearchParameters>
-    <SearchString>52574152</SearchString>
+    <SearchString>53534551FFFE</SearchString>
     <TreatSearchStringAsHex>true</TreatSearchStringAsHex>
     <SearchStringOffset>0</SearchStringOffset>
-    <OutputFileExtension>.rwar</OutputFileExtension>
+    <OutputFileExtension>.sseq</OutputFileExtension>
     <CutParameters>
       <CutStyle>offset</CutStyle>
       <CutSizeAtOffset>8</CutSizeAtOffset>
       <CutSizeOffsetSize>4</CutSizeOffsetSize>
-      <CutSizeOffsetEndianess>big</CutSizeOffsetEndianess>      
+      <CutSizeOffsetEndianess>little</CutSizeOffsetEndianess>      
     </CutParameters>
     <AddExtraBytes>false</AddExtraBytes>
   </SearchParameters>
-  <NotesOrWarnings>Note: For use with archives such as .brsar.</NotesOrWarnings>
 </OffsetFinderTemplate>

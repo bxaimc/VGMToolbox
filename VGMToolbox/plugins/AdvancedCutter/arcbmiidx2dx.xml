@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <OffsetFinderTemplate>
   <Header>
-    <FormatName>Nintendo Wii - RWAR Streams</FormatName>
+    <FormatName>Arcade - beatmaniaIIDX 2DX Streams</FormatName>
     <Author>bxaimc</Author>
   </Header>
   <SearchParameters>
-    <SearchString>52574152</SearchString>
+    <SearchString>3244583918</SearchString>
     <TreatSearchStringAsHex>true</TreatSearchStringAsHex>
     <SearchStringOffset>0</SearchStringOffset>
-    <OutputFileExtension>.rwar</OutputFileExtension>
+    <OutputFileExtension>.2dx</OutputFileExtension>
     <CutParameters>
       <CutStyle>offset</CutStyle>
       <CutSizeAtOffset>8</CutSizeAtOffset>
       <CutSizeOffsetSize>4</CutSizeOffsetSize>
-      <CutSizeOffsetEndianess>big</CutSizeOffsetEndianess>      
+      <CutSizeOffsetEndianess>little</CutSizeOffsetEndianess>      
     </CutParameters>
-    <AddExtraBytes>false</AddExtraBytes>
+    <AddExtraBytes>true</AddExtraBytes>
+    <AddExtraByteSize>24</AddExtraByteSize>
   </SearchParameters>
-  <NotesOrWarnings>Note: For use with archives such as .brsar.</NotesOrWarnings>
 </OffsetFinderTemplate>

@@ -59,119 +59,6 @@ namespace VGMToolbox.auditing
             return datHeader;
         }
 
-        public rom buildRom(string pDirectory, string pFileName, GetGameParamsStruct pGetGameParamsStruct)
-        {
-            string path = pFileName.Substring((pDirectory.LastIndexOf(this.dir) + this.dir.Length));
-            FileStream fs = File.OpenRead(pFileName);
-            Type formatType = FormatUtil.getObjectType(fs);
-
-            // CRC32
-            Crc32 crc32Generator = new Crc32();
-
-            /*
-            // MD5
-            MD5CryptoServiceProvider md5Hash = new MD5CryptoServiceProvider();
-            MemoryStream md5MemoryStream = new MemoryStream();
-            CryptoStream md5CryptoStream = new CryptoStream(md5MemoryStream, md5Hash, CryptoStreamMode.Write);
-
-            // SHA1
-            SHA1CryptoServiceProvider sha1Hash = new SHA1CryptoServiceProvider();
-            MemoryStream sha1MemoryStream = new MemoryStream();
-            CryptoStream sha1CryptoStream = new CryptoStream(sha1MemoryStream, sha1Hash, CryptoStreamMode.Write);
-            */
-
-            fs.Seek(0, SeekOrigin.Begin);                  // Return to start of stream
-            rom romfile = new rom();
-
-            if (!pGetGameParamsStruct.UseNormalChecksums && (formatType != null))
-            {
-                try
-                {
-                    IFormat vgmData = (IFormat)Activator.CreateInstance(formatType);
-                    vgmData.Initialize(fs, pFileName);
-                    fs.Close();
-                    fs.Dispose();
-
-                    // vgmData.getDatFileCrc32(pFileName, ref libHash, ref crc32Generator,
-                    //    ref md5CryptoStream, ref sha1CryptoStream, pUseLibHash, pStreamInput);
-                    vgmData.GetDatFileCrc32(ref crc32Generator);
-                    vgmData = null;
-                }
-                catch (EndOfStreamException _es)
-                {
-                    this.progressStruct.Clear();
-                    this.progressStruct.FileName = pFileName;
-                    this.progressStruct.ErrorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFileName, formatType.Name, _es.Message) + Environment.NewLine;
-                    ReportProgress(Constants.IgnoreProgress, this.progressStruct);
-
-                    crc32Generator.Reset();
-                    // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator, 
-                    //    ref md5CryptoStream, ref sha1CryptoStream);
-                    ChecksumUtil.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
-                }
-                catch (System.OutOfMemoryException _es)
-                {
-                    this.progressStruct.Clear();
-                    this.progressStruct.FileName = pFileName;
-                    this.progressStruct.ErrorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFileName, formatType.Name, _es.Message) + Environment.NewLine;
-                    ReportProgress(Constants.IgnoreProgress, this.progressStruct);
-
-
-                    crc32Generator.Reset();
-                    // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
-                    //    ref md5CryptoStream, ref sha1CryptoStream);
-                    ChecksumUtil.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
-                }
-                catch (IOException _es)
-                {
-                    this.progressStruct.Clear();
-                    this.progressStruct.FileName = pFileName;
-                    this.progressStruct.ErrorMessage = String.Format("Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}", pFileName, formatType.Name, _es.Message) + Environment.NewLine;
-                    ReportProgress(Constants.IgnoreProgress, this.progressStruct);
-
-                    crc32Generator.Reset();
-                    // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
-                    //    ref md5CryptoStream, ref sha1CryptoStream);
-                    ChecksumUtil.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
-                }
-            }
-            else
-            {
-                // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
-                //    ref md5CryptoStream, ref sha1CryptoStream);
-                
-                ChecksumUtil.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
-                romfile.size = fs.Length.ToString();
-            }
-
-            /*
-            md5CryptoStream.FlushFinalBlock();
-            sha1CryptoStream.FlushFinalBlock();
-            */
-
-            romfile.crc = crc32Generator.Value.ToString("X2");
-            // romfile.md5 = AuditingUtil.ByteArrayToString(md5Hash.Hash);
-            // romfile.sha1 = AuditingUtil.ByteArrayToString(sha1Hash.Hash);
-            
-            romfile.name = pFileName.Substring((pDirectory.LastIndexOf(this.dir) + this.dir.Length + 1));
-            // Cleanup
-            crc32Generator.Reset();
-
-            /*
-            md5MemoryStream.Close();
-            md5MemoryStream.Dispose();
-            sha1MemoryStream.Close();
-            sha1MemoryStream.Dispose();
-
-            md5CryptoStream.Close();
-            md5CryptoStream.Dispose();
-            sha1CryptoStream.Close();
-            sha1CryptoStream.Dispose();
-            */
-
-            return romfile;
-        }
-
         public game[] buildGames(GetGameParamsStruct pGetGameParamsStruct, DoWorkEventArgs e)
         {
             return this.buildGames(pGetGameParamsStruct, 0, e);
@@ -187,6 +74,9 @@ namespace VGMToolbox.auditing
             game set;
             int progress;
             rom romfile;
+
+            BuildRomStruct romParameters;
+            string buildRomMessages;
 
             try
             {                
@@ -213,12 +103,29 @@ namespace VGMToolbox.auditing
                                 ReportProgress(progress, this.progressStruct);
 
                                 try
-                                {
-                                    romfile = buildRom(d, f, pGetGameParamsStruct);
-                                    if (romfile.name != null)
+                                {                                    
+                                    romParameters = new BuildRomStruct();
+                                    romParameters.AddMd5 = false;
+                                    romParameters.AddSha1 = false;
+                                    romParameters.FilePath = f;
+                                    romParameters.TopLevelSetFolder = this.dir;
+                                    romParameters.UseNormalChecksums = pGetGameParamsStruct.UseNormalChecksums;
+
+                                    romfile = AuditingUtil.BuildRom(romParameters, out buildRomMessages);
+
+                                    if (String.IsNullOrEmpty(buildRomMessages))
                                     {
-                                        // Convert to use Array of rom?
-                                        romList.Add(romfile);
+                                        if (romfile.name != null)
+                                        {
+                                            romList.Add(romfile);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        this.progressStruct.Clear();
+                                        this.progressStruct.FileName = f;
+                                        this.progressStruct.ErrorMessage = buildRomMessages;
+                                        ReportProgress(Constants.IgnoreProgress, this.progressStruct);                                    
                                     }
                                 }
                                 catch (Exception _ex)

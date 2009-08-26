@@ -6,13 +6,26 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Serialization;
 
+using ICSharpCode.SharpZipLib.Checksums;
 using ICSharpCode.SharpZipLib.Zip.Compression;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 
+using VGMToolbox.format;
 using VGMToolbox.format.auditing;
+using VGMToolbox.format.util;
+using VGMToolbox.util;
 
 namespace VGMToolbox.auditing
 {
+    public struct BuildRomStruct
+    {
+        public string TopLevelSetFolder;
+        public string FilePath;
+        public bool AddMd5;
+        public bool AddSha1;
+        public bool UseNormalChecksums;
+    }
+    
     class AuditingUtil
     {
         public const string ROM_SPACER = "  ";         // Simple spacer for formatting output lists
@@ -53,7 +66,7 @@ namespace VGMToolbox.auditing
             public bool isFilePresent;
             public bool hasMultipleExtensions;
         }
- 
+
         #endregion
 
         #region DATFILE TEXT OUTPUT FUNCTIONS
@@ -434,6 +447,127 @@ namespace VGMToolbox.auditing
             }
 
             return workingDatafile;
+        }
+
+        public static rom BuildRom(BuildRomStruct parameters, out string messages)
+        {
+            string fileDirectory = Path.GetDirectoryName(parameters.FilePath);
+            string messageFormat = "Error processing <{0}> as type [{1}], falling back to full file cheksum.  Error received: {2}{3}";
+            messages = String.Empty;
+
+            Crc32 crc32Generator = new Crc32();
+            Type formatType = null;
+            rom romfile = new rom();
+
+            MD5CryptoServiceProvider md5Hash = null;
+            MemoryStream md5MemoryStream = null;
+            CryptoStream md5CryptoStream = null;
+
+            SHA1CryptoServiceProvider sha1Hash = null;
+            MemoryStream sha1MemoryStream = null;
+            CryptoStream sha1CryptoStream = null;
+
+            using (FileStream fs = File.OpenRead(parameters.FilePath))
+            {
+                formatType = FormatUtil.getObjectType(fs);
+
+                // MD5
+                if (parameters.AddMd5)
+                {
+                    md5Hash = new MD5CryptoServiceProvider();
+                    md5MemoryStream = new MemoryStream();
+                    md5CryptoStream = new CryptoStream(md5MemoryStream, md5Hash, CryptoStreamMode.Write);
+                }
+
+                // SHA1
+                if (parameters.AddSha1)
+                {
+                    sha1Hash = new SHA1CryptoServiceProvider();
+                    sha1MemoryStream = new MemoryStream();
+                    sha1CryptoStream = new CryptoStream(sha1MemoryStream, sha1Hash, CryptoStreamMode.Write);
+                }
+
+                fs.Seek(0, SeekOrigin.Begin); // Return to start of stream
+
+                if (!parameters.UseNormalChecksums && (formatType != null))
+                {
+                    try
+                    {
+                        IFormat vgmData = (IFormat)Activator.CreateInstance(formatType);
+                        vgmData.Initialize(fs, parameters.FilePath);
+
+                        // vgmData.getDatFileCrc32(pFileName, ref libHash, ref crc32Generator,
+                        //    ref md5CryptoStream, ref sha1CryptoStream, pUseLibHash, pStreamInput);
+                        vgmData.GetDatFileCrc32(ref crc32Generator);
+                        vgmData = null;
+                    }
+                    catch (EndOfStreamException _es)
+                    {
+                        messages = String.Format(messageFormat, parameters.FilePath, formatType.Name, _es.Message, Environment.NewLine);
+
+                        crc32Generator.Reset();
+                        // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator, 
+                        //    ref md5CryptoStream, ref sha1CryptoStream);
+                        ChecksumUtil.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
+                    }
+                    catch (System.OutOfMemoryException _es)
+                    {
+                        messages = String.Format(messageFormat, parameters.FilePath, formatType.Name, _es.Message, Environment.NewLine);
+
+                        crc32Generator.Reset();
+                        // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
+                        //    ref md5CryptoStream, ref sha1CryptoStream);
+                        ChecksumUtil.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
+                    }
+                    catch (IOException _es)
+                    {
+                        messages = String.Format(messageFormat, parameters.FilePath, formatType.Name, _es.Message, Environment.NewLine);
+
+                        crc32Generator.Reset();
+                        // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
+                        //    ref md5CryptoStream, ref sha1CryptoStream);
+                        ChecksumUtil.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
+                    }
+                }
+                else
+                {
+                    // ParseFile.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator,
+                    //    ref md5CryptoStream, ref sha1CryptoStream);
+
+                    ChecksumUtil.AddChunkToChecksum(fs, 0, (int)fs.Length, ref crc32Generator);
+                    romfile.size = fs.Length.ToString();
+                }
+
+                if (parameters.AddMd5)
+                {
+                    md5CryptoStream.FlushFinalBlock();
+                    romfile.md5 = AuditingUtil.ByteArrayToString(md5Hash.Hash);
+
+                    md5MemoryStream.Close();
+                    md5MemoryStream.Dispose();
+                    md5CryptoStream.Close();
+                    md5CryptoStream.Dispose();
+                }
+
+                if (parameters.AddSha1)
+                {
+                    sha1CryptoStream.FlushFinalBlock();
+                    romfile.sha1 = AuditingUtil.ByteArrayToString(sha1Hash.Hash);
+
+                    sha1MemoryStream.Close();
+                    sha1MemoryStream.Dispose();
+                    sha1CryptoStream.Close();
+                    sha1CryptoStream.Dispose();
+                }
+            } // using (FileStream fs = File.OpenRead(parameters.FilePath))
+
+            romfile.crc = crc32Generator.Value.ToString("X8");
+            romfile.name = parameters.FilePath.Substring((fileDirectory.LastIndexOf(parameters.TopLevelSetFolder) + parameters.TopLevelSetFolder.Length + 1));
+            
+            // Cleanup
+            crc32Generator.Reset();
+
+            return romfile;
         }
 
         # endregion

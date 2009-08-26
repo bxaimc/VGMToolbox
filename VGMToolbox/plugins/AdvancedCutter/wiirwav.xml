@@ -17,5 +17,5 @@
     </CutParameters>
     <AddExtraBytes>false</AddExtraBytes>
   </SearchParameters>
-  <NotesOrWarnings>Note: For use with archives such as .brsar. If nothing is extracted, there aren't any RWAVs within.</NotesOrWarnings>
+  <NotesOrWarnings>Note: For use with archives such as .brsar.</NotesOrWarnings>
 </OffsetFinderTemplate>
