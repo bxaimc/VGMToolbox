@@ -152,7 +152,7 @@ namespace VGMToolbox.tools.xsf
 
                     // extract file
                     ParseFile.ExtractChunkToFile(fs, vhObject.startingOffset, (int)vhObject.length,
-                        Path.Combine(destinationFolder, vhObject.FileName), true);
+                        Path.Combine(destinationFolder, vhObject.FileName), true, true);
 
                     offset += 1;
                 }
@@ -219,7 +219,7 @@ namespace VGMToolbox.tools.xsf
                         }
 
                         ParseFile.ExtractChunkToFile(fs, seq.offset, (int)seq.length,
-                            Path.Combine(destinationFolder, seqName), true);
+                            Path.Combine(destinationFolder, seqName), true, true);
                     }
                     else
                     { 
@@ -341,7 +341,7 @@ namespace VGMToolbox.tools.xsf
 
 
                                         ParseFile.ExtractChunkToFile(fs, vhObject.vbStartingOffset, (int)vhObject.vbLength,
-                                            Path.Combine(destinationFolder, vbName), true);
+                                            Path.Combine(destinationFolder, vbName), true, true);
                                     }
                                 }
                                 catch (Exception ex)

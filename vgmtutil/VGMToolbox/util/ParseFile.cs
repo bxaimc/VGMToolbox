@@ -13,6 +13,7 @@ namespace VGMToolbox.util
     public sealed class ParseFile
     {
         public const string LogFileName = "vgmt_extraction_log.txt";
+        public const string SnakeBiteBatchFileName = "vgmt_extraction_log.bat";
         
         /// <summary>
         /// Prevents a default instance of the ParseFile class from being created.
@@ -451,9 +452,16 @@ namespace VGMToolbox.util
             return ret;
         }
 
-        public static void ExtractChunkToFile(Stream stream, long startingOffset, int length, string filePath)
+        public static void ExtractChunkToFile(Stream stream, long startingOffset, int length, 
+            string filePath)
         {
-            ExtractChunkToFile(stream, startingOffset, length, filePath, false);
+            ExtractChunkToFile(stream, startingOffset, length, filePath, false, false);
+        }
+
+        public static void ExtractChunkToFile(Stream stream, long startingOffset, int length,
+            string filePath, bool outputLogFile)
+        {
+            ExtractChunkToFile(stream, startingOffset, length, filePath, outputLogFile, false);
         }
 
         /// <summary>
@@ -468,9 +476,12 @@ namespace VGMToolbox.util
             long startingOffset, 
             int length, 
             string filePath,
-            bool outputLogFile)
+            bool outputLogFile,
+            bool outputSnakebiteBatchFile)
         {
+            bool makeBatchFile = (outputSnakebiteBatchFile && (stream is FileStream));
             StringBuilder logInfo = new StringBuilder();
+            StringBuilder snakeBiteBatch = new StringBuilder();
             BinaryWriter bw = null;
             string fullOutputDirectory = Path.GetDirectoryName(Path.GetFullPath(filePath));
 
@@ -516,6 +527,21 @@ namespace VGMToolbox.util
                     {
                         logWriter.Write(logInfo.ToString());
                     }
+                }
+
+                if (makeBatchFile)
+                {
+                    snakeBiteBatch.AppendLine(
+                        String.Format("snakebite.exe \"{0}\" \"{1}\" 0x{2} 0x{3}",
+                            Path.GetFileName(((FileStream)stream).Name),
+                            Path.GetFileNameWithoutExtension(((FileStream)stream).Name) + Path.DirectorySeparatorChar + Path.GetFileName(filePath),                                                
+                            startingOffset.ToString("X8"),
+                            (startingOffset + length - 1).ToString("X8")));                    
+                    
+                    using (StreamWriter batchWriter = new StreamWriter(Path.Combine(fullOutputDirectory, ParseFile.SnakeBiteBatchFileName), true))
+                    {
+                        batchWriter.Write(snakeBiteBatch.ToString());
+                    }                
                 }
             }
             finally
