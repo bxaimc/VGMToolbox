@@ -156,7 +156,7 @@ namespace VGMToolbox.tools.genh
                 {
                     if (pGenhCreatorStruct.DoExtract)
                     {
-                        outputFilePath = GenhUtil.ExtractGenhFile(file);
+                        outputFilePath = GenhUtil.ExtractGenhFile(file, true, true);
                         outputMessageAction = "Extracted";
                     }
                     else

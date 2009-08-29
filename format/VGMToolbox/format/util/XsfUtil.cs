@@ -1277,7 +1277,7 @@ namespace VGMToolbox.format.util
             return ret;
         }
 
-        public static void SplitVab(string sourceFilePath)
+        public static void SplitVab(string sourceFilePath, bool outputLogFile, bool outputBatchFile)
         {
             using (FileStream fs = File.OpenRead(sourceFilePath))
             { 
@@ -1291,9 +1291,9 @@ namespace VGMToolbox.format.util
                     programCount = 
                         BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(fs, 0x12, 2), 0);
                     vabHeaderSize = 2592 + (512 * programCount);
-                    
-                    ParseFile.ExtractChunkToFile(fs, 0, vabHeaderSize, Path.ChangeExtension(sourceFilePath, ".vh"));
-                    ParseFile.ExtractChunkToFile(fs, (long)vabHeaderSize, (int)(fs.Length - (long)vabHeaderSize), Path.ChangeExtension(sourceFilePath, ".vb"));
+
+                    ParseFile.ExtractChunkToFile(fs, 0, vabHeaderSize, Path.ChangeExtension(sourceFilePath, ".vh"), outputLogFile, outputBatchFile);
+                    ParseFile.ExtractChunkToFile(fs, (long)vabHeaderSize, (int)(fs.Length - (long)vabHeaderSize), Path.ChangeExtension(sourceFilePath, ".vb"), outputLogFile, outputBatchFile);
                 }
             }            
         }

@@ -249,7 +249,7 @@ int psfdrv(void) {
   ** Reverb setup
   */
   
-  /*
+
   { unsigned reverb_attr[5] = {7,0x100,0,0,0};
     reverb_attr[1] |= rtype;
     reverb_attr[2] = (rdepth << 8) | (rdepth << 24);
@@ -272,7 +272,7 @@ int psfdrv(void) {
     SsUtReverbOn();
 #endif    
   }    
-  */
+
 #ifdef SpuSetReverb   
     SpuSetReverb(1);
 #elif defined SsUtReverbOn

@@ -13,18 +13,20 @@ namespace VGMToolbox.tools.xsf
 {        
     public struct PsfStubMakerStruct : IVgmtWorkerStruct
     {
-        private string[] sourcePaths;
-        private string driverText;
-        
         public string[] SourcePaths
         {
-            get { return sourcePaths; }
-            set { sourcePaths = value; }
+            get;
+            set;
         }
         public string DriverText
         {
-            set { driverText = value; }
-            get { return driverText; }
+            set;
+            get;
+        }
+        public bool IncludeReverb
+        {
+            set;
+            get;
         }
     }
     
@@ -42,6 +44,9 @@ namespace VGMToolbox.tools.xsf
 
         public static readonly string WorkingFolderPath =
             Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "working_psf"));         
+
+        private const int COMMENT_REVERB_OPEN = 252;
+        private const int COMMENT_REVERB_CLOSE = 275;
 
         public PsfStubMakerWorker() : base() { }
 
@@ -147,7 +152,7 @@ namespace VGMToolbox.tools.xsf
                 this.progressStruct.GenericMessage = "    - Rewriting driver source and batch file." + Environment.NewLine;
                 ReportProgress(Constants.ProgressMessageOnly, progressStruct);
 
-                this.rewritePsfOCycleDriverSource(psfOCycleSourceDestination, sigFindAddresses);
+                this.rewritePsfOCycleDriverSource(psfOCycleSourceDestination, sigFindAddresses, stubMakerParameters.IncludeReverb);
 
                 /////////////////////
                 // rewrite make file
@@ -241,7 +246,7 @@ namespace VGMToolbox.tools.xsf
             return ret;
         }
 
-        private void rewritePsfOCycleDriverSource(string driverSourceCodePath, PsfPsyQAddresses addresses)
+        private void rewritePsfOCycleDriverSource(string driverSourceCodePath, PsfPsyQAddresses addresses, bool includeReverb)
         {
             int lineNumber;
             string inputLine;
@@ -283,6 +288,14 @@ namespace VGMToolbox.tools.xsf
                                 // comment out this line
                                 writer.WriteLine(String.Format("//{0}", inputLine));
                             }
+                        }
+                        else if ((lineNumber == COMMENT_REVERB_OPEN) && (!includeReverb))
+                        {
+                            writer.WriteLine("/*");
+                        }
+                        else if ((lineNumber == COMMENT_REVERB_CLOSE) && (!includeReverb))
+                        {
+                            writer.WriteLine("*/");
                         }
                         else
                         {

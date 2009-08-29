@@ -351,7 +351,7 @@ namespace VGMToolbox.format.util
             return ret;
         }
 
-        public static string ExtractGenhFile(string pSourcePath)
+        public static string ExtractGenhFile(string pSourcePath, bool outputExtractionLog, bool outputExtractionFile)
         {
             string outputFileName = null;
             
@@ -366,7 +366,7 @@ namespace VGMToolbox.format.util
                     string originalFileName = System.Text.Encoding.ASCII.GetString(genhFile.OriginalFileName);
                     outputFileName = Path.Combine(Path.GetDirectoryName(pSourcePath), originalFileName).Trim();
 
-                    ParseFile.ExtractChunkToFile(fs, headerLength, originalFileSize, outputFileName);
+                    ParseFile.ExtractChunkToFile(fs, headerLength, originalFileSize, outputFileName, outputExtractionLog, outputExtractionFile);
 
                     FileInfo fi = new FileInfo(outputFileName);
                     if (fi.Length != (long)originalFileSize)

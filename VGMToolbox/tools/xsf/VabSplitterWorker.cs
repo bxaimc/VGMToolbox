@@ -22,7 +22,7 @@ namespace VGMToolbox.tools.xsf
         protected override void DoTaskForFile(string pPath, IVgmtWorkerStruct pUnpkPsf2Struct, 
             DoWorkEventArgs e)
         {
-            XsfUtil.SplitVab(pPath);
+            XsfUtil.SplitVab(pPath, true, true);
         }     
     }
 }

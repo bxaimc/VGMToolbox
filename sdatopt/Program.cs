@@ -153,7 +153,7 @@ namespace sdatopt
                                     findOffsetStruct.ExtraCutSizeBytes = null;
 
                                     string output;
-                                    extractedToFolder = ParseFile.FindOffsetAndCutFile(decompressedDataPath, findOffsetStruct, out output);
+                                    extractedToFolder = ParseFile.FindOffsetAndCutFile(decompressedDataPath, findOffsetStruct, out output, false, false);
 
                                     // create SDAT object                                                                        
                                     Console.WriteLine("Building Internal SDAT.");

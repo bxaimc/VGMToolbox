@@ -579,7 +579,7 @@ namespace VGMToolbox.util
         /// <param name="searchCriteria">Struct containing search criteria.</param>
         /// <param name="messages">Output messages.</param>
         /// <returns>Directory that extracted files were output into.</returns>
-        public static string FindOffsetAndCutFile(string sourcePath, FindOffsetStruct searchCriteria, out string messages)
+        public static string FindOffsetAndCutFile(string sourcePath, FindOffsetStruct searchCriteria, out string messages, bool outputLog, bool outputBatchFile)
         {
             int i;
             int j = 0;
@@ -756,9 +756,9 @@ namespace VGMToolbox.util
                             if (!String.IsNullOrEmpty(searchCriteria.ExtraCutSizeBytes))
                             {
                                 cutSize += (long)VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.ExtraCutSizeBytes);
-                            }                            
-                            
-                            ParseFile.ExtractChunkToFile(fs, cutStart, (int)cutSize, Path.Combine(outputFolder, outputFile));
+                            }
+
+                            ParseFile.ExtractChunkToFile(fs, cutStart, (int)cutSize, Path.Combine(outputFolder, outputFile), outputLog, outputBatchFile);
                             
                             ret.AppendFormat(
                                 CultureInfo.CurrentCulture, 

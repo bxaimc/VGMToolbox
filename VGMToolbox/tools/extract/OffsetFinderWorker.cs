@@ -68,7 +68,7 @@ namespace VGMToolbox.tools.extract
             findOffsetStruct.ExtraCutSizeBytes = offsetFinderStruct.extraCutSizeBytes;
 
             string output;
-            ParseFile.FindOffsetAndCutFile(pPath, findOffsetStruct, out output);
+            ParseFile.FindOffsetAndCutFile(pPath, findOffsetStruct, out output, true, true);
 
             this.progressStruct.Clear();
             this.progressStruct.GenericMessage = output;
