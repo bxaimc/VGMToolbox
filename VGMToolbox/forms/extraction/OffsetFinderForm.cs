@@ -76,6 +76,8 @@ namespace VGMToolbox.forms.extraction
                 ConfigurationSettings.AppSettings["Form_SimpleCutter_CheckBoxExtracCutSizeBytes"];
 
             // this.lblStartingOffset.Text
+            // this.lblMinCutSize.Text
+            // this.lblMinCutSizeBytes.Text
 
             this.createEndianList();
             this.createOffsetSizeList();
@@ -104,6 +106,7 @@ namespace VGMToolbox.forms.extraction
 
                     ofStruct.searchStringOffset = this.tbSearchStringOffset.Text;
                     ofStruct.outputFileExtension = this.tbOutputExtension.Text;
+                    ofStruct.MinimumSize = this.tbMinSizeForCut.Text;
 
                     if (this.rbOffsetBasedCutSize.Checked)
                     {
@@ -244,6 +247,12 @@ namespace VGMToolbox.forms.extraction
                 tbSearchStringOffset.ReadOnly = false;
                 tbOutputExtension.ReadOnly = false;
 
+                this.lblMinCutSize.Show();
+                this.tbMinSizeForCut.ReadOnly = false;
+                this.tbMinSizeForCut.Enabled = true;
+                this.tbMinSizeForCut.Show();                
+                this.lblMinCutSizeBytes.Show();
+
                 rbStaticCutSize.Enabled = true;
                 rbOffsetBasedCutSize.Enabled = true;
 
@@ -288,6 +297,12 @@ namespace VGMToolbox.forms.extraction
             {
                 tbSearchStringOffset.ReadOnly = true;
                 tbOutputExtension.ReadOnly = true;
+
+                this.lblMinCutSize.Hide();
+                this.tbMinSizeForCut.ReadOnly = true;
+                this.tbMinSizeForCut.Enabled = false;
+                this.tbMinSizeForCut.Hide();
+                this.lblMinCutSizeBytes.Hide();
 
                 rbStaticCutSize.Checked = false;
                 rbOffsetBasedCutSize.Checked = false;

@@ -25,7 +25,13 @@ namespace VGMToolbox.util
         private bool treatTerminatorStringAsHex;
         private bool includeTerminatorLength;
         private string extraCutSizeBytes;
-        
+
+        public string MinimumSize
+        {
+            set;
+            get;
+        }
+
         public string SearchString
         {
             get { return searchString; }

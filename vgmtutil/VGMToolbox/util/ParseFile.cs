@@ -591,6 +591,7 @@ namespace VGMToolbox.util
             long cutSize;
             long cutSizeOffset;
             byte[] cutSizeBytes;
+            long minimumCutSize = -1;
 
             long previousPosition;
             string outputFolder;
@@ -619,6 +620,12 @@ namespace VGMToolbox.util
             else
             {
                 searchBytes = enc.GetBytes(searchCriteria.SearchString);
+            }
+
+            // parse minimum cut size
+            if (!String.IsNullOrEmpty(searchCriteria.MinimumSize))
+            {
+                minimumCutSize = VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.MinimumSize);
             }
 
             // create terminator bytes
@@ -758,16 +765,21 @@ namespace VGMToolbox.util
                                 cutSize += (long)VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.ExtraCutSizeBytes);
                             }
 
-                            ParseFile.ExtractChunkToFile(fs, cutStart, (int)cutSize, Path.Combine(outputFolder, outputFile), outputLog, outputBatchFile);
-                            
-                            ret.AppendFormat(
-                                CultureInfo.CurrentCulture, 
-                                "  Extracted [{3}] begining at 0x{0}, for string found at: 0x{1}, with size 0x{2}",
-                                cutStart.ToString("X8", CultureInfo.InvariantCulture), 
-                                offset.ToString("X8", CultureInfo.InvariantCulture), 
-                                cutSize.ToString("X8", CultureInfo.InvariantCulture), 
-                                outputFile);
-                            ret.Append(Environment.NewLine);
+                            // check minimum cut size
+                            if (((minimumCutSize > 0) && (cutSize >= minimumCutSize)) ||
+                                (minimumCutSize < 1))
+                            {
+                                ParseFile.ExtractChunkToFile(fs, cutStart, (int)cutSize, Path.Combine(outputFolder, outputFile), outputLog, outputBatchFile);
+
+                                ret.AppendFormat(
+                                    CultureInfo.CurrentCulture,
+                                    "  Extracted [{3}] begining at 0x{0}, for string found at: 0x{1}, with size 0x{2}",
+                                    cutStart.ToString("X8", CultureInfo.InvariantCulture),
+                                    offset.ToString("X8", CultureInfo.InvariantCulture),
+                                    cutSize.ToString("X8", CultureInfo.InvariantCulture),
+                                    outputFile);
+                                ret.Append(Environment.NewLine);
+                            }
 
                             previousOffset = cutStart + cutSize;
                             chunkCount++;

@@ -16,6 +16,7 @@ namespace VGMToolbox.tools.extract
         {
             public string searchString;
             public string startingOffset;
+            public string MinimumSize { set; get; }
             public bool treatSearchStringAsHex;
 
             public bool cutFile;
@@ -52,6 +53,7 @@ namespace VGMToolbox.tools.extract
             VGMToolbox.util.FindOffsetStruct findOffsetStruct = new VGMToolbox.util.FindOffsetStruct();
             findOffsetStruct.SearchString = offsetFinderStruct.searchString;
             findOffsetStruct.TreatSearchStringAsHex = offsetFinderStruct.treatSearchStringAsHex;
+            findOffsetStruct.MinimumSize = offsetFinderStruct.MinimumSize;
 
             findOffsetStruct.CutFile = offsetFinderStruct.cutFile;
             findOffsetStruct.SearchStringOffset = offsetFinderStruct.searchStringOffset;
