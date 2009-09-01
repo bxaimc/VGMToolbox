@@ -70,6 +70,8 @@
             this.rbStaticCutSize = new System.Windows.Forms.RadioButton();
             this.lblStringAtOffset = new System.Windows.Forms.Label();
             this.tbSearchStringOffset = new System.Windows.Forms.TextBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -77,35 +79,37 @@
             this.grpCriteria.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.gbCutSizeOptions.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 507);
-            this.pnlLabels.Size = new System.Drawing.Size(638, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 521);
+            this.pnlLabels.Size = new System.Drawing.Size(757, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(638, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(757, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 430);
-            this.tbOutput.Size = new System.Drawing.Size(638, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 444);
+            this.tbOutput.Size = new System.Drawing.Size(757, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 410);
-            this.pnlButtons.Size = new System.Drawing.Size(638, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 424);
+            this.pnlButtons.Size = new System.Drawing.Size(757, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(578, 0);
+            this.btnCancel.Location = new System.Drawing.Point(697, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(518, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(637, 0);
             // 
             // grpFiles
             // 
@@ -119,7 +123,7 @@
             this.grpFiles.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFiles.Location = new System.Drawing.Point(0, 23);
             this.grpFiles.Name = "grpFiles";
-            this.grpFiles.Size = new System.Drawing.Size(638, 64);
+            this.grpFiles.Size = new System.Drawing.Size(757, 64);
             this.grpFiles.TabIndex = 5;
             this.grpFiles.TabStop = false;
             this.grpFiles.Text = "Files to Search";
@@ -202,7 +206,7 @@
             this.grpCriteria.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpCriteria.Location = new System.Drawing.Point(0, 87);
             this.grpCriteria.Name = "grpCriteria";
-            this.grpCriteria.Size = new System.Drawing.Size(638, 54);
+            this.grpCriteria.Size = new System.Drawing.Size(757, 55);
             this.grpCriteria.TabIndex = 6;
             this.grpCriteria.TabStop = false;
             this.grpCriteria.Text = "Criteria";
@@ -251,19 +255,13 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.lblMinCutSizeBytes);
-            this.groupBox3.Controls.Add(this.lblMinCutSize);
-            this.groupBox3.Controls.Add(this.tbMinSizeForCut);
-            this.groupBox3.Controls.Add(this.cbDoCut);
-            this.groupBox3.Controls.Add(this.lblOutputExtension);
-            this.groupBox3.Controls.Add(this.tbOutputExtension);
+            this.groupBox3.AutoSize = true;
             this.groupBox3.Controls.Add(this.gbCutSizeOptions);
-            this.groupBox3.Controls.Add(this.lblStringAtOffset);
-            this.groupBox3.Controls.Add(this.tbSearchStringOffset);
+            this.groupBox3.Controls.Add(this.panel2);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox3.Location = new System.Drawing.Point(0, 141);
+            this.groupBox3.Location = new System.Drawing.Point(0, 0);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(638, 256);
+            this.groupBox3.Size = new System.Drawing.Size(757, 252);
             this.groupBox3.TabIndex = 7;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Cut Options (all values are relative to the location of the file to be cut)";
@@ -271,7 +269,7 @@
             // lblMinCutSizeBytes
             // 
             this.lblMinCutSizeBytes.AutoSize = true;
-            this.lblMinCutSizeBytes.Location = new System.Drawing.Point(447, 43);
+            this.lblMinCutSizeBytes.Location = new System.Drawing.Point(444, 27);
             this.lblMinCutSizeBytes.Name = "lblMinCutSizeBytes";
             this.lblMinCutSizeBytes.Size = new System.Drawing.Size(32, 13);
             this.lblMinCutSizeBytes.TabIndex = 18;
@@ -280,7 +278,7 @@
             // lblMinCutSize
             // 
             this.lblMinCutSize.AutoSize = true;
-            this.lblMinCutSize.Location = new System.Drawing.Point(236, 43);
+            this.lblMinCutSize.Location = new System.Drawing.Point(233, 27);
             this.lblMinCutSize.Name = "lblMinCutSize";
             this.lblMinCutSize.Size = new System.Drawing.Size(101, 13);
             this.lblMinCutSize.TabIndex = 17;
@@ -288,7 +286,7 @@
             // 
             // tbMinSizeForCut
             // 
-            this.tbMinSizeForCut.Location = new System.Drawing.Point(349, 40);
+            this.tbMinSizeForCut.Location = new System.Drawing.Point(346, 24);
             this.tbMinSizeForCut.Name = "tbMinSizeForCut";
             this.tbMinSizeForCut.Size = new System.Drawing.Size(92, 20);
             this.tbMinSizeForCut.TabIndex = 16;
@@ -297,7 +295,7 @@
             // cbDoCut
             // 
             this.cbDoCut.AutoSize = true;
-            this.cbDoCut.Location = new System.Drawing.Point(9, 19);
+            this.cbDoCut.Location = new System.Drawing.Point(6, 3);
             this.cbDoCut.Name = "cbDoCut";
             this.cbDoCut.Size = new System.Drawing.Size(83, 17);
             this.cbDoCut.TabIndex = 15;
@@ -308,7 +306,7 @@
             // lblOutputExtension
             // 
             this.lblOutputExtension.AutoSize = true;
-            this.lblOutputExtension.Location = new System.Drawing.Point(236, 20);
+            this.lblOutputExtension.Location = new System.Drawing.Point(233, 4);
             this.lblOutputExtension.Name = "lblOutputExtension";
             this.lblOutputExtension.Size = new System.Drawing.Size(107, 13);
             this.lblOutputExtension.TabIndex = 14;
@@ -316,7 +314,7 @@
             // 
             // tbOutputExtension
             // 
-            this.tbOutputExtension.Location = new System.Drawing.Point(349, 17);
+            this.tbOutputExtension.Location = new System.Drawing.Point(346, 1);
             this.tbOutputExtension.Name = "tbOutputExtension";
             this.tbOutputExtension.Size = new System.Drawing.Size(92, 20);
             this.tbOutputExtension.TabIndex = 13;
@@ -341,9 +339,10 @@
             this.gbCutSizeOptions.Controls.Add(this.tbCutSizeOffset);
             this.gbCutSizeOptions.Controls.Add(this.rbOffsetBasedCutSize);
             this.gbCutSizeOptions.Controls.Add(this.rbStaticCutSize);
-            this.gbCutSizeOptions.Location = new System.Drawing.Point(9, 66);
+            this.gbCutSizeOptions.Dock = System.Windows.Forms.DockStyle.Top;
+            this.gbCutSizeOptions.Location = new System.Drawing.Point(3, 65);
             this.gbCutSizeOptions.Name = "gbCutSizeOptions";
-            this.gbCutSizeOptions.Size = new System.Drawing.Size(430, 184);
+            this.gbCutSizeOptions.Size = new System.Drawing.Size(751, 184);
             this.gbCutSizeOptions.TabIndex = 2;
             this.gbCutSizeOptions.TabStop = false;
             this.gbCutSizeOptions.Text = "Cut Size Options";
@@ -519,7 +518,7 @@
             // lblStringAtOffset
             // 
             this.lblStringAtOffset.AutoSize = true;
-            this.lblStringAtOffset.Location = new System.Drawing.Point(6, 43);
+            this.lblStringAtOffset.Location = new System.Drawing.Point(3, 27);
             this.lblStringAtOffset.Name = "lblStringAtOffset";
             this.lblStringAtOffset.Size = new System.Drawing.Size(124, 13);
             this.lblStringAtOffset.TabIndex = 1;
@@ -527,18 +526,46 @@
             // 
             // tbSearchStringOffset
             // 
-            this.tbSearchStringOffset.Location = new System.Drawing.Point(136, 40);
+            this.tbSearchStringOffset.Location = new System.Drawing.Point(133, 24);
             this.tbSearchStringOffset.Name = "tbSearchStringOffset";
             this.tbSearchStringOffset.Size = new System.Drawing.Size(92, 20);
             this.tbSearchStringOffset.TabIndex = 0;
             this.tbSearchStringOffset.Text = "0x00";
             // 
+            // panel1
+            // 
+            this.panel1.AutoScroll = true;
+            this.panel1.AutoSize = true;
+            this.panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.panel1.Controls.Add(this.groupBox3);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 142);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(757, 282);
+            this.panel1.TabIndex = 8;
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.cbDoCut);
+            this.panel2.Controls.Add(this.lblMinCutSizeBytes);
+            this.panel2.Controls.Add(this.tbSearchStringOffset);
+            this.panel2.Controls.Add(this.lblMinCutSize);
+            this.panel2.Controls.Add(this.lblStringAtOffset);
+            this.panel2.Controls.Add(this.tbMinSizeForCut);
+            this.panel2.Controls.Add(this.tbOutputExtension);
+            this.panel2.Controls.Add(this.lblOutputExtension);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel2.Location = new System.Drawing.Point(3, 16);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(751, 49);
+            this.panel2.TabIndex = 19;
+            // 
             // OffsetFinderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(638, 548);
-            this.Controls.Add(this.groupBox3);
+            this.ClientSize = new System.Drawing.Size(757, 562);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.grpCriteria);
             this.Controls.Add(this.grpFiles);
             this.Name = "OffsetFinderForm";
@@ -549,7 +576,7 @@
             this.Controls.SetChildIndex(this.pnlButtons, 0);
             this.Controls.SetChildIndex(this.grpFiles, 0);
             this.Controls.SetChildIndex(this.grpCriteria, 0);
-            this.Controls.SetChildIndex(this.groupBox3, 0);
+            this.Controls.SetChildIndex(this.panel1, 0);
             this.pnlLabels.ResumeLayout(false);
             this.pnlLabels.PerformLayout();
             this.pnlTitle.ResumeLayout(false);
@@ -561,9 +588,12 @@
             this.grpCriteria.ResumeLayout(false);
             this.grpCriteria.PerformLayout();
             this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
             this.gbCutSizeOptions.ResumeLayout(false);
             this.gbCutSizeOptions.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -613,5 +643,7 @@
         private System.Windows.Forms.TextBox tbMinSizeForCut;
         private System.Windows.Forms.Label lblMinCutSize;
         private System.Windows.Forms.Label lblMinCutSizeBytes;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panel2;
     }
 }

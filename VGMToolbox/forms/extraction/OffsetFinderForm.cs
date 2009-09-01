@@ -31,7 +31,7 @@ namespace VGMToolbox.forms.extraction
             this.btnDoTask.Hide();
 
             this.tbOutput.Text = String.Format(ConfigurationSettings.AppSettings["Form_SimpleCutter_IntroText"], PLUGIN_PATH);
-
+           
             InitializeComponent();
 
             this.toolTip1.SetToolTip(this.btnRefresh, "Refresh Presets");
