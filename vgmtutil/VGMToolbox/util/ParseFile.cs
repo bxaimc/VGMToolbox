@@ -779,10 +779,11 @@ namespace VGMToolbox.util
                                     cutSize.ToString("X8", CultureInfo.InvariantCulture),
                                     outputFile);
                                 ret.Append(Environment.NewLine);
+
+                                chunkCount++;
                             }
 
-                            previousOffset = cutStart + cutSize;
-                            chunkCount++;
+                            previousOffset = cutStart + cutSize;                            
                         }
                     }
                     else
