@@ -12,8 +12,6 @@ namespace VGMToolbox.format
     public class Psf2 : Xsf
     {
         public const string SQ_FILE = "SQ.IRX";
-        private Psf2DirectoryEntry[] directoryEntries;
-
         public const string FILE_EXTENSION_BD = ".bd";
         public const string FILE_EXTENSION_HD = ".hd";
         public const string FILE_EXTENSION_SQ = ".sq";
@@ -169,8 +167,8 @@ namespace VGMToolbox.format
 
         public void Unpack(string pDestinationFolder)
         {
-            this.directoryEntries = this.getDirectoryEntries(Xsf.RESERVED_SECTION_OFFSET);
-            this.extractDirectory(this.directoryEntries, pDestinationFolder);
+            Psf2DirectoryEntry[] directoryEntries = this.getDirectoryEntries(Xsf.RESERVED_SECTION_OFFSET);
+            this.extractDirectory(directoryEntries, pDestinationFolder);
         }
 
         private Psf2DirectoryEntry[] getDirectoryEntries(UInt32 pOffset)
@@ -216,7 +214,7 @@ namespace VGMToolbox.format
             }
 
             // loop through entries and process
-            foreach (Psf2DirectoryEntry p in this.directoryEntries)
+            foreach (Psf2DirectoryEntry p in pPsf2DirectoryEntries)
             {
                 filename = Path.Combine(pDestinationFolder, p.Filename);
 
