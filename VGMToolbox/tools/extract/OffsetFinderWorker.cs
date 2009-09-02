@@ -41,6 +41,12 @@ namespace VGMToolbox.tools.extract
                 set { sourcePaths = value; }
             }
 
+            public bool DoSearchStringModulo
+            {
+                set;
+                get;
+            }
+
             public bool DoTerminatorModulo
             {
                 set;
@@ -98,9 +104,13 @@ namespace VGMToolbox.tools.extract
             findOffsetStruct.TreatTerminatorStringAsHex = offsetFinderStruct.treatTerminatorStringAsHex;
             findOffsetStruct.IncludeTerminatorLength = offsetFinderStruct.includeTerminatorLength;
             findOffsetStruct.ExtraCutSizeBytes = offsetFinderStruct.extraCutSizeBytes;            
+            
             findOffsetStruct.DoTerminatorModulo = offsetFinderStruct.DoTerminatorModulo;
             findOffsetStruct.TerminatorStringModuloDivisor = offsetFinderStruct.TerminatorStringModuloDivisor;
             findOffsetStruct.TerminatorStringModuloResult = offsetFinderStruct.TerminatorStringModuloResult;
+            findOffsetStruct.DoSearchStringModulo = offsetFinderStruct.DoSearchStringModulo;
+            findOffsetStruct.SearchStringModuloDivisor = offsetFinderStruct.SearchStringModuloDivisor;
+            findOffsetStruct.SearchStringModuloResult = offsetFinderStruct.SearchStringModuloResult;
 
             string output;
             ParseFile.FindOffsetAndCutFile(pPath, findOffsetStruct, out output, true, true);

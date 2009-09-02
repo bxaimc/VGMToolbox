@@ -669,6 +669,8 @@ namespace VGMToolbox.util
             int chunkCount = 0;
 
             long offset;
+            long searchStringModuloDivisor = 0;
+            long searchStringModuloResult = 0;
             long previousOffset;
 
             long terminatorOffset;
@@ -700,6 +702,13 @@ namespace VGMToolbox.util
             if (!String.IsNullOrEmpty(searchCriteria.MinimumSize))
             {
                 minimumCutSize = VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.MinimumSize);
+            }
+
+            // parse Search String modulo information
+            if (searchCriteria.DoSearchStringModulo)
+            {
+                searchStringModuloDivisor = VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.SearchStringModuloDivisor);
+                searchStringModuloResult = VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.SearchStringModuloResult);
             }
 
             // create terminator bytes
@@ -738,7 +747,10 @@ namespace VGMToolbox.util
                         Path.GetFileNameWithoutExtension(sourcePath) + "_CUT"));
 
                 // search for our string
-                while ((offset = ParseFile.GetNextOffset(fs, previousOffset, searchBytes)) != -1)
+                // while ((offset = ParseFile.GetNextOffset(fs, previousOffset, searchBytes)) != -1)
+                while ((offset = ParseFile.GetNextOffset(fs, previousOffset, searchBytes, 
+                    searchCriteria.DoSearchStringModulo, searchStringModuloDivisor, 
+                    searchStringModuloResult)) != -1)
                 {
                     // do cut file tasks
                     if (searchCriteria.CutFile)

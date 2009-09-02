@@ -81,6 +81,7 @@ namespace VGMToolbox.forms.extraction
 
             this.createEndianList();
             this.createOffsetSizeList();
+            this.doOffsetModuloSearchStringCheckbox();
             this.resetCutSection();
             
             //this.loadPresetsComboBox();
@@ -99,6 +100,13 @@ namespace VGMToolbox.forms.extraction
                 ofStruct.startingOffset = 
                     String.IsNullOrEmpty(tbStartingOffset.Text) ? "0" : tbStartingOffset.Text;
                 ofStruct.treatSearchStringAsHex = cbSearchAsHex.Checked;
+
+                if (cbModOffsetSearchString.Checked)
+                {
+                    ofStruct.DoSearchStringModulo = true;
+                    ofStruct.SearchStringModuloDivisor = this.tbOffsetModuloSearchStringDivisor.Text;
+                    ofStruct.SearchStringModuloResult = this.tbOffsetModuloSearchStringResult.Text;
+                }
 
                 if (cbDoCut.Checked)
                 {
@@ -322,7 +330,6 @@ namespace VGMToolbox.forms.extraction
                 this.tbOffsetModuloTerminatorDivisor.Show();
                 this.tbOffsetModuloTerminatorResult.Show();
                 this.lblOffsetModuloEquals.Show();
-
             }
             else
             {
@@ -656,6 +663,35 @@ namespace VGMToolbox.forms.extraction
                 this.tbOffsetModuloTerminatorResult.Enabled = true;
                 this.tbOffsetModuloTerminatorResult.Clear();
             }
+        }
+
+        private void doOffsetModuloSearchStringCheckbox()
+        {
+            if (!cbModOffsetSearchString.Checked)
+            {
+                this.tbOffsetModuloSearchStringDivisor.ReadOnly = true;
+                this.tbOffsetModuloSearchStringDivisor.Enabled = false;
+                this.tbOffsetModuloSearchStringDivisor.Clear();
+
+                this.tbOffsetModuloSearchStringResult.ReadOnly = true;
+                this.tbOffsetModuloSearchStringResult.Enabled = false;
+                this.tbOffsetModuloSearchStringResult.Clear();
+            }
+            else
+            {
+                this.tbOffsetModuloSearchStringDivisor.ReadOnly = false;
+                this.tbOffsetModuloSearchStringDivisor.Enabled = true;
+                this.tbOffsetModuloSearchStringDivisor.Clear();
+
+                this.tbOffsetModuloSearchStringResult.ReadOnly = false;
+                this.tbOffsetModuloSearchStringResult.Enabled = true;
+                this.tbOffsetModuloSearchStringResult.Clear();
+            }
+        }
+
+        private void cbModOffsetSearchString_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doOffsetModuloSearchStringCheckbox();
         }
     }
 }
