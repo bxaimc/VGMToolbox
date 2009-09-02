@@ -238,6 +238,76 @@ namespace VGMToolbox.util
             return ret;
         }
 
+        public static long GetNextOffset(Stream stream, long startingOffset,
+            byte[] searchBytes, bool doOffsetModulo, long offsetModuloDivisor, 
+            long offsetModuloResult)
+        { 
+            return GetNextOffset(stream, startingOffset, searchBytes,
+                doOffsetModulo, offsetModuloDivisor, offsetModuloResult, true);
+        }
+
+        public static long GetNextOffset(Stream stream, long startingOffset,
+            byte[] searchBytes, bool doOffsetModulo, long offsetModuloDivisor, 
+            long offsetModuloResult, bool returnStreamToIncomingPosition)
+        {
+            long initialStreamPosition = 0;
+
+            if (returnStreamToIncomingPosition)
+            {
+                initialStreamPosition = stream.Position;
+            }
+
+            bool itemFound = false;
+            long absoluteOffset = startingOffset;
+            long relativeOffset;
+            long actualOffset;
+            byte[] checkBytes = new byte[Constants.FileReadChunkSize];
+            byte[] compareBytes;
+
+            long ret = -1;
+
+            while (!itemFound && (absoluteOffset < stream.Length))
+            {
+                stream.Position = absoluteOffset;
+                stream.Read(checkBytes, 0, Constants.FileReadChunkSize);
+                relativeOffset = 0;
+
+                while (!itemFound && (relativeOffset < Constants.FileReadChunkSize))
+                {
+                    actualOffset = absoluteOffset + relativeOffset;
+
+                    if ((!doOffsetModulo) ||
+                        (actualOffset % offsetModuloDivisor == offsetModuloResult))
+                    {
+                        if ((relativeOffset + searchBytes.Length) < checkBytes.Length)
+                        {
+                            compareBytes = new byte[searchBytes.Length];
+                            Array.Copy(checkBytes, relativeOffset, compareBytes, 0, searchBytes.Length);
+
+                            if (CompareSegment(compareBytes, 0, searchBytes))
+                            {
+                                itemFound = true;
+                                ret = actualOffset;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    relativeOffset++;
+                }
+
+                absoluteOffset += Constants.FileReadChunkSize - searchBytes.Length;
+            }
+
+            // return stream to incoming position
+            if (returnStreamToIncomingPosition)
+            {
+                stream.Position = initialStreamPosition;
+            }
+
+            return ret;
+        }
+
         public static Dictionary<byte[], long[]> GetAllOffsets(Stream stream, long startingOffset,
             byte[][] searchByteArrays, bool returnStreamToIncomingPosition)
         {
@@ -601,7 +671,6 @@ namespace VGMToolbox.util
             long offset;
             long previousOffset;
 
-            bool terminatorFound;
             long terminatorOffset;
             long terminatorModuloDivisor = 0;
             long terminatorModuloResult = 0;
@@ -719,32 +788,17 @@ namespace VGMToolbox.util
                                     terminatorModuloDivisor = VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.TerminatorStringModuloDivisor);
                                     terminatorModuloResult = VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.TerminatorStringModuloResult);
                                 }
+
+                                terminatorOffset = GetNextOffset(fs, offset + 1, terminatorBytes,
+                                    searchCriteria.DoTerminatorModulo, terminatorModuloDivisor,
+                                    terminatorModuloResult);
                                 
-                                // loop until we find a match                                 
-                                terminatorFound = false;
+                                 cutSize = terminatorOffset - cutStart;
 
-                                while (!terminatorFound)
+                                if (searchCriteria.IncludeTerminatorLength)
                                 {
-                                    // get offset of terminator
-                                    terminatorOffset = GetNextOffset(fs, offset + 1, terminatorBytes);
-
-                                    // check modulo if needed
-                                    if ((!searchCriteria.DoTerminatorModulo) ||
-                                        (terminatorOffset % terminatorModuloDivisor == terminatorModuloResult))
-                                    {
-                                        terminatorFound = true;
-                                        cutSize = terminatorOffset - cutStart;
-
-                                        if (searchCriteria.IncludeTerminatorLength)
-                                        {
-                                            cutSize += terminatorBytes.Length;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        offset = terminatorOffset;
-                                    }
-                                } // while (!terminatorFound)                               
+                                    cutSize += terminatorBytes.Length;
+                                }                          
                             }
                         }
                         else // static size
