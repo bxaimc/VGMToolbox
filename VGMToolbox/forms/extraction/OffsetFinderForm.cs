@@ -123,6 +123,13 @@ namespace VGMToolbox.forms.extraction
                         ofStruct.terminatorString = this.tbTerminatorString.Text;
                         ofStruct.treatTerminatorStringAsHex = this.cbTreatTerminatorAsHex.Checked;
                         ofStruct.includeTerminatorLength = this.cbIncludeTerminatorInLength.Checked;
+                        
+                        if (cbModOffsetTerminator.Checked)
+                        {
+                            ofStruct.DoTerminatorModulo = true;
+                            ofStruct.TerminatorStringModuloDivisor = this.tbOffsetModuloTerminatorDivisor.Text;
+                            ofStruct.TerminatorStringModuloResult = this.tbOffsetModuloTerminatorResult.Text;
+                        }
                     }
                     else if (this.rbStaticCutSize.Checked)
                     {
@@ -158,6 +165,11 @@ namespace VGMToolbox.forms.extraction
                 tbTerminatorString.ReadOnly = true;
                 cbTreatTerminatorAsHex.Enabled = false;
                 cbIncludeTerminatorInLength.Enabled = false;
+                this.cbModOffsetTerminator.Enabled = false;
+                this.tbOffsetModuloTerminatorDivisor.ReadOnly = true;
+                this.tbOffsetModuloTerminatorDivisor.Enabled = false;                
+                this.tbOffsetModuloTerminatorResult.ReadOnly = true;
+                this.tbOffsetModuloTerminatorResult.Enabled = false;
             }
             else if (rbOffsetBasedCutSize.Checked)
             {
@@ -168,6 +180,11 @@ namespace VGMToolbox.forms.extraction
                 tbTerminatorString.ReadOnly = true;
                 cbTreatTerminatorAsHex.Enabled = false;
                 cbIncludeTerminatorInLength.Enabled = false;
+                this.cbModOffsetTerminator.Enabled = false;
+                this.tbOffsetModuloTerminatorDivisor.ReadOnly = true;
+                this.tbOffsetModuloTerminatorDivisor.Enabled = false;
+                this.tbOffsetModuloTerminatorResult.ReadOnly = true;
+                this.tbOffsetModuloTerminatorResult.Enabled = false;
             }
             else
             {
@@ -178,7 +195,14 @@ namespace VGMToolbox.forms.extraction
                 tbTerminatorString.ReadOnly = false;
                 cbTreatTerminatorAsHex.Enabled = true;
                 cbIncludeTerminatorInLength.Enabled = true;
+                this.cbModOffsetTerminator.Enabled = true;
+                this.tbOffsetModuloTerminatorDivisor.ReadOnly = false;
+                this.tbOffsetModuloTerminatorDivisor.Enabled = true;
+                this.tbOffsetModuloTerminatorResult.ReadOnly = false;
+                this.tbOffsetModuloTerminatorResult.Enabled = true;
             }
+
+            this.doOffsetModuloTerminatorCheckbox();
         }
 
         private void createEndianList()
@@ -292,6 +316,13 @@ namespace VGMToolbox.forms.extraction
 
                 this.cbAddExtraBytes.Show();
                 this.tbExtraCutSizeBytes.Show();
+
+                this.cbModOffsetTerminator.Checked = false;
+                this.cbModOffsetTerminator.Show();
+                this.tbOffsetModuloTerminatorDivisor.Show();
+                this.tbOffsetModuloTerminatorResult.Show();
+                this.lblOffsetModuloEquals.Show();
+
             }
             else
             {
@@ -344,7 +375,15 @@ namespace VGMToolbox.forms.extraction
 
                 this.cbAddExtraBytes.Hide();
                 this.tbExtraCutSizeBytes.Hide();
-            }        
+
+                this.cbModOffsetTerminator.Checked = false;
+                this.cbModOffsetTerminator.Hide();
+                this.tbOffsetModuloTerminatorDivisor.Hide();
+                this.tbOffsetModuloTerminatorResult.Hide();
+                this.lblOffsetModuloEquals.Hide();
+            }
+
+            this.doOffsetModuloTerminatorCheckbox();
         }
         private void cbAddExtraBytes_CheckedChanged(object sender, EventArgs e)
         {
@@ -588,6 +627,35 @@ namespace VGMToolbox.forms.extraction
         private void btnRefresh_Click(object sender, EventArgs e)
         {
             this.loadOffsetPlugins();
+        }
+
+        private void cbModOffsetTerminator_CheckedChanged(object sender, EventArgs e)
+        {
+            doOffsetModuloTerminatorCheckbox();
+        }
+
+        private void doOffsetModuloTerminatorCheckbox()
+        {
+            if (!cbModOffsetTerminator.Checked)
+            {
+                this.tbOffsetModuloTerminatorDivisor.ReadOnly = true;
+                this.tbOffsetModuloTerminatorDivisor.Enabled = false;
+                this.tbOffsetModuloTerminatorDivisor.Clear();
+
+                this.tbOffsetModuloTerminatorResult.ReadOnly = true;
+                this.tbOffsetModuloTerminatorResult.Enabled = false;
+                this.tbOffsetModuloTerminatorResult.Clear();
+            }
+            else
+            {
+                this.tbOffsetModuloTerminatorDivisor.ReadOnly = false;
+                this.tbOffsetModuloTerminatorDivisor.Enabled = true;
+                this.tbOffsetModuloTerminatorDivisor.Clear();
+
+                this.tbOffsetModuloTerminatorResult.ReadOnly = false;
+                this.tbOffsetModuloTerminatorResult.Enabled = true;
+                this.tbOffsetModuloTerminatorResult.Clear();
+            }
         }
     }
 }

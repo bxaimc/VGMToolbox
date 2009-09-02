@@ -26,6 +26,36 @@ namespace VGMToolbox.util
         private bool includeTerminatorLength;
         private string extraCutSizeBytes;
 
+        public string SearchStringModuloDivisor
+        {
+            set;
+            get;
+        }
+
+        public string SearchStringModuloResult
+        {
+            set;
+            get;
+        }
+
+        public bool DoTerminatorModulo
+        {
+            set;
+            get;
+        }
+
+        public string TerminatorStringModuloDivisor
+        {
+            set;
+            get;
+        }
+
+        public string TerminatorStringModuloResult
+        {
+            set;
+            get;
+        }
+
         public string MinimumSize
         {
             set;

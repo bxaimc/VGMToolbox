@@ -588,7 +588,7 @@ namespace VGMToolbox.util
             System.Text.Encoding enc = System.Text.Encoding.ASCII;
 
             long cutStart;
-            long cutSize;
+            long cutSize = 0;
             long cutSizeOffset;
             byte[] cutSizeBytes;
             long minimumCutSize = -1;
@@ -600,6 +600,11 @@ namespace VGMToolbox.util
 
             long offset;
             long previousOffset;
+
+            bool terminatorFound;
+            long terminatorOffset;
+            long terminatorModuloDivisor = 0;
+            long terminatorModuloResult = 0;
 
             bool skipCut;
 
@@ -653,21 +658,27 @@ namespace VGMToolbox.util
                 ret.AppendFormat("[{0}]", sourcePath);
                 ret.Append(Environment.NewLine);
 
+                // setup starting offset
                 previousOffset = 
                     String.IsNullOrEmpty(searchCriteria.StartingOffset) ? 0 : VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.StartingOffset);
+                
+                // build output folder path
                 outputFolder = Path.GetFullPath(
                     Path.Combine(
                         Path.GetDirectoryName(sourcePath),
                         Path.GetFileNameWithoutExtension(sourcePath) + "_CUT"));
 
+                // search for our string
                 while ((offset = ParseFile.GetNextOffset(fs, previousOffset, searchBytes)) != -1)
                 {
+                    // do cut file tasks
                     if (searchCriteria.CutFile)
                     {
                         skipCut = false;
 
                         cutStart = offset - VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.SearchStringOffset);
 
+                        // determine cut size from value at offset
                         if (searchCriteria.IsCutSizeAnOffset)
                         {
                             cutSizeOffset = cutStart + VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.CutSize);
@@ -699,23 +710,44 @@ namespace VGMToolbox.util
                                     break;
                             }
                         }
-                        else if (searchCriteria.UseTerminatorForCutSize)
+                        else if (searchCriteria.UseTerminatorForCutSize) // look for terminator
                         {
                             if (cutStart >= 0)
-                            {
-                                cutSize = GetNextOffset(fs, offset + 1, terminatorBytes) - cutStart;
-
-                                if (searchCriteria.IncludeTerminatorLength)
+                            {                                                                
+                                if (searchCriteria.DoTerminatorModulo)
                                 {
-                                    cutSize += terminatorBytes.Length;
+                                    terminatorModuloDivisor = VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.TerminatorStringModuloDivisor);
+                                    terminatorModuloResult = VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.TerminatorStringModuloResult);
                                 }
-                            }
-                            else
-                            {
-                                cutSize = 0;
+                                
+                                // loop until we find a match                                 
+                                terminatorFound = false;
+
+                                while (!terminatorFound)
+                                {
+                                    // get offset of terminator
+                                    terminatorOffset = GetNextOffset(fs, offset + 1, terminatorBytes);
+
+                                    // check modulo if needed
+                                    if ((!searchCriteria.DoTerminatorModulo) ||
+                                        (terminatorOffset % terminatorModuloDivisor == terminatorModuloResult))
+                                    {
+                                        terminatorFound = true;
+                                        cutSize = terminatorOffset - cutStart;
+
+                                        if (searchCriteria.IncludeTerminatorLength)
+                                        {
+                                            cutSize += terminatorBytes.Length;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        offset = terminatorOffset;
+                                    }
+                                } // while (!terminatorFound)                               
                             }
                         }
-                        else
+                        else // static size
                         {
                             cutSize = VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.CutSize);
                         }
@@ -786,7 +818,7 @@ namespace VGMToolbox.util
                             previousOffset = cutStart + cutSize;                            
                         }
                     }
-                    else
+                    else // just output text
                     {
                         // just append the offset
                         ret.AppendFormat(CultureInfo.CurrentCulture, "  String found at: 0x{0}", offset.ToString("X8", CultureInfo.InvariantCulture));
