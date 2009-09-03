@@ -19,6 +19,8 @@ namespace VGMToolbox.tools.extract
                 get { return sourcePaths; }
                 set { sourcePaths = value; }
             }
+
+            public bool FilterAgainstBlockId { set; get; }
         }
 
         public ExtractCdxaWorker():
@@ -33,6 +35,7 @@ namespace VGMToolbox.tools.extract
             extStruct.AddRiffHeader = extractCdxaStruct.AddRiffHeader;
             extStruct.PatchByte0x11 = extractCdxaStruct.PatchByte0x11;
             extStruct.SilentFramesCount = extractCdxaStruct.SilentFramesCount;
+            extStruct.FilterAgainstBlockId = extractCdxaStruct.FilterAgainstBlockId;
 
             CdxaUtil.ExtractXaFiles(extStruct);            
         }       

@@ -35,6 +35,12 @@ namespace VGMToolbox.format.util
             set { silentFramesCount = value; }
             get { return silentFramesCount; }
         }
+
+        public bool FilterAgainstBlockId
+        {
+            set;
+            get;
+        }
     }
     
     public class CdxaUtil
@@ -70,7 +76,7 @@ namespace VGMToolbox.format.util
                         trackId = ParseFile.ParseSimpleOffset(fs, offset + Cdxa.XA_TRACK_OFFSET, Cdxa.XA_TRACK_SIZE);
                         trackKey = BitConverter.ToUInt32(trackId, 0);
 
-                        if (!ParseFile.ByteArrayToString(trackId).EndsWith(Cdxa.XA_ENDING_DIGITS))
+                        if ((pExtractXaStruct.FilterAgainstBlockId) && (!ParseFile.ByteArrayToString(trackId).EndsWith(Cdxa.XA_ENDING_DIGITS)))
                         {
                             offset = ParseFile.GetNextOffset(fs, offset + 1, Cdxa.XA_SIG);
                         }
