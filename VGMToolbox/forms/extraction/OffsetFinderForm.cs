@@ -611,6 +611,7 @@ namespace VGMToolbox.forms.extraction
             {
                 preset.SearchParameters.CutParameters.CutStyle = CutStyle.terminator;
                 preset.SearchParameters.CutParameters.TerminatorString = this.tbTerminatorString.Text;
+                preset.SearchParameters.CutParameters.TreatTerminatorStringAsHexSpecified = this.cbTreatTerminatorAsHex.Checked;
                 preset.SearchParameters.CutParameters.TreatTerminatorStringAsHex = this.cbTreatTerminatorAsHex.Checked;
                 preset.SearchParameters.CutParameters.IncludeTerminatorInSize = this.cbIncludeTerminatorInLength.Checked;
             }
