@@ -952,7 +952,7 @@ namespace VGMToolbox.format.util
                         (Path.GetFileNameWithoutExtension(pPath) + "extract" + PsxSequence.FILE_EXTENSION));
                 }
 
-                while ((offsetLocation = ParseFile.GetNextOffset(fs, previousOffset, PsxSequence.ASCII_SIGNATURE)) > -1)
+                while ((offsetLocation = ParseFile.GetNextOffset(fs, previousOffset, PsxSequence.ASCII_SIGNATURE_SEQ)) > -1)
                 {
                     seqEndLocation = ParseFile.GetNextOffset(fs, offsetLocation, PsxSequence.END_SEQUENCE);
                     seqEndLocationType2 = ParseFile.GetNextOffset(fs, offsetLocation, PsxSequence.END_SEQUENCE_TYPE2);

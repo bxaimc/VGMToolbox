@@ -107,6 +107,7 @@ namespace VGMToolbox.tools.xsf
             ProbableVbStruct potentialVb;
             ProbableVbStruct[] potentialVbList;
             byte[] vbRow = new byte[0x10];
+            long previousVbOffset = -1;
 
             // improve algorithm later
             using (FileStream fs = File.OpenRead(pPath))
@@ -170,7 +171,7 @@ namespace VGMToolbox.tools.xsf
                 offset = 0;
 
                 // build file list
-                while ((offset = ParseFile.GetNextOffset(fs, offset, PsxSequence.ASCII_SIGNATURE)) > -1)
+                while ((offset = ParseFile.GetNextOffset(fs, offset, PsxSequence.ASCII_SIGNATURE_SEQ)) > -1)
                 {
                     seqEof = ParseFile.GetNextOffset(fs, offset, PsxSequence.END_SEQUENCE);
 
@@ -238,6 +239,10 @@ namespace VGMToolbox.tools.xsf
                 
                 offset = 0;
 
+                // setup arrays for checking skips
+                VhStruct[] vhList = (VhStruct[])vhArrayList.ToArray(typeof(VhStruct));
+                ProbableSeqStruct[] seqList = (ProbableSeqStruct[])seqFiles.ToArray(typeof(ProbableSeqStruct));
+
                 // build list of potential adpcm start indexes (VB_START_BYTES)
                 potentialVb = new ProbableVbStruct();
 
@@ -259,8 +264,19 @@ namespace VGMToolbox.tools.xsf
 
                             if (IsPotentialAdpcm(fs, offset + 0x10, minRowLength))
                             {
-                                potentialVb.offset = offset;
-                                emptyRowList.Add(potentialVb);
+                                // check if we have passed a different file type and reset previousVbOffset if we did
+                                if (SteppedOverAnotherFile(previousVbOffset, offset, vhList, seqList))
+                                {
+                                    previousVbOffset = -1;
+                                }
+
+                                // try to preserve proper VB chunk size
+                                if ((previousVbOffset == -1) || ((offset - previousVbOffset) % 0x10 == 0))
+                                {
+                                    previousVbOffset = offset;
+                                    potentialVb.offset = offset;
+                                    emptyRowList.Add(potentialVb);
+                                }
                             }
 
                         }
@@ -444,6 +460,49 @@ namespace VGMToolbox.tools.xsf
                         ret.vbLength = -1;
                         break;
                     }
+                }
+            }
+
+            return ret;
+        }
+
+        /// <summary>
+        /// Checks to see if the input offsets contain another file.  Used during VB checking to see if a reset of the
+        /// previous offset is needed.
+        /// </summary>
+        /// <param name="previousOffset"></param>
+        /// <param name="currentOffset"></param>
+        /// <param name="vhObjects"></param>
+        /// <param name="seqObjects"></param>
+        /// <returns></returns>
+        private bool SteppedOverAnotherFile(long previousOffset, long currentOffset, VhStruct[] vhObjects,
+            ProbableSeqStruct[] seqObjects)
+        {
+            bool ret = false;
+
+            if (previousOffset != -1)
+            {
+                for (int i = 0; i < vhObjects.Length; i++)
+                { 
+                    if ((previousOffset < vhObjects[i].startingOffset) && 
+                        (currentOffset > vhObjects[i].startingOffset))
+                    {
+                        ret = true;
+                        break;
+                    }
+                }
+
+                if (!ret)
+                {
+                    for (int i = 0; i < seqObjects.Length; i++)
+                    {
+                        if ((previousOffset < seqObjects[i].offset) &&
+                            (currentOffset > seqObjects[i].offset))
+                        {
+                            ret = true;
+                            break;
+                        }
+                    }                
                 }
             }
 
