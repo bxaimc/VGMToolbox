@@ -101,6 +101,7 @@ namespace VGMToolbox.tools.xsf
             int minRowLength;
 
             VhStruct vhObject;
+            long sampleOffset;
             ArrayList vhArrayList = new ArrayList();
 
             ArrayList emptyRowList = new ArrayList();
@@ -140,7 +141,8 @@ namespace VGMToolbox.tools.xsf
 
                     for (int i = 0; i < vhObject.vbSampleCount; i++)
                     {
-                        vhObject.vbSampleSizes[i] = (uint)BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(fs, vhObject.offsetTableOffset + (i * 2), 2), 0);
+                        sampleOffset = vhObject.offsetTableOffset + (i * 2);
+                        vhObject.vbSampleSizes[i] = (uint)BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(fs, sampleOffset, 2), 0);
                         vhObject.vbSampleSizes[i] <<= 3;
 
                         if ((minSampleSize < 0) || (vhObject.vbSampleSizes[i] < minSampleSize))
@@ -159,7 +161,6 @@ namespace VGMToolbox.tools.xsf
                 }
 
                 #endregion
-
 
                 // get SEQ Files
                 #region SEQ EXTRACT
@@ -253,39 +254,37 @@ namespace VGMToolbox.tools.xsf
                     minRowLength = ADPCM_ROW_COUNT;
                 }
 
-                while ((offset = ParseFile.GetNextOffset(fs, offset, VB_START_BYTES, false)) > -1)
+                while ((offset = ParseFile.GetNextOffset(fs, offset, VB_START_BYTES, psfStruct.UseZeroOffsetForVb,
+                    0x10, 0)) > -1)
                 {
-                    if ((psfStruct.UseZeroOffsetForVb) && (offset % 0x10 == 0) ||
-                        (!psfStruct.UseZeroOffsetForVb))
-                    {
-                        try
+                    try
+                    {                        
+                        vbRow = ParseFile.ParseSimpleOffset(fs, offset, vbRow.Length);
+
+                        if (IsPotentialAdpcm(fs, offset + 0x10, minRowLength))
                         {
-                            vbRow = ParseFile.ParseSimpleOffset(fs, offset, vbRow.Length);
-
-                            if (IsPotentialAdpcm(fs, offset + 0x10, minRowLength))
+                            // check if we have passed a different file type and reset previousVbOffset if we did
+                            if (SteppedOverAnotherFile(previousVbOffset, offset, vhList, seqList))
                             {
-                                // check if we have passed a different file type and reset previousVbOffset if we did
-                                if (SteppedOverAnotherFile(previousVbOffset, offset, vhList, seqList))
-                                {
-                                    previousVbOffset = -1;
-                                }
-
-                                // try to preserve proper VB chunk size
-                                if ((previousVbOffset == -1) || ((offset - previousVbOffset) % 0x10 == 0))
-                                {
-                                    previousVbOffset = offset;
-                                    potentialVb.offset = offset;
-                                    emptyRowList.Add(potentialVb);
-                                }
+                                // need to add flag here so length calculation doesn't screw up?
+                                previousVbOffset = -1;
                             }
 
+                            // try to preserve proper VB chunk size
+                            if ((previousVbOffset == -1) || ((offset - previousVbOffset) % 0x10 == 0))
+                            {
+                                previousVbOffset = offset;
+                                potentialVb.offset = offset;
+                                emptyRowList.Add(potentialVb);
+                            }
                         }
-                        catch (Exception vbEx)
-                        {
-                            this.progressStruct.Clear();
-                            this.progressStruct.ErrorMessage = String.Format(" ERROR finding VB for <{0}> at Offset 0x{1}: {2}{3}", pPath, offset.ToString("X8"), vbEx.Message, Environment.NewLine);
-                            this.ReportProgress(this.progress, this.progressStruct);
-                        }
+
+                    }
+                    catch (Exception vbEx)
+                    {
+                        this.progressStruct.Clear();
+                        this.progressStruct.ErrorMessage = String.Format(" ERROR finding VB for <{0}> at Offset 0x{1}: {2}{3}", pPath, offset.ToString("X8"), vbEx.Message, Environment.NewLine);
+                        this.ReportProgress(this.progress, this.progressStruct);
                     }
 
                     offset += 1;
@@ -366,8 +365,8 @@ namespace VGMToolbox.tools.xsf
                                     this.progressStruct.ErrorMessage = String.Format(" ERROR building VB for <{0}>: {1}{2}", pPath, ex.Message, Environment.NewLine);
                                     this.ReportProgress(this.progress, this.progressStruct);
                                 }
-                            }
-                        }
+                            } // if (vhObject.vbSampleSizes[0] == potentialVbList[j].length)
+                        } // for (int j = 0; j < potentialVbList.Length; j++)
                     }
                 }
                 #endregion
@@ -437,6 +436,7 @@ namespace VGMToolbox.tools.xsf
                                 searchStream.Read(lastLine, 0, lastLine.Length);
 
                                 if (lastLine[1] == 3 ||
+                                    lastLine[1] == 7 ||
                                     ParseFile.CompareSegment(lastLine, 0, VB_END_BYTES_1) ||
                                     ParseFile.CompareSegment(lastLine, 0, VB_END_BYTES_2))
                                 {

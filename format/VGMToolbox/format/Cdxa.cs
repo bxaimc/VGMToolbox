@@ -37,6 +37,6 @@ namespace VGMToolbox.format
         public const int XA_TRACK_SIZE = 0x04;
         public const string XA_FILE_EXTENSION = ".xa";
 
-        public const string XA_ENDING_DIGITS = "6401";
+        public const int XA_CHUNK_ID_DIGITS = 0x64;
     }
 }

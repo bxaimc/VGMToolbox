@@ -76,7 +76,7 @@ namespace VGMToolbox.format.util
                         trackId = ParseFile.ParseSimpleOffset(fs, offset + Cdxa.XA_TRACK_OFFSET, Cdxa.XA_TRACK_SIZE);
                         trackKey = BitConverter.ToUInt32(trackId, 0);
 
-                        if ((pExtractXaStruct.FilterAgainstBlockId) && (!ParseFile.ByteArrayToString(trackId).EndsWith(Cdxa.XA_ENDING_DIGITS)))
+                        if ((pExtractXaStruct.FilterAgainstBlockId) && (trackId[2] != Cdxa.XA_CHUNK_ID_DIGITS))
                         {
                             offset = ParseFile.GetNextOffset(fs, offset + 1, Cdxa.XA_SIG);
                         }
