@@ -45,7 +45,7 @@ namespace xsfrecmp
                     }
                     else if (!File.Exists(filename))
                     {
-                        Console.WriteLine("  Error: Input file cannot be found.");
+                        Console.WriteLine(String.Format("  Error: Input file cannot be found <{0}>", filename));
                     }
                     else if (XsfUtil.GetXsfFormatString(filename) == null)
                     {
