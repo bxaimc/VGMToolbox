@@ -42,6 +42,7 @@
             this.cbLoopFileEnd = new System.Windows.Forms.RadioButton();
             this.cbNoLoops = new System.Windows.Forms.RadioButton();
             this.cbFrequency = new System.Windows.Forms.ComboBox();
+            this.cbManualEntry = new System.Windows.Forms.RadioButton();
             this.cbChannels = new System.Windows.Forms.ComboBox();
             this.cbInterleave = new System.Windows.Forms.ComboBox();
             this.cbHeaderSkip = new System.Windows.Forms.ComboBox();
@@ -64,7 +65,6 @@
             this.rbExtract = new System.Windows.Forms.RadioButton();
             this.contextMenuRefresh = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.refreshFileListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.cbManualEntry = new System.Windows.Forms.RadioButton();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -77,30 +77,30 @@
             // pnlLabels
             // 
             this.pnlLabels.Location = new System.Drawing.Point(0, 503);
-            this.pnlLabels.Size = new System.Drawing.Size(638, 19);
+            this.pnlLabels.Size = new System.Drawing.Size(850, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(638, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(850, 20);
             // 
             // tbOutput
             // 
             this.tbOutput.Location = new System.Drawing.Point(0, 426);
-            this.tbOutput.Size = new System.Drawing.Size(638, 77);
+            this.tbOutput.Size = new System.Drawing.Size(850, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
             this.pnlButtons.Location = new System.Drawing.Point(0, 406);
-            this.pnlButtons.Size = new System.Drawing.Size(638, 20);
+            this.pnlButtons.Size = new System.Drawing.Size(850, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(578, 0);
+            this.btnCancel.Location = new System.Drawing.Point(790, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(518, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(730, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // lbFiles
@@ -257,6 +257,20 @@
             this.cbFrequency.Name = "cbFrequency";
             this.cbFrequency.Size = new System.Drawing.Size(100, 21);
             this.cbFrequency.TabIndex = 24;
+            this.cbFrequency.SelectedValueChanged += new System.EventHandler(this.cbFrequency_SelectedValueChanged);
+            // 
+            // cbManualEntry
+            // 
+            this.cbManualEntry.AutoSize = true;
+            this.cbManualEntry.Checked = true;
+            this.cbManualEntry.Location = new System.Drawing.Point(9, 176);
+            this.cbManualEntry.Name = "cbManualEntry";
+            this.cbManualEntry.Size = new System.Drawing.Size(87, 17);
+            this.cbManualEntry.TabIndex = 28;
+            this.cbManualEntry.TabStop = true;
+            this.cbManualEntry.Text = "Manual Entry";
+            this.cbManualEntry.UseVisualStyleBackColor = true;
+            this.cbManualEntry.CheckedChanged += new System.EventHandler(this.cbManualEntry_CheckedChanged);
             // 
             // cbChannels
             // 
@@ -265,6 +279,7 @@
             this.cbChannels.Name = "cbChannels";
             this.cbChannels.Size = new System.Drawing.Size(100, 21);
             this.cbChannels.TabIndex = 23;
+            this.cbChannels.SelectedValueChanged += new System.EventHandler(this.cbChannels_SelectedValueChanged);
             // 
             // cbInterleave
             // 
@@ -274,6 +289,7 @@
             this.cbInterleave.Size = new System.Drawing.Size(100, 21);
             this.cbInterleave.TabIndex = 22;
             this.cbInterleave.Text = "0";
+            this.cbInterleave.SelectedValueChanged += new System.EventHandler(this.cbInterleave_SelectedValueChanged);
             // 
             // cbHeaderSkip
             // 
@@ -283,6 +299,7 @@
             this.cbHeaderSkip.Size = new System.Drawing.Size(100, 21);
             this.cbHeaderSkip.TabIndex = 21;
             this.cbHeaderSkip.Text = "0";
+            this.cbHeaderSkip.SelectedValueChanged += new System.EventHandler(this.cbHeaderSkip_SelectedValueChanged);
             // 
             // cbCapcomHack
             // 
@@ -454,24 +471,11 @@
             this.refreshFileListToolStripMenuItem.Text = "Refresh File List";
             this.refreshFileListToolStripMenuItem.Click += new System.EventHandler(this.refreshFileListToolStripMenuItem_Click);
             // 
-            // cbManualEntry
-            // 
-            this.cbManualEntry.AutoSize = true;
-            this.cbManualEntry.Checked = true;
-            this.cbManualEntry.Location = new System.Drawing.Point(9, 176);
-            this.cbManualEntry.Name = "cbManualEntry";
-            this.cbManualEntry.Size = new System.Drawing.Size(87, 17);
-            this.cbManualEntry.TabIndex = 28;
-            this.cbManualEntry.TabStop = true;
-            this.cbManualEntry.Text = "Manual Entry";
-            this.cbManualEntry.UseVisualStyleBackColor = true;
-            this.cbManualEntry.CheckedChanged += new System.EventHandler(this.cbManualEntry_CheckedChanged);
-            // 
             // Genh_CreatorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(638, 544);
+            this.ClientSize = new System.Drawing.Size(850, 544);
             this.Controls.Add(this.grpFormat);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.cbHeaderOnly);

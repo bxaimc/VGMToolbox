@@ -162,13 +162,22 @@ namespace VGMToolbox.forms
                 cbCapcomHack.Hide();
             }
 
+            this.showLoopPointsForSelectedFile();
+
         }
         private void lbFiles_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (lbFiles.SelectedIndices.Count > 1)
             {
                 this.tbLoopEnd.Text = String.Empty;
+
+                if (this.cbFindLoop.Checked)
+                {
+                    this.tbLoopStart.Text = String.Empty;
+                }
             }
+            
+            this.showLoopPointsForSelectedFile();
         }
 
         private void doLoopCheckboxes()
@@ -183,26 +192,25 @@ namespace VGMToolbox.forms
                 this.tbLoopStart.Clear();
                 this.tbLoopStart.ReadOnly = true;
 
-                this.tbLoopStart.Clear();
+                this.tbLoopEnd.Clear();
                 this.tbLoopEnd.ReadOnly = true;
             }
             else if (cbLoopFileEnd.Checked)
             {
                 this.tbLoopStart.ReadOnly = false;
 
-                this.tbLoopStart.Clear();
+                this.tbLoopEnd.Clear();
                 this.tbLoopEnd.ReadOnly = true;            
             }
+
+            this.showLoopPointsForSelectedFile();
         }
-        
-        private void btnDoTask_Click(object sender, EventArgs e)
+
+        private GenhCreatorStruct getGenhParameters()
         {
-            string errorMessages;
-
-            this.initializeProcessing();
-            DataRowView drv = (DataRowView)this.comboFormat.SelectedItem;
-
             GenhCreatorStruct genhStruct = new GenhCreatorStruct();
+            DataRowView drv = (DataRowView)this.comboFormat.SelectedItem;
+            
             genhStruct.DoCreation = this.rbCreate.Checked;
             genhStruct.DoEdit = this.rbEdit.Checked;
             genhStruct.DoExtract = this.rbExtract.Checked;
@@ -227,6 +235,17 @@ namespace VGMToolbox.forms
             {
                 genhStruct.SourcePaths[j++] = Path.Combine(this.tbSourceDirectory.Text, this.lbFiles.Items[i].ToString());
             }
+
+            return genhStruct;
+        }
+
+        private void btnDoTask_Click(object sender, EventArgs e)
+        {
+            string errorMessages;
+
+            this.initializeProcessing();
+
+            GenhCreatorStruct genhStruct = this.getGenhParameters();
 
             if ((!rbExtract.Checked) && (!ValidateInputs(genhStruct, out errorMessages)))
             {
@@ -492,6 +511,64 @@ namespace VGMToolbox.forms
         private void cbFindLoop_CheckedChanged(object sender, EventArgs e)
         {
             this.doLoopCheckboxes();
+        }
+
+        private void showLoopPointsForSelectedFile()
+        {
+            if (lbFiles.SelectedIndices.Count == 1)
+            {
+                string dummy;
+                string loopStartFound = this.tbLoopStart.Text;
+                string loopEndFound = this.tbLoopEnd.Text;
+                GenhCreatorStruct genhStruct = this.getGenhParameters();
+
+                if (ValidateInputs(genhStruct, out dummy))
+                {
+                    try
+                    {
+                        if (genhStruct.UseFileEnd)
+                        {
+                            loopEndFound = GenhUtil.GetFileEndLoopEnd(genhStruct.SourcePaths[0], genhStruct.ToGenhCreationStruct());
+                        }
+                        else if (genhStruct.FindLoop)
+                        {
+                            if (!GenhUtil.GetPsAdpcmLoop(genhStruct.SourcePaths[0], genhStruct.ToGenhCreationStruct(), out loopStartFound,
+                                out loopEndFound))
+                            {
+                                loopStartFound = String.Empty;
+                                loopEndFound = String.Empty;
+                            }
+                        }
+
+                        this.tbLoopStart.Text = loopStartFound;
+                        this.tbLoopEnd.Text = loopEndFound;
+                    }
+                    catch (Exception ex)
+                    {
+                        this.tbLoopStart.Clear();
+                        this.tbLoopEnd.Clear();
+                        this.tbOutput.Clear();
+                        this.tbOutput.Text += String.Format("{0}{1}", ex.Message, Environment.NewLine);
+                    }
+                }
+            }
+        }
+
+        private void cbHeaderSkip_SelectedValueChanged(object sender, EventArgs e)
+        {
+            this.showLoopPointsForSelectedFile();
+        }
+        private void cbInterleave_SelectedValueChanged(object sender, EventArgs e)
+        {
+            this.showLoopPointsForSelectedFile();
+        }
+        private void cbChannels_SelectedValueChanged(object sender, EventArgs e)
+        {
+            this.showLoopPointsForSelectedFile();
+        }
+        private void cbFrequency_SelectedValueChanged(object sender, EventArgs e)
+        {
+            this.showLoopPointsForSelectedFile();
         }
     }
 }

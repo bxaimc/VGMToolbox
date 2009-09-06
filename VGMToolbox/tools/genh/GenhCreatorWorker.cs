@@ -121,6 +121,29 @@ namespace VGMToolbox.tools.genh
             set { doExtract = value; }
             get { return doExtract; }
         }
+
+        public GenhCreationStruct ToGenhCreationStruct()
+        {
+            GenhCreationStruct genhCreationStruct = new GenhCreationStruct();
+
+            genhCreationStruct.Format = this.Format;
+            genhCreationStruct.HeaderSkip = this.HeaderSkip;
+            genhCreationStruct.Interleave = this.Interleave;
+            genhCreationStruct.Channels = this.Channels;
+            genhCreationStruct.Frequency = this.Frequency;
+            genhCreationStruct.LoopStart = this.LoopStart;
+            genhCreationStruct.LoopEnd = this.LoopEnd;
+            genhCreationStruct.NoLoops = this.NoLoops;
+            genhCreationStruct.UseFileEnd = this.UseFileEnd;
+            genhCreationStruct.FindLoop = this.FindLoop;
+            genhCreationStruct.CoefRightChannel = this.CoefRightChannel;
+            genhCreationStruct.CoefLeftChannel = this.CoefLeftChannel;
+            genhCreationStruct.CapcomHack = this.CapcomHack;
+            genhCreationStruct.OutputHeaderOnly = this.OutputHeaderOnly;
+            genhCreationStruct.SourcePaths = this.SourcePaths;
+
+            return genhCreationStruct;
+        }
     }
     
     public class GenhCreatorWorker : BackgroundWorker, IVgmtBackgroundWorker
@@ -161,22 +184,7 @@ namespace VGMToolbox.tools.genh
                     }
                     else
                     {
-                        GenhCreationStruct genhCreationStruct = new GenhCreationStruct();
-                        genhCreationStruct.Format = pGenhCreatorStruct.Format;
-                        genhCreationStruct.HeaderSkip = pGenhCreatorStruct.HeaderSkip;
-                        genhCreationStruct.Interleave = pGenhCreatorStruct.Interleave;
-                        genhCreationStruct.Channels = pGenhCreatorStruct.Channels;
-                        genhCreationStruct.Frequency = pGenhCreatorStruct.Frequency;
-                        genhCreationStruct.LoopStart = pGenhCreatorStruct.LoopStart;
-                        genhCreationStruct.LoopEnd = pGenhCreatorStruct.LoopEnd;
-                        genhCreationStruct.NoLoops = pGenhCreatorStruct.NoLoops;
-                        genhCreationStruct.UseFileEnd = pGenhCreatorStruct.UseFileEnd;
-                        genhCreationStruct.FindLoop = pGenhCreatorStruct.FindLoop;
-                        genhCreationStruct.CoefRightChannel = pGenhCreatorStruct.CoefRightChannel;
-                        genhCreationStruct.CoefLeftChannel = pGenhCreatorStruct.CoefLeftChannel;
-                        genhCreationStruct.CapcomHack = pGenhCreatorStruct.CapcomHack;
-                        genhCreationStruct.OutputHeaderOnly = pGenhCreatorStruct.OutputHeaderOnly;
-                        genhCreationStruct.SourcePaths = pGenhCreatorStruct.SourcePaths;
+                        GenhCreationStruct genhCreationStruct = pGenhCreatorStruct.ToGenhCreationStruct();
 
                         if (pGenhCreatorStruct.DoCreation)
                         {
@@ -194,6 +202,8 @@ namespace VGMToolbox.tools.genh
                 }
             }
         }
+
+        
 
         protected override void OnDoWork(DoWorkEventArgs e)
         {
