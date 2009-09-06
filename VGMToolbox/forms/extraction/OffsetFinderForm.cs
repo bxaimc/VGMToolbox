@@ -499,6 +499,8 @@ namespace VGMToolbox.forms.extraction
 
         private void loadOffsetPlugins()
         {
+            comboPresets.Items.Clear();
+            
             foreach (string f in Directory.GetFiles(PLUGIN_PATH, "*.xml", SearchOption.TopDirectoryOnly))
             {
                 try
