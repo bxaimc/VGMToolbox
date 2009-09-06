@@ -741,10 +741,17 @@ namespace VGMToolbox.util
                     String.IsNullOrEmpty(searchCriteria.StartingOffset) ? 0 : VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.StartingOffset);
                 
                 // build output folder path
-                outputFolder = Path.GetFullPath(
-                    Path.Combine(
-                        Path.GetDirectoryName(sourcePath),
-                        Path.GetFileNameWithoutExtension(sourcePath) + "_CUT"));
+                if (String.IsNullOrEmpty(searchCriteria.OutputFolder))
+                {
+                    outputFolder = Path.GetFullPath(
+                        Path.Combine(
+                            Path.GetDirectoryName(sourcePath),
+                            Path.GetFileNameWithoutExtension(sourcePath) + "_CUT"));
+                }
+                else
+                {
+                    outputFolder = searchCriteria.OutputFolder;
+                }
 
                 // search for our string
                 // while ((offset = ParseFile.GetNextOffset(fs, previousOffset, searchBytes)) != -1)

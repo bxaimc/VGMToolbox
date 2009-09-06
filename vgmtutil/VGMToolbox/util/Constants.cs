@@ -199,6 +199,8 @@ namespace VGMToolbox.util
             get { return extraCutSizeBytes; }
             set { extraCutSizeBytes = value; }
         }
+
+        public string OutputFolder { get; set; }
     }
 
     /// <summary>

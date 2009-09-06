@@ -113,6 +113,7 @@ namespace VGMToolbox.forms.extraction
                     ofStruct.cutFile = true;
 
                     ofStruct.searchStringOffset = this.tbSearchStringOffset.Text;
+                    ofStruct.OutputFolder = this.tbOutputFolder.Text;
                     ofStruct.outputFileExtension = this.tbOutputExtension.Text;
                     ofStruct.MinimumSize = this.tbMinSizeForCut.Text;
 
@@ -247,7 +248,11 @@ namespace VGMToolbox.forms.extraction
             bool ret = base.checkTextBox(this.tbSearchString.Text, "Search String");
 
             if (cbDoCut.Checked)
-            {                
+            {
+                if (!String.IsNullOrEmpty(this.tbOutputFolder.Text))
+                {
+                    ret = ret && base.checkFolderExists(this.tbOutputFolder.Text, this.lblOutputFolder.Text);
+                }
                 ret = ret && base.checkTextBox(this.tbOutputExtension.Text, "Output Extension");
 
                 if (this.rbStaticCutSize.Checked)
@@ -330,6 +335,10 @@ namespace VGMToolbox.forms.extraction
                 this.tbOffsetModuloTerminatorDivisor.Show();
                 this.tbOffsetModuloTerminatorResult.Show();
                 this.lblOffsetModuloEquals.Show();
+
+                this.lblOutputFolder.Show();
+                this.tbOutputFolder.Show();
+                this.btnBrowseOutputFolder.Show();
             }
             else
             {
@@ -388,6 +397,10 @@ namespace VGMToolbox.forms.extraction
                 this.tbOffsetModuloTerminatorDivisor.Hide();
                 this.tbOffsetModuloTerminatorResult.Hide();
                 this.lblOffsetModuloEquals.Hide();
+
+                this.lblOutputFolder.Hide();
+                this.tbOutputFolder.Hide();
+                this.btnBrowseOutputFolder.Hide();
             }
 
             this.doOffsetModuloTerminatorCheckbox();
@@ -695,6 +708,11 @@ namespace VGMToolbox.forms.extraction
         private void cbModOffsetSearchString_CheckedChanged(object sender, EventArgs e)
         {
             this.doOffsetModuloSearchStringCheckbox();
+        }
+
+        private void btnBrowseOutputFolder_Click(object sender, EventArgs e)
+        {
+            this.tbOutputFolder.Text = base.browseForFolder(sender, e);
         }
     }
 }

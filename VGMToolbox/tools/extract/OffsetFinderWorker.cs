@@ -76,6 +76,40 @@ namespace VGMToolbox.tools.extract
                 set;
                 get;
             }
+
+            public string OutputFolder { get; set; }
+
+            public FindOffsetStruct ToFindOffsetStruct()
+            {
+                VGMToolbox.util.FindOffsetStruct findOffsetStruct = new VGMToolbox.util.FindOffsetStruct();
+                findOffsetStruct.SearchString = this.searchString;
+                findOffsetStruct.TreatSearchStringAsHex = this.treatSearchStringAsHex;
+                findOffsetStruct.MinimumSize = this.MinimumSize;
+
+                findOffsetStruct.CutFile = this.cutFile;
+                findOffsetStruct.SearchStringOffset = this.searchStringOffset;
+                findOffsetStruct.StartingOffset = this.startingOffset;
+                findOffsetStruct.CutSize = this.cutSize;
+                findOffsetStruct.CutSizeOffsetSize = this.cutSizeOffsetSize;
+                findOffsetStruct.IsCutSizeAnOffset = this.isCutSizeAnOffset;
+                findOffsetStruct.OutputFileExtension = this.outputFileExtension;
+                findOffsetStruct.IsLittleEndian = this.isLittleEndian;
+                findOffsetStruct.UseTerminatorForCutSize = this.useTerminatorForCutsize;
+                findOffsetStruct.TerminatorString = this.terminatorString;
+                findOffsetStruct.TreatTerminatorStringAsHex = this.treatTerminatorStringAsHex;
+                findOffsetStruct.IncludeTerminatorLength = this.includeTerminatorLength;
+                findOffsetStruct.ExtraCutSizeBytes = this.extraCutSizeBytes;
+
+                findOffsetStruct.DoTerminatorModulo = this.DoTerminatorModulo;
+                findOffsetStruct.TerminatorStringModuloDivisor = this.TerminatorStringModuloDivisor;
+                findOffsetStruct.TerminatorStringModuloResult = this.TerminatorStringModuloResult;
+                findOffsetStruct.DoSearchStringModulo = this.DoSearchStringModulo;
+                findOffsetStruct.SearchStringModuloDivisor = this.SearchStringModuloDivisor;
+                findOffsetStruct.SearchStringModuloResult = this.SearchStringModuloResult;
+                findOffsetStruct.OutputFolder = this.OutputFolder;
+
+                return findOffsetStruct;
+            }
         }
 
         public OffsetFinderWorker() : 
@@ -85,32 +119,8 @@ namespace VGMToolbox.tools.extract
             DoWorkEventArgs e)
         {
             OffsetFinderStruct offsetFinderStruct = (OffsetFinderStruct) pOffsetFinderStruct;
-            
-            VGMToolbox.util.FindOffsetStruct findOffsetStruct = new VGMToolbox.util.FindOffsetStruct();
-            findOffsetStruct.SearchString = offsetFinderStruct.searchString;
-            findOffsetStruct.TreatSearchStringAsHex = offsetFinderStruct.treatSearchStringAsHex;
-            findOffsetStruct.MinimumSize = offsetFinderStruct.MinimumSize;
 
-            findOffsetStruct.CutFile = offsetFinderStruct.cutFile;
-            findOffsetStruct.SearchStringOffset = offsetFinderStruct.searchStringOffset;
-            findOffsetStruct.StartingOffset = offsetFinderStruct.startingOffset;
-            findOffsetStruct.CutSize = offsetFinderStruct.cutSize;
-            findOffsetStruct.CutSizeOffsetSize = offsetFinderStruct.cutSizeOffsetSize;
-            findOffsetStruct.IsCutSizeAnOffset = offsetFinderStruct.isCutSizeAnOffset;
-            findOffsetStruct.OutputFileExtension = offsetFinderStruct.outputFileExtension;
-            findOffsetStruct.IsLittleEndian = offsetFinderStruct.isLittleEndian;
-            findOffsetStruct.UseTerminatorForCutSize = offsetFinderStruct.useTerminatorForCutsize;
-            findOffsetStruct.TerminatorString = offsetFinderStruct.terminatorString;
-            findOffsetStruct.TreatTerminatorStringAsHex = offsetFinderStruct.treatTerminatorStringAsHex;
-            findOffsetStruct.IncludeTerminatorLength = offsetFinderStruct.includeTerminatorLength;
-            findOffsetStruct.ExtraCutSizeBytes = offsetFinderStruct.extraCutSizeBytes;            
-            
-            findOffsetStruct.DoTerminatorModulo = offsetFinderStruct.DoTerminatorModulo;
-            findOffsetStruct.TerminatorStringModuloDivisor = offsetFinderStruct.TerminatorStringModuloDivisor;
-            findOffsetStruct.TerminatorStringModuloResult = offsetFinderStruct.TerminatorStringModuloResult;
-            findOffsetStruct.DoSearchStringModulo = offsetFinderStruct.DoSearchStringModulo;
-            findOffsetStruct.SearchStringModuloDivisor = offsetFinderStruct.SearchStringModuloDivisor;
-            findOffsetStruct.SearchStringModuloResult = offsetFinderStruct.SearchStringModuloResult;
+            VGMToolbox.util.FindOffsetStruct findOffsetStruct = offsetFinderStruct.ToFindOffsetStruct();
 
             string output;
             ParseFile.FindOffsetAndCutFile(pPath, findOffsetStruct, out output, true, true);
