@@ -40,6 +40,7 @@ namespace VGMToolbox.forms
             this.lblFrequency.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_LblFrequency"];
             this.lblLoopStart.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_LblLoopStart"];
             this.lblLoopEnd.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_LblLoopEnd"];
+            this.cbManualEntry.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_CheckBoxManualEntry"];
             this.cbNoLoops.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_CheckBoxNoLoops"];
             this.cbLoopFileEnd.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_CheckBoxFileEnd"];
             this.cbFindLoop.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_CheckBoxFindLoop"];
@@ -68,7 +69,7 @@ namespace VGMToolbox.forms
         }
         private void loadHeaderSkip()
         {
-            cbHeaderSkip.Items.Add(String.Empty);
+            cbHeaderSkip.Items.Add("0");
 
             for (int i = 4; i < 15; i++)
             {
@@ -169,59 +170,31 @@ namespace VGMToolbox.forms
                 this.tbLoopEnd.Text = String.Empty;
             }
         }
-        private void cbLoopFileEnd_CheckedChanged(object sender, EventArgs e)
+
+        private void doLoopCheckboxes()
         {
-            if (cbFindLoop.Checked || cbLoopFileEnd.Checked)
+            if (cbManualEntry.Checked)
             {
-                this.tbLoopEnd.Text = String.Empty;
-                this.tbLoopEnd.ReadOnly = true;
-            }
-            else
-            {
-                this.tbLoopEnd.ReadOnly = false;
-            }
-            
-        }
-        private void cbFindLoop_CheckedChanged(object sender, EventArgs e)
-        {
-            if (cbFindLoop.Checked || cbLoopFileEnd.Checked)
-            {
-                this.tbLoopEnd.Text = String.Empty;
-                this.tbLoopEnd.ReadOnly = true;
-
-                this.tbLoopStart.Text = String.Empty;
-                this.tbLoopStart.ReadOnly = true;
-
-            }
-            else
-            {
-                this.tbLoopEnd.ReadOnly = false;
-                this.tbLoopStart.ReadOnly = false;
-            }
-        }
-        private void cbNoLoops_CheckedChanged(object sender, EventArgs e)
-        {
-            if (cbNoLoops.Checked)
-            {
-                this.cbFindLoop.Checked = false;
-                this.cbFindLoop.Enabled = false;
-                this.cbLoopFileEnd.Checked = false;
-                this.cbLoopFileEnd.Enabled = false;
-
-                this.tbLoopStart.Text = String.Empty;
-                this.tbLoopStart.ReadOnly = true;
-                this.tbLoopEnd.ReadOnly = true;
-            }
-            else
-            {
-                this.cbLoopFileEnd.Enabled = true;
-                this.comboFormat_SelectedValueChanged(sender, e);
-
                 this.tbLoopStart.ReadOnly = false;
                 this.tbLoopEnd.ReadOnly = false;
             }
-        }
+            else if (cbNoLoops.Checked || cbFindLoop.Checked)
+            {
+                this.tbLoopStart.Clear();
+                this.tbLoopStart.ReadOnly = true;
 
+                this.tbLoopStart.Clear();
+                this.tbLoopEnd.ReadOnly = true;
+            }
+            else if (cbLoopFileEnd.Checked)
+            {
+                this.tbLoopStart.ReadOnly = false;
+
+                this.tbLoopStart.Clear();
+                this.tbLoopEnd.ReadOnly = true;            
+            }
+        }
+        
         private void btnDoTask_Click(object sender, EventArgs e)
         {
             string errorMessages;
@@ -266,7 +239,6 @@ namespace VGMToolbox.forms
                 base.backgroundWorker_Execute(genhStruct);
             }
         }
-
         public static bool ValidateInputs(GenhCreatorStruct pGenhCreatorStruct,
             out string pErrorMessages)
         {
@@ -497,6 +469,29 @@ namespace VGMToolbox.forms
         {
             this.reloadFiles();
         }
+        private void tbSourceDirectory_Click(object sender, EventArgs e)
+        {
+            if (tbSourceDirectory.Text.Equals(ConfigurationSettings.AppSettings["Form_GenhCreator_tbSourceDirectory"]))
+            {
+                tbSourceDirectory.Clear();
+            }
+        }
 
+        private void cbManualEntry_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doLoopCheckboxes();
+        }
+        private void cbNoLoops_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doLoopCheckboxes();
+        }
+        private void cbLoopFileEnd_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doLoopCheckboxes();
+        }
+        private void cbFindLoop_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doLoopCheckboxes();
+        }
     }
 }

@@ -38,17 +38,18 @@
             this.grpFormat = new System.Windows.Forms.GroupBox();
             this.comboFormat = new System.Windows.Forms.ComboBox();
             this.grpOptions = new System.Windows.Forms.GroupBox();
+            this.cbFindLoop = new System.Windows.Forms.RadioButton();
+            this.cbLoopFileEnd = new System.Windows.Forms.RadioButton();
+            this.cbNoLoops = new System.Windows.Forms.RadioButton();
+            this.cbFrequency = new System.Windows.Forms.ComboBox();
             this.cbChannels = new System.Windows.Forms.ComboBox();
             this.cbInterleave = new System.Windows.Forms.ComboBox();
             this.cbHeaderSkip = new System.Windows.Forms.ComboBox();
-            this.cbNoLoops = new System.Windows.Forms.CheckBox();
-            this.cbFindLoop = new System.Windows.Forms.CheckBox();
             this.cbCapcomHack = new System.Windows.Forms.CheckBox();
             this.lblLeftCoef = new System.Windows.Forms.Label();
             this.tbLeftCoef = new System.Windows.Forms.TextBox();
             this.lblRightCoef = new System.Windows.Forms.Label();
             this.tbRightCoef = new System.Windows.Forms.TextBox();
-            this.cbLoopFileEnd = new System.Windows.Forms.CheckBox();
             this.lblLoopEnd = new System.Windows.Forms.Label();
             this.tbLoopEnd = new System.Windows.Forms.TextBox();
             this.lblLoopStart = new System.Windows.Forms.Label();
@@ -63,7 +64,7 @@
             this.rbExtract = new System.Windows.Forms.RadioButton();
             this.contextMenuRefresh = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.refreshFileListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.cbFrequency = new System.Windows.Forms.ComboBox();
+            this.cbManualEntry = new System.Windows.Forms.RadioButton();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -75,7 +76,7 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 562);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 503);
             this.pnlLabels.Size = new System.Drawing.Size(638, 19);
             // 
             // pnlTitle
@@ -84,13 +85,13 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 485);
+            this.tbOutput.Location = new System.Drawing.Point(0, 426);
             this.tbOutput.Size = new System.Drawing.Size(638, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 465);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 406);
             this.pnlButtons.Size = new System.Drawing.Size(638, 20);
             // 
             // btnCancel
@@ -153,6 +154,7 @@
             this.tbSourceDirectory.Size = new System.Drawing.Size(216, 20);
             this.tbSourceDirectory.TabIndex = 6;
             this.tbSourceDirectory.TextChanged += new System.EventHandler(this.tbSourceDirectory_TextChanged);
+            this.tbSourceDirectory.Click += new System.EventHandler(this.tbSourceDirectory_Click);
             // 
             // btnBrowseDirectory
             // 
@@ -187,18 +189,19 @@
             // 
             // grpOptions
             // 
+            this.grpOptions.Controls.Add(this.cbFindLoop);
+            this.grpOptions.Controls.Add(this.cbLoopFileEnd);
+            this.grpOptions.Controls.Add(this.cbNoLoops);
             this.grpOptions.Controls.Add(this.cbFrequency);
+            this.grpOptions.Controls.Add(this.cbManualEntry);
             this.grpOptions.Controls.Add(this.cbChannels);
             this.grpOptions.Controls.Add(this.cbInterleave);
             this.grpOptions.Controls.Add(this.cbHeaderSkip);
-            this.grpOptions.Controls.Add(this.cbNoLoops);
-            this.grpOptions.Controls.Add(this.cbFindLoop);
             this.grpOptions.Controls.Add(this.cbCapcomHack);
             this.grpOptions.Controls.Add(this.lblLeftCoef);
             this.grpOptions.Controls.Add(this.tbLeftCoef);
             this.grpOptions.Controls.Add(this.lblRightCoef);
             this.grpOptions.Controls.Add(this.tbRightCoef);
-            this.grpOptions.Controls.Add(this.cbLoopFileEnd);
             this.grpOptions.Controls.Add(this.lblLoopEnd);
             this.grpOptions.Controls.Add(this.tbLoopEnd);
             this.grpOptions.Controls.Add(this.lblLoopStart);
@@ -213,6 +216,47 @@
             this.grpOptions.TabIndex = 8;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
+            // 
+            // cbFindLoop
+            // 
+            this.cbFindLoop.AutoSize = true;
+            this.cbFindLoop.Location = new System.Drawing.Point(180, 195);
+            this.cbFindLoop.Name = "cbFindLoop";
+            this.cbFindLoop.Size = new System.Drawing.Size(72, 17);
+            this.cbFindLoop.TabIndex = 27;
+            this.cbFindLoop.Text = "Find Loop";
+            this.cbFindLoop.UseVisualStyleBackColor = true;
+            this.cbFindLoop.CheckedChanged += new System.EventHandler(this.cbFindLoop_CheckedChanged);
+            // 
+            // cbLoopFileEnd
+            // 
+            this.cbLoopFileEnd.AutoSize = true;
+            this.cbLoopFileEnd.Location = new System.Drawing.Point(89, 195);
+            this.cbLoopFileEnd.Name = "cbLoopFileEnd";
+            this.cbLoopFileEnd.Size = new System.Drawing.Size(85, 17);
+            this.cbLoopFileEnd.TabIndex = 26;
+            this.cbLoopFileEnd.Text = "Use File End";
+            this.cbLoopFileEnd.UseVisualStyleBackColor = true;
+            this.cbLoopFileEnd.CheckedChanged += new System.EventHandler(this.cbLoopFileEnd_CheckedChanged);
+            // 
+            // cbNoLoops
+            // 
+            this.cbNoLoops.AutoSize = true;
+            this.cbNoLoops.Location = new System.Drawing.Point(9, 195);
+            this.cbNoLoops.Name = "cbNoLoops";
+            this.cbNoLoops.Size = new System.Drawing.Size(71, 17);
+            this.cbNoLoops.TabIndex = 25;
+            this.cbNoLoops.Text = "No Loops";
+            this.cbNoLoops.UseVisualStyleBackColor = true;
+            this.cbNoLoops.CheckedChanged += new System.EventHandler(this.cbNoLoops_CheckedChanged);
+            // 
+            // cbFrequency
+            // 
+            this.cbFrequency.FormattingEnabled = true;
+            this.cbFrequency.Location = new System.Drawing.Point(152, 97);
+            this.cbFrequency.Name = "cbFrequency";
+            this.cbFrequency.Size = new System.Drawing.Size(100, 21);
+            this.cbFrequency.TabIndex = 24;
             // 
             // cbChannels
             // 
@@ -238,29 +282,7 @@
             this.cbHeaderSkip.Name = "cbHeaderSkip";
             this.cbHeaderSkip.Size = new System.Drawing.Size(100, 21);
             this.cbHeaderSkip.TabIndex = 21;
-            // 
-            // cbNoLoops
-            // 
-            this.cbNoLoops.AutoSize = true;
-            this.cbNoLoops.Location = new System.Drawing.Point(6, 183);
-            this.cbNoLoops.Name = "cbNoLoops";
-            this.cbNoLoops.Size = new System.Drawing.Size(72, 17);
-            this.cbNoLoops.TabIndex = 20;
-            this.cbNoLoops.Text = "No Loops";
-            this.cbNoLoops.UseVisualStyleBackColor = true;
-            this.cbNoLoops.CheckedChanged += new System.EventHandler(this.cbNoLoops_CheckedChanged);
-            // 
-            // cbFindLoop
-            // 
-            this.cbFindLoop.AutoSize = true;
-            this.cbFindLoop.Enabled = false;
-            this.cbFindLoop.Location = new System.Drawing.Point(179, 183);
-            this.cbFindLoop.Name = "cbFindLoop";
-            this.cbFindLoop.Size = new System.Drawing.Size(73, 17);
-            this.cbFindLoop.TabIndex = 19;
-            this.cbFindLoop.Text = "Find Loop";
-            this.cbFindLoop.UseVisualStyleBackColor = true;
-            this.cbFindLoop.CheckedChanged += new System.EventHandler(this.cbFindLoop_CheckedChanged);
+            this.cbHeaderSkip.Text = "0";
             // 
             // cbCapcomHack
             // 
@@ -303,17 +325,6 @@
             this.tbRightCoef.Name = "tbRightCoef";
             this.tbRightCoef.Size = new System.Drawing.Size(100, 20);
             this.tbRightCoef.TabIndex = 14;
-            // 
-            // cbLoopFileEnd
-            // 
-            this.cbLoopFileEnd.AutoSize = true;
-            this.cbLoopFileEnd.Location = new System.Drawing.Point(87, 183);
-            this.cbLoopFileEnd.Name = "cbLoopFileEnd";
-            this.cbLoopFileEnd.Size = new System.Drawing.Size(86, 17);
-            this.cbLoopFileEnd.TabIndex = 13;
-            this.cbLoopFileEnd.Text = "Use File End";
-            this.cbLoopFileEnd.UseVisualStyleBackColor = true;
-            this.cbLoopFileEnd.CheckedChanged += new System.EventHandler(this.cbLoopFileEnd_CheckedChanged);
             // 
             // lblLoopEnd
             // 
@@ -443,19 +454,24 @@
             this.refreshFileListToolStripMenuItem.Text = "Refresh File List";
             this.refreshFileListToolStripMenuItem.Click += new System.EventHandler(this.refreshFileListToolStripMenuItem_Click);
             // 
-            // cbFrequency
+            // cbManualEntry
             // 
-            this.cbFrequency.FormattingEnabled = true;
-            this.cbFrequency.Location = new System.Drawing.Point(152, 97);
-            this.cbFrequency.Name = "cbFrequency";
-            this.cbFrequency.Size = new System.Drawing.Size(100, 21);
-            this.cbFrequency.TabIndex = 24;
+            this.cbManualEntry.AutoSize = true;
+            this.cbManualEntry.Checked = true;
+            this.cbManualEntry.Location = new System.Drawing.Point(9, 176);
+            this.cbManualEntry.Name = "cbManualEntry";
+            this.cbManualEntry.Size = new System.Drawing.Size(87, 17);
+            this.cbManualEntry.TabIndex = 28;
+            this.cbManualEntry.TabStop = true;
+            this.cbManualEntry.Text = "Manual Entry";
+            this.cbManualEntry.UseVisualStyleBackColor = true;
+            this.cbManualEntry.CheckedChanged += new System.EventHandler(this.cbManualEntry_CheckedChanged);
             // 
             // Genh_CreatorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(638, 603);
+            this.ClientSize = new System.Drawing.Size(638, 544);
             this.Controls.Add(this.grpFormat);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.cbHeaderOnly);
@@ -511,14 +527,11 @@
         private System.Windows.Forms.TextBox tbLoopStart;
         private System.Windows.Forms.TextBox tbLoopEnd;
         private System.Windows.Forms.Label lblLoopEnd;
-        private System.Windows.Forms.CheckBox cbLoopFileEnd;
         private System.Windows.Forms.Label lblLeftCoef;
         private System.Windows.Forms.TextBox tbLeftCoef;
         private System.Windows.Forms.Label lblRightCoef;
         private System.Windows.Forms.TextBox tbRightCoef;
         private System.Windows.Forms.CheckBox cbCapcomHack;
-        private System.Windows.Forms.CheckBox cbFindLoop;
-        private System.Windows.Forms.CheckBox cbNoLoops;
         private System.Windows.Forms.RadioButton rbCreate;
         private System.Windows.Forms.RadioButton rbEdit;
         private System.Windows.Forms.RadioButton rbExtract;
@@ -530,5 +543,9 @@
         private System.Windows.Forms.ComboBox cbInterleave;
         private System.Windows.Forms.ComboBox cbChannels;
         private System.Windows.Forms.ComboBox cbFrequency;
+        private System.Windows.Forms.RadioButton cbLoopFileEnd;
+        private System.Windows.Forms.RadioButton cbNoLoops;
+        private System.Windows.Forms.RadioButton cbFindLoop;
+        private System.Windows.Forms.RadioButton cbManualEntry;
     }
 }

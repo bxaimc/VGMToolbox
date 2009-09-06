@@ -87,7 +87,7 @@ namespace VGMToolbox.format.util
                 else
                 {
                     pGenhCreationStruct.LoopStart = Genh.EMPTY_SAMPLE_COUNT;
-                    pGenhCreationStruct.LoopEnd = String.Empty;
+                    pGenhCreationStruct.LoopEnd = GetFileEndLoopEnd(pSourcePath, pGenhCreationStruct);
                 }
             }
 
