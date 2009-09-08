@@ -274,8 +274,8 @@ namespace VGMToolbox.tools.xsf
         /// <param name="bin2PsfDestinationPath"></param>
         /// <param name="ripOutputFolder"></param>
         private void makePsfFile(
-            Bin2PsfStruct pBin2PsfStruct, 
-            string seqFile, 
+            Bin2PsfStruct pBin2PsfStruct,
+            string seqFile,
             string vhFile, 
             string vbFile, 
             string outputExtension,
@@ -475,6 +475,13 @@ namespace VGMToolbox.tools.xsf
                     Environment.NewLine;
                 ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
             }        
+        }
+
+        private string setMiniPsfValues(string templateMiniPsfPath, Bin2PsfStruct pBin2PsfStruct)
+        {
+            string modifiedMiniPsfPath = String.Empty;
+
+            return modifiedMiniPsfPath;
         }
 
         protected override void OnDoWork(DoWorkEventArgs e)
