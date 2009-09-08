@@ -28,10 +28,36 @@ namespace VGMToolbox.tools.xsf
             set;
             get;
         }
+
+        public string PsfDrvLoad { set; get; }
+        public string PsfDrvSize { set; get; }
+        public string PsfDrvParam { set; get; }
+        public string PsfDrvParamSize { set; get; }
+
+        public string MySeq{ set; get; }
+        public string MySeqSize { set; get; }
+        public string MyVh { set; get; }
+        public string MyVhSize { set; get; }
+        public string MyVb { set; get; }
+        public string MyVbSize { set; get; }
+
+        public bool OverrideDriverLoadAddress { set; get; }
     }
     
     class PsfStubMakerWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
+        public const string PsfDrvLoadDefault = "0x80100000";
+        public const string PsfDrvSizeDefault = "0x00001000";
+        public const string PsfDrvParamDefault = "0x80101000";
+        public const string PsfDrvParamSizeDefault = "0x00000100";
+
+        public const string MySeqDefault = "0x80120000";
+        public const string MySeqSizeDefault = "0x00010000";
+        public const string MyVhDefault = "0x80130000";
+        public const string MyVhSizeDefault = "0x00010000";
+        public const string MyVbDefault = "0x80140000";
+        public const string MyVbSizeDefault = "0x00070000";
+        
         public static readonly string PsfToolFolderPath =
             Path.GetFullPath(Path.Combine(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "external"), "psf"));
 
@@ -47,6 +73,18 @@ namespace VGMToolbox.tools.xsf
 
         private const int COMMENT_REVERB_OPEN = 252;
         private const int COMMENT_REVERB_CLOSE = 275;
+
+        private const int PsfDrvLoadLineNo = 16;
+        private const int PsfDrvSizeLineNo = 17;
+        private const int PsfDrvParamLineNo = 18;
+        private const int PsfDrvParamSizeLineNo = 19;
+
+        private const int MySeqLineNo = 24;
+        private const int MySeqSizeLineNo = 25;
+        private const int MyVhLineNo = 26;
+        private const int MyVhSizeLineNo = 27;
+        private const int MyVbLineNo = 28;
+        private const int MyVbSizeLineNo = 29;
 
         public PsfStubMakerWorker() : base() { }
 
@@ -152,7 +190,7 @@ namespace VGMToolbox.tools.xsf
                 this.progressStruct.GenericMessage = "    - Rewriting driver source and batch file." + Environment.NewLine;
                 ReportProgress(Constants.ProgressMessageOnly, progressStruct);
 
-                this.rewritePsfOCycleDriverSource(psfOCycleSourceDestination, sigFindAddresses, stubMakerParameters.IncludeReverb);
+                this.rewritePsfOCycleDriverSource(psfOCycleSourceDestination, sigFindAddresses, stubMakerParameters);
 
                 /////////////////////
                 // rewrite make file
@@ -246,7 +284,7 @@ namespace VGMToolbox.tools.xsf
             return ret;
         }
 
-        private void rewritePsfOCycleDriverSource(string driverSourceCodePath, PsfPsyQAddresses addresses, bool includeReverb)
+        private void rewritePsfOCycleDriverSource(string driverSourceCodePath, PsfPsyQAddresses addresses, PsfStubMakerStruct stubMakerParameters)
         {
             int lineNumber;
             string inputLine;
@@ -274,32 +312,93 @@ namespace VGMToolbox.tools.xsf
                     {
                         if (psyQSourceCodeLineNumber.ContainsKey(lineNumber))
                         {
-                            lineItem = psyQSourceCodeLineNumber[lineNumber];
-                            lineFormat = psyQSourceCode[lineItem];
-                            psyQValue = addresses.GetType().GetProperty(lineItem);
-                            lineValue = (string)psyQValue.GetValue(addresses, null);
-
-                            if (!String.IsNullOrEmpty(lineValue))
+                            if (stubMakerParameters.OverrideDriverLoadAddress &&
+                                lineNumber == PsfDrvLoadLineNo)
                             {
-                                writer.WriteLine(String.Format(lineFormat, lineValue));
+                                writer.WriteLine(String.Format("#define PSFDRV_LOAD       ({0})", stubMakerParameters.PsfDrvLoad));                            
                             }
                             else
                             {
-                                // comment out this line
-                                writer.WriteLine(String.Format("//{0}", inputLine));
+                                lineItem = psyQSourceCodeLineNumber[lineNumber];
+                                lineFormat = psyQSourceCode[lineItem];
+                                psyQValue = addresses.GetType().GetProperty(lineItem);
+                                lineValue = (string)psyQValue.GetValue(addresses, null);
+
+                                if (!String.IsNullOrEmpty(lineValue))
+                                {
+                                    writer.WriteLine(String.Format(lineFormat, lineValue));
+                                }
+                                else
+                                {
+                                    // comment out this line
+                                    writer.WriteLine(String.Format("//{0}", inputLine));
+                                }
                             }
-                        }
-                        else if ((lineNumber == COMMENT_REVERB_OPEN) && (!includeReverb))
-                        {
-                            writer.WriteLine("/*");
-                        }
-                        else if ((lineNumber == COMMENT_REVERB_CLOSE) && (!includeReverb))
-                        {
-                            writer.WriteLine("*/");
                         }
                         else
                         {
-                            writer.WriteLine(inputLine);
+                            switch (lineNumber)
+                            {
+                                case COMMENT_REVERB_OPEN:
+                                    if (!stubMakerParameters.IncludeReverb)
+                                    {
+                                        writer.WriteLine("/*");
+                                    }
+                                    else
+                                    {
+                                        writer.WriteLine(inputLine);
+                                    }
+                                    break;                                
+                                case COMMENT_REVERB_CLOSE:
+                                    if (!stubMakerParameters.IncludeReverb)
+                                    {
+                                        writer.WriteLine("*/");
+                                    }
+                                    else
+                                    {
+                                        writer.WriteLine(inputLine);
+                                    }
+                                    break;
+                                case PsfDrvSizeLineNo:
+                                    this.rewriteOptionalLine(writer, stubMakerParameters.OverrideDriverLoadAddress,
+                                        "#define PSFDRV_SIZE       ({0})", stubMakerParameters.PsfDrvSize, inputLine);
+                                    break;
+                                case PsfDrvParamLineNo:
+                                    this.rewriteOptionalLine(writer, stubMakerParameters.OverrideDriverLoadAddress,
+                                        "#define PSFDRV_PARAM      ({0})", stubMakerParameters.PsfDrvParam, inputLine);
+                                    break;
+                                case PsfDrvParamSizeLineNo:
+                                    this.rewriteOptionalLine(writer, stubMakerParameters.OverrideDriverLoadAddress,
+                                        "#define PSFDRV_PARAM_SIZE ({0})", stubMakerParameters.PsfDrvParamSize, inputLine);
+                                    break;
+                                case MySeqLineNo:
+                                    this.rewriteOptionalLine(writer, stubMakerParameters.OverrideDriverLoadAddress,
+                                        "#define MY_SEQ      ({0})", stubMakerParameters.MySeq, inputLine);                                    
+                                    break;
+                                case MySeqSizeLineNo:
+                                    this.rewriteOptionalLine(writer, stubMakerParameters.OverrideDriverLoadAddress,
+                                        "#define MY_SEQ_SIZE ({0})", stubMakerParameters.MySeqSize, inputLine);                                    
+                                    break;
+                                case MyVhLineNo:
+                                    this.rewriteOptionalLine(writer, stubMakerParameters.OverrideDriverLoadAddress,
+                                        "#define MY_VH ({0})", stubMakerParameters.MyVh, inputLine);
+                                    break;
+                                case MyVhSizeLineNo:
+                                    this.rewriteOptionalLine(writer, stubMakerParameters.OverrideDriverLoadAddress,
+                                        "#define MY_VH_SIZE ({0})", stubMakerParameters.MyVhSize, inputLine);
+                                    break;
+                                case MyVbLineNo:
+                                    this.rewriteOptionalLine(writer, stubMakerParameters.OverrideDriverLoadAddress,
+                                        "#define MY_VB ({0})", stubMakerParameters.MyVb, inputLine);
+                                    break;
+                                case MyVbSizeLineNo:
+                                    this.rewriteOptionalLine(writer, stubMakerParameters.OverrideDriverLoadAddress,
+                                        "#define MY_VB_SIZE ({0})", stubMakerParameters.MyVbSize, inputLine);
+                                    break;
+                                default:
+                                    writer.WriteLine(inputLine);
+                                    break;
+                            }
                         }
 
                         lineNumber++;
@@ -367,6 +466,19 @@ namespace VGMToolbox.tools.xsf
             }
 
             return warnings.ToString();
+        }
+
+        private void rewriteOptionalLine(StreamWriter writer, bool rewriteTheLine, 
+            string formatString, string value, string originalLine)
+        {
+            if (rewriteTheLine)
+            {
+                writer.WriteLine(String.Format(formatString, value));
+            }
+            else
+            {
+                writer.WriteLine(originalLine);
+            }
         }
     }
 }
