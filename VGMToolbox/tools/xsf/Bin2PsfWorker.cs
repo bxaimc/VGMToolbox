@@ -20,6 +20,10 @@ namespace VGMToolbox.tools.xsf
         private const uint PC_OFFSET_CORRECTION = 0x800;
         private const uint TEXT_SIZE_OFFSET = 0x1C;
 
+        private const int MINIPSF_INITIAL_PC_OFFSET = 0x10;
+        private const int MINIPSF_TEXT_SECTION_OFFSET = 0x18;
+        private const int MINIPSF_TEXT_SECTION_SIZE_OFFSET = 0x1C;
+
         private static readonly string WORKING_FOLDER =
             Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "working_psf"));
         private static readonly string PROGRAMS_FOLDER =
@@ -49,6 +53,7 @@ namespace VGMToolbox.tools.xsf
             public string sourcePath;
             public string exePath;
             public string seqOffset;
+            public string SeqSize { set; get; }
             public string vhOffset;
             public string vbOffset;
 
@@ -157,6 +162,8 @@ namespace VGMToolbox.tools.xsf
             string vhName;
             string vbName;
 
+            string modifiedMiniPsfPath = null;
+
             try
             {
                 Directory.CreateDirectory(WORKING_FOLDER);
@@ -177,6 +184,7 @@ namespace VGMToolbox.tools.xsf
             if (pBin2PsfStruct.makeMiniPsfs)
             {
                 outputExtension = ".minipsf";
+                modifiedMiniPsfPath = setMiniPsfValues(GENERIC_MINIPSF_EXE_PATH, pBin2PsfStruct);
             }
             else
             {
@@ -219,8 +227,8 @@ namespace VGMToolbox.tools.xsf
                         try
                         {
                             if (pBin2PsfStruct.makeMiniPsfs)
-                            {
-                                pBin2PsfStruct.exePath = GENERIC_MINIPSF_EXE_PATH;
+                            {                                
+                                pBin2PsfStruct.exePath = modifiedMiniPsfPath;
                                 vhName = null;
                                 vbName = null;                            
                             }
@@ -479,7 +487,18 @@ namespace VGMToolbox.tools.xsf
 
         private string setMiniPsfValues(string templateMiniPsfPath, Bin2PsfStruct pBin2PsfStruct)
         {
-            string modifiedMiniPsfPath = String.Empty;
+            string modifiedMiniPsfPath = Path.Combine(WORKING_FOLDER, Path.GetFileName(templateMiniPsfPath));
+
+            // copy file
+            File.Copy(templateMiniPsfPath, modifiedMiniPsfPath, true);
+
+            // edit values
+            byte[] seqOffset = BitConverter.GetBytes((uint)VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.seqOffset));
+            byte[] seqSize = BitConverter.GetBytes((uint)VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.SeqSize));
+
+            FileUtil.UpdateChunk(modifiedMiniPsfPath, MINIPSF_INITIAL_PC_OFFSET, seqOffset);
+            FileUtil.UpdateChunk(modifiedMiniPsfPath, MINIPSF_TEXT_SECTION_OFFSET, seqOffset);
+            FileUtil.UpdateChunk(modifiedMiniPsfPath, MINIPSF_TEXT_SECTION_SIZE_OFFSET, seqSize);
 
             return modifiedMiniPsfPath;
         }

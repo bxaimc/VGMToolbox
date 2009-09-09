@@ -182,6 +182,7 @@ namespace VGMToolbox.forms.xsf
                 this.tbMyVb.ReadOnly = false;
                 this.tbMyVbSize.ReadOnly = false;                
                 
+                /*
                 this.tbPsfDrvLoad.Text = PsfStubMakerWorker.PsfDrvLoadDefault;
                 this.tbPsfDrvSize.Text = PsfStubMakerWorker.PsfDrvSizeDefault;
                 this.tbPsfDrvParam.Text = PsfStubMakerWorker.PsfDrvParamDefault;
@@ -192,7 +193,25 @@ namespace VGMToolbox.forms.xsf
                 this.tbMyVhSize.Text = PsfStubMakerWorker.MyVhSizeDefault;
                 this.tbMyVb.Text = PsfStubMakerWorker.MyVbDefault;
                 this.tbMyVbSize.Text = PsfStubMakerWorker.MyVbSizeDefault;
+                 */
             }        
+        }
+
+        public string GetSeqOffset()
+        {
+            return this.tbMySeq.Text;
+        }
+        public string GetSeqSize()
+        {
+            return this.tbMySeqSize.Text;
+        }
+        public string GetVhOffset()
+        {
+            return this.tbMyVh.Text;
+        }
+        public string GetVbOffset()
+        {
+            return this.tbMyVb.Text;
         }
     }
 }

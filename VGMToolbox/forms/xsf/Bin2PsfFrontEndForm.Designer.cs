@@ -41,6 +41,9 @@
             this.lblDriverPath = new System.Windows.Forms.Label();
             this.tbExePath = new System.Windows.Forms.TextBox();
             this.grpOptions = new System.Windows.Forms.GroupBox();
+            this.btnLoadFromStubMaker = new System.Windows.Forms.Button();
+            this.tbMySeqSize = new System.Windows.Forms.TextBox();
+            this.lblMySeqSize = new System.Windows.Forms.Label();
             this.cbTryMixing = new System.Windows.Forms.CheckBox();
             this.lblVbOffset = new System.Windows.Forms.Label();
             this.tbVbOffset = new System.Windows.Forms.TextBox();
@@ -61,31 +64,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 507);
-            this.pnlLabels.Size = new System.Drawing.Size(850, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 477);
+            this.pnlLabels.Size = new System.Drawing.Size(615, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(850, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(615, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 430);
-            this.tbOutput.Size = new System.Drawing.Size(850, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 400);
+            this.tbOutput.Size = new System.Drawing.Size(615, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 410);
-            this.pnlButtons.Size = new System.Drawing.Size(850, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 380);
+            this.pnlButtons.Size = new System.Drawing.Size(615, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(790, 0);
+            this.btnCancel.Location = new System.Drawing.Point(555, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(730, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(495, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpSource
@@ -104,7 +107,7 @@
             this.grpSource.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSource.Location = new System.Drawing.Point(0, 70);
             this.grpSource.Name = "grpSource";
-            this.grpSource.Size = new System.Drawing.Size(850, 117);
+            this.grpSource.Size = new System.Drawing.Size(615, 117);
             this.grpSource.TabIndex = 5;
             this.grpSource.TabStop = false;
             this.grpSource.Text = "Source";
@@ -208,6 +211,9 @@
             // 
             // grpOptions
             // 
+            this.grpOptions.Controls.Add(this.btnLoadFromStubMaker);
+            this.grpOptions.Controls.Add(this.tbMySeqSize);
+            this.grpOptions.Controls.Add(this.lblMySeqSize);
             this.grpOptions.Controls.Add(this.cbTryMixing);
             this.grpOptions.Controls.Add(this.lblVbOffset);
             this.grpOptions.Controls.Add(this.tbVbOffset);
@@ -218,10 +224,36 @@
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpOptions.Location = new System.Drawing.Point(0, 187);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(850, 200);
+            this.grpOptions.Size = new System.Drawing.Size(615, 200);
             this.grpOptions.TabIndex = 6;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
+            // 
+            // btnLoadFromStubMaker
+            // 
+            this.btnLoadFromStubMaker.Location = new System.Drawing.Point(338, 72);
+            this.btnLoadFromStubMaker.Name = "btnLoadFromStubMaker";
+            this.btnLoadFromStubMaker.Size = new System.Drawing.Size(130, 20);
+            this.btnLoadFromStubMaker.TabIndex = 10;
+            this.btnLoadFromStubMaker.Text = "Load from Stub Maker";
+            this.btnLoadFromStubMaker.UseVisualStyleBackColor = true;
+            this.btnLoadFromStubMaker.Click += new System.EventHandler(this.btnLoadFromStubMaker_Click);
+            // 
+            // tbMySeqSize
+            // 
+            this.tbMySeqSize.Location = new System.Drawing.Point(368, 19);
+            this.tbMySeqSize.Name = "tbMySeqSize";
+            this.tbMySeqSize.Size = new System.Drawing.Size(100, 20);
+            this.tbMySeqSize.TabIndex = 9;
+            // 
+            // lblMySeqSize
+            // 
+            this.lblMySeqSize.AutoSize = true;
+            this.lblMySeqSize.Location = new System.Drawing.Point(310, 22);
+            this.lblMySeqSize.Name = "lblMySeqSize";
+            this.lblMySeqSize.Size = new System.Drawing.Size(52, 13);
+            this.lblMySeqSize.TabIndex = 8;
+            this.lblMySeqSize.Text = "SEQ Size";
             // 
             // cbTryMixing
             // 
@@ -288,7 +320,7 @@
             this.grpGenericDrivers.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpGenericDrivers.Location = new System.Drawing.Point(0, 23);
             this.grpGenericDrivers.Name = "grpGenericDrivers";
-            this.grpGenericDrivers.Size = new System.Drawing.Size(850, 47);
+            this.grpGenericDrivers.Size = new System.Drawing.Size(615, 47);
             this.grpGenericDrivers.TabIndex = 7;
             this.grpGenericDrivers.TabStop = false;
             this.grpGenericDrivers.Text = "Presets";
@@ -317,7 +349,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(850, 548);
+            this.ClientSize = new System.Drawing.Size(615, 518);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpSource);
             this.Controls.Add(this.grpGenericDrivers);
@@ -372,5 +404,8 @@
         private System.Windows.Forms.ComboBox genericDriver;
         private System.Windows.Forms.Label lblGenericDriver;
         private System.Windows.Forms.CheckBox cbTryMixing;
+        private System.Windows.Forms.Label lblMySeqSize;
+        private System.Windows.Forms.TextBox tbMySeqSize;
+        private System.Windows.Forms.Button btnLoadFromStubMaker;
     }
 }

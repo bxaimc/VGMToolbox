@@ -997,5 +997,24 @@ namespace VGMToolbox
                 showForm(this.splitContainer1.Panel2.Controls, "ZZZ_NotYetImplemented");
             }           
         }
+
+        public object GetFormByName(string formName)
+        {
+            object ret = null;
+            
+            foreach (Control c in this.splitContainer1.Panel2.Controls)
+            {
+                if ((c is Form) && (!String.IsNullOrEmpty(c.Name)))
+                {
+                    if ((!String.IsNullOrEmpty(formName)) && (c.Name.Equals(formName)))
+                    {
+                        ret = c;
+                        break;
+                    }
+                }            
+            }
+
+            return ret;
+        }
     }
 }
