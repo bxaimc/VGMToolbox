@@ -195,7 +195,7 @@ namespace VGMToolbox.tools.xsf
                 /////////////////////
                 // rewrite make file
                 /////////////////////
-                this.rewritePsfOCycleMakeFile(psfOCycleMakeFileDestination, sigFindAddresses);
+                this.rewritePsfOCycleMakeFile(psfOCycleMakeFileDestination, sigFindAddresses, stubMakerParameters);
 
                 //////////////////////////////////
                 // delete old files if they exist
@@ -410,7 +410,7 @@ namespace VGMToolbox.tools.xsf
             File.Copy(tempFilePath, driverSourceCodePath, true);
         }
 
-        private void rewritePsfOCycleMakeFile(string makeFilePath, PsfPsyQAddresses addresses)
+        private void rewritePsfOCycleMakeFile(string makeFilePath, PsfPsyQAddresses addresses, PsfStubMakerStruct stubMakerParameters)
         {
 
             int lineNumber;
@@ -431,8 +431,15 @@ namespace VGMToolbox.tools.xsf
                     {
                         switch (lineNumber)
                         { 
-                            case 20:
-                                writer.WriteLine(String.Format("psylink /o {0} /p /z psfdrv.obj,psfdrv.bin", addresses.PsfDrvLoadAddress));
+                            case 17:
+                                if (stubMakerParameters.OverrideDriverLoadAddress)
+                                {
+                                    writer.WriteLine(String.Format("psylink /o {0} /p /z psfdrv.obj,psfdrv.bin", stubMakerParameters.PsfDrvLoad));
+                                }
+                                else
+                                {
+                                    writer.WriteLine(String.Format("psylink /o {0} /p /z psfdrv.obj,psfdrv.bin", addresses.PsfDrvLoadAddress));
+                                }
                                 break;
                             default:
                                 writer.WriteLine(inputLine);
