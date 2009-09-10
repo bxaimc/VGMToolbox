@@ -488,17 +488,23 @@ namespace VGMToolbox.tools.xsf
         private string setMiniPsfValues(string templateMiniPsfPath, Bin2PsfStruct pBin2PsfStruct)
         {
             string modifiedMiniPsfPath = Path.Combine(WORKING_FOLDER, Path.GetFileName(templateMiniPsfPath));
+            long seqSize = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.SeqSize);
+            int totalFileSize;
 
             // copy file
             File.Copy(templateMiniPsfPath, modifiedMiniPsfPath, true);
 
             // edit values
-            byte[] seqOffset = BitConverter.GetBytes((uint)VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.seqOffset));
-            byte[] seqSize = BitConverter.GetBytes((uint)VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.SeqSize));
+            byte[] seqOffsetBytes = BitConverter.GetBytes((uint)VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.seqOffset));
+            byte[] seqSizeBytes = BitConverter.GetBytes((uint)seqSize);
 
-            FileUtil.UpdateChunk(modifiedMiniPsfPath, MINIPSF_INITIAL_PC_OFFSET, seqOffset);
-            FileUtil.UpdateChunk(modifiedMiniPsfPath, MINIPSF_TEXT_SECTION_OFFSET, seqOffset);
-            FileUtil.UpdateChunk(modifiedMiniPsfPath, MINIPSF_TEXT_SECTION_SIZE_OFFSET, seqSize);
+            FileUtil.UpdateChunk(modifiedMiniPsfPath, MINIPSF_INITIAL_PC_OFFSET, seqOffsetBytes);
+            FileUtil.UpdateChunk(modifiedMiniPsfPath, MINIPSF_TEXT_SECTION_OFFSET, seqOffsetBytes);
+            FileUtil.UpdateChunk(modifiedMiniPsfPath, MINIPSF_TEXT_SECTION_SIZE_OFFSET, seqSizeBytes);
+
+            // trim end of file
+            totalFileSize = (int)(seqSize + PC_OFFSET_CORRECTION);
+            FileUtil.TrimFileToLength(modifiedMiniPsfPath, totalFileSize);
 
             return modifiedMiniPsfPath;
         }

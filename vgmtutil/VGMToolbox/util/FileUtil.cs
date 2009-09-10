@@ -199,6 +199,24 @@ namespace VGMToolbox.util
             }
         }
 
+        public static void TrimFileToLength(string path, int totalLength)
+        {
+            string fullPath = Path.GetFullPath(path);
+
+            if (File.Exists(fullPath))
+            {
+                string destinationPath = Path.ChangeExtension(fullPath, ".trimmed");
+                
+                using (FileStream fs = File.OpenRead(path))
+                {
+                    ParseFile.ExtractChunkToFile(fs, 0, totalLength, destinationPath);
+                }
+
+                File.Copy(destinationPath, path, true);
+                File.Delete(destinationPath);
+            }
+        }
+
         public static bool ExecuteExternalProgram(
             string pathToExecuatable, 
             string arguments, 
