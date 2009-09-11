@@ -72,6 +72,7 @@ namespace VGMToolbox.forms.xsf
                 bpStruct.DriverName = (string)this.genericDriver.SelectedItem;
                 bpStruct.psflibName = tbPsflibName.Text;
                 bpStruct.SeqSize = this.tbMySeqSize.Text;
+                bpStruct.ParamOffset = this.tbParamOffset.Text;
 
                 base.backgroundWorker_Execute(bpStruct);
             }
@@ -177,6 +178,8 @@ namespace VGMToolbox.forms.xsf
             this.tbMySeqSize.Text = "0x00010000";
             this.tbVhOffset.Text =  "0x80130000";
             this.tbVbOffset.Text =  "0x80140000";
+            this.tbParamOffset.Text = "0x80101000";
+
             this.cbMinipsf.Enabled = true;
         }
         private void loadMarkGrassGenericPresets()
@@ -205,7 +208,10 @@ namespace VGMToolbox.forms.xsf
             // this.tbExePath.ReadOnly = true;
             // this.btnExeBrowse.Enabled = false;
             this.tbPsflibName.Enabled = false;
-            this.tbPsflibName.ReadOnly = true;            
+            this.tbPsflibName.ReadOnly = true;
+
+            this.tbParamOffset.Enabled = false;
+            this.tbParamOffset.ReadOnly = true;
 
             this.tbSeqOffset.Enabled = false;
             this.tbSeqOffset.ReadOnly = true;
@@ -226,6 +232,9 @@ namespace VGMToolbox.forms.xsf
             this.tbPsflibName.ReadOnly = false;
             this.cbMinipsf.Enabled = true;
             this.cbMinipsf_CheckedChanged(null, null);
+
+            this.tbParamOffset.Enabled = true;
+            this.tbParamOffset.ReadOnly = false;
 
             this.tbSeqOffset.Enabled = true;
             this.tbSeqOffset.ReadOnly = false;
@@ -254,6 +263,9 @@ namespace VGMToolbox.forms.xsf
                 ret = ret && false;
             }
 
+            ret = ret && base.checkFileExists(this.tbExePath.Text, this.lblDriverPath.Text);
+            ret = ret && base.checkFolderExists(this.tbSourceFilesPath.Text, this.lblSourceFiles.Text);
+
             return ret;
         }
 
@@ -281,6 +293,7 @@ namespace VGMToolbox.forms.xsf
                 this.tbVhOffset.Text = psfForm.GetVhOffset();
                 this.tbVbOffset.Text = psfForm.GetVbOffset();
                 this.tbMySeqSize.Text = psfForm.GetSeqSize();
+                this.tbParamOffset.Text = psfForm.GetParamOffset();
             }
         }
     }

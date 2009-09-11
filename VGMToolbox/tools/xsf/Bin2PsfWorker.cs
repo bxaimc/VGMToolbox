@@ -43,6 +43,11 @@ namespace VGMToolbox.tools.xsf
 
         public const string PSFLIB_FILE_EXTENSION = ".psflib";
 
+        public const int PARAM_SEQNUM_TICKMODE = 0x0C;
+        public const int PARAM_MAXSEQ_LOOPOFF = 0x10;
+        public const int PARAM_SEQNUM_OFFSET = 0x14;
+        public const int PARAM_MAXSEQ_OFFSET = 0x18;
+
         private int progress = 0;
         private int fileCount = 0;
         private int maxFiles = 0;
@@ -56,6 +61,8 @@ namespace VGMToolbox.tools.xsf
             public string SeqSize { set; get; }
             public string vhOffset;
             public string vbOffset;
+
+            public string ParamOffset { set; get; }
 
             public string outputFolder;
             public bool makeMiniPsfs;
@@ -76,13 +83,15 @@ namespace VGMToolbox.tools.xsf
         {
             string[] uniqueSqFiles;
             string[] uniqueVhFiles;
+            string[] uniqueSepFiles;
 
             if (!CancellationPending)
             {
                 // get list of unique files
                 uniqueSqFiles = this.getUniqueFileNames(pBin2PsfStruct.sourcePath, "*.SEQ");
                 uniqueVhFiles = this.getUniqueFileNames(pBin2PsfStruct.sourcePath, "*.VH");
-                
+                uniqueSepFiles = this.getUniqueFileNames(pBin2PsfStruct.sourcePath, "*.SEP");
+
                 if (uniqueSqFiles != null)
                 {                    
                     if (pBin2PsfStruct.TryCombinations)
@@ -106,9 +115,23 @@ namespace VGMToolbox.tools.xsf
                             }
                         }                    
                     }
-                    
-                    this.buildPsfs(uniqueSqFiles, uniqueVhFiles, pBin2PsfStruct, e);
+
+                    // check for SEP
+                    if (uniqueSepFiles != null)
+                    {
+                        this.progressStruct.Clear();
+                        this.progressStruct.ErrorMessage = String.Format("ERROR: Both SEQ and SEP found, cannot make both types of PSF with the same driver.{0}", Environment.NewLine);
+                        ReportProgress(this.progress, this.progressStruct);
+                        return;
+                    }
                 }
+                else if (uniqueSepFiles != null)
+                {
+                    this.maxFiles = uniqueSepFiles.Length;
+                }
+                
+                // build PSFs
+                this.buildPsfs(uniqueSqFiles, uniqueVhFiles, uniqueSepFiles, pBin2PsfStruct, e);
             }
             else
             {
@@ -150,7 +173,7 @@ namespace VGMToolbox.tools.xsf
             return ret;
         }
 
-        private void buildPsfs(string[] pUniqueSqFiles, string[] pUniqueVhFiles, Bin2PsfStruct pBin2PsfStruct,
+        private void buildPsfs(string[] pUniqueSqFiles, string[] pUniqueVhFiles, string[] pUniqueSepFiles, Bin2PsfStruct pBin2PsfStruct,
             DoWorkEventArgs e)
         {
             string outputExtension;
@@ -163,7 +186,10 @@ namespace VGMToolbox.tools.xsf
             string vbName;
 
             string modifiedMiniPsfPath = null;
+            
+            uint seqCount = 0;
 
+            // create working directory
             try
             {
                 Directory.CreateDirectory(WORKING_FOLDER);
@@ -184,81 +210,129 @@ namespace VGMToolbox.tools.xsf
             if (pBin2PsfStruct.makeMiniPsfs)
             {
                 outputExtension = ".minipsf";
-                modifiedMiniPsfPath = setMiniPsfValues(GENERIC_MINIPSF_EXE_PATH, pBin2PsfStruct);
+
+                if (pUniqueSqFiles != null)
+                {
+                    modifiedMiniPsfPath = setMiniPsfValues(GENERIC_MINIPSF_EXE_PATH, pBin2PsfStruct, false);
+                }
+                else if (pUniqueSepFiles != null)
+                {
+                    modifiedMiniPsfPath = setMiniPsfValues(GENERIC_MINIPSF_EXE_PATH, pBin2PsfStruct, true);
+                }
             }
             else
             {
                 outputExtension = ".psf";
             }
 
-            // Create psflib
-            if (pBin2PsfStruct.makeMiniPsfs)
+            // Create psflib for SEQ style
+            if ((pBin2PsfStruct.makeMiniPsfs) && (pUniqueSqFiles != null))
             {
-                // make psflib
                 this.makePsfFile(pBin2PsfStruct, null, pUniqueVhFiles[0], Path.ChangeExtension(pUniqueVhFiles[0], ".vb"),
-                    PSFLIB_FILE_EXTENSION, bin2PsfDestinationPath, ripOutputFolder);
+                    PSFLIB_FILE_EXTENSION, bin2PsfDestinationPath, ripOutputFolder, -1, -1, null);
             }
 
-            foreach (string seqFile in pUniqueSqFiles)
+            #region SEQ LOOP
+            if (pUniqueSqFiles != null)
             {
-                if (!CancellationPending)
+                foreach (string seqFile in pUniqueSqFiles)
                 {
-                    // All Combinations
-                    if (pBin2PsfStruct.TryCombinations)
+                    if (!CancellationPending)
                     {
-                        foreach (string vhFile in pUniqueVhFiles)
+                        // All Combinations
+                        if (pBin2PsfStruct.TryCombinations)
+                        {
+                            foreach (string vhFile in pUniqueVhFiles)
+                            {
+                                try
+                                {
+                                    this.makePsfFile(pBin2PsfStruct, seqFile, vhFile, Path.ChangeExtension(vhFile, ".vb"),
+                                        outputExtension, bin2PsfDestinationPath, ripOutputFolder, -1, -1, null);
+                                }
+                                catch (Exception ex)
+                                {
+                                    this.progressStruct.Clear();
+                                    this.progressStruct.FileName = seqFile;
+                                    this.progressStruct.ErrorMessage = ex.Message;
+                                    ReportProgress(this.progress, this.progressStruct);
+                                }
+                            }
+                        }
+                        else
                         {
                             try
                             {
-                                this.makePsfFile(pBin2PsfStruct, seqFile, vhFile, Path.ChangeExtension(vhFile, ".vb"),
-                                    outputExtension, bin2PsfDestinationPath, ripOutputFolder);
+                                if (pBin2PsfStruct.makeMiniPsfs)
+                                {
+                                    pBin2PsfStruct.exePath = modifiedMiniPsfPath;
+                                    vhName = null;
+                                    vbName = null;
+                                }
+                                else
+                                {
+                                    vhName = Path.ChangeExtension(seqFile, ".vh");
+                                    vbName = Path.ChangeExtension(seqFile, ".vb");
+                                }
+
+                                this.makePsfFile(pBin2PsfStruct, seqFile, vhName, vbName,
+                                    outputExtension, bin2PsfDestinationPath, ripOutputFolder, -1, -1, null);
                             }
-                            catch (Exception ex)
+                            catch (Exception ex2)
                             {
                                 this.progressStruct.Clear();
                                 this.progressStruct.FileName = seqFile;
-                                this.progressStruct.ErrorMessage = ex.Message;
+                                this.progressStruct.ErrorMessage = ex2.Message;
                                 ReportProgress(this.progress, this.progressStruct);
                             }
                         }
+
                     }
                     else
                     {
-                        try
-                        {
-                            if (pBin2PsfStruct.makeMiniPsfs)
-                            {                                
-                                pBin2PsfStruct.exePath = modifiedMiniPsfPath;
-                                vhName = null;
-                                vbName = null;                            
-                            }
-                            else
-                            {
-                                vhName = Path.ChangeExtension(seqFile, ".vh");
-                                vbName = Path.ChangeExtension(seqFile, ".vb");                                
-                            }
+                        e.Cancel = true;
+                        return;
+                    } // if (!CancellationPending)
 
-                            this.makePsfFile(pBin2PsfStruct, seqFile, vhName, vbName,
-                                outputExtension, bin2PsfDestinationPath, ripOutputFolder);
-                        }
-                        catch (Exception ex2)
-                        {
-                            this.progressStruct.Clear();
-                            this.progressStruct.FileName = seqFile;
-                            this.progressStruct.ErrorMessage = ex2.Message;
-                            ReportProgress(this.progress, this.progressStruct);
-                        }
-                    }            
-
-                }
-                else
+                } // foreach (string seqFile in pUniqueSqFiles)            
+            } // if (pUniqueSqFiles != null)
+            #endregion
+            #region SEP LOOP
+            else if (pUniqueSepFiles != null)
+            {
+                string originalExe = pBin2PsfStruct.exePath;
+                
+                foreach (string sepFile in pUniqueSepFiles)
                 {
-                    e.Cancel = true;
-                    return;
-                } // if (!CancellationPending)
+                    // loop through SEQs
+                    seqCount = PsxSequence.GetSeqCountForSep(sepFile);
+                    this.maxFiles += (int)(seqCount + 1);
 
-            } // foreach (string seqFile in pUniqueSqFiles)
+                    pBin2PsfStruct.exePath = originalExe;
 
+                    // create lib file
+                    this.makePsfFile(pBin2PsfStruct, sepFile, pUniqueVhFiles[0], Path.ChangeExtension(pUniqueVhFiles[0], ".vb"),
+                        PSFLIB_FILE_EXTENSION, bin2PsfDestinationPath, ripOutputFolder, -1, -1, null);
+
+                    pBin2PsfStruct.exePath = modifiedMiniPsfPath;
+
+                    for (int i = 0; i < seqCount; i++)
+                    {
+                        if (!CancellationPending)
+                        {
+                            this.makePsfFile(pBin2PsfStruct, null, null, null, outputExtension,
+                                bin2PsfDestinationPath, ripOutputFolder, i, (int)seqCount, Path.GetFileNameWithoutExtension(sepFile));                                                                                       
+                        }
+                        else
+                        {
+                            e.Cancel = true;
+                            return;
+                        } // if (!CancellationPending)
+                    } // for (int i = 1; i <= seqCount; i++)
+                } // foreach (string sepFile in pUniqueSepFiles)
+            }
+            #endregion
+
+            // delete working folder
             try
             {
                 Directory.Delete(WORKING_FOLDER, true);
@@ -288,20 +362,25 @@ namespace VGMToolbox.tools.xsf
             string vbFile, 
             string outputExtension,
             string bin2PsfDestinationPath,
-            string ripOutputFolder)
+            string ripOutputFolder,
+            int sepCount,
+            int sepTotalSeqs, 
+            string sepMiniPsfPrefix)
         {
 
             long pcOffsetSeq;
             long pcOffsetVh;
             long pcOffsetVb;
+            long pcOffsetSepParams = 0;
             long textSectionOffsetValue;
 
             bool isSeqPresent = !String.IsNullOrEmpty(seqFile);
             bool isVbPresent = !String.IsNullOrEmpty(vbFile);
             bool isVhPresent = !String.IsNullOrEmpty(vhFile);
-            
-            bool isMakingPsfLib = ((!isSeqPresent) && (pBin2PsfStruct.makeMiniPsfs));
-            bool isMakingMiniPsf = ((isSeqPresent) && (pBin2PsfStruct.makeMiniPsfs));
+
+            bool isMakingPsfLib = (isVhPresent && isVbPresent && pBin2PsfStruct.makeMiniPsfs);
+            bool isMakingMiniPsf = (!isMakingPsfLib && (pBin2PsfStruct.makeMiniPsfs));
+            bool isMakingSepMiniPsf = (!isSeqPresent && !isVhPresent && !isVbPresent && (sepTotalSeqs > 0) && (sepCount > -1));
 
             string destinationFile;
 
@@ -322,13 +401,17 @@ namespace VGMToolbox.tools.xsf
             {
                 filePrefix = String.Format("S[{0}]_V[{1}]", Path.GetFileNameWithoutExtension(seqFile), Path.GetFileNameWithoutExtension(vhFile));
             }
-            else if (isSeqPresent)
+            else if (isMakingSepMiniPsf)
             {
-                filePrefix = Path.GetFileNameWithoutExtension(seqFile);
+                filePrefix = String.Format("{0}_{1}", sepMiniPsfPrefix, sepCount.ToString("X2"));
             }
             else if (isMakingPsfLib) // making .psflib
             {
                 filePrefix = Path.GetFileNameWithoutExtension(pBin2PsfStruct.psflibName);
+            }
+            else if (isSeqPresent)
+            {
+                filePrefix = Path.GetFileNameWithoutExtension(seqFile);
             }
             else
             {
@@ -355,10 +438,11 @@ namespace VGMToolbox.tools.xsf
             
             // check for empty SEQ files
             if (((isSeqPresent) && (fi.Length > 0)) || pBin2PsfStruct.makeMiniPsfs)
-            {               
-                // determine offsets
+            {                               
+                // copy exe to destination folder
                 File.Copy(pBin2PsfStruct.exePath, destinationExeFile, true);
-                
+
+                // determine offsets
                 using (FileStream fs = File.OpenRead(destinationExeFile))
                 {
                     // get offset of text section
@@ -381,6 +465,8 @@ namespace VGMToolbox.tools.xsf
                                 textSectionOffsetValue + PC_OFFSET_CORRECTION;
                             pcOffsetVh = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.vhOffset) -
                                 textSectionOffsetValue + PC_OFFSET_CORRECTION;
+                            pcOffsetSepParams = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.ParamOffset) -
+                                textSectionOffsetValue + PC_OFFSET_CORRECTION;                            
                             break;
                     }
                 }
@@ -415,7 +501,27 @@ namespace VGMToolbox.tools.xsf
                         destinationExeFile, pcOffsetVh);
                     File.Delete(destinationFile);
                 }
-                                
+
+                if (isMakingSepMiniPsf)
+                {
+
+                    byte[] tickModeBytes = BitConverter.GetBytes((uint)1);
+                    byte[] loopOffBytes = BitConverter.GetBytes((uint)1);
+                    byte[] sepCountBytes = BitConverter.GetBytes((uint)sepCount);
+                    byte[] sepTotalSeqsBytes = BitConverter.GetBytes((uint)sepTotalSeqs);
+                    
+                    uint totalFileSize = (uint)(pcOffsetSepParams + PARAM_MAXSEQ_OFFSET + 4);
+                    byte[] totalFileSizeBytes = BitConverter.GetBytes(totalFileSize);
+
+                    FileUtil.UpdateChunk(destinationExeFile, (int)(pcOffsetSepParams + PARAM_SEQNUM_TICKMODE), tickModeBytes);
+                    FileUtil.UpdateChunk(destinationExeFile, (int)(pcOffsetSepParams + PARAM_MAXSEQ_LOOPOFF), loopOffBytes);
+                    FileUtil.UpdateChunk(destinationExeFile, (int)(pcOffsetSepParams + PARAM_SEQNUM_OFFSET), sepCountBytes);
+                    FileUtil.UpdateChunk(destinationExeFile, (int)(pcOffsetSepParams + PARAM_MAXSEQ_OFFSET), sepTotalSeqsBytes);
+
+                    FileUtil.TrimFileToLength(destinationExeFile, (int)totalFileSize);
+                }
+                
+
                 //// patch addresses for Davironica
                 //if ((!String.IsNullOrEmpty(pBin2PsfStruct.DriverName)) && (pBin2PsfStruct.DriverName.Equals(GENERIC_DRIVER_DAVIRONICA)))
                 //{
@@ -485,7 +591,7 @@ namespace VGMToolbox.tools.xsf
             }        
         }
 
-        private string setMiniPsfValues(string templateMiniPsfPath, Bin2PsfStruct pBin2PsfStruct)
+        private string setMiniPsfValues(string templateMiniPsfPath, Bin2PsfStruct pBin2PsfStruct, bool useSepParameters)
         {
             string modifiedMiniPsfPath = Path.Combine(WORKING_FOLDER, Path.GetFileName(templateMiniPsfPath));
             long seqSize = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.SeqSize);
@@ -494,16 +600,32 @@ namespace VGMToolbox.tools.xsf
             // copy file
             File.Copy(templateMiniPsfPath, modifiedMiniPsfPath, true);
 
-            // edit values
-            byte[] seqOffsetBytes = BitConverter.GetBytes((uint)VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.seqOffset));
-            byte[] seqSizeBytes = BitConverter.GetBytes((uint)seqSize);
+            // edit values            
+            if (!useSepParameters)
+            {
+                byte[] seqOffsetBytes = BitConverter.GetBytes((uint)VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.seqOffset));
+                byte[] seqSizeBytes = BitConverter.GetBytes((uint)seqSize);
 
-            FileUtil.UpdateChunk(modifiedMiniPsfPath, MINIPSF_INITIAL_PC_OFFSET, seqOffsetBytes);
-            FileUtil.UpdateChunk(modifiedMiniPsfPath, MINIPSF_TEXT_SECTION_OFFSET, seqOffsetBytes);
-            FileUtil.UpdateChunk(modifiedMiniPsfPath, MINIPSF_TEXT_SECTION_SIZE_OFFSET, seqSizeBytes);
+                FileUtil.UpdateChunk(modifiedMiniPsfPath, MINIPSF_INITIAL_PC_OFFSET, seqOffsetBytes);
+                FileUtil.UpdateChunk(modifiedMiniPsfPath, MINIPSF_TEXT_SECTION_OFFSET, seqOffsetBytes);
+                FileUtil.UpdateChunk(modifiedMiniPsfPath, MINIPSF_TEXT_SECTION_SIZE_OFFSET, seqSizeBytes);
 
-            // trim end of file
-            totalFileSize = (int)(seqSize + PC_OFFSET_CORRECTION);
+                // trim end of file
+                totalFileSize = (int)(seqSize + PC_OFFSET_CORRECTION);
+            }
+            else
+            {
+                uint paramOffet = (uint)VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.ParamOffset);
+                byte[] paramOffsetBytes = BitConverter.GetBytes(paramOffet);
+
+                totalFileSize = (int)(PC_OFFSET_CORRECTION + PARAM_MAXSEQ_OFFSET + 4);
+                byte[] textSectionSizeBytes = BitConverter.GetBytes((uint)(totalFileSize - PC_OFFSET_CORRECTION));
+
+                FileUtil.UpdateChunk(modifiedMiniPsfPath, MINIPSF_INITIAL_PC_OFFSET, paramOffsetBytes);
+                FileUtil.UpdateChunk(modifiedMiniPsfPath, MINIPSF_TEXT_SECTION_OFFSET, paramOffsetBytes);
+                FileUtil.UpdateChunk(modifiedMiniPsfPath, MINIPSF_TEXT_SECTION_SIZE_OFFSET, textSectionSizeBytes);
+            }
+            
             FileUtil.TrimFileToLength(modifiedMiniPsfPath, totalFileSize);
 
             return modifiedMiniPsfPath;

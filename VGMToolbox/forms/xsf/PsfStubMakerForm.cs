@@ -214,5 +214,10 @@ namespace VGMToolbox.forms.xsf
         {
             return this.tbMyVb.Text;
         }
+
+        public string GetParamOffset()
+        {
+            return this.tbPsfDrvParam.Text;
+        }
     }
 }

@@ -488,6 +488,23 @@ DONE:       // Marker used for skipping delta ticks at the end of a file.
             pStream.Position = incomingStreamPosition;
             return ret;        
         }
+
+        public static uint GetSeqCountForSep(string sepFileName)
+        {
+            uint seqCount = 0;
+            long offset = 0;
+
+            using (FileStream fs = File.OpenRead(sepFileName))
+            { 
+                while ((offset = ParseFile.GetNextOffset(fs, offset, PsxSequence.END_SEQUENCE)) > -1)
+                {
+                    seqCount++;
+                    offset++;
+                }
+            }
+
+            return seqCount;
+        }
     }
 
     public class PsxSeqFormatException : Exception
