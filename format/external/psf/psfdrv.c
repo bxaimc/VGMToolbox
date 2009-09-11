@@ -8,6 +8,8 @@
 ** the SEQ/VAB library or not).
 */
 
+#define DO_SEQ // will be set/unset inside the code generation routine
+
 /*
 ** Define the location of the PSF driver stub.
 ** You should define this to somewhere safe where there's no useful data and
@@ -33,9 +35,18 @@
 ** PSFDRV_PARAM block.
 ** In this example, I'm including the sequence volume, reverb type and depth.
 */
-#define PARAM_SEQVOL (*((unsigned char*)(PSFDRV_PARAM+0x0000)))
-#define PARAM_RTYPE  (*((unsigned char*)(PSFDRV_PARAM+0x0001)))
-#define PARAM_RDEPTH (*((unsigned char*)(PSFDRV_PARAM+0x0002)))
+#define PARAM_SEQVOL   (*((unsigned char*)(PSFDRV_PARAM+0x0000)))
+#define PARAM_RTYPE    (*((unsigned char*)(PSFDRV_PARAM+0x0004)))
+#define PARAM_RDEPTH   (*((unsigned char*)(PSFDRV_PARAM+0x0008)))
+
+#ifndef DO_SEQ
+
+#define PARAM_TICKMODE (*((unsigned char*)(PSFDRV_PARAM+0x000C)))
+#define PARAM_LOOPOFF  (*((unsigned char*)(PSFDRV_PARAM+0x0010)))
+#define PARAM_SEQNUM   (*((unsigned char*)(PSFDRV_PARAM+0x0014)))
+#define PARAM_MAXSEQ   (*((unsigned char*)(PSFDRV_PARAM+0x0018)))
+
+#endif
 
 /***************************************************************************/
 /*
@@ -123,7 +134,13 @@ unsigned long driverinfo[] = {
   (int)"seqvol", (int)(&PARAM_SEQVOL), 1,
   (int)"rtype" , (int)(&PARAM_RTYPE ), 1,
   (int)"rdepth", (int)(&PARAM_RDEPTH), 1,
-  0
+#ifndef DO_SEQ
+  (int)"tickmode", (int)(&PARAM_TICKMODE), 1,
+  (int)"loop_off", (int)(&PARAM_LOOPOFF ), 1,
+  (int)"seqnum",   (int)(&PARAM_SEQNUM)  , 1,
+  (int)"maxseq",   (int)(&PARAM_MAXSEQ)  , 1,
+#endif
+  0  
 };
 
 /***************************************************************************/
@@ -200,7 +217,12 @@ unsigned long loopforever_data[] = {0x1000FFFF,0};
   #define SpuIsTransferCompleted(a)    ((short)( F5(0x8003A920) ((long)(a)) ))
   #define SpuInit                                F0(0x80038838)
   #define SsStart2                               F0(0x80038B9C)
-
+  
+  // SEP functions
+#ifndef DO_SEQ
+  #define SsSepOpen(a,b,c)             ((short)( F3(0x800629D4) ((int)(a),(int)(b),(int)(c)) ))
+  #define SsSepPlay(a,b,c,d)                     F4(0x80064F6C) ((int)(a),(int)(b),(int)(c),(int)(d))
+#endif
 /***************************************************************************/
 /*
 ** PSF driver main() replacement
@@ -211,6 +233,12 @@ int psfdrv(void) {
   int seqvol;
   int rtype;
   int rdepth;
+#ifndef DO_SEQ  
+  int tickmode;
+  int loop_off;
+  int seqnum;
+  int maxseq; 
+#endif   
   int r;
 
   seq = (void*)(MY_SEQ);
@@ -222,10 +250,19 @@ int psfdrv(void) {
   */
   seqvol = PARAM_SEQVOL;
   rtype  = PARAM_RTYPE;
-  rdepth = PARAM_RDEPTH;
+  rdepth = PARAM_RDEPTH;  
   if(!seqvol) seqvol = 127;
   if(!rtype)  rtype = 4;
   if(!rdepth) rdepth = 0x2A;
+
+#ifndef DO_SEQ  
+  tickmode = PARAM_TICKMODE;
+  loop_off = PARAM_LOOPOFF;
+  seqnum   = PARAM_SEQNUM;
+  maxseq   = PARAM_MAXSEQ;  
+  if(!seqnum)   seqnum     = 0;
+  if(!tickmode) tickmode   = 4;  
+#endif
 
   /*
   ** Initialize stuff
@@ -241,9 +278,15 @@ int psfdrv(void) {
   /* If the game originally used a predefined address for the SEQ table,
   ** you might want to set it here */
 #define SSTABLE (0x801F0000)
+
+#ifdef DO_SEQ
   SsSetTableSize(SSTABLE, 2, 1);
   SsSetTickMode(1);
-  SsSetMVol(127,127);
+#else
+  SsSetTableSize(SSTABLE, 2, maxseq);
+  SsSetTickMode(tickmode);
+#endif    
+  SsSetMVol(seqvol, seqvol);
   
   /*
   ** Reverb setup
@@ -311,28 +354,29 @@ int psfdrv(void) {
 #elif defined SsVabTransCompleted
   r = SsVabTransCompleted(1);
 #endif 
-
   ASSERT(r == 1);
 
-  /*
-  ** Open the SEQ
-  */
+  
+#ifdef DO_SEQ
+  // Open the SEQ
   seqid = SsSeqOpen(seq, vabid);
   ASSERT(seqid >= 0);
 
-  /*
-  ** Play the seq
-  */
+  //Play the seq
   SsSeqPlay(seqid, 1, 0);
+#else
+  // Open the SEP
+  seqid = SsSepOpen(seq, vabid, maxseq);
+  ASSERT(seqid >= 0);
 
-  /*
-  ** Set its volume
-  */
+  //Play the seq
+  SsSepPlay(seqid, seqnum, 1, loop_off);
+#endif
+
+  // Set its volume
   SsSeqSetVol(seqid, seqvol, seqvol);
 
-  /*
-  ** Loop a while.
-  */
+  // Loop a while.
   loopforever();
 
   return 0;

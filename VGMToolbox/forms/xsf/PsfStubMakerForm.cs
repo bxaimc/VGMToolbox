@@ -72,6 +72,7 @@ namespace VGMToolbox.forms.xsf
 
                 PsfStubMakerStruct bwStruct = new PsfStubMakerStruct();
                 bwStruct.SourcePaths = s;
+                bwStruct.UseSeqFunctions = this.cbSeqFunctions.Checked;
                 bwStruct.DriverText = this.tbDriverText.Text;
                 bwStruct.IncludeReverb = this.cbIncludeReverb.Checked;
 

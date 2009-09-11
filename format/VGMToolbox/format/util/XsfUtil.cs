@@ -367,6 +367,9 @@ namespace VGMToolbox.format.util
             set { spuSetReverbVoice = value; }
             get { return spuSetReverbVoice; }
         }
+
+        public string SsSepOpen { set; get; }
+        public string SsSepPlay { set; get; }
     }
 
     public class XsfUtil
@@ -1135,6 +1138,10 @@ namespace VGMToolbox.format.util
             psyQFunctionList.Add("SpuInit");
             psyQFunctionList.Add("SsStart2");
 
+            // SEP
+            psyQFunctionList.Add("SsSepOpen");
+            psyQFunctionList.Add("SsSepPlay");
+
             return psyQFunctionList;
         }
 
@@ -1174,6 +1181,10 @@ namespace VGMToolbox.format.util
             list.Add("SpuInit", "  #define SpuInit                                F0({0})");
             list.Add("SsStart2", "  #define SsStart2                               F0({0})");
 
+            // SEP
+            list.Add("SsSepOpen", "  #define SsSepOpen(a,b,c)             ((short)( F3({0}) ((int)(a),(int)(b),(int)(c)) ))");
+            list.Add("SsSepPlay", "  #define SsSepPlay(a,b,c,d)                     F4({0}) ((int)(a),(int)(b),(int)(c),(int)(d))");
+
             return list;
         }
 
@@ -1181,37 +1192,41 @@ namespace VGMToolbox.format.util
         {
             Dictionary<int, string> list = new Dictionary<int, string>();
 
-            list.Add(16, "PsfDrvLoadAddress");
-            list.Add(90, "DriverTextString");
-            list.Add(101, "ExeFileNameCrc");
-            list.Add(107, "JumpPatchAddress");
+            list.Add(18, "PsfDrvLoadAddress");
+            list.Add(101, "DriverTextString");
+            list.Add(112, "ExeFileNameCrc");
+            list.Add(118, "JumpPatchAddress");
 
-            list.Add(176, "ResetCallback");            
-            list.Add(178, "SsInit");
-            list.Add(179, "SsSeqOpen");
-            list.Add(180, "SsSeqPlay");
-            list.Add(181, "SsSetMVol");
-            list.Add(182, "SsStart");
-            list.Add(183, "SsSetTableSize");
-            list.Add(184, "SsSetTickMode");
-            list.Add(185, "SsSeqSetVol");
-            list.Add(186, "SsUtSetReverbType");
-            list.Add(187, "SsUtReverbOn");
-            list.Add(188, "SsVabOpenHead");
-            list.Add(189, "SsVabTransBodyPartly");
-            list.Add(190, "SsVabTransCompleted");
+            list.Add(193, "ResetCallback");            
+            list.Add(195, "SsInit");
+            list.Add(196, "SsSeqOpen");
+            list.Add(197, "SsSeqPlay");
+            list.Add(198, "SsSetMVol");
+            list.Add(199, "SsStart");
+            list.Add(200, "SsSetTableSize");
+            list.Add(201, "SsSetTickMode");
+            list.Add(202, "SsSeqSetVol");
+            list.Add(203, "SsUtSetReverbType");
+            list.Add(204, "SsUtReverbOn");
+            list.Add(205, "SsVabOpenHead");
+            list.Add(206, "SsVabTransBodyPartly");
+            list.Add(207, "SsVabTransCompleted");
             
-            list.Add(192, "SpuSetReverb");
-            list.Add(193, "SpuSetReverbModeParam");
-            list.Add(194, "SpuSetReverbDepth");
-            list.Add(195, "SpuSetReverbVoice");
+            list.Add(209, "SpuSetReverb");
+            list.Add(210, "SpuSetReverbModeParam");
+            list.Add(211, "SpuSetReverbDepth");
+            list.Add(212, "SpuSetReverbVoice");
 
             // alternatives
-            list.Add(198, "SsVabOpenHeadSticky");
-            list.Add(199, "SsVabTransBody");
-            list.Add(200, "SpuIsTransferCompleted");
-            list.Add(201, "SpuInit");
-            list.Add(202, "SsStart2");
+            list.Add(215, "SsVabOpenHeadSticky");
+            list.Add(216, "SsVabTransBody");
+            list.Add(217, "SpuIsTransferCompleted");
+            list.Add(218, "SpuInit");
+            list.Add(219, "SsStart2");
+
+            // SEP
+            list.Add(223, "SsSepOpen");
+            list.Add(224, "SsSepPlay");
 
             return list;
         }

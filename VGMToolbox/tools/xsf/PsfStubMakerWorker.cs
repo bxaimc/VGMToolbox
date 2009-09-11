@@ -41,6 +41,7 @@ namespace VGMToolbox.tools.xsf
         public string MyVb { set; get; }
         public string MyVbSize { set; get; }
 
+        public bool UseSeqFunctions { set; get; }
         public bool OverrideDriverLoadAddress { set; get; }
     }
     
@@ -73,6 +74,8 @@ namespace VGMToolbox.tools.xsf
 
         private const int COMMENT_REVERB_OPEN = 252;
         private const int COMMENT_REVERB_CLOSE = 275;
+
+        private const int DoSeqDefineLineNo = 11;
 
         private const int PsfDrvLoadLineNo = 16;
         private const int PsfDrvSizeLineNo = 17;
@@ -339,6 +342,12 @@ namespace VGMToolbox.tools.xsf
                         {
                             switch (lineNumber)
                             {
+                                case DoSeqDefineLineNo:
+                                    if (!stubMakerParameters.UseSeqFunctions)
+                                    {
+                                        writer.WriteLine("#undef DO_SEQ");
+                                    }                                    
+                                    break;
                                 case COMMENT_REVERB_OPEN:
                                     if (!stubMakerParameters.IncludeReverb)
                                     {
