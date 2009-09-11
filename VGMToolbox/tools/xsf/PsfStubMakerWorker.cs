@@ -72,22 +72,22 @@ namespace VGMToolbox.tools.xsf
         public static readonly string WorkingFolderPath =
             Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "working_psf"));         
 
-        private const int COMMENT_REVERB_OPEN = 252;
-        private const int COMMENT_REVERB_CLOSE = 275;
+        private const int COMMENT_REVERB_OPEN = 295;
+        private const int COMMENT_REVERB_CLOSE = 318;
 
         private const int DoSeqDefineLineNo = 11;
 
-        private const int PsfDrvLoadLineNo = 16;
-        private const int PsfDrvSizeLineNo = 17;
-        private const int PsfDrvParamLineNo = 18;
-        private const int PsfDrvParamSizeLineNo = 19;
+        private const int PsfDrvLoadLineNo = 18;
+        private const int PsfDrvSizeLineNo = 19;
+        private const int PsfDrvParamLineNo = 20;
+        private const int PsfDrvParamSizeLineNo = 21;
 
-        private const int MySeqLineNo = 24;
-        private const int MySeqSizeLineNo = 25;
-        private const int MyVhLineNo = 26;
-        private const int MyVhSizeLineNo = 27;
-        private const int MyVbLineNo = 28;
-        private const int MyVbSizeLineNo = 29;
+        private const int MySeqLineNo = 26;
+        private const int MySeqSizeLineNo = 27;
+        private const int MyVhLineNo = 28;
+        private const int MyVhSizeLineNo = 29;
+        private const int MyVbLineNo = 30;
+        private const int MyVbSizeLineNo = 31;
 
         public PsfStubMakerWorker() : base() { }
 
