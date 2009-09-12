@@ -70,7 +70,7 @@ namespace VGMToolbox.tools.xsf
             public long offset;
             public uint length;
         }
-        public struct ProbableSeqStruct
+        public struct ProbableItemStruct
         {
             public long offset;
             public int length;
@@ -91,10 +91,21 @@ namespace VGMToolbox.tools.xsf
             long seqEof;
             string seqName;
             int seqNumber = 0;
-            int seqLength;
-            ProbableSeqStruct seqEntry;
+            int seqLength;            
+            ProbableItemStruct seqEntry;
             ArrayList seqFiles = new ArrayList();
             bool seqNamingMessageDisplayed = false;
+
+            long sepStartingOffset;
+            long sepEof;
+            byte[] nextSepCheckBytes;
+            string sepName;
+            int sepNumber = 0;
+            int sepSeqCount;
+            int sepLength;
+            ProbableItemStruct sepEntry;
+            ArrayList sepFiles = new ArrayList();
+            bool sepNamingMessageDisplayed = false;
 
             int vhNumber = 0;
             int minSampleSize = -1;
@@ -168,7 +179,7 @@ namespace VGMToolbox.tools.xsf
                 this.progressStruct.GenericMessage = String.Format("  Extracting SEQ{0}", Environment.NewLine);
                 this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
 
-                seqEntry = new ProbableSeqStruct();
+                seqEntry = new ProbableItemStruct();
                 offset = 0;
 
                 // build file list
@@ -191,7 +202,7 @@ namespace VGMToolbox.tools.xsf
                     offset += 1;
                 }
 
-                foreach (ProbableSeqStruct seq in seqFiles)
+                foreach (ProbableItemStruct seq in seqFiles)
                 {
                     if (seq.length > 0)
                     {
@@ -232,6 +243,86 @@ namespace VGMToolbox.tools.xsf
                 }
                 #endregion
 
+                // get SEP Files
+                #region SEP EXTRACT
+                this.progressStruct.Clear();
+                this.progressStruct.GenericMessage = String.Format("  Extracting SEP{0}", Environment.NewLine);
+                this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
+
+                sepEntry = new ProbableItemStruct();
+                offset = 0;
+
+                // build file list
+                while ((offset = ParseFile.GetNextOffset(fs, offset, PsxSequence.ASCII_SIGNATURE_SEP)) > -1)
+                {
+                    sepStartingOffset = offset;
+                    sepSeqCount = 1;
+                    seqEof = offset;
+
+                    while ((seqEof = ParseFile.GetNextOffset(fs, seqEof, PsxSequence.END_SEQUENCE)) > -1)
+                    {
+                        nextSepCheckBytes = ParseFile.ParseSimpleOffset(fs, (long)(seqEof + PsxSequence.END_SEQUENCE.Length), 2);
+                        Array.Reverse(nextSepCheckBytes);
+
+                        if (BitConverter.ToUInt16(nextSepCheckBytes, 0) == (UInt16)sepSeqCount)
+                        {
+                            sepSeqCount++;                            
+                        }
+                        else
+                        {
+                            sepEntry.offset = sepStartingOffset;
+                            sepEntry.length = (int)(seqEof - sepStartingOffset + PsxSequence.END_SEQUENCE.Length);
+                            sepFiles.Add(sepEntry);
+                            break;
+                        }
+
+                        seqEof += 1;
+                    }
+
+                    offset += 1;
+                }
+
+                foreach (ProbableItemStruct sep in sepFiles)
+                {
+                    if (sep.length > 0)
+                    {
+                        if (psfStruct.ReorderSeqFiles)
+                        {
+                            if ((vhArrayList.Count < sepFiles.Count))
+                            {
+                                if (!sepNamingMessageDisplayed)
+                                {
+                                    this.progressStruct.Clear();
+                                    this.progressStruct.ErrorMessage = String.Format(
+                                        "Warning, cannot reorder SEP files, there are less VH files than SEP files.{0}", Environment.NewLine);
+                                    this.ReportProgress(this.progress, this.progressStruct);
+                                    sepNamingMessageDisplayed = true;
+                                }
+                                sepName = String.Format("{0}_{1}.SEP", Path.GetFileNameWithoutExtension(pPath), sepNumber++.ToString("X4"));
+                            }
+                            else
+                            {
+                                vhObject = (VhStruct)vhArrayList[vhArrayList.Count - sepFiles.Count + sepNumber++];
+                                sepName = Path.ChangeExtension(vhObject.FileName, ".SEP");
+                            }
+                        }
+                        else
+                        {
+                            sepName = String.Format("{0}_{1}.SEP", Path.GetFileNameWithoutExtension(pPath), sepNumber++.ToString("X4"));
+                        }
+
+                        ParseFile.ExtractChunkToFile(fs, sep.offset, (int)sep.length,
+                            Path.Combine(destinationFolder, sepName), true, true);
+                    }
+                    else
+                    {
+                        this.progressStruct.Clear();
+                        this.progressStruct.ErrorMessage = String.Format(" Warning SEP found with length less than 0,  at Offset 0x{1}: {2}{3}", sep.offset.ToString("X8"), sep.length.ToString("X8"), Environment.NewLine);
+                        this.ReportProgress(this.progress, this.progressStruct);
+                    }
+                }
+                #endregion
+
                 // get VB files
                 #region VB EXTRACT
                 this.progressStruct.Clear();
@@ -242,7 +333,8 @@ namespace VGMToolbox.tools.xsf
 
                 // setup arrays for checking skips
                 VhStruct[] vhList = (VhStruct[])vhArrayList.ToArray(typeof(VhStruct));
-                ProbableSeqStruct[] seqList = (ProbableSeqStruct[])seqFiles.ToArray(typeof(ProbableSeqStruct));
+                ProbableItemStruct[] seqList = (ProbableItemStruct[])seqFiles.ToArray(typeof(ProbableItemStruct));
+                ProbableItemStruct[] sepList = (ProbableItemStruct[])sepFiles.ToArray(typeof(ProbableItemStruct));
 
                 // build list of potential adpcm start indexes (VB_START_BYTES)
                 potentialVb = new ProbableVbStruct();
@@ -264,7 +356,7 @@ namespace VGMToolbox.tools.xsf
                         if (IsPotentialAdpcm(fs, offset + 0x10, minRowLength))
                         {
                             // check if we have passed a different file type and reset previousVbOffset if we did
-                            if (SteppedOverAnotherFile(previousVbOffset, offset, vhList, seqList))
+                            if (SteppedOverAnotherFile(previousVbOffset, offset, vhList, seqList, sepList))
                             {
                                 // need to add flag here so length calculation doesn't screw up?
                                 previousVbOffset = -1;
@@ -476,7 +568,7 @@ namespace VGMToolbox.tools.xsf
         /// <param name="seqObjects"></param>
         /// <returns></returns>
         private bool SteppedOverAnotherFile(long previousOffset, long currentOffset, VhStruct[] vhObjects,
-            ProbableSeqStruct[] seqObjects)
+            ProbableItemStruct[] seqObjects, ProbableItemStruct[] sepObjects)
         {
             bool ret = false;
 
@@ -503,6 +595,19 @@ namespace VGMToolbox.tools.xsf
                             break;
                         }
                     }                
+                }
+
+                if (!ret)
+                {
+                    for (int i = 0; i < sepObjects.Length; i++)
+                    {
+                        if ((previousOffset < sepObjects[i].offset) &&
+                            (currentOffset > sepObjects[i].offset))
+                        {
+                            ret = true;
+                            break;
+                        }
+                    }
                 }
             }
 

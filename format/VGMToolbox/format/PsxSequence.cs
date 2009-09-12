@@ -12,7 +12,7 @@ namespace VGMToolbox.format
         public static readonly byte[] ASCII_SIGNATURE_SEQ = new byte[] {0x70, 0x51, 0x45, 0x53,
                                                                         0x00, 0x00, 0x00, 0x01}; //pQES SEQ
         public static readonly byte[] ASCII_SIGNATURE_SEP = new byte[] {0x70, 0x51, 0x45, 0x53,
-                                                                        0x00, 0x00, 0x00, 0x01}; //pQES SEP
+                                                                        0x00, 0x00, 0x00, 0x00}; //pQES SEP
         public static readonly byte[] END_SEQUENCE = new byte[] { 0xFF, 0x2F, 0x00 };
         public static readonly byte[] END_SEQUENCE_TYPE2 = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                                                                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };

@@ -56,6 +56,8 @@
             this.grpGenericDrivers = new System.Windows.Forms.GroupBox();
             this.lblGenericDriver = new System.Windows.Forms.Label();
             this.genericDriver = new System.Windows.Forms.ComboBox();
+            this.cbSeqDriver = new System.Windows.Forms.RadioButton();
+            this.cbSepDriver = new System.Windows.Forms.RadioButton();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -66,7 +68,7 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 468);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 554);
             this.pnlLabels.Size = new System.Drawing.Size(638, 19);
             // 
             // pnlTitle
@@ -75,13 +77,13 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 391);
+            this.tbOutput.Location = new System.Drawing.Point(0, 477);
             this.tbOutput.Size = new System.Drawing.Size(638, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 371);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 457);
             this.pnlButtons.Size = new System.Drawing.Size(638, 20);
             // 
             // btnCancel
@@ -210,9 +212,13 @@
             this.tbExePath.Name = "tbExePath";
             this.tbExePath.Size = new System.Drawing.Size(218, 20);
             this.tbExePath.TabIndex = 0;
+            this.tbExePath.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbExePath_DragDrop);
+            this.tbExePath.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbExePath_DragEnter);
             // 
             // grpOptions
             // 
+            this.grpOptions.Controls.Add(this.cbSepDriver);
+            this.grpOptions.Controls.Add(this.cbSeqDriver);
             this.grpOptions.Controls.Add(this.lblParamOffset);
             this.grpOptions.Controls.Add(this.tbParamOffset);
             this.grpOptions.Controls.Add(this.btnLoadFromStubMaker);
@@ -236,7 +242,7 @@
             // lblParamOffset
             // 
             this.lblParamOffset.AutoSize = true;
-            this.lblParamOffset.Location = new System.Drawing.Point(0, 22);
+            this.lblParamOffset.Location = new System.Drawing.Point(3, 45);
             this.lblParamOffset.Name = "lblParamOffset";
             this.lblParamOffset.Size = new System.Drawing.Size(68, 13);
             this.lblParamOffset.TabIndex = 12;
@@ -244,14 +250,14 @@
             // 
             // tbParamOffset
             // 
-            this.tbParamOffset.Location = new System.Drawing.Point(83, 19);
+            this.tbParamOffset.Location = new System.Drawing.Point(86, 42);
             this.tbParamOffset.Name = "tbParamOffset";
             this.tbParamOffset.Size = new System.Drawing.Size(218, 20);
             this.tbParamOffset.TabIndex = 11;
             // 
             // btnLoadFromStubMaker
             // 
-            this.btnLoadFromStubMaker.Location = new System.Drawing.Point(335, 98);
+            this.btnLoadFromStubMaker.Location = new System.Drawing.Point(338, 121);
             this.btnLoadFromStubMaker.Name = "btnLoadFromStubMaker";
             this.btnLoadFromStubMaker.Size = new System.Drawing.Size(130, 20);
             this.btnLoadFromStubMaker.TabIndex = 10;
@@ -261,7 +267,7 @@
             // 
             // tbMySeqSize
             // 
-            this.tbMySeqSize.Location = new System.Drawing.Point(365, 45);
+            this.tbMySeqSize.Location = new System.Drawing.Point(368, 68);
             this.tbMySeqSize.Name = "tbMySeqSize";
             this.tbMySeqSize.Size = new System.Drawing.Size(100, 20);
             this.tbMySeqSize.TabIndex = 9;
@@ -269,7 +275,7 @@
             // lblMySeqSize
             // 
             this.lblMySeqSize.AutoSize = true;
-            this.lblMySeqSize.Location = new System.Drawing.Point(307, 48);
+            this.lblMySeqSize.Location = new System.Drawing.Point(310, 71);
             this.lblMySeqSize.Name = "lblMySeqSize";
             this.lblMySeqSize.Size = new System.Drawing.Size(52, 13);
             this.lblMySeqSize.TabIndex = 8;
@@ -277,9 +283,9 @@
             // 
             // cbTryMixing
             // 
-            this.cbTryMixing.Location = new System.Drawing.Point(3, 124);
+            this.cbTryMixing.Location = new System.Drawing.Point(6, 147);
             this.cbTryMixing.Name = "cbTryMixing";
-            this.cbTryMixing.Size = new System.Drawing.Size(501, 31);
+            this.cbTryMixing.Size = new System.Drawing.Size(462, 31);
             this.cbTryMixing.TabIndex = 7;
             this.cbTryMixing.Text = "Try all possible combinations of SEQ and VH (Good for finding matches in unmatche" +
                 "d data) ";
@@ -288,7 +294,7 @@
             // lblVbOffset
             // 
             this.lblVbOffset.AutoSize = true;
-            this.lblVbOffset.Location = new System.Drawing.Point(0, 101);
+            this.lblVbOffset.Location = new System.Drawing.Point(3, 124);
             this.lblVbOffset.Name = "lblVbOffset";
             this.lblVbOffset.Size = new System.Drawing.Size(52, 13);
             this.lblVbOffset.TabIndex = 5;
@@ -296,7 +302,7 @@
             // 
             // tbVbOffset
             // 
-            this.tbVbOffset.Location = new System.Drawing.Point(83, 98);
+            this.tbVbOffset.Location = new System.Drawing.Point(86, 121);
             this.tbVbOffset.Name = "tbVbOffset";
             this.tbVbOffset.Size = new System.Drawing.Size(218, 20);
             this.tbVbOffset.TabIndex = 4;
@@ -304,7 +310,7 @@
             // lblVhOffset
             // 
             this.lblVhOffset.AutoSize = true;
-            this.lblVhOffset.Location = new System.Drawing.Point(0, 74);
+            this.lblVhOffset.Location = new System.Drawing.Point(3, 97);
             this.lblVhOffset.Name = "lblVhOffset";
             this.lblVhOffset.Size = new System.Drawing.Size(53, 13);
             this.lblVhOffset.TabIndex = 3;
@@ -312,7 +318,7 @@
             // 
             // tbVhOffset
             // 
-            this.tbVhOffset.Location = new System.Drawing.Point(83, 71);
+            this.tbVhOffset.Location = new System.Drawing.Point(86, 94);
             this.tbVhOffset.Name = "tbVhOffset";
             this.tbVhOffset.Size = new System.Drawing.Size(218, 20);
             this.tbVhOffset.TabIndex = 2;
@@ -320,7 +326,7 @@
             // lblSeqOffset
             // 
             this.lblSeqOffset.AutoSize = true;
-            this.lblSeqOffset.Location = new System.Drawing.Point(0, 48);
+            this.lblSeqOffset.Location = new System.Drawing.Point(3, 71);
             this.lblSeqOffset.Name = "lblSeqOffset";
             this.lblSeqOffset.Size = new System.Drawing.Size(60, 13);
             this.lblSeqOffset.TabIndex = 1;
@@ -328,7 +334,7 @@
             // 
             // tbSeqOffset
             // 
-            this.tbSeqOffset.Location = new System.Drawing.Point(83, 45);
+            this.tbSeqOffset.Location = new System.Drawing.Point(86, 68);
             this.tbSeqOffset.Name = "tbSeqOffset";
             this.tbSeqOffset.Size = new System.Drawing.Size(218, 20);
             this.tbSeqOffset.TabIndex = 0;
@@ -365,11 +371,33 @@
             this.genericDriver.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.genericDriver_KeyPress);
             this.genericDriver.KeyDown += new System.Windows.Forms.KeyEventHandler(this.genericDriver_KeyDown);
             // 
+            // cbSeqDriver
+            // 
+            this.cbSeqDriver.AutoSize = true;
+            this.cbSeqDriver.Location = new System.Drawing.Point(6, 19);
+            this.cbSeqDriver.Name = "cbSeqDriver";
+            this.cbSeqDriver.Size = new System.Drawing.Size(78, 17);
+            this.cbSeqDriver.TabIndex = 13;
+            this.cbSeqDriver.TabStop = true;
+            this.cbSeqDriver.Text = "SEQ Driver";
+            this.cbSeqDriver.UseVisualStyleBackColor = true;
+            // 
+            // cbSepDriver
+            // 
+            this.cbSepDriver.AutoSize = true;
+            this.cbSepDriver.Location = new System.Drawing.Point(90, 19);
+            this.cbSepDriver.Name = "cbSepDriver";
+            this.cbSepDriver.Size = new System.Drawing.Size(77, 17);
+            this.cbSepDriver.TabIndex = 14;
+            this.cbSepDriver.TabStop = true;
+            this.cbSepDriver.Text = "SEP Driver";
+            this.cbSepDriver.UseVisualStyleBackColor = true;
+            // 
             // Bin2PsfFrontEndForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(638, 509);
+            this.ClientSize = new System.Drawing.Size(638, 595);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpSource);
             this.Controls.Add(this.grpGenericDrivers);
@@ -429,5 +457,7 @@
         private System.Windows.Forms.Button btnLoadFromStubMaker;
         private System.Windows.Forms.TextBox tbParamOffset;
         private System.Windows.Forms.Label lblParamOffset;
+        private System.Windows.Forms.RadioButton cbSeqDriver;
+        private System.Windows.Forms.RadioButton cbSepDriver;
     }
 }

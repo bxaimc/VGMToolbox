@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Configuration;
+using System.IO;
 using System.Windows.Forms;
 
 using VGMToolbox.plugin;
@@ -73,6 +74,7 @@ namespace VGMToolbox.forms.xsf
                 bpStruct.psflibName = tbPsflibName.Text;
                 bpStruct.SeqSize = this.tbMySeqSize.Text;
                 bpStruct.ParamOffset = this.tbParamOffset.Text;
+                bpStruct.DoSeqStyle = this.cbSeqDriver.Checked;
 
                 base.backgroundWorker_Execute(bpStruct);
             }
@@ -294,6 +296,21 @@ namespace VGMToolbox.forms.xsf
                 this.tbVbOffset.Text = psfForm.GetVbOffset();
                 this.tbMySeqSize.Text = psfForm.GetSeqSize();
                 this.tbParamOffset.Text = psfForm.GetParamOffset();
+            }
+        }
+
+        private void tbExePath_DragEnter(object sender, DragEventArgs e)
+        {
+            base.doDragEnter(sender, e);
+        }
+
+        private void tbExePath_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            if ((s.Length == 1) && (File.Exists(s[0])))
+            {
+                this.tbExePath.Text = s[0];
             }
         }
     }
