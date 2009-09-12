@@ -41,6 +41,8 @@
             this.lblDriverPath = new System.Windows.Forms.Label();
             this.tbExePath = new System.Windows.Forms.TextBox();
             this.grpOptions = new System.Windows.Forms.GroupBox();
+            this.cbSepDriver = new System.Windows.Forms.RadioButton();
+            this.cbSeqDriver = new System.Windows.Forms.RadioButton();
             this.lblParamOffset = new System.Windows.Forms.Label();
             this.tbParamOffset = new System.Windows.Forms.TextBox();
             this.btnLoadFromStubMaker = new System.Windows.Forms.Button();
@@ -56,8 +58,6 @@
             this.grpGenericDrivers = new System.Windows.Forms.GroupBox();
             this.lblGenericDriver = new System.Windows.Forms.Label();
             this.genericDriver = new System.Windows.Forms.ComboBox();
-            this.cbSeqDriver = new System.Windows.Forms.RadioButton();
-            this.cbSepDriver = new System.Windows.Forms.RadioButton();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -68,31 +68,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 554);
-            this.pnlLabels.Size = new System.Drawing.Size(638, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 451);
+            this.pnlLabels.Size = new System.Drawing.Size(850, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(638, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(850, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 477);
-            this.tbOutput.Size = new System.Drawing.Size(638, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 374);
+            this.tbOutput.Size = new System.Drawing.Size(850, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 457);
-            this.pnlButtons.Size = new System.Drawing.Size(638, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 354);
+            this.pnlButtons.Size = new System.Drawing.Size(850, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(578, 0);
+            this.btnCancel.Location = new System.Drawing.Point(790, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(518, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(730, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpSource
@@ -111,7 +111,7 @@
             this.grpSource.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSource.Location = new System.Drawing.Point(0, 70);
             this.grpSource.Name = "grpSource";
-            this.grpSource.Size = new System.Drawing.Size(638, 117);
+            this.grpSource.Size = new System.Drawing.Size(850, 117);
             this.grpSource.TabIndex = 5;
             this.grpSource.TabStop = false;
             this.grpSource.Text = "Source";
@@ -191,10 +191,13 @@
             // 
             // tbSourceFilesPath
             // 
+            this.tbSourceFilesPath.AllowDrop = true;
             this.tbSourceFilesPath.Location = new System.Drawing.Point(86, 39);
             this.tbSourceFilesPath.Name = "tbSourceFilesPath";
             this.tbSourceFilesPath.Size = new System.Drawing.Size(218, 20);
             this.tbSourceFilesPath.TabIndex = 2;
+            this.tbSourceFilesPath.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbSourceFilesPath_DragDrop);
+            this.tbSourceFilesPath.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbSourceFilesPath_DragEnter);
             // 
             // lblDriverPath
             // 
@@ -234,10 +237,32 @@
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpOptions.Location = new System.Drawing.Point(0, 187);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(638, 200);
+            this.grpOptions.Size = new System.Drawing.Size(850, 200);
             this.grpOptions.TabIndex = 6;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
+            // 
+            // cbSepDriver
+            // 
+            this.cbSepDriver.AutoSize = true;
+            this.cbSepDriver.Location = new System.Drawing.Point(90, 19);
+            this.cbSepDriver.Name = "cbSepDriver";
+            this.cbSepDriver.Size = new System.Drawing.Size(77, 17);
+            this.cbSepDriver.TabIndex = 14;
+            this.cbSepDriver.TabStop = true;
+            this.cbSepDriver.Text = "SEP Driver";
+            this.cbSepDriver.UseVisualStyleBackColor = true;
+            // 
+            // cbSeqDriver
+            // 
+            this.cbSeqDriver.AutoSize = true;
+            this.cbSeqDriver.Location = new System.Drawing.Point(6, 19);
+            this.cbSeqDriver.Name = "cbSeqDriver";
+            this.cbSeqDriver.Size = new System.Drawing.Size(78, 17);
+            this.cbSeqDriver.TabIndex = 13;
+            this.cbSeqDriver.TabStop = true;
+            this.cbSeqDriver.Text = "SEQ Driver";
+            this.cbSeqDriver.UseVisualStyleBackColor = true;
             // 
             // lblParamOffset
             // 
@@ -346,7 +371,7 @@
             this.grpGenericDrivers.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpGenericDrivers.Location = new System.Drawing.Point(0, 23);
             this.grpGenericDrivers.Name = "grpGenericDrivers";
-            this.grpGenericDrivers.Size = new System.Drawing.Size(638, 47);
+            this.grpGenericDrivers.Size = new System.Drawing.Size(850, 47);
             this.grpGenericDrivers.TabIndex = 7;
             this.grpGenericDrivers.TabStop = false;
             this.grpGenericDrivers.Text = "Presets";
@@ -371,33 +396,11 @@
             this.genericDriver.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.genericDriver_KeyPress);
             this.genericDriver.KeyDown += new System.Windows.Forms.KeyEventHandler(this.genericDriver_KeyDown);
             // 
-            // cbSeqDriver
-            // 
-            this.cbSeqDriver.AutoSize = true;
-            this.cbSeqDriver.Location = new System.Drawing.Point(6, 19);
-            this.cbSeqDriver.Name = "cbSeqDriver";
-            this.cbSeqDriver.Size = new System.Drawing.Size(78, 17);
-            this.cbSeqDriver.TabIndex = 13;
-            this.cbSeqDriver.TabStop = true;
-            this.cbSeqDriver.Text = "SEQ Driver";
-            this.cbSeqDriver.UseVisualStyleBackColor = true;
-            // 
-            // cbSepDriver
-            // 
-            this.cbSepDriver.AutoSize = true;
-            this.cbSepDriver.Location = new System.Drawing.Point(90, 19);
-            this.cbSepDriver.Name = "cbSepDriver";
-            this.cbSepDriver.Size = new System.Drawing.Size(77, 17);
-            this.cbSepDriver.TabIndex = 14;
-            this.cbSepDriver.TabStop = true;
-            this.cbSepDriver.Text = "SEP Driver";
-            this.cbSepDriver.UseVisualStyleBackColor = true;
-            // 
             // Bin2PsfFrontEndForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(638, 595);
+            this.ClientSize = new System.Drawing.Size(850, 492);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpSource);
             this.Controls.Add(this.grpGenericDrivers);

@@ -267,6 +267,7 @@ namespace VGMToolbox.forms.xsf
 
             ret = ret && base.checkFileExists(this.tbExePath.Text, this.lblDriverPath.Text);
             ret = ret && base.checkFolderExists(this.tbSourceFilesPath.Text, this.lblSourceFiles.Text);
+            ret = ret && base.checkTextBox(this.tbOutputFolderName.Text, this.lblOutputFolder.Text);
 
             return ret;
         }
@@ -311,6 +312,21 @@ namespace VGMToolbox.forms.xsf
             if ((s.Length == 1) && (File.Exists(s[0])))
             {
                 this.tbExePath.Text = s[0];
+            }
+        }
+
+        private void tbSourceFilesPath_DragEnter(object sender, DragEventArgs e)
+        {
+            base.doDragEnter(sender, e);
+        }
+
+        private void tbSourceFilesPath_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            if ((s.Length == 1) && (Directory.Exists(s[0])))
+            {
+                this.tbSourceFilesPath.Text = s[0];
             }
         }
     }
