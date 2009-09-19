@@ -23,6 +23,7 @@ namespace VGMToolbox.tools.xsf
         SepMiniPsf,
         SepMiniPsfWithVhVbLib,
         SepPsfLib,
+        SepPsfLibWithVhVbLib,
         SepPsfWithVhVbLib
     }
     
@@ -411,7 +412,8 @@ namespace VGMToolbox.tools.xsf
                                 vhName = null;
                                 vbName = null;
                                 task = PsfMakerTask.SepMiniPsfWithVhVbLib;
-                                sepPsfLibExePath = setMiniPsfValues(GENERIC_MINIPSF_EXE_PATH, pBin2PsfStruct, true);
+                                // sepPsfLibExePath = setMiniPsfValues(GENERIC_MINIPSF_EXE_PATH, pBin2PsfStruct, true);
+                                sepPsfLibExePath = setMiniPsfValues(GENERIC_MINIPSF_EXE_PATH, pBin2PsfStruct, false);
                             }
                             else
                             {
@@ -438,6 +440,8 @@ namespace VGMToolbox.tools.xsf
 
 
                             // create minipsfs
+                            sepPsfLibExePath = setMiniPsfValues(GENERIC_MINIPSF_EXE_PATH, pBin2PsfStruct, true);
+                            
                             for (int i = 0; i < seqCount; i++)
                             {
                                 if (!CancellationPending)
@@ -1070,9 +1074,9 @@ namespace VGMToolbox.tools.xsf
             // copy and insert the data
             if ((task == PsfMakerTask.SepPsf) ||
                 (task == PsfMakerTask.SepPsfLib) ||
+                (task == PsfMakerTask.SepPsfWithVhVbLib) ||
                 (task == PsfMakerTask.SeqMiniPsf) ||
-                (task == PsfMakerTask.SeqPsf) ||
-                (task == PsfMakerTask.SepPsfWithVhVbLib))
+                (task == PsfMakerTask.SeqPsf))
             {                                                       
                 if (isSeqPresent)
                 {
@@ -1112,10 +1116,10 @@ namespace VGMToolbox.tools.xsf
                 }
             }
 
-            if ((task == PsfMakerTask.SepMiniPsf) || 
+            if ((task == PsfMakerTask.SepMiniPsf) ||
+                (task == PsfMakerTask.SepMiniPsfWithVhVbLib) ||
                 (task == PsfMakerTask.SepPsf) ||
-                (task == PsfMakerTask.SepPsfWithVhVbLib) ||
-                (task == PsfMakerTask.SepMiniPsfWithVhVbLib))
+                (task == PsfMakerTask.SepPsfWithVhVbLib))
             {
                     byte[] tickModeBytes = BitConverter.GetBytes((uint)1);
                     byte[] loopOffBytes = BitConverter.GetBytes((uint)1);
