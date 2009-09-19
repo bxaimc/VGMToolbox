@@ -68,13 +68,12 @@ namespace VGMToolbox.forms.xsf
                 bpStruct.vhOffset = tbVhOffset.Text;
                 bpStruct.exePath = tbExePath.Text;
                 bpStruct.outputFolder = tbOutputFolderName.Text;
-                bpStruct.makeMiniPsfs = cbMinipsf.Checked;
+                bpStruct.MakePsfLib = cbMinipsf.Checked;
                 bpStruct.TryCombinations = this.cbTryMixing.Checked;
                 bpStruct.DriverName = (string)this.genericDriver.SelectedItem;
                 bpStruct.psflibName = tbPsflibName.Text;
                 bpStruct.SeqSize = this.tbMySeqSize.Text;
                 bpStruct.ParamOffset = this.tbParamOffset.Text;
-                bpStruct.DoSeqStyle = this.cbSeqDriver.Checked;
 
                 base.backgroundWorker_Execute(bpStruct);
             }
@@ -163,12 +162,7 @@ namespace VGMToolbox.forms.xsf
                 case Bin2PsfWorker.GENERIC_DRIVER_MGRASS:
                     this.disablePresetFields();
                     this.loadMarkGrassGenericPresets();
-                    break;
-                
-                case Bin2PsfWorker.GENERIC_DRIVER_DAVIRONICA:                   
-                    this.disablePresetFields();
-                    this.loadDavironicaGenericV014Presets();
-                    break;                                
+                    break;                                       
                 default:
                     this.enablePresetFields();
                     break;
@@ -194,16 +188,7 @@ namespace VGMToolbox.forms.xsf
             this.tbVhOffset.Text = "0x800E0000";
             this.tbVbOffset.Text = "0x80160000";
         }
-        private void loadDavironicaGenericV014Presets()
-        {
-            this.tbExePath.Text = Bin2PsfWorker.DAVIRONICA_EXE_PATH;
-            this.tbPsflibName.Text = String.Empty;
-            this.cbMinipsf.Enabled = false;
 
-            this.tbSeqOffset.Text = "0x80100000";
-            this.tbVhOffset.Text = "0x800FFFF8";
-            this.tbVbOffset.Text = "0x800FFFFC";
-        }
         private void disablePresetFields()
         {
             // this.tbExePath.Enabled = false;

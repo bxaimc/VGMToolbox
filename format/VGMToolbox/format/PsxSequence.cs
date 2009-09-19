@@ -7,6 +7,13 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.format
 {
+    public enum PsxSequenceType
+    { 
+        None,
+        SeqType,
+        SepType        
+    }
+    
     public class PsxSequence
     {
         public static readonly byte[] ASCII_SIGNATURE_SEQ = new byte[] {0x70, 0x51, 0x45, 0x53,
@@ -489,21 +496,66 @@ DONE:       // Marker used for skipping delta ticks at the end of a file.
             return ret;        
         }
 
-        public static uint GetSeqCountForSep(string sepFileName)
+        public static uint GetSeqCount(string fileName)
         {
             uint seqCount = 0;
             long offset = 0;
 
-            using (FileStream fs = File.OpenRead(sepFileName))
-            { 
-                while ((offset = ParseFile.GetNextOffset(fs, offset, PsxSequence.END_SEQUENCE)) > -1)
+            if (PsxSequence.IsSepTypeSequence(fileName))
+            {
+                using (FileStream fs = File.OpenRead(fileName))
+                { 
+                    while ((offset = ParseFile.GetNextOffset(fs, offset, PsxSequence.END_SEQUENCE)) > -1)
+                    {
+                        seqCount++;
+                        offset++;
+                    }
+                }
+            }
+            else if (PsxSequence.IsSeqTypeSequence(fileName))
+            {
+                seqCount = 1;
+            }
+            
+            return seqCount;
+        }
+
+        public static bool IsSepTypeSequence(string fileName)
+        {
+            bool ret = false;
+            int numBytesRead;
+            byte[] checkBytes = new byte[PsxSequence.ASCII_SIGNATURE_SEP.Length];
+
+            using (FileStream fs = File.OpenRead(fileName))
+            {
+                numBytesRead = fs.Read(checkBytes, 0, PsxSequence.ASCII_SIGNATURE_SEP.Length);
+
+                if (numBytesRead == PsxSequence.ASCII_SIGNATURE_SEP.Length)
                 {
-                    seqCount++;
-                    offset++;
+                    ret = ParseFile.CompareSegment(checkBytes, 0, PsxSequence.ASCII_SIGNATURE_SEP);
                 }
             }
 
-            return seqCount;
+            return ret;
+        }
+
+        public static bool IsSeqTypeSequence(string fileName)
+        {
+            bool ret = false;
+            int numBytesRead;
+            byte[] checkBytes = new byte[PsxSequence.ASCII_SIGNATURE_SEQ.Length];
+
+            using (FileStream fs = File.OpenRead(fileName))
+            {
+                numBytesRead = fs.Read(checkBytes, 0, PsxSequence.ASCII_SIGNATURE_SEQ.Length);
+
+                if (numBytesRead == PsxSequence.ASCII_SIGNATURE_SEQ.Length)
+                {
+                    ret = ParseFile.CompareSegment(checkBytes, 0, PsxSequence.ASCII_SIGNATURE_SEQ);
+                }
+            }
+
+            return ret;
         }
     }
 

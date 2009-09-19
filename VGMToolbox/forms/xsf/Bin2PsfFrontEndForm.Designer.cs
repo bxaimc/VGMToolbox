@@ -41,8 +41,6 @@
             this.lblDriverPath = new System.Windows.Forms.Label();
             this.tbExePath = new System.Windows.Forms.TextBox();
             this.grpOptions = new System.Windows.Forms.GroupBox();
-            this.cbSepDriver = new System.Windows.Forms.RadioButton();
-            this.cbSeqDriver = new System.Windows.Forms.RadioButton();
             this.lblParamOffset = new System.Windows.Forms.Label();
             this.tbParamOffset = new System.Windows.Forms.TextBox();
             this.btnLoadFromStubMaker = new System.Windows.Forms.Button();
@@ -68,7 +66,7 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 451);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 426);
             this.pnlLabels.Size = new System.Drawing.Size(850, 19);
             // 
             // pnlTitle
@@ -77,13 +75,13 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 374);
+            this.tbOutput.Location = new System.Drawing.Point(0, 349);
             this.tbOutput.Size = new System.Drawing.Size(850, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 354);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 329);
             this.pnlButtons.Size = new System.Drawing.Size(850, 20);
             // 
             // btnCancel
@@ -220,8 +218,6 @@
             // 
             // grpOptions
             // 
-            this.grpOptions.Controls.Add(this.cbSepDriver);
-            this.grpOptions.Controls.Add(this.cbSeqDriver);
             this.grpOptions.Controls.Add(this.lblParamOffset);
             this.grpOptions.Controls.Add(this.tbParamOffset);
             this.grpOptions.Controls.Add(this.btnLoadFromStubMaker);
@@ -242,32 +238,10 @@
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
             // 
-            // cbSepDriver
-            // 
-            this.cbSepDriver.AutoSize = true;
-            this.cbSepDriver.Location = new System.Drawing.Point(90, 19);
-            this.cbSepDriver.Name = "cbSepDriver";
-            this.cbSepDriver.Size = new System.Drawing.Size(77, 17);
-            this.cbSepDriver.TabIndex = 14;
-            this.cbSepDriver.TabStop = true;
-            this.cbSepDriver.Text = "SEP Driver";
-            this.cbSepDriver.UseVisualStyleBackColor = true;
-            // 
-            // cbSeqDriver
-            // 
-            this.cbSeqDriver.AutoSize = true;
-            this.cbSeqDriver.Location = new System.Drawing.Point(6, 19);
-            this.cbSeqDriver.Name = "cbSeqDriver";
-            this.cbSeqDriver.Size = new System.Drawing.Size(78, 17);
-            this.cbSeqDriver.TabIndex = 13;
-            this.cbSeqDriver.TabStop = true;
-            this.cbSeqDriver.Text = "SEQ Driver";
-            this.cbSeqDriver.UseVisualStyleBackColor = true;
-            // 
             // lblParamOffset
             // 
             this.lblParamOffset.AutoSize = true;
-            this.lblParamOffset.Location = new System.Drawing.Point(3, 45);
+            this.lblParamOffset.Location = new System.Drawing.Point(3, 16);
             this.lblParamOffset.Name = "lblParamOffset";
             this.lblParamOffset.Size = new System.Drawing.Size(68, 13);
             this.lblParamOffset.TabIndex = 12;
@@ -275,14 +249,14 @@
             // 
             // tbParamOffset
             // 
-            this.tbParamOffset.Location = new System.Drawing.Point(86, 42);
+            this.tbParamOffset.Location = new System.Drawing.Point(86, 13);
             this.tbParamOffset.Name = "tbParamOffset";
             this.tbParamOffset.Size = new System.Drawing.Size(218, 20);
             this.tbParamOffset.TabIndex = 11;
             // 
             // btnLoadFromStubMaker
             // 
-            this.btnLoadFromStubMaker.Location = new System.Drawing.Point(338, 121);
+            this.btnLoadFromStubMaker.Location = new System.Drawing.Point(338, 92);
             this.btnLoadFromStubMaker.Name = "btnLoadFromStubMaker";
             this.btnLoadFromStubMaker.Size = new System.Drawing.Size(130, 20);
             this.btnLoadFromStubMaker.TabIndex = 10;
@@ -292,7 +266,7 @@
             // 
             // tbMySeqSize
             // 
-            this.tbMySeqSize.Location = new System.Drawing.Point(368, 68);
+            this.tbMySeqSize.Location = new System.Drawing.Point(368, 39);
             this.tbMySeqSize.Name = "tbMySeqSize";
             this.tbMySeqSize.Size = new System.Drawing.Size(100, 20);
             this.tbMySeqSize.TabIndex = 9;
@@ -300,7 +274,7 @@
             // lblMySeqSize
             // 
             this.lblMySeqSize.AutoSize = true;
-            this.lblMySeqSize.Location = new System.Drawing.Point(310, 71);
+            this.lblMySeqSize.Location = new System.Drawing.Point(310, 42);
             this.lblMySeqSize.Name = "lblMySeqSize";
             this.lblMySeqSize.Size = new System.Drawing.Size(52, 13);
             this.lblMySeqSize.TabIndex = 8;
@@ -308,7 +282,7 @@
             // 
             // cbTryMixing
             // 
-            this.cbTryMixing.Location = new System.Drawing.Point(6, 147);
+            this.cbTryMixing.Location = new System.Drawing.Point(6, 118);
             this.cbTryMixing.Name = "cbTryMixing";
             this.cbTryMixing.Size = new System.Drawing.Size(462, 31);
             this.cbTryMixing.TabIndex = 7;
@@ -319,7 +293,7 @@
             // lblVbOffset
             // 
             this.lblVbOffset.AutoSize = true;
-            this.lblVbOffset.Location = new System.Drawing.Point(3, 124);
+            this.lblVbOffset.Location = new System.Drawing.Point(3, 95);
             this.lblVbOffset.Name = "lblVbOffset";
             this.lblVbOffset.Size = new System.Drawing.Size(52, 13);
             this.lblVbOffset.TabIndex = 5;
@@ -327,7 +301,7 @@
             // 
             // tbVbOffset
             // 
-            this.tbVbOffset.Location = new System.Drawing.Point(86, 121);
+            this.tbVbOffset.Location = new System.Drawing.Point(86, 92);
             this.tbVbOffset.Name = "tbVbOffset";
             this.tbVbOffset.Size = new System.Drawing.Size(218, 20);
             this.tbVbOffset.TabIndex = 4;
@@ -335,7 +309,7 @@
             // lblVhOffset
             // 
             this.lblVhOffset.AutoSize = true;
-            this.lblVhOffset.Location = new System.Drawing.Point(3, 97);
+            this.lblVhOffset.Location = new System.Drawing.Point(3, 68);
             this.lblVhOffset.Name = "lblVhOffset";
             this.lblVhOffset.Size = new System.Drawing.Size(53, 13);
             this.lblVhOffset.TabIndex = 3;
@@ -343,7 +317,7 @@
             // 
             // tbVhOffset
             // 
-            this.tbVhOffset.Location = new System.Drawing.Point(86, 94);
+            this.tbVhOffset.Location = new System.Drawing.Point(86, 65);
             this.tbVhOffset.Name = "tbVhOffset";
             this.tbVhOffset.Size = new System.Drawing.Size(218, 20);
             this.tbVhOffset.TabIndex = 2;
@@ -351,7 +325,7 @@
             // lblSeqOffset
             // 
             this.lblSeqOffset.AutoSize = true;
-            this.lblSeqOffset.Location = new System.Drawing.Point(3, 71);
+            this.lblSeqOffset.Location = new System.Drawing.Point(3, 42);
             this.lblSeqOffset.Name = "lblSeqOffset";
             this.lblSeqOffset.Size = new System.Drawing.Size(60, 13);
             this.lblSeqOffset.TabIndex = 1;
@@ -359,7 +333,7 @@
             // 
             // tbSeqOffset
             // 
-            this.tbSeqOffset.Location = new System.Drawing.Point(86, 68);
+            this.tbSeqOffset.Location = new System.Drawing.Point(86, 39);
             this.tbSeqOffset.Name = "tbSeqOffset";
             this.tbSeqOffset.Size = new System.Drawing.Size(218, 20);
             this.tbSeqOffset.TabIndex = 0;
@@ -400,7 +374,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(850, 492);
+            this.ClientSize = new System.Drawing.Size(850, 467);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpSource);
             this.Controls.Add(this.grpGenericDrivers);
@@ -460,7 +434,5 @@
         private System.Windows.Forms.Button btnLoadFromStubMaker;
         private System.Windows.Forms.TextBox tbParamOffset;
         private System.Windows.Forms.Label lblParamOffset;
-        private System.Windows.Forms.RadioButton cbSeqDriver;
-        private System.Windows.Forms.RadioButton cbSepDriver;
     }
 }
