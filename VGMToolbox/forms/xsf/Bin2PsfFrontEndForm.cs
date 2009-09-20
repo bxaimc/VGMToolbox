@@ -75,6 +75,9 @@ namespace VGMToolbox.forms.xsf
                 bpStruct.SeqSize = this.tbMySeqSize.Text;
                 bpStruct.ParamOffset = this.tbParamOffset.Text;
 
+                bpStruct.ForceSepTrackNo = cbForceSepTrackNo.Checked;
+                bpStruct.SepTrackNo = (int)sepTrackUpDown.Value;
+
                 base.backgroundWorker_Execute(bpStruct);
             }
         }
@@ -312,6 +315,18 @@ namespace VGMToolbox.forms.xsf
             if ((s.Length == 1) && (Directory.Exists(s[0])))
             {
                 this.tbSourceFilesPath.Text = s[0];
+            }
+        }
+
+        private void cbForceSepTrackNo_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbForceSepTrackNo.Checked)
+            {
+                sepTrackUpDown.Enabled = true;
+            }
+            else
+            {
+                sepTrackUpDown.Enabled = false;
             }
         }
     }

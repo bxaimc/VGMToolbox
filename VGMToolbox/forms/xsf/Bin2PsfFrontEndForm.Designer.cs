@@ -56,41 +56,44 @@
             this.grpGenericDrivers = new System.Windows.Forms.GroupBox();
             this.lblGenericDriver = new System.Windows.Forms.Label();
             this.genericDriver = new System.Windows.Forms.ComboBox();
+            this.cbForceSepTrackNo = new System.Windows.Forms.CheckBox();
+            this.sepTrackUpDown = new System.Windows.Forms.NumericUpDown();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
             this.grpSource.SuspendLayout();
             this.grpOptions.SuspendLayout();
             this.grpGenericDrivers.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.sepTrackUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // pnlLabels
             // 
             this.pnlLabels.Location = new System.Drawing.Point(0, 426);
-            this.pnlLabels.Size = new System.Drawing.Size(850, 19);
+            this.pnlLabels.Size = new System.Drawing.Size(638, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(850, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(638, 20);
             // 
             // tbOutput
             // 
             this.tbOutput.Location = new System.Drawing.Point(0, 349);
-            this.tbOutput.Size = new System.Drawing.Size(850, 77);
+            this.tbOutput.Size = new System.Drawing.Size(638, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
             this.pnlButtons.Location = new System.Drawing.Point(0, 329);
-            this.pnlButtons.Size = new System.Drawing.Size(850, 20);
+            this.pnlButtons.Size = new System.Drawing.Size(638, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(790, 0);
+            this.btnCancel.Location = new System.Drawing.Point(578, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(730, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(518, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpSource
@@ -109,7 +112,7 @@
             this.grpSource.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSource.Location = new System.Drawing.Point(0, 70);
             this.grpSource.Name = "grpSource";
-            this.grpSource.Size = new System.Drawing.Size(850, 117);
+            this.grpSource.Size = new System.Drawing.Size(638, 117);
             this.grpSource.TabIndex = 5;
             this.grpSource.TabStop = false;
             this.grpSource.Text = "Source";
@@ -218,6 +221,8 @@
             // 
             // grpOptions
             // 
+            this.grpOptions.Controls.Add(this.sepTrackUpDown);
+            this.grpOptions.Controls.Add(this.cbForceSepTrackNo);
             this.grpOptions.Controls.Add(this.lblParamOffset);
             this.grpOptions.Controls.Add(this.tbParamOffset);
             this.grpOptions.Controls.Add(this.btnLoadFromStubMaker);
@@ -233,7 +238,7 @@
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpOptions.Location = new System.Drawing.Point(0, 187);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(850, 200);
+            this.grpOptions.Size = new System.Drawing.Size(638, 200);
             this.grpOptions.TabIndex = 6;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
@@ -345,7 +350,7 @@
             this.grpGenericDrivers.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpGenericDrivers.Location = new System.Drawing.Point(0, 23);
             this.grpGenericDrivers.Name = "grpGenericDrivers";
-            this.grpGenericDrivers.Size = new System.Drawing.Size(850, 47);
+            this.grpGenericDrivers.Size = new System.Drawing.Size(638, 47);
             this.grpGenericDrivers.TabIndex = 7;
             this.grpGenericDrivers.TabStop = false;
             this.grpGenericDrivers.Text = "Presets";
@@ -370,11 +375,35 @@
             this.genericDriver.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.genericDriver_KeyPress);
             this.genericDriver.KeyDown += new System.Windows.Forms.KeyEventHandler(this.genericDriver_KeyDown);
             // 
+            // cbForceSepTrackNo
+            // 
+            this.cbForceSepTrackNo.AutoSize = true;
+            this.cbForceSepTrackNo.Location = new System.Drawing.Point(6, 145);
+            this.cbForceSepTrackNo.Name = "cbForceSepTrackNo";
+            this.cbForceSepTrackNo.Size = new System.Drawing.Size(148, 17);
+            this.cbForceSepTrackNo.TabIndex = 13;
+            this.cbForceSepTrackNo.Text = "Force SEP Track Number";
+            this.cbForceSepTrackNo.UseVisualStyleBackColor = true;
+            this.cbForceSepTrackNo.CheckedChanged += new System.EventHandler(this.cbForceSepTrackNo_CheckedChanged);
+            // 
+            // sepTrackUpDown
+            // 
+            this.sepTrackUpDown.Enabled = false;
+            this.sepTrackUpDown.Location = new System.Drawing.Point(160, 144);
+            this.sepTrackUpDown.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.sepTrackUpDown.Name = "sepTrackUpDown";
+            this.sepTrackUpDown.Size = new System.Drawing.Size(44, 20);
+            this.sepTrackUpDown.TabIndex = 14;
+            // 
             // Bin2PsfFrontEndForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(850, 467);
+            this.ClientSize = new System.Drawing.Size(638, 467);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpSource);
             this.Controls.Add(this.grpGenericDrivers);
@@ -399,6 +428,7 @@
             this.grpOptions.PerformLayout();
             this.grpGenericDrivers.ResumeLayout(false);
             this.grpGenericDrivers.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.sepTrackUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -434,5 +464,7 @@
         private System.Windows.Forms.Button btnLoadFromStubMaker;
         private System.Windows.Forms.TextBox tbParamOffset;
         private System.Windows.Forms.Label lblParamOffset;
+        private System.Windows.Forms.CheckBox cbForceSepTrackNo;
+        private System.Windows.Forms.NumericUpDown sepTrackUpDown;
     }
 }
