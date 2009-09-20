@@ -43,6 +43,7 @@ namespace VGMToolbox.tools.xsf
 
         public bool UseSeqFunctions { set; get; }
         public bool OverrideDriverLoadAddress { set; get; }
+        public bool RelaxLoadAddressRestriction { set; get; }
     }
     
     class PsfStubMakerWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
@@ -162,7 +163,9 @@ namespace VGMToolbox.tools.xsf
                 if ((isProcessSuccessful) && (String.IsNullOrEmpty(standardError)) &&
                     (!standardOutput.Contains("ERROR")))
                 {
-                    sigFindAddresses = XsfUtil.GetSigFindItems(new MemoryStream(System.Text.Encoding.ASCII.GetBytes(standardOutput)));
+                    sigFindAddresses = XsfUtil.GetSigFindItems(
+                        new MemoryStream(System.Text.Encoding.ASCII.GetBytes(standardOutput)),
+                        stubMakerParameters.RelaxLoadAddressRestriction);
                 }
 
                 /////////////////
@@ -178,7 +181,10 @@ namespace VGMToolbox.tools.xsf
                 if ((isProcessSuccessful) && (String.IsNullOrEmpty(standardError)) &&
                     (!standardOutput.Contains("ERROR")))
                 {
-                    sigFindAddresses = XsfUtil.GetSigFindItems(new MemoryStream(System.Text.Encoding.ASCII.GetBytes(standardOutput)), sigFindAddresses);
+                    sigFindAddresses = XsfUtil.GetSigFindItems(
+                        new MemoryStream(System.Text.Encoding.ASCII.GetBytes(standardOutput)), 
+                        stubMakerParameters.RelaxLoadAddressRestriction, 
+                        sigFindAddresses);
                 }
 
                 /////////////////////////
@@ -346,7 +352,11 @@ namespace VGMToolbox.tools.xsf
                                     if (!stubMakerParameters.UseSeqFunctions)
                                     {
                                         writer.WriteLine("#undef DO_SEQ");
-                                    }                                    
+                                    }
+                                    else
+                                    {
+                                        writer.WriteLine(inputLine);
+                                    }
                                     break;
                                 case COMMENT_REVERB_OPEN:
                                     if (!stubMakerParameters.IncludeReverb)

@@ -97,12 +97,10 @@ namespace VGMToolbox.tools.xsf
             bool seqNamingMessageDisplayed = false;
 
             long sepStartingOffset;
-            long sepEof;
             byte[] nextSepCheckBytes;
             string sepName;
             int sepNumber = 0;
             int sepSeqCount;
-            int sepLength;
             ProbableItemStruct sepEntry;
             ArrayList sepFiles = new ArrayList();
             bool sepNamingMessageDisplayed = false;

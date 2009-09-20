@@ -89,6 +89,7 @@ namespace VGMToolbox.forms.xsf
                 bwStruct.MyVbSize = this.tbMyVbSize.Text;
 
                 bwStruct.OverrideDriverLoadAddress = cbOverrideDriverOffset.Checked;
+                bwStruct.RelaxLoadAddressRestriction = cbRelaxPsfLoadAddress.Checked;
 
                 base.backgroundWorker_Execute(bwStruct);
             }
@@ -218,6 +219,18 @@ namespace VGMToolbox.forms.xsf
         public string GetParamOffset()
         {
             return this.tbPsfDrvParam.Text;
+        }
+
+        private void cbRelaxPsfLoadAddress_CheckedChanged(object sender, System.EventArgs e)
+        {
+            if (cbRelaxPsfLoadAddress.Checked)
+            {
+                this.cbOverrideDriverOffset.Checked = true;
+            }
+            else
+            {
+                this.cbOverrideDriverOffset.Checked = false;
+            }
         }
     }
 }

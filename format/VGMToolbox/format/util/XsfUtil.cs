@@ -1008,12 +1008,12 @@ namespace VGMToolbox.format.util
             return outputPath;
         }
 
-        public static PsfPsyQAddresses GetSigFindItems(Stream sigFindOutputStream)
+        public static PsfPsyQAddresses GetSigFindItems(Stream sigFindOutputStream, bool relaxLoadAddressRestriction)
         {
-            return GetSigFindItems(sigFindOutputStream, null);
+            return GetSigFindItems(sigFindOutputStream, relaxLoadAddressRestriction, null);
         }
         
-        public static PsfPsyQAddresses GetSigFindItems(Stream sigFindOutputStream, PsfPsyQAddresses addressesToUpdate)
+        public static PsfPsyQAddresses GetSigFindItems(Stream sigFindOutputStream, bool relaxLoadAddressRestriction, PsfPsyQAddresses addressesToUpdate)
         {
             PsfPsyQAddresses ret;
 
@@ -1044,7 +1044,8 @@ namespace VGMToolbox.format.util
                     {
                         ret.PsfDrvLoadAddress = XsfUtil.getSigFindAddress(inputLine, true);
 
-                        if ((uint)VGMToolbox.util.Encoding.GetLongValueFromString(ret.PsfDrvLoadAddress) > PSFDRV_LOAD_ADDRESS)
+                        if ((!relaxLoadAddressRestriction) && 
+                            ((uint)VGMToolbox.util.Encoding.GetLongValueFromString(ret.PsfDrvLoadAddress) > PSFDRV_LOAD_ADDRESS))
                         {
                             throw new ArgumentOutOfRangeException("PSFDRV_LOAD", ret.PsfDrvLoadAddress, String.Format("Text Area + Size is greater than 0x{0}, this is not supported.", PSFDRV_LOAD_ADDRESS.ToString("X8")));
                         }

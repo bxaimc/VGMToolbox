@@ -444,21 +444,31 @@ namespace VGMToolbox.tools.xsf
                                     task = PsfMakerTask.SepPsf;
                                 }
                             }
-                                                        
-                            this.makePsfFile(
-                                task,
-                                pBin2PsfStruct,
-                                exePath,
-                                sequenceFile,
-                                vhName,
-                                vbName,
-                                bin2PsfDestinationPath,
-                                ripOutputFolder,
-                                pBin2PsfStruct.psflibName,
-                                null,
-                                filePrefix,
-                                trackId,
-                                (trackId + 1));
+
+                            try
+                            {
+                                this.makePsfFile(
+                                    task,
+                                    pBin2PsfStruct,
+                                    exePath,
+                                    sequenceFile,
+                                    vhName,
+                                    vbName,
+                                    bin2PsfDestinationPath,
+                                    ripOutputFolder,
+                                    pBin2PsfStruct.psflibName,
+                                    null,
+                                    filePrefix,
+                                    trackId,
+                                    (trackId + 1));
+                            }
+                            catch (Exception ex)
+                            { 
+                                this.progressStruct.Clear();
+                                this.progressStruct.FileName = sequenceFile;
+                                this.progressStruct.ErrorMessage = String.Format("{0}{1}", ex.Message, Environment.NewLine);
+                                ReportProgress(this.progress, this.progressStruct);
+                            }
                         }
                         else if (seqCount > 1) // SEP only
                         {
