@@ -557,6 +557,83 @@ DONE:       // Marker used for skipping delta ticks at the end of a file.
 
             return ret;
         }
+
+        public static string ExtractSeqFromSep(string fileName, uint sepId)
+        {
+            string outputSeqPath = null;
+
+            // check if this is an SEP type and the Id is within range
+            if (IsSepTypeSequence(fileName) &&
+                (sepId < GetSeqCount(fileName)))
+            {
+                byte[] resolution;
+                byte[] tempo;
+                byte[] rhythm;
+                byte[] midiSectionLength;
+                uint midiSectionLengthValue;
+                uint midiSectionOffset;
+
+                // setup values for SEQ 0
+                uint currentSeqNumber = 0;
+                uint currentSeqOffset = 0x08;
+                uint currentSeqEof;                
+                                
+                // open file strean
+                using (FileStream fs = File.OpenRead(fileName))
+                {                    
+                    midiSectionLength = ParseFile.ParseSimpleOffset(fs, (currentSeqOffset + 7), 4);                    
+                    Array.Reverse(midiSectionLength);
+                    midiSectionLengthValue = BitConverter.ToUInt32(midiSectionLength, 0);
+
+                    midiSectionOffset = currentSeqOffset + 0x0B;
+                    currentSeqEof = midiSectionOffset + midiSectionLengthValue;
+
+                    // loop for values greater than 0
+                    while (currentSeqNumber < sepId)
+                    {
+                        currentSeqNumber++;
+                        currentSeqOffset = currentSeqEof + 2; // Size of SEQ ID is 2
+                        
+                        midiSectionLength = ParseFile.ParseSimpleOffset(fs, (currentSeqOffset + 7), 4);
+                        Array.Reverse(midiSectionLength);
+                        midiSectionLengthValue = BitConverter.ToUInt32(midiSectionLength, 0);
+
+                        midiSectionOffset = currentSeqOffset + 0x0B;
+                        currentSeqEof = midiSectionOffset + midiSectionLengthValue;                        
+                    }
+
+                    // get chunks and write to new file
+                    resolution = ParseFile.ParseSimpleOffset(fs, currentSeqOffset, 2);
+                    tempo = ParseFile.ParseSimpleOffset(fs, (currentSeqOffset + 2), 3);
+                    rhythm = ParseFile.ParseSimpleOffset(fs, (currentSeqOffset + 5), 2);
+                    midiSectionLength = ParseFile.ParseSimpleOffset(fs, (currentSeqOffset + 7), 4);
+                }
+
+                // write file
+                outputSeqPath = Path.Combine(
+                    Path.GetDirectoryName(fileName),
+                    String.Format(
+                        "{0}_{1}{2}",
+                        Path.GetFileNameWithoutExtension(fileName),
+                        currentSeqNumber.ToString("X2"),
+                        PsxSequence.FILE_EXTENSION));
+
+                // write header
+                using (FileStream seqStream = File.Open(outputSeqPath, FileMode.Create, FileAccess.Write))
+                {
+                    seqStream.Write(ASCII_SIGNATURE_SEQ, 0, ASCII_SIGNATURE_SEQ.Length);
+                    seqStream.Write(resolution, 0, resolution.Length);
+                    seqStream.Write(tempo, 0, tempo.Length);
+                    seqStream.Write(rhythm, 0, rhythm.Length);
+                }
+
+                // write MIDI data
+                FileUtil.ReplaceFileChunk(fileName, midiSectionOffset, 
+                    (currentSeqEof - midiSectionOffset), outputSeqPath, 0x0F);
+            }
+
+            return outputSeqPath;
+        }
     }
 
     public class PsxSeqFormatException : Exception

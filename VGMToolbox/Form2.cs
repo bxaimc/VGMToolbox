@@ -609,6 +609,19 @@ namespace VGMToolbox
             nodeTag.FormClass = psfDataFinderForm.GetType().Name;
             psfDataExtractorNode.Tag = nodeTag;
 
+            //////////////////////
+            // SEP to SEQ EXTRACTOR
+            //////////////////////
+            TreeNode psxSepSeqExtractorNode = new TreeNode("SEP Splitter");
+
+            // Add Form
+            PsxSepToSeqExtractorForm psxSepToSeqExtractorForm = new PsxSepToSeqExtractorForm(psxSepSeqExtractorNode);
+            this.splitContainer1.Panel2.Controls.Add(psxSepToSeqExtractorForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = psxSepToSeqExtractorForm.GetType().Name;
+            psxSepSeqExtractorNode.Tag = nodeTag;
+
             // SSFMAKE
             TreeNode xsf_SsfMakeFENode = 
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SsfMakeFENode"]);
@@ -694,11 +707,12 @@ namespace VGMToolbox
 
             psf_RootNode.NodeFont = this.treeviewBoldFont;
             psf_RootNode.Tag = nodeTag;
-            psf_RootNode.Nodes.Add(psfDataExtractorNode);
+            psf_RootNode.Nodes.Add(psfDataExtractorNode);            
             psf_RootNode.Nodes.Add(xsf_Bin2PsfFENode);
             psf_RootNode.Nodes.Add(psfStubCreatorNode);
             psf_RootNode.Nodes.Add(xsf_SeqExtractNode);
             psf_RootNode.Nodes.Add(vabSplitterNode);
+            psf_RootNode.Nodes.Add(psxSepSeqExtractorNode);
             psf_RootNode.Nodes.Add(easyDriverExtractorNode);
             xsf_RootNode.Nodes.Add(psf_RootNode);
 
