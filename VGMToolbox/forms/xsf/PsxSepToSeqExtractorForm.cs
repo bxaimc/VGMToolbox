@@ -22,6 +22,7 @@ namespace VGMToolbox.forms.xsf
             
             // this.grpSource.Text
             this.lblTitle.Text = "Extract SEQ from SEP files";
+            this.tbOutput.Text = "Split PSX SEP format files into SEQ files.";
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
