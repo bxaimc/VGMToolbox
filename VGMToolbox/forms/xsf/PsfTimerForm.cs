@@ -48,20 +48,23 @@ namespace VGMToolbox.forms.xsf
         {
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-            PsfTimerWorker.PsxSeqExtractStruct psxStruct = new PsfTimerWorker.PsxSeqExtractStruct();
-            psxStruct.SourcePaths = s;
-            psxStruct.force2Loops = cbForce2Loops.Checked;
-            psxStruct.forceSepType = rbForceSepType.Checked;
-            psxStruct.forceSeqType = rbForceSeqType.Checked;
-            psxStruct.loopEntireTrack = cbLoopEntireTrack.Checked;
-
-            if (psxStruct.forceSepType)
+            if (this.ValidateInputs())
             {
-                psxStruct.SepSeqOffset = this.tbSepIndexOffset.Text;
-                psxStruct.SepSeqIndexLength = (string)this.sepIndexParameterLengthComboBox.SelectedItem;
-            }
+                PsfTimerWorker.PsxSeqExtractStruct psxStruct = new PsfTimerWorker.PsxSeqExtractStruct();
+                psxStruct.SourcePaths = s;
+                psxStruct.force2Loops = cbForce2Loops.Checked;
+                psxStruct.forceSepType = rbForceSepType.Checked;
+                psxStruct.forceSeqType = rbForceSeqType.Checked;
+                psxStruct.loopEntireTrack = cbLoopEntireTrack.Checked;
 
-            base.backgroundWorker_Execute(psxStruct);
+                if (psxStruct.forceSepType)
+                {
+                    psxStruct.SepSeqOffset = this.tbSepIndexOffset.Text;
+                    psxStruct.SepSeqIndexLength = (string)this.sepIndexParameterLengthComboBox.SelectedItem;
+                }
+
+                base.backgroundWorker_Execute(psxStruct);
+            }
         }
         
         protected override IVgmtBackgroundWorker getBackgroundWorker()
@@ -135,6 +138,21 @@ namespace VGMToolbox.forms.xsf
         private void sepIndexParameterLengthComboBox_KeyUp(object sender, KeyEventArgs e)
         {
             e.Handled = true;
+        }
+
+        private bool ValidateInputs()
+        {
+            bool ret = true;
+            
+            if (this.rbForceSepType.Checked)
+            {
+                if (!base.checkTextBox(this.tbSepIndexOffset.Text, "SEQ Offset"))
+                {
+                    ret = false;
+                }
+            }
+
+            return ret;
         }
     }
 }
