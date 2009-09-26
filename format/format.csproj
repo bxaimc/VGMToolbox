@@ -58,6 +58,7 @@
     <Compile Include="VGMToolbox\format\IXsfTagFormat.cs" />
     <Compile Include="VGMToolbox\format\Midi.cs" />
     <Compile Include="VGMToolbox\format\Nds.cs" />
+    <Compile Include="VGMToolbox\format\Psf.cs" />
     <Compile Include="VGMToolbox\format\PsxSequence.cs" />
     <Compile Include="VGMToolbox\format\S98V3.cs" />
     <Compile Include="VGMToolbox\format\sdat\Swar.cs" />

@@ -22,20 +22,22 @@ namespace VGMToolbox.forms.xsf
 
             this.grpSource.Text =
                 ConfigurationSettings.AppSettings["Form_SeqExtractor_GroupSource"];
-            this.lblDragNDrop.Text =
-                ConfigurationSettings.AppSettings["Form_SeqExtractor_LblDragNDrop"];            
             this.grpOptions.Text =
                 ConfigurationSettings.AppSettings["Form_SeqExtractor_GroupOptions"];
             this.cbForce2Loops.Text =
                 ConfigurationSettings.AppSettings["Form_SeqExtractor_CheckBoxForce2Loops"];
-            this.cbForceType.Text =
-                ConfigurationSettings.AppSettings["Form_SeqExtractor_CheckBoxForceType"];
             this.rbForceSepType.Text =
                 ConfigurationSettings.AppSettings["Form_SeqExtractor_RadioForceSepType"];
             this.rbForceSeqType.Text =
                 ConfigurationSettings.AppSettings["Form_SeqExtractor_RadioForceSeqType"];
             this.cbLoopEntireTrack.Text =
                 ConfigurationSettings.AppSettings["Form_SeqExtractor_CheckBoxLoopEntireTrack"];
+
+            this.grpSource.AllowDrop = true;
+            this.rbForceSeqType.Checked = true;
+            this.tbSepIndexOffset.Text = "0x80101014";
+            this.initializeSepIndexParameterLengthComboBox();
+            this.doSepSeqCheckChanged();
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -46,36 +48,25 @@ namespace VGMToolbox.forms.xsf
         {
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-            PsxSeqExtractWorker.PsxSeqExtractStruct psxStruct = new PsxSeqExtractWorker.PsxSeqExtractStruct();
+            PsfTimerWorker.PsxSeqExtractStruct psxStruct = new PsfTimerWorker.PsxSeqExtractStruct();
             psxStruct.SourcePaths = s;
             psxStruct.force2Loops = cbForce2Loops.Checked;
             psxStruct.forceSepType = rbForceSepType.Checked;
             psxStruct.forceSeqType = rbForceSeqType.Checked;
             psxStruct.loopEntireTrack = cbLoopEntireTrack.Checked;
 
+            if (psxStruct.forceSepType)
+            {
+                psxStruct.SepSeqOffset = this.tbSepIndexOffset.Text;
+                psxStruct.SepSeqIndexLength = (string)this.sepIndexParameterLengthComboBox.SelectedItem;
+            }
+
             base.backgroundWorker_Execute(psxStruct);
         }
         
-        private void cbForceType_CheckedChanged(object sender, EventArgs e)
-        {
-            if (this.cbForceType.Checked)
-            {
-                this.rbForceSepType.Enabled = true;
-                this.rbForceSeqType.Enabled = true;
-            }
-            else
-            {
-                this.rbForceSepType.Enabled = false;
-                this.rbForceSeqType.Enabled = false;
-
-                this.rbForceSepType.Checked = false;
-                this.rbForceSeqType.Checked = false;
-            }
-        }
-
         protected override IVgmtBackgroundWorker getBackgroundWorker()
         {
-            return new PsxSeqExtractWorker();
+            return new PsfTimerWorker();
         }
         protected override string getCancelMessage()
         {
@@ -88,6 +79,62 @@ namespace VGMToolbox.forms.xsf
         protected override string getBeginMessage()
         {
             return ConfigurationSettings.AppSettings["Form_SeqExtractor_MessageBegin"];
+        }
+
+        private void rbForceSepType_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doSepSeqCheckChanged();
+        }
+
+        private void rbForceSeqType_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doSepSeqCheckChanged();
+        }
+
+        private void doSepSeqCheckChanged()
+        {
+            if (rbForceSepType.Checked)
+            {
+                this.lblSepIndexOffset.Enabled = true;
+                this.tbSepIndexOffset.Enabled = true;
+                this.tbSepIndexOffset.ReadOnly = false;
+
+                this.lblSepIndexParameterLength.Enabled = true;
+                this.sepIndexParameterLengthComboBox.Enabled = true;
+            }
+            else
+            {
+                this.lblSepIndexOffset.Enabled = false;
+                this.tbSepIndexOffset.Enabled = false;
+                this.tbSepIndexOffset.ReadOnly = true;
+
+                this.lblSepIndexParameterLength.Enabled = false;
+                this.sepIndexParameterLengthComboBox.Enabled = false;
+            }
+        }
+
+        private void initializeSepIndexParameterLengthComboBox()
+        {
+            sepIndexParameterLengthComboBox.Items.Add("1");
+            sepIndexParameterLengthComboBox.Items.Add("2");
+            sepIndexParameterLengthComboBox.Items.Add("4");
+
+            sepIndexParameterLengthComboBox.SelectedIndex = 2;
+        }
+        
+        private void sepIndexParameterLengthComboBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void sepIndexParameterLengthComboBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void sepIndexParameterLengthComboBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
         }
     }
 }

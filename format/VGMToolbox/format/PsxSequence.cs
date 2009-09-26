@@ -25,11 +25,12 @@ namespace VGMToolbox.format
                                                                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
         public static readonly byte[] END_SEQUENCE_TYPE3 = new byte[] { 0xFF, 0x00, 0x00 };
                 
-        public const string FILE_EXTENSION = ".seq";
+        public const string FILE_EXTENSION_SEQ = ".seq";
+        public const string FILE_EXTENSION_SEP = ".sep";
 
         public const int FADE_SECONDS_LOOP = 10;
         public const int FADE_SECONDS_NO_LOOP = 0;
-
+        
         public struct PsxSqTimingStruct
         {
             public double TimeInSeconds;
@@ -175,8 +176,8 @@ namespace VGMToolbox.format
 
             #region Start Offset
 
-            if (!this.forceSepType && !this.forceSeqType)
-            {
+            //if (!this.forceSepType && !this.forceSeqType)
+            //{
 
                 if ((this.sqHeader.Version == 0) || (this.sqHeader.Version > 1))
                 {
@@ -200,18 +201,18 @@ namespace VGMToolbox.format
                         pStream.Position = 19;
                     }
                 }
-            }
-            else
-            {
-                if (this.forceSepType)
-                {
-                    pStream.Position = 19;
-                }
-                else if (this.forceSeqType)
-                {
-                    pStream.Position = 15;
-                }
-            }
+            //}
+            //else
+            //{
+            //    if (this.forceSepType)
+            //    {
+            //        pStream.Position = 19;
+            //    }
+            //    else if (this.forceSeqType)
+            //    {
+            //        pStream.Position = 15;
+            //    }
+            //}
                         
             if (this.forceOppositeFormatType)
             {
@@ -616,7 +617,7 @@ DONE:       // Marker used for skipping delta ticks at the end of a file.
                         "{0}_{1}{2}",
                         Path.GetFileNameWithoutExtension(fileName),
                         currentSeqNumber.ToString("X2"),
-                        PsxSequence.FILE_EXTENSION));
+                        PsxSequence.FILE_EXTENSION_SEQ));
 
                 // write header
                 using (FileStream seqStream = File.Open(outputSeqPath, FileMode.Create, FileAccess.Write))

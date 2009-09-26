@@ -904,20 +904,20 @@ namespace VGMToolbox.format.util
         }
 
         // PSF        
-        public static string ExtractPsxSequences(string pPath)
+        public static string ExtractPsxSequenceForTiming(string pPath, bool forceSep, string sepSeqIndexOffset,
+            string sepSeqIndexParameterLength, int sepSeqIndexFromMinipsf)
         {
+            string tempOutputPath = null;
             string outputPath = null;
+
+            string sepOutputPath = null;
             string fileToExtractFrom = null;
             string decompressedDataSection = null;
 
-            long previousOffset = 0;
-            long offsetLocation = -1;
-            long seqEndLocation = -1;
-            long seqEndLocationType2 = -1;
-            long seqEndLocationType3 = -1;
+            int sepSeqIndex;
+            string[] libFiles = new string[0];
 
-            int i = 0;
-
+            // extract PSF data section if needed
             using (FileStream typeFs = File.Open(pPath, FileMode.Open, FileAccess.Read))
             {
                 Type dataType = FormatUtil.getObjectType(typeFs);
@@ -926,6 +926,7 @@ namespace VGMToolbox.format.util
                 {
                     Xsf xsfFile = new Xsf();
                     xsfFile.Initialize(typeFs, pPath);
+                    libFiles = xsfFile.GetLibPathArray();
 
                     if (xsfFile.GetFormat().Equals(Xsf.FormatNamePsf))
                     {
@@ -947,65 +948,242 @@ namespace VGMToolbox.format.util
 
             using (FileStream fs = File.Open(fileToExtractFrom, FileMode.Open, FileAccess.Read))
             {
-                outputPath = Path.Combine(Path.GetDirectoryName(pPath), Path.ChangeExtension(pPath, PsxSequence.FILE_EXTENSION));
+                // build output path
+                tempOutputPath = Path.Combine(Path.GetDirectoryName(pPath), Path.ChangeExtension(pPath, PsxSequence.FILE_EXTENSION_SEQ));
 
-                if (outputPath.Equals(fileToExtractFrom))
+                if (tempOutputPath.Equals(fileToExtractFrom))
                 {
-                    outputPath = Path.Combine(Path.GetDirectoryName(pPath), 
-                        (Path.GetFileNameWithoutExtension(pPath) + "extract" + PsxSequence.FILE_EXTENSION));
+                    tempOutputPath = Path.Combine(Path.GetDirectoryName(pPath),
+                        (Path.GetFileNameWithoutExtension(pPath) + "extract" + PsxSequence.FILE_EXTENSION_SEQ));
                 }
 
-                while ((offsetLocation = ParseFile.GetNextOffset(fs, previousOffset, PsxSequence.ASCII_SIGNATURE_SEQ)) > -1)
+                //extract the SEQ we need
+                try
                 {
-                    seqEndLocation = ParseFile.GetNextOffset(fs, offsetLocation, PsxSequence.END_SEQUENCE);
-                    seqEndLocationType2 = ParseFile.GetNextOffset(fs, offsetLocation, PsxSequence.END_SEQUENCE_TYPE2);
-                    seqEndLocationType3 = ParseFile.GetNextOffset(fs, offsetLocation, PsxSequence.END_SEQUENCE_TYPE2);
-
-                    if  (((seqEndLocation == -1) && (seqEndLocationType2 > -1)) ||
-                        ((seqEndLocationType2 != -1) && (seqEndLocationType2 < seqEndLocation))) // SEP Type
+                    // check for SEQ first
+                    if (!ExtractPsxSeq(fs, tempOutputPath))
                     {
-                        seqEndLocation = seqEndLocationType2 + PsxSequence.END_SEQUENCE_TYPE2.Length;
-                    }
-                    else if (((seqEndLocation == -1) && (seqEndLocationType3 > -1)) ||
-                        ((seqEndLocationType3 != -1) && (seqEndLocationType3 < seqEndLocation))) // SEP Type
-                    {
-                        seqEndLocation = seqEndLocationType3 + PsxSequence.END_SEQUENCE_TYPE3.Length;
-                    }
-
-
-                    if (seqEndLocation > -1)
-                    {
-                        seqEndLocation += PsxSequence.END_SEQUENCE.Length;  // add length to include the end bytes
-
-                        // extract SEQ                    
-                        ParseFile.ExtractChunkToFile(fs, offsetLocation, (int)(seqEndLocation - offsetLocation),
-                            outputPath);
-
-
-                        previousOffset = seqEndLocation + PsxSequence.END_SEQUENCE.Length;
-                        i++;
-                    }
-                    else
-                    {
-                        fs.Close();
-                        fs.Dispose();
-                        
-                        if (!String.IsNullOrEmpty(decompressedDataSection))
+                        if ((!forceSep) ||
+                            (String.IsNullOrEmpty(sepSeqIndexOffset.Trim())))
                         {
-                            File.Delete(decompressedDataSection);
+                            throw new PsxSeqFormatException("No SEQ Data found, and SEP inputs are not set.  Did you forget to add the SEP parameters in the options?");
                         }
-                        
-                        throw new PsxSeqFormatException("SEQ begin found, but terminator bytes were not found.");
+                        else
+                        {
+                            //try for SEP
+                            sepOutputPath = Path.ChangeExtension(tempOutputPath, PsxSequence.FILE_EXTENSION_SEP);
+
+                            if (sepSeqIndexFromMinipsf == -1)
+                            {
+                                sepSeqIndex = GetSepSeqIndex(fs, sepSeqIndexOffset, sepSeqIndexParameterLength);
+                            }
+                            else
+                            {
+                                sepSeqIndex = sepSeqIndexFromMinipsf;
+                            }
+
+                            if (sepSeqIndex > -1)
+                            {
+                                if (ExtractPsxSep(fs, sepOutputPath))
+                                {
+                                    tempOutputPath = PsxSequence.ExtractSeqFromSep(sepOutputPath, (uint)sepSeqIndex);
+                                    File.Delete(sepOutputPath);  // delete extracted SEP
+                                }
+                                else
+                                {
+                                    // minipsf pointing to SEP
+                                    foreach (string lib in libFiles)
+                                    {
+                                        tempOutputPath = ExtractPsxSequenceForTiming(lib, forceSep, sepSeqIndexOffset,
+                                            sepSeqIndexParameterLength, sepSeqIndex);
+
+                                        if (!String.IsNullOrEmpty(tempOutputPath))
+                                        {
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                throw new PsxSeqFormatException("SEQ Index cannot be found for input SEP parameters.");
+                            }
+                        }                       
                     }
                 }
-            }
+                finally
+                {
+                    fs.Close();
+                    fs.Dispose();
+                    
+                    if (!String.IsNullOrEmpty(decompressedDataSection))
+                    {
+                        File.Delete(decompressedDataSection);
+                    }
 
-            if (!String.IsNullOrEmpty(decompressedDataSection))
-            {
-                File.Delete(decompressedDataSection);
+                    if (File.Exists(tempOutputPath))
+                    {
+                        outputPath = tempOutputPath;
+                    }
+                }
             }
 
             return outputPath;
+        }
+
+        private static bool ExtractPsxSeq(Stream data, string outputPath)
+        {
+            bool ret = false;
+            
+            long offsetLocation = -1;
+            long seqEndLocation = -1;
+            long seqEndLocationType2 = -1;
+            long seqEndLocationType3 = -1;
+
+            if ((offsetLocation = ParseFile.GetNextOffset(data, 0, PsxSequence.ASCII_SIGNATURE_SEQ)) > -1)
+            {
+                seqEndLocation = ParseFile.GetNextOffset(data, offsetLocation, PsxSequence.END_SEQUENCE);
+                seqEndLocationType2 = ParseFile.GetNextOffset(data, offsetLocation, PsxSequence.END_SEQUENCE_TYPE2);
+                seqEndLocationType3 = ParseFile.GetNextOffset(data, offsetLocation, PsxSequence.END_SEQUENCE_TYPE2);
+
+                if  (((seqEndLocation == -1) && (seqEndLocationType2 > -1)) ||
+                    ((seqEndLocationType2 != -1) && (seqEndLocationType2 < seqEndLocation)))
+                {
+                    seqEndLocation = seqEndLocationType2 + PsxSequence.END_SEQUENCE_TYPE2.Length;
+                }
+                else if (((seqEndLocation == -1) && (seqEndLocationType3 > -1)) ||
+                    ((seqEndLocationType3 != -1) && (seqEndLocationType3 < seqEndLocation)))
+                {
+                    seqEndLocation = seqEndLocationType3 + PsxSequence.END_SEQUENCE_TYPE3.Length;
+                }
+
+
+                if (seqEndLocation > -1)
+                {
+                    seqEndLocation += PsxSequence.END_SEQUENCE.Length;  // add length to include the end bytes
+
+                    // extract SEQ                    
+                    ParseFile.ExtractChunkToFile(data, offsetLocation, (int)(seqEndLocation - offsetLocation),
+                        outputPath);
+                    ret = true;
+                }
+                else
+                {                                        
+                    throw new PsxSeqFormatException("SEQ begin found, but terminator bytes were not found.");
+                }
+            }
+
+            return ret;
+        }
+
+        private static bool ExtractPsxSep(Stream data, string outputPath)
+        {
+            bool ret = false;
+
+            long offsetLocation = -1;
+            long sepEndLocation = -1;
+            long sepStartingOffset = -1;
+            
+            int sepSeqCount;
+            long seqEof;
+
+            byte[] nextSepCheckBytes;
+
+            if ((offsetLocation = ParseFile.GetNextOffset(data, 0, PsxSequence.ASCII_SIGNATURE_SEP)) > -1)
+            {
+                sepStartingOffset = offsetLocation;
+                sepSeqCount = 1;
+                seqEof = offsetLocation;
+
+                while ((seqEof = ParseFile.GetNextOffset(data, seqEof, PsxSequence.END_SEQUENCE)) > -1)
+                {
+                    nextSepCheckBytes = ParseFile.ParseSimpleOffset(data, (long)(seqEof + PsxSequence.END_SEQUENCE.Length), 2);
+
+                    if (nextSepCheckBytes.Length > 0)
+                    {
+                        Array.Reverse(nextSepCheckBytes);
+
+                        if (BitConverter.ToUInt16(nextSepCheckBytes, 0) == (UInt16)sepSeqCount)
+                        {
+                            sepSeqCount++;
+                        }
+                        else
+                        {
+                            sepEndLocation = seqEof + PsxSequence.END_SEQUENCE.Length;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        sepEndLocation = seqEof + PsxSequence.END_SEQUENCE.Length;
+                        break;
+                    }
+
+                    seqEof += 1;                    
+                }
+
+                // if we found the end
+                if (sepEndLocation > -1)
+                {
+                    sepEndLocation += PsxSequence.END_SEQUENCE.Length;  // add length to include the end bytes
+
+                    // extract SEP                    
+                    ParseFile.ExtractChunkToFile(data, offsetLocation, (int)(sepEndLocation - sepStartingOffset),
+                        outputPath);
+                    ret = true;
+                }
+                else
+                {
+                    throw new PsxSeqFormatException("SEP begin found, but terminator bytes were not found.");
+                }
+            }
+
+            return ret;
+        }
+
+        private static int GetSepSeqIndex(Stream data, string seqIndexOffset, string seqIndexLength)
+        {
+            int ret = -1;
+            
+            byte[] textSectionOffset;
+            long textSectionOffsetValue;
+
+            long pcOffsetSepSeqIndex;
+            int seqOffsetLength;
+
+            byte[] indexValueBytes;
+            uint tempIndexValue;
+
+            // get text section offset
+            textSectionOffset = ParseFile.ParseSimpleOffset(data, 0x18, 4);
+            textSectionOffsetValue = BitConverter.ToUInt32(textSectionOffset, 0);
+
+            // get offset of index
+            pcOffsetSepSeqIndex = VGMToolbox.util.Encoding.GetLongValueFromString(seqIndexOffset) -
+                textSectionOffsetValue + Psf.PC_OFFSET_CORRECTION;
+
+            // get index value
+            seqOffsetLength = (int)VGMToolbox.util.Encoding.GetLongValueFromString(seqIndexLength);
+            indexValueBytes = ParseFile.ParseSimpleOffset(data, pcOffsetSepSeqIndex, seqOffsetLength);
+
+            switch (seqOffsetLength)
+            { 
+                case 1:
+                    tempIndexValue = (uint)indexValueBytes[0];
+                    break;
+                case 2:
+                    tempIndexValue = (uint)BitConverter.ToUInt16(indexValueBytes, 0);
+                    break;
+                case 4:
+                    tempIndexValue = BitConverter.ToUInt32(indexValueBytes, 0);
+                    break;
+                default:
+                    throw new PsxSeqFormatException("Invalid SEQ index parameter entered");
+            }
+
+            ret = (int)tempIndexValue;
+
+            return ret;        
         }
 
         public static PsfPsyQAddresses GetSigFindItems(Stream sigFindOutputStream, bool relaxLoadAddressRestriction)

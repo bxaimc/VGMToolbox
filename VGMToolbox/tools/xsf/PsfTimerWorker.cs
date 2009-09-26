@@ -10,7 +10,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.tools.xsf
 {
-    public partial class PsxSeqExtractWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
+    public partial class PsfTimerWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
         private const string BATCH_FILE_NAME = "!timing_batch.bat";
         
@@ -21,6 +21,9 @@ namespace VGMToolbox.tools.xsf
             public bool forceSeqType;
             public bool loopEntireTrack;
 
+            public string SepSeqOffset { set; get; }
+            public string SepSeqIndexLength { set; get; }
+
             private string[] sourcePaths;
             public string[] SourcePaths 
             {
@@ -29,7 +32,7 @@ namespace VGMToolbox.tools.xsf
             }
         }
 
-        public PsxSeqExtractWorker()
+        public PsfTimerWorker()
             : base() {}
 
         protected override void DoTaskForFile(string pPath, IVgmtWorkerStruct pPsxSeqExtractStruct, 
@@ -48,8 +51,9 @@ namespace VGMToolbox.tools.xsf
 
             StringBuilder batchFile = new StringBuilder();
             string batchFilePath;
-              
-            string extractedSq = XsfUtil.ExtractPsxSequences(pPath);
+
+            string extractedSq = XsfUtil.ExtractPsxSequenceForTiming(pPath, psxSeqExtractStruct.forceSepType,
+                psxSeqExtractStruct.SepSeqOffset, psxSeqExtractStruct.SepSeqIndexLength, -1);
 
             if (!String.IsNullOrEmpty(extractedSq))
             {

@@ -29,13 +29,14 @@
         private void InitializeComponent()
         {
             this.grpSource = new System.Windows.Forms.GroupBox();
-            this.lblDragNDrop = new System.Windows.Forms.Label();
-            this.tbSource = new System.Windows.Forms.TextBox();
             this.grpOptions = new System.Windows.Forms.GroupBox();
+            this.sepIndexParameterLengthComboBox = new System.Windows.Forms.ComboBox();
+            this.lblSepIndexParameterLength = new System.Windows.Forms.Label();
+            this.lblSepIndexOffset = new System.Windows.Forms.Label();
+            this.tbSepIndexOffset = new System.Windows.Forms.TextBox();
             this.cbLoopEntireTrack = new System.Windows.Forms.CheckBox();
             this.rbForceSeqType = new System.Windows.Forms.RadioButton();
             this.rbForceSepType = new System.Windows.Forms.RadioButton();
-            this.cbForceType = new System.Windows.Forms.CheckBox();
             this.cbForce2Loops = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
@@ -46,76 +47,98 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 523);
-            this.pnlLabels.Size = new System.Drawing.Size(771, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 452);
+            this.pnlLabels.Size = new System.Drawing.Size(850, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(771, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(850, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 446);
-            this.tbOutput.Size = new System.Drawing.Size(771, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 375);
+            this.tbOutput.Size = new System.Drawing.Size(850, 77);
+            this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 426);
-            this.pnlButtons.Size = new System.Drawing.Size(771, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 355);
+            this.pnlButtons.Size = new System.Drawing.Size(850, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(711, 0);
+            this.btnCancel.Location = new System.Drawing.Point(790, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(651, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(730, 0);
             // 
             // grpSource
             // 
-            this.grpSource.Controls.Add(this.lblDragNDrop);
-            this.grpSource.Controls.Add(this.tbSource);
-            this.grpSource.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpSource.Controls.Add(this.grpOptions);
+            this.grpSource.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpSource.Location = new System.Drawing.Point(0, 23);
             this.grpSource.Name = "grpSource";
-            this.grpSource.Size = new System.Drawing.Size(771, 63);
+            this.grpSource.Size = new System.Drawing.Size(850, 332);
             this.grpSource.TabIndex = 5;
             this.grpSource.TabStop = false;
             this.grpSource.Text = "Source Files";
-            // 
-            // lblDragNDrop
-            // 
-            this.lblDragNDrop.AutoSize = true;
-            this.lblDragNDrop.Location = new System.Drawing.Point(6, 42);
-            this.lblDragNDrop.Name = "lblDragNDrop";
-            this.lblDragNDrop.Size = new System.Drawing.Size(163, 13);
-            this.lblDragNDrop.TabIndex = 1;
-            this.lblDragNDrop.Text = "Drag and Drop files to scan here.";
-            // 
-            // tbSource
-            // 
-            this.tbSource.AllowDrop = true;
-            this.tbSource.Location = new System.Drawing.Point(6, 19);
-            this.tbSource.Name = "tbSource";
-            this.tbSource.Size = new System.Drawing.Size(282, 20);
-            this.tbSource.TabIndex = 0;
-            this.tbSource.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbSource_DragDrop);
-            this.tbSource.DragEnter += new System.Windows.Forms.DragEventHandler(this.doDragEnter);
+            this.grpSource.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbSource_DragDrop);
+            this.grpSource.DragEnter += new System.Windows.Forms.DragEventHandler(this.doDragEnter);
             // 
             // grpOptions
             // 
+            this.grpOptions.Controls.Add(this.sepIndexParameterLengthComboBox);
+            this.grpOptions.Controls.Add(this.lblSepIndexParameterLength);
+            this.grpOptions.Controls.Add(this.lblSepIndexOffset);
+            this.grpOptions.Controls.Add(this.tbSepIndexOffset);
             this.grpOptions.Controls.Add(this.cbLoopEntireTrack);
             this.grpOptions.Controls.Add(this.rbForceSeqType);
             this.grpOptions.Controls.Add(this.rbForceSepType);
-            this.grpOptions.Controls.Add(this.cbForceType);
             this.grpOptions.Controls.Add(this.cbForce2Loops);
-            this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpOptions.Location = new System.Drawing.Point(0, 86);
+            this.grpOptions.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.grpOptions.Location = new System.Drawing.Point(3, 166);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(771, 158);
+            this.grpOptions.Size = new System.Drawing.Size(844, 163);
             this.grpOptions.TabIndex = 6;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
+            // 
+            // sepIndexParameterLengthComboBox
+            // 
+            this.sepIndexParameterLengthComboBox.FormattingEnabled = true;
+            this.sepIndexParameterLengthComboBox.Location = new System.Drawing.Point(339, 132);
+            this.sepIndexParameterLengthComboBox.Name = "sepIndexParameterLengthComboBox";
+            this.sepIndexParameterLengthComboBox.Size = new System.Drawing.Size(41, 21);
+            this.sepIndexParameterLengthComboBox.TabIndex = 8;
+            this.sepIndexParameterLengthComboBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.sepIndexParameterLengthComboBox_KeyPress);
+            this.sepIndexParameterLengthComboBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.sepIndexParameterLengthComboBox_KeyUp);
+            this.sepIndexParameterLengthComboBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.sepIndexParameterLengthComboBox_KeyDown);
+            // 
+            // lblSepIndexParameterLength
+            // 
+            this.lblSepIndexParameterLength.AutoSize = true;
+            this.lblSepIndexParameterLength.Location = new System.Drawing.Point(219, 135);
+            this.lblSepIndexParameterLength.Name = "lblSepIndexParameterLength";
+            this.lblSepIndexParameterLength.Size = new System.Drawing.Size(114, 13);
+            this.lblSepIndexParameterLength.TabIndex = 7;
+            this.lblSepIndexParameterLength.Text = "Index Paramter Length";
+            // 
+            // lblSepIndexOffset
+            // 
+            this.lblSepIndexOffset.Location = new System.Drawing.Point(94, 103);
+            this.lblSepIndexOffset.Name = "lblSepIndexOffset";
+            this.lblSepIndexOffset.Size = new System.Drawing.Size(239, 26);
+            this.lblSepIndexOffset.TabIndex = 6;
+            this.lblSepIndexOffset.Text = "Offset of SEQ Index for .minipsfs, use PSX offset. See stub source for value PARA" +
+                "M_SEQNUM.";
+            // 
+            // tbSepIndexOffset
+            // 
+            this.tbSepIndexOffset.Location = new System.Drawing.Point(339, 100);
+            this.tbSepIndexOffset.Name = "tbSepIndexOffset";
+            this.tbSepIndexOffset.Size = new System.Drawing.Size(80, 20);
+            this.tbSepIndexOffset.TabIndex = 5;
             // 
             // cbLoopEntireTrack
             // 
@@ -131,42 +154,31 @@
             // rbForceSeqType
             // 
             this.rbForceSeqType.AutoSize = true;
-            this.rbForceSeqType.Enabled = false;
-            this.rbForceSeqType.Location = new System.Drawing.Point(28, 117);
+            this.rbForceSeqType.Location = new System.Drawing.Point(6, 78);
             this.rbForceSeqType.Name = "rbForceSeqType";
             this.rbForceSeqType.Size = new System.Drawing.Size(74, 17);
             this.rbForceSeqType.TabIndex = 3;
             this.rbForceSeqType.TabStop = true;
             this.rbForceSeqType.Text = "SEQ Type";
             this.rbForceSeqType.UseVisualStyleBackColor = true;
+            this.rbForceSeqType.CheckedChanged += new System.EventHandler(this.rbForceSeqType_CheckedChanged);
             // 
             // rbForceSepType
             // 
             this.rbForceSepType.AutoSize = true;
-            this.rbForceSepType.Enabled = false;
-            this.rbForceSepType.Location = new System.Drawing.Point(28, 94);
+            this.rbForceSepType.Location = new System.Drawing.Point(6, 101);
             this.rbForceSepType.Name = "rbForceSepType";
             this.rbForceSepType.Size = new System.Drawing.Size(73, 17);
             this.rbForceSepType.TabIndex = 2;
             this.rbForceSepType.TabStop = true;
             this.rbForceSepType.Text = "SEP Type";
             this.rbForceSepType.UseVisualStyleBackColor = true;
-            // 
-            // cbForceType
-            // 
-            this.cbForceType.AutoSize = true;
-            this.cbForceType.Location = new System.Drawing.Point(6, 72);
-            this.cbForceType.Name = "cbForceType";
-            this.cbForceType.Size = new System.Drawing.Size(111, 17);
-            this.cbForceType.TabIndex = 1;
-            this.cbForceType.Text = "Force source type";
-            this.cbForceType.UseVisualStyleBackColor = true;
-            this.cbForceType.CheckedChanged += new System.EventHandler(this.cbForceType_CheckedChanged);
+            this.rbForceSepType.CheckedChanged += new System.EventHandler(this.rbForceSepType_CheckedChanged);
             // 
             // cbForce2Loops
             // 
             this.cbForce2Loops.AutoSize = true;
-            this.cbForce2Loops.Location = new System.Drawing.Point(6, 49);
+            this.cbForce2Loops.Location = new System.Drawing.Point(6, 55);
             this.cbForce2Loops.Name = "cbForce2Loops";
             this.cbForce2Loops.Size = new System.Drawing.Size(413, 17);
             this.cbForce2Loops.TabIndex = 0;
@@ -174,12 +186,11 @@
                 ")";
             this.cbForce2Loops.UseVisualStyleBackColor = true;
             // 
-            // Xsf_PsxSeqExtractForm
+            // PsfTimerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(771, 564);
-            this.Controls.Add(this.grpOptions);
+            this.ClientSize = new System.Drawing.Size(850, 493);
             this.Controls.Add(this.grpSource);
             this.Name = "PsfTimerForm";
             this.Text = "PsfTimerForm";
@@ -188,7 +199,6 @@
             this.Controls.SetChildIndex(this.pnlTitle, 0);
             this.Controls.SetChildIndex(this.pnlButtons, 0);
             this.Controls.SetChildIndex(this.grpSource, 0);
-            this.Controls.SetChildIndex(this.grpOptions, 0);
             this.pnlLabels.ResumeLayout(false);
             this.pnlLabels.PerformLayout();
             this.pnlTitle.ResumeLayout(false);
@@ -196,7 +206,6 @@
             this.pnlButtons.ResumeLayout(false);
             this.pnlButtons.PerformLayout();
             this.grpSource.ResumeLayout(false);
-            this.grpSource.PerformLayout();
             this.grpOptions.ResumeLayout(false);
             this.grpOptions.PerformLayout();
             this.ResumeLayout(false);
@@ -207,13 +216,14 @@
         #endregion
 
         private System.Windows.Forms.GroupBox grpSource;
-        private System.Windows.Forms.Label lblDragNDrop;
-        private System.Windows.Forms.TextBox tbSource;
         private System.Windows.Forms.GroupBox grpOptions;
         private System.Windows.Forms.CheckBox cbForce2Loops;
-        private System.Windows.Forms.CheckBox cbForceType;
         private System.Windows.Forms.RadioButton rbForceSeqType;
         private System.Windows.Forms.RadioButton rbForceSepType;
         private System.Windows.Forms.CheckBox cbLoopEntireTrack;
+        private System.Windows.Forms.Label lblSepIndexOffset;
+        private System.Windows.Forms.TextBox tbSepIndexOffset;
+        private System.Windows.Forms.Label lblSepIndexParameterLength;
+        private System.Windows.Forms.ComboBox sepIndexParameterLengthComboBox;
     }
 }
