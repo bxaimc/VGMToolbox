@@ -96,31 +96,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 448);
-            this.pnlLabels.Size = new System.Drawing.Size(638, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 452);
+            this.pnlLabels.Size = new System.Drawing.Size(844, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(638, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(844, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 371);
-            this.tbOutput.Size = new System.Drawing.Size(638, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 375);
+            this.tbOutput.Size = new System.Drawing.Size(844, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 351);
-            this.pnlButtons.Size = new System.Drawing.Size(638, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 355);
+            this.pnlButtons.Size = new System.Drawing.Size(844, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(578, 0);
+            this.btnCancel.Location = new System.Drawing.Point(784, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(518, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(724, 0);
             // 
             // grpFiles
             // 
@@ -134,7 +134,7 @@
             this.grpFiles.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFiles.Location = new System.Drawing.Point(0, 23);
             this.grpFiles.Name = "grpFiles";
-            this.grpFiles.Size = new System.Drawing.Size(638, 64);
+            this.grpFiles.Size = new System.Drawing.Size(844, 64);
             this.grpFiles.TabIndex = 5;
             this.grpFiles.TabStop = false;
             this.grpFiles.Text = "Files to Search";
@@ -221,7 +221,7 @@
             this.grpCriteria.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpCriteria.Location = new System.Drawing.Point(0, 87);
             this.grpCriteria.Name = "grpCriteria";
-            this.grpCriteria.Size = new System.Drawing.Size(638, 64);
+            this.grpCriteria.Size = new System.Drawing.Size(844, 64);
             this.grpCriteria.TabIndex = 6;
             this.grpCriteria.TabStop = false;
             this.grpCriteria.Text = "Criteria";
@@ -310,7 +310,7 @@
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox3.Location = new System.Drawing.Point(0, 0);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(621, 310);
+            this.groupBox3.Size = new System.Drawing.Size(827, 310);
             this.groupBox3.TabIndex = 7;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Cut Options (all values are relative to the location of the file to be cut)";
@@ -342,7 +342,7 @@
             this.gbCutSizeOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.gbCutSizeOptions.Location = new System.Drawing.Point(3, 98);
             this.gbCutSizeOptions.Name = "gbCutSizeOptions";
-            this.gbCutSizeOptions.Size = new System.Drawing.Size(615, 209);
+            this.gbCutSizeOptions.Size = new System.Drawing.Size(821, 209);
             this.gbCutSizeOptions.TabIndex = 2;
             this.gbCutSizeOptions.TabStop = false;
             this.gbCutSizeOptions.Text = "Cut Size Options";
@@ -565,7 +565,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(3, 16);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(615, 82);
+            this.panel2.Size = new System.Drawing.Size(821, 82);
             this.panel2.TabIndex = 19;
             // 
             // btnBrowseOutputFolder
@@ -673,14 +673,14 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 151);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(638, 200);
+            this.panel1.Size = new System.Drawing.Size(844, 204);
             this.panel1.TabIndex = 8;
             // 
             // OffsetFinderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(638, 489);
+            this.ClientSize = new System.Drawing.Size(844, 493);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.grpCriteria);
             this.Controls.Add(this.grpFiles);

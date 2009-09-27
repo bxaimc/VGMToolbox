@@ -405,6 +405,15 @@ namespace VGMToolbox.forms.extraction
 
             this.doOffsetModuloTerminatorCheckbox();
         }
+        private void resetCriteriaSection()
+        {
+            this.tbSearchString.Clear();
+            this.cbSearchAsHex.Checked = false;
+            this.tbStartingOffset.Text = "0";
+
+            this.cbModOffsetSearchString.Checked = false;
+            this.doOffsetModuloSearchStringCheckbox();
+        }
         private void cbAddExtraBytes_CheckedChanged(object sender, EventArgs e)
         {
             if (cbAddExtraBytes.Checked)
@@ -487,6 +496,7 @@ namespace VGMToolbox.forms.extraction
 
             if (preset != null)
             {
+                this.resetCriteriaSection();
                 this.resetCutSection();
                 this.loadOffsetFinderPreset(preset);
 
@@ -553,12 +563,25 @@ namespace VGMToolbox.forms.extraction
         {           
             this.cbDoCut.Checked = true;
 
+            // Criteria Section
             this.tbSearchString.Text = presets.SearchParameters.SearchString;
             this.cbSearchAsHex.Checked = presets.SearchParameters.TreatSearchStringAsHex;
+            this.tbStartingOffset.Text = presets.SearchParameters.StartingOffset;
 
+            if (presets.SearchParameters.UseModOffsetForSearchStringSpecified &&
+                presets.SearchParameters.UseModOffsetForSearchString)
+            {
+                this.cbModOffsetSearchString.Checked = true;
+                this.tbOffsetModuloSearchStringDivisor.Text = presets.SearchParameters.ModOffsetForSearchStringDivisor;
+                this.tbOffsetModuloSearchStringResult.Text = presets.SearchParameters.ModOffsetForSearchStringResult;            
+            }
+
+            // Cut Options
             this.tbSearchStringOffset.Text = presets.SearchParameters.SearchStringOffset;
             this.tbOutputExtension.Text = presets.SearchParameters.OutputFileExtension;
+            this.tbMinSizeForCut.Text = presets.SearchParameters.MinimumSizeForCutting;
 
+            // Cut Size Options
             switch (presets.SearchParameters.CutParameters.CutStyle)
             {
                 case CutStyle.@static:
@@ -586,6 +609,14 @@ namespace VGMToolbox.forms.extraction
                     this.cbIncludeTerminatorInLength.Checked = presets.SearchParameters.CutParameters.IncludeTerminatorInSize;
                     break;
             }
+
+            if (presets.SearchParameters.CutParameters.UseModOffsetForTerminatorStringSpecified &&
+                presets.SearchParameters.CutParameters.UseModOffsetForTerminatorString)
+            {
+                this.cbModOffsetTerminator.Checked = true;
+                this.tbOffsetModuloTerminatorDivisor.Text = presets.SearchParameters.CutParameters.ModOffsetForTerminatorStringDivisor;
+                this.tbOffsetModuloTerminatorResult.Text = presets.SearchParameters.CutParameters.ModOffsetForTerminatorStringResult;
+            }
             
             this.cbAddExtraBytes.Checked = presets.SearchParameters.AddExtraBytes;
             this.tbExtraCutSizeBytes.Text = presets.SearchParameters.AddExtraByteSize;        
@@ -595,12 +626,31 @@ namespace VGMToolbox.forms.extraction
         { 
             OffsetFinderTemplate preset = new OffsetFinderTemplate();
 
+            // Criteria Section
             preset.SearchParameters.SearchString = this.tbSearchString.Text;
             preset.SearchParameters.TreatSearchStringAsHex = this.cbSearchAsHex.Checked;
+            preset.SearchParameters.StartingOffset = this.tbStartingOffset.Text;
 
+            if (this.cbModOffsetSearchString.Checked)
+            {
+                preset.SearchParameters.UseModOffsetForSearchStringSpecified = true;
+                preset.SearchParameters.UseModOffsetForSearchString = true;
+
+                preset.SearchParameters.ModOffsetForSearchStringDivisor = this.tbOffsetModuloSearchStringDivisor.Text;
+                preset.SearchParameters.ModOffsetForSearchStringResult = this.tbOffsetModuloSearchStringResult.Text;
+            }
+            else
+            {
+                preset.SearchParameters.UseModOffsetForSearchStringSpecified = true;
+                preset.SearchParameters.UseModOffsetForSearchString = false;            
+            }
+            
+            // Cut Options Section
             preset.SearchParameters.SearchStringOffset = this.tbSearchStringOffset.Text;
             preset.SearchParameters.OutputFileExtension = this.tbOutputExtension.Text;
+            preset.SearchParameters.MinimumSizeForCutting = this.tbMinSizeForCut.Text;
 
+            // Cut Size Section
             if (this.rbStaticCutSize.Checked)
             {
                 preset.SearchParameters.CutParameters.CutStyle = CutStyle.@static;
@@ -629,6 +679,16 @@ namespace VGMToolbox.forms.extraction
                 preset.SearchParameters.CutParameters.TreatTerminatorStringAsHexSpecified = this.cbTreatTerminatorAsHex.Checked;
                 preset.SearchParameters.CutParameters.TreatTerminatorStringAsHex = this.cbTreatTerminatorAsHex.Checked;
                 preset.SearchParameters.CutParameters.IncludeTerminatorInSize = this.cbIncludeTerminatorInLength.Checked;
+
+                if (this.cbModOffsetTerminator.Checked)
+                {
+                    preset.SearchParameters.CutParameters.UseModOffsetForTerminatorStringSpecified = true;
+                    preset.SearchParameters.CutParameters.UseModOffsetForTerminatorString = true;
+
+                    preset.SearchParameters.CutParameters.ModOffsetForTerminatorStringDivisor = this.tbOffsetModuloTerminatorDivisor.Text;
+                    preset.SearchParameters.CutParameters.ModOffsetForTerminatorStringResult = this.tbOffsetModuloTerminatorResult.Text;
+
+                }
             }
 
             preset.SearchParameters.AddExtraBytes = this.cbAddExtraBytes.Checked;

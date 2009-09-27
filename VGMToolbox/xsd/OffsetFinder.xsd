@@ -37,6 +37,10 @@
       <xs:element name="CutSizeOffsetSize" type="xs:integer" minOccurs="0" maxOccurs="1"/>
       <xs:element name="CutSizeOffsetEndianess" type="Endianness" minOccurs="0" maxOccurs="1"/>
 
+      <xs:element name="UseModOffsetForTerminatorString" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ModOffsetForTerminatorStringDivisor" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ModOffsetForTerminatorStringResult" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      
       <xs:element name="TerminatorString" type="xs:string" minOccurs="0" maxOccurs="1"/>
       <xs:element name="TreatTerminatorStringAsHex" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
       <xs:element name="IncludeTerminatorInSize" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
@@ -47,11 +51,21 @@
   <!-- Search Parameters -->
   <xs:complexType name="SearchParameters">
     <xs:sequence minOccurs="1" maxOccurs="1">
+      <!-- Criteria Section -->
       <xs:element name="SearchString" type="xs:string" minOccurs="1" maxOccurs="1"/>
       <xs:element name="TreatSearchStringAsHex" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+      
+      <xs:element name="StartingOffset" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="UseModOffsetForSearchString" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ModOffsetForSearchStringDivisor" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ModOffsetForSearchStringResult" type="xs:string" minOccurs="0" maxOccurs="1"/>
+
+      <!-- Cut Options -->
       <xs:element name="SearchStringOffset" type="xs:integer" minOccurs="1" maxOccurs="1"/>
       <xs:element name="OutputFileExtension" type="xs:string" minOccurs="1" maxOccurs="1"/>
-
+      <xs:element name="MinimumSizeForCutting" type="xs:string" minOccurs="1" maxOccurs="1"/>
+      
+      <!-- Cut Size Options -->
       <xs:element name="CutParameters" type="cutParameters" minOccurs="1" maxOccurs="1"/>
 
       <xs:element name="AddExtraBytes" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
