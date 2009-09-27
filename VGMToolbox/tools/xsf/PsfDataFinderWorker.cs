@@ -262,9 +262,19 @@ namespace VGMToolbox.tools.xsf
                         nextSepCheckBytes = ParseFile.ParseSimpleOffset(fs, (long)(seqEof + PsxSequence.END_SEQUENCE.Length), 2);
                         Array.Reverse(nextSepCheckBytes);
 
-                        if (BitConverter.ToUInt16(nextSepCheckBytes, 0) == (UInt16)sepSeqCount)
+                        if (nextSepCheckBytes.Length > 0)
                         {
-                            sepSeqCount++;                            
+                            if (BitConverter.ToUInt16(nextSepCheckBytes, 0) == (UInt16)sepSeqCount)
+                            {
+                                sepSeqCount++;
+                            }
+                            else
+                            {
+                                sepEntry.offset = sepStartingOffset;
+                                sepEntry.length = (int)(seqEof - sepStartingOffset + PsxSequence.END_SEQUENCE.Length);
+                                sepFiles.Add(sepEntry);
+                                break;
+                            }
                         }
                         else
                         {
