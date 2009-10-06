@@ -356,7 +356,7 @@ namespace VGMToolbox.tools.xsf
 
                 while ((offset = ParseFile.GetNextOffset(fs, offset, VB_START_BYTES, psfStruct.UseZeroOffsetForVb,
                     0x10, 0)) > -1)
-                {
+                {                    
                     try
                     {                        
                         vbRow = ParseFile.ParseSimpleOffset(fs, offset, vbRow.Length);
