@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xsfrecmp", "xsfrecmp\xsfrec
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "snakebite", "snakebite\snakebite.csproj", "{D8809B3A-4212-4F0B-B920-86813298DDA7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "zlibext", "zlibext\zlibext.csproj", "{C9FC9E30-8D58-47A3-9E21-6280DD3FE461}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,10 @@ Global
 		{D8809B3A-4212-4F0B-B920-86813298DDA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8809B3A-4212-4F0B-B920-86813298DDA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8809B3A-4212-4F0B-B920-86813298DDA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9FC9E30-8D58-47A3-9E21-6280DD3FE461}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9FC9E30-8D58-47A3-9E21-6280DD3FE461}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9FC9E30-8D58-47A3-9E21-6280DD3FE461}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9FC9E30-8D58-47A3-9E21-6280DD3FE461}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
