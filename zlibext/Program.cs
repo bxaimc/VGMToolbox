@@ -61,7 +61,14 @@ namespace zlibext
                         }
                         else
                         {
-                            CompressionUtil.DecompressZlibStreamToFile(fs, fullOutputPath, longStartOffset);
+                            try
+                            {
+                                CompressionUtil.DecompressZlibStreamToFile(fs, fullOutputPath, longStartOffset);
+                            }
+                            catch (Exception)
+                            {
+                                Console.WriteLine(String.Format("Cannot decompress <{0}>.", fullInputPath));
+                            }
                         }
                     }
                 }

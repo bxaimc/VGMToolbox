@@ -61,7 +61,14 @@ namespace gzipext
                         }
                         else
                         {
-                            CompressionUtil.DecompressGzipStreamToFile(fs, fullOutputPath, longStartOffset);
+                            try
+                            {
+                                CompressionUtil.DecompressGzipStreamToFile(fs, fullOutputPath, longStartOffset);
+                            }
+                            catch (Exception)
+                            {
+                                Console.WriteLine(String.Format("Cannot decompress <{0}>.", fullInputPath));
+                            }
                         }
                     }
                 }
