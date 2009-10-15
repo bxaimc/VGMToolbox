@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Configuration;
+using System.IO;
 using System.Windows.Forms;
 
 using VGMToolbox.plugin;
@@ -119,6 +120,51 @@ namespace VGMToolbox.forms.xsf
         protected override string getBeginMessage()
         {
             return ConfigurationSettings.AppSettings["Form_SsfMakeFE_MessageBegin"];
+        }
+
+        private void tbDriver_DragEnter(object sender, DragEventArgs e)
+        {
+            base.doDragEnter(sender, e);
+        }
+
+        private void tbDriver_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            if ((s.Length == 1) && (File.Exists(s[0])))
+            {
+                this.tbDriver.Text = s[0];
+            }
+        }
+
+        private void tbSourcePath_DragEnter(object sender, DragEventArgs e)
+        {
+            base.doDragEnter(sender, e);
+        }
+
+        private void tbSourcePath_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            if ((s.Length == 1) && (Directory.Exists(s[0])))
+            {
+                this.tbSourcePath.Text = s[0];
+            }
+        }
+
+        private void tbDspFile_DragEnter(object sender, DragEventArgs e)
+        {
+            base.doDragEnter(sender, e);
+        }
+
+        private void tbDspFile_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            if ((s.Length == 1) && (File.Exists(s[0])))
+            {
+                this.tbDspFile.Text = s[0];
+            }
         }
     }
 }

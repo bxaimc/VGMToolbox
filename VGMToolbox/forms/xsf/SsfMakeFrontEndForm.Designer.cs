@@ -68,30 +68,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 415);
-            this.pnlLabels.Size = new System.Drawing.Size(1006, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 479);
+            this.pnlLabels.Size = new System.Drawing.Size(880, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(1006, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(880, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 338);
-            this.tbOutput.Size = new System.Drawing.Size(1006, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 402);
+            this.tbOutput.Size = new System.Drawing.Size(880, 77);
+            this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 318);
-            this.pnlButtons.Size = new System.Drawing.Size(1006, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 382);
+            this.pnlButtons.Size = new System.Drawing.Size(880, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(946, 0);
+            this.btnCancel.Location = new System.Drawing.Point(820, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(886, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(760, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnExecute_Click);
             // 
             // panel1
@@ -103,7 +104,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 23);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1006, 295);
+            this.panel1.Size = new System.Drawing.Size(880, 359);
             this.panel1.TabIndex = 5;
             // 
             // groupBox3
@@ -112,7 +113,7 @@
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox3.Location = new System.Drawing.Point(0, 222);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(989, 81);
+            this.groupBox3.Size = new System.Drawing.Size(880, 81);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Options";
@@ -147,7 +148,7 @@
             this.grpSettings.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSettings.Location = new System.Drawing.Point(0, 124);
             this.grpSettings.Name = "grpSettings";
-            this.grpSettings.Size = new System.Drawing.Size(989, 98);
+            this.grpSettings.Size = new System.Drawing.Size(880, 98);
             this.grpSettings.TabIndex = 1;
             this.grpSettings.TabStop = false;
             this.grpSettings.Text = "Settings";
@@ -285,7 +286,7 @@
             this.groupFiles.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupFiles.Location = new System.Drawing.Point(0, 0);
             this.groupFiles.Name = "groupFiles";
-            this.groupFiles.Size = new System.Drawing.Size(989, 124);
+            this.groupFiles.Size = new System.Drawing.Size(880, 124);
             this.groupFiles.TabIndex = 0;
             this.groupFiles.TabStop = false;
             this.groupFiles.Text = "Files";
@@ -311,10 +312,13 @@
             // 
             // tbDspFile
             // 
+            this.tbDspFile.AllowDrop = true;
             this.tbDspFile.Location = new System.Drawing.Point(140, 97);
             this.tbDspFile.Name = "tbDspFile";
             this.tbDspFile.Size = new System.Drawing.Size(247, 20);
             this.tbDspFile.TabIndex = 10;
+            this.tbDspFile.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbDspFile_DragDrop);
+            this.tbDspFile.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbDspFile_DragEnter);
             // 
             // lblOutputFolder
             // 
@@ -373,23 +377,29 @@
             // 
             // tbSourcePath
             // 
+            this.tbSourcePath.AllowDrop = true;
             this.tbSourcePath.Location = new System.Drawing.Point(140, 45);
             this.tbSourcePath.Name = "tbSourcePath";
             this.tbSourcePath.Size = new System.Drawing.Size(247, 20);
             this.tbSourcePath.TabIndex = 1;
+            this.tbSourcePath.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbSourcePath_DragDrop);
+            this.tbSourcePath.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbSourcePath_DragEnter);
             // 
             // tbDriver
             // 
+            this.tbDriver.AllowDrop = true;
             this.tbDriver.Location = new System.Drawing.Point(140, 19);
             this.tbDriver.Name = "tbDriver";
             this.tbDriver.Size = new System.Drawing.Size(247, 20);
             this.tbDriver.TabIndex = 0;
+            this.tbDriver.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbDriver_DragDrop);
+            this.tbDriver.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbDriver_DragEnter);
             // 
-            // Xsf_SsfMakeFrontEndForm
+            // SsfMakeFrontEndForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1006, 456);
+            this.ClientSize = new System.Drawing.Size(880, 520);
             this.Controls.Add(this.panel1);
             this.Name = "SsfMakeFrontEndForm";
             this.Text = "SsfMakeFrontEndForm";
