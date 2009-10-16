@@ -88,7 +88,9 @@ namespace VGMToolbox.tools.xsf
             public string sourcePath;
             public string outputFolder;
             public string dspFile;
+            
             public bool findData;
+            public bool TryAllCombinations { set; get; }
         }
 
         public SsfMakeWorker()
@@ -170,7 +172,8 @@ namespace VGMToolbox.tools.xsf
  
         private void makeSsfs(SsfMakeStruct pSsfMakeStruct, DoWorkEventArgs e)
         {
-            string[] uniqueSqFiles;
+            string[] uniqueSeqFiles;
+            string[] uniqueToneFiles;
 
             if (!CancellationPending)
             {
@@ -195,11 +198,21 @@ namespace VGMToolbox.tools.xsf
 
 
                 // get list of unique files
-                uniqueSqFiles = this.getUniqueFileNames(pSsfMakeStruct.sourcePath);
-                if (uniqueSqFiles != null)
+                uniqueSeqFiles = this.getUniqueFileNames(pSsfMakeStruct.sourcePath, "*.SEQ");
+                uniqueToneFiles = this.getUniqueFileNames(pSsfMakeStruct.sourcePath, "*.BIN");
+                
+                if (uniqueSeqFiles.Length > 0)
                 {
-                    this.maxFiles = uniqueSqFiles.Length;
-                    this.buildSsfs(uniqueSqFiles, pSsfMakeStruct, e);
+                    if (pSsfMakeStruct.TryAllCombinations && (uniqueToneFiles.Length > 0))
+                    {
+                        this.maxFiles = uniqueSeqFiles.Length * uniqueToneFiles.Length;
+                    }
+                    else
+                    {
+                        this.maxFiles = uniqueSeqFiles.Length;
+                    }
+
+                    this.buildSsfs(uniqueSeqFiles, uniqueToneFiles, pSsfMakeStruct, e);
                     this.timeSsfs(Path.Combine(OUTPUT_FOLDER, pSsfMakeStruct.outputFolder));
                 }
 
@@ -217,11 +230,11 @@ namespace VGMToolbox.tools.xsf
             return;
         }
 
-        private string[] getUniqueFileNames(string pSourceDirectory)
+        private string[] getUniqueFileNames(string pSourceDirectory, string mask)
         {
             int fileCount = 0;
             int i = 0;
-            string[] ret = null;
+            string[] ret = new string[0];
 
             if (!Directory.Exists(pSourceDirectory))
             {
@@ -231,14 +244,14 @@ namespace VGMToolbox.tools.xsf
             }
             else
             {
-                fileCount = Directory.GetFiles(pSourceDirectory, "*.SEQ").Length;
+                fileCount = Directory.GetFiles(pSourceDirectory, mask, SearchOption.TopDirectoryOnly).Length;
 
                 if (fileCount > 0)
                 {
                     ret = new string[fileCount];
                 }
 
-                foreach (string f in Directory.GetFiles(pSourceDirectory, "*.SEQ"))
+                foreach (string f in Directory.GetFiles(pSourceDirectory, mask))
                 {
                     ret[i] = f;
                     i++;
@@ -248,13 +261,13 @@ namespace VGMToolbox.tools.xsf
             return ret;
         }
 
-        private void buildSsfs(string[] pUniqueSqFiles, SsfMakeStruct pSsfMakeStruct,
-            DoWorkEventArgs e)
+        private void buildSsfs(string[] pUniqueSqFiles, string[] pUniqueToneFiles, 
+            SsfMakeStruct pSsfMakeStruct, DoWorkEventArgs e)
         {
             int progress = 0;
             StringBuilder ssfmakeArguments = new StringBuilder();
 
-            string filePrefixPath;
+            // string filePrefixPath;
             string filePrefix;
             
             string anticipatedTonePath;
@@ -262,6 +275,8 @@ namespace VGMToolbox.tools.xsf
 
             string potentialFilePath;
             string potentialFileName;
+
+            string toneFileName;
 
             int totalTracks;
 
@@ -301,56 +316,113 @@ namespace VGMToolbox.tools.xsf
                 }
             } // if (pSsfMakeStruct.findData)
 
-            foreach (string f in pUniqueSqFiles)
+            foreach (string seqFile in pUniqueSqFiles)
             {
                 if (!CancellationPending)
                 {
-                    try
+                    if (pSsfMakeStruct.TryAllCombinations)
                     {
-                        // report progress
-                        progress = (++this.fileCount * 100) / maxFiles;
-                        this.progressStruct.Clear();
-                        this.progressStruct.FileName = f;
-                        ReportProgress(progress, this.progressStruct);
-
-                        filePrefix = Path.GetFileNameWithoutExtension(f);
-                        filePrefixPath = Path.Combine(Path.GetDirectoryName(f), filePrefix);
-
-                        if (!String.IsNullOrEmpty(pSsfMakeStruct.dspFile) ||
-                            File.Exists(Path.ChangeExtension(f, FILE_EXTENSION_DSP)))
+                        foreach (string toneFile in pUniqueToneFiles)
                         {
-                            pSsfMakeStruct.useDsp = "1";
-                        }
-                        
-                        pSsfMakeStruct.map = getMapFile(pSsfMakeStruct, filePrefixPath);
-
-                        if (!String.IsNullOrEmpty(pSsfMakeStruct.map))
-                        {
-                            totalTracks = this.getNumberOfTracks(f);
-                            
-                            if (this.prepareWorkingDir(pSsfMakeStruct, filePrefixPath))
+                            try
                             {
-                                this.customizeScript(pSsfMakeStruct, filePrefix, totalTracks);
-                                this.executeScript();
-                                this.moveSsfToRipFolder(ripOutputFolder, totalTracks);
+                                // report progress
+                                progress = (++this.fileCount * 100) / maxFiles;
+                                this.progressStruct.Clear();
+                                this.progressStruct.FileName = seqFile;
+                                ReportProgress(progress, this.progressStruct);
+
+                                toneFileName = toneFile;
+
+                                if (!String.IsNullOrEmpty(pSsfMakeStruct.dspFile) ||
+                                    File.Exists(Path.ChangeExtension(seqFile, FILE_EXTENSION_DSP)))
+                                {
+                                    pSsfMakeStruct.useDsp = "1";
+                                }
+
+                                pSsfMakeStruct.map = getMapFile(pSsfMakeStruct, seqFile, toneFileName);
+
+                                if (!String.IsNullOrEmpty(pSsfMakeStruct.map))
+                                {
+                                    totalTracks = this.getNumberOfTracks(seqFile);
+
+                                    if (this.prepareWorkingDir(pSsfMakeStruct, seqFile, toneFileName))
+                                    {
+                                        this.customizeScript(pSsfMakeStruct, seqFile, toneFileName, totalTracks);
+                                        this.executeScript();
+                                        this.moveSsfToRipFolder(ripOutputFolder, totalTracks);
+                                    }
+
+                                    Directory.Delete(WORKING_FOLDER, true);
+                                }
+                                else
+                                {
+                                    this.progressStruct.Clear();
+                                    this.progressStruct.FileName = seqFile;
+                                    this.progressStruct.ErrorMessage = "[ERROR - NO SUITABLE MAP FILE FOUND]: " + seqFile + Environment.NewLine;
+                                    ReportProgress(progress, this.progressStruct);
+                                }
+                            }
+                            catch (Exception ex2)
+                            {
+                                this.progressStruct.Clear();
+                                this.progressStruct.FileName = seqFile;
+                                this.progressStruct.ErrorMessage = ex2.Message;
+                                ReportProgress(progress, this.progressStruct);
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        try
+                        {
+                            // report progress
+                            progress = (++this.fileCount * 100) / maxFiles;
+                            this.progressStruct.Clear();
+                            this.progressStruct.FileName = seqFile;
+                            ReportProgress(progress, this.progressStruct);
+
+                            // filePrefix = Path.GetFileNameWithoutExtension(seqFile);
+                            // filePrefixPath = Path.Combine(Path.GetDirectoryName(seqFile), filePrefix);
+                            toneFileName = Path.ChangeExtension(seqFile, FILE_EXTENSION_TONE);
+
+                            if (!String.IsNullOrEmpty(pSsfMakeStruct.dspFile) ||
+                                File.Exists(Path.ChangeExtension(seqFile, FILE_EXTENSION_DSP)))
+                            {
+                                pSsfMakeStruct.useDsp = "1";
                             }
 
-                            Directory.Delete(WORKING_FOLDER, true);
+                            pSsfMakeStruct.map = getMapFile(pSsfMakeStruct, seqFile, toneFileName);
+
+                            if (!String.IsNullOrEmpty(pSsfMakeStruct.map))
+                            {
+                                totalTracks = this.getNumberOfTracks(seqFile);
+
+                                if (this.prepareWorkingDir(pSsfMakeStruct, seqFile, toneFileName))
+                                {
+                                    this.customizeScript(pSsfMakeStruct, seqFile, toneFileName, totalTracks);
+                                    this.executeScript();
+                                    this.moveSsfToRipFolder(ripOutputFolder, totalTracks);
+                                }
+
+                                Directory.Delete(WORKING_FOLDER, true);
+                            }
+                            else
+                            {
+                                this.progressStruct.Clear();
+                                this.progressStruct.FileName = seqFile;
+                                this.progressStruct.ErrorMessage = "[ERROR - NO SUITABLE MAP FILE FOUND]: " + seqFile + Environment.NewLine;
+                                ReportProgress(progress, this.progressStruct);
+                            }
                         }
-                        else
+                        catch (Exception ex2)
                         {
                             this.progressStruct.Clear();
-                            this.progressStruct.FileName = f;
-                            this.progressStruct.ErrorMessage = "[ERROR - NO SUITABLE MAP FILE FOUND]: " + f + Environment.NewLine;
-                            ReportProgress(progress, this.progressStruct);                        
+                            this.progressStruct.FileName = seqFile;
+                            this.progressStruct.ErrorMessage = ex2.Message;
+                            ReportProgress(progress, this.progressStruct);
                         }
-                    }
-                    catch (Exception ex2)
-                    {
-                        this.progressStruct.Clear();
-                        this.progressStruct.FileName = f;
-                        this.progressStruct.ErrorMessage = ex2.Message;
-                        ReportProgress(progress, this.progressStruct);
                     }
                 }
                 else
@@ -362,18 +434,15 @@ namespace VGMToolbox.tools.xsf
             } // foreach (string f in pUniqueSqFiles)
         }
 
-        private string getMapFile(SsfMakeStruct pSsfMakeStruct, string pSourceFilePrefix)
+        private string getMapFile(SsfMakeStruct pSsfMakeStruct, string seqFileName, string toneFileName)
         {
             FileInfo fi;
             string ret = null;
 
-            string seqPath = Path.GetFullPath(pSourceFilePrefix + FILE_EXTENSION_SEQUENCE);
-            string tonePath = Path.GetFullPath(pSourceFilePrefix + FILE_EXTENSION_TONE);
-
-            fi = new FileInfo(seqPath);
+            fi = new FileInfo(seqFileName);
             long seqSize = fi.Length;
 
-            fi = new FileInfo(tonePath);
+            fi = new FileInfo(toneFileName);
             long toneSize = fi.Length;
 
             if (pSsfMakeStruct.useDsp.Equals("0"))
@@ -418,7 +487,7 @@ namespace VGMToolbox.tools.xsf
             return ret;
         }
 
-        private bool prepareWorkingDir(SsfMakeStruct pSsfMakeStruct, string pSourceFilePrefix)
+        private bool prepareWorkingDir(SsfMakeStruct pSsfMakeStruct, string seqFileName, string toneFileName)
         {
             bool ret = false;
             string userFilePath;
@@ -444,15 +513,15 @@ namespace VGMToolbox.tools.xsf
                 userFilePath = Path.GetFullPath(pSsfMakeStruct.driver);
                 File.Copy(userFilePath, Path.Combine(WORKING_FOLDER, Path.GetFileName(userFilePath)), true);
 
-                userFilePath = Path.GetFullPath(Path.Combine(pSsfMakeStruct.sourcePath, pSourceFilePrefix + FILE_EXTENSION_TONE));
+                userFilePath = toneFileName;
                 File.Copy(userFilePath, Path.Combine(WORKING_FOLDER, Path.GetFileName(userFilePath)), true);
 
-                userFilePath = Path.GetFullPath(Path.Combine(pSsfMakeStruct.sourcePath, pSourceFilePrefix + FILE_EXTENSION_SEQUENCE));
+                userFilePath = seqFileName;
                 File.Copy(userFilePath, Path.Combine(WORKING_FOLDER, Path.GetFileName(userFilePath)), true);
 
                 if (String.IsNullOrEmpty(pSsfMakeStruct.dspFile))
                 {
-                    userFilePath = Path.GetFullPath(Path.Combine(pSsfMakeStruct.sourcePath, pSourceFilePrefix + FILE_EXTENSION_DSP));
+                    userFilePath = Path.ChangeExtension(seqFileName, FILE_EXTENSION_DSP);
                     if (File.Exists(userFilePath))
                     {
                         File.Copy(userFilePath, Path.Combine(WORKING_FOLDER, Path.GetFileName(userFilePath)), true);
@@ -477,21 +546,21 @@ namespace VGMToolbox.tools.xsf
             return ret;
         }
 
-        private bool customizeScript(SsfMakeStruct pSsfMakeStruct, string pSourceFilePrefix,
-            int pTotalTracks)
+        private bool customizeScript(SsfMakeStruct pSsfMakeStruct, string seqFileName, string toneFileName, int pTotalTracks)
         {            
             bool ret = true;
             int lineNumber;
             string inputLine;
 
             string workingFile = SSFMAKE_DESTINATION_PATH + ".tmp";
+            string dspFileName = Path.GetFileName(Path.ChangeExtension(seqFileName, FILE_EXTENSION_DSP));
+            string outputFileNameWithoutExtension = Path.GetFileNameWithoutExtension(seqFileName);
 
             // open reader
-            StreamReader reader = 
-                new StreamReader(File.Open(SSFMAKE_DESTINATION_PATH, FileMode.Open, FileAccess.Read));
+            StreamReader reader = new StreamReader(File.Open(SSFMAKE_DESTINATION_PATH, FileMode.Open, FileAccess.Read));
+            
             // open writer for temp file
-            StreamWriter writer = 
-                new StreamWriter(File.Open(workingFile, FileMode.Create, FileAccess.Write));
+            StreamWriter writer = new StreamWriter(File.Open(workingFile, FileMode.Create, FileAccess.Write));
 
             lineNumber = 1;
             while ((inputLine = reader.ReadLine()) != null)
@@ -527,17 +596,17 @@ namespace VGMToolbox.tools.xsf
                         writer.WriteLine(String.Format("nmap = '{0}'    # sound area map", pSsfMakeStruct.map));
                         break;
                     case LINE_NUM_TONE_DATA:
-                        writer.WriteLine(String.Format("nbin = '{0}'    # tone data", Path.GetFileName(pSourceFilePrefix + FILE_EXTENSION_TONE)));
+                        writer.WriteLine(String.Format("nbin = '{0}'    # tone data", Path.GetFileName(toneFileName)));
                         break;
                     case LINE_NUM_SEQ_DATA:
-                        writer.WriteLine(String.Format("nseq = '{0}'    # sequence data", Path.GetFileName(pSourceFilePrefix + FILE_EXTENSION_SEQUENCE)));
+                        writer.WriteLine(String.Format("nseq = '{0}'    # sequence data", Path.GetFileName(seqFileName)));
                         break;
                     case LINE_NUM_DSP_PROGRAM:
                         if (String.IsNullOrEmpty(pSsfMakeStruct.dspFile))
                         {
-                            if (File.Exists(Path.GetFullPath(Path.Combine(WORKING_FOLDER, pSourceFilePrefix + FILE_EXTENSION_DSP))))
+                            if (File.Exists(Path.GetFullPath(Path.Combine(WORKING_FOLDER, dspFileName))))
                             {
-                                writer.WriteLine(String.Format("nexb = '{0}'    # DSP program", Path.GetFileName(pSourceFilePrefix + FILE_EXTENSION_DSP)));
+                                writer.WriteLine(String.Format("nexb = '{0}'    # DSP program", Path.GetFileName(dspFileName)));
                             }
                             else
                             {
@@ -551,13 +620,19 @@ namespace VGMToolbox.tools.xsf
                         break;
 
                     case LINE_NUM_OUT_FILE:
+                        if (pSsfMakeStruct.TryAllCombinations)
+                        {
+                            outputFileNameWithoutExtension = 
+                                String.Format("SEQ[{0}]_TON[{1}]", Path.GetFileNameWithoutExtension(seqFileName), Path.GetFileNameWithoutExtension(toneFileName));
+                        }
+
                         if (pTotalTracks > 1)
                         {
-                            writer.WriteLine(String.Format("nout = '{0}.ssflib'    # output file name (if .ssflib, create ssflib and minissfs for each track in the bank)", Path.GetFileNameWithoutExtension(pSourceFilePrefix)));                        
+                            writer.WriteLine(String.Format("nout = '{0}.ssflib'    # output file name (if .ssflib, create ssflib and minissfs for each track in the bank)", outputFileNameWithoutExtension));                        
                         }
                         else
                         {
-                            writer.WriteLine(String.Format("nout = '{0}.ssf'    # output file name (if .ssflib, create ssflib and minissfs for each track in the bank)", Path.GetFileNameWithoutExtension(pSourceFilePrefix)));                        
+                            writer.WriteLine(String.Format("nout = '{0}.ssf'    # output file name (if .ssflib, create ssflib and minissfs for each track in the bank)", outputFileNameWithoutExtension));                        
                         }
                         break;
                 

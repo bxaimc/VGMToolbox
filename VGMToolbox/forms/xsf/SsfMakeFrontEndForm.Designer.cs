@@ -57,6 +57,7 @@
             this.lblDriver = new System.Windows.Forms.Label();
             this.tbSourcePath = new System.Windows.Forms.TextBox();
             this.tbDriver = new System.Windows.Forms.TextBox();
+            this.cbTryAllCombinations = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -68,31 +69,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 479);
-            this.pnlLabels.Size = new System.Drawing.Size(880, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 480);
+            this.pnlLabels.Size = new System.Drawing.Size(998, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(880, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(998, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 402);
-            this.tbOutput.Size = new System.Drawing.Size(880, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 403);
+            this.tbOutput.Size = new System.Drawing.Size(998, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 382);
-            this.pnlButtons.Size = new System.Drawing.Size(880, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 383);
+            this.pnlButtons.Size = new System.Drawing.Size(998, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(820, 0);
+            this.btnCancel.Location = new System.Drawing.Point(938, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(760, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(878, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnExecute_Click);
             // 
             // panel1
@@ -104,16 +105,17 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 23);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(880, 359);
+            this.panel1.Size = new System.Drawing.Size(998, 360);
             this.panel1.TabIndex = 5;
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.cbTryAllCombinations);
             this.groupBox3.Controls.Add(this.cbSeekData);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox3.Location = new System.Drawing.Point(0, 222);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(880, 81);
+            this.groupBox3.Size = new System.Drawing.Size(998, 103);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Options";
@@ -148,7 +150,7 @@
             this.grpSettings.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSettings.Location = new System.Drawing.Point(0, 124);
             this.grpSettings.Name = "grpSettings";
-            this.grpSettings.Size = new System.Drawing.Size(880, 98);
+            this.grpSettings.Size = new System.Drawing.Size(998, 98);
             this.grpSettings.TabIndex = 1;
             this.grpSettings.TabStop = false;
             this.grpSettings.Text = "Settings";
@@ -286,7 +288,7 @@
             this.groupFiles.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupFiles.Location = new System.Drawing.Point(0, 0);
             this.groupFiles.Name = "groupFiles";
-            this.groupFiles.Size = new System.Drawing.Size(880, 124);
+            this.groupFiles.Size = new System.Drawing.Size(998, 124);
             this.groupFiles.TabIndex = 0;
             this.groupFiles.TabStop = false;
             this.groupFiles.Text = "Files";
@@ -395,11 +397,21 @@
             this.tbDriver.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbDriver_DragDrop);
             this.tbDriver.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbDriver_DragEnter);
             // 
+            // cbTryAllCombinations
+            // 
+            this.cbTryAllCombinations.AutoSize = true;
+            this.cbTryAllCombinations.Location = new System.Drawing.Point(6, 81);
+            this.cbTryAllCombinations.Name = "cbTryAllCombinations";
+            this.cbTryAllCombinations.Size = new System.Drawing.Size(323, 17);
+            this.cbTryAllCombinations.TabIndex = 1;
+            this.cbTryAllCombinations.Text = "Try all combinations of SEQ and BIN (good for finding matches)";
+            this.cbTryAllCombinations.UseVisualStyleBackColor = true;
+            // 
             // SsfMakeFrontEndForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(880, 520);
+            this.ClientSize = new System.Drawing.Size(998, 521);
             this.Controls.Add(this.panel1);
             this.Name = "SsfMakeFrontEndForm";
             this.Text = "SsfMakeFrontEndForm";
@@ -457,6 +469,7 @@
         private System.Windows.Forms.Label lblSingleDspFile;
         private System.Windows.Forms.TextBox tbDspFile;
         private System.Windows.Forms.Button btnBrowseDsp;
+        private System.Windows.Forms.CheckBox cbTryAllCombinations;
 
     }
 }

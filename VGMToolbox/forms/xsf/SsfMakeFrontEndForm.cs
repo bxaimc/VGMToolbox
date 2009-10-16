@@ -72,6 +72,7 @@ namespace VGMToolbox.forms.xsf
             smStruct.sourcePath = tbSourcePath.Text;
             smStruct.outputFolder = tbOutputFolder.Text;
             smStruct.findData = cbSeekData.Checked;
+            smStruct.TryAllCombinations = cbTryAllCombinations.Checked;
 
             base.backgroundWorker_Execute(smStruct);
         }
