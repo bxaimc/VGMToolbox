@@ -30,7 +30,7 @@ namespace VGMToolbox.format
         public const int BLOCK_HEADER_SIZE = 0x18;
 
         public const long FILESIZE_OFFSET = 0x04;
-        public const long DATA_OFFSET = 0x2C;
+        public const long DATA_LENGTH_OFFSET = 0x28;
 
         public const int XA_BLOCK_SIZE = 2352;
         public const int XA_TRACK_OFFSET = 0x10;

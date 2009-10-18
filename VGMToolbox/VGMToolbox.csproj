@@ -800,6 +800,9 @@
     <Content Include="plugins\AdvancedCutter\riff.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="plugins\AdvancedCutter\sddrvs.tsk.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="plugins\AdvancedCutter\wiirbnk.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
