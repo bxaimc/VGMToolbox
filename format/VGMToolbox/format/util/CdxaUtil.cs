@@ -149,8 +149,8 @@ namespace VGMToolbox.format.util
                 pBw.Write(BitConverter.GetBytes(xaFileSize - 8));
 
                 // add data size
-                pBw.BaseStream.Position = Cdxa.DATA_OFFSET;
-                pBw.Write(BitConverter.GetBytes(xaFileSize - Cdxa.XA_RIFF_HEADER.Length));
+                // pBw.BaseStream.Position = Cdxa.DATA_OFFSET;
+                // pBw.Write(BitConverter.GetBytes(xaFileSize - Cdxa.XA_RIFF_HEADER.Length));
             }
 
             pBw.Close();
