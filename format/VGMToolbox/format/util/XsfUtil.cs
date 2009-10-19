@@ -2206,8 +2206,11 @@ namespace VGMToolbox.format.util
 
                                 tagData = enc.GetBytes(String.Format("_lib={0}", Path.GetFileName(libOutputPath)));
                                 bw.Write(tagData, 0, tagData.Length);
-                                bw.Write(0x0A);
+                                bw.Write((byte)0x0A);
 
+                                tagData = enc.GetBytes(String.Format("2sfby={0}", "VGMToolbox - NDSto2SF"));
+                                bw.Write(tagData, 0, tagData.Length);
+                                bw.Write((byte)0x0A);
                             }
                         }
                     }
