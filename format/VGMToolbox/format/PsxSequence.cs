@@ -437,6 +437,11 @@ namespace VGMToolbox.format
                             if (loopTimeStack.Count > 0)
                             {
                                 loopTime = loopTimeStack.Pop();
+                                
+                                // set loop end
+                                ret.LoopEndInSeconds = ((totalTime + loopTime) * Math.Pow(10, -6));
+                                
+                                // multiply by loop multiplier.
                                 loopTime = (loopTime * loopTimeMultiplier);
                                 totalTime += loopTime;
 
@@ -446,7 +451,7 @@ namespace VGMToolbox.format
 
                                 timeSinceLastLoopEnd = 0;
 
-                                ret.LoopEndInSeconds = ((totalTime) * Math.Pow(10, -6));
+                                
                             }
 
                             loopEndFound = false;
