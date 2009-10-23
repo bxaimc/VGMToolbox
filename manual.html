@@ -4,6 +4,18 @@
     <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html">	
     <TITLE>
     </TITLE>		
+
+    <style type="text/css">
+    ol {
+        list-style: decimal;
+    }
+    ol ol {
+        list-style: lower-alpha;
+    }
+    ol ol ol {
+        list-style: lower-roman;
+    }
+    </style>
   </HEAD>
   <BODY LANG="en-US" DIR="LTR">
     <P ALIGN=CENTER><U><B>VGMToolbox &ndash; Manual</B></U></P>
@@ -510,9 +522,34 @@
     <!-- Simple Cutter -->
     <p align=left><b>Extraction Tools &gt; Generic &gt; Simple Cutter (Snakebite GUI)</b></p>
     <p align=left><img src=".\images\simple_cutter.jpg" align=left><br clear=left></p> 
-    <p><i>Description</i>:</p>
+    <p><i>Description</i>: The Simple Cutter will extract chunks from a file (or files) according to the input rules.
+    </p>
     <p><i>Usage</i>:
       <ol>      
+        <li>Enter the Cut Options (be sure to prefix all hexidecimal values with '0x')
+          <ol>      
+            <li>Enter the Start Address to begin the cut.</li>
+            <li>Select the Cut Length radio button for the type of cut you would like to use:</li>        
+              <ol>      
+                <li>End Address: Enter a specific address to end the file cut.  Cut file will include [Start Address - End Address]</li>
+                <li>Length: Enter the number of bytes to cut. Cut file will include [Start Address - (Start Address + Length Bytes)]</li>
+                <li>EOF: Read until the End of File, good for removing a static sized header.  Cut file will include [Start Address - End of File]</li>                      
+              </ol>          
+          </ol>
+        </li>
+        <li>Select 'Single File Mode' or 'Batch Mode'.
+          <ol>
+            <li>Single File Mode: Select this if you will only be cutting one file with these settings.</li>
+              <ol>
+                <li>ADD THIS!!!</li>
+              </ol>
+            <li>Batch Mode: Select this if you will be cutting multiple files with these settings.</li>
+              <ol>
+                <li>Enter the "Output File Extension" for the cut files, including the leading period '.'.  The file name will be based on the original file name.</li>
+              </ol>
+          </ol>
+        </li>
+        <li>ADD THIS!!!</li>  
       </ol>
     </p>   
     <p><i>Options</i>:
