@@ -745,11 +745,15 @@ namespace VGMToolbox.format.util
             return batchFilePath;
         }
 
-        public static string GetTitleForFileName(string pFilePath)
+        public static string GetTitleForFileName(string pFilePath, bool pRemoveBracketInfo)
         {
             string fileName = Path.GetFileNameWithoutExtension(pFilePath);
             string[] splitFileName = fileName.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             string ret = fileName.Trim();
+
+            int openBracketLoc;
+            int closeBracketLoc;
+
 
             if (splitFileName.Length > 1)
             {
@@ -763,6 +767,25 @@ namespace VGMToolbox.format.util
                     ((firstSegmentNumOnlyLength / firstSegmentLength) > 0.5)) // more than half are numeric
                 {
                     ret = fileName.Substring(firstSegment.Length).Trim();
+                }
+            }
+
+            if (pRemoveBracketInfo)
+            {                    
+                while ((openBracketLoc = ret.IndexOf("[", 0, StringComparison.InvariantCulture)) > -1)
+                {
+                    closeBracketLoc = ret.IndexOf("]", openBracketLoc, StringComparison.InvariantCulture);
+
+                    if (closeBracketLoc > -1)
+                    {
+                        ret = ret.Remove(openBracketLoc, closeBracketLoc - openBracketLoc + 1).Trim();
+                        openBracketLoc = closeBracketLoc;
+                        closeBracketLoc = -1;
+                    }
+                    else
+                    {
+                        break;
+                    }                                        
                 }
             }
 

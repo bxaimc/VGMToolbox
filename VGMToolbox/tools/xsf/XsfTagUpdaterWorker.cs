@@ -19,6 +19,7 @@ namespace VGMToolbox.tools.xsf
             public bool RemoveEmptyTags;
             public bool IsBatchMode;
             public bool GenerateTitleFromFilename;
+            public bool RemoveBracketInfoFromTitle { set; get; }
             public bool AddToBatchFile;
 
             public string TitleTag;
@@ -85,7 +86,7 @@ namespace VGMToolbox.tools.xsf
 
                 if (xsfTagUpdaterStruct.GenerateTitleFromFilename)
                 {
-                    xsfTagUpdaterStruct.TitleTag = XsfUtil.GetTitleForFileName(pPath);
+                    xsfTagUpdaterStruct.TitleTag = XsfUtil.GetTitleForFileName(pPath, xsfTagUpdaterStruct.RemoveBracketInfoFromTitle);
                     xts = new XsfTagSetter(vgmData.SetTitleTag);
                     updateXsfTag(xts, xsfTagUpdaterStruct.TitleTag, xsfTagUpdaterStruct.RemoveEmptyTags, xsfTagUpdaterStruct.AddToBatchFile);
                 }

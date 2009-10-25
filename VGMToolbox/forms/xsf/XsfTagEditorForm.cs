@@ -48,6 +48,9 @@ namespace VGMToolbox.forms.xsf
             this.grpComments.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_GrpComments"];
             this.cbDeleteEmpty.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_CbDeleteEmpty"];
             this.cbAddToBatchFile.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_CheckboxCreateBatch"];
+
+            // this.cbRemoveBrackets.Text
+            this.cbRemoveBrackets.Enabled = false;
         }
 
         private void btnBrowseDirectory_Click(object sender, EventArgs e)
@@ -124,7 +127,7 @@ namespace VGMToolbox.forms.xsf
 
                         if (this.cbGenerateTitleFromFilename.Checked)
                         {
-                            this.tbTitle.Text = XsfUtil.GetTitleForFileName(selectedFilePath);
+                            this.tbTitle.Text = XsfUtil.GetTitleForFileName(selectedFilePath, this.cbRemoveBrackets.Checked);
                         }
                         else
                         {
@@ -198,6 +201,7 @@ namespace VGMToolbox.forms.xsf
             xtUpdateStruct.RemoveEmptyTags = cbDeleteEmpty.Checked;
             xtUpdateStruct.IsBatchMode = this.isBatchMode;
             xtUpdateStruct.GenerateTitleFromFilename = this.cbGenerateTitleFromFilename.Checked;
+            xtUpdateStruct.RemoveBracketInfoFromTitle = this.cbRemoveBrackets.Checked;
             xtUpdateStruct.AddToBatchFile = this.cbAddToBatchFile.Checked;
 
             xtUpdateStruct.TitleTag = this.tbTitle.Text;
@@ -236,6 +240,16 @@ namespace VGMToolbox.forms.xsf
         private void cbGenerateTitleFromFilename_CheckedChanged(object sender, EventArgs e)
         {
             this.setTitleTagEnable();
+
+            if (this.cbGenerateTitleFromFilename.Checked)
+            {
+                this.cbRemoveBrackets.Enabled = true;
+            }
+            else
+            {
+                this.cbRemoveBrackets.Enabled = false;
+                this.cbRemoveBrackets.Checked = false;
+            }
         }
         private void setTitleTagEnable()
         {

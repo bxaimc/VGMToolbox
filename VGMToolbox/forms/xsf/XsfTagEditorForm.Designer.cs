@@ -64,6 +64,7 @@
             this.contextMenuRefresh = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.refreshFileListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cbAddToBatchFile = new System.Windows.Forms.CheckBox();
+            this.cbRemoveBrackets = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -76,30 +77,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 500);
-            this.pnlLabels.Size = new System.Drawing.Size(879, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 507);
+            this.pnlLabels.Size = new System.Drawing.Size(786, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(879, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(786, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 423);
-            this.tbOutput.Size = new System.Drawing.Size(879, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 430);
+            this.tbOutput.Size = new System.Drawing.Size(786, 77);
+            this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 403);
-            this.pnlButtons.Size = new System.Drawing.Size(879, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 410);
+            this.pnlButtons.Size = new System.Drawing.Size(786, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(819, 0);
+            this.btnCancel.Location = new System.Drawing.Point(726, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(759, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(666, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpSourceFiles
@@ -426,11 +428,22 @@
                 "d).";
             this.cbAddToBatchFile.UseVisualStyleBackColor = true;
             // 
+            // cbRemoveBrackets
+            // 
+            this.cbRemoveBrackets.AutoSize = true;
+            this.cbRemoveBrackets.Location = new System.Drawing.Point(9, 361);
+            this.cbRemoveBrackets.Name = "cbRemoveBrackets";
+            this.cbRemoveBrackets.Size = new System.Drawing.Size(223, 17);
+            this.cbRemoveBrackets.TabIndex = 25;
+            this.cbRemoveBrackets.Text = "Remove Information in Brackets from Title";
+            this.cbRemoveBrackets.UseVisualStyleBackColor = true;
+            // 
             // XsfTagEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(879, 541);
+            this.ClientSize = new System.Drawing.Size(786, 548);
+            this.Controls.Add(this.cbRemoveBrackets);
             this.Controls.Add(this.cbAddToBatchFile);
             this.Controls.Add(this.cbGenerateTitleFromFilename);
             this.Controls.Add(this.cbDeleteEmpty);
@@ -451,6 +464,7 @@
             this.Controls.SetChildIndex(this.cbDeleteEmpty, 0);
             this.Controls.SetChildIndex(this.cbGenerateTitleFromFilename, 0);
             this.Controls.SetChildIndex(this.cbAddToBatchFile, 0);
+            this.Controls.SetChildIndex(this.cbRemoveBrackets, 0);
             this.pnlLabels.ResumeLayout(false);
             this.pnlLabels.PerformLayout();
             this.pnlTitle.ResumeLayout(false);
@@ -508,5 +522,6 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuRefresh;
         private System.Windows.Forms.ToolStripMenuItem refreshFileListToolStripMenuItem;
         private System.Windows.Forms.CheckBox cbAddToBatchFile;
+        private System.Windows.Forms.CheckBox cbRemoveBrackets;
     }
 }
