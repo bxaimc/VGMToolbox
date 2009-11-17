@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
+using VGMToolbox.util;
+
 namespace VGMToolbox.format.util
 {
     public struct NezPlugM3uEntry
@@ -17,7 +19,13 @@ namespace VGMToolbox.format.util
         public string fade;
         public string loopCount;
     }
-    
+
+    public struct M3uBuilderStruct
+    {
+        public string Path {set; get;}
+        public bool OnePlaylistPerFile { set; get; }
+    }
+
     public class NezPlugUtil
     {
         public const string FORMAT_NSF = "NSF";
@@ -140,6 +148,105 @@ namespace VGMToolbox.format.util
             }
 
             return m3uEntries;
+        }
+
+        public static void BuildPlaylistForFile(M3uBuilderStruct pM3uBuilderStruct)
+        {
+            using (FileStream fs = File.OpenRead(pM3uBuilderStruct.Path))
+            {
+                Type dataType = FormatUtil.getObjectType(fs);
+                System.Text.Encoding enc = System.Text.Encoding.ASCII;
+               
+                if (dataType != null &&
+                    (typeof(IEmbeddedTagsFormat).IsAssignableFrom(dataType)))
+                {
+                    string filename = Path.GetFileName(pM3uBuilderStruct.Path);
+                    string trackItem = String.Empty;
+
+                    INezPlugPlaylistFormat vgmData = 
+                        (INezPlugPlaylistFormat)Activator.CreateInstance(dataType);
+                    fs.Seek(0, SeekOrigin.Begin);
+                    vgmData.Initialize(fs, pM3uBuilderStruct.Path);
+
+                    string outputFile = Path.GetDirectoryName(pM3uBuilderStruct.Path) + Path.DirectorySeparatorChar +
+                        Path.GetFileNameWithoutExtension(pM3uBuilderStruct.Path) + ".m3u";
+
+                    using (StreamWriter sw = File.CreateText(outputFile))
+                    {
+                        sw.WriteLine("#######################################################");
+                        sw.WriteLine("#");
+                        sw.WriteLine("# Game: " + enc.GetString(FileUtil.ReplaceNullByteWithSpace(vgmData.SongName)).Trim());
+                        sw.WriteLine("# Artist: " + enc.GetString(FileUtil.ReplaceNullByteWithSpace(vgmData.SongArtist)).Trim());
+                        sw.WriteLine("# Copyright: " + enc.GetString(FileUtil.ReplaceNullByteWithSpace(vgmData.SongCopyright)).Trim());
+                        sw.WriteLine("#");
+                        sw.WriteLine("#######################################################");
+                        sw.WriteLine();
+
+                        for (int i = vgmData.StartingSong[0] - 1; i < vgmData.TotalSongs[0]; i++)
+                        {
+                            trackItem = BuildPlaylistTrackItem(i, vgmData, pM3uBuilderStruct.Path);
+                            sw.WriteLine(trackItem);
+
+                            if (pM3uBuilderStruct.OnePlaylistPerFile)
+                            {
+                                BuildSingleFilePlaylist(pM3uBuilderStruct.Path, vgmData, trackItem, i);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public static string BuildPlaylistTrackItem(int index, INezPlugPlaylistFormat vgmData, string pPath)
+        {
+            System.Text.Encoding enc = System.Text.Encoding.ASCII;
+            string title = enc.GetString(FileUtil.ReplaceNullByteWithSpace(vgmData.SongArtist)).Trim() + " - " +
+                    enc.GetString(FileUtil.ReplaceNullByteWithSpace(vgmData.SongName)).Trim() + " - " +
+                    "Track " + index.ToString().PadLeft(2, '0'); ;
+
+            string entry = NezPlugUtil.BuildPlaylistEntry(vgmData.GetNezPlugPlaylistFormat(),
+                Path.GetFileName(pPath),
+                (index).ToString(),
+                title,
+                String.Empty,
+                String.Empty,
+                String.Empty,
+                String.Empty);
+            return entry;
+        }
+
+        public static void BuildSingleFilePlaylist(string pPath, INezPlugPlaylistFormat vgmData, string pTrackData, int pIndex)
+        {
+            System.Text.Encoding enc = System.Text.Encoding.ASCII;
+            string outputFileName = Path.GetFileNameWithoutExtension(pPath) + " - " + pIndex.ToString().PadLeft(2, '0') +
+                " - " + CreatePlaylistTitle(pIndex) + ".m3u";
+
+            foreach (char c in Path.GetInvalidFileNameChars())
+            {
+                outputFileName = outputFileName.Replace(c, '_');
+            }
+
+            string outputPath = Path.GetDirectoryName(pPath);
+
+            StreamWriter singleSW = File.CreateText(outputPath + Path.DirectorySeparatorChar + outputFileName);
+
+            singleSW.WriteLine("#######################################################");
+            singleSW.WriteLine("#");
+            singleSW.WriteLine("# Game: " + enc.GetString(FileUtil.ReplaceNullByteWithSpace(vgmData.SongName)).Trim());
+            singleSW.WriteLine("# Artist: " + enc.GetString(FileUtil.ReplaceNullByteWithSpace(vgmData.SongArtist)).Trim());
+            singleSW.WriteLine("# Copyright: " + enc.GetString(FileUtil.ReplaceNullByteWithSpace(vgmData.SongCopyright)).Trim());
+            singleSW.WriteLine("#");
+            singleSW.WriteLine("#######################################################");
+            singleSW.WriteLine();
+            singleSW.WriteLine(pTrackData);
+
+            singleSW.Close();
+            singleSW.Dispose();
+        }
+
+        public static string CreatePlaylistTitle(int index)
+        {
+            return "Track " + index.ToString().PadLeft(2, '0');
         }
     }
 }

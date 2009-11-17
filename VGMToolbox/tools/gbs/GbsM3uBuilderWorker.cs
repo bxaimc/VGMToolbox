@@ -27,10 +27,10 @@ namespace VGMToolbox.tools.gbs
         {
             GbsM3uWorkerStruct gbsM3uWorkerStruct = (GbsM3uWorkerStruct)pGbsM3uWorkerStruct;
                       
-            GbsM3uBuilderStruct gbsM3uBuilderStruct = new GbsM3uBuilderStruct();
+            M3uBuilderStruct gbsM3uBuilderStruct = new M3uBuilderStruct();
             gbsM3uBuilderStruct.OnePlaylistPerFile = gbsM3uWorkerStruct.onePlaylistPerFile;
             gbsM3uBuilderStruct.Path = pPath;
-            GbsUtil.BuildPlaylistForFile(gbsM3uBuilderStruct);
+            NezPlugUtil.BuildPlaylistForFile(gbsM3uBuilderStruct);
         }                       
     }
 }

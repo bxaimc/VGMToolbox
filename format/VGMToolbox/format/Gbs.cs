@@ -10,7 +10,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.format
 {
-    public class Gbs : IFormat, IHootFormat, IEmbeddedTagsFormat
+    public class Gbs : IFormat, IHootFormat, IEmbeddedTagsFormat, INezPlugPlaylistFormat
     {
         private static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x47, 0x42, 0x53 }; // GBS
         private const string FORMAT_ABBREVIATION = "GBS";
@@ -379,18 +379,24 @@ namespace VGMToolbox.format
         public string GetSongNameAsText()
         {
             System.Text.Encoding enc = System.Text.Encoding.ASCII;
-            return enc.GetString(this.songName);
+            return enc.GetString(FileUtil.ReplaceNullByteWithSpace(this.songName)).Trim();
         }
         public string GetArtistAsText()
         {
             System.Text.Encoding enc = System.Text.Encoding.ASCII;
-            return enc.GetString(this.songArtist);
+            return enc.GetString(FileUtil.ReplaceNullByteWithSpace(this.songArtist)).Trim();
         }
         public string GetCopyrightAsText()
         {
             System.Text.Encoding enc = System.Text.Encoding.ASCII;
-            return enc.GetString(this.songCopyright);
+            return enc.GetString(FileUtil.ReplaceNullByteWithSpace(this.songCopyright)).Trim();
         }
+
+        #endregion
+
+        #region NEZPLUG M3U METHODS
+
+        public string GetNezPlugPlaylistFormat() { return "GBS"; }
 
         #endregion
     }
