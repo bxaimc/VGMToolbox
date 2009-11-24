@@ -1,6 +1,6 @@
-﻿namespace VGMToolbox.forms
+﻿namespace VGMToolbox.forms.nsf
 {
-    partial class Gbs_GbsToM3uForm
+    partial class NsfToM3uForm
     {
         /// <summary>
         /// Required designer variable.
@@ -30,7 +30,7 @@
         {
             this.grpSource = new System.Windows.Forms.GroupBox();
             this.grpOptions = new System.Windows.Forms.GroupBox();
-            this.cbGBS_OneM3uPerTrack = new System.Windows.Forms.CheckBox();
+            this.cbOneM3uPerTrack = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -75,39 +75,39 @@
             this.grpSource.Size = new System.Drawing.Size(786, 387);
             this.grpSource.TabIndex = 5;
             this.grpSource.TabStop = false;
-            this.grpSource.Text = "Source";
-            this.grpSource.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbGBS_gbsm3uSource_DragDrop);
+            this.grpSource.Text = "Drop files here";
+            this.grpSource.DragDrop += new System.Windows.Forms.DragEventHandler(this.grpSource_DragDrop);
             this.grpSource.DragEnter += new System.Windows.Forms.DragEventHandler(this.doDragEnter);
             // 
             // grpOptions
             // 
-            this.grpOptions.Controls.Add(this.cbGBS_OneM3uPerTrack);
+            this.grpOptions.Controls.Add(this.cbOneM3uPerTrack);
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.grpOptions.Location = new System.Drawing.Point(3, 341);
+            this.grpOptions.Location = new System.Drawing.Point(3, 342);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(780, 43);
-            this.grpOptions.TabIndex = 8;
+            this.grpOptions.Size = new System.Drawing.Size(780, 42);
+            this.grpOptions.TabIndex = 0;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
             // 
-            // cbGBS_OneM3uPerTrack
+            // cbOneM3uPerTrack
             // 
-            this.cbGBS_OneM3uPerTrack.AutoSize = true;
-            this.cbGBS_OneM3uPerTrack.Location = new System.Drawing.Point(6, 19);
-            this.cbGBS_OneM3uPerTrack.Name = "cbGBS_OneM3uPerTrack";
-            this.cbGBS_OneM3uPerTrack.Size = new System.Drawing.Size(177, 17);
-            this.cbGBS_OneM3uPerTrack.TabIndex = 0;
-            this.cbGBS_OneM3uPerTrack.Text = "Output additional .m3u per track";
-            this.cbGBS_OneM3uPerTrack.UseVisualStyleBackColor = true;
+            this.cbOneM3uPerTrack.AutoSize = true;
+            this.cbOneM3uPerTrack.Location = new System.Drawing.Point(6, 19);
+            this.cbOneM3uPerTrack.Name = "cbOneM3uPerTrack";
+            this.cbOneM3uPerTrack.Size = new System.Drawing.Size(177, 17);
+            this.cbOneM3uPerTrack.TabIndex = 1;
+            this.cbOneM3uPerTrack.Text = "Output additional .m3u per track";
+            this.cbOneM3uPerTrack.UseVisualStyleBackColor = true;
             // 
-            // Gbs_GbsToM3uForm
+            // NsfToM3uForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(786, 548);
             this.Controls.Add(this.grpSource);
-            this.Name = "Gbs_GbsToM3uForm";
-            this.Text = "Gbs_GbsToM3uForm";
+            this.Name = "NsfToM3uForm";
+            this.Text = "NsfToM3uForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);
@@ -131,6 +131,6 @@
 
         private System.Windows.Forms.GroupBox grpSource;
         private System.Windows.Forms.GroupBox grpOptions;
-        private System.Windows.Forms.CheckBox cbGBS_OneM3uPerTrack;
+        private System.Windows.Forms.CheckBox cbOneM3uPerTrack;
     }
 }

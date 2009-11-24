@@ -19,7 +19,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{8A96D568-CB21-4E64-8FD2-849A8E2B2D4F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -216,11 +216,17 @@
     <Compile Include="forms\hoot\XmlBuilderForm.Designer.cs">
       <DependentUpon>XmlBuilderForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\Nsf_Nsfe2NsfM3uForm.cs">
+    <Compile Include="forms\nsf\Nsfe2NsfM3uForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\Nsf_Nsfe2NsfM3uForm.Designer.cs">
-      <DependentUpon>Nsf_Nsfe2NsfM3uForm.cs</DependentUpon>
+    <Compile Include="forms\nsf\Nsfe2NsfM3uForm.Designer.cs">
+      <DependentUpon>Nsfe2NsfM3uForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="forms\nsf\NsfToM3uForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\nsf\NsfToM3uForm.Designer.cs">
+      <DependentUpon>NsfToM3uForm.cs</DependentUpon>
     </Compile>
     <Compile Include="forms\xsf\EasyPsfDriverExtractorForm.cs">
       <SubType>Form</SubType>
@@ -460,8 +466,8 @@
       <DependentUpon>XmlBuilderForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\Nsf_Nsfe2NsfM3uForm.resx">
-      <DependentUpon>Nsf_Nsfe2NsfM3uForm.cs</DependentUpon>
+    <EmbeddedResource Include="forms\nsf\Nsfe2NsfM3uForm.resx">
+      <DependentUpon>Nsfe2NsfM3uForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\examine\SingleTagUpdateForm.resx">
@@ -867,6 +873,9 @@
     <EmbeddedResource Include="forms\hoot\HootAuditorForm.resx">
       <DependentUpon>HootAuditorForm.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\nsf\NsfToM3uForm.resx">
+      <DependentUpon>NsfToM3uForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\xsf\EasyPsfDriverExtractorForm.resx">
       <DependentUpon>EasyPsfDriverExtractorForm.cs</DependentUpon>

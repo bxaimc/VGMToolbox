@@ -9,6 +9,7 @@ using VGMToolbox.forms.compression;
 using VGMToolbox.forms.examine;
 using VGMToolbox.forms.extraction;
 using VGMToolbox.forms.hoot;
+using VGMToolbox.forms.nsf;
 using VGMToolbox.forms.xsf;
 using VGMToolbox.util;
 
@@ -313,19 +314,33 @@ namespace VGMToolbox
 
             TreeNode nsf_RootNode = 
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_NsfRootNode"]);
-            TreeNode nsf_NsfeM3uNode = 
-                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_NsfeM3uNode"]);
             nsf_RootNode.NodeFont = this.treeviewBoldFont;
 
+            // NSFE to M3U
+            TreeNode nsf_NsfeM3uNode = 
+                new TreeNode(ConfigurationSettings.AppSettings["MenuTree_NsfeM3uNode"]);            
+
             // add form
-            Nsf_Nsfe2NsfM3uForm nsf_Nsfe2NsfM3uForm = new Nsf_Nsfe2NsfM3uForm(nsf_NsfeM3uNode);
+            Nsfe2NsfM3uForm nsf_Nsfe2NsfM3uForm = new Nsfe2NsfM3uForm(nsf_NsfeM3uNode);
             this.splitContainer1.Panel2.Controls.Add(nsf_Nsfe2NsfM3uForm);
 
             // set tag for displaying the form
             nodeTag.FormClass = nsf_Nsfe2NsfM3uForm.GetType().Name;
             nsf_NsfeM3uNode.Tag = nodeTag;
 
+            // NSF to M3U
+            TreeNode nsfM3uNode =new TreeNode("NSF M3U Creator");
+
+            // add form
+            NsfToM3uForm nsfToM3uForm = new NsfToM3uForm(nsfM3uNode);
+            this.splitContainer1.Panel2.Controls.Add(nsfToM3uForm);
+
+            // set tag for displaying the form
+            nodeTag.FormClass = nsfToM3uForm.GetType().Name;
+            nsfM3uNode.Tag = nodeTag;
+
             nsf_RootNode.Nodes.Add(nsf_NsfeM3uNode);
+            nsf_RootNode.Nodes.Add(nsfM3uNode);
 
             return nsf_RootNode;        
         }

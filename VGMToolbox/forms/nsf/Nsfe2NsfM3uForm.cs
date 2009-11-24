@@ -7,11 +7,11 @@ using System.Windows.Forms;
 using VGMToolbox.plugin;
 using VGMToolbox.tools.nsf;
 
-namespace VGMToolbox.forms
+namespace VGMToolbox.forms.nsf
 {
-    public partial class Nsf_Nsfe2NsfM3uForm : AVgmtForm
+    public partial class Nsfe2NsfM3uForm : AVgmtForm
     {        
-        public Nsf_Nsfe2NsfM3uForm(TreeNode pTreeNode) : base(pTreeNode)
+        public Nsfe2NsfM3uForm(TreeNode pTreeNode) : base(pTreeNode)
         {
             // set title
             this.lblTitle.Text = 

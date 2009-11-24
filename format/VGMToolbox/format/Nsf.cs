@@ -11,7 +11,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.format
 {
-    public class Nsf : IFormat, IHootFormat, IEmbeddedTagsFormat
+    public class Nsf : IFormat, IHootFormat, IEmbeddedTagsFormat, INezPlugPlaylistFormat
     {
         public static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x4E, 0x45, 0x53, 0x4D, 0x1A };
         public static readonly byte[] CURRENT_VERSION_NUMBER = new byte[] { 0x01};
@@ -617,6 +617,12 @@ namespace VGMToolbox.format
             System.Text.Encoding enc = System.Text.Encoding.ASCII;
             return enc.GetString(this.songCopyright);
         }
+
+        #endregion
+
+        #region NEZPLUG M3U METHODS
+
+        public string GetNezPlugPlaylistFormat() { return "NSF"; }
 
         #endregion
     }

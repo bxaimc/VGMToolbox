@@ -1,6 +1,6 @@
-﻿namespace VGMToolbox.forms
+﻿namespace VGMToolbox.forms.nsf
 {
-    partial class Nsf_Nsfe2NsfM3uForm
+    partial class Nsfe2NsfM3uForm
     {
         /// <summary>
         /// Required designer variable.
