@@ -26,7 +26,13 @@ namespace VGMToolbox.tools.xsf
         SepPsfLibWithVhVbLib,
         SepPsfWithVhVbLib
     }
-    
+
+    public enum PsfDriverNames
+    {
+        StandardStub,
+        MarkGrassGenericV25
+    }
+
     class Bin2PsfWorker : BackgroundWorker, IVgmtBackgroundWorker
     {                
         private static readonly string WORKING_FOLDER =
@@ -224,6 +230,7 @@ namespace VGMToolbox.tools.xsf
             int trackId;
             string originalExe;
             uint seqCount = 0;
+            uint totalSequences = 1;
             PsfMakerTask task;
             
             try
@@ -277,12 +284,16 @@ namespace VGMToolbox.tools.xsf
                     if (pBin2PsfStruct.ForceSepTrackNo && PsxSequence.IsSepTypeSequence(sequenceFile))
                     {
                         seqCount = 1;
+                        
+                        // get actual number of sequences for SEP functions
+                        totalSequences = PsxSequence.GetSeqCount(sequenceFile);
                     }
                     else
                     {
                         seqCount = PsxSequence.GetSeqCount(sequenceFile);
+                        totalSequences = seqCount;
                     }
-                    
+                                        
                     // Try combinations                    
                     if (pBin2PsfStruct.TryCombinations)
                     #region COMBINATIONS
@@ -335,7 +346,7 @@ namespace VGMToolbox.tools.xsf
                                         null,
                                         filePrefix,
                                         trackId,
-                                        (trackId + 1));
+                                        (int)totalSequences);
                                 }
                                 else if (seqCount > 1) // SEP only
                                 {
@@ -362,7 +373,7 @@ namespace VGMToolbox.tools.xsf
                                             null,
                                             filePrefix,
                                             i,
-                                            (int)seqCount);
+                                            (int)totalSequences);
                                     }
                                 }
                             }
@@ -452,7 +463,7 @@ namespace VGMToolbox.tools.xsf
                                     null,
                                     filePrefix,
                                     trackId,
-                                    (trackId + 1));
+                                    (int)totalSequences);
                             }
                             catch (Exception ex)
                             { 
@@ -524,7 +535,7 @@ namespace VGMToolbox.tools.xsf
                                         psfLibName,
                                         filePrefix,
                                         i,
-                                        (int)seqCount);
+                                        (int)totalSequences);
                                 }
                                 else
                                 {
