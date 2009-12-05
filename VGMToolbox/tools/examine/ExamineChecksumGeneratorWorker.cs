@@ -17,20 +17,19 @@ namespace VGMToolbox.tools.examine
 {
     class ExamineChecksumGeneratorWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
+        const string VGMToolboxDuplicatesSubfolder = "__VGMT_Checksum_Duplicates";
+        const string StandardDuplicatesSubfolder = "__Standard_Checksum_Duplicates";
+
         private Dictionary<string, string[]> duplicateCheckHashStandard;
         private Dictionary<string, string[]> duplicateCheckHashVgmt;
         
         public struct ExamineChecksumGeneratorStruct : IVgmtWorkerStruct
         {
-            public bool DoVgmtChecksums;
-            public bool CheckForDuplicates;
-
-            private string[] sourcePaths;
-            public string[] SourcePaths
-            {
-                get { return sourcePaths; }
-                set { sourcePaths = value; }
-            }
+            public bool DoVgmtChecksums {set; get; }
+            public bool CheckForDuplicates { set; get; }
+            public bool MoveStandardDuplicatesToSubfolder { set; get; }
+            public bool MoveVgmtDuplicatesToSubfolder { set; get; }
+            public string[] SourcePaths { set; get; }
         }
 
         public ExamineChecksumGeneratorWorker() : 
@@ -144,21 +143,30 @@ namespace VGMToolbox.tools.examine
             if (examineChecksumGeneratorStruct.CheckForDuplicates)
             {
                 this.outputDuplicatesForDictionary(
-                    this.duplicateCheckHashStandard, String.Format(headerFormat, "standard"));
+                    this.duplicateCheckHashStandard, String.Format(headerFormat, "standard"),
+                        examineChecksumGeneratorStruct.MoveStandardDuplicatesToSubfolder,
+                        ExamineChecksumGeneratorWorker.StandardDuplicatesSubfolder);
 
                 if (examineChecksumGeneratorStruct.DoVgmtChecksums)
                 {
                     this.outputDuplicatesForDictionary(
-                        this.duplicateCheckHashVgmt, String.Format(headerFormat, "VGMToolbox method"));                
+                        this.duplicateCheckHashVgmt, String.Format(headerFormat, "VGMToolbox method"),
+                            examineChecksumGeneratorStruct.MoveVgmtDuplicatesToSubfolder,
+                            ExamineChecksumGeneratorWorker.VGMToolboxDuplicatesSubfolder);                
                 }
             
             }
         }
 
-        private void outputDuplicatesForDictionary(Dictionary<string,string[]> hashList, string hashLabel)
+        private void outputDuplicatesForDictionary(Dictionary<string,string[]> hashList, string hashLabel, 
+            bool moveDuplicates, string duplicateDestinationFolder)
         { 
             StringBuilder duplicateList = new StringBuilder();
             string[] paths;
+            string destinationPath;
+            int duplicateCount;
+            
+            string movedTag = String.Empty;
 
             duplicateList.AppendFormat("{0}:{1}", hashLabel, Environment.NewLine);
             
@@ -169,10 +177,22 @@ namespace VGMToolbox.tools.examine
                 if (paths.Length > 1)
                 {
                     duplicateList.AppendFormat("{0}:{1}", key, Environment.NewLine);
+                    duplicateCount = 0;
+                    movedTag = String.Empty;
                     
                     foreach (string s in paths)
                     {
-                        duplicateList.AppendFormat("  {0}{1}", s, Environment.NewLine);
+                        // move all files except the first instance
+                        if ((moveDuplicates) && (duplicateCount > 0))
+                        {
+                            destinationPath = Path.Combine(
+                                                Path.Combine(Path.GetDirectoryName(s), duplicateDestinationFolder),
+                                                Path.GetFileName(s));
+                            movedTag = moveDuplicateFile(s, destinationPath);
+                        }
+                        
+                        duplicateList.AppendFormat("  {0}{1}{2}", s, movedTag, Environment.NewLine);
+                        duplicateCount++;
                     }
                 }
             }
@@ -181,7 +201,6 @@ namespace VGMToolbox.tools.examine
             progressStruct.GenericMessage = duplicateList.ToString();
             ReportProgress(Constants.ProgressMessageOnly, progressStruct);
         }
-
 
         private void addChecksumToHash(string checksum, string path, bool isStandardChecksum)
         {
@@ -210,6 +229,43 @@ namespace VGMToolbox.tools.examine
                 paths.Add(path);
                 this.duplicateCheckHashVgmt[checksum] = (string[])paths.ToArray(typeof(string));            
             }
+        }
+
+        private string moveDuplicateFile(string sourcePath, string destinationPath)
+        {
+            string moveMessage;
+            string destinationFolder;
+
+            if (File.Exists(sourcePath))
+            {
+                if (File.Exists(destinationPath)) // there is already a file of the same name in the destination
+                {
+                    moveMessage = " (DESTINATION FILE ALREADY EXISTS)";
+                }
+                else
+                {
+                    // move file
+                    destinationFolder = Path.GetDirectoryName(destinationPath);
+
+                    if (!Directory.Exists(destinationFolder))
+                    {
+                        Directory.CreateDirectory(destinationFolder);
+                    }
+
+                    File.Move(sourcePath, destinationPath);
+                    moveMessage = " (MOVED)";
+                }
+            }
+            else if (File.Exists(destinationPath)) // file has already been moved
+            {
+                moveMessage = " (FILE ALREADY MOVED)";
+            }
+            else // file is not in source or destination (disappeared?)
+            {
+                moveMessage = " (FILE NOT FOUND)";
+            }
+
+            return moveMessage;
         }
     }
 }

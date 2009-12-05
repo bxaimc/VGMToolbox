@@ -29,6 +29,11 @@ namespace VGMToolbox.forms.examine
             this.cbDoVgmtChecksums.Text = ConfigurationSettings.AppSettings["Form_ChecksumCalculator_CheckBoxDoVgmtChecksums"];
             this.checkForDuplicatesFlag.Text = ConfigurationSettings.AppSettings["Form_ChecksumCalculator_CheckBoxCheckForDuplicates"];
 
+            this.cbMoveDuplicates.Text = ConfigurationSettings.AppSettings["Form_ChecksumCalculator_CheckBoxMoveDuplicates"];
+            this.cbMoveDuplicates.Enabled = false;
+            this.cbMoveVgmtDuplicates.Text = ConfigurationSettings.AppSettings["Form_ChecksumCalculator_CheckBoxMoveVgmtDuplicates"];
+            this.cbMoveVgmtDuplicates.Enabled = false;
+
             this.btnDoTask.Hide();
         }
 
@@ -41,6 +46,8 @@ namespace VGMToolbox.forms.examine
             crcStruct.SourcePaths = s;
             crcStruct.DoVgmtChecksums = cbDoVgmtChecksums.Checked;
             crcStruct.CheckForDuplicates = checkForDuplicatesFlag.Checked;
+            crcStruct.MoveStandardDuplicatesToSubfolder = cbMoveDuplicates.Checked;
+            crcStruct.MoveVgmtDuplicatesToSubfolder = cbMoveVgmtDuplicates.Checked;
 
             base.backgroundWorker_Execute(crcStruct);
         }
@@ -64,6 +71,28 @@ namespace VGMToolbox.forms.examine
         protected override string getBeginMessage()
         {
             return ConfigurationSettings.AppSettings["Form_ChecksumCalculator_MessageBegin"];
+        }
+
+        private void checkForDuplicatesFlag_CheckedChanged(object sender, EventArgs e)
+        {
+            cbMoveDuplicates.Enabled = checkForDuplicatesFlag.Checked;
+            cbMoveVgmtDuplicates.Enabled = cbDoVgmtChecksums.Checked && checkForDuplicatesFlag.Checked;
+   
+            if (!checkForDuplicatesFlag.Checked)
+            {
+                cbMoveDuplicates.Checked = false;
+                cbMoveVgmtDuplicates.Checked = false;
+            }
+        }
+
+        private void cbDoVgmtChecksums_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!cbDoVgmtChecksums.Checked)
+            {
+                cbMoveVgmtDuplicates.Checked = false;
+            }
+
+            checkForDuplicatesFlag_CheckedChanged(sender, e);
         }
     }
 }

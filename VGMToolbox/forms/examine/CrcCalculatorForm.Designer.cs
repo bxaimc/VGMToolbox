@@ -30,8 +30,10 @@
         {
             this.grpSourceFiles = new System.Windows.Forms.GroupBox();
             this.grpOptions = new System.Windows.Forms.GroupBox();
+            this.cbMoveDuplicates = new System.Windows.Forms.CheckBox();
             this.checkForDuplicatesFlag = new System.Windows.Forms.CheckBox();
             this.cbDoVgmtChecksums = new System.Windows.Forms.CheckBox();
+            this.cbMoveVgmtDuplicates = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -41,30 +43,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 501);
-            this.pnlLabels.Size = new System.Drawing.Size(879, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 507);
+            this.pnlLabels.Size = new System.Drawing.Size(786, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(879, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(786, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 424);
-            this.tbOutput.Size = new System.Drawing.Size(879, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 430);
+            this.tbOutput.Size = new System.Drawing.Size(786, 77);
+            this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 404);
-            this.pnlButtons.Size = new System.Drawing.Size(879, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 410);
+            this.pnlButtons.Size = new System.Drawing.Size(786, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(819, 0);
+            this.btnCancel.Location = new System.Drawing.Point(726, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(759, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(666, 0);
             // 
             // grpSourceFiles
             // 
@@ -72,7 +75,7 @@
             this.grpSourceFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpSourceFiles.Location = new System.Drawing.Point(0, 23);
             this.grpSourceFiles.Name = "grpSourceFiles";
-            this.grpSourceFiles.Size = new System.Drawing.Size(879, 381);
+            this.grpSourceFiles.Size = new System.Drawing.Size(786, 387);
             this.grpSourceFiles.TabIndex = 5;
             this.grpSourceFiles.TabStop = false;
             this.grpSourceFiles.Text = "Drop Files Here";
@@ -81,15 +84,27 @@
             // 
             // grpOptions
             // 
+            this.grpOptions.Controls.Add(this.cbMoveVgmtDuplicates);
+            this.grpOptions.Controls.Add(this.cbMoveDuplicates);
             this.grpOptions.Controls.Add(this.checkForDuplicatesFlag);
             this.grpOptions.Controls.Add(this.cbDoVgmtChecksums);
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.grpOptions.Location = new System.Drawing.Point(3, 312);
+            this.grpOptions.Location = new System.Drawing.Point(3, 269);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(873, 66);
+            this.grpOptions.Size = new System.Drawing.Size(780, 115);
             this.grpOptions.TabIndex = 6;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
+            // 
+            // cbMoveDuplicates
+            // 
+            this.cbMoveDuplicates.AutoSize = true;
+            this.cbMoveDuplicates.Location = new System.Drawing.Point(23, 65);
+            this.cbMoveDuplicates.Name = "cbMoveDuplicates";
+            this.cbMoveDuplicates.Size = new System.Drawing.Size(311, 17);
+            this.cbMoveDuplicates.TabIndex = 2;
+            this.cbMoveDuplicates.Text = "Move standard checksum duplicates to a subfolder, if found.";
+            this.cbMoveDuplicates.UseVisualStyleBackColor = true;
             // 
             // checkForDuplicatesFlag
             // 
@@ -100,6 +115,7 @@
             this.checkForDuplicatesFlag.TabIndex = 1;
             this.checkForDuplicatesFlag.Text = "Check for duplicates and include a report in the output.";
             this.checkForDuplicatesFlag.UseVisualStyleBackColor = true;
+            this.checkForDuplicatesFlag.CheckedChanged += new System.EventHandler(this.checkForDuplicatesFlag_CheckedChanged);
             // 
             // cbDoVgmtChecksums
             // 
@@ -110,12 +126,23 @@
             this.cbDoVgmtChecksums.TabIndex = 0;
             this.cbDoVgmtChecksums.Text = "Include VGMToolbox method checksums";
             this.cbDoVgmtChecksums.UseVisualStyleBackColor = true;
+            this.cbDoVgmtChecksums.CheckedChanged += new System.EventHandler(this.cbDoVgmtChecksums_CheckedChanged);
+            // 
+            // cbMoveVgmtDuplicates
+            // 
+            this.cbMoveVgmtDuplicates.AutoSize = true;
+            this.cbMoveVgmtDuplicates.Location = new System.Drawing.Point(23, 88);
+            this.cbMoveVgmtDuplicates.Name = "cbMoveVgmtDuplicates";
+            this.cbMoveVgmtDuplicates.Size = new System.Drawing.Size(370, 17);
+            this.cbMoveVgmtDuplicates.TabIndex = 3;
+            this.cbMoveVgmtDuplicates.Text = "Move VGMToolbox method checksum duplicates to a subfolder, if found.";
+            this.cbMoveVgmtDuplicates.UseVisualStyleBackColor = true;
             // 
             // CrcCalculatorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(879, 542);
+            this.ClientSize = new System.Drawing.Size(786, 548);
             this.Controls.Add(this.grpSourceFiles);
             this.Name = "CrcCalculatorForm";
             this.Text = "CrcCalculatorForm";
@@ -144,5 +171,7 @@
         private System.Windows.Forms.GroupBox grpOptions;
         private System.Windows.Forms.CheckBox cbDoVgmtChecksums;
         private System.Windows.Forms.CheckBox checkForDuplicatesFlag;
+        private System.Windows.Forms.CheckBox cbMoveDuplicates;
+        private System.Windows.Forms.CheckBox cbMoveVgmtDuplicates;
     }
 }
