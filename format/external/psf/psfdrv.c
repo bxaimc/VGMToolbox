@@ -286,7 +286,10 @@ int psfdrv(void) {
   SsSetTableSize(SSTABLE, 2, maxseq);
   SsSetTickMode(tickmode);
 #endif    
+  
+#ifdef SsSetMVol  
   SsSetMVol(seqvol, seqvol);
+#endif
   
   /*
   ** Reverb setup
@@ -373,8 +376,10 @@ int psfdrv(void) {
   SsSepPlay(seqid, seqnum, 1, loop_off);
 #endif
 
+#ifdef SsSeqSetVol
   // Set its volume
   SsSeqSetVol(seqid, seqvol, seqvol);
+#endif
 
   // Loop a while.
   loopforever();
