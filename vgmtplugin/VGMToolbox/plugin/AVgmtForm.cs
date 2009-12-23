@@ -11,6 +11,7 @@ using VGMToolbox.util;
 namespace VGMToolbox.plugin
 {
     public abstract partial class AVgmtForm : Form
+    //public partial class AVgmtForm : Form
     {
         protected DateTime elapsedTimeStart;
         protected DateTime elapsedTimeEnd;
@@ -32,6 +33,8 @@ namespace VGMToolbox.plugin
             this.Dock = DockStyle.Fill;
 
             InitializeComponent();
+
+            this.lblGears.Hide();
         }
         protected AVgmtForm(TreeNode pTreeNode)
         {
@@ -39,9 +42,11 @@ namespace VGMToolbox.plugin
 
             this.TopLevel = false;
             this.FormBorderStyle = FormBorderStyle.None;
-            this.Dock = DockStyle.Fill;
+            this.Dock = DockStyle.Fill;            
 
             InitializeComponent();
+            
+            this.lblGears.Hide();
         }
 
         public static void ResetNodeColor(TreeNode pTreeNode)
@@ -58,9 +63,13 @@ namespace VGMToolbox.plugin
                 menuTreeNode.BackColor = Color.Yellow;
                 menuTreeNode.ForeColor = Color.Black;
             }
+
+            this.lblGears.Show();
         }
         protected void setNodeAsComplete()
         {
+            this.lblGears.Hide();
+            
             if (errorFound)
             {
                 setNodeAsError();

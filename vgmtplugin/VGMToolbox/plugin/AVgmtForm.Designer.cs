@@ -29,11 +29,13 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AVgmtForm));
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.pnlLabels = new System.Windows.Forms.Panel();
             this.lblProgressLabel = new System.Windows.Forms.Label();
+            this.lblGears = new System.Windows.Forms.Label();
             this.lblTimeElapsed = new System.Windows.Forms.Label();
             this.pnlTitle = new System.Windows.Forms.Panel();
             this.lblTitle = new System.Windows.Forms.Label();
@@ -76,6 +78,7 @@
             // pnlLabels
             // 
             this.pnlLabels.Controls.Add(this.lblProgressLabel);
+            this.pnlLabels.Controls.Add(this.lblGears);
             this.pnlLabels.Controls.Add(this.lblTimeElapsed);
             this.pnlLabels.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pnlLabels.Location = new System.Drawing.Point(0, 352);
@@ -88,12 +91,25 @@
             this.lblProgressLabel.AutoSize = true;
             this.lblProgressLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.lblProgressLabel.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lblProgressLabel.Location = new System.Drawing.Point(51, 0);
+            this.lblProgressLabel.Location = new System.Drawing.Point(71, 0);
             this.lblProgressLabel.MinimumSize = new System.Drawing.Size(456, 0);
             this.lblProgressLabel.Name = "lblProgressLabel";
             this.lblProgressLabel.Padding = new System.Windows.Forms.Padding(0, 2, 0, 0);
             this.lblProgressLabel.Size = new System.Drawing.Size(456, 17);
             this.lblProgressLabel.TabIndex = 1;
+            // 
+            // lblGears
+            // 
+            this.lblGears.AutoSize = true;
+            this.lblGears.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.lblGears.Dock = System.Windows.Forms.DockStyle.Left;
+            this.lblGears.Image = ((System.Drawing.Image)(resources.GetObject("lblGears.Image")));
+            this.lblGears.Location = new System.Drawing.Point(51, 0);
+            this.lblGears.MinimumSize = new System.Drawing.Size(20, 0);
+            this.lblGears.Name = "lblGears";
+            this.lblGears.Padding = new System.Windows.Forms.Padding(0, 2, 0, 0);
+            this.lblGears.Size = new System.Drawing.Size(20, 17);
+            this.lblGears.TabIndex = 2;
             // 
             // lblTimeElapsed
             // 
@@ -221,5 +237,6 @@
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         protected System.Windows.Forms.ToolTip toolTip1;
+        protected System.Windows.Forms.Label lblGears;
     }
 }
