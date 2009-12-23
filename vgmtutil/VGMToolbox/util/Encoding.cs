@@ -74,15 +74,32 @@ namespace VGMToolbox.util
         public static long GetLongValueFromString(string value)
         {
             long ret;
+            bool isNegative = false;
+            string parseValue;
 
-            if (value.StartsWith("0x", StringComparison.CurrentCultureIgnoreCase))
+            if (value.StartsWith("-"))
             {
-                value = value.Substring(2);
-                ret = long.Parse(value, System.Globalization.NumberStyles.HexNumber, null);
+                parseValue = value.Substring(1);
+                isNegative = true;
             }
             else
             {
-                ret = long.Parse(value, System.Globalization.NumberStyles.Integer, null);
+                parseValue = value;
+            }
+
+            if (parseValue.StartsWith("0x", StringComparison.CurrentCultureIgnoreCase))
+            {
+                parseValue = parseValue.Substring(2);
+                ret = long.Parse(parseValue, System.Globalization.NumberStyles.HexNumber, null);
+            }
+            else
+            {
+                ret = long.Parse(parseValue, System.Globalization.NumberStyles.Integer, null);
+            }
+
+            if (isNegative)
+            {
+                ret *= -1;
             }
 
             return ret;
