@@ -190,6 +190,7 @@ namespace VGMToolbox.forms.xsf
             this.tbMySeqSize.Text = "0x00040000";
             this.tbVhOffset.Text = "0x800E0000";
             this.tbVbOffset.Text = "0x80160000";
+            this.tbParamOffset.Text = "0";
         }
 
         private void disablePresetFields()
