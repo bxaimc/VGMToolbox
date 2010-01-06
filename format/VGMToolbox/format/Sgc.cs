@@ -80,12 +80,7 @@ namespace VGMToolbox.format
 
         private const int DATA_OFFSET = 0xA0;
 
-        private string filePath;
-        public string FilePath
-        {
-            get { return filePath; }
-            set { filePath = value; }
-        }
+        public string FilePath { set; get; }
 
         public byte[] AsciiSignature { set; get; }
         public byte[] VersionNumber { set; get; }
@@ -116,7 +111,7 @@ namespace VGMToolbox.format
 
         public void Initialize(Stream pStream, string pFilePath)
         {
-            this.filePath = pFilePath;
+            this.FilePath = pFilePath;
             this.AsciiSignature = ParseFile.ParseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
             this.VersionNumber = ParseFile.ParseSimpleOffset(pStream, VERSION_OFFSET, VERSION_LENGTH);
             this.PalNtscFlag = ParseFile.ParseSimpleOffset(pStream, PAL_NTSC_OFFSET, PAL_NTSC_LENGTH);
@@ -331,7 +326,7 @@ namespace VGMToolbox.format
         {
             NezPlugM3uEntry[] entries = null;
 
-            string m3uFileName = Path.ChangeExtension(this.filePath, NezPlugUtil.M3U_FILE_EXTENSION);
+            string m3uFileName = Path.ChangeExtension(this.FilePath, NezPlugUtil.M3U_FILE_EXTENSION);
             entries = NezPlugUtil.GetNezPlugM3uEntriesFromFile(m3uFileName);
 
             return entries;
@@ -343,17 +338,17 @@ namespace VGMToolbox.format
 
         public void UpdateSongName(string pNewValue)
         {
-            FileUtil.UpdateTextField(this.filePath, pNewValue, NAME_OFFSET,
+            FileUtil.UpdateTextField(this.FilePath, pNewValue, NAME_OFFSET,
                 NAME_LENGTH);
         }
         public void UpdateArtist(string pNewValue)
         {
-            FileUtil.UpdateTextField(this.filePath, pNewValue, ARTIST_OFFSET,
+            FileUtil.UpdateTextField(this.FilePath, pNewValue, ARTIST_OFFSET,
                 ARTIST_LENGTH);
         }
         public void UpdateCopyright(string pNewValue)
         {
-            FileUtil.UpdateTextField(this.filePath, pNewValue, COPYRIGHT_OFFSET,
+            FileUtil.UpdateTextField(this.FilePath, pNewValue, COPYRIGHT_OFFSET,
                 COPYRIGHT_LENGTH);
         }
 
