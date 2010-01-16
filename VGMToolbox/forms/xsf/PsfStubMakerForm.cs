@@ -1,13 +1,16 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.Windows.Forms;
 
+using VGMToolbox.format;
 using VGMToolbox.format.util;
 using VGMToolbox.plugin;
 using VGMToolbox.tools.xsf;
+using VGMToolbox.util;
 
 namespace VGMToolbox.forms.xsf
 {
-    public partial class PsfStubMakerForm : AVgmtForm
+    public partial class PsfStubMakerForm : VgmtForm
     {
         public PsfStubMakerForm(TreeNode pTreeNode): 
             base(pTreeNode)
@@ -27,6 +30,7 @@ namespace VGMToolbox.forms.xsf
 
             this.cbOverrideDriverOffset.Checked = false;
             this.overrideDriverOffset();
+            this.btnHighestAddress.Enabled = false;
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -122,12 +126,12 @@ namespace VGMToolbox.forms.xsf
                 ret = ret && base.checkTextBox(this.tbPadDrvParamSize.Text, this.lblPadDrvParamSize.Text);
 
                 ret = ret && base.checkTextBox(this.tbMySeq.Text, this.lblMySeq.Text);
-                ret = ret && base.checkTextBox(this.tbMySeqSize.Text, this.tbMySeqSize.Text);
+                ret = ret && base.checkTextBox(this.tbMySeqSize.Text, this.lblMySeqSize.Text);
                 ret = ret && base.checkTextBox(this.tbMyVh.Text, this.lblMyVh.Text);
-                ret = ret && base.checkTextBox(this.tbMyVhSize.Text, this.tbMyVhSize.Text);
+                ret = ret && base.checkTextBox(this.tbMyVhSize.Text, this.lblMyVhSize.Text);
 
                 ret = ret && base.checkTextBox(this.tbMyVb.Text, this.lblMyVb.Text);
-                ret = ret && base.checkTextBox(this.tbMyVbSize.Text, this.tbMyVbSize.Text);
+                ret = ret && base.checkTextBox(this.tbMyVbSize.Text, this.lblMyVbSize.Text);
             }
             
             return ret;
@@ -170,6 +174,8 @@ namespace VGMToolbox.forms.xsf
                 this.tbMyVhSize.Clear();
                 this.tbMyVb.Clear();
                 this.tbMyVbSize.Clear();
+
+                this.btnHighestAddress.Enabled = false;
             }
             else
             {
@@ -196,6 +202,8 @@ namespace VGMToolbox.forms.xsf
                 this.tbMyVb.Text = PsfStubMakerWorker.MyVbDefault;
                 this.tbMyVbSize.Text = PsfStubMakerWorker.MyVbSizeDefault;
                  */
+
+                this.btnHighestAddress.Enabled = true;
             }        
         }
 
@@ -230,6 +238,58 @@ namespace VGMToolbox.forms.xsf
             else
             {
                 this.cbOverrideDriverOffset.Checked = false;
+            }
+        }
+
+        private bool validateMoveHighestInputs()
+        {
+            bool ret = true;
+
+            if (cbOverrideDriverOffset.Checked)
+            {
+                ret = ret && base.checkTextBox(this.tbPsfDrvSize.Text, this.lblPsfDrvSize.Text);
+                ret = ret && base.checkTextBox(this.tbPadDrvParamSize.Text, this.lblPadDrvParamSize.Text);
+
+                ret = ret && base.checkTextBox(this.tbMySeqSize.Text, this.lblMySeqSize.Text);
+                ret = ret && base.checkTextBox(this.tbMyVhSize.Text, this.lblMyVhSize.Text);
+                ret = ret && base.checkTextBox(this.tbMyVbSize.Text, this.lblMyVbSize.Text);
+            }
+
+            return ret;
+        }
+
+        private void btnHighestAddress_Click(object sender, System.EventArgs e)
+        {
+            if (this.validateMoveHighestInputs())
+            {
+                uint vbLocation, vhLocation, seqLocation, paramLocation, psdrvLocation;
+
+                try
+                {
+                    // calculate locations
+                    vbLocation = Psf.MAX_TEXT_SECTION_OFFSET -
+                        (uint)VGMToolbox.util.Encoding.GetLongValueFromString(this.tbMyVbSize.Text);
+                    vhLocation = vbLocation -
+                        (uint)VGMToolbox.util.Encoding.GetLongValueFromString(this.tbMyVhSize.Text);
+                    seqLocation = vhLocation -
+                        (uint)VGMToolbox.util.Encoding.GetLongValueFromString(this.tbMySeqSize.Text);
+                    paramLocation = seqLocation -
+                        (uint)VGMToolbox.util.Encoding.GetLongValueFromString(this.tbPadDrvParamSize.Text);
+                    psdrvLocation = paramLocation -
+                        (uint)VGMToolbox.util.Encoding.GetLongValueFromString(this.tbPsfDrvSize.Text);
+
+                    // update form
+                    this.tbPsfDrvLoad.Text = "0x" + psdrvLocation.ToString("X8");
+                    this.tbPsfDrvParam.Text = "0x" + paramLocation.ToString("X8");
+
+                    this.tbMySeq.Text = "0x" + seqLocation.ToString("X8");
+                    this.tbMyVh.Text = "0x" + vhLocation.ToString("X8");
+                    this.tbMyVb.Text = "0x" + vbLocation.ToString("X8");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
         }
     }
