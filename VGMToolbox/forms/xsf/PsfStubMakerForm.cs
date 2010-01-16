@@ -10,7 +10,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.forms.xsf
 {
-    public partial class PsfStubMakerForm : VgmtForm
+    public partial class PsfStubMakerForm : AVgmtForm
     {
         public PsfStubMakerForm(TreeNode pTreeNode): 
             base(pTreeNode)
