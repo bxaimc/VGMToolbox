@@ -483,17 +483,25 @@ namespace VGMToolbox.util
         {
             bool ret = true;
             uint j = 0;
-            for (int i = offset; i < target.Length; i++)
-            {
-                if (sourceArray[i] != target[j])
-                {
-                    ret = false;
-                    break;
-                }
-                
-                j++;
-            }
 
+            if (sourceArray.Length > 0)
+            {
+                for (int i = offset; i < target.Length; i++)
+                {
+                    if (sourceArray[i] != target[j])
+                    {
+                        ret = false;
+                        break;
+                    }
+
+                    j++;
+                }
+            }
+            else
+            {
+                ret = false;
+            }
+            
             return ret;
         }
 

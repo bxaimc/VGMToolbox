@@ -63,6 +63,7 @@ namespace VGMToolbox.tools.xsf
             public long vbStartingOffset;
             public long vbLength;
             public long expectedVbLength;
+            public long expectedVbLengthBySample;
         }
 
         public struct ProbableVbStruct
@@ -153,13 +154,23 @@ namespace VGMToolbox.tools.xsf
                         sampleOffset = vhObject.offsetTableOffset + (i * 2);
                         vhObject.vbSampleSizes[i] = (uint)BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(fs, sampleOffset, 2), 0);
                         vhObject.vbSampleSizes[i] <<= 3;
+                        vhObject.expectedVbLengthBySample += vhObject.vbSampleSizes[i];
 
                         if ((minSampleSize < 0) || (vhObject.vbSampleSizes[i] < minSampleSize))
                         {
                             minSampleSize = (int)vhObject.vbSampleSizes[i];
                         }
                     }
-                    
+
+                    if (vhObject.expectedVbLength != vhObject.expectedVbLengthBySample)
+                    {
+                        vhObject.expectedVbLength = vhObject.expectedVbLengthBySample;
+                        
+                        this.progressStruct.Clear();
+                        this.progressStruct.GenericMessage = String.Format("     Warning, for VH <{0}>, header does not match samples' lengths.  Ignoring header value.{1}", vhObject.FileName, Environment.NewLine);
+                        this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
+                    }
+
                     vhArrayList.Add(vhObject);
 
                     // extract file
@@ -356,11 +367,20 @@ namespace VGMToolbox.tools.xsf
 
                 while ((offset = ParseFile.GetNextOffset(fs, offset, VB_START_BYTES, psfStruct.UseZeroOffsetForVb,
                     0x10, 0)) > -1)
-                {                    
+                {
+                    //if (offset >= 0x78800)
+                    //{
+                    //    int r = 1;
+                    //}
+                    
                     try
                     {                        
                         vbRow = ParseFile.ParseSimpleOffset(fs, offset, vbRow.Length);
 
+                        // check for potential sony adpcm signature, and also make sure this offset is not inside another
+                        //   more easily parsed file since those formats are solid
+                        //if ((!InsideAnotherFile(offset, vhList, seqList, sepList)) && 
+                        //    (IsPotentialAdpcm(fs, offset + 0x10, minRowLength)))
                         if (IsPotentialAdpcm(fs, offset + 0x10, minRowLength))
                         {
                             // check if we have passed a different file type and reset previousVbOffset if we did
@@ -615,6 +635,50 @@ namespace VGMToolbox.tools.xsf
                             ret = true;
                             break;
                         }
+                    }
+                }
+            }
+
+            return ret;
+        }
+
+        private bool InsideAnotherFile(long offset, VhStruct[] vhObjects,
+            ProbableItemStruct[] seqObjects, ProbableItemStruct[] sepObjects)
+        {
+            bool ret = false;
+
+            for (int i = 0; i < vhObjects.Length; i++)
+            {
+                if ((offset >= vhObjects[i].startingOffset) &&
+                    (offset <= vhObjects[i].startingOffset + vhObjects[i].length))
+                {
+                    ret = true;
+                    break;
+                }
+            }
+
+            if (!ret)
+            {
+                for (int i = 0; i < seqObjects.Length; i++)
+                {
+                    if ((offset >= seqObjects[i].offset) &&
+                        (offset <= seqObjects[i].offset + seqObjects[i].length))
+                    {
+                        ret = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!ret)
+            {
+                for (int i = 0; i < sepObjects.Length; i++)
+                {
+                    if ((offset >= sepObjects[i].offset) &&
+                        (offset <= sepObjects[i].offset + sepObjects[i].length))
+                    {
+                        ret = true;
+                        break;
                     }
                 }
             }

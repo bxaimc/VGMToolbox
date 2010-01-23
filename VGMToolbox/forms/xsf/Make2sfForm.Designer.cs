@@ -67,30 +67,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 501);
-            this.pnlLabels.Size = new System.Drawing.Size(857, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 507);
+            this.pnlLabels.Size = new System.Drawing.Size(787, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(857, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(787, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 424);
-            this.tbOutput.Size = new System.Drawing.Size(857, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 430);
+            this.tbOutput.Size = new System.Drawing.Size(787, 77);
+            this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 404);
-            this.pnlButtons.Size = new System.Drawing.Size(857, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 410);
+            this.pnlButtons.Size = new System.Drawing.Size(787, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(797, 0);
+            this.btnCancel.Location = new System.Drawing.Point(727, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(737, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(667, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpSourcePaths
@@ -104,7 +105,7 @@
             this.grpSourcePaths.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSourcePaths.Location = new System.Drawing.Point(0, 23);
             this.grpSourcePaths.Name = "grpSourcePaths";
-            this.grpSourcePaths.Size = new System.Drawing.Size(857, 72);
+            this.grpSourcePaths.Size = new System.Drawing.Size(787, 72);
             this.grpSourcePaths.TabIndex = 5;
             this.grpSourcePaths.TabStop = false;
             this.grpSourcePaths.Text = "Source Paths";
@@ -114,7 +115,7 @@
             this.btnBrowseOutput.Location = new System.Drawing.Point(373, 45);
             this.btnBrowseOutput.Name = "btnBrowseOutput";
             this.btnBrowseOutput.Size = new System.Drawing.Size(25, 20);
-            this.btnBrowseOutput.TabIndex = 5;
+            this.btnBrowseOutput.TabIndex = 3;
             this.btnBrowseOutput.Text = "...";
             this.btnBrowseOutput.UseVisualStyleBackColor = true;
             this.btnBrowseOutput.Click += new System.EventHandler(this.btnBrowseOutput_Click);
@@ -124,7 +125,7 @@
             this.tbOutputPath.Location = new System.Drawing.Point(78, 45);
             this.tbOutputPath.Name = "tbOutputPath";
             this.tbOutputPath.Size = new System.Drawing.Size(289, 20);
-            this.tbOutputPath.TabIndex = 4;
+            this.tbOutputPath.TabIndex = 2;
             // 
             // lblOutputPath
             // 
@@ -177,7 +178,7 @@
             this.grpSetInformation.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSetInformation.Location = new System.Drawing.Point(0, 95);
             this.grpSetInformation.Name = "grpSetInformation";
-            this.grpSetInformation.Size = new System.Drawing.Size(857, 114);
+            this.grpSetInformation.Size = new System.Drawing.Size(787, 114);
             this.grpSetInformation.TabIndex = 6;
             this.grpSetInformation.TabStop = false;
             this.grpSetInformation.Text = "Set Information";
@@ -187,7 +188,7 @@
             this.tbGameSerial.Location = new System.Drawing.Point(407, 19);
             this.tbGameSerial.Name = "tbGameSerial";
             this.tbGameSerial.Size = new System.Drawing.Size(100, 20);
-            this.tbGameSerial.TabIndex = 9;
+            this.tbGameSerial.TabIndex = 7;
             // 
             // lblGameSerial
             // 
@@ -204,7 +205,7 @@
             this.tbYear.MaxLength = 4;
             this.tbYear.Name = "tbYear";
             this.tbYear.Size = new System.Drawing.Size(58, 20);
-            this.tbYear.TabIndex = 7;
+            this.tbYear.TabIndex = 8;
             // 
             // lblYear
             // 
@@ -245,7 +246,7 @@
             this.tbCopyright.Location = new System.Drawing.Point(78, 71);
             this.tbCopyright.Name = "tbCopyright";
             this.tbCopyright.Size = new System.Drawing.Size(239, 20);
-            this.tbCopyright.TabIndex = 2;
+            this.tbCopyright.TabIndex = 6;
             // 
             // lblArtist
             // 
@@ -261,7 +262,7 @@
             this.tbArtist.Location = new System.Drawing.Point(78, 45);
             this.tbArtist.Name = "tbArtist";
             this.tbArtist.Size = new System.Drawing.Size(239, 20);
-            this.tbArtist.TabIndex = 0;
+            this.tbArtist.TabIndex = 5;
             // 
             // dataGridSseq
             // 
@@ -285,8 +286,8 @@
             this.dataGridSseq.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridSseq.Location = new System.Drawing.Point(0, 209);
             this.dataGridSseq.Name = "dataGridSseq";
-            this.dataGridSseq.Size = new System.Drawing.Size(857, 195);
-            this.dataGridSseq.TabIndex = 7;
+            this.dataGridSseq.Size = new System.Drawing.Size(787, 201);
+            this.dataGridSseq.TabIndex = 9;
             this.dataGridSseq.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridSseq_CellEndEdit);
             // 
             // CheckBoxColumn
@@ -368,11 +369,11 @@
             this.PlyColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.PlyColumn.Width = 40;
             // 
-            // Xsf_Mk2sfForm
+            // Make2sfForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(857, 542);
+            this.ClientSize = new System.Drawing.Size(787, 548);
             this.Controls.Add(this.dataGridSseq);
             this.Controls.Add(this.grpSetInformation);
             this.Controls.Add(this.grpSourcePaths);
