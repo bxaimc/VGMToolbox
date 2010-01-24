@@ -372,42 +372,50 @@ namespace VGMToolbox.tools.xsf
                     //{
                     //    int r = 1;
                     //}
-                    
-                    try
-                    {                        
-                        vbRow = ParseFile.ParseSimpleOffset(fs, offset, vbRow.Length);
 
-                        // check for potential sony adpcm signature, and also make sure this offset is not inside another
-                        //   more easily parsed file since those formats are solid
-                        //if ((!InsideAnotherFile(offset, vhList, seqList, sepList)) && 
-                        //    (IsPotentialAdpcm(fs, offset + 0x10, minRowLength)))
-                        if (IsPotentialAdpcm(fs, offset + 0x10, minRowLength))
+                    if (!CancellationPending)
+                    {
+                        try
                         {
-                            // check if we have passed a different file type and reset previousVbOffset if we did
-                            if (SteppedOverAnotherFile(previousVbOffset, offset, vhList, seqList, sepList))
+                            vbRow = ParseFile.ParseSimpleOffset(fs, offset, vbRow.Length);
+
+                            // check for potential sony adpcm signature, and also make sure this offset is not inside another
+                            //   more easily parsed file since those formats are solid
+                            //if ((!InsideAnotherFile(offset, vhList, seqList, sepList)) && 
+                            //    (IsPotentialAdpcm(fs, offset + 0x10, minRowLength)))
+                            if (IsPotentialAdpcm(fs, offset + 0x10, minRowLength))
                             {
-                                // need to add flag here so length calculation doesn't screw up?
-                                previousVbOffset = -1;
+                                // check if we have passed a different file type and reset previousVbOffset if we did
+                                if (SteppedOverAnotherFile(previousVbOffset, offset, vhList, seqList, sepList))
+                                {
+                                    // need to add flag here so length calculation doesn't screw up?
+                                    previousVbOffset = -1;
+                                }
+
+                                // try to preserve proper VB chunk size
+                                if ((previousVbOffset == -1) || ((offset - previousVbOffset) % 0x10 == 0))
+                                {
+                                    previousVbOffset = offset;
+                                    potentialVb.offset = offset;
+                                    emptyRowList.Add(potentialVb);
+                                }
                             }
 
-                            // try to preserve proper VB chunk size
-                            if ((previousVbOffset == -1) || ((offset - previousVbOffset) % 0x10 == 0))
-                            {
-                                previousVbOffset = offset;
-                                potentialVb.offset = offset;
-                                emptyRowList.Add(potentialVb);
-                            }
+                        }
+                        catch (Exception vbEx)
+                        {
+                            this.progressStruct.Clear();
+                            this.progressStruct.ErrorMessage = String.Format(" ERROR finding VB for <{0}> at Offset 0x{1}: {2}{3}", pPath, offset.ToString("X8"), vbEx.Message, Environment.NewLine);
+                            this.ReportProgress(this.progress, this.progressStruct);
                         }
 
+                        offset += 1;
                     }
-                    catch (Exception vbEx)
+                    else 
                     {
-                        this.progressStruct.Clear();
-                        this.progressStruct.ErrorMessage = String.Format(" ERROR finding VB for <{0}> at Offset 0x{1}: {2}{3}", pPath, offset.ToString("X8"), vbEx.Message, Environment.NewLine);
-                        this.ReportProgress(this.progress, this.progressStruct);
+                        e.Cancel = true;
+                        return;
                     }
-
-                    offset += 1;
                 }
 
                 potentialVbList = (ProbableVbStruct[])emptyRowList.ToArray(typeof(ProbableVbStruct));
