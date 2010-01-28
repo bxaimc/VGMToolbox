@@ -1863,7 +1863,7 @@ namespace VGMToolbox.format.util
                     // Do Fade
                     if (isLoopingTrack(pMini2sfPath, Path.GetFileName(pSseqFilePath)))
                     {
-                        arguments = " -fade=\"10\" " + _2sfFileName;
+                        arguments = " -fade=\"10\" \"" + _2sfFileName + "\"";
 
                         if (minutes == 0 && seconds == 0)
                         {
@@ -1872,7 +1872,7 @@ namespace VGMToolbox.format.util
                     }
                     else
                     {
-                        arguments = " -fade=\"1\" " + _2sfFileName;
+                        arguments = " -fade=\"1\" \"" + _2sfFileName + "\"";
                         seconds++;
                         if (seconds > 60)
                         {
@@ -1886,7 +1886,7 @@ namespace VGMToolbox.format.util
                     sw.WriteLine("psfpoint.exe" + arguments);
 
                     // Add length info to batch file
-                    arguments = " -length=\"" + minutes + ":" + seconds.ToString().PadLeft(2, '0') + "\" " + _2sfFileName;
+                    arguments = " -length=\"" + minutes + ":" + seconds.ToString().PadLeft(2, '0') + "\" \"" + _2sfFileName + "\"";
                     sw.WriteLine("psfpoint.exe" + arguments);
                 }
 
