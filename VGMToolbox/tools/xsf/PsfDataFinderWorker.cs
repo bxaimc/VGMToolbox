@@ -165,7 +165,7 @@ namespace VGMToolbox.tools.xsf
                     //if (vhObject.expectedVbLength != vhObject.expectedVbLengthBySample)
                     //{
                     //    vhObject.expectedVbLength = vhObject.expectedVbLengthBySample;
-                        
+
                     //    this.progressStruct.Clear();
                     //    this.progressStruct.GenericMessage = String.Format("     Warning, for VH <{0}>, header does not match samples' lengths.  Ignoring header value.{1}", vhObject.FileName, Environment.NewLine);
                     //    this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);

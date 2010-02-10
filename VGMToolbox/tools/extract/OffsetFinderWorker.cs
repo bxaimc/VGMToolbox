@@ -113,7 +113,10 @@ namespace VGMToolbox.tools.extract
         }
 
         public OffsetFinderWorker() : 
-            base() {}
+            base() 
+        {
+            this.progressCounterIncrementer = 10;
+        }
         
         protected override void DoTaskForFile(string pPath, IVgmtWorkerStruct pOffsetFinderStruct,
             DoWorkEventArgs e)
@@ -125,9 +128,11 @@ namespace VGMToolbox.tools.extract
             string output;
             ParseFile.FindOffsetAndCutFile(pPath, findOffsetStruct, out output, true, true);
 
-            this.progressStruct.Clear();
-            this.progressStruct.GenericMessage = output;
-            ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);            
+            this.outputBuffer.Append(output);
+
+            //this.progressStruct.Clear();
+            //this.progressStruct.GenericMessage = output;
+            //ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);            
         }    
 
         protected override void OnDoWork(DoWorkEventArgs e)

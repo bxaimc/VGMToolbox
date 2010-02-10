@@ -761,6 +761,9 @@
     <Content Include="plugins\AdvancedCutter\ndssseq.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="plugins\AdvancedCutter\ndsstrm.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="plugins\AdvancedCutter\ndsswav.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
