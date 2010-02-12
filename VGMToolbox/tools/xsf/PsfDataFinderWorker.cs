@@ -453,8 +453,9 @@ namespace VGMToolbox.tools.xsf
                     {
                         for (int j = 0; j < potentialVbList.Length; j++)
                         {
-                            // we have a potential match
-                            if (vhObject.vbSampleSizes[0] == potentialVbList[j].length)
+                            // we have a potential match or are at the last item.
+                            if ((vhObject.vbSampleSizes[0] <= potentialVbList[j].length) ||
+                                (potentialVbList[j].length == 0)) 
                             {
                                 try
                                 {
@@ -568,11 +569,13 @@ namespace VGMToolbox.tools.xsf
                                     ParseFile.CompareSegment(lastLine, 0, VB_END_BYTES_1) ||
                                     ParseFile.CompareSegment(lastLine, 0, VB_END_BYTES_2))
                                 {
-
-                                    {
-                                        ret.vbStartingOffset = potentialVbList[potentialVbStartIndex].offset;
-                                        ret.vbLength = vhObject.expectedVbLength;
-                                    }
+                                    ret.vbStartingOffset = potentialVbList[potentialVbStartIndex].offset;
+                                    ret.vbLength = vhObject.expectedVbLength;
+                                }
+                                else // reset in case a match has already been found for this VH
+                                {
+                                    ret.vbStartingOffset = 0;
+                                    ret.vbLength = 0;
                                 }
                             }
                             else
