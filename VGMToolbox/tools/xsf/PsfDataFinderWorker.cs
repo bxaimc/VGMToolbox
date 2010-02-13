@@ -162,14 +162,14 @@ namespace VGMToolbox.tools.xsf
                         }
                     }
 
-                    //if (vhObject.expectedVbLength != vhObject.expectedVbLengthBySample)
-                    //{
-                    //    vhObject.expectedVbLength = vhObject.expectedVbLengthBySample;
+                    if (vhObject.expectedVbLength != vhObject.expectedVbLengthBySample)
+                    {
+                        vhObject.expectedVbLength = vhObject.expectedVbLengthBySample;
 
-                    //    this.progressStruct.Clear();
-                    //    this.progressStruct.GenericMessage = String.Format("     Warning, for VH <{0}>, header does not match samples' lengths.  Ignoring header value.{1}", vhObject.FileName, Environment.NewLine);
-                    //    this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
-                    //}
+                        this.progressStruct.Clear();
+                        this.progressStruct.GenericMessage = String.Format("     Warning, for VH <{0}>, header does not match samples' lengths.  Ignoring header value.{1}", vhObject.FileName, Environment.NewLine);
+                        this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
+                    }
 
                     vhArrayList.Add(vhObject);
 
@@ -368,7 +368,7 @@ namespace VGMToolbox.tools.xsf
                 while ((offset = ParseFile.GetNextOffset(fs, offset, VB_START_BYTES, psfStruct.UseZeroOffsetForVb,
                     0x10, 0)) > -1)
                 {
-                    //if (offset >= 0x78800)
+                    //if (offset >= 0x1fcf96)
                     //{
                     //    int r = 1;
                     //}
@@ -517,7 +517,8 @@ namespace VGMToolbox.tools.xsf
 
                 if (!((bytesRead == checkBytes.Length) &&
                     (!ParseFile.CompareSegment(checkBytes, 0, VB_START_BYTES)) &&
-                    (checkBytes[1] < 8)))
+                    (checkBytes[1] < 8) &&
+                    (checkBytes[0] <= 0x4C)))
                 {
                     ret = false;
                     break;

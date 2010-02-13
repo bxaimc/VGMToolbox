@@ -262,6 +262,7 @@ namespace VGMToolbox.util
             long relativeOffset;
             long actualOffset;
             byte[] checkBytes = new byte[Constants.FileReadChunkSize];
+            int checkBytesRead;
             byte[] compareBytes;
 
             long ret = -1;
@@ -269,10 +270,10 @@ namespace VGMToolbox.util
             while (!itemFound && (absoluteOffset < stream.Length))
             {
                 stream.Position = absoluteOffset;
-                stream.Read(checkBytes, 0, Constants.FileReadChunkSize);
+                checkBytesRead = stream.Read(checkBytes, 0, Constants.FileReadChunkSize);
                 relativeOffset = 0;
 
-                while (!itemFound && (relativeOffset < Constants.FileReadChunkSize))
+                while (!itemFound && (relativeOffset < checkBytesRead))
                 {
                     actualOffset = absoluteOffset + relativeOffset;
 
