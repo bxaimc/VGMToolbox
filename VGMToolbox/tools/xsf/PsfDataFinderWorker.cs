@@ -368,7 +368,7 @@ namespace VGMToolbox.tools.xsf
                 while ((offset = ParseFile.GetNextOffset(fs, offset, VB_START_BYTES, psfStruct.UseZeroOffsetForVb,
                     0x10, 0)) > -1)
                 {
-                    //if (offset >= 0x1fcf96)
+                    //if (offset >= 0x49FD26)
                     //{
                     //    int r = 1;
                     //}
@@ -393,12 +393,12 @@ namespace VGMToolbox.tools.xsf
                                 }
 
                                 // try to preserve proper VB chunk size
-                                if ((previousVbOffset == -1) || ((offset - previousVbOffset) % 0x10 == 0))
-                                {
+                                //if ((previousVbOffset == -1) || ((offset - previousVbOffset) % 0x10 == 0))
+                                //{
                                     previousVbOffset = offset;
                                     potentialVb.offset = offset;
                                     emptyRowList.Add(potentialVb);
-                                }
+                                //}
                             }
 
                         }

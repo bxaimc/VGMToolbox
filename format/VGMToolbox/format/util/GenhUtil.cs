@@ -354,7 +354,8 @@ namespace VGMToolbox.format.util
         public static string ExtractGenhFile(string pSourcePath, bool outputExtractionLog, bool outputExtractionFile)
         {
             string outputFileName = null;
-            
+            string headerOutputFileName = null;
+
             if (IsGenhFile(pSourcePath))
             {
                 using (FileStream fs = File.Open(pSourcePath, FileMode.Open, FileAccess.Read))
@@ -364,9 +365,12 @@ namespace VGMToolbox.format.util
                     Int32 headerLength = BitConverter.ToInt32(genhFile.HeaderLength, 0);
                     Int32 originalFileSize = BitConverter.ToInt32(genhFile.OriginalFileSize, 0);
                     string originalFileName = System.Text.Encoding.ASCII.GetString(genhFile.OriginalFileName);
+                    
                     outputFileName = Path.Combine(Path.GetDirectoryName(pSourcePath), originalFileName).Trim();
+                    headerOutputFileName = Path.Combine(Path.GetDirectoryName(pSourcePath), String.Format("{0}.genh.header", originalFileName.Trim())).Trim();
 
                     ParseFile.ExtractChunkToFile(fs, headerLength, originalFileSize, outputFileName, outputExtractionLog, outputExtractionFile);
+                    ParseFile.ExtractChunkToFile(fs, 0, headerLength, headerOutputFileName, outputExtractionLog, outputExtractionFile);
 
                     FileInfo fi = new FileInfo(outputFileName);
                     if (fi.Length != (long)originalFileSize)

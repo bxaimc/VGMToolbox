@@ -290,8 +290,9 @@ namespace VGMToolbox.tools.xsf
                     {
                         for (int j = 0; j < potentialBdList.Length; j++)
                         {
-                            // we have a potential match
-                            if (hdObject.vagLengths[0] == potentialBdList[j].length)
+                            // we have a potential match or are at the last item.
+                            if ((hdObject.vagLengths[0] <= potentialBdList[j].length) ||
+                                (potentialBdList[j].length == 0)) 
                             {
                                 try
                                 {
@@ -354,7 +355,8 @@ namespace VGMToolbox.tools.xsf
 
                 if (!((bytesRead == checkBytes.Length) &&
                     (!ParseFile.CompareSegment(checkBytes, 0, VB_START_BYTES)) &&
-                    (checkBytes[1] < 8)))
+                    (checkBytes[1] < 8) &&
+                    (checkBytes[0] <= 0x4C)))
                 {
                     ret = false;
                     break;
