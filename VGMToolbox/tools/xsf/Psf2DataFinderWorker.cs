@@ -354,9 +354,9 @@ namespace VGMToolbox.tools.xsf
                 bytesRead = searchStream.Read(checkBytes, 0, checkBytes.Length);
 
                 if (!((bytesRead == checkBytes.Length) &&
-                    (!ParseFile.CompareSegment(checkBytes, 0, VB_START_BYTES)) &&
                     (checkBytes[1] < 8) &&
-                    (checkBytes[0] <= 0x4C)))
+                    (checkBytes[0] <= 0x4C) &&
+                    (!ParseFile.CompareSegment(checkBytes, 0, VB_START_BYTES))))
                 {
                     ret = false;
                     break;

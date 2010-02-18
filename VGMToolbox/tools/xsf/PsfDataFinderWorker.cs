@@ -29,8 +29,8 @@ namespace VGMToolbox.tools.xsf
                                                                   0x77, 0x77, 0x77, 0x77,
                                                                   0x77, 0x77, 0x77, 0x77};
 
-        private static int ADPCM_ROW_COUNT = 10;
-
+        private static int MIN_ADPCM_ROW_COUNT = 10;
+        private static int MIN_ADPCM_ROW_SIZE = MIN_ADPCM_ROW_COUNT * 0x10;
 
         public struct PsfDataFinderStruct : IVgmtWorkerStruct
         {
@@ -108,6 +108,7 @@ namespace VGMToolbox.tools.xsf
 
             int vhNumber = 0;
             int minSampleSize = -1;
+            int maxSampleSize = -1;
             int minRowLength;
 
             VhStruct vhObject;
@@ -159,6 +160,19 @@ namespace VGMToolbox.tools.xsf
                         if ((minSampleSize < 0) || (vhObject.vbSampleSizes[i] < minSampleSize))
                         {
                             minSampleSize = (int)vhObject.vbSampleSizes[i];
+
+                            if (minSampleSize < MIN_ADPCM_ROW_SIZE)
+                            {
+                                this.progressStruct.Clear();
+                                this.progressStruct.GenericMessage = String.Format("     Notice, VH <{0}>, contains a sample smaller than 0x{1}, making finding a VB very unlikely.{2}", vhObject.FileName, MIN_ADPCM_ROW_SIZE.ToString("X2"), Environment.NewLine);
+                                this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);                            
+                            }
+                        }
+
+                        // update max sample size
+                        if ((maxSampleSize < 0) || (vhObject.vbSampleSizes[i] > maxSampleSize))
+                        {
+                            maxSampleSize = (int)vhObject.vbSampleSizes[i];
                         }
                     }
 
@@ -359,19 +373,19 @@ namespace VGMToolbox.tools.xsf
                 potentialVb = new ProbableVbStruct();
 
                 // check for the smallest found size or use default
-                minRowLength = (minSampleSize / 0x10) - 1; // divide into rows
-                if ((minRowLength > 0) && (minRowLength > ADPCM_ROW_COUNT))
-                {
-                    minRowLength = ADPCM_ROW_COUNT;
-                }
+                //minRowLength = (minSampleSize / 0x10) - 1; // divide into rows
+                //if ((minRowLength > 0) && (minRowLength > MIN_ADPCM_ROW_COUNT))
+                //{
+                    minRowLength = MIN_ADPCM_ROW_COUNT;
+                //}
 
                 while ((offset = ParseFile.GetNextOffset(fs, offset, VB_START_BYTES, psfStruct.UseZeroOffsetForVb,
                     0x10, 0)) > -1)
                 {
-                    //if (offset >= 0x49FD26)
-                    //{
-                    //    int r = 1;
-                    //}
+                    if (offset >= 0x42E83)
+                    {
+                        int r = 1;
+                    }
 
                     if (!CancellationPending)
                     {
@@ -392,13 +406,20 @@ namespace VGMToolbox.tools.xsf
                                     previousVbOffset = -1;
                                 }
 
+                                // check if we have exceeded the max sample size and reset previous offset
+                                //  so the chunk size check doesn't apply
+                                if ((offset - previousVbOffset) > maxSampleSize)
+                                {
+                                    previousVbOffset = -1;
+                                }
+
                                 // try to preserve proper VB chunk size
-                                //if ((previousVbOffset == -1) || ((offset - previousVbOffset) % 0x10 == 0))
-                                //{
+                                if ((previousVbOffset == -1) || ((offset - previousVbOffset) % 0x10 == 0))
+                                {
                                     previousVbOffset = offset;
                                     potentialVb.offset = offset;
                                     emptyRowList.Add(potentialVb);
-                                //}
+                                }
                             }
 
                         }
@@ -453,8 +474,9 @@ namespace VGMToolbox.tools.xsf
                     {
                         for (int j = 0; j < potentialVbList.Length; j++)
                         {
-                            // we have a potential match or are at the last item.
-                            if ((vhObject.vbSampleSizes[0] <= potentialVbList[j].length) ||
+                            // we have a potential match or are at the last item.  skip rows that are too small
+                            if ((vhObject.vbSampleSizes[0] < MIN_ADPCM_ROW_SIZE) ||
+                                (vhObject.vbSampleSizes[0] <= potentialVbList[j].length) ||
                                 (potentialVbList[j].length == 0)) 
                             {
                                 try
@@ -516,12 +538,69 @@ namespace VGMToolbox.tools.xsf
                 bytesRead = searchStream.Read(checkBytes, 0, checkBytes.Length);
 
                 if (!((bytesRead == checkBytes.Length) &&
-                    (!ParseFile.CompareSegment(checkBytes, 0, VB_START_BYTES)) &&
-                    (checkBytes[1] < 8) &&
-                    (checkBytes[0] <= 0x4C)))
+                    (checkBytes[1] < 8) && 
+                    (checkBytes[0] <= 0x4C) &&
+                    (!ParseFile.CompareSegment(checkBytes, 0, VB_START_BYTES))))
                 {
                     ret = false;
                     break;
+                }
+            }
+
+            return ret;
+        }
+
+        private bool AreFirstXBytesZero(byte[] byteArray, int count)
+        {
+            bool ret = true;
+
+            if (count <= byteArray.Length)
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    if (byteArray[i] != 0x00)
+                    {
+                        ret = false;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                ret = false;            
+            }
+
+            return ret;
+        }
+
+        private uint GetSizeOfSmallSamples(uint[] sampleLengths, int startIndex)
+        {
+            uint ret = 0;
+
+            for (int i = startIndex; i < sampleLengths.Length; i++)
+            {
+                if (sampleLengths[i] < MIN_ADPCM_ROW_SIZE)
+                {
+                    ret += sampleLengths[i];
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return ret;
+        }
+
+        private uint GetCountOfPreviousSmallSamples(uint[] sampleLengths, int startIndex)
+        {
+            uint ret = 0;
+
+            for (int i = startIndex; i > 0; i--)
+            {
+                if (sampleLengths[i] < MIN_ADPCM_ROW_SIZE)
+                {
+                    ret += 1;
                 }
             }
 
@@ -547,6 +626,13 @@ namespace VGMToolbox.tools.xsf
                         potentialVbList[potentialVbStartIndex].offset.ToString("X8"),
                         Environment.NewLine);
                     throw new IndexOutOfRangeException(errorMessage);
+                }
+                else if (vhObject.vbSampleSizes[i] < MIN_ADPCM_ROW_SIZE)
+                {
+                    // just add to the total, 
+                    //  we have added its value to the previous for comparison purposes
+                    //  in the last iteration
+                    totalLength += vhObject.vbSampleSizes[i];
                 }
                 else
                 {
@@ -586,7 +672,9 @@ namespace VGMToolbox.tools.xsf
                             }                       
                         }                        
                     }
-                    else if (vhObject.vbSampleSizes[i] != potentialVbList[potentialVbStartIndex + i].length)
+                    // need to test this logic further, but it seems to work for skipping small samples
+                    else if ((vhObject.vbSampleSizes[i] + GetSizeOfSmallSamples(vhObject.vbSampleSizes, i + 1)) !=
+                        potentialVbList[potentialVbStartIndex + i - GetCountOfPreviousSmallSamples(vhObject.vbSampleSizes, i - 1)].length)
                     {
                         ret.vbStartingOffset = -1;
                         ret.vbLength = -1;
