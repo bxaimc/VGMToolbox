@@ -9,7 +9,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.format
 {
-    public class Psf2 : Xsf
+    public class Psf2 : Psf
     {
         public const string SQ_FILE = "SQ.IRX";
         public const string FILE_EXTENSION_BD = ".bd";

@@ -135,7 +135,13 @@
     <Content Include="external\psfpoint.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="external\psf\EZPSF_V104.EXE">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="external\psf\listsig.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="external\psf\MG_DRIVER_V25.SEQ.INFINITE.EXE">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="external\psf\minipsf.exe">

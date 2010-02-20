@@ -11,23 +11,6 @@ namespace VGMToolbox.tools.xsf
 {
     class Psf2DataFinderWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
-        public static readonly byte[] VB_START_BYTES = new byte[] { 0x00, 0x00, 0x00, 0x00,
-                                                                    0x00, 0x00, 0x00, 0x00,
-                                                                    0x00, 0x00, 0x00, 0x00,
-                                                                    0x00, 0x00, 0x00, 0x00};
-
-        public static readonly byte[] VB_END_BYTES_1 = new byte[] { 0x00, 0x07, 0x07, 0x07,
-                                                                  0x07, 0x07, 0x07, 0x07, 
-                                                                  0x07, 0x07, 0x07, 0x07, 
-                                                                  0x07, 0x07, 0x07, 0x07};
-
-        public static readonly byte[] VB_END_BYTES_2 = new byte[] { 0x00, 0x07, 0x77, 0x77,
-                                                                  0x77, 0x77, 0x77, 0x77, 
-                                                                  0x77, 0x77, 0x77, 0x77,
-                                                                  0x77, 0x77, 0x77, 0x77};
-
-        private static int ADPCM_ROW_COUNT = 20;
-
         public struct Psf2DataFinderStruct : IVgmtWorkerStruct
         {
             public bool UseSeqMinimumSize;
@@ -229,7 +212,7 @@ namespace VGMToolbox.tools.xsf
                 // build list of potential adpcm start indexes
                 potentialBd = new ProbableBdStruct();
 
-                while ((offset = ParseFile.GetNextOffset(fs, offset, VB_START_BYTES, false)) > -1)
+                while ((offset = ParseFile.GetNextOffset(fs, offset, Psf2.VB_START_BYTES, false)) > -1)
                 {
                     if ((psf2Struct.UseZeroOffsetForBd) && (offset % 0x10 == 0) ||
                         (!psf2Struct.UseZeroOffsetForBd))
@@ -238,7 +221,7 @@ namespace VGMToolbox.tools.xsf
                         {
                             bdRow = ParseFile.ParseSimpleOffset(fs, offset, bdRow.Length);
 
-                            if (IsPotentialAdpcm(fs, offset + 0x10))
+                            if (Psf2.IsPotentialAdpcm(fs, offset + 0x10, Psf2.MIN_ADPCM_ROW_COUNT))
                             {
                                 potentialBd.offset = offset;
                                 emptyRowList.Add(potentialBd);
@@ -339,33 +322,6 @@ namespace VGMToolbox.tools.xsf
             }
         }
 
-
-        private bool IsPotentialAdpcm(Stream searchStream, long offset)
-        {
-            bool ret = true;
-            byte[] checkBytes = new byte[0x10];
-            int bytesRead;
-
-            searchStream.Position = offset;
-
-            // check for 10 rows meeting criteria
-            for (int i = 0; i < ADPCM_ROW_COUNT; i++)
-            {
-                bytesRead = searchStream.Read(checkBytes, 0, checkBytes.Length);
-
-                if (!((bytesRead == checkBytes.Length) &&
-                    (checkBytes[1] < 8) &&
-                    (checkBytes[0] <= 0x4C) &&
-                    (!ParseFile.CompareSegment(checkBytes, 0, VB_START_BYTES))))
-                {
-                    ret = false;
-                    break;
-                }
-            }
-
-            return ret;
-        }
-
         private HdStruct PopulateBdOffsetLength(Stream searchStream,
             ProbableBdStruct[] potentialBdList, int potentialBdStartIndex,
             HdStruct hdObject)
@@ -399,8 +355,8 @@ namespace VGMToolbox.tools.xsf
                         searchStream.Read(lastLine, 0, lastLine.Length);
 
                         if (lastLine[1] == 3 ||
-                            ParseFile.CompareSegment(lastLine, 0, VB_END_BYTES_1) ||
-                            ParseFile.CompareSegment(lastLine, 0, VB_END_BYTES_2))
+                            ParseFile.CompareSegment(lastLine, 0, Psf2.VB_END_BYTES_1) ||
+                            ParseFile.CompareSegment(lastLine, 0, Psf2.VB_END_BYTES_2))
                         {
                             ret.bdStartingOffset = potentialBdList[potentialBdStartIndex].offset;                            
                             ret.bdLength = hdObject.expectedBdLength;

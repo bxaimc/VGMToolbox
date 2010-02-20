@@ -14,24 +14,6 @@ namespace VGMToolbox.tools.xsf
 {
     class PsfDataFinderWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
-        public static readonly byte[] VB_START_BYTES = new byte[] { 0x00, 0x00, 0x00, 0x00,
-                                                                    0x00, 0x00, 0x00, 0x00,
-                                                                    0x00, 0x00, 0x00, 0x00,
-                                                                    0x00, 0x00, 0x00, 0x00};
-
-        public static readonly byte[] VB_END_BYTES_1 = new byte[] { 0x00, 0x07, 0x07, 0x07,
-                                                                  0x07, 0x07, 0x07, 0x07, 
-                                                                  0x07, 0x07, 0x07, 0x07, 
-                                                                  0x07, 0x07, 0x07, 0x07};
-        
-        public static readonly byte[] VB_END_BYTES_2 = new byte[] { 0x00, 0x07, 0x77, 0x77,
-                                                                  0x77, 0x77, 0x77, 0x77, 
-                                                                  0x77, 0x77, 0x77, 0x77,
-                                                                  0x77, 0x77, 0x77, 0x77};
-
-        private static int MIN_ADPCM_ROW_COUNT = 10;
-        private static int MIN_ADPCM_ROW_SIZE = MIN_ADPCM_ROW_COUNT * 0x10;
-
         public struct PsfDataFinderStruct : IVgmtWorkerStruct
         {
             public bool UseSeqMinimumSize;
@@ -71,11 +53,6 @@ namespace VGMToolbox.tools.xsf
             public long offset;
             public uint length;
         }
-        public struct ProbableItemStruct
-        {
-            public long offset;
-            public int length;
-        }
 
         public PsfDataFinderWorker() { }
 
@@ -89,20 +66,13 @@ namespace VGMToolbox.tools.xsf
 
             long offset;
 
-            long seqEof;
             string seqName;
             int seqNumber = 0;
-            int seqLength;            
-            ProbableItemStruct seqEntry;
             ArrayList seqFiles = new ArrayList();
             bool seqNamingMessageDisplayed = false;
-
-            long sepStartingOffset;
-            byte[] nextSepCheckBytes;
+            
             string sepName;
             int sepNumber = 0;
-            int sepSeqCount;
-            ProbableItemStruct sepEntry;
             ArrayList sepFiles = new ArrayList();
             bool sepNamingMessageDisplayed = false;
 
@@ -161,10 +131,10 @@ namespace VGMToolbox.tools.xsf
                         {
                             minSampleSize = (int)vhObject.vbSampleSizes[i];
 
-                            if (minSampleSize < MIN_ADPCM_ROW_SIZE)
+                            if (minSampleSize < Psf.MIN_ADPCM_ROW_SIZE)
                             {
                                 this.progressStruct.Clear();
-                                this.progressStruct.GenericMessage = String.Format("     Notice, VH <{0}>, contains a sample smaller than 0x{1}, making finding a VB very unlikely.{2}", vhObject.FileName, MIN_ADPCM_ROW_SIZE.ToString("X2"), Environment.NewLine);
+                                this.progressStruct.GenericMessage = String.Format("     Notice, VH <{0}>, contains a sample smaller than 0x{1}, making finding a VB very unlikely.{2}", vhObject.FileName, Psf.MIN_ADPCM_ROW_SIZE.ToString("X2"), Environment.NewLine);
                                 this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);                            
                             }
                         }
@@ -202,30 +172,10 @@ namespace VGMToolbox.tools.xsf
                 this.progressStruct.GenericMessage = String.Format("  Extracting SEQ{0}", Environment.NewLine);
                 this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
 
-                seqEntry = new ProbableItemStruct();
-                offset = 0;
+                // get SEQ file list
+                seqFiles = Psf.GetSeqFileList(fs, psfStruct.UseSeqMinimumSize, psfStruct.MinimumSize);
 
-                // build file list
-                while ((offset = ParseFile.GetNextOffset(fs, offset, PsxSequence.ASCII_SIGNATURE_SEQ)) > -1)
-                {
-                    seqEof = ParseFile.GetNextOffset(fs, offset, PsxSequence.END_SEQUENCE);
-
-                    if (seqEof > 0)
-                    {
-                        seqLength = (int)(seqEof - offset + PsxSequence.END_SEQUENCE.Length);
-
-                        if ((!psfStruct.UseSeqMinimumSize) || ((psfStruct.UseSeqMinimumSize) &&
-                            (seqLength >= psfStruct.MinimumSize)))
-                        {
-                            seqEntry.offset = offset;
-                            seqEntry.length = (int)(seqEof - offset + PsxSequence.END_SEQUENCE.Length);
-                            seqFiles.Add(seqEntry);
-                        }
-                    }
-                    offset += 1;
-                }
-
-                foreach (ProbableItemStruct seq in seqFiles)
+                foreach (Psf.ProbableItemStruct seq in seqFiles)
                 {
                     if (seq.length > 0)
                     {
@@ -272,50 +222,10 @@ namespace VGMToolbox.tools.xsf
                 this.progressStruct.GenericMessage = String.Format("  Extracting SEP{0}", Environment.NewLine);
                 this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
 
-                sepEntry = new ProbableItemStruct();
-                offset = 0;
-
-                // build file list
-                while ((offset = ParseFile.GetNextOffset(fs, offset, PsxSequence.ASCII_SIGNATURE_SEP)) > -1)
-                {
-                    sepStartingOffset = offset;
-                    sepSeqCount = 1;
-                    seqEof = offset;
-
-                    while ((seqEof = ParseFile.GetNextOffset(fs, seqEof, PsxSequence.END_SEQUENCE)) > -1)
-                    {
-                        nextSepCheckBytes = ParseFile.ParseSimpleOffset(fs, (long)(seqEof + PsxSequence.END_SEQUENCE.Length), 2);
-                        Array.Reverse(nextSepCheckBytes);
-
-                        if (nextSepCheckBytes.Length > 0)
-                        {
-                            if (BitConverter.ToUInt16(nextSepCheckBytes, 0) == (UInt16)sepSeqCount)
-                            {
-                                sepSeqCount++;
-                            }
-                            else
-                            {
-                                sepEntry.offset = sepStartingOffset;
-                                sepEntry.length = (int)(seqEof - sepStartingOffset + PsxSequence.END_SEQUENCE.Length);
-                                sepFiles.Add(sepEntry);
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            sepEntry.offset = sepStartingOffset;
-                            sepEntry.length = (int)(seqEof - sepStartingOffset + PsxSequence.END_SEQUENCE.Length);
-                            sepFiles.Add(sepEntry);
-                            break;
-                        }
-
-                        seqEof += 1;
-                    }
-
-                    offset += 1;
-                }
-
-                foreach (ProbableItemStruct sep in sepFiles)
+                // get SEP file list
+                sepFiles = Psf.GetSepFileList(fs);
+                
+                foreach (Psf.ProbableItemStruct sep in sepFiles)
                 {
                     if (sep.length > 0)
                     {
@@ -366,8 +276,8 @@ namespace VGMToolbox.tools.xsf
 
                 // setup arrays for checking skips
                 VhStruct[] vhList = (VhStruct[])vhArrayList.ToArray(typeof(VhStruct));
-                ProbableItemStruct[] seqList = (ProbableItemStruct[])seqFiles.ToArray(typeof(ProbableItemStruct));
-                ProbableItemStruct[] sepList = (ProbableItemStruct[])sepFiles.ToArray(typeof(ProbableItemStruct));
+                Psf.ProbableItemStruct[] seqList = (Psf.ProbableItemStruct[])seqFiles.ToArray(typeof(Psf.ProbableItemStruct));
+                Psf.ProbableItemStruct[] sepList = (Psf.ProbableItemStruct[])sepFiles.ToArray(typeof(Psf.ProbableItemStruct));
 
                 // build list of potential adpcm start indexes (VB_START_BYTES)
                 potentialVb = new ProbableVbStruct();
@@ -376,16 +286,16 @@ namespace VGMToolbox.tools.xsf
                 //minRowLength = (minSampleSize / 0x10) - 1; // divide into rows
                 //if ((minRowLength > 0) && (minRowLength > MIN_ADPCM_ROW_COUNT))
                 //{
-                    minRowLength = MIN_ADPCM_ROW_COUNT;
+                    minRowLength = Psf.MIN_ADPCM_ROW_COUNT;
                 //}
 
-                while ((offset = ParseFile.GetNextOffset(fs, offset, VB_START_BYTES, psfStruct.UseZeroOffsetForVb,
+                while ((offset = ParseFile.GetNextOffset(fs, offset, Psf.VB_START_BYTES, psfStruct.UseZeroOffsetForVb,
                     0x10, 0)) > -1)
                 {
-                    if (offset >= 0x42E83)
-                    {
-                        int r = 1;
-                    }
+                    //if (offset >= 0x42E83)
+                    //{
+                    //    int r = 1;
+                    //}
 
                     if (!CancellationPending)
                     {
@@ -397,7 +307,7 @@ namespace VGMToolbox.tools.xsf
                             //   more easily parsed file since those formats are solid
                             //if ((!InsideAnotherFile(offset, vhList, seqList, sepList)) && 
                             //    (IsPotentialAdpcm(fs, offset + 0x10, minRowLength)))
-                            if (IsPotentialAdpcm(fs, offset + 0x10, minRowLength))
+                            if (Psf.IsPotentialAdpcm(fs, offset + 0x10, minRowLength))
                             {
                                 // check if we have passed a different file type and reset previousVbOffset if we did
                                 if (SteppedOverAnotherFile(previousVbOffset, offset, vhList, seqList, sepList))
@@ -475,7 +385,7 @@ namespace VGMToolbox.tools.xsf
                         for (int j = 0; j < potentialVbList.Length; j++)
                         {
                             // we have a potential match or are at the last item.  skip rows that are too small
-                            if ((vhObject.vbSampleSizes[0] < MIN_ADPCM_ROW_SIZE) ||
+                            if ((vhObject.vbSampleSizes[0] < Psf.MIN_ADPCM_ROW_SIZE) ||
                                 (vhObject.vbSampleSizes[0] <= potentialVbList[j].length) ||
                                 (potentialVbList[j].length == 0)) 
                             {
@@ -524,32 +434,6 @@ namespace VGMToolbox.tools.xsf
             }
         }
 
-        private bool IsPotentialAdpcm(Stream searchStream, long offset, int rowsToCheck)
-        {
-            bool ret = true;
-            byte[] checkBytes = new byte[0x10];
-            int bytesRead;
-
-            searchStream.Position = offset;
-
-            // check for rows meeting criteria
-            for (int i = 0; i < rowsToCheck; i++)
-            {
-                bytesRead = searchStream.Read(checkBytes, 0, checkBytes.Length);
-
-                if (!((bytesRead == checkBytes.Length) &&
-                    (checkBytes[1] < 8) && 
-                    (checkBytes[0] <= 0x4C) &&
-                    (!ParseFile.CompareSegment(checkBytes, 0, VB_START_BYTES))))
-                {
-                    ret = false;
-                    break;
-                }
-            }
-
-            return ret;
-        }
-
         private bool AreFirstXBytesZero(byte[] byteArray, int count)
         {
             bool ret = true;
@@ -579,7 +463,7 @@ namespace VGMToolbox.tools.xsf
 
             for (int i = startIndex; i < sampleLengths.Length; i++)
             {
-                if (sampleLengths[i] < MIN_ADPCM_ROW_SIZE)
+                if (sampleLengths[i] < Psf.MIN_ADPCM_ROW_SIZE)
                 {
                     ret += sampleLengths[i];
                 }
@@ -598,7 +482,7 @@ namespace VGMToolbox.tools.xsf
 
             for (int i = startIndex; i > 0; i--)
             {
-                if (sampleLengths[i] < MIN_ADPCM_ROW_SIZE)
+                if (sampleLengths[i] < Psf.MIN_ADPCM_ROW_SIZE)
                 {
                     ret += 1;
                 }
@@ -627,7 +511,7 @@ namespace VGMToolbox.tools.xsf
                         Environment.NewLine);
                     throw new IndexOutOfRangeException(errorMessage);
                 }
-                else if (vhObject.vbSampleSizes[i] < MIN_ADPCM_ROW_SIZE)
+                else if (vhObject.vbSampleSizes[i] < Psf.MIN_ADPCM_ROW_SIZE)
                 {
                     // just add to the total, 
                     //  we have added its value to the previous for comparison purposes
@@ -653,8 +537,8 @@ namespace VGMToolbox.tools.xsf
 
                                 if (lastLine[1] == 3 ||
                                     lastLine[1] == 7 ||
-                                    ParseFile.CompareSegment(lastLine, 0, VB_END_BYTES_1) ||
-                                    ParseFile.CompareSegment(lastLine, 0, VB_END_BYTES_2))
+                                    ParseFile.CompareSegment(lastLine, 0, Psf.VB_END_BYTES_1) ||
+                                    ParseFile.CompareSegment(lastLine, 0, Psf.VB_END_BYTES_2))
                                 {
                                     ret.vbStartingOffset = potentialVbList[potentialVbStartIndex].offset;
                                     ret.vbLength = vhObject.expectedVbLength;
@@ -696,7 +580,7 @@ namespace VGMToolbox.tools.xsf
         /// <param name="seqObjects"></param>
         /// <returns></returns>
         private bool SteppedOverAnotherFile(long previousOffset, long currentOffset, VhStruct[] vhObjects,
-            ProbableItemStruct[] seqObjects, ProbableItemStruct[] sepObjects)
+            Psf.ProbableItemStruct[] seqObjects, Psf.ProbableItemStruct[] sepObjects)
         {
             bool ret = false;
 
@@ -743,7 +627,7 @@ namespace VGMToolbox.tools.xsf
         }
 
         private bool InsideAnotherFile(long offset, VhStruct[] vhObjects,
-            ProbableItemStruct[] seqObjects, ProbableItemStruct[] sepObjects)
+            Psf.ProbableItemStruct[] seqObjects, Psf.ProbableItemStruct[] sepObjects)
         {
             bool ret = false;
 

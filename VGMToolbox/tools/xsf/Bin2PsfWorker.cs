@@ -43,9 +43,12 @@ namespace VGMToolbox.tools.xsf
         private static readonly string OUTPUT_FOLDER =
             Path.GetFullPath(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "rips"), "psfs"));
 
+        public const string STUB_BUILDER = "PSF Stub Builder Defaults";
         public const string GENERIC_DRIVER_MGRASS = "Mark Grass Generic Driver v2.5";
+        public const string GENERIC_DRIVER_DAVIRONICA = "Davironica's Generic Driver v1.0.4";
 
-        public static readonly string MGRASS_EXE_PATH = Path.Combine(PSF_PROGRAMS_FOLDER, "MG_DRIVER_V25.EXE");
+        public static readonly string MGRASS_EXE_PATH = Path.Combine(PSF_PROGRAMS_FOLDER, "MG_DRIVER_V25.SEQ.INFINITE.EXE");
+        public static readonly string EZPSF_EXE_PATH = Path.Combine(PSF_PROGRAMS_FOLDER, "EZPSF_V104.EXE");
         public static readonly string GENERIC_MINIPSF_EXE_PATH = Path.Combine(PSF_PROGRAMS_FOLDER, "minipsf.exe");
 
         public const string PSFLIB_FILE_EXTENSION = ".psflib";

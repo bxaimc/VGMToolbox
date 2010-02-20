@@ -11,8 +11,6 @@ namespace VGMToolbox.forms.xsf
 {
     public partial class Bin2PsfFrontEndForm : AVgmtForm
     {
-        private const string STUB_BUILDER = "PSF Stub Builder Defaults";
-        
         public Bin2PsfFrontEndForm(TreeNode pTreeNode)
             : base(pTreeNode)
         {
@@ -146,11 +144,9 @@ namespace VGMToolbox.forms.xsf
         private void loadGenericDriversList()
         {
             this.genericDriver.Items.Add(String.Empty);
-
-            this.genericDriver.Items.Add(STUB_BUILDER);
-            
+            this.genericDriver.Items.Add(Bin2PsfWorker.STUB_BUILDER);                        
             this.genericDriver.Items.Add(Bin2PsfWorker.GENERIC_DRIVER_MGRASS);
-            // this.genericDriver.Items.Add(Bin2PsfWorker.GENERIC_DRIVER_DAVIRONICA);
+            this.genericDriver.Items.Add(Bin2PsfWorker.GENERIC_DRIVER_DAVIRONICA);
         }
         private void loadGenericDriverPreset()
         {
@@ -158,14 +154,18 @@ namespace VGMToolbox.forms.xsf
 
             switch (selectedItem)
             {
-                case STUB_BUILDER:
+                case Bin2PsfWorker.STUB_BUILDER:
                     this.disablePresetFields();
                     this.loadStubBuilderPresets();
                     break;
                 case Bin2PsfWorker.GENERIC_DRIVER_MGRASS:
                     this.disablePresetFields();
                     this.loadMarkGrassGenericPresets();
-                    break;                                       
+                    break;
+                case Bin2PsfWorker.GENERIC_DRIVER_DAVIRONICA:
+                    this.disablePresetFields();
+                    this.loadDavironicaGenericPresets();
+                    break;
                 default:
                     this.enablePresetFields();
                     break;
@@ -173,6 +173,10 @@ namespace VGMToolbox.forms.xsf
         }
         private void loadStubBuilderPresets()
         {
+            this.tbExePath.Enabled = true;
+            this.tbExePath.ReadOnly = false;
+            this.btnExeBrowse.Enabled = true;
+            
             this.tbSeqOffset.Text = "0x80120000";
             this.tbMySeqSize.Text = "0x00010000";
             this.tbVhOffset.Text =  "0x80130000";
@@ -183,7 +187,7 @@ namespace VGMToolbox.forms.xsf
         }
         private void loadMarkGrassGenericPresets()
         {            
-            // this.tbExePath.Text = Bin2PsfWorker.MGRASS_EXE_PATH;
+            this.tbExePath.Text = Bin2PsfWorker.MGRASS_EXE_PATH;
             this.tbPsflibName.Clear();
 
             this.tbSeqOffset.Text = "0x800A0000";
@@ -191,6 +195,26 @@ namespace VGMToolbox.forms.xsf
             this.tbVhOffset.Text = "0x800E0000";
             this.tbVbOffset.Text = "0x80160000";
             this.tbParamOffset.Text = "0";
+
+            this.tbExePath.Enabled = false;
+            this.tbExePath.ReadOnly = true;
+            this.btnExeBrowse.Enabled = false;
+        }
+
+        private void loadDavironicaGenericPresets()
+        {
+            this.tbExePath.Text = Bin2PsfWorker.EZPSF_EXE_PATH;
+            this.tbPsflibName.Clear();
+
+            this.tbSeqOffset.Text = "0x80100000";
+            this.tbMySeqSize.Text = "0x00020000";
+            this.tbVhOffset.Text = "0x80120000";
+            this.tbVbOffset.Text = "0x80140000";
+            this.tbParamOffset.Text = "0";
+
+            this.tbExePath.Enabled = false;
+            this.tbExePath.ReadOnly = true;
+            this.btnExeBrowse.Enabled = false;
         }
 
         private void disablePresetFields()
@@ -215,10 +239,10 @@ namespace VGMToolbox.forms.xsf
         }
         private void enablePresetFields()
         {            
-            // this.tbExePath.Enabled = true;
-            // this.tbExePath.ReadOnly = false;
+            this.tbExePath.Enabled = true;
+            this.tbExePath.ReadOnly = false;
             // this.tbExePath.Text = String.Empty;
-            // this.btnExeBrowse.Enabled = true;
+            this.btnExeBrowse.Enabled = true;
             this.tbPsflibName.Enabled = true;
             this.tbPsflibName.ReadOnly = false;
             this.cbMinipsf.Enabled = true;
