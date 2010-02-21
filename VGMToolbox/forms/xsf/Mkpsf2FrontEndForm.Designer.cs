@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.grpDirectory = new System.Windows.Forms.GroupBox();
+            this.lblPsf2LibName = new System.Windows.Forms.Label();
+            this.cbTryCombinations = new System.Windows.Forms.CheckBox();
             this.lblOutputFolder = new System.Windows.Forms.Label();
             this.tbOutputFolderName = new System.Windows.Forms.TextBox();
             this.btnModulesDirectoryBrowse = new System.Windows.Forms.Button();
@@ -50,7 +52,8 @@
             this.tbReverb = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lblAuthor = new System.Windows.Forms.Label();
-            this.cbTryCombinations = new System.Windows.Forms.CheckBox();
+            this.tbPsf2LibName = new System.Windows.Forms.TextBox();
+            this.cbMakePsf2Lib = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -61,36 +64,38 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 507);
-            this.pnlLabels.Size = new System.Drawing.Size(638, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 476);
+            this.pnlLabels.Size = new System.Drawing.Size(929, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(638, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(929, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 430);
-            this.tbOutput.Size = new System.Drawing.Size(638, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 399);
+            this.tbOutput.Size = new System.Drawing.Size(929, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 410);
-            this.pnlButtons.Size = new System.Drawing.Size(638, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 379);
+            this.pnlButtons.Size = new System.Drawing.Size(929, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(578, 0);
+            this.btnCancel.Location = new System.Drawing.Point(869, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(518, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(809, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnExecute_Click);
             // 
             // grpDirectory
             // 
-            this.grpDirectory.Controls.Add(this.cbTryCombinations);
+            this.grpDirectory.Controls.Add(this.cbMakePsf2Lib);
+            this.grpDirectory.Controls.Add(this.tbPsf2LibName);
+            this.grpDirectory.Controls.Add(this.lblPsf2LibName);
             this.grpDirectory.Controls.Add(this.lblOutputFolder);
             this.grpDirectory.Controls.Add(this.tbOutputFolderName);
             this.grpDirectory.Controls.Add(this.btnModulesDirectoryBrowse);
@@ -102,15 +107,35 @@
             this.grpDirectory.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpDirectory.Location = new System.Drawing.Point(0, 23);
             this.grpDirectory.Name = "grpDirectory";
-            this.grpDirectory.Size = new System.Drawing.Size(638, 158);
+            this.grpDirectory.Size = new System.Drawing.Size(929, 121);
             this.grpDirectory.TabIndex = 5;
             this.grpDirectory.TabStop = false;
             this.grpDirectory.Text = "Directories";
             // 
+            // lblPsf2LibName
+            // 
+            this.lblPsf2LibName.AutoSize = true;
+            this.lblPsf2LibName.Location = new System.Drawing.Point(6, 94);
+            this.lblPsf2LibName.Name = "lblPsf2LibName";
+            this.lblPsf2LibName.Size = new System.Drawing.Size(78, 13);
+            this.lblPsf2LibName.TabIndex = 18;
+            this.lblPsf2LibName.Text = "PSF2Lib Name";
+            // 
+            // cbTryCombinations
+            // 
+            this.cbTryCombinations.AutoSize = true;
+            this.cbTryCombinations.Location = new System.Drawing.Point(10, 80);
+            this.cbTryCombinations.Name = "cbTryCombinations";
+            this.cbTryCombinations.Size = new System.Drawing.Size(365, 17);
+            this.cbTryCombinations.TabIndex = 17;
+            this.cbTryCombinations.Text = "Try all combinations of SQ and HD/BD (good for finding matching pairs).";
+            this.cbTryCombinations.UseVisualStyleBackColor = true;
+            this.cbTryCombinations.CheckedChanged += new System.EventHandler(this.cbTryCombinations_CheckedChanged);
+            // 
             // lblOutputFolder
             // 
             this.lblOutputFolder.AutoSize = true;
-            this.lblOutputFolder.Location = new System.Drawing.Point(5, 94);
+            this.lblOutputFolder.Location = new System.Drawing.Point(7, 68);
             this.lblOutputFolder.Name = "lblOutputFolder";
             this.lblOutputFolder.Size = new System.Drawing.Size(102, 13);
             this.lblOutputFolder.TabIndex = 16;
@@ -118,7 +143,7 @@
             // 
             // tbOutputFolderName
             // 
-            this.tbOutputFolderName.Location = new System.Drawing.Point(9, 110);
+            this.tbOutputFolderName.Location = new System.Drawing.Point(115, 65);
             this.tbOutputFolderName.Name = "tbOutputFolderName";
             this.tbOutputFolderName.Size = new System.Drawing.Size(235, 20);
             this.tbOutputFolderName.TabIndex = 15;
@@ -126,7 +151,7 @@
             // 
             // btnModulesDirectoryBrowse
             // 
-            this.btnModulesDirectoryBrowse.Location = new System.Drawing.Point(250, 71);
+            this.btnModulesDirectoryBrowse.Location = new System.Drawing.Point(356, 38);
             this.btnModulesDirectoryBrowse.Name = "btnModulesDirectoryBrowse";
             this.btnModulesDirectoryBrowse.Size = new System.Drawing.Size(25, 21);
             this.btnModulesDirectoryBrowse.TabIndex = 14;
@@ -136,15 +161,18 @@
             // 
             // tbModulesDirectory
             // 
-            this.tbModulesDirectory.Location = new System.Drawing.Point(9, 71);
+            this.tbModulesDirectory.AllowDrop = true;
+            this.tbModulesDirectory.Location = new System.Drawing.Point(115, 39);
             this.tbModulesDirectory.Name = "tbModulesDirectory";
             this.tbModulesDirectory.Size = new System.Drawing.Size(235, 20);
             this.tbModulesDirectory.TabIndex = 13;
+            this.tbModulesDirectory.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbModulesDirectory_DragDrop);
+            this.tbModulesDirectory.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbModulesDirectory_DragEnter);
             // 
             // lblModulesDirectory
             // 
             this.lblModulesDirectory.AutoSize = true;
-            this.lblModulesDirectory.Location = new System.Drawing.Point(6, 55);
+            this.lblModulesDirectory.Location = new System.Drawing.Point(7, 42);
             this.lblModulesDirectory.Name = "lblModulesDirectory";
             this.lblModulesDirectory.Size = new System.Drawing.Size(92, 13);
             this.lblModulesDirectory.TabIndex = 12;
@@ -152,7 +180,7 @@
             // 
             // btnSourceDirectoryBrowse
             // 
-            this.btnSourceDirectoryBrowse.Location = new System.Drawing.Point(250, 32);
+            this.btnSourceDirectoryBrowse.Location = new System.Drawing.Point(356, 13);
             this.btnSourceDirectoryBrowse.Name = "btnSourceDirectoryBrowse";
             this.btnSourceDirectoryBrowse.Size = new System.Drawing.Size(25, 20);
             this.btnSourceDirectoryBrowse.TabIndex = 11;
@@ -171,16 +199,20 @@
             // 
             // tbSourceDirectory
             // 
-            this.tbSourceDirectory.Location = new System.Drawing.Point(9, 32);
+            this.tbSourceDirectory.AllowDrop = true;
+            this.tbSourceDirectory.Location = new System.Drawing.Point(115, 13);
             this.tbSourceDirectory.Name = "tbSourceDirectory";
             this.tbSourceDirectory.Size = new System.Drawing.Size(235, 20);
             this.tbSourceDirectory.TabIndex = 9;
+            this.tbSourceDirectory.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbSourceDirectory_DragDrop);
+            this.tbSourceDirectory.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbSourceDirectory_DragEnter);
             // 
             // grpOptions
             // 
             this.grpOptions.Controls.Add(this.lblVolume);
             this.grpOptions.Controls.Add(this.tbVolume);
             this.grpOptions.Controls.Add(this.tbTempo);
+            this.grpOptions.Controls.Add(this.cbTryCombinations);
             this.grpOptions.Controls.Add(this.lblTempo);
             this.grpOptions.Controls.Add(this.tbTickInterval);
             this.grpOptions.Controls.Add(this.lblTickInterval);
@@ -189,9 +221,9 @@
             this.grpOptions.Controls.Add(this.lblReverb);
             this.grpOptions.Controls.Add(this.tbReverb);
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpOptions.Location = new System.Drawing.Point(0, 181);
+            this.grpOptions.Location = new System.Drawing.Point(0, 144);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(638, 73);
+            this.grpOptions.Size = new System.Drawing.Size(929, 103);
             this.grpOptions.TabIndex = 10;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options (Leave empty for defaults)";
@@ -285,9 +317,9 @@
             // 
             this.panel1.Controls.Add(this.lblAuthor);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(0, 254);
+            this.panel1.Location = new System.Drawing.Point(0, 247);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(638, 25);
+            this.panel1.Size = new System.Drawing.Size(929, 25);
             this.panel1.TabIndex = 11;
             // 
             // lblAuthor
@@ -301,21 +333,29 @@
             this.lblAuthor.TabIndex = 0;
             this.lblAuthor.Text = "mkpsf2.exe is written by Neill Corlett (http://www.neillcorlett.com/).";
             // 
-            // cbTryCombinations
+            // tbPsf2LibName
             // 
-            this.cbTryCombinations.AutoSize = true;
-            this.cbTryCombinations.Location = new System.Drawing.Point(9, 136);
-            this.cbTryCombinations.Name = "cbTryCombinations";
-            this.cbTryCombinations.Size = new System.Drawing.Size(365, 17);
-            this.cbTryCombinations.TabIndex = 17;
-            this.cbTryCombinations.Text = "Try all combinations of SQ and HD/BD (good for finding matching pairs).";
-            this.cbTryCombinations.UseVisualStyleBackColor = true;
+            this.tbPsf2LibName.Location = new System.Drawing.Point(115, 91);
+            this.tbPsf2LibName.Name = "tbPsf2LibName";
+            this.tbPsf2LibName.Size = new System.Drawing.Size(235, 20);
+            this.tbPsf2LibName.TabIndex = 19;
+            // 
+            // cbMakePsf2Lib
+            // 
+            this.cbMakePsf2Lib.AutoSize = true;
+            this.cbMakePsf2Lib.Location = new System.Drawing.Point(356, 93);
+            this.cbMakePsf2Lib.Name = "cbMakePsf2Lib";
+            this.cbMakePsf2Lib.Size = new System.Drawing.Size(169, 17);
+            this.cbMakePsf2Lib.TabIndex = 20;
+            this.cbMakePsf2Lib.Text = "Create .psf2lib for HD.BD data";
+            this.cbMakePsf2Lib.UseVisualStyleBackColor = true;
+            this.cbMakePsf2Lib.CheckedChanged += new System.EventHandler(this.cbMakePsf2Lib_CheckedChanged);
             // 
             // Mkpsf2FrontEndForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(638, 548);
+            this.ClientSize = new System.Drawing.Size(929, 517);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpDirectory);
@@ -370,5 +410,8 @@
         private System.Windows.Forms.Label lblOutputFolder;
         private System.Windows.Forms.TextBox tbOutputFolderName;
         private System.Windows.Forms.CheckBox cbTryCombinations;
+        private System.Windows.Forms.Label lblPsf2LibName;
+        private System.Windows.Forms.TextBox tbPsf2LibName;
+        private System.Windows.Forms.CheckBox cbMakePsf2Lib;
     }
 }

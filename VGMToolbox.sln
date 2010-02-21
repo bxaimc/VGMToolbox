@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gzipext", "gzipext\gzipext.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "zerofill", "zerofill\zerofill.csproj", "{F16A18AE-D148-4F30-B873-B56883ED0B58}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vgmtinfo", "vgmtinfo\vgmtinfo.csproj", "{7C7C80F7-9E2A-43F3-9B85-F97A2ADF173F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -156,7 +158,15 @@ Global
 		{F16A18AE-D148-4F30-B873-B56883ED0B58}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{F16A18AE-D148-4F30-B873-B56883ED0B58}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F16A18AE-D148-4F30-B873-B56883ED0B58}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F16A18AE-D148-4F30-B873-B56883ED0B58}.Release|x86.ActiveCfg = Release|Any CPU
+		{F16A18AE-D148-4F30-B873-B56883ED0B58}.Release|x86.ActiveCfg = Release|x86
+		{F16A18AE-D148-4F30-B873-B56883ED0B58}.Release|x86.Build.0 = Release|x86
+		{7C7C80F7-9E2A-43F3-9B85-F97A2ADF173F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C7C80F7-9E2A-43F3-9B85-F97A2ADF173F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C7C80F7-9E2A-43F3-9B85-F97A2ADF173F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7C7C80F7-9E2A-43F3-9B85-F97A2ADF173F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C7C80F7-9E2A-43F3-9B85-F97A2ADF173F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C7C80F7-9E2A-43F3-9B85-F97A2ADF173F}.Release|x86.ActiveCfg = Release|x86
+		{7C7C80F7-9E2A-43F3-9B85-F97A2ADF173F}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

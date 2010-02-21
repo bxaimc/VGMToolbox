@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Configuration;
+using System.IO;
 using System.Windows.Forms;
 
 using VGMToolbox.plugin;
@@ -45,13 +46,22 @@ namespace VGMToolbox.forms.xsf
                 ConfigurationSettings.AppSettings["Form_MkPsf2FE_LblTickInterval"];
             this.lblAuthor.Text =
                 ConfigurationSettings.AppSettings["Form_MkPsf2FE_LblAuthor"];
+            
+            this.lblPsf2LibName.Text = "PSF2Lib Name";
+            this.cbMakePsf2Lib.Text = "Create .psf2lib for HD/BD data";
 
             this.cbTryCombinations.Text = "Try all combinations of SQ and HD/BD (good for finding matching pairs).";
 
+            this.setGuiForPsf2Lib();
         }
 
         private void btnExecute_Click(object sender, EventArgs e)
         {
+            if ((cbMakePsf2Lib.Checked) && (!tbPsf2LibName.Text.EndsWith(MkPsf2Worker.PSF2LIB_FILE_EXTENSION)))
+            {
+                tbPsf2LibName.Text += MkPsf2Worker.PSF2LIB_FILE_EXTENSION;
+            }
+            
             MkPsf2Worker.MkPsf2Struct mkStruct = new MkPsf2Worker.MkPsf2Struct();
             mkStruct.sourcePath = tbSourceDirectory.Text;
             mkStruct.modulePath = tbModulesDirectory.Text;
@@ -64,6 +74,8 @@ namespace VGMToolbox.forms.xsf
             mkStruct.volume = tbVolume.Text;
 
             mkStruct.TryCombinations = cbTryCombinations.Checked;
+            mkStruct.CreatePsf2lib = cbMakePsf2Lib.Checked;
+            mkStruct.Psf2LibName = tbPsf2LibName.Text;
 
             base.backgroundWorker_Execute(mkStruct);
         }
@@ -92,6 +104,76 @@ namespace VGMToolbox.forms.xsf
         protected override string getBeginMessage()
         {
             return ConfigurationSettings.AppSettings["Form_MkPsf2FE_MessageBegin"];
+        }
+
+        private void tbSourceDirectory_DragEnter(object sender, DragEventArgs e)
+        {
+            base.doDragEnter(sender, e);
+        }
+
+        private void tbSourceDirectory_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            if ((s.Length == 1) && (Directory.Exists(s[0])))
+            {
+                this.tbSourceDirectory.Text = s[0];
+            }
+        }
+
+        private void tbModulesDirectory_DragEnter(object sender, DragEventArgs e)
+        {
+            base.doDragEnter(sender, e);
+        }
+
+        private void tbModulesDirectory_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            if ((s.Length == 1) && (Directory.Exists(s[0])))
+            {
+                this.tbModulesDirectory.Text = s[0];
+            }
+        }
+
+        private void cbMakePsf2Lib_CheckedChanged(object sender, EventArgs e)
+        {
+            this.setGuiForPsf2Lib();
+        }
+
+        private void setGuiForPsf2Lib()
+        {
+            if (cbMakePsf2Lib.Checked)
+            {
+                this.tbPsf2LibName.Enabled = true;
+                this.tbPsf2LibName.ReadOnly = false;
+                
+                this.cbTryCombinations.Checked = false;
+                this.cbTryCombinations.Enabled = false;
+            }
+            else
+            {
+                this.tbPsf2LibName.Enabled = false;
+                this.tbPsf2LibName.ReadOnly = true;
+                this.tbPsf2LibName.Clear();
+
+                this.cbTryCombinations.Enabled = true;
+            }
+        }
+
+        private void cbTryCombinations_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.cbTryCombinations.Checked)
+            {
+                this.cbMakePsf2Lib.Enabled = false;
+                this.cbMakePsf2Lib.Checked = false;
+            }
+            else
+            {
+                this.cbMakePsf2Lib.Enabled = true;
+            }
+
+            this.setGuiForPsf2Lib();
         }
     }
 }
