@@ -79,9 +79,7 @@ namespace VGMToolbox.format
         public byte[] ReservedSection { get { return this.reservedSection; } }
         public uint ReservedSectionLength { get { return this.reservedSectionLength; } }
         public byte[] VersionByte { get { return this.versionByte; } }
-        public Dictionary<string, string> TagHash { get { return this.tagHash; } }
-
-        protected Dictionary<string, string> tagHash;
+        public Dictionary<string, string> TagHash { set; get; }
         protected Hashtable formatHash;
 
 
@@ -294,16 +292,16 @@ namespace VGMToolbox.format
             int i = 2;
 
             // Grab the _lib files from the tags.  Sort them and get the checksum bytes of each one.
-            if (this.tagHash.ContainsKey("_lib"))
+            if (this.TagHash.ContainsKey("_lib"))
             {
-                libPath = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(this.filePath)), this.tagHash["_lib"]);
+                libPath = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(this.filePath)), this.TagHash["_lib"]);
                 libPaths.Add(libPath.Trim().ToUpper());
 
                 while (libsFound)
                 {
-                    if (this.tagHash.ContainsKey("_lib" + i.ToString()))
+                    if (this.TagHash.ContainsKey("_lib" + i.ToString()))
                     {
-                        libPaths.Add(Path.Combine(Path.GetDirectoryName(Path.GetFullPath(this.filePath)), this.tagHash["_lib" + i.ToString()]));
+                        libPaths.Add(Path.Combine(Path.GetDirectoryName(Path.GetFullPath(this.filePath)), this.TagHash["_lib" + i.ToString()]));
                         i++;
                     }
                     else
@@ -452,7 +450,7 @@ namespace VGMToolbox.format
             this.compressedProgramLength = this.getCompressedProgramLength(pBytes);
             this.compressedProgramCrc32 = this.getCompressedProgramCrc32(pBytes);
             this.PopulateFormatHash();
-            this.tagHash = this.getTags(pBytes);         
+            this.TagHash = this.getTags(pBytes);         
         }
 
         public virtual void Initialize(Stream pStream, string pFilePath)
@@ -464,7 +462,7 @@ namespace VGMToolbox.format
             this.compressedProgramLength = this.getCompressedProgramLength(pStream);
             this.compressedProgramCrc32 = this.getCompressedProgramCrc32(pStream);
             this.PopulateFormatHash();
-            this.tagHash = this.getTags(pStream);
+            this.TagHash = this.getTags(pStream);
         }
 
         protected void PopulateFormatHash()
@@ -547,7 +545,7 @@ namespace VGMToolbox.format
 
         public Dictionary<string, string> GetTagHash()
         {
-            return this.tagHash;
+            return this.TagHash;
         }
 
         public bool UsesLibraries() { return true; }
@@ -576,9 +574,9 @@ namespace VGMToolbox.format
         {
             string ret = String.Empty;
 
-            if (this.tagHash.ContainsKey(pTagKey))
+            if (this.TagHash.ContainsKey(pTagKey))
             {
-                ret = this.tagHash[pTagKey];
+                ret = this.TagHash[pTagKey];
             }
             return ret;
         }
@@ -614,12 +612,12 @@ namespace VGMToolbox.format
             if (!String.IsNullOrEmpty(pNewValue) && !String.IsNullOrEmpty(pNewValue.Trim()))
             {
                 batchValue = pNewValue.Trim();
-                this.tagHash[pKey] = batchValue;
+                this.TagHash[pKey] = batchValue;
                 
             }
-            else if (this.tagHash.ContainsKey(pKey))
+            else if (this.TagHash.ContainsKey(pKey))
             {
-                this.tagHash.Remove(pKey);
+                this.TagHash.Remove(pKey);
             }
 
             if (AddActionToBatchFile)
@@ -742,11 +740,11 @@ namespace VGMToolbox.format
                     fs.Write(dataToWrite, 0, dataToWrite.Length);
                                         
                     // add or update utf8=1 tag
-                    this.tagHash["utf8"] = "1";
+                    this.TagHash["utf8"] = "1";
                     
-                    foreach (string key in this.tagHash.Keys)
+                    foreach (string key in this.TagHash.Keys)
                     {
-                        splitValue = this.tagHash[key].Split(splitParam, StringSplitOptions.None);
+                        splitValue = this.TagHash[key].Split(splitParam, StringSplitOptions.None);
 
                         foreach (string valueItem in splitValue)
                         {

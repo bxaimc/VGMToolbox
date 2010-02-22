@@ -358,8 +358,13 @@ namespace VGMToolbox.tools.xsf
                             ParseFile.CompareSegment(lastLine, 0, Psf2.VB_END_BYTES_1) ||
                             ParseFile.CompareSegment(lastLine, 0, Psf2.VB_END_BYTES_2))
                         {
-                            ret.bdStartingOffset = potentialBdList[potentialBdStartIndex].offset;                            
+                            ret.bdStartingOffset = potentialBdList[potentialBdStartIndex].offset;
                             ret.bdLength = hdObject.expectedBdLength;
+                        }
+                        else // reset in case a match has already been found for this HD
+                        {
+                            ret.bdStartingOffset = 0;
+                            ret.bdLength = 0;                        
                         }
                     }
                     else if (hdObject.vagLengths[i] != potentialBdList[potentialBdStartIndex + i].length)

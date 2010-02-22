@@ -481,7 +481,20 @@ namespace VGMToolbox
             // Set Tag for displaying the Form
             nodeTag.FormClass = xsf_Mkpsf2FrontEndForm.GetType().Name;
             xsf_MkPsf2FENode.Tag = nodeTag;
-            
+
+            /////////////////////////
+            // PSF2 SETTINGS CHANGER
+            /////////////////////////
+            TreeNode xsf_Psf2SettingsUpdaterNode = new TreeNode("PSF2 Settings Updater");
+
+            // Add Form
+            Psf2SettingsUpdaterForm xsf_Psf2SettingsUpdaterForm = new Psf2SettingsUpdaterForm(xsf_Psf2SettingsUpdaterNode);
+            this.splitContainer1.Panel2.Controls.Add(xsf_Psf2SettingsUpdaterForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = xsf_Psf2SettingsUpdaterForm.GetType().Name;
+            xsf_Psf2SettingsUpdaterNode.Tag = nodeTag;
+
             //////////////
             // UNPKPSF2FE
             //////////////
@@ -518,7 +531,7 @@ namespace VGMToolbox
             TreeNode xsf_Psf2SqExtractorNode = 
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_Psf2SqExtractorNode"]);
 
-            // Add UnpkPsf2 Ripper Form
+            // Add Form
             Psf2SqExtractorForm xsf_Psf2SqExtractorForm =
                 new Psf2SqExtractorForm(xsf_Psf2SqExtractorNode);
             this.splitContainer1.Panel2.Controls.Add(xsf_Psf2SqExtractorForm);
@@ -735,6 +748,7 @@ namespace VGMToolbox
             psf2_RootNode.Tag = nodeTag;
             psf2_RootNode.Nodes.Add(psf2DataExtractorNode);
             psf2_RootNode.Nodes.Add(xsf_MkPsf2FENode);
+            psf2_RootNode.Nodes.Add(xsf_Psf2SettingsUpdaterNode);
             psf2_RootNode.Nodes.Add(xsf_UnPsf2FENode);
             psf2_RootNode.Nodes.Add(xsf_Psf2ToPsf2LibNode);
             psf2_RootNode.Nodes.Add(xsf_Psf2SqExtractorNode);

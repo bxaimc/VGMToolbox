@@ -1,12 +1,7 @@
-﻿using System;
-using System.ComponentModel;
-using System.IO;
-using System.Windows.Forms;
+﻿using System.ComponentModel;
 
-using VGMToolbox.format;
 using VGMToolbox.format.util;
 using VGMToolbox.plugin;
-using VGMToolbox.util;
 
 namespace VGMToolbox.tools.xsf
 {

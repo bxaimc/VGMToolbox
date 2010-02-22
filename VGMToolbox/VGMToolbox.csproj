@@ -240,6 +240,12 @@
     <Compile Include="forms\xsf\Psf2DataFinderForm.Designer.cs">
       <DependentUpon>Psf2DataFinderForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\xsf\Psf2SettingsUpdaterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\xsf\Psf2SettingsUpdaterForm.Designer.cs">
+      <DependentUpon>Psf2SettingsUpdaterForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\xsf\PsfDataFinderForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -630,6 +636,9 @@
     <Compile Include="tools\xsf\Psf2DataFinderWorker.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\xsf\Psf2SettingsUpdaterWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\xsf\Psf2SqExtractorWorker.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -887,6 +896,9 @@
     <EmbeddedResource Include="forms\xsf\Psf2DataFinderForm.resx">
       <DependentUpon>Psf2DataFinderForm.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\xsf\Psf2SettingsUpdaterForm.resx">
+      <DependentUpon>Psf2SettingsUpdaterForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\xsf\PsfDataFinderForm.resx">
       <DependentUpon>PsfDataFinderForm.cs</DependentUpon>
