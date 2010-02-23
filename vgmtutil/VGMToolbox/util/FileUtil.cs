@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace VGMToolbox.util
 {
@@ -248,5 +249,20 @@ namespace VGMToolbox.util
             
             return isSuccess;
         }
+
+        public static bool FitsMask(string fileName, string fileMask)
+        {
+            string pattern =
+                 '^' +
+                 Regex.Escape(fileMask.Replace(".", "__DOT__")
+                                 .Replace("*", "__STAR__")
+                                 .Replace("?", "__QM__"))
+                     .Replace("__DOT__", "[.]")
+                     .Replace("__STAR__", ".*")
+                     .Replace("__QM__", ".")
+                 + '$';
+            return new Regex(pattern, RegexOptions.IgnoreCase).IsMatch(fileName);
+        }
+
     }
 }
