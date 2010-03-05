@@ -17,6 +17,10 @@ namespace VGMToolbox.forms.xsf
             InitializeComponent();
 
             this.grpSourceFiles.AllowDrop = true;
+            this.btnDoTask.Hide();
+
+            this.lblTitle.Text = "PSF2 Settings Updater";
+            this.tbOutput.Text = "Update the psf2.ini settings for PSF2s in batch mode.";
         }
 
         private void grpSourceFiles_DragEnter(object sender, DragEventArgs e)

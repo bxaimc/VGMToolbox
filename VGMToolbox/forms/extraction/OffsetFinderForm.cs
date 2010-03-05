@@ -14,7 +14,7 @@ using VGMToolbox.tools.extract;
 
 namespace VGMToolbox.forms.extraction
 {
-    public partial class OffsetFinderForm : AVgmtForm
+    public partial class OffsetFinderForm : VgmtForm
     {
         private static readonly string DB_PATH =
             Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "db"), "collection.s3db");

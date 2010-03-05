@@ -18,10 +18,6 @@ namespace VGMToolbox.tools.xsf
             Path.GetFullPath(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "psf2"));
         private static readonly string MKPSF2_SOURCE_PATH =
             Path.Combine(PSF2_PROGRAMS_FOLDER, "mkpsf2.exe");
-
-        private static readonly string PSFPOINT_SOURCE_PATH =
-            Path.GetFullPath(Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"), "psfpoint.exe"));
-        private static readonly string PSFPOINT_BATCH_FILE = "psfpoint_batch.bat";
         
         public struct Psf2SettingsUpdaterStruct : IVgmtWorkerStruct
         {

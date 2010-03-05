@@ -329,9 +329,13 @@ namespace VGMToolbox.format.util
                         loopEnd = br.BaseStream.Position + 0x0E - headerSkip;
                         break;
                     }
-                    else
+                    else if (br.BaseStream.Position >= 0x11)
                     {
                         br.BaseStream.Position -= 0x10 - 0x01;
+                    }
+                    else
+                    {
+                        br.BaseStream.Position = headerSkip;
                     }
                 }
             }

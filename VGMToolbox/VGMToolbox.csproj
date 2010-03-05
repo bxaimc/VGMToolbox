@@ -192,6 +192,12 @@
     <Compile Include="forms\extraction\SavePresetForm.Designer.cs">
       <DependentUpon>SavePresetForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\extraction\VfsExtractorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\extraction\VfsExtractorForm.Designer.cs">
+      <DependentUpon>VfsExtractorForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\Gbs_GbsToM3uForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -587,6 +593,9 @@
     <Compile Include="tools\extract\SimpleCutterSnakebiteWorker.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\extract\VfsExtractorWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\extract\ZlibExtractorWorker.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -886,6 +895,9 @@
     <EmbeddedResource Include="forms\compression\ZlibCompressionForm.resx">
       <DependentUpon>ZlibCompressionForm.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\extraction\VfsExtractorForm.resx">
+      <DependentUpon>VfsExtractorForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Genh_CreatorForm.resx">
       <DependentUpon>Genh_CreatorForm.cs</DependentUpon>

@@ -809,6 +809,17 @@ namespace VGMToolbox
             ext_OffsetFinderNode.Tag = nodeTag;
 
 
+            // VFS Extractor
+            TreeNode ext_VfsExtractorNode = new TreeNode("Virtual File System Extractor");
+
+            // Add Offset Finder Form
+            VfsExtractorForm extract_VfsExtractorForm = new VfsExtractorForm(ext_VfsExtractorNode);
+            this.splitContainer1.Panel2.Controls.Add(extract_VfsExtractorForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = extract_VfsExtractorForm.GetType().Name;
+            ext_VfsExtractorNode.Tag = nodeTag;
+
             // CD-XA Extractor
             TreeNode ext_ExtractCdxaNode =
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_ExtractCdxaNode"]);
@@ -882,6 +893,7 @@ namespace VGMToolbox
 
             ext_GenericNode.Nodes.Add(ext_SimpleCutterNode);
             ext_GenericNode.Nodes.Add(ext_OffsetFinderNode);
+            ext_GenericNode.Nodes.Add(ext_VfsExtractorNode);
             ext_GenericNode.Nodes.Add(ext_ExtractCdxaNode);
             ext_GenericNode.Nodes.Add(ext_ExtractMidiNode);
                                
