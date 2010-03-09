@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 
 using VGMToolbox.plugin;
+using VGMToolbox.util;
 
 namespace VGMToolbox.tools.extract
 {
@@ -41,8 +42,43 @@ namespace VGMToolbox.tools.extract
 
             public string FileRecordNameOffset { set; get; }
             public string FileRecordNameLength { set; get; }
-            public bool FileRecordNameIsPresent { set; get; }            
+            public bool FileRecordNameIsPresent { set; get; }
 
+            public VfsExtractionStruct ToVfsExtractionStruct()
+            {
+                VfsExtractionStruct ret = new VfsExtractionStruct();
+
+                ret.UseFileCountOffset = this.UseFileCountOffset;
+                ret.FileCountValue = this.FileCountValue;
+                ret.FileCountValueOffset = this.FileCountValueOffset;
+                ret.FileCountValueLength = this.FileCountValueLength;
+                ret.FileCountValueIsLittleEndian = this.FileCountValueIsLittleEndian;
+                ret.FileCountEndOffset = this.FileCountEndOffset;
+
+                // file information
+                ret.FileRecordsStartOffset = this.FileRecordsStartOffset;
+                ret.FileRecordSize = this.FileRecordSize;
+
+                ret.UsePreviousFilesSizeToDetermineOffset = this.UsePreviousFilesSizeToDetermineOffset;
+                ret.BeginCuttingFilesAtOffset = this.BeginCuttingFilesAtOffset;
+
+                ret.FileRecordOffsetOffset = this.FileRecordOffsetOffset;
+                ret.FileRecordOffsetLength = this.FileRecordOffsetLength;
+                ret.FileRecordOffsetIsLittleEndian = this.FileRecordOffsetIsLittleEndian;
+                ret.UseFileRecordOffsetMultiplier = this.UseFileRecordOffsetMultiplier;
+                ret.FileRecordOffsetMultiplier = this.FileRecordOffsetMultiplier;
+
+                ret.FileRecordLengthOffset = this.FileRecordLengthOffset;
+                ret.FileRecordLengthLength = this.FileRecordLengthLength;
+                ret.FileRecordLengthIsLittleEndian = this.FileRecordLengthIsLittleEndian;
+                ret.UseLocationOfNextFileToDetermineLength = this.UseLocationOfNextFileToDetermineLength;
+
+                ret.FileRecordNameOffset = this.FileRecordNameOffset;
+                ret.FileRecordNameLength = this.FileRecordNameLength;
+                ret.FileRecordNameIsPresent = this.FileRecordNameIsPresent;
+                
+                return ret;
+            }
         }
         
         public VfsExtractorWorker() : 
@@ -55,10 +91,12 @@ namespace VGMToolbox.tools.extract
             DoWorkEventArgs e)
         {
             VfsExtractorStruct taskStruct = (VfsExtractorStruct)pVfsExtractorStruct;
+            VfsExtractionStruct extractionStruct = taskStruct.ToVfsExtractionStruct();
+            string output;
 
+            ParseFile.ParseVirtualFileSystem(pPath, extractionStruct, out output, true, true);
 
-
-            // this.outputBuffer.Append(output);           
+            this.outputBuffer.Append(output);           
         }
     }
 }

@@ -14,6 +14,7 @@ namespace VGMToolbox.util
     {
         public const string LogFileName = "vgmt_extraction_log.txt";
         public const string SnakeBiteBatchFileName = "vgmt_extraction_log.bat";
+        public const string VirtualFileSystemExtractionFolder = "vgmt_vfs_cut";
         
         /// <summary>
         /// Prevents a default instance of the ParseFile class from being created.
@@ -913,6 +914,238 @@ namespace VGMToolbox.util
 
             messages = ret.ToString();
             return outputFolder;
+        }
+
+        public static void ParseVirtualFileSystem(string sourcePath, VfsExtractionStruct vfsInformation, out string messages, bool outputLog, bool outputBatchFile)
+        {
+            StringBuilder ret = new StringBuilder();
+            SimpleFileExtractionStruct fileItem = new SimpleFileExtractionStruct();
+            ArrayList fileItems = new ArrayList();
+
+            // determine number of files or ending offset            
+            long fileCountValue = -1;
+            long fileCountOffset = -1;
+            long fileCountLength = -1;
+            long endingOffset = -1;
+
+            using (FileStream fs = File.Open(sourcePath, FileMode.Open, FileAccess.Read))
+            {
+                if (vfsInformation.UseFileCountOffset)
+                {
+                    fileCountOffset = VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.FileCountValueOffset);
+                    fileCountLength = VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.FileCountValueLength);
+                    byte[] fileCountBytes = ParseFile.ParseSimpleOffset(fs, fileCountOffset, (int)fileCountLength);
+
+                    if (!vfsInformation.FileCountValueIsLittleEndian)
+                    {
+                        Array.Reverse(fileCountBytes);
+                    }
+
+                    switch (fileCountBytes.Length)
+                    {
+                        case 1:
+                            fileCountValue = fileCountBytes[0];
+                            break;
+                        case 2:
+                            fileCountValue = BitConverter.ToUInt16(fileCountBytes, 0);
+                            break;
+                        case 4:
+                            fileCountValue = BitConverter.ToUInt32(fileCountBytes, 0);
+                            break;
+                        default:
+                            fileCountValue = 0;
+                            break;
+                    }
+
+                }
+                else if (!String.IsNullOrEmpty(vfsInformation.FileCountEndOffset))
+                {
+                    endingOffset = VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.FileCountEndOffset);
+                }
+                else if (!String.IsNullOrEmpty(vfsInformation.FileCountValue))
+                {
+                    fileCountValue = VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.FileCountValue);
+                }
+
+                // loop over header, building file list
+                long currentOffset = VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.FileRecordsStartOffset);
+                long recordSize = VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.FileRecordSize);
+                long currentFileCount = 0;
+
+                while (!(((fileCountValue > 0) && (currentFileCount >= fileCountValue)) ||
+                        ((endingOffset > 0) && (currentOffset >= endingOffset))))
+                {
+
+                    fileItem = GetNextVfsRecord(fs, vfsInformation, currentOffset, currentFileCount, sourcePath);
+
+                    fileItems.Add(fileItem);
+
+                    currentFileCount++;
+                    currentOffset += recordSize;
+                }
+
+                // loop through list, extracting files
+                SimpleFileExtractionStruct[] fileItemArray =
+                    (SimpleFileExtractionStruct[])fileItems.ToArray(typeof(SimpleFileExtractionStruct));
+                long previousCutOffset = -1;
+                long previousCutLength = -1;
+                long cutOffset;
+                long cutLength;
+                                
+                for (int j = 0; j < fileItemArray.Length; j++)
+                {
+                    if (vfsInformation.UsePreviousFilesSizeToDetermineOffset)
+                    {
+                        if (previousCutOffset == -1)
+                        {
+                            cutOffset = VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.BeginCuttingFilesAtOffset);
+                        }
+                        else
+                        {
+                            cutOffset = previousCutOffset + previousCutLength;
+                        }
+
+                        cutLength = fileItemArray[j].FileLength;
+                    }
+                    else if (vfsInformation.UseLocationOfNextFileToDetermineLength)
+                    {
+                        cutOffset = fileItemArray[j].FileOffset;
+
+                        if (j < (fileItemArray.Length - 1))
+                        {
+                            cutLength = fileItemArray[j + 1].FileOffset - fileItemArray[j].FileOffset;
+                        }
+                        else // use EOF
+                        {
+                            cutLength = fs.Length - fileItemArray[j].FileOffset;
+                        }
+                    }
+                    else
+                    {
+                        cutOffset = fileItemArray[j].FileOffset;
+                        cutLength = fileItemArray[j].FileLength;
+                    }
+
+                    ParseFile.ExtractChunkToFile(fs, cutOffset, (int)cutLength, fileItemArray[j].FilePath, outputLog, outputBatchFile);
+                    ret.AppendFormat("{0} extracted.{1}", Path.GetFileName(fileItemArray[j].FilePath), Environment.NewLine);
+
+                    previousCutOffset = cutOffset;
+                    previousCutLength = cutLength;
+                }
+
+            } // using (FileStream fs = File.Open(sourcePath, FileMode.Open, FileAccess.Read))
+            
+
+
+
+
+
+
+            // return output messages
+            messages = ret.ToString();
+        }
+
+        private static SimpleFileExtractionStruct GetNextVfsRecord(
+            Stream vfsStream, 
+            VfsExtractionStruct vfsInformation, 
+            long currentStreamOffset,
+            long currentFileNumber, 
+            string sourceFilePath)
+        {
+            SimpleFileExtractionStruct newFileItem = new SimpleFileExtractionStruct();
+            string destinationDirectory = Path.Combine(Path.GetDirectoryName(sourceFilePath), VirtualFileSystemExtractionFolder);
+            string newFileName;
+
+            //----------
+            // get name
+            //----------
+            if (vfsInformation.FileRecordNameIsPresent)
+            {
+                long nameOffset = currentStreamOffset + VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.FileRecordNameOffset);
+                long nameLength = VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.FileRecordNameLength);
+                byte[] nameBytes = ParseSimpleOffset(vfsStream, nameOffset, (int)nameLength);
+                nameBytes = FileUtil.ReplaceNullByteWithSpace(nameBytes);
+                newFileName = VGMToolbox.util.Encoding.GetAsciiText(nameBytes).Trim();
+            }
+            else
+            { 
+                newFileName = String.Format(
+                                "{0}_{1}.bin", 
+                                Path.GetFileNameWithoutExtension(sourceFilePath), 
+                                currentFileNumber.ToString("X8"));
+            }
+
+            newFileItem.FilePath = Path.Combine(destinationDirectory, newFileName);
+
+            //------------
+            // get offset
+            //------------
+            if (!vfsInformation.UsePreviousFilesSizeToDetermineOffset)
+            {
+                long fileOffsetOffset = currentStreamOffset + VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.FileRecordOffsetOffset);
+                long fileOffsetLength = VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.FileRecordOffsetLength);
+                byte[] fileOffsetBytes = ParseSimpleOffset(vfsStream, fileOffsetOffset, (int)fileOffsetLength);                
+
+                if (!vfsInformation.FileRecordOffsetIsLittleEndian)
+                {
+                    Array.Reverse(fileOffsetBytes);
+                }
+
+                switch (fileOffsetBytes.Length)
+                {
+                    case 1:
+                        newFileItem.FileOffset = fileOffsetBytes[0];
+                        break;
+                    case 2:
+                        newFileItem.FileOffset = BitConverter.ToUInt16(fileOffsetBytes, 0);
+                        break;
+                    case 4:
+                        newFileItem.FileOffset = BitConverter.ToUInt32(fileOffsetBytes, 0);
+                        break;
+                    default:
+                        newFileItem.FileOffset = -1;
+                        break;
+                }
+
+                if (vfsInformation.UseFileRecordOffsetMultiplier)
+                {
+                    long offsetMultiplier = VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.FileRecordOffsetMultiplier);
+                    newFileItem.FileOffset *= offsetMultiplier;
+                }
+            }
+
+            //------------
+            // get length
+            //------------
+            if (!vfsInformation.UseLocationOfNextFileToDetermineLength)
+            {
+                long fileLengthOffset = currentStreamOffset + VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.FileRecordLengthOffset);
+                long fileLengthLength = VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.FileRecordLengthLength);
+                byte[] fileLengthBytes = ParseSimpleOffset(vfsStream, fileLengthOffset, (int)fileLengthLength);
+
+                if (!vfsInformation.FileRecordLengthIsLittleEndian)
+                {
+                    Array.Reverse(fileLengthBytes);
+                }
+
+                switch (fileLengthBytes.Length)
+                {
+                    case 1:
+                        newFileItem.FileLength = fileLengthBytes[0];
+                        break;
+                    case 2:
+                        newFileItem.FileLength = BitConverter.ToUInt16(fileLengthBytes, 0);
+                        break;
+                    case 4:
+                        newFileItem.FileLength = BitConverter.ToUInt32(fileLengthBytes, 0);
+                        break;
+                    default:
+                        newFileItem.FileLength = -1;
+                        break;
+                }
+            }
+
+            return newFileItem;
         }
     }
 }

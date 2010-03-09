@@ -9,6 +9,7 @@ namespace manakut
         static void Main(string[] args)
         {
             const string LBA_SWITCH = "/LBA";
+            const string MULTIPLIER_SWITCH = "/M";
 
             string inFilename;
             string outFilename;
@@ -22,14 +23,19 @@ namespace manakut
             long longCutSize;
 
             bool doLba = false;
+            bool doMultiplier = false;
+            string multiplierChunk;
+            long multiplierValue = 1;
+            char[] multiplierSplitParam = new char[1] { '=' };
 
             if (args.Length < 3)
             {
-                Console.WriteLine("Usage: manakut.exe <infile> <outfile> <start offset> <cut size> [/lba]");
-                Console.WriteLine("   or: manakut.exe <infile> <outfile> <start offset> [/lba]");
+                Console.WriteLine("Usage: manakut.exe <infile> <outfile> <start offset> <cut size> [/lba|/m=<multiplier>]");
+                Console.WriteLine("   or: manakut.exe <infile> <outfile> <start offset> [/lba|/m=<multiplier>]");
                 Console.WriteLine();
                 Console.WriteLine("The 4 parameter option will read from <start offset> to EOF.");
                 Console.WriteLine("Use the /lba switch to multiply start offset by 0x800.");
+                Console.WriteLine("Use the /m switch to multiply start offset by the value after the equals sign.");
                 Console.WriteLine(String.Format("The only current limitation is that cut size cannot exceed [{0}].", int.MaxValue.ToString()));
             }
             else
@@ -48,50 +54,51 @@ namespace manakut
 
                     using (FileStream fs = File.OpenRead(fullInputPath))
                     {
+                        longStartOffset = VGMToolbox.util.Encoding.GetLongValueFromString(startOffset);
 
-                        if (startOffset.StartsWith("0x"))
-                        {
-                            startOffset = startOffset.Substring(2);
-                            longStartOffset = long.Parse(startOffset, System.Globalization.NumberStyles.HexNumber, null);
-                        }
-                        else
-                        {
-                            longStartOffset = long.Parse(startOffset, System.Globalization.NumberStyles.Integer, null);
-                        }
-
-                        // check for LBA switch
+                        // check for LBA or MULTIPLIER switch
                         if ((args.Length > 4) && (args[4].ToUpper().Equals(LBA_SWITCH)))
                         {
                             doLba = true;
+                        }
+                        else if ((args.Length > 4) && (args[4].ToUpper().Substring(0, 2).Equals(MULTIPLIER_SWITCH)))
+                        {
+                            doMultiplier = true;
+                            multiplierChunk = args[4].Split(multiplierSplitParam)[1];
+                            multiplierValue = VGMToolbox.util.Encoding.GetLongValueFromString(multiplierChunk);
                         }
                         else if ((args.Length > 3) && (args[3].ToUpper().Equals(LBA_SWITCH)))
                         {
                             doLba = true;
                         }
+                        else if ((args.Length > 3) && (args[3].ToUpper().Substring(0, 2).Equals(MULTIPLIER_SWITCH)))
+                        {
+                            doMultiplier = true;
+                            multiplierChunk = args[3].Split(multiplierSplitParam)[1];
+                            multiplierValue = VGMToolbox.util.Encoding.GetLongValueFromString(multiplierChunk);
+                        }
 
-                        if ((args.Length > 3) && (!args[3].ToUpper().Equals(LBA_SWITCH)))
+                        // GET CUTSIZE
+                        if ((args.Length > 3) && 
+                            (!args[3].ToUpper().Equals(LBA_SWITCH)) &&
+                            (!args[3].ToUpper().Substring(0, 2).Equals(MULTIPLIER_SWITCH)))
                         {
                             cutSize = args[3];
-
-                            if (cutSize.StartsWith("0x"))
-                            {
-                                cutSize = cutSize.Substring(2);
-                                longCutSize = long.Parse(cutSize, System.Globalization.NumberStyles.HexNumber, null);
-                            }
-                            else
-                            {
-                                longCutSize = long.Parse(cutSize, System.Globalization.NumberStyles.Integer, null);
-                            }
+                            longCutSize = VGMToolbox.util.Encoding.GetLongValueFromString(cutSize);
                         }
                         else
                         {
                             longCutSize = fs.Length - longStartOffset;
                         }
 
-                        // set LBA values
+                        // set LBA/MULTIPLIER values
                         if (doLba)
                         {
                             longStartOffset *= 0x800;
+                        }
+                        else if (doMultiplier)
+                        {
+                            longStartOffset *= multiplierValue;
                         }
 
                         if (longCutSize > (long)int.MaxValue)

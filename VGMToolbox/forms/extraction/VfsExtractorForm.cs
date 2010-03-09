@@ -11,25 +11,37 @@ using VGMToolbox.tools.extract;
 
 namespace VGMToolbox.forms.extraction
 {
-    public partial class VfsExtractorForm : VgmtForm
+    public partial class VfsExtractorForm : AVgmtForm
     {
         public VfsExtractorForm(TreeNode pTreeNode)
             : base(pTreeNode)
         {
             InitializeComponent();
-            
+
+            this.btnDoTask.Hide();
+            this.lblTitle.Text = "Virtual File System (VFS) Extractor";
+            this.tbOutput.Text = "Extract files from simple VFS archives.";
+
             // file count
             this.createFileCountOffsetSizeList();
             this.createFileCountOffsetEndianList();
             this.rbFileCountEndOffset.Checked = true;
 
             // file record
+            this.rbUseVfsFileOffset.Checked = true;
             this.createFileRecordSizeList();
             this.createFileRecordOffsetSizeList();
             this.createFileRecordOffsetEndianList();
+
+            this.doFileRecordOffsetRadioButtons();
             this.doCbOffsetMultiplier();
+
+            this.rbUseVfsFileLength.Checked = true;
             this.createFileRecordLengthSizeList();
             this.createFileRecordLengthEndianList();
+            this.doFileRecordLengthRadioButtons();
+
+            this.doFileRecordNameCheckbox();
         }
 
         protected override IVgmtBackgroundWorker getBackgroundWorker()
@@ -58,7 +70,9 @@ namespace VGMToolbox.forms.extraction
             if (this.validateInputs())
             {
                 string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+                
                 VfsExtractorWorker.VfsExtractorStruct bgStruct = new VfsExtractorWorker.VfsExtractorStruct();
+                bgStruct.SourcePaths = s;
 
                 // File Count            
                 bgStruct.UseFileCountOffset = this.rbOffsetBasedFileCount.Checked;
@@ -66,6 +80,7 @@ namespace VGMToolbox.forms.extraction
                 bgStruct.FileCountValueOffset = this.tbFileCountOffset.Text;
                 bgStruct.FileCountValueLength = this.comboFileCountOffsetSize.Text;
                 bgStruct.FileCountValueIsLittleEndian = this.comboFileCountByteOrder.Text.Equals(VfsExtractorWorker.LITTLE_ENDIAN);
+                bgStruct.FileCountEndOffset = this.tbFileCountEndOffset.Text;
 
                 // File Records
                 bgStruct.FileRecordsStartOffset = this.tbFileRecordsBeginOffset.Text;
@@ -75,7 +90,7 @@ namespace VGMToolbox.forms.extraction
 
                 bgStruct.FileRecordOffsetOffset = this.tbFileRecordOffsetOffset.Text;
                 bgStruct.FileRecordOffsetLength = this.comboFileRecordOffsetSize.Text;
-                bgStruct.FileRecordOffsetIsLittleEndian = this.comboFileRecordLengthByteOrder.Text.Equals(VfsExtractorWorker.LITTLE_ENDIAN);
+                bgStruct.FileRecordOffsetIsLittleEndian = this.comboFileRecordOffsetByteOrder.Text.Equals(VfsExtractorWorker.LITTLE_ENDIAN);
                 bgStruct.UseFileRecordOffsetMultiplier = this.cbUseOffsetMultiplier.Checked;
                 bgStruct.FileRecordOffsetMultiplier = this.tbFileRecordOffsetMultiplier.Text;
 
@@ -272,6 +287,7 @@ namespace VGMToolbox.forms.extraction
         {
             this.doFileRecordOffsetRadioButtons();
         }
+        
         private void doCbOffsetMultiplier()
         {
             if (this.cbUseOffsetMultiplier.Checked)
@@ -291,6 +307,23 @@ namespace VGMToolbox.forms.extraction
             this.doCbOffsetMultiplier();
         }
 
+        private void doFileRecordLengthRadioButtons()
+        {
+            if (this.rbUseVfsFileLength.Checked)
+            {
+                this.tbFileRecordLengthOffset.Enabled = true;
+                this.tbFileRecordLengthOffset.ReadOnly = false;
+                this.comboFileRecordLengthSize.Enabled = true;
+                this.comboFileRecordLengthByteOrder.Enabled = true;
+            }
+            else if (this.rbUseOffsetsToDetermineLength.Checked)
+            {
+                this.tbFileRecordLengthOffset.Enabled = false;
+                this.tbFileRecordLengthOffset.ReadOnly = true;
+                this.comboFileRecordLengthSize.Enabled = false;
+                this.comboFileRecordLengthByteOrder.Enabled = false;            
+            }
+        }
         private void createFileRecordLengthSizeList()
         {
             this.comboFileRecordLengthSize.Items.Add("1");
@@ -301,6 +334,36 @@ namespace VGMToolbox.forms.extraction
         {
             this.comboFileRecordLengthByteOrder.Items.Add(VfsExtractorWorker.BIG_ENDIAN);
             this.comboFileRecordLengthByteOrder.Items.Add(VfsExtractorWorker.LITTLE_ENDIAN);
+        }
+        private void rbUseVfsFileLength_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doFileRecordLengthRadioButtons();
+        }
+        private void rbUseOffsetsToDetermineLength_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doFileRecordLengthRadioButtons();
+        }
+
+        private void doFileRecordNameCheckbox()
+        {
+            if (this.cbFileNameIsPresent.Checked)
+            {
+                this.tbFileRecordNameOffset.Enabled = true;
+                this.tbFileRecordNameOffset.ReadOnly = false;
+                this.tbFileRecordNameSize.Enabled = true;
+                this.tbFileRecordNameSize.ReadOnly = false;
+            }
+            else
+            {
+                this.tbFileRecordNameOffset.Enabled = false;
+                this.tbFileRecordNameOffset.ReadOnly = true;
+                this.tbFileRecordNameSize.Enabled = false;
+                this.tbFileRecordNameSize.ReadOnly = true;            
+            }
+        }
+        private void cbFileNameIsPresent_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doFileRecordNameCheckbox();
         }
     }
 }

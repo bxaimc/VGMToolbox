@@ -322,7 +322,54 @@ namespace VGMToolbox.util
             get { return filePath; }
             set { filePath = value; }
         }
-    } 
+    }
+
+    public struct VfsExtractionStruct
+    {
+        // total files
+        public bool UseFileCountOffset { set; get; }
+        public string FileCountValue { set; get; }       // user entered value
+        public string FileCountValueOffset { set; get; } // file count is in VFS
+        public string FileCountValueLength { set; get; }
+        public bool FileCountValueIsLittleEndian { set; get; }
+        public string FileCountEndOffset { set; get; }
+
+        // file information
+        public string FileRecordsStartOffset { set; get; }
+        public string FileRecordSize { set; get; }
+
+        public bool UsePreviousFilesSizeToDetermineOffset { set; get; }
+        public string BeginCuttingFilesAtOffset { set; get; }
+
+        public string FileRecordOffsetOffset { set; get; }
+        public string FileRecordOffsetLength { set; get; }
+        public bool FileRecordOffsetIsLittleEndian { set; get; }
+        public bool UseFileRecordOffsetMultiplier { set; get; }
+        public string FileRecordOffsetMultiplier { set; get; }
+
+        public string FileRecordLengthOffset { set; get; }
+        public string FileRecordLengthLength { set; get; }
+        public bool FileRecordLengthIsLittleEndian { set; get; }
+        public bool UseLocationOfNextFileToDetermineLength { set; get; }
+
+        public string FileRecordNameOffset { set; get; }
+        public string FileRecordNameLength { set; get; }
+        public bool FileRecordNameIsPresent { set; get; }
+    }
+
+    public struct SimpleFileExtractionStruct
+    {
+        public string FilePath { set; get; }
+        public long FileOffset { set; get; }
+        public long FileLength { set; get; }
+
+        public void Clear()
+        {
+            this.FilePath = String.Empty;
+            this.FileOffset = -1;
+            this.FileLength = -1;
+        }
+    }
 
     /// <summary>
     /// Class containing universal constants.

@@ -331,7 +331,7 @@ namespace VGMToolbox.format.util
                     }
                     else if (br.BaseStream.Position >= 0x11)
                     {
-                        br.BaseStream.Position -= 0x10 - 0x01;
+                        br.BaseStream.Position -= 0x11;
                     }
                     else
                     {
