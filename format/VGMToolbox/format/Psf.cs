@@ -169,8 +169,7 @@ namespace VGMToolbox.format
             long offsetToCheck,
             ProbableItemStruct previousItem,
             ProbableItemStruct[][] existingItemLocations,
-            int maximumSampleSize,
-            bool onlyZeroOffsetAllowed)
+            int maximumSampleSize)
         {
             ProbableItemStruct probableAdpcmItem = new ProbableItemStruct();
             byte[] adpcmRow = new byte[0x10];
@@ -182,6 +181,7 @@ namespace VGMToolbox.format
             // check for potential sony adpcm signature
             if (IsPotentialAdpcm(searchStream, offsetToCheck + 0x10, MIN_ADPCM_ROW_SIZE))
             {
+                /*
                 // check if we have passed a different file type and reset previousVbOffset if we did
                 foreach (ProbableItemStruct[] items in existingItemLocations)
                 {
@@ -192,8 +192,7 @@ namespace VGMToolbox.format
                     }
                 }
                 
-
-                // check if we have exceeded the max sample size and reset previous offset
+                // check if we have exceeded the max sample size and set error flag
                 //  so the chunk size check doesn't apply
                 if (!errorExists &&
                     (previousItem.offset != -1) &&
@@ -203,11 +202,14 @@ namespace VGMToolbox.format
                 }
 
                 // try to preserve proper VB chunk size
-                if ((previousItem.offset == -1) ||
+                if (errorExists || 
+                    (previousItem.offset == -1) ||
                     ((offsetToCheck - previousItem.offset) % 0x10 == 0))
                 {
                     probableAdpcmItem.offset = offsetToCheck;
                 }
+                */
+                probableAdpcmItem.offset = offsetToCheck;
             }
 
             return probableAdpcmItem;

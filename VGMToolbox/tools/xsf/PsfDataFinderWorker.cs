@@ -300,7 +300,7 @@ namespace VGMToolbox.tools.xsf
                     if (!CancellationPending)
                     {
                         try
-                        {
+                        {                            
                             vbRow = ParseFile.ParseSimpleOffset(fs, offset, vbRow.Length);
 
                             // check for potential sony adpcm signature, and also make sure this offset is not inside another
