@@ -14,6 +14,12 @@ namespace VGMToolbox.format
         {
             public long offset;
             public uint length;
+
+            public void Init()
+            {
+                offset = -1;
+                length = 0;
+            }
         }
 
         public const uint MIN_TEXT_SECTION_OFFSET = 0x80010000;
@@ -42,6 +48,7 @@ namespace VGMToolbox.format
 
         public static int MIN_ADPCM_ROW_COUNT = 10;
         public static int MIN_ADPCM_ROW_SIZE = MIN_ADPCM_ROW_COUNT * 0x10;
+        public static double MIN_SAMPLE_MATCH_PERCENTAGE = 0.05f; // 5%
 
         public static ArrayList GetSeqFileList(Stream fs, bool UseSeqMinimumSize, int MinimumSeqSize)
         {
@@ -152,6 +159,78 @@ namespace VGMToolbox.format
                     ret = false;
                     break;
                 }
+            }
+
+            return ret;
+        }
+
+        public static ProbableItemStruct GetPotentialAdpcmItem(
+            Stream searchStream,
+            long offsetToCheck,
+            ProbableItemStruct previousItem,
+            ProbableItemStruct[][] existingItemLocations,
+            int maximumSampleSize,
+            bool onlyZeroOffsetAllowed)
+        {
+            ProbableItemStruct probableAdpcmItem = new ProbableItemStruct();
+            byte[] adpcmRow = new byte[0x10];
+            bool errorExists = false;
+
+            probableAdpcmItem.Init();
+            adpcmRow = ParseFile.ParseSimpleOffset(searchStream, offsetToCheck, adpcmRow.Length);
+
+            // check for potential sony adpcm signature
+            if (IsPotentialAdpcm(searchStream, offsetToCheck + 0x10, MIN_ADPCM_ROW_SIZE))
+            {
+                // check if we have passed a different file type and reset previousVbOffset if we did
+                foreach (ProbableItemStruct[] items in existingItemLocations)
+                {
+                    if (SteppedOverAnotherFile(previousItem.offset, offsetToCheck, items))
+                    {
+                        errorExists = true;
+                        break;
+                    }
+                }
+                
+
+                // check if we have exceeded the max sample size and reset previous offset
+                //  so the chunk size check doesn't apply
+                if (!errorExists &&
+                    (previousItem.offset != -1) &&
+                    ((offsetToCheck - previousItem.offset) > maximumSampleSize))
+                {
+                    errorExists = true;
+                }
+
+                // try to preserve proper VB chunk size
+                if ((previousItem.offset == -1) ||
+                    ((offsetToCheck - previousItem.offset) % 0x10 == 0))
+                {
+                    probableAdpcmItem.offset = offsetToCheck;
+                }
+            }
+
+            return probableAdpcmItem;
+        }
+
+        // check if the offsets have "stepped" over another file
+        private static bool SteppedOverAnotherFile(long previousOffset, long currentOffset, 
+            ProbableItemStruct[] items)
+        {
+            bool ret = false;
+
+            if (previousOffset != -1)
+            {
+                for (int i = 0; i < items.Length; i++)
+                {
+                    if ((previousOffset < items[i].offset) &&
+                        (currentOffset > items[i].offset))
+                    {
+                        ret = true;
+                        break;
+                    }
+                }
+
             }
 
             return ret;

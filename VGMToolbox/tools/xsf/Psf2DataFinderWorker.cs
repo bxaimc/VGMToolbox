@@ -33,6 +33,7 @@ namespace VGMToolbox.tools.xsf
             public long[] vagInfoOffsetAddr;
             public long[] vagOffset;
             public long[] vagLengths;
+            public bool IsSmallSamplePresent { set; get; }
 
             public string FileName;
             public long startingOffset;
@@ -41,18 +42,6 @@ namespace VGMToolbox.tools.xsf
             public long expectedBdLength;
             public long bdStartingOffset;
             public long bdLength;
-        }
-
-        public struct ProbableBdStruct
-        {
-            public long offset;
-            public uint length;
-        }
-
-        public struct ProbableSqStruct
-        {
-            public long offset;
-            public uint length;
         }
 
         public Psf2DataFinderWorker() { }
@@ -66,7 +55,7 @@ namespace VGMToolbox.tools.xsf
             uint sqLength;
             string sqName;
             int sqNumber = 0;
-            ProbableSqStruct sqEntry;
+            Psf2.ProbableItemStruct sqEntry;
             ArrayList sqFiles = new ArrayList();
             bool sqNamingMessageDisplayed = false;
 
@@ -78,8 +67,8 @@ namespace VGMToolbox.tools.xsf
             ArrayList hdArrayList = new ArrayList();
 
             ArrayList emptyRowList = new ArrayList();
-            ProbableBdStruct potentialBd;
-            ProbableBdStruct[] potentialBdList;
+            Psf2.ProbableItemStruct potentialBd;
+            Psf2.ProbableItemStruct[] potentialBdList;
             byte[] bdRow = new byte[0x10];
 
             // display file name
@@ -119,6 +108,7 @@ namespace VGMToolbox.tools.xsf
                     hdObject.vagInfoOffsetAddr = new long[hdObject.maxVagInfoNumber + 1];
                     hdObject.vagOffset = new long[hdObject.maxVagInfoNumber + 1];
                     hdObject.vagLengths = new long[hdObject.maxVagInfoNumber];
+                    hdObject.IsSmallSamplePresent = false;
 
                     for (int i = 0; i <= hdObject.maxVagInfoNumber; i++)
                     {
@@ -128,6 +118,11 @@ namespace VGMToolbox.tools.xsf
                         if (i > 0)
                         {
                             hdObject.vagLengths[i - 1] = hdObject.vagOffset[i] - hdObject.vagOffset[i - 1];
+
+                            if (hdObject.vagLengths[i - 1] < Psf2.MIN_ADPCM_ROW_SIZE)
+                            {
+                                hdObject.IsSmallSamplePresent = true;
+                            }
                         }
                     }
 
@@ -145,7 +140,7 @@ namespace VGMToolbox.tools.xsf
                 this.progressStruct.GenericMessage = String.Format("  Extracting SQ{0}", Environment.NewLine);
                 this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
 
-                sqEntry = new ProbableSqStruct();
+                sqEntry = new Psf2.ProbableItemStruct();
                 offset = 0;
 
                 // build file list
@@ -164,7 +159,7 @@ namespace VGMToolbox.tools.xsf
                     offset += 1;
                 }
 
-                foreach (ProbableSqStruct sq in sqFiles)
+                foreach (Psf2.ProbableItemStruct sq in sqFiles)
                 {
                     if (psf2Struct.ReorderSqFiles)
                     {
@@ -210,10 +205,15 @@ namespace VGMToolbox.tools.xsf
                 offset = 0;
 
                 // build list of potential adpcm start indexes
-                potentialBd = new ProbableBdStruct();
+                potentialBd = new Psf2.ProbableItemStruct();
 
                 while ((offset = ParseFile.GetNextOffset(fs, offset, Psf2.VB_START_BYTES, false)) > -1)
                 {
+                    //if (offset == 0x1DD3800)
+                    //{
+                    //    int fff = 1;
+                    //}
+                    
                     if ((psf2Struct.UseZeroOffsetForBd) && (offset % 0x10 == 0) ||
                         (!psf2Struct.UseZeroOffsetForBd))
                     {
@@ -239,7 +239,7 @@ namespace VGMToolbox.tools.xsf
                     offset += 1;
                 }
 
-                potentialBdList = (ProbableBdStruct[])emptyRowList.ToArray(typeof(ProbableBdStruct));
+                potentialBdList = (Psf2.ProbableItemStruct[])emptyRowList.ToArray(typeof(Psf2.ProbableItemStruct));
 
                 // set probable lengths
                 for (int i = 0; i < potentialBdList.Length; i++)
@@ -271,6 +271,11 @@ namespace VGMToolbox.tools.xsf
                     }
                     else
                     {
+                        if (i == 0x9E)
+                        {
+                            int ggg = 1;
+                        }
+                        
                         for (int j = 0; j < potentialBdList.Length; j++)
                         {
                             // we have a potential match or are at the last item.
@@ -311,7 +316,7 @@ namespace VGMToolbox.tools.xsf
                                 catch (Exception ex)
                                 {
                                     this.progressStruct.Clear();
-                                    this.progressStruct.ErrorMessage = String.Format(" ERROR building BD for <{0}>: {1}{2}", pPath, ex.Message, Environment.NewLine);
+                                    this.progressStruct.ErrorMessage = String.Format("     ERROR building BD for <{0}>: {1}{2}", pPath, ex.Message, Environment.NewLine);
                                     this.ReportProgress(this.progress, this.progressStruct);
                                 }
                             }
@@ -323,7 +328,7 @@ namespace VGMToolbox.tools.xsf
         }
 
         private HdStruct PopulateBdOffsetLength(Stream searchStream,
-            ProbableBdStruct[] potentialBdList, int potentialBdStartIndex,
+            Psf2.ProbableItemStruct[] potentialBdList, int potentialBdStartIndex,
             HdStruct hdObject)
         {
             HdStruct ret = hdObject;
@@ -369,8 +374,47 @@ namespace VGMToolbox.tools.xsf
                     }
                     else if (hdObject.vagLengths[i] != potentialBdList[potentialBdStartIndex + i].length)
                     {
-                        ret.bdStartingOffset = -1;
-                        ret.bdLength = -1;
+                        // if we have a small sample, and a minimum number of matches, check the expected length
+                        if (hdObject.IsSmallSamplePresent)
+                        {
+                            double matchPercentage = (double)i / (double)hdObject.vagLengths.Length;
+
+                            if (matchPercentage >= Psf2.MIN_SAMPLE_MATCH_PERCENTAGE)
+                            {
+                                // check last row for expected length
+                                searchStream.Position = potentialBdList[potentialBdStartIndex].offset + hdObject.expectedBdLength - lastLine.Length;
+                                searchStream.Read(lastLine, 0, lastLine.Length);
+
+                                if (lastLine[1] == 3 ||
+                                    ParseFile.CompareSegment(lastLine, 0, Psf2.VB_END_BYTES_1) ||
+                                    ParseFile.CompareSegment(lastLine, 0, Psf2.VB_END_BYTES_2))
+                                {
+                                    ret.bdStartingOffset = potentialBdList[potentialBdStartIndex].offset;
+                                    ret.bdLength = hdObject.expectedBdLength;
+
+                                    this.progressStruct.Clear();
+                                    this.progressStruct.GenericMessage = String.Format("     HD <{0}> contains a sample smaller than 0x{1}, partial matching will be used.  Be sure to thoroughly listen to assembled files.{2}", ret.FileName, Psf2.MIN_ADPCM_ROW_SIZE.ToString("X8"), Environment.NewLine);
+                                    this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
+
+                                }
+                                else // reset in case a match has already been found for this HD
+                                {
+                                    ret.bdStartingOffset = 0;
+                                    ret.bdLength = 0;
+                                }
+                            }
+                            else // reset in case a match has already been found for this HD
+                            {
+                                ret.bdStartingOffset = 0;
+                                ret.bdLength = 0;
+                            }
+                        }
+                        else
+                        {
+                            ret.bdStartingOffset = -1;
+                            ret.bdLength = -1;
+                        }
+                        
                         break;
                     }
                 }
