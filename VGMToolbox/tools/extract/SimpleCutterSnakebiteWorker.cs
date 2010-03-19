@@ -39,16 +39,16 @@ namespace VGMToolbox.tools.extract
 
             using (FileStream fs = File.OpenRead(pPath))
             {
-                long startOffset = VGMToolbox.util.Encoding.GetLongValueFromString(simpleCutterSnakebiteStruct.StartOffset);
+                long startOffset = VGMToolbox.util.ByteConversion.GetLongValueFromString(simpleCutterSnakebiteStruct.StartOffset);
                 long cutLength = -1;
 
                 if (simpleCutterSnakebiteStruct.UseEndAddress)
                 {
-                    cutLength = (VGMToolbox.util.Encoding.GetLongValueFromString(simpleCutterSnakebiteStruct.EndAddress) - startOffset) + 1;
+                    cutLength = (VGMToolbox.util.ByteConversion.GetLongValueFromString(simpleCutterSnakebiteStruct.EndAddress) - startOffset) + 1;
                 }
                 else if (simpleCutterSnakebiteStruct.UseLength)
                 {
-                    cutLength = VGMToolbox.util.Encoding.GetLongValueFromString(simpleCutterSnakebiteStruct.Length);
+                    cutLength = VGMToolbox.util.ByteConversion.GetLongValueFromString(simpleCutterSnakebiteStruct.Length);
                 }
                 else if (simpleCutterSnakebiteStruct.UseFileEnd)
                 {

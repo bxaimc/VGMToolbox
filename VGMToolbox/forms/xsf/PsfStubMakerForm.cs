@@ -268,15 +268,15 @@ namespace VGMToolbox.forms.xsf
                 {
                     // calculate locations
                     vbLocation = Psf.MAX_TEXT_SECTION_OFFSET -
-                        (uint)VGMToolbox.util.Encoding.GetLongValueFromString(this.tbMyVbSize.Text);
+                        (uint)VGMToolbox.util.ByteConversion.GetLongValueFromString(this.tbMyVbSize.Text);
                     vhLocation = vbLocation -
-                        (uint)VGMToolbox.util.Encoding.GetLongValueFromString(this.tbMyVhSize.Text);
+                        (uint)VGMToolbox.util.ByteConversion.GetLongValueFromString(this.tbMyVhSize.Text);
                     seqLocation = vhLocation -
-                        (uint)VGMToolbox.util.Encoding.GetLongValueFromString(this.tbMySeqSize.Text);
+                        (uint)VGMToolbox.util.ByteConversion.GetLongValueFromString(this.tbMySeqSize.Text);
                     paramLocation = seqLocation -
-                        (uint)VGMToolbox.util.Encoding.GetLongValueFromString(this.tbPadDrvParamSize.Text);
+                        (uint)VGMToolbox.util.ByteConversion.GetLongValueFromString(this.tbPadDrvParamSize.Text);
                     psdrvLocation = paramLocation -
-                        (uint)VGMToolbox.util.Encoding.GetLongValueFromString(this.tbPsfDrvSize.Text);
+                        (uint)VGMToolbox.util.ByteConversion.GetLongValueFromString(this.tbPsfDrvSize.Text);
 
                     // update form
                     this.tbPsfDrvLoad.Text = "0x" + psdrvLocation.ToString("X8");

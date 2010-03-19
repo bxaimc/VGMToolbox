@@ -168,6 +168,12 @@
     <Compile Include="forms\extraction\ExtractCdxaForm.Designer.cs">
       <DependentUpon>ExtractCdxaForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\extraction\ExtractSonyAdpcmForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\extraction\ExtractSonyAdpcmForm.Designer.cs">
+      <DependentUpon>ExtractSonyAdpcmForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\extraction\MidiExtractorForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -583,6 +589,9 @@
     <Compile Include="tools\extract\ExtractMidiWorker.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\extract\ExtractSonyAdpcmWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\extract\GzipExtractorWorker.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -879,6 +888,9 @@
     <EmbeddedResource Include="forms\extraction\ExtractCdxaForm.resx">
       <DependentUpon>ExtractCdxaForm.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\extraction\ExtractSonyAdpcmForm.resx">
+      <DependentUpon>ExtractSonyAdpcmForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\extraction\MidiExtractorForm.resx">
       <DependentUpon>MidiExtractorForm.cs</DependentUpon>

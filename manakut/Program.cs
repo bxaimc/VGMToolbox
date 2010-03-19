@@ -54,7 +54,7 @@ namespace manakut
 
                     using (FileStream fs = File.OpenRead(fullInputPath))
                     {
-                        longStartOffset = VGMToolbox.util.Encoding.GetLongValueFromString(startOffset);
+                        longStartOffset = VGMToolbox.util.ByteConversion.GetLongValueFromString(startOffset);
 
                         // check for LBA or MULTIPLIER switch
                         if ((args.Length > 4) && (args[4].ToUpper().Equals(LBA_SWITCH)))
@@ -65,7 +65,7 @@ namespace manakut
                         {
                             doMultiplier = true;
                             multiplierChunk = args[4].Split(multiplierSplitParam)[1];
-                            multiplierValue = VGMToolbox.util.Encoding.GetLongValueFromString(multiplierChunk);
+                            multiplierValue = VGMToolbox.util.ByteConversion.GetLongValueFromString(multiplierChunk);
                         }
                         else if ((args.Length > 3) && (args[3].ToUpper().Equals(LBA_SWITCH)))
                         {
@@ -75,7 +75,7 @@ namespace manakut
                         {
                             doMultiplier = true;
                             multiplierChunk = args[3].Split(multiplierSplitParam)[1];
-                            multiplierValue = VGMToolbox.util.Encoding.GetLongValueFromString(multiplierChunk);
+                            multiplierValue = VGMToolbox.util.ByteConversion.GetLongValueFromString(multiplierChunk);
                         }
 
                         // GET CUTSIZE
@@ -84,7 +84,7 @@ namespace manakut
                             (!args[3].ToUpper().Substring(0, 2).Equals(MULTIPLIER_SWITCH)))
                         {
                             cutSize = args[3];
-                            longCutSize = VGMToolbox.util.Encoding.GetLongValueFromString(cutSize);
+                            longCutSize = VGMToolbox.util.ByteConversion.GetLongValueFromString(cutSize);
                         }
                         else
                         {

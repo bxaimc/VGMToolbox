@@ -7,7 +7,7 @@ namespace VGMToolbox.util
     /// <summary>
     /// Class containing static text conversion functions.
     /// </summary>
-    public sealed class Encoding
+    public sealed class ByteConversion
     {
         /// <summary>
         /// Codepage value for Shift JIS (Jp)
@@ -23,7 +23,7 @@ namespace VGMToolbox.util
         /// </summary>
         public const int CodePageOEM = 437;
 
-        private Encoding() { }
+        private ByteConversion() { }
 
         /// <summary>
         /// Get string from bytes.
@@ -158,6 +158,16 @@ namespace VGMToolbox.util
             }
 
             return predictedCodePage;
+        }
+
+        public static byte GetHighNibble(byte value)
+        {
+            return (byte)(((value) >> 4) & 0x0F);
+        }
+
+        public static byte GetLowNibble(byte value)
+        {
+            return (byte)((value) & 0x0F); ;
         }
     }
 }

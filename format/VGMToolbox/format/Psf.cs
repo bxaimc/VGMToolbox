@@ -46,8 +46,9 @@ namespace VGMToolbox.format
                                                                   0x77, 0x77, 0x77, 0x77,
                                                                   0x77, 0x77, 0x77, 0x77};
 
+        public static int SONY_ADPCM_ROW_SIZE = 0x10;
         public static int MIN_ADPCM_ROW_COUNT = 10;
-        public static int MIN_ADPCM_ROW_SIZE = MIN_ADPCM_ROW_COUNT * 0x10;
+        public static int MIN_ADPCM_ROW_SIZE = MIN_ADPCM_ROW_COUNT * SONY_ADPCM_ROW_SIZE;
         public static double MIN_SAMPLE_MATCH_PERCENTAGE = 0.05f; // 5%
 
         public static ArrayList GetSeqFileList(Stream fs, bool UseSeqMinimumSize, int MinimumSeqSize)
@@ -151,14 +152,60 @@ namespace VGMToolbox.format
             {
                 bytesRead = searchStream.Read(checkBytes, 0, checkBytes.Length);
 
-                if (!((bytesRead == checkBytes.Length) &&
-                    (checkBytes[1] < 8) &&
-                    (checkBytes[0] <= 0x4C) &&
-                    (!ParseFile.CompareSegment(checkBytes, 0, VB_START_BYTES))))
+                //if (!((bytesRead == checkBytes.Length) &&
+                //    (checkBytes[1] < 8) &&
+                //    (checkBytes[0] <= 0x4C) &&
+                //    (!ParseFile.CompareSegment(checkBytes, 0, VB_START_BYTES))))
+                //{
+                //    ret = false;
+                //    break;
+                //}
+
+                if (!IsSonyAdpcmRow(checkBytes))
                 {
                     ret = false;
                     break;
                 }
+
+            }
+
+            return ret;
+        }
+
+        public static bool IsSonyAdpcmRow(byte[] potentialAdpcm)
+        {
+            bool ret = true;
+
+            if ((potentialAdpcm.Length != SONY_ADPCM_ROW_SIZE) ||
+                (potentialAdpcm[1] > 7) || 
+                (ByteConversion.GetHighNibble(potentialAdpcm[0]) > 4) ||
+                (ByteConversion.GetHighNibble(potentialAdpcm[0]) > 0xC) ||
+                (ParseFile.CompareSegment(potentialAdpcm, 0, VB_START_BYTES))
+               )
+            {
+                ret = false;
+            }
+
+            return ret;
+        }
+
+        public static bool IsSonyAdpcmRow(Stream inputStream, long offset)
+        {
+            bool ret = true;
+            byte[] potentialAdpcm = new byte[SONY_ADPCM_ROW_SIZE];
+            int bytesRead;
+
+            inputStream.Position = offset;
+            bytesRead = inputStream.Read(potentialAdpcm, 0, SONY_ADPCM_ROW_SIZE);
+
+            if ((bytesRead != SONY_ADPCM_ROW_SIZE) ||
+                (potentialAdpcm[1] > 7) ||
+                (ByteConversion.GetHighNibble(potentialAdpcm[0]) > 4) ||
+                (ByteConversion.GetHighNibble(potentialAdpcm[0]) > 0xC) ||
+                (ParseFile.CompareSegment(potentialAdpcm, 0, VB_START_BYTES))
+               )
+            {
+                ret = false;
             }
 
             return ret;

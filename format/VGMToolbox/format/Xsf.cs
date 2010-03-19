@@ -407,9 +407,9 @@ namespace VGMToolbox.format
                  *   does not allow null values (0x00) */
                 tagBytes = FileUtil.ReplaceNullByteWithSpace(tagBytes);
 
-                tagsString = VGMToolbox.util.Encoding.GetEncodedText(
+                tagsString = VGMToolbox.util.ByteConversion.GetEncodedText(
                     tagBytes,
-                    VGMToolbox.util.Encoding.GetPredictedCodePageForTags(tagBytes));
+                    VGMToolbox.util.ByteConversion.GetPredictedCodePageForTags(tagBytes));
                                 
                 // check for utf8 tag and reencode bytes if needed
                 if (tagsString.IndexOf(TAG_UTF8_INDICATOR) > -1)

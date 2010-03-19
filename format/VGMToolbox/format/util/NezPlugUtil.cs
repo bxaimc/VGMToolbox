@@ -78,7 +78,7 @@ namespace VGMToolbox.format.util
 
                 if (splitData.Length > 1)
                 {
-                    m3uEntry.songNumber = (int)VGMToolbox.util.Encoding.GetLongValueFromString(splitData[1].Replace("$", "0x"));
+                    m3uEntry.songNumber = (int)VGMToolbox.util.ByteConversion.GetLongValueFromString(splitData[1].Replace("$", "0x"));
                 }
                 else
                 {

@@ -647,13 +647,13 @@ namespace VGMToolbox.tools.xsf
                 textSectionOffsetValue = BitConverter.ToUInt32(textSectionOffset, 0);
 
                 // calculate pc offsets
-                pcOffsetSeq = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.seqOffset) -
+                pcOffsetSeq = VGMToolbox.util.ByteConversion.GetLongValueFromString(pBin2PsfStruct.seqOffset) -
                     textSectionOffsetValue + Psf.PC_OFFSET_CORRECTION;
-                pcOffsetVb = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.vbOffset) -
+                pcOffsetVb = VGMToolbox.util.ByteConversion.GetLongValueFromString(pBin2PsfStruct.vbOffset) -
                     textSectionOffsetValue + Psf.PC_OFFSET_CORRECTION;
-                pcOffsetVh = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.vhOffset) -
+                pcOffsetVh = VGMToolbox.util.ByteConversion.GetLongValueFromString(pBin2PsfStruct.vhOffset) -
                     textSectionOffsetValue + Psf.PC_OFFSET_CORRECTION;
-                pcOffsetSepParams = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.ParamOffset) -
+                pcOffsetSepParams = VGMToolbox.util.ByteConversion.GetLongValueFromString(pBin2PsfStruct.ParamOffset) -
                     textSectionOffsetValue + Psf.PC_OFFSET_CORRECTION;
             }
 
@@ -797,7 +797,7 @@ namespace VGMToolbox.tools.xsf
         private string setMiniPsfValues(string templateMiniPsfPath, Bin2PsfStruct pBin2PsfStruct, bool useSepParameters)
         {
             string modifiedMiniPsfPath = Path.Combine(WORKING_FOLDER, Path.GetFileName(templateMiniPsfPath));
-            long seqSize = VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.SeqSize);
+            long seqSize = VGMToolbox.util.ByteConversion.GetLongValueFromString(pBin2PsfStruct.SeqSize);
             int totalFileSize;
 
             // copy file
@@ -806,7 +806,7 @@ namespace VGMToolbox.tools.xsf
             // edit values            
             if (!useSepParameters)
             {
-                byte[] seqOffsetBytes = BitConverter.GetBytes((uint)VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.seqOffset));
+                byte[] seqOffsetBytes = BitConverter.GetBytes((uint)VGMToolbox.util.ByteConversion.GetLongValueFromString(pBin2PsfStruct.seqOffset));
                 byte[] seqSizeBytes = BitConverter.GetBytes((uint)seqSize);
 
                 FileUtil.UpdateChunk(modifiedMiniPsfPath, Psf.MINIPSF_INITIAL_PC_OFFSET, seqOffsetBytes);
@@ -818,7 +818,7 @@ namespace VGMToolbox.tools.xsf
             }
             else
             {
-                uint paramOffet = (uint)VGMToolbox.util.Encoding.GetLongValueFromString(pBin2PsfStruct.ParamOffset);
+                uint paramOffet = (uint)VGMToolbox.util.ByteConversion.GetLongValueFromString(pBin2PsfStruct.ParamOffset);
                 byte[] paramOffsetBytes = BitConverter.GetBytes(paramOffet);
 
                 totalFileSize = (int)(Psf.PC_OFFSET_CORRECTION + PARAM_MAXSEQ_OFFSET + 4);

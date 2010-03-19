@@ -880,6 +880,17 @@ namespace VGMToolbox
             ext_SdatFinderNode.Tag = nodeTag;
 
             ///////
+            // PSX/PS2
+            ///////
+            TreeNode ext_Ps2Node =
+                new TreeNode("Playstation PSX/PS2");
+            ext_Ps2Node.NodeFont = this.treeviewBoldFont;
+
+            nodeTag = new VGMToolbox.util.NodeTagStruct();
+            nodeTag.FormClass = emptyForm.GetType().Name;
+            ext_Ps2Node.Tag = nodeTag;
+
+            ///////
             // PC
             ///////
             TreeNode ext_PcNode = 
@@ -890,6 +901,19 @@ namespace VGMToolbox
             emptyForm = new EmptyForm();
             nodeTag.FormClass = emptyForm.GetType().Name;
             ext_PcNode.Tag = nodeTag;
+
+            // ExtractSonyAdpcmForm
+            TreeNode ext_SonyAdpcmNode =
+                new TreeNode("Sony ADPCM Extractor");
+
+            // Add ExtractSonyAdpcmForm
+            ExtractSonyAdpcmForm sonyAdpcmForm = new ExtractSonyAdpcmForm(ext_SonyAdpcmNode);
+            this.splitContainer1.Panel2.Controls.Add(sonyAdpcmForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = sonyAdpcmForm.GetType().Name;
+            ext_SonyAdpcmNode.Tag = nodeTag;
+
 
             ext_GenericNode.Nodes.Add(ext_SimpleCutterNode);
             ext_GenericNode.Nodes.Add(ext_OffsetFinderNode);
@@ -902,7 +926,10 @@ namespace VGMToolbox
             ext_NdsNode.Nodes.Add(ext_SdatExtractorNode);
             ext_NdsNode.Nodes.Add(ext_SdatFinderNode);            
             ext_RootNode.Nodes.Add(ext_NdsNode);
-            
+
+            ext_Ps2Node.Nodes.Add(ext_SonyAdpcmNode);
+            ext_RootNode.Nodes.Add(ext_Ps2Node);
+
             // ext_RootNode.Nodes.Add(ext_PcNode);
 
             return ext_RootNode;

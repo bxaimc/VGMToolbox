@@ -156,7 +156,7 @@ namespace VGMToolbox.tools.genh
         {
             this.progressStruct = new VGMToolbox.util.ProgressStruct();
             WorkerReportsProgress = true;
-            WorkerSupportsCancellation = true;        
+            WorkerSupportsCancellation = true;
         }
 
         private void createGenhs(GenhCreatorStruct pGenhCreatorStruct, DoWorkEventArgs e)

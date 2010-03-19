@@ -711,14 +711,14 @@ namespace VGMToolbox.util
             // parse minimum cut size
             if (!String.IsNullOrEmpty(searchCriteria.MinimumSize))
             {
-                minimumCutSize = VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.MinimumSize);
+                minimumCutSize = VGMToolbox.util.ByteConversion.GetLongValueFromString(searchCriteria.MinimumSize);
             }
 
             // parse Search String modulo information
             if (searchCriteria.DoSearchStringModulo)
             {
-                searchStringModuloDivisor = VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.SearchStringModuloDivisor);
-                searchStringModuloResult = VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.SearchStringModuloResult);
+                searchStringModuloDivisor = VGMToolbox.util.ByteConversion.GetLongValueFromString(searchCriteria.SearchStringModuloDivisor);
+                searchStringModuloResult = VGMToolbox.util.ByteConversion.GetLongValueFromString(searchCriteria.SearchStringModuloResult);
             }
 
             // create terminator bytes
@@ -748,7 +748,7 @@ namespace VGMToolbox.util
 
                 // setup starting offset
                 previousOffset = 
-                    String.IsNullOrEmpty(searchCriteria.StartingOffset) ? 0 : VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.StartingOffset);
+                    String.IsNullOrEmpty(searchCriteria.StartingOffset) ? 0 : VGMToolbox.util.ByteConversion.GetLongValueFromString(searchCriteria.StartingOffset);
                 
                 // build output folder path
                 if (String.IsNullOrEmpty(searchCriteria.OutputFolder))
@@ -774,17 +774,17 @@ namespace VGMToolbox.util
                     {
                         skipCut = false;
 
-                        cutStart = offset - VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.SearchStringOffset);
+                        cutStart = offset - VGMToolbox.util.ByteConversion.GetLongValueFromString(searchCriteria.SearchStringOffset);
 
                         // determine cut size from value at offset
                         if (searchCriteria.IsCutSizeAnOffset)
                         {
-                            cutSizeOffset = cutStart + VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.CutSize);
+                            cutSizeOffset = cutStart + VGMToolbox.util.ByteConversion.GetLongValueFromString(searchCriteria.CutSize);
                             previousPosition = fs.Position;
                             cutSizeBytes = ParseFile.ParseSimpleOffset(
                                 fs, 
                                 cutSizeOffset,
-                                (int)VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.CutSizeOffsetSize));
+                                (int)VGMToolbox.util.ByteConversion.GetLongValueFromString(searchCriteria.CutSizeOffsetSize));
                             fs.Position = previousPosition;
 
                             if (!searchCriteria.IsLittleEndian)
@@ -814,8 +814,8 @@ namespace VGMToolbox.util
                             {                                                                
                                 if (searchCriteria.DoTerminatorModulo)
                                 {
-                                    terminatorModuloDivisor = VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.TerminatorStringModuloDivisor);
-                                    terminatorModuloResult = VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.TerminatorStringModuloResult);
+                                    terminatorModuloDivisor = VGMToolbox.util.ByteConversion.GetLongValueFromString(searchCriteria.TerminatorStringModuloDivisor);
+                                    terminatorModuloResult = VGMToolbox.util.ByteConversion.GetLongValueFromString(searchCriteria.TerminatorStringModuloResult);
                                 }
 
                                 terminatorOffset = GetNextOffset(fs, offset + 1, terminatorBytes,
@@ -832,7 +832,7 @@ namespace VGMToolbox.util
                         }
                         else // static size
                         {
-                            cutSize = VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.CutSize);
+                            cutSize = VGMToolbox.util.ByteConversion.GetLongValueFromString(searchCriteria.CutSize);
                         }
 
                         outputFile = String.Format(CultureInfo.InvariantCulture, "{0}_{1}{2}", Path.GetFileNameWithoutExtension(sourcePath), chunkCount.ToString("X8", CultureInfo.InvariantCulture), searchCriteria.OutputFileExtension);
@@ -877,7 +877,7 @@ namespace VGMToolbox.util
                         {
                             if (!String.IsNullOrEmpty(searchCriteria.ExtraCutSizeBytes))
                             {
-                                cutSize += (long)VGMToolbox.util.Encoding.GetLongValueFromString(searchCriteria.ExtraCutSizeBytes);
+                                cutSize += (long)VGMToolbox.util.ByteConversion.GetLongValueFromString(searchCriteria.ExtraCutSizeBytes);
                             }
 
                             // check minimum cut size
@@ -932,8 +932,8 @@ namespace VGMToolbox.util
             {
                 if (vfsInformation.UseFileCountOffset)
                 {
-                    fileCountOffset = VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.FileCountValueOffset);
-                    fileCountLength = VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.FileCountValueLength);
+                    fileCountOffset = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileCountValueOffset);
+                    fileCountLength = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileCountValueLength);
                     byte[] fileCountBytes = ParseFile.ParseSimpleOffset(fs, fileCountOffset, (int)fileCountLength);
 
                     if (!vfsInformation.FileCountValueIsLittleEndian)
@@ -960,16 +960,16 @@ namespace VGMToolbox.util
                 }
                 else if (!String.IsNullOrEmpty(vfsInformation.FileCountEndOffset))
                 {
-                    endingOffset = VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.FileCountEndOffset);
+                    endingOffset = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileCountEndOffset);
                 }
                 else if (!String.IsNullOrEmpty(vfsInformation.FileCountValue))
                 {
-                    fileCountValue = VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.FileCountValue);
+                    fileCountValue = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileCountValue);
                 }
 
                 // loop over header, building file list
-                long currentOffset = VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.FileRecordsStartOffset);
-                long recordSize = VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.FileRecordSize);
+                long currentOffset = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordsStartOffset);
+                long recordSize = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordSize);
                 long currentFileCount = 0;
 
                 while (!(((fileCountValue > 0) && (currentFileCount >= fileCountValue)) ||
@@ -998,7 +998,7 @@ namespace VGMToolbox.util
                     {
                         if (previousCutOffset == -1)
                         {
-                            cutOffset = VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.BeginCuttingFilesAtOffset);
+                            cutOffset = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.BeginCuttingFilesAtOffset);
                         }
                         else
                         {
@@ -1061,11 +1061,11 @@ namespace VGMToolbox.util
             //----------
             if (vfsInformation.FileRecordNameIsPresent)
             {
-                long nameOffset = currentStreamOffset + VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.FileRecordNameOffset);
-                long nameLength = VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.FileRecordNameLength);
+                long nameOffset = currentStreamOffset + VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordNameOffset);
+                long nameLength = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordNameLength);
                 byte[] nameBytes = ParseSimpleOffset(vfsStream, nameOffset, (int)nameLength);
                 nameBytes = FileUtil.ReplaceNullByteWithSpace(nameBytes);
-                newFileName = VGMToolbox.util.Encoding.GetAsciiText(nameBytes).Trim();
+                newFileName = VGMToolbox.util.ByteConversion.GetAsciiText(nameBytes).Trim();
             }
             else
             { 
@@ -1082,8 +1082,8 @@ namespace VGMToolbox.util
             //------------
             if (!vfsInformation.UsePreviousFilesSizeToDetermineOffset)
             {
-                long fileOffsetOffset = currentStreamOffset + VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.FileRecordOffsetOffset);
-                long fileOffsetLength = VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.FileRecordOffsetLength);
+                long fileOffsetOffset = currentStreamOffset + VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordOffsetOffset);
+                long fileOffsetLength = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordOffsetLength);
                 byte[] fileOffsetBytes = ParseSimpleOffset(vfsStream, fileOffsetOffset, (int)fileOffsetLength);                
 
                 if (!vfsInformation.FileRecordOffsetIsLittleEndian)
@@ -1109,7 +1109,7 @@ namespace VGMToolbox.util
 
                 if (vfsInformation.UseFileRecordOffsetMultiplier)
                 {
-                    long offsetMultiplier = VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.FileRecordOffsetMultiplier);
+                    long offsetMultiplier = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordOffsetMultiplier);
                     newFileItem.FileOffset *= offsetMultiplier;
                 }
             }
@@ -1119,8 +1119,8 @@ namespace VGMToolbox.util
             //------------
             if (!vfsInformation.UseLocationOfNextFileToDetermineLength)
             {
-                long fileLengthOffset = currentStreamOffset + VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.FileRecordLengthOffset);
-                long fileLengthLength = VGMToolbox.util.Encoding.GetLongValueFromString(vfsInformation.FileRecordLengthLength);
+                long fileLengthOffset = currentStreamOffset + VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordLengthOffset);
+                long fileLengthLength = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordLengthLength);
                 byte[] fileLengthBytes = ParseSimpleOffset(vfsStream, fileLengthOffset, (int)fileLengthLength);
 
                 if (!vfsInformation.FileRecordLengthIsLittleEndian)

@@ -83,9 +83,9 @@ namespace VGMToolbox.format
             {
                 this.v3Tags = FileUtil.ReplaceNullByteWithSpace(this.v3Tags);
 
-                tagsString = VGMToolbox.util.Encoding.GetEncodedText(
+                tagsString = VGMToolbox.util.ByteConversion.GetEncodedText(
                     this.v3Tags, 
-                    VGMToolbox.util.Encoding.GetPredictedCodePageForTags(this.v3Tags));
+                    VGMToolbox.util.ByteConversion.GetPredictedCodePageForTags(this.v3Tags));
 
                 // check for utf8 tag and reencode bytes if needed
                 if (tagsString.IndexOf(TAG_UTF8_INDICATOR) > -1)

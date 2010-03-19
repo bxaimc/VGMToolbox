@@ -63,7 +63,7 @@ namespace VGMToolbox.forms.compression
                 ZlibExtractorWorker.ZlibExtractorStruct zlStruct = new ZlibExtractorWorker.ZlibExtractorStruct();
                 zlStruct.SourcePaths = s;
                 zlStruct.DoDecompress = this.rbDecompress.Checked;
-                zlStruct.StartingOffset = VGMToolbox.util.Encoding.GetLongValueFromString(this.tbOffset.Text);
+                zlStruct.StartingOffset = VGMToolbox.util.ByteConversion.GetLongValueFromString(this.tbOffset.Text);
 
                 base.backgroundWorker_Execute(zlStruct);
             }
@@ -80,7 +80,7 @@ namespace VGMToolbox.forms.compression
 
             try
             {
-                long tempval = VGMToolbox.util.Encoding.GetLongValueFromString(this.tbOffset.Text);
+                long tempval = VGMToolbox.util.ByteConversion.GetLongValueFromString(this.tbOffset.Text);
             }
             catch
             {

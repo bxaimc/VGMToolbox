@@ -48,12 +48,12 @@ namespace VGMToolbox.format
             this.GameCode = ParseFile.ParseSimpleOffset(pStream, 0x0C, 4);
             this.MakerCode = ParseFile.ParseSimpleOffset(pStream, 0x10, 2);
 
-            countryCode = VGMToolbox.util.Encoding.GetAsciiText(this.GameCode)[3];
-            makerCode = VGMToolbox.util.Encoding.GetAsciiText(this.MakerCode);
+            countryCode = VGMToolbox.util.ByteConversion.GetAsciiText(this.GameCode)[3];
+            makerCode = VGMToolbox.util.ByteConversion.GetAsciiText(this.MakerCode);
 
             if (this.countryCodeHash.ContainsKey(countryCode))
             {
-                this.GameSerial = String.Format("NTR-{0}-{1}", VGMToolbox.util.Encoding.GetAsciiText(this.GameCode), this.countryCodeHash[countryCode]);
+                this.GameSerial = String.Format("NTR-{0}-{1}", VGMToolbox.util.ByteConversion.GetAsciiText(this.GameCode), this.countryCodeHash[countryCode]);
             }
             else
             {
@@ -61,7 +61,7 @@ namespace VGMToolbox.format
             }
 
 
-            this.tagHash.Add("Game Title", VGMToolbox.util.Encoding.GetAsciiText(this.GameTitle));
+            this.tagHash.Add("Game Title", VGMToolbox.util.ByteConversion.GetAsciiText(this.GameTitle));
             this.tagHash.Add("Game Serial", this.GameSerial);
 
             if (this.makerCodeHash.ContainsKey(makerCode))

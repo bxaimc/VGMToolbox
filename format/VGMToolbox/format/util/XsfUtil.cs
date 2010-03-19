@@ -578,7 +578,7 @@ namespace VGMToolbox.format.util
                             {
                                 // crc32
                                 deflatedCrc32String = "0x" + ChecksumUtil.GetCrc32OfFullFile(outFs);
-                                bw.Write((uint)VGMToolbox.util.Encoding.GetLongValueFromString(deflatedCrc32String));
+                                bw.Write((uint)VGMToolbox.util.ByteConversion.GetLongValueFromString(deflatedCrc32String));
                                 // reserved section
                                 bw.Write(ParseFile.ParseSimpleOffset(vgmFs, Xsf.RESERVED_SECTION_OFFSET, (int)vgmData.ReservedSectionLength));
 
@@ -1182,11 +1182,11 @@ namespace VGMToolbox.format.util
             textSectionOffsetValue = BitConverter.ToUInt32(textSectionOffset, 0);
 
             // get offset of index
-            pcOffsetSepSeqIndex = VGMToolbox.util.Encoding.GetLongValueFromString(seqIndexOffset) -
+            pcOffsetSepSeqIndex = VGMToolbox.util.ByteConversion.GetLongValueFromString(seqIndexOffset) -
                 textSectionOffsetValue + Psf.PC_OFFSET_CORRECTION;
 
             // get index value
-            seqOffsetLength = (int)VGMToolbox.util.Encoding.GetLongValueFromString(seqIndexLength);
+            seqOffsetLength = (int)VGMToolbox.util.ByteConversion.GetLongValueFromString(seqIndexLength);
             indexValueBytes = ParseFile.ParseSimpleOffset(data, pcOffsetSepSeqIndex, seqOffsetLength);
 
             switch (seqOffsetLength)
@@ -1246,7 +1246,7 @@ namespace VGMToolbox.format.util
                         ret.PsfDrvLoadAddress = XsfUtil.getSigFindAddress(inputLine, true);
 
                         if ((!relaxLoadAddressRestriction) && 
-                            ((uint)VGMToolbox.util.Encoding.GetLongValueFromString(ret.PsfDrvLoadAddress) > PSFDRV_LOAD_ADDRESS))
+                            ((uint)VGMToolbox.util.ByteConversion.GetLongValueFromString(ret.PsfDrvLoadAddress) > PSFDRV_LOAD_ADDRESS))
                         {
                             throw new ArgumentOutOfRangeException("PSFDRV_LOAD", ret.PsfDrvLoadAddress, String.Format("Text Area + Size is greater than 0x{0}, this is not supported.", PSFDRV_LOAD_ADDRESS.ToString("X8")));
                         }
@@ -1296,8 +1296,8 @@ namespace VGMToolbox.format.util
             {
                 if ((firstHexSpecifier != -1) && (secondHexSpecifier != -1))
                 {
-                    firstHexValue = (uint)VGMToolbox.util.Encoding.GetLongValueFromString(inputLine.Substring(firstHexSpecifier, 10));
-                    secondHexValue = (uint)VGMToolbox.util.Encoding.GetLongValueFromString(inputLine.Substring(secondHexSpecifier, 10));
+                    firstHexValue = (uint)VGMToolbox.util.ByteConversion.GetLongValueFromString(inputLine.Substring(firstHexSpecifier, 10));
+                    secondHexValue = (uint)VGMToolbox.util.ByteConversion.GetLongValueFromString(inputLine.Substring(secondHexSpecifier, 10));
 
                     ret = String.Format("0x{0}", (firstHexValue + secondHexValue).ToString("X8"));
                 }
@@ -2018,7 +2018,7 @@ namespace VGMToolbox.format.util
                         bw.Write(new byte[] { 0x24 });
                         bw.Write(BitConverter.GetBytes((UInt32)0));          // reserved size
                         bw.Write(BitConverter.GetBytes(dataLength));         // data length
-                        bw.Write((UInt32)VGMToolbox.util.Encoding.GetLongValueFromString("0x" + dataCrc32)); // data crc32
+                        bw.Write((UInt32)VGMToolbox.util.ByteConversion.GetLongValueFromString("0x" + dataCrc32)); // data crc32
 
                         // data
                         dataFs.Seek(0, SeekOrigin.Begin);
@@ -2161,7 +2161,7 @@ namespace VGMToolbox.format.util
                         bw.Write(new byte[] { 0x24 });
                         bw.Write(BitConverter.GetBytes((UInt32)0));          // reserved size
                         bw.Write(BitConverter.GetBytes(dataLength));         // data length
-                        bw.Write((UInt32)VGMToolbox.util.Encoding.GetLongValueFromString("0x" + dataCrc32)); // data crc32
+                        bw.Write((UInt32)VGMToolbox.util.ByteConversion.GetLongValueFromString("0x" + dataCrc32)); // data crc32
 
                         // data
                         dataFs.Seek(0, SeekOrigin.Begin);

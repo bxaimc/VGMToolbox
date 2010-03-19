@@ -70,7 +70,7 @@ namespace VGMToolbox.forms.compression
 
             try
             {
-                long tempval = VGMToolbox.util.Encoding.GetLongValueFromString(this.tbOffset.Text);
+                long tempval = VGMToolbox.util.ByteConversion.GetLongValueFromString(this.tbOffset.Text);
             }
             catch
             {
@@ -91,7 +91,7 @@ namespace VGMToolbox.forms.compression
                 GzipExtractorWorker.GzipExtractorStruct bwStruct = new GzipExtractorWorker.GzipExtractorStruct();
                 bwStruct.SourcePaths = s;
                 bwStruct.DoDecompress = this.rbDecompress.Checked;
-                bwStruct.StartingOffset = VGMToolbox.util.Encoding.GetLongValueFromString(this.tbOffset.Text);
+                bwStruct.StartingOffset = VGMToolbox.util.ByteConversion.GetLongValueFromString(this.tbOffset.Text);
 
                 base.backgroundWorker_Execute(bwStruct);
             }
