@@ -38,32 +38,38 @@ namespace VGMToolbox.tools.extract
 
             using (FileStream fs = File.Open(pPath, FileMode.Open, FileAccess.Read))
             {
-                if (!CancellationPending)
-                {
                     while (offset < fi.Length)
                     { 
-                        if (Psf.IsPotentialAdpcm(fs, offset, Psf.MIN_ADPCM_ROW_SIZE))
+                        if (!CancellationPending)
                         {
-                            // create probable adpcm item
-                            adpcmDataItem.Init();
-                            
-                            // set starting offset
-                            adpcmDataItem.offset = offset;
-                        
-                            // move to next row
-                            offset += Psf.SONY_ADPCM_ROW_SIZE;
-
-                            // loop until end
-                            while (Psf.IsSonyAdpcmRow(fs, offset))
+                            if (Psf.IsPotentialAdpcm(fs, offset, Psf.MIN_ADPCM_ROW_SIZE))
                             {
+                                // create probable adpcm item
+                                adpcmDataItem.Init();
+                                
+                                // set starting offset
+                                adpcmDataItem.offset = offset;
+                            
+                                // move to next row
                                 offset += Psf.SONY_ADPCM_ROW_SIZE;
+
+                                // loop until end
+                                while (Psf.IsSonyAdpcmRow(fs, offset))
+                                {
+                                    offset += Psf.SONY_ADPCM_ROW_SIZE;
+                                }
+
+                                adpcmDataItem.length = (uint)(offset - adpcmDataItem.offset);
+                                adpcmList.Add(adpcmDataItem);
                             }
 
-                            adpcmDataItem.length = (uint)(offset - adpcmDataItem.offset);
-                            adpcmList.Add(adpcmDataItem);
+                            offset += 1;
                         }
-
-                        offset += 1;
+                        else
+                        {
+                            e.Cancel = true;
+                            return;
+                        }
                     }
 
 
@@ -77,12 +83,6 @@ namespace VGMToolbox.tools.extract
 
                         fileCount++;
                     }
-                }
-                else
-                {
-                    e.Cancel = true;
-                    return;                
-                }
             }
         }
 

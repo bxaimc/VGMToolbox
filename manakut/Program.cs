@@ -71,7 +71,9 @@ namespace manakut
                         {
                             doLba = true;
                         }
-                        else if ((args.Length > 3) && (args[3].ToUpper().Substring(0, 2).Equals(MULTIPLIER_SWITCH)))
+                        else if ((args.Length > 3) &&
+                                 (args[3].Length >= MULTIPLIER_SWITCH.Length) &&
+                                 (args[3].ToUpper().Substring(0, 2).Equals(MULTIPLIER_SWITCH)))
                         {
                             doMultiplier = true;
                             multiplierChunk = args[3].Split(multiplierSplitParam)[1];
@@ -79,9 +81,9 @@ namespace manakut
                         }
 
                         // GET CUTSIZE
-                        if ((args.Length > 3) && 
+                        if ((args.Length > 3) &&                            
                             (!args[3].ToUpper().Equals(LBA_SWITCH)) &&
-                            (!args[3].ToUpper().Substring(0, 2).Equals(MULTIPLIER_SWITCH)))
+                            ((args[3].Length < MULTIPLIER_SWITCH.Length) || (!args[3].ToUpper().Substring(0, 2).Equals(MULTIPLIER_SWITCH))))
                         {
                             cutSize = args[3];
                             longCutSize = VGMToolbox.util.ByteConversion.GetLongValueFromString(cutSize);

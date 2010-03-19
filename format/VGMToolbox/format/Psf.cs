@@ -178,8 +178,8 @@ namespace VGMToolbox.format
 
             if ((potentialAdpcm.Length != SONY_ADPCM_ROW_SIZE) ||
                 (potentialAdpcm[1] > 7) || 
-                (ByteConversion.GetHighNibble(potentialAdpcm[0]) > 4) ||
-                (ByteConversion.GetHighNibble(potentialAdpcm[0]) > 0xC) ||
+                (potentialAdpcm[0] > 0x4C) ||
+                ((potentialAdpcm[0] == 0) && (GetCountOfZeroBytes(potentialAdpcm) > 14)) ||
                 (ParseFile.CompareSegment(potentialAdpcm, 0, VB_START_BYTES))
                )
             {
@@ -200,8 +200,8 @@ namespace VGMToolbox.format
 
             if ((bytesRead != SONY_ADPCM_ROW_SIZE) ||
                 (potentialAdpcm[1] > 7) ||
-                (ByteConversion.GetHighNibble(potentialAdpcm[0]) > 4) ||
-                (ByteConversion.GetHighNibble(potentialAdpcm[0]) > 0xC) ||
+                (potentialAdpcm[0] > 0x4C) ||
+                ((potentialAdpcm[0] == 0) && (GetCountOfZeroBytes(potentialAdpcm) > 14)) ||
                 (ParseFile.CompareSegment(potentialAdpcm, 0, VB_START_BYTES))
                )
             {
@@ -209,6 +209,23 @@ namespace VGMToolbox.format
             }
 
             return ret;
+        }
+
+        public static int GetCountOfZeroBytes(byte[] values)
+        {
+            int zeroCount = 0;
+
+            if (values != null)
+            {
+                for (int i = 0; i < values.Length; i++)
+                {
+                    if (values[i] == 0)
+                    {
+                        zeroCount++;
+                    }
+                }
+            }
+            return zeroCount;
         }
 
         public static ProbableItemStruct GetPotentialAdpcmItem(

@@ -167,14 +167,24 @@ namespace VGMToolbox.tools.genh
             
             string outputFilePath = String.Empty;
             string outputMessageAction = String.Empty;
+            StringBuilder outputMessage = new StringBuilder();
+
+            int progressReportingPercentage = 10;
+            int progressReportingPercentageIncrementValue = 10;
 
             foreach (string file in pGenhCreatorStruct.SourcePaths)
             {
                 progress = (++this.fileCount * 100) / this.maxFiles;
-                this.progressStruct.Clear();
-                this.progressStruct.FileName = file;
-                ReportProgress(progress, this.progressStruct);
                 
+                // throttle output to prevent locking up the GUI
+                if ((progress > progressReportingPercentage) ||
+                    (this.fileCount == this.maxFiles))
+                {
+                    this.progressStruct.Clear();
+                    this.progressStruct.FileName = file;
+                    ReportProgress(progress, this.progressStruct);
+                }
+
                 if (File.Exists(file))
                 {
                     if (pGenhCreatorStruct.DoExtract)
@@ -195,9 +205,20 @@ namespace VGMToolbox.tools.genh
 
                     if (!String.IsNullOrEmpty(outputFilePath))
                     {
+                        outputMessage.AppendFormat("{0} {1}.{2}", outputFilePath, outputMessageAction, Environment.NewLine);                        
+                    }
+
+                    // throttle output to prevent locking up the GUI
+                    if ((progress > progressReportingPercentage) || 
+                        (this.fileCount == this.maxFiles))
+                    {
+                        progressReportingPercentage += progressReportingPercentageIncrementValue;
+                        
                         this.progressStruct.Clear();
-                        this.progressStruct.GenericMessage = String.Format("{0} {1}.{2}", outputFilePath, outputMessageAction, Environment.NewLine);
+                        this.progressStruct.GenericMessage = outputMessage.ToString();
                         ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
+
+                        outputMessage.Length = 0;
                     }
                 }
             }
