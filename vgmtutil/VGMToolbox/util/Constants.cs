@@ -332,6 +332,12 @@ namespace VGMToolbox.util
         public string FileCountValueOffset { set; get; } // file count is in VFS
         public string FileCountValueLength { set; get; }
         public bool FileCountValueIsLittleEndian { set; get; }
+        
+        // header size
+        public bool UseHeaderSizeOffset { set; get; }
+        public string HeaderSizeValueOffset { set; get; }
+        public string HeaderSizeValueLength { set; get; }
+        public bool HeaderSizeValueIsLittleEndian { set; get; }
         public string FileCountEndOffset { set; get; }
 
         // file information

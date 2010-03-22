@@ -20,7 +20,13 @@ namespace VGMToolbox.tools.extract
             public string FileCountValueOffset { set; get; } // file count is in VFS
             public string FileCountValueLength { set; get; }
             public bool FileCountValueIsLittleEndian { set; get; }
+            
+            // header size
             public string FileCountEndOffset { set; get; }
+            public bool UseHeaderSizeOffset { set; get; }
+            public string HeaderSizeValueOffset { set; get; }
+            public string HeaderSizeValueLength { set; get; }
+            public bool HeaderSizeValueIsLittleEndian { set; get; }
 
             // file information
             public string FileRecordsStartOffset { set; get; }
@@ -53,6 +59,11 @@ namespace VGMToolbox.tools.extract
                 ret.FileCountValueOffset = this.FileCountValueOffset;
                 ret.FileCountValueLength = this.FileCountValueLength;
                 ret.FileCountValueIsLittleEndian = this.FileCountValueIsLittleEndian;
+                
+                ret.UseHeaderSizeOffset = this.UseHeaderSizeOffset;
+                ret.HeaderSizeValueOffset = this.HeaderSizeValueOffset;
+                ret.HeaderSizeValueLength = this.HeaderSizeValueLength;
+                ret.HeaderSizeValueIsLittleEndian = this.HeaderSizeValueIsLittleEndian;
                 ret.FileCountEndOffset = this.FileCountEndOffset;
 
                 // file information

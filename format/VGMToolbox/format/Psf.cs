@@ -179,7 +179,7 @@ namespace VGMToolbox.format
             if ((potentialAdpcm.Length != SONY_ADPCM_ROW_SIZE) ||
                 (potentialAdpcm[1] > 7) || 
                 (potentialAdpcm[0] > 0x4C) ||
-                ((potentialAdpcm[0] == 0) && (GetCountOfZeroBytes(potentialAdpcm) > 14)) ||
+                ((potentialAdpcm[0] == 0) && (potentialAdpcm[1] != 2) && (GetCountOfZeroBytes(potentialAdpcm) > 14)) ||
                 (ParseFile.CompareSegment(potentialAdpcm, 0, VB_START_BYTES))
                )
             {
@@ -201,7 +201,7 @@ namespace VGMToolbox.format
             if ((bytesRead != SONY_ADPCM_ROW_SIZE) ||
                 (potentialAdpcm[1] > 7) ||
                 (potentialAdpcm[0] > 0x4C) ||
-                ((potentialAdpcm[0] == 0) && (GetCountOfZeroBytes(potentialAdpcm) > 14)) ||
+                ((potentialAdpcm[0] == 0) && (potentialAdpcm[1] != 2) && (GetCountOfZeroBytes(potentialAdpcm) > 14)) ||
                 (ParseFile.CompareSegment(potentialAdpcm, 0, VB_START_BYTES))
                )
             {

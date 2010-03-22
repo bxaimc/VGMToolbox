@@ -922,11 +922,13 @@ namespace VGMToolbox.util
             SimpleFileExtractionStruct fileItem = new SimpleFileExtractionStruct();
             ArrayList fileItems = new ArrayList();
 
-            // determine number of files or ending offset            
+            // determine number of files or header size            
+            long headerSizeValue = -1;
+            long headerSizeOffset = -1;
+            long headerSizeLength = -1;
             long fileCountValue = -1;
             long fileCountOffset = -1;
             long fileCountLength = -1;
-            long endingOffset = -1;
 
             using (FileStream fs = File.Open(sourcePath, FileMode.Open, FileAccess.Read))
             {
@@ -958,9 +960,36 @@ namespace VGMToolbox.util
                     }
 
                 }
+                else if (vfsInformation.UseHeaderSizeOffset)
+                {
+                    headerSizeOffset = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.HeaderSizeValueOffset);
+                    headerSizeLength = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.HeaderSizeValueLength);
+                    byte[] headerSizeBytes = ParseFile.ParseSimpleOffset(fs, headerSizeOffset, (int)headerSizeLength);
+
+                    if (!vfsInformation.HeaderSizeValueIsLittleEndian)
+                    {
+                        Array.Reverse(headerSizeBytes);
+                    }
+
+                    switch (headerSizeBytes.Length)
+                    {
+                        case 1:
+                            headerSizeValue = headerSizeBytes[0];
+                            break;
+                        case 2:
+                            headerSizeValue = BitConverter.ToUInt16(headerSizeBytes, 0);
+                            break;
+                        case 4:
+                            headerSizeValue = BitConverter.ToUInt32(headerSizeBytes, 0);
+                            break;
+                        default:
+                            headerSizeValue = 0;
+                            break;
+                    }                
+                }
                 else if (!String.IsNullOrEmpty(vfsInformation.FileCountEndOffset))
                 {
-                    endingOffset = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileCountEndOffset);
+                    headerSizeValue = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileCountEndOffset);
                 }
                 else if (!String.IsNullOrEmpty(vfsInformation.FileCountValue))
                 {
@@ -973,7 +1002,7 @@ namespace VGMToolbox.util
                 long currentFileCount = 0;
 
                 while (!(((fileCountValue > 0) && (currentFileCount >= fileCountValue)) ||
-                        ((endingOffset > 0) && (currentOffset >= endingOffset))))
+                        ((headerSizeValue > 0) && (currentOffset >= headerSizeValue))))
                 {
 
                     fileItem = GetNextVfsRecord(fs, vfsInformation, currentOffset, currentFileCount, sourcePath);

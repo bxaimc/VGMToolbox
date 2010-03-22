@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
@@ -11,18 +12,28 @@ using VGMToolbox.tools.extract;
 
 namespace VGMToolbox.forms.extraction
 {
-    public partial class VfsExtractorForm : AVgmtForm
+    public partial class VfsExtractorForm : VgmtForm
     {
         public VfsExtractorForm(TreeNode pTreeNode)
             : base(pTreeNode)
         {
             InitializeComponent();
 
-            this.btnDoTask.Hide();
+            this.btnDoTask.Text = "Extract Files";
             this.lblTitle.Text = "Virtual File System (VFS) Extractor";
-            this.tbOutput.Text = "Extract files from simple VFS archives.";
+            this.tbOutput.Text =  "- Extract files from simple VFS archives." + System.Environment.NewLine;
+            this.tbOutput.Text += "1) Enter settings." + System.Environment.NewLine;
+            this.tbOutput.Text += "2) Select data file and header file and click 'Extract Files'" + System.Environment.NewLine;
+            this.tbOutput.Text += "          OR" + System.Environment.NewLine;
+            this.tbOutput.Text += "Drag and Drop data files onto the application (Header file not supported for Drag and Drop)." + System.Environment.NewLine;
+
+            // header file
+            this.doUserHeaderFileCheckbox();
 
             // file count
+            this.createHeaderSizeOffsetSizeList();
+            this.createHeaderSizeOffsetEndianList();
+            
             this.createFileCountOffsetSizeList();
             this.createFileCountOffsetEndianList();
             this.rbFileCountEndOffset.Checked = true;
@@ -67,12 +78,16 @@ namespace VGMToolbox.forms.extraction
         }
         private void VfsExtractorForm_DragDrop(object sender, DragEventArgs e)
         {
+            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);            
+            this.extractFiles(s);            
+        }
+
+        private void extractFiles(string[] inputPaths)
+        {
             if (this.validateInputs())
             {
-                string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
-                
                 VfsExtractorWorker.VfsExtractorStruct bgStruct = new VfsExtractorWorker.VfsExtractorStruct();
-                bgStruct.SourcePaths = s;
+                bgStruct.SourcePaths = inputPaths;
 
                 // File Count            
                 bgStruct.UseFileCountOffset = this.rbOffsetBasedFileCount.Checked;
@@ -80,6 +95,13 @@ namespace VGMToolbox.forms.extraction
                 bgStruct.FileCountValueOffset = this.tbFileCountOffset.Text;
                 bgStruct.FileCountValueLength = this.comboFileCountOffsetSize.Text;
                 bgStruct.FileCountValueIsLittleEndian = this.comboFileCountByteOrder.Text.Equals(VfsExtractorWorker.LITTLE_ENDIAN);
+
+                // header size
+                bgStruct.UseHeaderSizeOffset = this.rbHeaderSizeOffset.Checked;
+                bgStruct.HeaderSizeValueOffset = this.tbHeaderSizeOffset.Text;
+                bgStruct.HeaderSizeValueLength = this.comboHeaderSizeOffsetSize.Text;
+                bgStruct.HeaderSizeValueIsLittleEndian = this.comboHeaderSizeByteOrder.Text.Equals(VfsExtractorWorker.LITTLE_ENDIAN);
+
                 bgStruct.FileCountEndOffset = this.tbFileCountEndOffset.Text;
 
                 // File Records
@@ -104,7 +126,7 @@ namespace VGMToolbox.forms.extraction
                 bgStruct.FileRecordNameLength = this.tbFileRecordNameSize.Text;
 
                 base.backgroundWorker_Execute(bgStruct);
-            }
+            }        
         }
 
         // Validate Inputs
@@ -120,6 +142,18 @@ namespace VGMToolbox.forms.extraction
         //////////////
         // File Count
         //////////////
+        private void createHeaderSizeOffsetSizeList()
+        {
+            this.comboHeaderSizeOffsetSize.Items.Add("1");
+            this.comboHeaderSizeOffsetSize.Items.Add("2");
+            this.comboHeaderSizeOffsetSize.Items.Add("4");
+        }
+        private void createHeaderSizeOffsetEndianList()
+        {
+            this.comboHeaderSizeByteOrder.Items.Add(VfsExtractorWorker.BIG_ENDIAN);
+            this.comboHeaderSizeByteOrder.Items.Add(VfsExtractorWorker.LITTLE_ENDIAN);
+        }
+        
         private void createFileCountOffsetSizeList()
         {
             this.comboFileCountOffsetSize.Items.Add("1");
@@ -134,8 +168,35 @@ namespace VGMToolbox.forms.extraction
         
         private void doFileCountRadioButtons()
         {
-            if (this.rbUserEnteredFileCount.Checked)
+            if (this.rbHeaderSizeOffset.Checked)
             {
+                this.tbHeaderSizeOffset.Enabled = true;
+                this.tbHeaderSizeOffset.ReadOnly = false;
+                this.comboHeaderSizeOffsetSize.Enabled = true;
+                this.comboHeaderSizeByteOrder.Enabled = true;
+
+                this.tbFileCountValue.Clear();
+                this.tbFileCountValue.Enabled = false;
+                this.tbFileCountValue.ReadOnly = true;
+
+                this.tbFileCountOffset.Clear();
+                this.tbFileCountOffset.Enabled = false;
+                this.tbFileCountOffset.ReadOnly = true;
+                this.comboFileCountOffsetSize.Enabled = false;
+                this.comboFileCountByteOrder.Enabled = false;
+
+                this.tbFileCountEndOffset.Clear();
+                this.tbFileCountEndOffset.Enabled = false;
+                this.tbFileCountEndOffset.ReadOnly = true;
+            }            
+            else if (this.rbUserEnteredFileCount.Checked)
+            {
+                this.tbHeaderSizeOffset.Clear();
+                this.tbHeaderSizeOffset.Enabled = false;
+                this.tbHeaderSizeOffset.ReadOnly = true;
+                this.comboHeaderSizeOffsetSize.Enabled = false;
+                this.comboHeaderSizeByteOrder.Enabled = false;
+                
                 this.tbFileCountValue.Enabled = true;
                 this.tbFileCountValue.ReadOnly = false;
 
@@ -151,6 +212,12 @@ namespace VGMToolbox.forms.extraction
             }
             else if (this.rbOffsetBasedFileCount.Checked)
             {
+                this.tbHeaderSizeOffset.Clear();
+                this.tbHeaderSizeOffset.Enabled = false;
+                this.tbHeaderSizeOffset.ReadOnly = true;
+                this.comboHeaderSizeOffsetSize.Enabled = false;
+                this.comboHeaderSizeByteOrder.Enabled = false;
+                
                 this.tbFileCountValue.Clear();
                 this.tbFileCountValue.Enabled = false;
                 this.tbFileCountValue.ReadOnly = true;
@@ -166,6 +233,12 @@ namespace VGMToolbox.forms.extraction
             }
             else if (this.rbFileCountEndOffset.Checked)
             {
+                this.tbHeaderSizeOffset.Clear();
+                this.tbHeaderSizeOffset.Enabled = false;
+                this.tbHeaderSizeOffset.ReadOnly = true;
+                this.comboHeaderSizeOffsetSize.Enabled = false;
+                this.comboHeaderSizeByteOrder.Enabled = false;
+                
                 this.tbFileCountValue.Clear();
                 this.tbFileCountValue.Enabled = false;
                 this.tbFileCountValue.ReadOnly = true;
@@ -196,8 +269,14 @@ namespace VGMToolbox.forms.extraction
         private bool validateFileCountSection()
         {
             bool isValid = true;
-            
-            if (this.rbUserEnteredFileCount.Checked)
+
+            if (this.rbHeaderSizeOffset.Checked)
+            {
+                isValid &= base.checkTextBox(this.tbHeaderSizeOffset.Text, this.rbHeaderSizeOffset.Text);
+                isValid &= base.checkTextBox(this.comboHeaderSizeOffsetSize.Text, "Header Size Offset Size");
+                isValid &= base.checkTextBox(this.comboHeaderSizeByteOrder.Text, "Header Size Offset Byte Order");            
+            }
+            else if (this.rbUserEnteredFileCount.Checked)
             {
                 isValid &= base.checkTextBox(this.tbFileCountValue.Text, this.rbUserEnteredFileCount.Text);               
             }
@@ -364,6 +443,63 @@ namespace VGMToolbox.forms.extraction
         private void cbFileNameIsPresent_CheckedChanged(object sender, EventArgs e)
         {
             this.doFileRecordNameCheckbox();
+        }
+
+        private void doUserHeaderFileCheckbox()
+        {
+            if (cbUseHeaderFile.Checked)
+            {
+                this.tbHeaderFilePath.Enabled = true;
+                this.tbHeaderFilePath.ReadOnly = false;
+                this.btnBrowseHeaderFile.Enabled = true;
+            }
+            else
+            {
+                this.tbHeaderFilePath.Clear();
+                this.tbHeaderFilePath.Enabled = false;
+                this.tbHeaderFilePath.ReadOnly = true;
+                this.btnBrowseHeaderFile.Enabled = false;
+            }        
+        }
+        private void cbUseHeaderFile_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doUserHeaderFileCheckbox();
+        }
+
+        private void btnBrowseHeaderFile_Click(object sender, EventArgs e)
+        {
+            this.tbHeaderFilePath.Text = base.browseForFile(sender, e);
+        }
+        private void tbHeaderFilePath_DragEnter(object sender, DragEventArgs e)
+        {
+            base.doDragEnter(sender, e);
+        }
+        private void tbHeaderFilePath_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            if ((s.Length == 1) && (File.Exists(s[0])))
+            {
+                this.tbHeaderFilePath.Text = s[0];
+            }
+        }
+
+        private void btnBrowseDataFile_Click(object sender, EventArgs e)
+        {
+            this.tbDataFilePath.Text = base.browseForFile(sender, e);
+        }
+        private void tbDataFilePath_DragEnter(object sender, DragEventArgs e)
+        {
+            base.doDragEnter(sender, e);
+        }
+        private void tbDataFilePath_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            if ((s.Length == 1) && (File.Exists(s[0])))
+            {
+                this.tbDataFilePath.Text = s[0];
+            }
         }
     }
 }
