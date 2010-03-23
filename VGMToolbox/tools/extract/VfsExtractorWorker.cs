@@ -13,6 +13,7 @@ namespace VGMToolbox.tools.extract
         public struct VfsExtractorStruct : IVgmtWorkerStruct
         {
             public string[] SourcePaths { set; get; }
+            public string HeaderSourcePath { set; get; }
 
             // total files
             public bool UseFileCountOffset { set; get; }     // user entered value

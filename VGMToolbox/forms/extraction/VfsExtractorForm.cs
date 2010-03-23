@@ -79,15 +79,20 @@ namespace VGMToolbox.forms.extraction
         private void VfsExtractorForm_DragDrop(object sender, DragEventArgs e)
         {
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);            
-            this.extractFiles(s);            
+            this.extractFiles(s, false);            
         }
 
-        private void extractFiles(string[] inputPaths)
+        private void extractFiles(string[] inputPaths, bool includeHeaderPath)
         {
             if (this.validateInputs())
             {
                 VfsExtractorWorker.VfsExtractorStruct bgStruct = new VfsExtractorWorker.VfsExtractorStruct();
                 bgStruct.SourcePaths = inputPaths;
+
+                if (includeHeaderPath)
+                {
+                    bgStruct.HeaderSourcePath = this.tbHeaderFilePath.Text;
+                }
 
                 // File Count            
                 bgStruct.UseFileCountOffset = this.rbOffsetBasedFileCount.Checked;

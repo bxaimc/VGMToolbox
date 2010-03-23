@@ -916,7 +916,8 @@ namespace VGMToolbox.util
             return outputFolder;
         }
 
-        public static void ParseVirtualFileSystem(string sourcePath, VfsExtractionStruct vfsInformation, out string messages, bool outputLog, bool outputBatchFile)
+        public static void ParseVirtualFileSystem(string sourcePath, string headerFilePath, 
+            VfsExtractionStruct vfsInformation, out string messages, bool outputLog, bool outputBatchFile)
         {
             StringBuilder ret = new StringBuilder();
             SimpleFileExtractionStruct fileItem = new SimpleFileExtractionStruct();
@@ -930,13 +931,17 @@ namespace VGMToolbox.util
             long fileCountOffset = -1;
             long fileCountLength = -1;
 
-            using (FileStream fs = File.Open(sourcePath, FileMode.Open, FileAccess.Read))
+            string headerFile;
+            headerFile = String.IsNullOrEmpty(headerFilePath) ? sourcePath : headerFilePath;
+            
+            // parse header/table file and build extraction list
+            using (FileStream headerFs = File.Open(sourcePath, FileMode.Open, FileAccess.Read))
             {
                 if (vfsInformation.UseFileCountOffset)
                 {
                     fileCountOffset = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileCountValueOffset);
                     fileCountLength = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileCountValueLength);
-                    byte[] fileCountBytes = ParseFile.ParseSimpleOffset(fs, fileCountOffset, (int)fileCountLength);
+                    byte[] fileCountBytes = ParseFile.ParseSimpleOffset(headerFs, fileCountOffset, (int)fileCountLength);
 
                     if (!vfsInformation.FileCountValueIsLittleEndian)
                     {
@@ -964,7 +969,7 @@ namespace VGMToolbox.util
                 {
                     headerSizeOffset = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.HeaderSizeValueOffset);
                     headerSizeLength = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.HeaderSizeValueLength);
-                    byte[] headerSizeBytes = ParseFile.ParseSimpleOffset(fs, headerSizeOffset, (int)headerSizeLength);
+                    byte[] headerSizeBytes = ParseFile.ParseSimpleOffset(headerFs, headerSizeOffset, (int)headerSizeLength);
 
                     if (!vfsInformation.HeaderSizeValueIsLittleEndian)
                     {
@@ -1005,14 +1010,18 @@ namespace VGMToolbox.util
                         ((headerSizeValue > 0) && (currentOffset >= headerSizeValue))))
                 {
 
-                    fileItem = GetNextVfsRecord(fs, vfsInformation, currentOffset, currentFileCount, sourcePath);
+                    fileItem = GetNextVfsRecord(headerFs, vfsInformation, currentOffset, currentFileCount, sourcePath);
 
                     fileItems.Add(fileItem);
 
                     currentFileCount++;
                     currentOffset += recordSize;
                 }
-
+            }
+            
+            // extract files
+            using (FileStream fs = File.Open(sourcePath, FileMode.Open, FileAccess.Read))
+            {
                 // loop through list, extracting files
                 SimpleFileExtractionStruct[] fileItemArray =
                     (SimpleFileExtractionStruct[])fileItems.ToArray(typeof(SimpleFileExtractionStruct));
@@ -1064,12 +1073,6 @@ namespace VGMToolbox.util
 
             } // using (FileStream fs = File.Open(sourcePath, FileMode.Open, FileAccess.Read))
             
-
-
-
-
-
-
             // return output messages
             messages = ret.ToString();
         }
