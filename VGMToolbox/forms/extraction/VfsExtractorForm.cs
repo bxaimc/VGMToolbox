@@ -12,7 +12,7 @@ using VGMToolbox.tools.extract;
 
 namespace VGMToolbox.forms.extraction
 {
-    public partial class VfsExtractorForm : VgmtForm
+    public partial class VfsExtractorForm : AVgmtForm
     {
         public VfsExtractorForm(TreeNode pTreeNode)
             : base(pTreeNode)
@@ -505,6 +505,12 @@ namespace VGMToolbox.forms.extraction
             {
                 this.tbDataFilePath.Text = s[0];
             }
+        }
+
+        private void btnDoTask_Click(object sender, EventArgs e)
+        {
+            string[] dataFiles = new string[] {Path.GetFullPath(this.tbDataFilePath.Text)};
+            this.extractFiles(dataFiles, true);
         }
     }
 }

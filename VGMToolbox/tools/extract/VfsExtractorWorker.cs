@@ -106,7 +106,7 @@ namespace VGMToolbox.tools.extract
             VfsExtractionStruct extractionStruct = taskStruct.ToVfsExtractionStruct();
             string output;
 
-            ParseFile.ParseVirtualFileSystem(pPath, extractionStruct, out output, true, true);
+            ParseFile.ParseVirtualFileSystem(pPath, taskStruct.HeaderSourcePath, extractionStruct, out output, true, true);
 
             this.outputBuffer.Append(output);           
         }

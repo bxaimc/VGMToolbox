@@ -79,12 +79,12 @@
             this.lblFileRecordSize = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.grpSourceFiles = new System.Windows.Forms.GroupBox();
+            this.btnBrowseDataFile = new System.Windows.Forms.Button();
             this.lblDataFilePath = new System.Windows.Forms.Label();
             this.tbDataFilePath = new System.Windows.Forms.TextBox();
             this.btnBrowseHeaderFile = new System.Windows.Forms.Button();
             this.tbHeaderFilePath = new System.Windows.Forms.TextBox();
             this.cbUseHeaderFile = new System.Windows.Forms.CheckBox();
-            this.btnBrowseDataFile = new System.Windows.Forms.Button();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -100,31 +100,32 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 606);
-            this.pnlLabels.Size = new System.Drawing.Size(664, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 457);
+            this.pnlLabels.Size = new System.Drawing.Size(804, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(664, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(804, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 529);
-            this.tbOutput.Size = new System.Drawing.Size(664, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 380);
+            this.tbOutput.Size = new System.Drawing.Size(804, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 509);
-            this.pnlButtons.Size = new System.Drawing.Size(664, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 360);
+            this.pnlButtons.Size = new System.Drawing.Size(804, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(604, 0);
+            this.btnCancel.Location = new System.Drawing.Point(744, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(544, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(684, 0);
+            this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpFileCount
             // 
@@ -147,7 +148,7 @@
             this.grpFileCount.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFileCount.Location = new System.Drawing.Point(0, 0);
             this.grpFileCount.Name = "grpFileCount";
-            this.grpFileCount.Size = new System.Drawing.Size(664, 113);
+            this.grpFileCount.Size = new System.Drawing.Size(787, 113);
             this.grpFileCount.TabIndex = 7;
             this.grpFileCount.TabStop = false;
             this.grpFileCount.Text = "Header Size or File Count";
@@ -216,10 +217,10 @@
             this.rbFileCountEndOffset.AutoSize = true;
             this.rbFileCountEndOffset.Location = new System.Drawing.Point(6, 19);
             this.rbFileCountEndOffset.Name = "rbFileCountEndOffset";
-            this.rbFileCountEndOffset.Size = new System.Drawing.Size(118, 17);
+            this.rbFileCountEndOffset.Size = new System.Drawing.Size(130, 17);
             this.rbFileCountEndOffset.TabIndex = 8;
             this.rbFileCountEndOffset.TabStop = true;
-            this.rbFileCountEndOffset.Text = "Header Size Equals";
+            this.rbFileCountEndOffset.Text = "Header Ends at Offset";
             this.rbFileCountEndOffset.UseVisualStyleBackColor = true;
             this.rbFileCountEndOffset.CheckedChanged += new System.EventHandler(this.rbFileCountEndOffset_CheckedChanged);
             // 
@@ -302,7 +303,7 @@
             this.grpPresets.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpPresets.Location = new System.Drawing.Point(0, 23);
             this.grpPresets.Name = "grpPresets";
-            this.grpPresets.Size = new System.Drawing.Size(664, 38);
+            this.grpPresets.Size = new System.Drawing.Size(804, 38);
             this.grpPresets.TabIndex = 8;
             this.grpPresets.TabStop = false;
             this.grpPresets.Text = "Presets (not yet implemented)";
@@ -316,7 +317,7 @@
             this.grpFileRecordInfo.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFileRecordInfo.Location = new System.Drawing.Point(0, 113);
             this.grpFileRecordInfo.Name = "grpFileRecordInfo";
-            this.grpFileRecordInfo.Size = new System.Drawing.Size(664, 241);
+            this.grpFileRecordInfo.Size = new System.Drawing.Size(787, 241);
             this.grpFileRecordInfo.TabIndex = 9;
             this.grpFileRecordInfo.TabStop = false;
             this.grpFileRecordInfo.Text = "File Record Information";
@@ -330,7 +331,7 @@
             this.grpFileRecordName.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFileRecordName.Location = new System.Drawing.Point(3, 194);
             this.grpFileRecordName.Name = "grpFileRecordName";
-            this.grpFileRecordName.Size = new System.Drawing.Size(658, 42);
+            this.grpFileRecordName.Size = new System.Drawing.Size(781, 42);
             this.grpFileRecordName.TabIndex = 7;
             this.grpFileRecordName.TabStop = false;
             this.grpFileRecordName.Text = "Individual File Name";
@@ -381,7 +382,7 @@
             this.grpIndividualFileLength.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpIndividualFileLength.Location = new System.Drawing.Point(3, 130);
             this.grpIndividualFileLength.Name = "grpIndividualFileLength";
-            this.grpIndividualFileLength.Size = new System.Drawing.Size(658, 64);
+            this.grpIndividualFileLength.Size = new System.Drawing.Size(781, 64);
             this.grpIndividualFileLength.TabIndex = 6;
             this.grpIndividualFileLength.TabStop = false;
             this.grpIndividualFileLength.Text = "Individual File Length";
@@ -467,7 +468,7 @@
             this.grpIndividualFileOffset.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpIndividualFileOffset.Location = new System.Drawing.Point(3, 42);
             this.grpIndividualFileOffset.Name = "grpIndividualFileOffset";
-            this.grpIndividualFileOffset.Size = new System.Drawing.Size(658, 88);
+            this.grpIndividualFileOffset.Size = new System.Drawing.Size(781, 88);
             this.grpIndividualFileOffset.TabIndex = 5;
             this.grpIndividualFileOffset.TabStop = false;
             this.grpIndividualFileOffset.Text = "Individual File Offset";
@@ -580,7 +581,7 @@
             this.pnlFileRecordsHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlFileRecordsHeader.Location = new System.Drawing.Point(3, 16);
             this.pnlFileRecordsHeader.Name = "pnlFileRecordsHeader";
-            this.pnlFileRecordsHeader.Size = new System.Drawing.Size(658, 26);
+            this.pnlFileRecordsHeader.Size = new System.Drawing.Size(781, 26);
             this.pnlFileRecordsHeader.TabIndex = 4;
             // 
             // lblFileRecordsStartOffset
@@ -624,7 +625,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 122);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(664, 387);
+            this.panel1.Size = new System.Drawing.Size(804, 238);
             this.panel1.TabIndex = 10;
             // 
             // grpSourceFiles
@@ -638,10 +639,20 @@
             this.grpSourceFiles.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSourceFiles.Location = new System.Drawing.Point(0, 61);
             this.grpSourceFiles.Name = "grpSourceFiles";
-            this.grpSourceFiles.Size = new System.Drawing.Size(664, 61);
+            this.grpSourceFiles.Size = new System.Drawing.Size(804, 61);
             this.grpSourceFiles.TabIndex = 10;
             this.grpSourceFiles.TabStop = false;
             this.grpSourceFiles.Text = "Source Files";
+            // 
+            // btnBrowseDataFile
+            // 
+            this.btnBrowseDataFile.Location = new System.Drawing.Point(407, 11);
+            this.btnBrowseDataFile.Name = "btnBrowseDataFile";
+            this.btnBrowseDataFile.Size = new System.Drawing.Size(25, 20);
+            this.btnBrowseDataFile.TabIndex = 5;
+            this.btnBrowseDataFile.Text = "...";
+            this.btnBrowseDataFile.UseVisualStyleBackColor = true;
+            this.btnBrowseDataFile.Click += new System.EventHandler(this.btnBrowseDataFile_Click);
             // 
             // lblDataFilePath
             // 
@@ -693,22 +704,12 @@
             this.cbUseHeaderFile.UseVisualStyleBackColor = true;
             this.cbUseHeaderFile.CheckedChanged += new System.EventHandler(this.cbUseHeaderFile_CheckedChanged);
             // 
-            // btnBrowseDataFile
-            // 
-            this.btnBrowseDataFile.Location = new System.Drawing.Point(407, 11);
-            this.btnBrowseDataFile.Name = "btnBrowseDataFile";
-            this.btnBrowseDataFile.Size = new System.Drawing.Size(25, 20);
-            this.btnBrowseDataFile.TabIndex = 5;
-            this.btnBrowseDataFile.Text = "...";
-            this.btnBrowseDataFile.UseVisualStyleBackColor = true;
-            this.btnBrowseDataFile.Click += new System.EventHandler(this.btnBrowseDataFile_Click);
-            // 
             // VfsExtractorForm
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(664, 647);
+            this.ClientSize = new System.Drawing.Size(804, 498);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.grpSourceFiles);
             this.Controls.Add(this.grpPresets);

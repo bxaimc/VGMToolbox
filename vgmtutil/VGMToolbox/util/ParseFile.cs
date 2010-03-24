@@ -935,7 +935,7 @@ namespace VGMToolbox.util
             headerFile = String.IsNullOrEmpty(headerFilePath) ? sourcePath : headerFilePath;
             
             // parse header/table file and build extraction list
-            using (FileStream headerFs = File.Open(sourcePath, FileMode.Open, FileAccess.Read))
+            using (FileStream headerFs = File.Open(headerFile, FileMode.Open, FileAccess.Read))
             {
                 if (vfsInformation.UseFileCountOffset)
                 {
