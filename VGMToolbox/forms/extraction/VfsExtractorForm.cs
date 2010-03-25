@@ -14,6 +14,9 @@ namespace VGMToolbox.forms.extraction
 {
     public partial class VfsExtractorForm : AVgmtForm
     {
+        private static readonly string PLUGIN_PATH =
+            Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "plugins"), "VFSExtractor");                
+        
         public VfsExtractorForm(TreeNode pTreeNode)
             : base(pTreeNode)
         {
@@ -511,6 +514,66 @@ namespace VGMToolbox.forms.extraction
         {
             string[] dataFiles = new string[] {Path.GetFullPath(this.tbDataFilePath.Text)};
             this.extractFiles(dataFiles, true);
+        }
+
+        private void comboHeaderSizeByteOrder_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
+        private void comboHeaderSizeByteOrder_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void comboFileCountByteOrder_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
+        private void comboFileCountByteOrder_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void comboFileRecordOffsetByteOrder_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
+        private void comboFileRecordOffsetByteOrder_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void comboFileRecordLengthByteOrder_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
+        private void comboFileRecordLengthByteOrder_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void loadVfsPresets()
+        {
+            comboPresets.Items.Clear();
+
+            foreach (string f in Directory.GetFiles(PLUGIN_PATH, "*.xml", SearchOption.TopDirectoryOnly))
+            {
+                try
+                {
+                    //OffsetFinderTemplate preset = getPresetFromFile(f);
+
+                    //if ((preset != null) && (!String.IsNullOrEmpty(preset.Header.FormatName)))
+                    //{
+                    //    comboPresets.Items.Add(preset);
+                    //}
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(String.Format("Error loading preset file <{0}>", Path.GetFileName(f)), "Error");
+                }
+            }
+
+            comboPresets.Sorted = true;
         }
     }
 }
