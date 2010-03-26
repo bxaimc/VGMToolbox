@@ -15,9 +15,9 @@ namespace VGMToolbox.forms.extraction
 {
     public partial class SavePresetForm : Form
     {
-        OffsetFinderTemplate template;
-        
-        public SavePresetForm(OffsetFinderTemplate preset)
+        ISerializablePreset template;
+
+        public SavePresetForm(ISerializablePreset preset)
         {
             InitializeComponent();
 

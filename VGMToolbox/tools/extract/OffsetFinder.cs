@@ -25,7 +25,7 @@ namespace VGMToolbox.tools.extract
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class OffsetFinderTemplate : IComparable
+    public partial class OffsetFinderTemplate : IComparable, ISerializablePreset
     {
 
         private Header headerField;
@@ -102,7 +102,7 @@ namespace VGMToolbox.tools.extract
                 return this.Header.FormatName.CompareTo(o.Header.FormatName);
             }
 
-            throw new ArgumentException("object is not a Temperature");
+            throw new ArgumentException("object is not a OffsetFinderTemplate");
         }
     }
 

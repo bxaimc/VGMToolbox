@@ -1045,6 +1045,7 @@ namespace VGMToolbox.util
 
                         cutLength = fileItemArray[j].FileLength;
                     }
+                    // Need to make sure offset list is sorted for the next option?
                     else if (vfsInformation.UseLocationOfNextFileToDetermineLength)
                     {
                         cutOffset = fileItemArray[j].FileOffset;

@@ -94,6 +94,7 @@
         <xs:element name="Header" type="Header" minOccurs="1" maxOccurs="1"/>
         <xs:element name="HeaderParameters" type="HeaderParameters" minOccurs="1" maxOccurs="1"/>
         <xs:element name="FileRecordParameters" type="FileRecordParameters" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="NotesOrWarnings" type="xs:string" minOccurs="0" maxOccurs="1"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
