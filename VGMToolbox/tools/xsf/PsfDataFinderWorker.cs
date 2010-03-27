@@ -41,6 +41,7 @@ namespace VGMToolbox.tools.xsf
             public long startingOffset;
             public long length;
             public long vabSize;
+            public bool IsSmallSamplePresent { set; get; }
 
             public long vbStartingOffset;
             public long vbLength;
@@ -119,6 +120,7 @@ namespace VGMToolbox.tools.xsf
 
                     vhObject.offsetTableOffset = offset + (512 * vhObject.vhProgramCount) + 2080;
                     vhObject.offsetTableOffset += 2; // not sure but seems to be needed
+                    vhObject.IsSmallSamplePresent = false;
 
                     for (int i = 0; i < vhObject.vbSampleCount; i++)
                     {
@@ -133,9 +135,7 @@ namespace VGMToolbox.tools.xsf
 
                             if (minSampleSize < Psf.MIN_ADPCM_ROW_SIZE)
                             {
-                                this.progressStruct.Clear();
-                                this.progressStruct.GenericMessage = String.Format("     Notice, VH <{0}>, contains a sample smaller than 0x{1}, making finding a VB very unlikely.{2}", vhObject.FileName, Psf.MIN_ADPCM_ROW_SIZE.ToString("X2"), Environment.NewLine);
-                                this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);                            
+                                vhObject.IsSmallSamplePresent = true;                                
                             }
                         }
 
@@ -434,63 +434,6 @@ namespace VGMToolbox.tools.xsf
             }
         }
 
-        private bool AreFirstXBytesZero(byte[] byteArray, int count)
-        {
-            bool ret = true;
-
-            if (count <= byteArray.Length)
-            {
-                for (int i = 0; i < count; i++)
-                {
-                    if (byteArray[i] != 0x00)
-                    {
-                        ret = false;
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                ret = false;            
-            }
-
-            return ret;
-        }
-
-        private uint GetSizeOfSmallSamples(uint[] sampleLengths, int startIndex)
-        {
-            uint ret = 0;
-
-            for (int i = startIndex; i < sampleLengths.Length; i++)
-            {
-                if (sampleLengths[i] < Psf.MIN_ADPCM_ROW_SIZE)
-                {
-                    ret += sampleLengths[i];
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            return ret;
-        }
-
-        private uint GetCountOfPreviousSmallSamples(uint[] sampleLengths, int startIndex)
-        {
-            uint ret = 0;
-
-            for (int i = startIndex; i > 0; i--)
-            {
-                if (sampleLengths[i] < Psf.MIN_ADPCM_ROW_SIZE)
-                {
-                    ret += 1;
-                }
-            }
-
-            return ret;
-        }
-
         private VhStruct PopulateVbOffsetLength(Stream searchStream,
             ProbableVbStruct[] potentialVbList, int potentialVbStartIndex,
             VhStruct vhObject, bool RelaxVbEofRestrictions)
@@ -556,12 +499,49 @@ namespace VGMToolbox.tools.xsf
                             }                       
                         }                        
                     }
-                    // need to test this logic further, but it seems to work for skipping small samples
-                    else if ((vhObject.vbSampleSizes[i] + GetSizeOfSmallSamples(vhObject.vbSampleSizes, i + 1)) !=
-                        potentialVbList[potentialVbStartIndex + i - GetCountOfPreviousSmallSamples(vhObject.vbSampleSizes, i - 1)].length)
+                    else if (vhObject.vbSampleSizes[i] !=  potentialVbList[potentialVbStartIndex + i].length)
                     {
-                        ret.vbStartingOffset = -1;
-                        ret.vbLength = -1;
+                        // if we have a small sample, and a minimum number of matches, check the expected length
+                        if (vhObject.IsSmallSamplePresent)
+                        {
+                            double matchPercentage = (double)i / (double)vhObject.vbSampleSizes.Length;
+
+                            if (matchPercentage >= Psf.MIN_SAMPLE_MATCH_PERCENTAGE)
+                            {
+                                // check last row for expected length
+                                searchStream.Position = potentialVbList[potentialVbStartIndex].offset + vhObject.expectedVbLength - lastLine.Length;
+                                searchStream.Read(lastLine, 0, lastLine.Length);
+
+                                if (lastLine[1] == 3 ||
+                                    ParseFile.CompareSegment(lastLine, 0, Psf.VB_END_BYTES_1) ||
+                                    ParseFile.CompareSegment(lastLine, 0, Psf.VB_END_BYTES_2))
+                                {
+                                    ret.vbStartingOffset = potentialVbList[potentialVbStartIndex].offset;
+                                    ret.vbLength = vhObject.expectedVbLength;
+
+                                    this.progressStruct.Clear();
+                                    this.progressStruct.GenericMessage = String.Format("     VH <{0}> contains a sample smaller than 0x{1}, partial matching will be used.  Be sure to thoroughly listen to assembled files.{2}", ret.FileName, Psf.MIN_ADPCM_ROW_SIZE.ToString("X8"), Environment.NewLine);
+                                    this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
+
+                                }
+                                else // reset in case a match has already been found for this HD
+                                {
+                                    ret.vbStartingOffset = 0;
+                                    ret.vbLength = 0;
+                                }
+                            }
+                            else // reset in case a match has already been found for this HD
+                            {
+                                ret.vbStartingOffset = 0;
+                                ret.vbLength = 0;
+                            }
+                        }
+                        else
+                        {
+                            ret.vbStartingOffset = -1;
+                            ret.vbLength = -1;
+                        }
+
                         break;
                     }
                 }
@@ -619,50 +599,6 @@ namespace VGMToolbox.tools.xsf
                             ret = true;
                             break;
                         }
-                    }
-                }
-            }
-
-            return ret;
-        }
-
-        private bool InsideAnotherFile(long offset, VhStruct[] vhObjects,
-            Psf.ProbableItemStruct[] seqObjects, Psf.ProbableItemStruct[] sepObjects)
-        {
-            bool ret = false;
-
-            for (int i = 0; i < vhObjects.Length; i++)
-            {
-                if ((offset >= vhObjects[i].startingOffset) &&
-                    (offset <= vhObjects[i].startingOffset + vhObjects[i].length))
-                {
-                    ret = true;
-                    break;
-                }
-            }
-
-            if (!ret)
-            {
-                for (int i = 0; i < seqObjects.Length; i++)
-                {
-                    if ((offset >= seqObjects[i].offset) &&
-                        (offset <= seqObjects[i].offset + seqObjects[i].length))
-                    {
-                        ret = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!ret)
-            {
-                for (int i = 0; i < sepObjects.Length; i++)
-                {
-                    if ((offset >= sepObjects[i].offset) &&
-                        (offset <= sepObjects[i].offset + sepObjects[i].length))
-                    {
-                        ret = true;
-                        break;
                     }
                 }
             }

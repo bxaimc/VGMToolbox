@@ -152,16 +152,8 @@ namespace VGMToolbox.format
             {
                 bytesRead = searchStream.Read(checkBytes, 0, checkBytes.Length);
 
-                //if (!((bytesRead == checkBytes.Length) &&
-                //    (checkBytes[1] < 8) &&
-                //    (checkBytes[0] <= 0x4C) &&
-                //    (!ParseFile.CompareSegment(checkBytes, 0, VB_START_BYTES))))
-                //{
-                //    ret = false;
-                //    break;
-                //}
-
-                if (!IsSonyAdpcmRow(checkBytes))
+                if ((bytesRead != checkBytes.Length) || 
+                    (!IsSonyAdpcmRow(checkBytes)))
                 {
                     ret = false;
                     break;
