@@ -139,7 +139,7 @@ namespace VGMToolbox.format
         }
 
         // function to determine if data is sony adpcm
-        public static bool IsPotentialAdpcm(Stream searchStream, long offset, int rowsToCheck)
+        public static bool IsPotentialAdpcm(Stream searchStream, long offset, int rowsToCheck, bool doAdditionalChecks)
         {
             bool ret = true;
             byte[] checkBytes = new byte[0x10];
@@ -153,7 +153,7 @@ namespace VGMToolbox.format
                 bytesRead = searchStream.Read(checkBytes, 0, checkBytes.Length);
 
                 if ((bytesRead != checkBytes.Length) || 
-                    (!IsSonyAdpcmRow(checkBytes)))
+                    (!IsSonyAdpcmRow(checkBytes, doAdditionalChecks)))
                 {
                     ret = false;
                     break;
@@ -164,20 +164,23 @@ namespace VGMToolbox.format
             return ret;
         }
 
-        public static bool IsSonyAdpcmRow(byte[] potentialAdpcm)
+        public static bool IsSonyAdpcmRow(byte[] potentialAdpcm, bool doAdditionalChecks)
         {
             bool ret = true;
 
             if ((potentialAdpcm.Length != SONY_ADPCM_ROW_SIZE) ||
                 (potentialAdpcm[1] > 7) || 
                 (potentialAdpcm[0] > 0x4C) ||
-                ((potentialAdpcm[0] == 0) && (potentialAdpcm[1] != 2) && (GetCountOfZeroBytes(potentialAdpcm) > 14)) ||
                 (ParseFile.CompareSegment(potentialAdpcm, 0, VB_START_BYTES))
                )
             {
                 ret = false;
             }
-
+            else if (doAdditionalChecks &&
+                     ((potentialAdpcm[0] == 0) && (potentialAdpcm[1] != 2) && (GetCountOfZeroBytes(potentialAdpcm) > 14)))
+            {
+                ret = false;
+            }
             return ret;
         }
 
@@ -235,7 +238,7 @@ namespace VGMToolbox.format
             adpcmRow = ParseFile.ParseSimpleOffset(searchStream, offsetToCheck, adpcmRow.Length);
 
             // check for potential sony adpcm signature
-            if (IsPotentialAdpcm(searchStream, offsetToCheck + 0x10, MIN_ADPCM_ROW_SIZE))
+            if (IsPotentialAdpcm(searchStream, offsetToCheck + 0x10, MIN_ADPCM_ROW_SIZE, false))
             {
                 /*
                 // check if we have passed a different file type and reset previousVbOffset if we did

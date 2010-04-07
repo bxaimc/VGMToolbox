@@ -42,6 +42,7 @@ namespace VGMToolbox.tools.xsf
             public long length;
             public long vabSize;
             public bool IsSmallSamplePresent { set; get; }
+            public bool HasHeaderMismatch { set; get; }
 
             public long vbStartingOffset;
             public long vbLength;
@@ -121,6 +122,7 @@ namespace VGMToolbox.tools.xsf
                     vhObject.offsetTableOffset = offset + (512 * vhObject.vhProgramCount) + 2080;
                     vhObject.offsetTableOffset += 2; // not sure but seems to be needed
                     vhObject.IsSmallSamplePresent = false;
+                    vhObject.HasHeaderMismatch = false;
 
                     for (int i = 0; i < vhObject.vbSampleCount; i++)
                     {
@@ -148,11 +150,13 @@ namespace VGMToolbox.tools.xsf
 
                     if (vhObject.expectedVbLength != vhObject.expectedVbLengthBySample)
                     {
-                        vhObject.expectedVbLength = vhObject.expectedVbLengthBySample;
+                        vhObject.HasHeaderMismatch = true;
+                        
+                        //vhObject.expectedVbLength = vhObject.expectedVbLengthBySample;
 
-                        this.progressStruct.Clear();
-                        this.progressStruct.GenericMessage = String.Format("     Warning, for VH <{0}>, header does not match samples' lengths.  Ignoring header value.{1}", vhObject.FileName, Environment.NewLine);
-                        this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
+                        //this.progressStruct.Clear();
+                        //this.progressStruct.GenericMessage = String.Format("     Warning, for VH <{0}>, header does not match samples' lengths.  Ignoring header value.{1}", vhObject.FileName, Environment.NewLine);
+                        //this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
                     }
 
                     vhArrayList.Add(vhObject);
@@ -307,7 +311,7 @@ namespace VGMToolbox.tools.xsf
                             //   more easily parsed file since those formats are solid
                             //if ((!InsideAnotherFile(offset, vhList, seqList, sepList)) && 
                             //    (IsPotentialAdpcm(fs, offset + 0x10, minRowLength)))
-                            if (Psf.IsPotentialAdpcm(fs, offset + 0x10, minRowLength))
+                            if (Psf.IsPotentialAdpcm(fs, offset + 0x10, minRowLength, false))
                             {
                                 // check if we have passed a different file type and reset previousVbOffset if we did
                                 if (SteppedOverAnotherFile(previousVbOffset, offset, vhList, seqList, sepList))
@@ -442,6 +446,7 @@ namespace VGMToolbox.tools.xsf
             long totalLength = 0;
             byte[] lastLine = new byte[0x10];
             string errorMessage;
+            string warningMessageFormat;
 
             for (int i = 0; i < vhObject.vbSampleSizes.Length; i++)
             {
@@ -502,7 +507,7 @@ namespace VGMToolbox.tools.xsf
                     else if (vhObject.vbSampleSizes[i] !=  potentialVbList[potentialVbStartIndex + i].length)
                     {
                         // if we have a small sample, and a minimum number of matches, check the expected length
-                        if (vhObject.IsSmallSamplePresent)
+                        if (vhObject.IsSmallSamplePresent || vhObject.HasHeaderMismatch)
                         {
                             double matchPercentage = (double)i / (double)vhObject.vbSampleSizes.Length;
 
@@ -519,8 +524,22 @@ namespace VGMToolbox.tools.xsf
                                     ret.vbStartingOffset = potentialVbList[potentialVbStartIndex].offset;
                                     ret.vbLength = vhObject.expectedVbLength;
 
+                                    if (vhObject.IsSmallSamplePresent)
+                                    {
+                                        warningMessageFormat = "     VH <{0}> contains a sample smaller than 0x{1}, partial matching will be used.  Be sure to thoroughly listen to assembled files.{2}";
+                                    }
+                                    else if (vhObject.HasHeaderMismatch)
+                                    {
+                                        warningMessageFormat = "     The header for VH <{0}> does not match its internal structure, partial matching will be used.  Be sure to thoroughly listen to assembled files.{2}";
+                                    }
+                                    else
+                                    {
+                                        warningMessageFormat = "     VH <{0}> has errors, partial matching will be used.  Be sure to thoroughly listen to assembled files.{2}";
+                                    }
+
+
                                     this.progressStruct.Clear();
-                                    this.progressStruct.GenericMessage = String.Format("     VH <{0}> contains a sample smaller than 0x{1}, partial matching will be used.  Be sure to thoroughly listen to assembled files.{2}", ret.FileName, Psf.MIN_ADPCM_ROW_SIZE.ToString("X8"), Environment.NewLine);
+                                    this.progressStruct.GenericMessage = String.Format(warningMessageFormat, ret.FileName, Psf.MIN_ADPCM_ROW_SIZE.ToString("X8"), Environment.NewLine);
                                     this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
 
                                 }

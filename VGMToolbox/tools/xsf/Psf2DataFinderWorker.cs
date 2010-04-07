@@ -89,46 +89,55 @@ namespace VGMToolbox.tools.xsf
                 offset = 0;
 
                 while ((offset = ParseFile.GetNextOffset(fs, offset, Psf2.HD_SIGNATURE)) > -1)
-                {                    
-                    hdLength = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, offset + 0xC, 4), 0);
-
-                    hdName = String.Format("{0}_{1}.HD", Path.GetFileNameWithoutExtension(pPath), hdNumber++.ToString("X4"));
-                    ParseFile.ExtractChunkToFile(fs, offset - 0x10, (int)hdLength,
-                        Path.Combine(destinationFolder, hdName), true, true);
-
-                    // get info
-                    hdObject = new HdStruct();
-                    hdObject.FileName = hdName;
-                    hdObject.startingOffset = offset - 0x10;
-                    hdObject.length = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, offset + 0xC, 4), 0);
-                    hdObject.expectedBdLength = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, offset + 0x10, 4), 0);
-                    hdObject.vagSectionOffset = hdObject.startingOffset + BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, offset + 0x20, 4), 0);
-                    hdObject.maxVagInfoNumber = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, hdObject.vagSectionOffset + 0xC, 4), 0);
-
-                    hdObject.vagInfoOffsetAddr = new long[hdObject.maxVagInfoNumber + 1];
-                    hdObject.vagOffset = new long[hdObject.maxVagInfoNumber + 1];
-                    hdObject.vagLengths = new long[hdObject.maxVagInfoNumber];
-                    hdObject.IsSmallSamplePresent = false;
-
-                    for (int i = 0; i <= hdObject.maxVagInfoNumber; i++)
+                {
+                    try
                     {
-                        hdObject.vagInfoOffsetAddr[i] = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, hdObject.vagSectionOffset + 0x10 + (i * 4), 4), 0);
-                        hdObject.vagOffset[i] = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, hdObject.vagSectionOffset + hdObject.vagInfoOffsetAddr[i], 4), 0);
+                        hdLength = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, offset + 0xC, 4), 0);
 
-                        if (i > 0)
+                        hdName = String.Format("{0}_{1}.HD", Path.GetFileNameWithoutExtension(pPath), hdNumber++.ToString("X4"));
+                        ParseFile.ExtractChunkToFile(fs, offset - 0x10, (int)hdLength,
+                            Path.Combine(destinationFolder, hdName), true, true);
+
+                        // get info
+                        hdObject = new HdStruct();
+                        hdObject.FileName = hdName;
+                        hdObject.startingOffset = offset - 0x10;
+                        hdObject.length = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, offset + 0xC, 4), 0);
+                        hdObject.expectedBdLength = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, offset + 0x10, 4), 0);
+                        hdObject.vagSectionOffset = hdObject.startingOffset + BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, offset + 0x20, 4), 0);
+                        hdObject.maxVagInfoNumber = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, hdObject.vagSectionOffset + 0xC, 4), 0);
+
+                        hdObject.vagInfoOffsetAddr = new long[hdObject.maxVagInfoNumber + 1];
+                        hdObject.vagOffset = new long[hdObject.maxVagInfoNumber + 1];
+                        hdObject.vagLengths = new long[hdObject.maxVagInfoNumber];
+                        hdObject.IsSmallSamplePresent = false;
+
+                        for (int i = 0; i <= hdObject.maxVagInfoNumber; i++)
                         {
-                            hdObject.vagLengths[i - 1] = hdObject.vagOffset[i] - hdObject.vagOffset[i - 1];
+                            hdObject.vagInfoOffsetAddr[i] = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, hdObject.vagSectionOffset + 0x10 + (i * 4), 4), 0);
+                            hdObject.vagOffset[i] = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, hdObject.vagSectionOffset + hdObject.vagInfoOffsetAddr[i], 4), 0);
 
-                            if (hdObject.vagLengths[i - 1] < Psf2.MIN_ADPCM_ROW_SIZE)
+                            if (i > 0)
                             {
-                                hdObject.IsSmallSamplePresent = true;
+                                hdObject.vagLengths[i - 1] = hdObject.vagOffset[i] - hdObject.vagOffset[i - 1];
+
+                                if (hdObject.vagLengths[i - 1] < Psf2.MIN_ADPCM_ROW_SIZE)
+                                {
+                                    hdObject.IsSmallSamplePresent = true;
+                                }
                             }
                         }
+
+                        // add to array
+                        hdArrayList.Add(hdObject);
+                    }
+                    catch (Exception hdEx)
+                    {
+                        this.progressStruct.Clear();
+                        this.progressStruct.ErrorMessage = String.Format("      Error extracting HD at offset 0x{0}: {1}{2}", offset.ToString("X8"), hdEx.Message, Environment.NewLine);
+                        ReportProgress(progress, this.progressStruct);
                     }
 
-                    // add to array
-                    hdArrayList.Add(hdObject);
-                   
                     // increment offset
                     offset += 1;
                 }
@@ -221,7 +230,7 @@ namespace VGMToolbox.tools.xsf
                         {
                             bdRow = ParseFile.ParseSimpleOffset(fs, offset, bdRow.Length);
 
-                            if (Psf2.IsPotentialAdpcm(fs, offset + 0x10, Psf2.MIN_ADPCM_ROW_COUNT))
+                            if (Psf2.IsPotentialAdpcm(fs, offset + 0x10, Psf2.MIN_ADPCM_ROW_COUNT, false))
                             {
                                 potentialBd.offset = offset;
                                 emptyRowList.Add(potentialBd);

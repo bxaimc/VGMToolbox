@@ -882,13 +882,13 @@ namespace VGMToolbox
             ///////
             // PSX/PS2
             ///////
-            TreeNode ext_Ps2Node =
-                new TreeNode("Playstation PSX/PS2");
-            ext_Ps2Node.NodeFont = this.treeviewBoldFont;
+            TreeNode ext_StreamsNode =
+                new TreeNode("Streams");
+            ext_StreamsNode.NodeFont = this.treeviewBoldFont;
 
             nodeTag = new VGMToolbox.util.NodeTagStruct();
             nodeTag.FormClass = emptyForm.GetType().Name;
-            ext_Ps2Node.Tag = nodeTag;
+            ext_StreamsNode.Tag = nodeTag;
 
             ///////
             // PC
@@ -927,8 +927,8 @@ namespace VGMToolbox
             ext_NdsNode.Nodes.Add(ext_SdatFinderNode);            
             ext_RootNode.Nodes.Add(ext_NdsNode);
 
-            ext_Ps2Node.Nodes.Add(ext_SonyAdpcmNode);
-            ext_RootNode.Nodes.Add(ext_Ps2Node);
+            ext_StreamsNode.Nodes.Add(ext_SonyAdpcmNode);
+            ext_RootNode.Nodes.Add(ext_StreamsNode);
 
             // ext_RootNode.Nodes.Add(ext_PcNode);
 

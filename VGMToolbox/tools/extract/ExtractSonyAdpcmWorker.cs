@@ -42,7 +42,7 @@ namespace VGMToolbox.tools.extract
                     { 
                         if (!CancellationPending)
                         {
-                            if (Psf.IsPotentialAdpcm(fs, offset, Psf.MIN_ADPCM_ROW_SIZE))
+                            if (Psf.IsPotentialAdpcm(fs, offset, Psf.MIN_ADPCM_ROW_SIZE, true))
                             {
                                 // create probable adpcm item
                                 adpcmDataItem.Init();
