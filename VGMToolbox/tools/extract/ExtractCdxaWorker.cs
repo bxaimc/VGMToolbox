@@ -37,7 +37,7 @@ namespace VGMToolbox.tools.extract
             extStruct.SilentFramesCount = extractCdxaStruct.SilentFramesCount;
             extStruct.FilterAgainstBlockId = extractCdxaStruct.FilterAgainstBlockId;
 
-            CdxaUtil.ExtractXaFiles(extStruct);            
+            CdxaUtil.ExtractXaFiles(extStruct, true);            
         }       
     }
 }

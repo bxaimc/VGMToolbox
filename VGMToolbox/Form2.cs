@@ -918,7 +918,6 @@ namespace VGMToolbox
             ext_GenericNode.Nodes.Add(ext_SimpleCutterNode);
             ext_GenericNode.Nodes.Add(ext_OffsetFinderNode);
             ext_GenericNode.Nodes.Add(ext_VfsExtractorNode);
-            ext_GenericNode.Nodes.Add(ext_ExtractCdxaNode);
             ext_GenericNode.Nodes.Add(ext_ExtractMidiNode);
                                
             ext_RootNode.Nodes.Add(ext_GenericNode);
@@ -927,6 +926,7 @@ namespace VGMToolbox
             ext_NdsNode.Nodes.Add(ext_SdatFinderNode);            
             ext_RootNode.Nodes.Add(ext_NdsNode);
 
+            ext_StreamsNode.Nodes.Add(ext_ExtractCdxaNode);
             ext_StreamsNode.Nodes.Add(ext_SonyAdpcmNode);
             ext_RootNode.Nodes.Add(ext_StreamsNode);
 

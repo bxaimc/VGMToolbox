@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -42,12 +43,20 @@ namespace VGMToolbox.format.util
             get;
         }
     }
-    
+
+    public struct CdxaWriterStruct
+    {
+        public BinaryWriter FileWriter { set; get; }
+        public long CurrentChunkOffset { set; get; }
+    }
+
     public class CdxaUtil
     {
-        public static void ExtractXaFiles(ExtractXaStruct pExtractXaStruct)
-        { 
-            Dictionary<UInt32, BinaryWriter> bwDictionary = new Dictionary<UInt32, BinaryWriter>();
+        const long EMPTY_BLOCK_OFFSET_FLAG = -1;
+        
+        public static void ExtractXaFiles(ExtractXaStruct pExtractXaStruct, bool useTwoPasses)
+        {
+            Dictionary<UInt32, CdxaWriterStruct> bwDictionary = new Dictionary<UInt32, CdxaWriterStruct>();
             List<UInt32> bwKeys;
 
             long offset;
@@ -55,85 +64,171 @@ namespace VGMToolbox.format.util
             byte[] buffer = new byte[Cdxa.XA_BLOCK_SIZE];
             UInt32 trackKey;
 
+            long previousOffset;
+            long distanceBetweenBlocks;
+            long distanceStatisticalMode = EMPTY_BLOCK_OFFSET_FLAG;
+            Dictionary<long, int> distanceFrequency = new Dictionary<long, int>();
+            
+            CdxaWriterStruct workingStruct = new CdxaWriterStruct();
+
             string outputFileName;
             string outputDirectory = Path.Combine(Path.GetDirectoryName(pExtractXaStruct.Path),
                 Path.GetFileNameWithoutExtension(pExtractXaStruct.Path));
 
+            int totalPasses = 1;
+            bool doFileWrite = false;
+
+            if (useTwoPasses)
+            {
+                totalPasses = 2; 
+            }
+
             using (FileStream fs = File.OpenRead(pExtractXaStruct.Path))
-            {                
-                // get first offset to start the party
-                offset = ParseFile.GetNextOffset(fs, 0, Cdxa.XA_SIG);
-
-                if (offset != -1) // we have found an XA sig
+            {
+                for (int currentPass = 1; currentPass <= totalPasses; currentPass++)
                 {
-                    if (!Directory.Exists(outputDirectory))
+                    // turn on write flag
+                    if (currentPass == totalPasses)
                     {
-                        Directory.CreateDirectory(outputDirectory);
+                        doFileWrite = true;
                     }
+                    
+                    // get first offset to start the party
+                    offset = ParseFile.GetNextOffset(fs, 0, Cdxa.XA_SIG);
 
-                    while ((offset != -1)  && ((offset + Cdxa.XA_BLOCK_SIZE) <= fs.Length))
+                    if (offset != -1) // we have found an XA sig
                     {
-                        trackId = ParseFile.ParseSimpleOffset(fs, offset + Cdxa.XA_TRACK_OFFSET, Cdxa.XA_TRACK_SIZE);
-                        trackKey = BitConverter.ToUInt32(trackId, 0);
-
-                        if ((pExtractXaStruct.FilterAgainstBlockId) && (trackId[2] != Cdxa.XA_CHUNK_ID_DIGITS))
+                        if (!Directory.Exists(outputDirectory))
                         {
-                            offset = ParseFile.GetNextOffset(fs, offset + 1, Cdxa.XA_SIG);
+                            Directory.CreateDirectory(outputDirectory);
                         }
-                        else
+
+                        while ((offset != -1) && ((offset + Cdxa.XA_BLOCK_SIZE) <= fs.Length))
                         {
-                            if (!bwDictionary.ContainsKey(trackKey))
+                            trackId = ParseFile.ParseSimpleOffset(fs, offset + Cdxa.XA_TRACK_OFFSET, Cdxa.XA_TRACK_SIZE);
+                            trackKey = BitConverter.ToUInt32(trackId, 0);
+
+                            if ((pExtractXaStruct.FilterAgainstBlockId) && (trackId[2] != Cdxa.XA_CHUNK_ID_DIGITS))
                             {
-                                // outputFileName = Path.Combine(outputDirectory, Path.GetFileNameWithoutExtension(pExtractXaStruct.Path) + "_" + ParseFile.ByteArrayToString(trackId) + Cdxa.XA_FILE_EXTENSION);
-                                outputFileName = GetOutputFileName(pExtractXaStruct, trackId);
-                                bwDictionary.Add(trackKey, new BinaryWriter(File.Open(outputFileName, FileMode.Create, FileAccess.Write)));
-
-                                if (pExtractXaStruct.AddRiffHeader)
-                                {
-                                    bwDictionary[trackKey].Write(Cdxa.XA_RIFF_HEADER);
-                                }
-                            }
-
-                            // get the next block
-                            buffer = ParseFile.ParseSimpleOffset(fs, offset, Cdxa.XA_BLOCK_SIZE);
-
-                            // check if this is a "silent" block, ignore leading silence (first block)
-                            if ((bwDictionary[trackKey].BaseStream.Length > Cdxa.XA_BLOCK_SIZE) && IsSilentBlock(buffer, pExtractXaStruct))
-                            {
-                                // write the block
-                                bwDictionary[trackKey].Write(buffer);
-
-                                // close up this file, we're done.
-                                FixHeaderAndCloseWriter(bwDictionary[trackKey], pExtractXaStruct);
-                                bwDictionary.Remove(trackKey);
+                                offset = ParseFile.GetNextOffset(fs, offset + 1, Cdxa.XA_SIG);
                             }
                             else
                             {
-                                // patch if needed
-                                if (pExtractXaStruct.PatchByte0x11)
+                                // check distance between blocks for possible split
+                                if ((doFileWrite) &&
+                                    (bwDictionary.ContainsKey(trackKey)) &&
+                                    (distanceStatisticalMode != EMPTY_BLOCK_OFFSET_FLAG) &&
+                                    (bwDictionary[trackKey].CurrentChunkOffset != EMPTY_BLOCK_OFFSET_FLAG))
                                 {
-                                    buffer[0x11] = 0x00;
+                                    previousOffset = bwDictionary[trackKey].CurrentChunkOffset;
+                                    distanceBetweenBlocks = offset - previousOffset;
+
+                                    if (distanceBetweenBlocks > distanceStatisticalMode)
+                                    {
+                                        // close up this file, we're done.
+                                        FixHeaderAndCloseWriter(bwDictionary[trackKey].FileWriter, pExtractXaStruct);
+                                        bwDictionary.Remove(trackKey);
+                                    }
+                                }                                
+                                
+                                // First Block only
+                                if (!bwDictionary.ContainsKey(trackKey))
+                                {
+                                    outputFileName = GetOutputFileName(pExtractXaStruct, trackId);
+                                    workingStruct = new CdxaWriterStruct();
+                                    workingStruct.CurrentChunkOffset = EMPTY_BLOCK_OFFSET_FLAG;
+
+                                    if (doFileWrite)
+                                    {
+                                        workingStruct.FileWriter = new BinaryWriter(File.Open(outputFileName, FileMode.Create, FileAccess.Write));
+                                    }
+                                    
+                                    bwDictionary.Add(trackKey, workingStruct);
+
+                                    if (doFileWrite && pExtractXaStruct.AddRiffHeader)
+                                    {
+                                        bwDictionary[trackKey].FileWriter.Write(Cdxa.XA_RIFF_HEADER);
+                                    }
                                 }
 
-                                // write the block
-                                bwDictionary[trackKey].Write(buffer);
-                            }
+                                // calculate distance between blocks for possible split
+                                if ((!doFileWrite) &&
+                                    (bwDictionary[trackKey].CurrentChunkOffset != EMPTY_BLOCK_OFFSET_FLAG))
+                                {
+                                    previousOffset = bwDictionary[trackKey].CurrentChunkOffset;
+                                    distanceBetweenBlocks = offset - previousOffset;
 
-                            offset += Cdxa.XA_BLOCK_SIZE;
+                                    if (!distanceFrequency.ContainsKey(distanceBetweenBlocks))
+                                    {
+                                        distanceFrequency.Add(distanceBetweenBlocks, 1);
+                                    }
+                                    else
+                                    {
+                                        distanceFrequency[distanceBetweenBlocks]++;
+                                    }
+                                }
+
+                                // set offset, doing this way because of boxing issues
+                                workingStruct = bwDictionary[trackKey];
+                                workingStruct.CurrentChunkOffset = offset;
+                                bwDictionary[trackKey] = workingStruct;
+
+                                // get the next block
+                                buffer = ParseFile.ParseSimpleOffset(fs, offset, Cdxa.XA_BLOCK_SIZE);
+                                
+                                // check if this is a "silent" block, ignore leading silence (first block)
+                                if (IsSilentBlock(buffer, pExtractXaStruct))
+                                {
+                                    if (doFileWrite && (bwDictionary[trackKey].FileWriter.BaseStream.Length > Cdxa.XA_BLOCK_SIZE))
+                                    {
+                                        // write the block
+                                        bwDictionary[trackKey].FileWriter.Write(buffer);
+
+                                        // close up this file, we're done.
+                                        FixHeaderAndCloseWriter(bwDictionary[trackKey].FileWriter, pExtractXaStruct);
+                                    }
+                                    
+                                    bwDictionary.Remove(trackKey);
+                                }
+                                else if (doFileWrite)
+                                {
+                                    // patch if needed
+                                    if (pExtractXaStruct.PatchByte0x11)
+                                    {
+                                        buffer[0x11] = 0x00;
+                                    }
+
+                                    // write the block
+                                    bwDictionary[trackKey].FileWriter.Write(buffer);
+                                }
+
+                                offset += Cdxa.XA_BLOCK_SIZE;
+                            }
+                        }
+
+                        // fix header and close writers
+                        bwKeys = new List<UInt32>(bwDictionary.Keys);
+                        foreach (UInt32 keyname in bwKeys)
+                        {
+                            if (doFileWrite)
+                            {
+                                FixHeaderAndCloseWriter(bwDictionary[keyname].FileWriter, pExtractXaStruct);
+                            }
+                            
+                            bwDictionary.Remove(keyname);
+                        }
+
+                        // get statistical mode of distance between blocks
+                        if (!doFileWrite)
+                        {
+                            distanceStatisticalMode = GetDistanceMode(distanceFrequency);
                         }
                     }
-
-                    // fix header and close writers
-                    bwKeys = new List<UInt32>(bwDictionary.Keys);
-                    foreach (UInt32 keyname in bwKeys)
+                    else
                     {
-                        FixHeaderAndCloseWriter(bwDictionary[keyname], pExtractXaStruct);
-                        bwDictionary.Remove(keyname);
+                        // no CD-XA found
+                        break;
                     }
-                }
-                else
-                {
-                    // Console.WriteLine("XA Signature bytes not found");
                 }
             }                
         }
@@ -174,18 +269,6 @@ namespace VGMToolbox.format.util
                 ret = true;
             }
 
-
-            //for (int i = 0; i < Cdxa.NUM_SILENT_FRAMES_FOR_SILENT_BLOCK; i++)
-            //{
-            //    ret = ret && ParseFile.CompareSegment(pCdxaBlock, 
-            //        (i * Cdxa.XA_SILENT_FRAME.Length) + ((i + 1) * Cdxa.BLOCK_HEADER_SIZE), Cdxa.XA_SILENT_FRAME);
-
-            //    if (!ret)
-            //    {
-            //        break;
-            //    }
-            //}
-
             return ret;
         }
 
@@ -201,6 +284,21 @@ namespace VGMToolbox.format.util
             string ret = Path.Combine(outputDirectory, outputFileName);
             
             return ret;
+        }
+
+        private static long GetDistanceMode(Dictionary<long, int> distanceFrequencyList)
+        {
+            long distanceMode = EMPTY_BLOCK_OFFSET_FLAG;
+
+            foreach (long key in distanceFrequencyList.Keys)
+            {
+                if (distanceFrequencyList[key] > distanceMode)
+                {
+                    distanceMode = key;
+                }
+            }
+
+            return distanceMode;
         }
     }
 }
