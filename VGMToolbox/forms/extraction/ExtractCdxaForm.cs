@@ -48,6 +48,7 @@ namespace VGMToolbox.forms.extraction
             extStruct.PatchByte0x11 = cbPatchByte0x11.Checked;
             extStruct.SilentFramesCount = (uint)this.silentFrameCounter.Value;
             extStruct.FilterAgainstBlockId = this.cbFilterById.Checked;
+            extStruct.DoTwoPass = this.cbDoTwoPass.Checked;
 
             base.backgroundWorker_Execute(extStruct);
         }

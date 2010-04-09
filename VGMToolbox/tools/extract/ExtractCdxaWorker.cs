@@ -13,14 +13,9 @@ namespace VGMToolbox.tools.extract
             public bool PatchByte0x11;
             public uint SilentFramesCount;
 
-            private string[] sourcePaths;
-            public string[] SourcePaths
-            {
-                get { return sourcePaths; }
-                set { sourcePaths = value; }
-            }
-
+            public string[] SourcePaths { set; get; }
             public bool FilterAgainstBlockId { set; get; }
+            public bool DoTwoPass { set; get; }
         }
 
         public ExtractCdxaWorker():
@@ -36,8 +31,9 @@ namespace VGMToolbox.tools.extract
             extStruct.PatchByte0x11 = extractCdxaStruct.PatchByte0x11;
             extStruct.SilentFramesCount = extractCdxaStruct.SilentFramesCount;
             extStruct.FilterAgainstBlockId = extractCdxaStruct.FilterAgainstBlockId;
+            extStruct.DoTwoPass = extractCdxaStruct.DoTwoPass;
 
-            CdxaUtil.ExtractXaFiles(extStruct, true);            
+            CdxaUtil.ExtractXaFiles(extStruct);            
         }       
     }
 }

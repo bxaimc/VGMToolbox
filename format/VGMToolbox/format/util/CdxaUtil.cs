@@ -42,19 +42,23 @@ namespace VGMToolbox.format.util
             set;
             get;
         }
+
+        public bool DoTwoPass { set; get;}
     }
 
     public struct CdxaWriterStruct
     {
-        public BinaryWriter FileWriter { set; get; }
+        public FileStream FileWriter { set; get; }
         public long CurrentChunkOffset { set; get; }
+        public bool NonSilentBlockDetected { set; get; }
     }
 
     public class CdxaUtil
     {
         const long EMPTY_BLOCK_OFFSET_FLAG = -1;
+        const float MINIMUM_BLOCK_DISTANCE_PERCENTAGE = 0.15f;
         
-        public static void ExtractXaFiles(ExtractXaStruct pExtractXaStruct, bool useTwoPasses)
+        public static void ExtractXaFiles(ExtractXaStruct pExtractXaStruct)
         {
             Dictionary<UInt32, CdxaWriterStruct> bwDictionary = new Dictionary<UInt32, CdxaWriterStruct>();
             List<UInt32> bwKeys;
@@ -66,7 +70,7 @@ namespace VGMToolbox.format.util
 
             long previousOffset;
             long distanceBetweenBlocks;
-            long distanceStatisticalMode = EMPTY_BLOCK_OFFSET_FLAG;
+            long distanceCeiling = EMPTY_BLOCK_OFFSET_FLAG;
             Dictionary<long, int> distanceFrequency = new Dictionary<long, int>();
             
             CdxaWriterStruct workingStruct = new CdxaWriterStruct();
@@ -78,7 +82,7 @@ namespace VGMToolbox.format.util
             int totalPasses = 1;
             bool doFileWrite = false;
 
-            if (useTwoPasses)
+            if (pExtractXaStruct.DoTwoPass)
             {
                 totalPasses = 2; 
             }
@@ -117,16 +121,17 @@ namespace VGMToolbox.format.util
                                 // check distance between blocks for possible split
                                 if ((doFileWrite) &&
                                     (bwDictionary.ContainsKey(trackKey)) &&
-                                    (distanceStatisticalMode != EMPTY_BLOCK_OFFSET_FLAG) &&
+                                    (distanceCeiling != EMPTY_BLOCK_OFFSET_FLAG) &&
                                     (bwDictionary[trackKey].CurrentChunkOffset != EMPTY_BLOCK_OFFSET_FLAG))
                                 {
                                     previousOffset = bwDictionary[trackKey].CurrentChunkOffset;
                                     distanceBetweenBlocks = offset - previousOffset;
 
-                                    if (distanceBetweenBlocks > distanceStatisticalMode)
+                                    if (distanceBetweenBlocks > distanceCeiling)
                                     {
                                         // close up this file, we're done.
-                                        FixHeaderAndCloseWriter(bwDictionary[trackKey].FileWriter, pExtractXaStruct);
+                                        FixHeaderAndCloseWriter(bwDictionary[trackKey].FileWriter, pExtractXaStruct, 
+                                            bwDictionary[trackKey].NonSilentBlockDetected);
                                         bwDictionary.Remove(trackKey);
                                     }
                                 }                                
@@ -137,17 +142,18 @@ namespace VGMToolbox.format.util
                                     outputFileName = GetOutputFileName(pExtractXaStruct, trackId);
                                     workingStruct = new CdxaWriterStruct();
                                     workingStruct.CurrentChunkOffset = EMPTY_BLOCK_OFFSET_FLAG;
+                                    workingStruct.NonSilentBlockDetected = false;
 
                                     if (doFileWrite)
                                     {
-                                        workingStruct.FileWriter = new BinaryWriter(File.Open(outputFileName, FileMode.Create, FileAccess.Write));
+                                        workingStruct.FileWriter = File.Open(outputFileName, FileMode.Create, FileAccess.ReadWrite);
                                     }
                                     
                                     bwDictionary.Add(trackKey, workingStruct);
 
                                     if (doFileWrite && pExtractXaStruct.AddRiffHeader)
                                     {
-                                        bwDictionary[trackKey].FileWriter.Write(Cdxa.XA_RIFF_HEADER);
+                                        bwDictionary[trackKey].FileWriter.Write(Cdxa.XA_RIFF_HEADER, 0, Cdxa.XA_RIFF_HEADER.Length);
                                     }
                                 }
 
@@ -176,16 +182,20 @@ namespace VGMToolbox.format.util
                                 // get the next block
                                 buffer = ParseFile.ParseSimpleOffset(fs, offset, Cdxa.XA_BLOCK_SIZE);
                                 
-                                // check if this is a "silent" block, ignore leading silence (first block)
+                                // check if this is a "silent" block
                                 if (IsSilentBlock(buffer, pExtractXaStruct))
                                 {
-                                    if (doFileWrite && (bwDictionary[trackKey].FileWriter.BaseStream.Length > Cdxa.XA_BLOCK_SIZE))
+                                    if (doFileWrite)
                                     {
-                                        // write the block
-                                        bwDictionary[trackKey].FileWriter.Write(buffer);
+                                        //if ((bwDictionary[trackKey].FileWriter.Length > Cdxa.XA_BLOCK_SIZE))
+                                        //{
+                                        //    // write the block
+                                        //    bwDictionary[trackKey].FileWriter.Write(buffer, 0, buffer.Length);
+                                        //}
 
                                         // close up this file, we're done.
-                                        FixHeaderAndCloseWriter(bwDictionary[trackKey].FileWriter, pExtractXaStruct);
+                                        FixHeaderAndCloseWriter(bwDictionary[trackKey].FileWriter, pExtractXaStruct,
+                                            bwDictionary[trackKey].NonSilentBlockDetected);
                                     }
                                     
                                     bwDictionary.Remove(trackKey);
@@ -199,7 +209,16 @@ namespace VGMToolbox.format.util
                                     }
 
                                     // write the block
-                                    bwDictionary[trackKey].FileWriter.Write(buffer);
+                                    bwDictionary[trackKey].FileWriter.Write(buffer, 0, buffer.Length);
+                                    
+                                    // set flag that a non-silent block was found
+                                    if (!bwDictionary[trackKey].NonSilentBlockDetected)
+                                    {
+                                        // doing this way because of boxing issues
+                                        workingStruct = bwDictionary[trackKey];
+                                        workingStruct.NonSilentBlockDetected = true;
+                                        bwDictionary[trackKey] = workingStruct;
+                                    }
                                 }
 
                                 offset += Cdxa.XA_BLOCK_SIZE;
@@ -212,7 +231,8 @@ namespace VGMToolbox.format.util
                         {
                             if (doFileWrite)
                             {
-                                FixHeaderAndCloseWriter(bwDictionary[keyname].FileWriter, pExtractXaStruct);
+                                FixHeaderAndCloseWriter(bwDictionary[keyname].FileWriter, pExtractXaStruct,
+                                    bwDictionary[keyname].NonSilentBlockDetected);
                             }
                             
                             bwDictionary.Remove(keyname);
@@ -221,7 +241,7 @@ namespace VGMToolbox.format.util
                         // get statistical mode of distance between blocks
                         if (!doFileWrite)
                         {
-                            distanceStatisticalMode = GetDistanceMode(distanceFrequency);
+                            distanceCeiling = GetDistanceCeiling(distanceFrequency);
                         }
                     }
                     else
@@ -233,22 +253,31 @@ namespace VGMToolbox.format.util
             }                
         }
 
-        private static void FixHeaderAndCloseWriter(BinaryWriter pBw, ExtractXaStruct pExtractXaStruct)
+        private static void FixHeaderAndCloseWriter(FileStream pFs, ExtractXaStruct pExtractXaStruct,
+            bool nonSilentBlockFound)
         {
+            string filename = pFs.Name;
+            
             if (pExtractXaStruct.AddRiffHeader)
             {
-                UInt32 xaFileSize = (UInt32)pBw.BaseStream.Length;
+                UInt32 xaFileSize = (UInt32)pFs.Length;
 
                 // add file size
-                pBw.BaseStream.Position = Cdxa.FILESIZE_OFFSET;
-                pBw.Write(BitConverter.GetBytes(xaFileSize - 8));
+                pFs.Position = Cdxa.FILESIZE_OFFSET;
+                pFs.Write(BitConverter.GetBytes(xaFileSize - 8), 0, 4);
 
                 // add data size
-                pBw.BaseStream.Position = Cdxa.DATA_LENGTH_OFFSET;
-                pBw.Write(BitConverter.GetBytes((uint)(xaFileSize - Cdxa.XA_RIFF_HEADER.Length)));
+                pFs.Position = Cdxa.DATA_LENGTH_OFFSET;
+                pFs.Write(BitConverter.GetBytes((uint)(xaFileSize - Cdxa.XA_RIFF_HEADER.Length)), 0, 4);
             }
 
-            pBw.Close();
+            pFs.Close();
+            pFs.Dispose();
+
+            if (!nonSilentBlockFound)
+            {
+                File.Delete(filename);
+            }
         }
 
         private static bool IsSilentBlock(byte[] pCdxaBlock, ExtractXaStruct pExtractXaStruct)
@@ -281,24 +310,38 @@ namespace VGMToolbox.format.util
             int fileCount = Directory.GetFiles(outputDirectory, String.Format("{0}*", Path.GetFileNameWithoutExtension(outputFileName)), SearchOption.TopDirectoryOnly).Length;
             outputFileName = String.Format("{0}_{1}{2}", Path.GetFileNameWithoutExtension(outputFileName), fileCount.ToString("X4"), Cdxa.XA_FILE_EXTENSION);
 
+            //if (outputFileName.Equals("BGM2_01016401_0005.xa"))
+            //{
+            //    int x = 1;
+            //}
+
             string ret = Path.Combine(outputDirectory, outputFileName);
             
             return ret;
         }
 
-        private static long GetDistanceMode(Dictionary<long, int> distanceFrequencyList)
+        private static long GetDistanceCeiling(Dictionary<long, int> distanceFrequencyList)
         {
-            long distanceMode = EMPTY_BLOCK_OFFSET_FLAG;
+            long distanceCeiling = EMPTY_BLOCK_OFFSET_FLAG;
+            long totalBlockCount = 0;
 
+            // get total number of blocks found (not entirely correct, because of the first one skipped)
             foreach (long key in distanceFrequencyList.Keys)
             {
-                if (distanceFrequencyList[key] > distanceMode)
+                totalBlockCount += distanceFrequencyList[key];
+            }
+
+            // determine max value based on percentage of hits
+            foreach (long key in distanceFrequencyList.Keys)
+            {
+                if ((key > distanceCeiling) &&
+                    ((((float)distanceFrequencyList[key]/(float)totalBlockCount) >= MINIMUM_BLOCK_DISTANCE_PERCENTAGE)))
                 {
-                    distanceMode = key;
+                    distanceCeiling = key;
                 }
             }
 
-            return distanceMode;
+            return distanceCeiling;
         }
     }
 }

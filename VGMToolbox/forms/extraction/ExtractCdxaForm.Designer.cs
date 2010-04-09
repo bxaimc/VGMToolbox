@@ -30,11 +30,12 @@
         {
             this.grpSource = new System.Windows.Forms.GroupBox();
             this.grpOptions = new System.Windows.Forms.GroupBox();
+            this.cbDoTwoPass = new System.Windows.Forms.CheckBox();
+            this.cbFilterById = new System.Windows.Forms.CheckBox();
             this.lblSilentBlocks = new System.Windows.Forms.Label();
             this.silentFrameCounter = new System.Windows.Forms.NumericUpDown();
             this.cbPatchByte0x11 = new System.Windows.Forms.CheckBox();
             this.cbAddRiffHeader = new System.Windows.Forms.CheckBox();
-            this.cbFilterById = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -45,31 +46,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 479);
-            this.pnlLabels.Size = new System.Drawing.Size(757, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 427);
+            this.pnlLabels.Size = new System.Drawing.Size(804, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(757, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(804, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 402);
-            this.tbOutput.Size = new System.Drawing.Size(757, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 350);
+            this.tbOutput.Size = new System.Drawing.Size(804, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 382);
-            this.pnlButtons.Size = new System.Drawing.Size(757, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 330);
+            this.pnlButtons.Size = new System.Drawing.Size(804, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(697, 0);
+            this.btnCancel.Location = new System.Drawing.Point(744, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(637, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(684, 0);
             // 
             // grpSource
             // 
@@ -77,7 +78,7 @@
             this.grpSource.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpSource.Location = new System.Drawing.Point(0, 23);
             this.grpSource.Name = "grpSource";
-            this.grpSource.Size = new System.Drawing.Size(757, 359);
+            this.grpSource.Size = new System.Drawing.Size(804, 307);
             this.grpSource.TabIndex = 5;
             this.grpSource.TabStop = false;
             this.grpSource.Text = "Source Files";
@@ -86,18 +87,43 @@
             // 
             // grpOptions
             // 
+            this.grpOptions.Controls.Add(this.cbDoTwoPass);
             this.grpOptions.Controls.Add(this.cbFilterById);
             this.grpOptions.Controls.Add(this.lblSilentBlocks);
             this.grpOptions.Controls.Add(this.silentFrameCounter);
             this.grpOptions.Controls.Add(this.cbPatchByte0x11);
             this.grpOptions.Controls.Add(this.cbAddRiffHeader);
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.grpOptions.Location = new System.Drawing.Point(3, 227);
+            this.grpOptions.Location = new System.Drawing.Point(3, 140);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(751, 129);
+            this.grpOptions.Size = new System.Drawing.Size(798, 164);
             this.grpOptions.TabIndex = 6;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
+            // 
+            // cbDoTwoPass
+            // 
+            this.cbDoTwoPass.AutoSize = true;
+            this.cbDoTwoPass.Location = new System.Drawing.Point(8, 128);
+            this.cbDoTwoPass.Name = "cbDoTwoPass";
+            this.cbDoTwoPass.Size = new System.Drawing.Size(343, 30);
+            this.cbDoTwoPass.TabIndex = 5;
+            this.cbDoTwoPass.Text = "Use Two-Pass Method (use this if multiple tracks are extracted to a \r\nsingle file" +
+                " even when Silent Frames setting equals 1)";
+            this.cbDoTwoPass.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.cbDoTwoPass.UseVisualStyleBackColor = true;
+            // 
+            // cbFilterById
+            // 
+            this.cbFilterById.AutoSize = true;
+            this.cbFilterById.Checked = true;
+            this.cbFilterById.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbFilterById.Location = new System.Drawing.Point(8, 59);
+            this.cbFilterById.Name = "cbFilterById";
+            this.cbFilterById.Size = new System.Drawing.Size(266, 17);
+            this.cbFilterById.TabIndex = 4;
+            this.cbFilterById.Text = "Filter by Block ID (uncheck if no files are extracted)";
+            this.cbFilterById.UseVisualStyleBackColor = true;
             // 
             // lblSilentBlocks
             // 
@@ -154,23 +180,11 @@
             this.cbAddRiffHeader.Text = "Add RIFF header (currently needed by all players).";
             this.cbAddRiffHeader.UseVisualStyleBackColor = true;
             // 
-            // cbFilterById
-            // 
-            this.cbFilterById.AutoSize = true;
-            this.cbFilterById.Checked = true;
-            this.cbFilterById.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbFilterById.Location = new System.Drawing.Point(8, 59);
-            this.cbFilterById.Name = "cbFilterById";
-            this.cbFilterById.Size = new System.Drawing.Size(266, 17);
-            this.cbFilterById.TabIndex = 4;
-            this.cbFilterById.Text = "Filter by Block ID (uncheck if no files are extracted)";
-            this.cbFilterById.UseVisualStyleBackColor = true;
-            // 
             // ExtractCdxaForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(757, 520);
+            this.ClientSize = new System.Drawing.Size(804, 468);
             this.Controls.Add(this.grpSource);
             this.Name = "ExtractCdxaForm";
             this.Text = "ExtractCdxaForm";
@@ -203,5 +217,6 @@
         private System.Windows.Forms.Label lblSilentBlocks;
         private System.Windows.Forms.NumericUpDown silentFrameCounter;
         private System.Windows.Forms.CheckBox cbFilterById;
+        private System.Windows.Forms.CheckBox cbDoTwoPass;
     }
 }
