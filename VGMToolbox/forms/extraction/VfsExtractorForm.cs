@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
@@ -27,6 +22,7 @@ namespace VGMToolbox.forms.extraction
             this.btnDoTask.Text = "Extract Files";
             this.lblTitle.Text = "Virtual File System (VFS) Extractor";
             this.tbOutput.Text =  "- Extract files from simple VFS archives." + System.Environment.NewLine;
+            this.tbOutput.Text += "- Preset .xml files should be placed in <" + PLUGIN_PATH + ">" + System.Environment.NewLine;
             this.tbOutput.Text += "1) Enter settings." + System.Environment.NewLine;
             this.tbOutput.Text += "2) Select data file and header file and click 'Extract Files'" + System.Environment.NewLine;
             this.tbOutput.Text += "          OR" + System.Environment.NewLine;

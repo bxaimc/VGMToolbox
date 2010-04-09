@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.Windows.Forms;
 using VGMToolbox.plugin;
 using VGMToolbox.tools.extract;
@@ -12,7 +13,8 @@ namespace VGMToolbox.forms.extraction
         {
             // set title
             this.lblTitle.Text = "Sony ADPCM Extractor";
-            this.tbOutput.Text = "Extract Sony ADPCM Data";
+            this.tbOutput.Text = "Extract Sony ADPCM Data" + Environment.NewLine;
+            this.tbOutput.Text += "- Tool still WIP, results are still imperfect.";
             
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
