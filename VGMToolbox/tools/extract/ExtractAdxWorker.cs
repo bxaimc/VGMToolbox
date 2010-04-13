@@ -58,43 +58,55 @@ namespace VGMToolbox.tools.extract
                 
                 while ((offset = ParseFile.GetNextOffset(fs, offset, ADX_SIG_BYTES)) > -1)
                 {
-                    // get offset to copyright string
-                    copyrightOffset = (uint)ByteConversion.GetUInt16BigEndian(ParseFile.ParseSimpleOffset(fs, offset + 2, 2));
-                    copyrightBytes = ParseFile.ParseSimpleOffset(fs, offset + copyrightOffset - 2, CRI_COPYRIGHT_BYTES.Length);                    
-
-                    // check that copyright bytes are present
-                    if (ParseFile.CompareSegment(copyrightBytes, 0, CRI_COPYRIGHT_BYTES))
+                    if (!this.CancellationPending)
                     {
-                        // verify this is standard ADX
-                        encodingType = ParseFile.ParseSimpleOffset(fs, offset + 4, 1)[0];
+                        // get offset to copyright string
+                        copyrightOffset = (uint)ByteConversion.GetUInt16BigEndian(ParseFile.ParseSimpleOffset(fs, offset + 2, 2));
+                        copyrightBytes = ParseFile.ParseSimpleOffset(fs, offset + copyrightOffset - 2, CRI_COPYRIGHT_BYTES.Length);
 
-                        if (encodingType != 3)
+                        // check that copyright bytes are present
+                        if (ParseFile.CompareSegment(copyrightBytes, 0, CRI_COPYRIGHT_BYTES))
                         {
-                            continue;
+                            // verify this is standard ADX
+                            encodingType = ParseFile.ParseSimpleOffset(fs, offset + 4, 1)[0];
+
+                            if (encodingType != 3)
+                            {
+                                continue;
+                            }
+
+                            // get other info
+                            blockSize = (uint)ParseFile.ParseSimpleOffset(fs, offset + 5, 1)[0];
+                            bitDepth = (uint)ParseFile.ParseSimpleOffset(fs, offset + 6, 1)[0];
+                            channelCount = (uint)ParseFile.ParseSimpleOffset(fs, offset + 7, 1)[0];
+                            sampleRate = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(fs, offset + 8, 4));
+                            totalSamples = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(fs, offset + 0xC, 4));
+                            totalHeaderSize = copyrightOffset + 4;
+
+                            // calculate file size
+                            totalBytes = (totalSamples) / (bitDepth * 8);
+                            fileSize = (totalBytes * channelCount * blockSize) + totalHeaderSize;
+
+                            // extract file
+                            outputFileName = String.Format("{0}_{1}.adx", Path.GetFileNameWithoutExtension(pPath), fileCount.ToString("X8"));
+                            outputFilePath = Path.Combine(outputPath, outputFileName);
+
+                            this.progressStruct.Clear();
+                            this.progressStruct.GenericMessage = String.Format("{0} - offset: 0x{1} size: 0x{2}{3}", outputFileName, offset.ToString("X8"), fileSize.ToString("X8"), Environment.NewLine);
+                            ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
+
+                            ParseFile.ExtractChunkToFile(fs, offset, (int)fileSize, outputFilePath, true, true);
+
+                            fileCount++;
                         }
 
-                        // get other info
-                        blockSize = (uint)ParseFile.ParseSimpleOffset(fs, offset + 5, 1)[0];
-                        bitDepth = (uint)ParseFile.ParseSimpleOffset(fs, offset + 6, 1)[0];
-                        channelCount = (uint)ParseFile.ParseSimpleOffset(fs, offset + 7, 1)[0];
-                        sampleRate = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(fs, offset + 8, 4));
-                        totalSamples = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(fs, offset + 0xC, 4));
-                        totalHeaderSize = copyrightOffset + 4;
-
-                        // calculate file size
-                        totalBytes = (totalSamples) / (bitDepth * 8);
-                        fileSize = (totalBytes * channelCount * blockSize) + totalHeaderSize;
-
-                        // extract file
-                        outputFileName = String.Format("{0}_{1}.adx", Path.GetFileNameWithoutExtension(pPath), fileCount.ToString("X8"));
-                        outputFilePath = Path.Combine(outputPath, outputFileName);
-
-                        ParseFile.ExtractChunkToFile(fs, offset, (int)fileSize, outputFilePath, true, true);
-
-                        fileCount++;
+                        offset += 1;
                     }
-
-                    offset += 1;
+                    else
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
                 }
             }
         }    
