@@ -879,9 +879,9 @@ namespace VGMToolbox
             nodeTag.FormClass = xsf_SdatFinderForm.GetType().Name;
             ext_SdatFinderNode.Tag = nodeTag;
 
-            ///////
-            // PSX/PS2
-            ///////
+            ////////////
+            // STREAMS
+            ///////////
             TreeNode ext_StreamsNode =
                 new TreeNode("Streams");
             ext_StreamsNode.NodeFont = this.treeviewBoldFont;
@@ -914,6 +914,15 @@ namespace VGMToolbox
             nodeTag.FormClass = sonyAdpcmForm.GetType().Name;
             ext_SonyAdpcmNode.Tag = nodeTag;
 
+            // ExtractAdxForm
+            TreeNode ext_ExtractAdxNode = new TreeNode("CRI ADX Extractor");
+
+            ExtractAdxForm extAdxForm = new ExtractAdxForm(ext_ExtractAdxNode);
+            this.splitContainer1.Panel2.Controls.Add(extAdxForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = extAdxForm.GetType().Name;
+            ext_ExtractAdxNode.Tag = nodeTag;
 
             ext_GenericNode.Nodes.Add(ext_SimpleCutterNode);
             ext_GenericNode.Nodes.Add(ext_OffsetFinderNode);
@@ -926,6 +935,7 @@ namespace VGMToolbox
             ext_NdsNode.Nodes.Add(ext_SdatFinderNode);            
             ext_RootNode.Nodes.Add(ext_NdsNode);
 
+            ext_StreamsNode.Nodes.Add(ext_ExtractAdxNode);
             ext_StreamsNode.Nodes.Add(ext_ExtractCdxaNode);
             ext_StreamsNode.Nodes.Add(ext_SonyAdpcmNode);
             ext_RootNode.Nodes.Add(ext_StreamsNode);

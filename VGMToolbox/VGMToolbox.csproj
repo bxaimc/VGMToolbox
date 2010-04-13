@@ -162,6 +162,12 @@
     <Compile Include="forms\examine\TagViewerForm.Designer.cs">
       <DependentUpon>TagViewerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\extraction\ExtractAdxForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\extraction\ExtractAdxForm.Designer.cs">
+      <DependentUpon>ExtractAdxForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\extraction\ExtractCdxaForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -583,6 +589,9 @@
     <Compile Include="tools\examine\ExamineSearchForFileWorker.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\extract\ExtractAdxWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\extract\ExtractCdxaWorker.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -889,6 +898,9 @@
     <EmbeddedResource Include="forms\examine\SearchForFileForm.resx">
       <DependentUpon>SearchForFileForm.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\extraction\ExtractAdxForm.resx">
+      <DependentUpon>ExtractAdxForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\extraction\ExtractCdxaForm.resx">
       <DependentUpon>ExtractCdxaForm.cs</DependentUpon>
