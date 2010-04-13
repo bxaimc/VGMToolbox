@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Collections.Generic;
 using System.Text;
 
@@ -168,6 +169,21 @@ namespace VGMToolbox.util
         public static byte GetLowNibble(byte value)
         {
             return (byte)((value) & 0x0F); ;
+        }
+
+        public static byte[] GetBytesFromHexString(string hexValue)
+        {
+            int j = 0;
+            byte[] bytes = new byte[hexValue.Length / 2];
+
+            // convert the string to bytes
+            for (int i = 0; i < hexValue.Length; i += 2)
+            {
+                bytes[j] = BitConverter.GetBytes(Int16.Parse(hexValue.Substring(i, 2), System.Globalization.NumberStyles.AllowHexSpecifier, CultureInfo.CurrentCulture))[0];
+                j++;
+            }
+
+            return bytes;
         }
     }
 }

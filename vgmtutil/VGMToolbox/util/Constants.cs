@@ -347,19 +347,23 @@ namespace VGMToolbox.util
         public bool UsePreviousFilesSizeToDetermineOffset { set; get; }
         public string BeginCuttingFilesAtOffset { set; get; }
 
+        // offset
         public string FileRecordOffsetOffset { set; get; }
         public string FileRecordOffsetLength { set; get; }
         public bool FileRecordOffsetIsLittleEndian { set; get; }
         public bool UseFileRecordOffsetMultiplier { set; get; }
         public string FileRecordOffsetMultiplier { set; get; }
 
+        // length
         public string FileRecordLengthOffset { set; get; }
         public string FileRecordLengthLength { set; get; }
         public bool FileRecordLengthIsLittleEndian { set; get; }
         public bool UseLocationOfNextFileToDetermineLength { set; get; }
 
+        // name
         public string FileRecordNameOffset { set; get; }
         public string FileRecordNameLength { set; get; }
+        public string FileRecordNameTerminator { set; get; }
         public bool FileRecordNameIsPresent { set; get; }
     }
 
@@ -368,12 +372,14 @@ namespace VGMToolbox.util
         public string FilePath { set; get; }
         public long FileOffset { set; get; }
         public long FileLength { set; get; }
+        public long FileNameLength { set; get; }
 
         public void Clear()
         {
             this.FilePath = String.Empty;
             this.FileOffset = -1;
             this.FileLength = -1;
+            this.FileNameLength = -1;
         }
     }
 

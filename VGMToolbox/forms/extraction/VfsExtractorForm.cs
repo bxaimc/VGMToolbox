@@ -127,10 +127,11 @@ namespace VGMToolbox.forms.extraction
                 bgStruct.FileRecordLengthLength = this.comboFileRecordLengthSize.Text;
                 bgStruct.FileRecordLengthIsLittleEndian = this.comboFileRecordLengthByteOrder.Text.Equals(VfsExtractorWorker.LITTLE_ENDIAN);
                 bgStruct.UseLocationOfNextFileToDetermineLength = this.rbUseOffsetsToDetermineLength.Checked;
-
+             
                 bgStruct.FileRecordNameIsPresent = this.cbFileNameIsPresent.Checked;
                 bgStruct.FileRecordNameOffset = this.tbFileRecordNameOffset.Text;
                 bgStruct.FileRecordNameLength = this.tbFileRecordNameSize.Text;
+                bgStruct.FileRecordNameTerminator = this.tbFileRecordNameTerminatorBytes.Text;
 
                 base.backgroundWorker_Execute(bgStruct);
             }        
@@ -436,18 +437,60 @@ namespace VGMToolbox.forms.extraction
             {
                 this.tbFileRecordNameOffset.Enabled = true;
                 this.tbFileRecordNameOffset.ReadOnly = false;
-                this.tbFileRecordNameSize.Enabled = true;
-                this.tbFileRecordNameSize.ReadOnly = false;
+
+                this.rbFileRecordNameSize.Enabled = true;
+
+                
+                this.rbFileRecordNameTerminator.Enabled = true;
+
+
+                if (this.rbFileRecordNameSize.Checked)
+                {
+                    this.tbFileRecordNameSize.Enabled = true;
+                    this.tbFileRecordNameSize.ReadOnly = false;
+
+                    this.tbFileRecordNameTerminatorBytes.Clear();
+                    this.tbFileRecordNameTerminatorBytes.Enabled = false;
+                    this.tbFileRecordNameTerminatorBytes.ReadOnly = true;
+                    this.lblHexOnly.Enabled = false;
+                }
+                else if (this.rbFileRecordNameTerminator.Checked)
+                {
+                    this.tbFileRecordNameTerminatorBytes.Enabled = true;
+                    this.tbFileRecordNameTerminatorBytes.ReadOnly = false;
+
+                    this.tbFileRecordNameSize.Clear();
+                    this.tbFileRecordNameSize.Enabled = false;
+                    this.tbFileRecordNameSize.ReadOnly = true;
+                    this.lblHexOnly.Enabled = true;
+                }
             }
             else
             {
                 this.tbFileRecordNameOffset.Enabled = false;
                 this.tbFileRecordNameOffset.ReadOnly = true;
+
+                this.rbFileRecordNameSize.Enabled = false;
+                this.tbFileRecordNameSize.Clear();
                 this.tbFileRecordNameSize.Enabled = false;
-                this.tbFileRecordNameSize.ReadOnly = true;            
+                this.tbFileRecordNameSize.ReadOnly = true;
+
+                this.rbFileRecordNameTerminator.Enabled = false;
+                this.tbFileRecordNameTerminatorBytes.Clear();
+                this.tbFileRecordNameTerminatorBytes.Enabled = false;
+                this.tbFileRecordNameTerminatorBytes.ReadOnly = true;
+                this.lblHexOnly.Enabled = false;
             }
         }
         private void cbFileNameIsPresent_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doFileRecordNameCheckbox();
+        }
+        private void rbFileRecordNameSize_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doFileRecordNameCheckbox();
+        }
+        private void rbFileRecordNameTerminator_CheckedChanged(object sender, EventArgs e)
         {
             this.doFileRecordNameCheckbox();
         }

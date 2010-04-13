@@ -694,7 +694,7 @@ namespace VGMToolbox.util
             // create search bytes
             if (searchCriteria.TreatSearchStringAsHex)
             {
-                searchBytes = new byte[searchCriteria.SearchString.Length / 2];
+                searchBytes = ByteConversion.GetBytesFromHexString(searchCriteria.SearchString);
 
                 // convert the search string to bytes
                 for (i = 0; i < searchCriteria.SearchString.Length; i += 2)
@@ -725,14 +725,7 @@ namespace VGMToolbox.util
             j = 0;
             if (searchCriteria.TreatTerminatorStringAsHex)
             {
-                terminatorBytes = new byte[searchCriteria.TerminatorString.Length / 2];
-
-                // convert the search string to bytes
-                for (i = 0; i < searchCriteria.TerminatorString.Length; i += 2)
-                {
-                    terminatorBytes[j] = BitConverter.GetBytes(Int16.Parse(searchCriteria.TerminatorString.Substring(i, 2), System.Globalization.NumberStyles.AllowHexSpecifier, CultureInfo.CurrentCulture))[0];
-                    j++;
-                }
+                terminatorBytes = ByteConversion.GetBytesFromHexString(searchCriteria.TerminatorString);
             }
             else if (!String.IsNullOrEmpty(searchCriteria.TerminatorString))
             {
@@ -1016,6 +1009,11 @@ namespace VGMToolbox.util
 
                     currentFileCount++;
                     currentOffset += recordSize;
+
+                    if (fileItem.FileNameLength != -1)
+                    {
+                        currentOffset += fileItem.FileNameLength;
+                    }
                 }
             }
             
@@ -1095,7 +1093,20 @@ namespace VGMToolbox.util
             if (vfsInformation.FileRecordNameIsPresent)
             {
                 long nameOffset = currentStreamOffset + VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordNameOffset);
-                long nameLength = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordNameLength);
+                long nameLength;
+                byte[] nameTerminatorBytes;
+
+                if (!String.IsNullOrEmpty(vfsInformation.FileRecordNameLength))
+                {
+                    nameLength = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordNameLength);
+                }
+                else
+                {
+                    nameTerminatorBytes = ByteConversion.GetBytesFromHexString(vfsInformation.FileRecordNameTerminator);
+                    nameLength = (long)ParseFile.GetSegmentLength(vfsStream, (int)nameOffset, nameTerminatorBytes);
+                    newFileItem.FileNameLength = nameLength + nameTerminatorBytes.Length;
+                }
+
                 byte[] nameBytes = ParseSimpleOffset(vfsStream, nameOffset, (int)nameLength);
                 nameBytes = FileUtil.ReplaceNullByteWithSpace(nameBytes);
                 newFileName = VGMToolbox.util.ByteConversion.GetAsciiText(nameBytes).Trim();

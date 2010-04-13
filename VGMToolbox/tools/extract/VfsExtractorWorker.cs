@@ -49,6 +49,7 @@ namespace VGMToolbox.tools.extract
 
             public string FileRecordNameOffset { set; get; }
             public string FileRecordNameLength { set; get; }
+            public string FileRecordNameTerminator { set; get; }
             public bool FileRecordNameIsPresent { set; get; }
 
             public VfsExtractionStruct ToVfsExtractionStruct()
@@ -87,6 +88,7 @@ namespace VGMToolbox.tools.extract
 
                 ret.FileRecordNameOffset = this.FileRecordNameOffset;
                 ret.FileRecordNameLength = this.FileRecordNameLength;
+                ret.FileRecordNameTerminator = this.FileRecordNameTerminator;
                 ret.FileRecordNameIsPresent = this.FileRecordNameIsPresent;
                 
                 return ret;
