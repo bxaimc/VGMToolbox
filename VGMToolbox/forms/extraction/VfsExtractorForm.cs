@@ -52,6 +52,7 @@ namespace VGMToolbox.forms.extraction
             this.createFileRecordLengthSizeList();
             this.createFileRecordLengthEndianList();
             this.doFileRecordLengthRadioButtons();
+            this.doCbLengthMultiplier();
 
             this.doFileRecordNameCheckbox();
             this.loadPresetList();
@@ -127,7 +128,9 @@ namespace VGMToolbox.forms.extraction
                 bgStruct.FileRecordLengthLength = this.comboFileRecordLengthSize.Text;
                 bgStruct.FileRecordLengthIsLittleEndian = this.comboFileRecordLengthByteOrder.Text.Equals(VfsExtractorWorker.LITTLE_ENDIAN);
                 bgStruct.UseLocationOfNextFileToDetermineLength = this.rbUseOffsetsToDetermineLength.Checked;
-             
+                bgStruct.UseFileRecordLengthMultiplier = this.cbUseLengthMultiplier.Checked;
+                bgStruct.FileRecordLengthMultiplier = tbFileRecordOffsetMultiplier.Text;
+
                 bgStruct.FileRecordNameIsPresent = this.cbFileNameIsPresent.Checked;
                 bgStruct.FileRecordNameOffset = this.tbFileRecordNameOffset.Text;
                 bgStruct.FileRecordNameLength = this.tbFileRecordNameSize.Text;
@@ -402,13 +405,23 @@ namespace VGMToolbox.forms.extraction
                 this.tbFileRecordLengthOffset.ReadOnly = false;
                 this.comboFileRecordLengthSize.Enabled = true;
                 this.comboFileRecordLengthByteOrder.Enabled = true;
+
+                this.cbUseLengthMultiplier.Enabled = true;
+                this.tbFileRecordLengthMultiplier.Enabled = true;
+                this.tbFileRecordLengthMultiplier.ReadOnly = false;
             }
             else if (this.rbUseOffsetsToDetermineLength.Checked)
             {
                 this.tbFileRecordLengthOffset.Enabled = false;
                 this.tbFileRecordLengthOffset.ReadOnly = true;
                 this.comboFileRecordLengthSize.Enabled = false;
-                this.comboFileRecordLengthByteOrder.Enabled = false;            
+                this.comboFileRecordLengthByteOrder.Enabled = false;
+
+                this.cbUseLengthMultiplier.Checked = false;
+                this.cbUseLengthMultiplier.Enabled = false;
+                this.tbFileRecordLengthMultiplier.Clear();
+                this.tbFileRecordLengthMultiplier.Enabled = false;
+                this.tbFileRecordLengthMultiplier.ReadOnly = true;
             }
         }
         private void createFileRecordLengthSizeList()
@@ -429,6 +442,25 @@ namespace VGMToolbox.forms.extraction
         private void rbUseOffsetsToDetermineLength_CheckedChanged(object sender, EventArgs e)
         {
             this.doFileRecordLengthRadioButtons();
+        }
+
+        private void doCbLengthMultiplier()
+        {
+            if (this.cbUseLengthMultiplier.Checked)
+            {
+                this.tbFileRecordLengthMultiplier.Enabled = true;
+                this.tbFileRecordLengthMultiplier.ReadOnly = false;
+            }
+            else
+            {
+                this.tbFileRecordLengthMultiplier.Clear();
+                this.tbFileRecordLengthMultiplier.Enabled = false;
+                this.tbFileRecordLengthMultiplier.ReadOnly = true;
+            }
+        }
+        private void cbUseLengthMultiplier_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doCbLengthMultiplier();
         }
 
         private void doFileRecordNameCheckbox()
@@ -718,12 +750,12 @@ namespace VGMToolbox.forms.extraction
                                 this.comboFileRecordOffsetByteOrder.SelectedItem = VfsExtractorWorker.LITTLE_ENDIAN;
                                 break;
                         }
-                    }
+                    }                    
                     if (!String.IsNullOrEmpty(vfsSettings.FileRecordParameters.FileOffsetOffsetMultiplier))
                     {
                         this.cbUseOffsetMultiplier.Checked = true;
                         this.tbFileRecordOffsetMultiplier.Text = vfsSettings.FileRecordParameters.FileOffsetOffsetMultiplier;
-                    }
+                    }                    
                     break;
                 
                 case FileOffsetLengthMethod.length:
@@ -751,7 +783,11 @@ namespace VGMToolbox.forms.extraction
                                 break;
                         }
                     }
-
+                    if (!String.IsNullOrEmpty(vfsSettings.FileRecordParameters.FileLengthMultiplier))
+                    {
+                        this.cbUseLengthMultiplier.Checked = true;
+                        this.tbFileRecordLengthMultiplier.Text = vfsSettings.FileRecordParameters.FileLengthMultiplier;
+                    }
                     break;
 
                 case FileOffsetLengthMethod.length:
@@ -905,6 +941,11 @@ namespace VGMToolbox.forms.extraction
                     vfsSettings.FileRecordParameters.FileLengthOffsetEndianessSpecified = true;
                     vfsSettings.FileRecordParameters.FileLengthOffsetEndianess = Endianness.little;
                 }
+
+                if (this.cbUseLengthMultiplier.Checked)
+                {
+                    vfsSettings.FileRecordParameters.FileLengthMultiplier = this.tbFileRecordLengthMultiplier.Text;
+                }
             }
             else if (this.rbUseOffsetsToDetermineLength.Checked)
             {
@@ -961,9 +1002,11 @@ namespace VGMToolbox.forms.extraction
             this.comboFileRecordSize.ResetText();
 
             this.rbUseVfsFileOffset.Checked = true;
+            this.cbUseOffsetMultiplier.Checked = false;
             this.doFileRecordOffsetRadioButtons();
 
             this.rbUseVfsFileLength.Checked = true;
+            this.cbUseLengthMultiplier.Checked = false;
             this.doFileRecordLengthRadioButtons();
 
             this.cbFileNameIsPresent.Checked = false;

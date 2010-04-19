@@ -90,7 +90,6 @@ namespace VGMToolbox.tools.extract
         }
     }
 
-
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.3038")]
     [System.SerializableAttribute()]
@@ -126,6 +125,8 @@ namespace VGMToolbox.tools.extract
         private Endianness fileLengthOffsetEndianessField;
 
         private bool fileLengthOffsetEndianessFieldSpecified;
+
+        private string fileLengthMultiplierField;
 
         private bool extractFileNameField;
 
@@ -328,6 +329,20 @@ namespace VGMToolbox.tools.extract
             set
             {
                 this.fileLengthOffsetEndianessFieldSpecified = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType = "integer")]
+        public string FileLengthMultiplier
+        {
+            get
+            {
+                return this.fileLengthMultiplierField;
+            }
+            set
+            {
+                this.fileLengthMultiplierField = value;
             }
         }
 

@@ -359,7 +359,9 @@ namespace VGMToolbox.util
         public string FileRecordLengthLength { set; get; }
         public bool FileRecordLengthIsLittleEndian { set; get; }
         public bool UseLocationOfNextFileToDetermineLength { set; get; }
-
+        public bool UseFileRecordLengthMultiplier { set; get; }
+        public string FileRecordLengthMultiplier { set; get; }
+        
         // name
         public string FileRecordNameOffset { set; get; }
         public string FileRecordNameLength { set; get; }

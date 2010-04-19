@@ -85,6 +85,7 @@
       <xs:element name="FileLengthOffset" type="xs:integer" minOccurs="0" maxOccurs="1"/>
       <xs:element name="FileLengthOffsetSize" type="xs:integer" minOccurs="0" maxOccurs="1"/>
       <xs:element name="FileLengthOffsetEndianess" type="Endianness" minOccurs="0" maxOccurs="1"/>            
+      <xs:element name="FileLengthMultiplier" type="xs:integer" minOccurs="0" maxOccurs="1"/>
             
       <!-- File Name Section -->
       <xs:element name="ExtractFileName" type="xs:boolean" minOccurs="1" maxOccurs="1"/>

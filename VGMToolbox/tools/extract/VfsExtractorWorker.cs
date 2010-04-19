@@ -46,6 +46,8 @@ namespace VGMToolbox.tools.extract
             public string FileRecordLengthLength { set; get; }
             public bool FileRecordLengthIsLittleEndian { set; get; }
             public bool UseLocationOfNextFileToDetermineLength { set; get; }
+            public bool UseFileRecordLengthMultiplier { set; get; }
+            public string FileRecordLengthMultiplier { set; get; }
 
             public string FileRecordNameOffset { set; get; }
             public string FileRecordNameLength { set; get; }
@@ -85,6 +87,8 @@ namespace VGMToolbox.tools.extract
                 ret.FileRecordLengthLength = this.FileRecordLengthLength;
                 ret.FileRecordLengthIsLittleEndian = this.FileRecordLengthIsLittleEndian;
                 ret.UseLocationOfNextFileToDetermineLength = this.UseLocationOfNextFileToDetermineLength;
+                ret.UseFileRecordLengthMultiplier = this.UseFileRecordLengthMultiplier;
+                ret.FileRecordLengthMultiplier = this.FileRecordLengthMultiplier;
 
                 ret.FileRecordNameOffset = this.FileRecordNameOffset;
                 ret.FileRecordNameLength = this.FileRecordNameLength;

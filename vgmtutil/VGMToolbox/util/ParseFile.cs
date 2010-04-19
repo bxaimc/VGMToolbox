@@ -1187,6 +1187,12 @@ namespace VGMToolbox.util
                         newFileItem.FileLength = -1;
                         break;
                 }
+
+                if (vfsInformation.UseFileRecordLengthMultiplier)
+                {
+                    long lengthMultiplier = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordLengthMultiplier);
+                    newFileItem.FileLength *= lengthMultiplier;
+                }
             }
 
             return newFileItem;
