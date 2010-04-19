@@ -671,6 +671,7 @@ namespace VGMToolbox.util
             long cutSize = 0;
             long cutSizeOffset;
             byte[] cutSizeBytes;
+            long lengthMultiplier;
             long minimumCutSize = -1;
 
             long previousPosition;
@@ -799,6 +800,12 @@ namespace VGMToolbox.util
                                 default:
                                     cutSize = 0;
                                     break;
+                            }
+
+                            if (searchCriteria.UseLengthMultiplier)
+                            {
+                                lengthMultiplier = VGMToolbox.util.ByteConversion.GetLongValueFromString(searchCriteria.LengthMultiplier);
+                                cutSize *= lengthMultiplier;
                             }
                         }
                         else if (searchCriteria.UseTerminatorForCutSize) // look for terminator

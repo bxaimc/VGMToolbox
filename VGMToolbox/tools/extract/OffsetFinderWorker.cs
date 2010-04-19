@@ -26,6 +26,8 @@ namespace VGMToolbox.tools.extract
             public bool isCutSizeAnOffset;
             public string outputFileExtension;
             public bool isLittleEndian;
+            public bool UseLengthMultiplier { set; get; }
+            public string LengthMultiplier { set; get; }
 
             public bool useTerminatorForCutsize;
             public string terminatorString;
@@ -94,6 +96,10 @@ namespace VGMToolbox.tools.extract
                 findOffsetStruct.IsCutSizeAnOffset = this.isCutSizeAnOffset;
                 findOffsetStruct.OutputFileExtension = this.outputFileExtension;
                 findOffsetStruct.IsLittleEndian = this.isLittleEndian;
+                
+                findOffsetStruct.UseLengthMultiplier = this.UseLengthMultiplier;
+                findOffsetStruct.LengthMultiplier = this.LengthMultiplier;
+                
                 findOffsetStruct.UseTerminatorForCutSize = this.useTerminatorForCutsize;
                 findOffsetStruct.TerminatorString = this.terminatorString;
                 findOffsetStruct.TreatTerminatorStringAsHex = this.treatTerminatorStringAsHex;

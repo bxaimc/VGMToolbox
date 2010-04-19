@@ -606,6 +606,7 @@
     </Compile>
     <Compile Include="tools\extract\ISerializablePreset.cs" />
     <Compile Include="tools\extract\OffsetFinder.cs" />
+    <Compile Include="tools\extract\OffsetFinderStatic.cs" />
     <Compile Include="tools\extract\OffsetFinderWorker.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -825,6 +826,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="plugins\AdvancedCutter\ps2sq.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="plugins\AdvancedCutter\ps2ster.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="plugins\AdvancedCutter\ps2svag.xml">

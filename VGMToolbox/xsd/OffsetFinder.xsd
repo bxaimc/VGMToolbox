@@ -36,6 +36,7 @@
       <xs:element name="CutSizeAtOffset" type="xs:integer" minOccurs="0" maxOccurs="1"/>
       <xs:element name="CutSizeOffsetSize" type="xs:integer" minOccurs="0" maxOccurs="1"/>
       <xs:element name="CutSizeOffsetEndianess" type="Endianness" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="CutSizeMultiplier" type="xs:integer" minOccurs="0" maxOccurs="1"/>
 
       <xs:element name="UseModOffsetForTerminatorString" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
       <xs:element name="ModOffsetForTerminatorStringDivisor" type="xs:string" minOccurs="0" maxOccurs="1"/>

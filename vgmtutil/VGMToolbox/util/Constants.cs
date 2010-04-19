@@ -19,7 +19,7 @@ namespace VGMToolbox.util
         private string cutSizeOffsetSize;
         private bool isCutSizeAnOffset;
         private string outputFileExtension;
-        private bool isLittleEndian;
+        private bool isLittleEndian;        
         private bool useTerminatorForCutSize;
         private string terminatorString;
         private bool treatTerminatorStringAsHex;
@@ -158,6 +158,10 @@ namespace VGMToolbox.util
         /// <summary>
         /// Gets or sets flag indicating that a terminator should be used to determine the cut size.
         /// </summary>
+
+        public bool UseLengthMultiplier { set; get; }
+        public string LengthMultiplier { set; get; }
+        
         public bool UseTerminatorForCutSize
         {
             get { return useTerminatorForCutSize; }

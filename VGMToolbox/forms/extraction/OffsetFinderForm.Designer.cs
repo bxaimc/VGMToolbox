@@ -48,6 +48,8 @@
             this.tbSearchString = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.gbCutSizeOptions = new System.Windows.Forms.GroupBox();
+            this.tbLengthMultiplier = new System.Windows.Forms.TextBox();
+            this.cbUseLengthMultiplier = new System.Windows.Forms.CheckBox();
             this.tbOffsetModuloTerminatorResult = new System.Windows.Forms.TextBox();
             this.lblOffsetModuloEquals = new System.Windows.Forms.Label();
             this.tbOffsetModuloTerminatorDivisor = new System.Windows.Forms.TextBox();
@@ -96,31 +98,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 459);
-            this.pnlLabels.Size = new System.Drawing.Size(861, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 622);
+            this.pnlLabels.Size = new System.Drawing.Size(804, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(861, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(804, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 382);
-            this.tbOutput.Size = new System.Drawing.Size(861, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 545);
+            this.tbOutput.Size = new System.Drawing.Size(804, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 362);
-            this.pnlButtons.Size = new System.Drawing.Size(861, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 525);
+            this.pnlButtons.Size = new System.Drawing.Size(804, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(801, 0);
+            this.btnCancel.Location = new System.Drawing.Point(744, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(741, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(684, 0);
             // 
             // grpFiles
             // 
@@ -134,7 +136,7 @@
             this.grpFiles.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFiles.Location = new System.Drawing.Point(0, 23);
             this.grpFiles.Name = "grpFiles";
-            this.grpFiles.Size = new System.Drawing.Size(861, 64);
+            this.grpFiles.Size = new System.Drawing.Size(804, 64);
             this.grpFiles.TabIndex = 5;
             this.grpFiles.TabStop = false;
             this.grpFiles.Text = "Files to Search";
@@ -221,7 +223,7 @@
             this.grpCriteria.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpCriteria.Location = new System.Drawing.Point(0, 87);
             this.grpCriteria.Name = "grpCriteria";
-            this.grpCriteria.Size = new System.Drawing.Size(861, 64);
+            this.grpCriteria.Size = new System.Drawing.Size(804, 64);
             this.grpCriteria.TabIndex = 6;
             this.grpCriteria.TabStop = false;
             this.grpCriteria.Text = "Criteria";
@@ -310,13 +312,15 @@
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox3.Location = new System.Drawing.Point(0, 0);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(844, 310);
+            this.groupBox3.Size = new System.Drawing.Size(804, 344);
             this.groupBox3.TabIndex = 7;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Cut Options (all values are relative to the location of the file to be cut)";
             // 
             // gbCutSizeOptions
             // 
+            this.gbCutSizeOptions.Controls.Add(this.tbLengthMultiplier);
+            this.gbCutSizeOptions.Controls.Add(this.cbUseLengthMultiplier);
             this.gbCutSizeOptions.Controls.Add(this.tbOffsetModuloTerminatorResult);
             this.gbCutSizeOptions.Controls.Add(this.lblOffsetModuloEquals);
             this.gbCutSizeOptions.Controls.Add(this.tbOffsetModuloTerminatorDivisor);
@@ -342,14 +346,32 @@
             this.gbCutSizeOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.gbCutSizeOptions.Location = new System.Drawing.Point(3, 98);
             this.gbCutSizeOptions.Name = "gbCutSizeOptions";
-            this.gbCutSizeOptions.Size = new System.Drawing.Size(838, 209);
+            this.gbCutSizeOptions.Size = new System.Drawing.Size(798, 243);
             this.gbCutSizeOptions.TabIndex = 2;
             this.gbCutSizeOptions.TabStop = false;
             this.gbCutSizeOptions.Text = "Cut Size Options";
             // 
+            // tbLengthMultiplier
+            // 
+            this.tbLengthMultiplier.Location = new System.Drawing.Point(178, 110);
+            this.tbLengthMultiplier.Name = "tbLengthMultiplier";
+            this.tbLengthMultiplier.Size = new System.Drawing.Size(63, 20);
+            this.tbLengthMultiplier.TabIndex = 24;
+            // 
+            // cbUseLengthMultiplier
+            // 
+            this.cbUseLengthMultiplier.AutoSize = true;
+            this.cbUseLengthMultiplier.Location = new System.Drawing.Point(56, 112);
+            this.cbUseLengthMultiplier.Name = "cbUseLengthMultiplier";
+            this.cbUseLengthMultiplier.Size = new System.Drawing.Size(118, 17);
+            this.cbUseLengthMultiplier.TabIndex = 23;
+            this.cbUseLengthMultiplier.Text = "Multiply Cut Size By";
+            this.cbUseLengthMultiplier.UseVisualStyleBackColor = true;
+            this.cbUseLengthMultiplier.CheckedChanged += new System.EventHandler(this.cbUseLengthMultiplier_CheckedChanged);
+            // 
             // tbOffsetModuloTerminatorResult
             // 
-            this.tbOffsetModuloTerminatorResult.Location = new System.Drawing.Point(205, 136);
+            this.tbOffsetModuloTerminatorResult.Location = new System.Drawing.Point(208, 159);
             this.tbOffsetModuloTerminatorResult.Name = "tbOffsetModuloTerminatorResult";
             this.tbOffsetModuloTerminatorResult.Size = new System.Drawing.Size(33, 20);
             this.tbOffsetModuloTerminatorResult.TabIndex = 22;
@@ -357,7 +379,7 @@
             // lblOffsetModuloEquals
             // 
             this.lblOffsetModuloEquals.AutoSize = true;
-            this.lblOffsetModuloEquals.Location = new System.Drawing.Point(186, 139);
+            this.lblOffsetModuloEquals.Location = new System.Drawing.Point(189, 162);
             this.lblOffsetModuloEquals.Name = "lblOffsetModuloEquals";
             this.lblOffsetModuloEquals.Size = new System.Drawing.Size(13, 13);
             this.lblOffsetModuloEquals.TabIndex = 21;
@@ -365,7 +387,7 @@
             // 
             // tbOffsetModuloTerminatorDivisor
             // 
-            this.tbOffsetModuloTerminatorDivisor.Location = new System.Drawing.Point(138, 136);
+            this.tbOffsetModuloTerminatorDivisor.Location = new System.Drawing.Point(141, 159);
             this.tbOffsetModuloTerminatorDivisor.Name = "tbOffsetModuloTerminatorDivisor";
             this.tbOffsetModuloTerminatorDivisor.Size = new System.Drawing.Size(42, 20);
             this.tbOffsetModuloTerminatorDivisor.TabIndex = 20;
@@ -373,7 +395,7 @@
             // cbModOffsetTerminator
             // 
             this.cbModOffsetTerminator.AutoSize = true;
-            this.cbModOffsetTerminator.Location = new System.Drawing.Point(56, 138);
+            this.cbModOffsetTerminator.Location = new System.Drawing.Point(56, 161);
             this.cbModOffsetTerminator.Name = "cbModOffsetTerminator";
             this.cbModOffsetTerminator.Size = new System.Drawing.Size(77, 17);
             this.cbModOffsetTerminator.TabIndex = 19;
@@ -383,7 +405,7 @@
             // 
             // tbExtraCutSizeBytes
             // 
-            this.tbExtraCutSizeBytes.Location = new System.Drawing.Point(162, 183);
+            this.tbExtraCutSizeBytes.Location = new System.Drawing.Point(162, 206);
             this.tbExtraCutSizeBytes.Name = "tbExtraCutSizeBytes";
             this.tbExtraCutSizeBytes.ReadOnly = true;
             this.tbExtraCutSizeBytes.Size = new System.Drawing.Size(57, 20);
@@ -392,7 +414,7 @@
             // cbAddExtraBytes
             // 
             this.cbAddExtraBytes.AutoSize = true;
-            this.cbAddExtraBytes.Location = new System.Drawing.Point(6, 185);
+            this.cbAddExtraBytes.Location = new System.Drawing.Point(6, 208);
             this.cbAddExtraBytes.Name = "cbAddExtraBytes";
             this.cbAddExtraBytes.Size = new System.Drawing.Size(150, 17);
             this.cbAddExtraBytes.TabIndex = 17;
@@ -403,7 +425,7 @@
             // cbIncludeTerminatorInLength
             // 
             this.cbIncludeTerminatorInLength.AutoSize = true;
-            this.cbIncludeTerminatorInLength.Location = new System.Drawing.Point(56, 162);
+            this.cbIncludeTerminatorInLength.Location = new System.Drawing.Point(56, 185);
             this.cbIncludeTerminatorInLength.Name = "cbIncludeTerminatorInLength";
             this.cbIncludeTerminatorInLength.Size = new System.Drawing.Size(222, 17);
             this.cbIncludeTerminatorInLength.TabIndex = 16;
@@ -413,7 +435,7 @@
             // cbTreatTerminatorAsHex
             // 
             this.cbTreatTerminatorAsHex.AutoSize = true;
-            this.cbTreatTerminatorAsHex.Location = new System.Drawing.Point(247, 116);
+            this.cbTreatTerminatorAsHex.Location = new System.Drawing.Point(247, 139);
             this.cbTreatTerminatorAsHex.Name = "cbTreatTerminatorAsHex";
             this.cbTreatTerminatorAsHex.Size = new System.Drawing.Size(87, 17);
             this.cbTreatTerminatorAsHex.TabIndex = 15;
@@ -422,7 +444,7 @@
             // 
             // tbTerminatorString
             // 
-            this.tbTerminatorString.Location = new System.Drawing.Point(138, 113);
+            this.tbTerminatorString.Location = new System.Drawing.Point(141, 136);
             this.tbTerminatorString.Name = "tbTerminatorString";
             this.tbTerminatorString.Size = new System.Drawing.Size(100, 20);
             this.tbTerminatorString.TabIndex = 14;
@@ -430,7 +452,7 @@
             // rbUseTerminator
             // 
             this.rbUseTerminator.AutoSize = true;
-            this.rbUseTerminator.Location = new System.Drawing.Point(6, 115);
+            this.rbUseTerminator.Location = new System.Drawing.Point(6, 138);
             this.rbUseTerminator.Name = "rbUseTerminator";
             this.rbUseTerminator.Size = new System.Drawing.Size(127, 17);
             this.rbUseTerminator.TabIndex = 13;
@@ -442,7 +464,7 @@
             // cbOffsetSize
             // 
             this.cbOffsetSize.FormattingEnabled = true;
-            this.cbOffsetSize.Location = new System.Drawing.Point(138, 63);
+            this.cbOffsetSize.Location = new System.Drawing.Point(141, 63);
             this.cbOffsetSize.Name = "cbOffsetSize";
             this.cbOffsetSize.Size = new System.Drawing.Size(100, 21);
             this.cbOffsetSize.TabIndex = 12;
@@ -470,7 +492,7 @@
             // cbByteOrder
             // 
             this.cbByteOrder.FormattingEnabled = true;
-            this.cbByteOrder.Location = new System.Drawing.Point(138, 86);
+            this.cbByteOrder.Location = new System.Drawing.Point(141, 85);
             this.cbByteOrder.Name = "cbByteOrder";
             this.cbByteOrder.Size = new System.Drawing.Size(100, 21);
             this.cbByteOrder.TabIndex = 9;
@@ -513,14 +535,14 @@
             // 
             // tbStaticCutsize
             // 
-            this.tbStaticCutsize.Location = new System.Drawing.Point(138, 18);
+            this.tbStaticCutsize.Location = new System.Drawing.Point(141, 18);
             this.tbStaticCutsize.Name = "tbStaticCutsize";
             this.tbStaticCutsize.Size = new System.Drawing.Size(100, 20);
             this.tbStaticCutsize.TabIndex = 3;
             // 
             // tbCutSizeOffset
             // 
-            this.tbCutSizeOffset.Location = new System.Drawing.Point(138, 41);
+            this.tbCutSizeOffset.Location = new System.Drawing.Point(141, 41);
             this.tbCutSizeOffset.Name = "tbCutSizeOffset";
             this.tbCutSizeOffset.Size = new System.Drawing.Size(100, 20);
             this.tbCutSizeOffset.TabIndex = 2;
@@ -565,7 +587,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(3, 16);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(838, 82);
+            this.panel2.Size = new System.Drawing.Size(798, 82);
             this.panel2.TabIndex = 19;
             // 
             // btnBrowseOutputFolder
@@ -673,14 +695,14 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 151);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(861, 211);
+            this.panel1.Size = new System.Drawing.Size(804, 374);
             this.panel1.TabIndex = 8;
             // 
             // OffsetFinderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(861, 500);
+            this.ClientSize = new System.Drawing.Size(804, 663);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.grpCriteria);
             this.Controls.Add(this.grpFiles);
@@ -772,5 +794,7 @@
         private System.Windows.Forms.Label lblOutputFolder;
         private System.Windows.Forms.Button btnBrowseOutputFolder;
         private System.Windows.Forms.TextBox tbOutputFolder;
+        private System.Windows.Forms.CheckBox cbUseLengthMultiplier;
+        private System.Windows.Forms.TextBox tbLengthMultiplier;
     }
 }

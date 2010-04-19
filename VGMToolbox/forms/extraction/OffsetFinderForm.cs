@@ -122,8 +122,9 @@ namespace VGMToolbox.forms.extraction
                         ofStruct.cutSize = this.tbCutSizeOffset.Text;
                         ofStruct.cutSizeOffsetSize = this.cbOffsetSize.Text;
                         ofStruct.isCutSizeAnOffset = true;
-                        ofStruct.isLittleEndian =
-                            (cbByteOrder.Text.Equals(OffsetFinderWorker.LITTLE_ENDIAN));
+                        ofStruct.isLittleEndian = (cbByteOrder.Text.Equals(OffsetFinderWorker.LITTLE_ENDIAN));
+                        ofStruct.UseLengthMultiplier = cbUseLengthMultiplier.Checked;
+                        ofStruct.LengthMultiplier = this.tbLengthMultiplier.Text;
 
                     }
                     else if (this.rbUseTerminator.Checked)
@@ -171,6 +172,8 @@ namespace VGMToolbox.forms.extraction
                 tbCutSizeOffset.ReadOnly = true;
                 cbOffsetSize.Enabled = false;
                 cbByteOrder.Enabled = false;
+                this.cbUseLengthMultiplier.Checked = false;
+                this.cbUseLengthMultiplier.Enabled = false;                
                 tbTerminatorString.ReadOnly = true;
                 cbTreatTerminatorAsHex.Enabled = false;
                 cbIncludeTerminatorInLength.Enabled = false;
@@ -186,6 +189,7 @@ namespace VGMToolbox.forms.extraction
                 tbCutSizeOffset.ReadOnly = false;
                 cbOffsetSize.Enabled = true;
                 cbByteOrder.Enabled = true;
+                this.cbUseLengthMultiplier.Enabled = true;
                 tbTerminatorString.ReadOnly = true;
                 cbTreatTerminatorAsHex.Enabled = false;
                 cbIncludeTerminatorInLength.Enabled = false;
@@ -201,6 +205,7 @@ namespace VGMToolbox.forms.extraction
                 tbCutSizeOffset.ReadOnly = true;
                 cbOffsetSize.Enabled = false;
                 cbByteOrder.Enabled = false;
+                this.cbUseLengthMultiplier.Enabled = false;
                 tbTerminatorString.ReadOnly = false;
                 cbTreatTerminatorAsHex.Enabled = true;
                 cbIncludeTerminatorInLength.Enabled = true;
@@ -212,6 +217,7 @@ namespace VGMToolbox.forms.extraction
             }
 
             this.doOffsetModuloTerminatorCheckbox();
+            this.doCbUseLengthMultiplier();
         }
 
         private void createEndianList()
@@ -279,6 +285,8 @@ namespace VGMToolbox.forms.extraction
         }
         private void resetCutSection()
         {
+            this.cbUseLengthMultiplier.Checked = false;
+            
             if (cbDoCut.Checked)
             {
                 tbSearchStringOffset.ReadOnly = false;
@@ -311,6 +319,9 @@ namespace VGMToolbox.forms.extraction
                 tbCutSizeOffset.Show();
                 cbOffsetSize.Show();
                 cbByteOrder.Show();
+
+                cbUseLengthMultiplier.Show();
+                tbLengthMultiplier.Show();
 
                 gbCutSizeOptions.Show();
                 lblStringAtOffset.Show();
@@ -362,6 +373,8 @@ namespace VGMToolbox.forms.extraction
                 cbOffsetSize.Enabled = false;
                 cbByteOrder.Enabled = false;
 
+                cbUseLengthMultiplier.Show();
+                tbLengthMultiplier.Show();
 
                 tbSearchStringOffset.Hide();
                 tbOutputExtension.Hide();
@@ -403,6 +416,7 @@ namespace VGMToolbox.forms.extraction
                 this.btnBrowseOutputFolder.Hide();
             }
 
+            this.doCbUseLengthMultiplier();
             this.doOffsetModuloTerminatorCheckbox();
         }
         private void resetCriteriaSection()
@@ -450,45 +464,7 @@ namespace VGMToolbox.forms.extraction
             this.comboPresets.DataSource = SqlLiteUtil.GetSimpleDataTable(DB_PATH, "OffsetFinder", "OffsetFinderFormatName");
             this.comboPresets.DisplayMember = "OffsetFinderFormatName";
             this.comboPresets.ValueMember = "OffsetFinderId";
-        }        
-        private void loadSelectedItem2()
-        {
-            string warningString;
-            DataRowView drv = (DataRowView)this.comboPresets.SelectedItem;
-            DataTable dt = SqlLiteUtil.GetSimpleDataItem(DB_PATH, "OffsetFinder", "OffsetFinderId", drv["OffsetFinderId"].ToString());
-            DataRow dr = dt.Rows[0];
-
-            this.cbDoCut.Checked = true;
-
-            this.tbSearchString.Text = dr["SearchString"].ToString();
-            this.cbSearchAsHex.Checked = Convert.ToBoolean(dr["TreatSearchStringAsHex"]);
-            
-            this.tbSearchStringOffset.Text = dr["SearchStringOffset"].ToString();
-            this.tbOutputExtension.Text = dr["OuputFileExtension"].ToString();
-
-            this.rbStaticCutSize.Checked = Convert.ToBoolean(dr["UseStaticCutsize"]);
-            this.tbStaticCutsize.Text = dr["StaticCutSize"].ToString();
-
-            this.rbOffsetBasedCutSize.Checked = Convert.ToBoolean(dr["UseCutSizeAtOffset"]);
-            this.tbCutSizeOffset.Text = dr["CutSizeAtOffset"].ToString();
-            this.cbOffsetSize.SelectedItem = dr["CutSizeOffsetSize"];
-            this.cbByteOrder.SelectedItem = dr["CutSizeOffsetEndianess"];
-
-            this.rbUseTerminator.Checked = Convert.ToBoolean(dr["UseTerminatorString"]);
-            this.tbTerminatorString.Text = dr["TerminatorString"].ToString();
-            this.cbTreatTerminatorAsHex.Checked = Convert.ToBoolean(dr["TreatTerminatorStringAsHex"]);
-            this.cbIncludeTerminatorInLength.Checked = Convert.ToBoolean(dr["IncludeTerminatorInSize"]);
-
-            this.cbAddExtraBytes.Checked = Convert.ToBoolean(dr["AddExtraBytes"]);
-            this.tbExtraCutSizeBytes.Text = dr["AddExtraBytesSize"].ToString();
-
-            warningString = dr["NotesOrWarnings"].ToString();
-
-            if (!String.IsNullOrEmpty(warningString))
-            {
-                MessageBox.Show(warningString, "Notes/Warnings");
-            }
-        }
+        }                
         
         private void loadSelectedItem()
         {
@@ -601,6 +577,13 @@ namespace VGMToolbox.forms.extraction
                             this.cbByteOrder.SelectedItem = "Little Endian";
                             break;
                     }
+
+                    if (!String.IsNullOrEmpty(presets.SearchParameters.CutParameters.CutSizeMultiplier))
+                    {
+                        this.cbUseLengthMultiplier.Checked = true;
+                        this.tbLengthMultiplier.Text = presets.SearchParameters.CutParameters.CutSizeMultiplier;
+                    }
+
                     break;
                 case CutStyle.terminator:
                     this.rbUseTerminator.Checked = true;
@@ -670,6 +653,11 @@ namespace VGMToolbox.forms.extraction
                 else if (this.cbByteOrder.SelectedItem.Equals("Big Endian"))
                 {
                     preset.SearchParameters.CutParameters.CutSizeOffsetEndianess = Endianness.big;
+                }
+
+                if (!String.IsNullOrEmpty(this.tbLengthMultiplier.Text))
+                {
+                    preset.SearchParameters.CutParameters.CutSizeMultiplier = this.tbLengthMultiplier.Text;
                 }
             }
             else if (this.rbUseTerminator.Checked)
@@ -773,6 +761,26 @@ namespace VGMToolbox.forms.extraction
         private void btnBrowseOutputFolder_Click(object sender, EventArgs e)
         {
             this.tbOutputFolder.Text = base.browseForFolder(sender, e);
+        }
+
+        private void doCbUseLengthMultiplier()
+        {
+            if (this.cbUseLengthMultiplier.Checked)
+            {
+                this.tbLengthMultiplier.Enabled = true;
+                this.tbLengthMultiplier.ReadOnly = false;
+            }
+            else
+            {
+                this.tbLengthMultiplier.Clear();
+                this.tbLengthMultiplier.Enabled = false;
+                this.tbLengthMultiplier.ReadOnly = true;            
+            }
+
+        }
+        private void cbUseLengthMultiplier_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doCbUseLengthMultiplier();
         }
     }
 }
