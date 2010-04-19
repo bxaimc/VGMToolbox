@@ -72,35 +72,41 @@ namespace VGMToolbox.tools.extract
 
                             if (encodingType != 3)
                             {
-                                continue;
+                                fileSize = 1;
+                            }
+                            else
+                            {
+                                // get other info
+                                blockSize = (uint)ParseFile.ParseSimpleOffset(fs, offset + 5, 1)[0];
+                                bitDepth = (uint)ParseFile.ParseSimpleOffset(fs, offset + 6, 1)[0];
+                                channelCount = (uint)ParseFile.ParseSimpleOffset(fs, offset + 7, 1)[0];
+                                sampleRate = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(fs, offset + 8, 4));
+                                totalSamples = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(fs, offset + 0xC, 4));
+                                totalHeaderSize = copyrightOffset + 4;
+
+                                // calculate file size
+                                totalBytes = (totalSamples) / (bitDepth * 8);
+                                fileSize = (totalBytes * channelCount * blockSize) + totalHeaderSize;
+
+                                // extract file
+                                outputFileName = String.Format("{0}_{1}.adx", Path.GetFileNameWithoutExtension(pPath), fileCount.ToString("X8"));
+                                outputFilePath = Path.Combine(outputPath, outputFileName);
+
+                                this.progressStruct.Clear();
+                                this.progressStruct.GenericMessage = String.Format("{0} - offset: 0x{1} size: 0x{2}{3}", outputFileName, offset.ToString("X8"), fileSize.ToString("X8"), Environment.NewLine);
+                                ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
+
+                                ParseFile.ExtractChunkToFile(fs, offset, (int)fileSize, outputFilePath, true, true);
+
+                                fileCount++;
                             }
 
-                            // get other info
-                            blockSize = (uint)ParseFile.ParseSimpleOffset(fs, offset + 5, 1)[0];
-                            bitDepth = (uint)ParseFile.ParseSimpleOffset(fs, offset + 6, 1)[0];
-                            channelCount = (uint)ParseFile.ParseSimpleOffset(fs, offset + 7, 1)[0];
-                            sampleRate = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(fs, offset + 8, 4));
-                            totalSamples = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(fs, offset + 0xC, 4));
-                            totalHeaderSize = copyrightOffset + 4;
-
-                            // calculate file size
-                            totalBytes = (totalSamples) / (bitDepth * 8);
-                            fileSize = (totalBytes * channelCount * blockSize) + totalHeaderSize;
-
-                            // extract file
-                            outputFileName = String.Format("{0}_{1}.adx", Path.GetFileNameWithoutExtension(pPath), fileCount.ToString("X8"));
-                            outputFilePath = Path.Combine(outputPath, outputFileName);
-
-                            this.progressStruct.Clear();
-                            this.progressStruct.GenericMessage = String.Format("{0} - offset: 0x{1} size: 0x{2}{3}", outputFileName, offset.ToString("X8"), fileSize.ToString("X8"), Environment.NewLine);
-                            ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
-
-                            ParseFile.ExtractChunkToFile(fs, offset, (int)fileSize, outputFilePath, true, true);
-
-                            fileCount++;
+                            offset += fileSize;
                         }
-
-                        offset += 1;
+                        else
+                        {
+                            offset += 1;
+                        }                                                
                     }
                     else
                     {

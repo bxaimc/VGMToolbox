@@ -811,7 +811,7 @@ namespace VGMToolbox.util
                                     terminatorModuloResult = VGMToolbox.util.ByteConversion.GetLongValueFromString(searchCriteria.TerminatorStringModuloResult);
                                 }
 
-                                terminatorOffset = GetNextOffset(fs, offset + 1, terminatorBytes,
+                                terminatorOffset = GetNextOffset(fs, offset + searchBytes.Length, terminatorBytes,
                                     searchCriteria.DoTerminatorModulo, terminatorModuloDivisor,
                                     terminatorModuloResult);
                                 

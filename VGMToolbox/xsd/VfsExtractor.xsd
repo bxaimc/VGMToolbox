@@ -35,6 +35,14 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <!-- Name Length -->
+  <xs:simpleType name="NameLengthType">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="staticSize" />
+      <xs:enumeration value="terminator" />
+    </xs:restriction>
+  </xs:simpleType>
+  
   <!--  Header/Table Parameters -->
   <xs:complexType name="HeaderParameters">
     <xs:sequence minOccurs="1" maxOccurs="1">
@@ -82,7 +90,9 @@
       <xs:element name="ExtractFileName" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
       
       <xs:element name="FileNameOffset" type="xs:integer" minOccurs="0" maxOccurs="1"/>
-      <xs:element name="FileNameSize" type="xs:integer" minOccurs="0" maxOccurs="1"/>      
+      <xs:element name="FileNameLengthMethod" type="NameLengthType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="FileNameSize" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="FileNameTerminator" type="xs:string" minOccurs="0" maxOccurs="1"/>
             
     </xs:sequence>
   </xs:complexType>

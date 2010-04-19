@@ -764,7 +764,17 @@ namespace VGMToolbox.forms.extraction
             {
                 this.cbFileNameIsPresent.Checked = true;
                 this.tbFileRecordNameOffset.Text = vfsSettings.FileRecordParameters.FileNameOffset;
-                this.tbFileRecordNameSize.Text = vfsSettings.FileRecordParameters.FileNameSize;
+                
+                if (vfsSettings.FileRecordParameters.FileNameLengthMethod.Equals(NameLengthType.staticSize))
+                {
+                    this.rbFileRecordNameSize.Checked = true;
+                    this.tbFileRecordNameSize.Text = vfsSettings.FileRecordParameters.FileNameSize;
+                }
+                else if (vfsSettings.FileRecordParameters.FileNameLengthMethod.Equals(NameLengthType.terminator))
+                {
+                    this.rbFileRecordNameTerminator.Checked = true;
+                    this.tbFileRecordNameTerminatorBytes.Text = vfsSettings.FileRecordParameters.FileNameTerminator;
+                }
             }
 
             #endregion
@@ -906,7 +916,20 @@ namespace VGMToolbox.forms.extraction
             {
                 vfsSettings.FileRecordParameters.ExtractFileName = true;
                 vfsSettings.FileRecordParameters.FileNameOffset = this.tbFileRecordNameOffset.Text;
-                vfsSettings.FileRecordParameters.FileNameSize = this.tbFileRecordNameSize.Text;
+
+
+                if (this.rbFileRecordNameSize.Checked)
+                {
+                    vfsSettings.FileRecordParameters.FileNameLengthMethodSpecified = true;
+                    vfsSettings.FileRecordParameters.FileNameLengthMethod = NameLengthType.staticSize;
+                    vfsSettings.FileRecordParameters.FileNameSize = this.tbFileRecordNameSize.Text;
+                }
+                else if (this.rbFileRecordNameTerminator.Checked)
+                {
+                    vfsSettings.FileRecordParameters.FileNameLengthMethodSpecified = true;
+                    vfsSettings.FileRecordParameters.FileNameLengthMethod = NameLengthType.terminator;
+                    vfsSettings.FileRecordParameters.FileNameTerminator = this.tbFileRecordNameTerminatorBytes.Text;
+                }
             }
             
             #endregion

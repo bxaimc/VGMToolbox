@@ -613,6 +613,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\extract\VfsExtractor.cs" />
+    <Compile Include="tools\extract\VfsExtractorStatic.cs" />
     <Compile Include="tools\extract\VfsExtractorWorker.cs">
       <SubType>Component</SubType>
     </Compile>
