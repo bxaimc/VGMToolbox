@@ -19,6 +19,7 @@ namespace VGMToolbox.format
         
         public const UInt32 GENH_HEADER_SIZE = 0x1000;
         public const string FILE_EXTENSION = ".genh";
+        public const string FILE_EXTENSION_HEADER = ".genh.header";
         public const string EMPTY_SAMPLE_COUNT = "-1";
 
 

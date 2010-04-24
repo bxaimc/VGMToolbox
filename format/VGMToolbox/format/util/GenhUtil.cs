@@ -36,7 +36,8 @@ namespace VGMToolbox.format.util
     public sealed class GenhUtil
     {
         private const int SONY_ADPCM_LOOP_HACK_BYTE_COUNT = 0x30;
-        
+        private const string GENH_BATCH_FILE_NAME = "vgmt_genh_copy.bat";
+
         private GenhUtil() { }
 
         public static bool IsGenhFile(string path)
@@ -95,9 +96,17 @@ namespace VGMToolbox.format.util
 
             FileInfo fi = new FileInfo(Path.GetFullPath(pSourcePath));
             UInt32 fileLength = (UInt32)fi.Length;
+            string outputFilePath;
 
-            string outputFilePath = Path.ChangeExtension(pSourcePath, Genh.FILE_EXTENSION);
-
+            if (pGenhCreationStruct.OutputHeaderOnly)
+            {
+                outputFilePath = Path.ChangeExtension(pSourcePath, Genh.FILE_EXTENSION_HEADER);
+            }
+            else
+            {
+                outputFilePath = Path.ChangeExtension(pSourcePath, Genh.FILE_EXTENSION);
+            }
+            
             // write the file
             using (FileStream outputFs = File.Open(outputFilePath, FileMode.Create, FileAccess.Write))
             {
@@ -151,8 +160,12 @@ namespace VGMToolbox.format.util
                     bw.BaseStream.Position = 0xFFC;
                     bw.Write(0x0);
 
-                    // add input file now
-                    if (!pGenhCreationStruct.OutputHeaderOnly)
+                    // create batch script or add input file
+                    if (pGenhCreationStruct.OutputHeaderOnly)
+                    {
+                        AddCopyItemToBatchFile(Path.GetDirectoryName(pSourcePath), pSourcePath, outputFilePath);
+                    }
+                    else
                     {
                         using (FileStream inputFs = File.Open(pSourcePath, FileMode.Open, FileAccess.Read))
                         {
@@ -286,6 +299,9 @@ namespace VGMToolbox.format.util
 
             long loopStart = -1;
             long loopEnd = -1;
+            
+            long loopCheckBytesOffset;
+            byte[] possibleLoopBytes;
 
             long headerSkip = VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.HeaderSkip);
             int channels = (int)VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.Channels);
@@ -344,10 +360,14 @@ namespace VGMToolbox.format.util
                 // if loop end found but start not found, try alternate method
                 if ((loopEnd >= 0) && (loopStart < 0))
                 {
-                    byte[] possibleLoopBytes = ParseFile.ParseSimpleOffset(br.BaseStream, fi.Length - SONY_ADPCM_LOOP_HACK_BYTE_COUNT, SONY_ADPCM_LOOP_HACK_BYTE_COUNT - 0x10);
+                    loopCheckBytesOffset = loopEnd + headerSkip - SONY_ADPCM_LOOP_HACK_BYTE_COUNT;
+                    possibleLoopBytes = ParseFile.ParseSimpleOffset(
+                                                br.BaseStream,
+                                                loopCheckBytesOffset, 
+                                                SONY_ADPCM_LOOP_HACK_BYTE_COUNT - 0x10);
                     loopStart = ParseFile.GetNextOffset(br.BaseStream, 0, possibleLoopBytes, true);
 
-                    if (loopStart > 0)
+                    if ((loopStart > 0) && (loopStart < loopCheckBytesOffset))
                     {
                         loopStart += SONY_ADPCM_LOOP_HACK_BYTE_COUNT - headerSkip;
                     }
@@ -386,7 +406,7 @@ namespace VGMToolbox.format.util
                     string originalFileName = System.Text.Encoding.ASCII.GetString(genhFile.OriginalFileName);
                     
                     outputFileName = Path.Combine(Path.GetDirectoryName(pSourcePath), originalFileName).Trim();
-                    headerOutputFileName = Path.Combine(Path.GetDirectoryName(pSourcePath), String.Format("{0}.genh.header", originalFileName.Trim())).Trim();
+                    headerOutputFileName = Path.Combine(Path.GetDirectoryName(pSourcePath), String.Format("{0}{1}", originalFileName.Trim(), Genh.FILE_EXTENSION_HEADER)).Trim();
 
                     ParseFile.ExtractChunkToFile(fs, headerLength, originalFileSize, outputFileName, outputExtractionLog, outputExtractionFile);
                     ParseFile.ExtractChunkToFile(fs, 0, headerLength, headerOutputFileName, outputExtractionLog, outputExtractionFile);
@@ -401,6 +421,20 @@ namespace VGMToolbox.format.util
             }
 
             return outputFileName;
+        }
+
+        public static string AddCopyItemToBatchFile(string destinationFolder, string originalFileName,
+            string headerFileName)
+        {
+            string batchOutputPath = Path.Combine(destinationFolder, GENH_BATCH_FILE_NAME);
+            string copyStatementFormat = "copy /b \"{0}\" + \"{1}\" \"{2}\"";
+
+            using (StreamWriter sw = new StreamWriter(File.Open(batchOutputPath, FileMode.Append, FileAccess.Write)))
+            {
+                sw.WriteLine(String.Format(copyStatementFormat, Path.GetFileName(headerFileName), Path.GetFileName(originalFileName), Path.GetFileName(Path.ChangeExtension(originalFileName, Genh.FILE_EXTENSION))));
+            }
+
+            return batchOutputPath;
         }
     }
 }

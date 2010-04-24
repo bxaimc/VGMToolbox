@@ -235,6 +235,7 @@ namespace VGMToolbox.forms
             genhStruct.CoefRightChannel = this.tbRightCoef.Text;
             genhStruct.CoefLeftChannel = this.tbLeftCoef.Text;
             genhStruct.CapcomHack = this.cbCapcomHack.Checked;
+            genhStruct.OutputHeaderOnly = this.cbHeaderOnly.Checked;
 
             genhStruct.SourcePaths = new string[this.lbFiles.SelectedIndices.Count];
 
