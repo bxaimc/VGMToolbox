@@ -65,6 +65,8 @@
             this.rbExtract = new System.Windows.Forms.RadioButton();
             this.contextMenuRefresh = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.refreshFileListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuBytesToSamples = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.bytesToSamplesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -72,35 +74,36 @@
             this.grpFormat.SuspendLayout();
             this.grpOptions.SuspendLayout();
             this.contextMenuRefresh.SuspendLayout();
+            this.contextMenuBytesToSamples.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 503);
-            this.pnlLabels.Size = new System.Drawing.Size(850, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 504);
+            this.pnlLabels.Size = new System.Drawing.Size(785, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(850, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(785, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 426);
-            this.tbOutput.Size = new System.Drawing.Size(850, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 427);
+            this.tbOutput.Size = new System.Drawing.Size(785, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 406);
-            this.pnlButtons.Size = new System.Drawing.Size(850, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 407);
+            this.pnlButtons.Size = new System.Drawing.Size(785, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(790, 0);
+            this.btnCancel.Location = new System.Drawing.Point(725, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(730, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(665, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // lbFiles
@@ -351,6 +354,7 @@
             this.lblLoopEnd.Size = new System.Drawing.Size(102, 13);
             this.lblLoopEnd.TabIndex = 11;
             this.lblLoopEnd.Text = "Loop End (Samples)";
+            this.lblLoopEnd.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lblLoopEnd_MouseUp);
             // 
             // tbLoopEnd
             // 
@@ -367,6 +371,7 @@
             this.lblLoopStart.Size = new System.Drawing.Size(105, 13);
             this.lblLoopStart.TabIndex = 9;
             this.lblLoopStart.Text = "Loop Start (Samples)";
+            this.lblLoopStart.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lblLoopStart_MouseUp);
             // 
             // tbLoopStart
             // 
@@ -471,11 +476,25 @@
             this.refreshFileListToolStripMenuItem.Text = "Refresh File List";
             this.refreshFileListToolStripMenuItem.Click += new System.EventHandler(this.refreshFileListToolStripMenuItem_Click);
             // 
+            // contextMenuBytesToSamples
+            // 
+            this.contextMenuBytesToSamples.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.bytesToSamplesToolStripMenuItem});
+            this.contextMenuBytesToSamples.Name = "contextMenuBytesToSamples";
+            this.contextMenuBytesToSamples.Size = new System.Drawing.Size(157, 48);
+            // 
+            // bytesToSamplesToolStripMenuItem
+            // 
+            this.bytesToSamplesToolStripMenuItem.Name = "bytesToSamplesToolStripMenuItem";
+            this.bytesToSamplesToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.bytesToSamplesToolStripMenuItem.Text = "Bytes to Samples";
+            this.bytesToSamplesToolStripMenuItem.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bytesToSamplesToolStripMenuItem_MouseUp);
+            // 
             // Genh_CreatorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(850, 544);
+            this.ClientSize = new System.Drawing.Size(785, 545);
             this.Controls.Add(this.grpFormat);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.cbHeaderOnly);
@@ -508,6 +527,7 @@
             this.grpOptions.ResumeLayout(false);
             this.grpOptions.PerformLayout();
             this.contextMenuRefresh.ResumeLayout(false);
+            this.contextMenuBytesToSamples.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -551,5 +571,7 @@
         private System.Windows.Forms.RadioButton cbNoLoops;
         private System.Windows.Forms.RadioButton cbFindLoop;
         private System.Windows.Forms.RadioButton cbManualEntry;
+        private System.Windows.Forms.ContextMenuStrip contextMenuBytesToSamples;
+        private System.Windows.Forms.ToolStripMenuItem bytesToSamplesToolStripMenuItem;
     }
 }

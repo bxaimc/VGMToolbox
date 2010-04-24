@@ -35,6 +35,8 @@ namespace VGMToolbox.format.util
 
     public sealed class GenhUtil
     {
+        private const int SONY_ADPCM_LOOP_HACK_BYTE_COUNT = 0x30;
+        
         private GenhUtil() { }
 
         public static bool IsGenhFile(string path)
@@ -337,6 +339,19 @@ namespace VGMToolbox.format.util
                     {
                         br.BaseStream.Position = headerSkip;
                     }
+                }
+
+                // if loop end found but start not found, try alternate method
+                if ((loopEnd >= 0) && (loopStart < 0))
+                {
+                    byte[] possibleLoopBytes = ParseFile.ParseSimpleOffset(br.BaseStream, fi.Length - SONY_ADPCM_LOOP_HACK_BYTE_COUNT, SONY_ADPCM_LOOP_HACK_BYTE_COUNT - 0x10);
+                    loopStart = ParseFile.GetNextOffset(br.BaseStream, 0, possibleLoopBytes, true);
+
+                    if (loopStart > 0)
+                    {
+                        loopStart += SONY_ADPCM_LOOP_HACK_BYTE_COUNT - headerSkip;
+                    }
+
                 }
             }
             

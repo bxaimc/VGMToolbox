@@ -18,6 +18,12 @@ namespace VGMToolbox.forms
 {
     public partial class Genh_CreatorForm : AVgmtForm
     {
+        public const int NO_LABEL_SELECTED = -1;
+        public const int LOOP_START_LABEL_SELECTED = 1;
+        public const int LOOP_END_LABEL_SELECTED = 2;
+        
+        private int selectedLabel;
+
         private static readonly string DB_PATH =
             Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "db"), "collection.s3db");
                 
@@ -59,6 +65,8 @@ namespace VGMToolbox.forms
             this.updateFormForTask();
 
             rbEdit.Hide();
+
+            this.selectedLabel = NO_LABEL_SELECTED;
         }
              
         private void loadFormats()
@@ -532,8 +540,8 @@ namespace VGMToolbox.forms
                         }
                         else if (genhStruct.FindLoop)
                         {
-                            if (!GenhUtil.GetPsAdpcmLoop(genhStruct.SourcePaths[0], genhStruct.ToGenhCreationStruct(), out loopStartFound,
-                                out loopEndFound))
+                            if ((!isPs2AdpcmSelected()) || 
+                                (!GenhUtil.GetPsAdpcmLoop(genhStruct.SourcePaths[0], genhStruct.ToGenhCreationStruct(), out loopStartFound, out loopEndFound)))
                             {
                                 loopStartFound = String.Empty;
                                 loopEndFound = String.Empty;
@@ -569,6 +577,102 @@ namespace VGMToolbox.forms
         private void cbFrequency_SelectedValueChanged(object sender, EventArgs e)
         {
             this.showLoopPointsForSelectedFile();
+        }
+
+        private bool isPs2AdpcmSelected()
+        {
+            bool ret = false;
+
+            DataRowView drv = (DataRowView)this.comboFormat.SelectedItem;
+            UInt16 formatId = Convert.ToUInt16(drv.Row.ItemArray[0]);
+
+            if (formatId == 0 || formatId == 0xE)
+            {
+                ret = true;
+            }
+
+            return ret;
+        }
+        private void lblLoopStart_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                // Point where the mouse is clicked.
+                Point p = new Point(e.X, e.Y);
+
+                if (tbLoopStart.Enabled && !tbLoopStart.ReadOnly &&
+                    !String.IsNullOrEmpty(this.tbLoopStart.Text) && isPs2AdpcmSelected())
+                {
+                    this.selectedLabel = LOOP_START_LABEL_SELECTED;
+                    
+                    // show menu
+                    contextMenuBytesToSamples.Show(lblLoopStart, p);
+                }
+            }
+        }
+        private void lblLoopEnd_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                // Point where the mouse is clicked.
+                Point p = new Point(e.X, e.Y);
+
+                if (tbLoopEnd.Enabled && !tbLoopEnd.ReadOnly &&
+                    !String.IsNullOrEmpty(this.tbLoopEnd.Text) && isPs2AdpcmSelected())
+                {
+                    this.selectedLabel = LOOP_END_LABEL_SELECTED;
+                    
+                    // show menu
+                    contextMenuBytesToSamples.Show(lblLoopEnd, p);
+                }
+            }
+        }
+        private void bytesToSamplesToolStripMenuItem_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                try
+                {
+                    long loopValue = 0;
+                    long headerValue = 0;
+
+                    if (this.selectedLabel == LOOP_START_LABEL_SELECTED)
+                    {
+                        loopValue = ByteConversion.GetLongValueFromString(this.tbLoopStart.Text);
+                    }
+                    else if (this.selectedLabel == LOOP_END_LABEL_SELECTED)
+                    {
+                        loopValue = ByteConversion.GetLongValueFromString(this.tbLoopEnd.Text);
+                    }
+
+                    if (!String.IsNullOrEmpty(this.cbHeaderSkip.Text))
+                    {
+                        headerValue = ByteConversion.GetLongValueFromString(this.cbHeaderSkip.Text);
+                        loopValue -= headerValue;
+                    }
+
+
+                    if (loopValue > 0)
+                    {
+                        long channelCount = ByteConversion.GetLongValueFromString(this.cbChannels.Text);
+                        long samplesValue = (loopValue / 16 / channelCount * 28);
+
+                        if (this.selectedLabel == LOOP_START_LABEL_SELECTED)
+                        {
+                            this.tbLoopStart.Text = samplesValue.ToString();
+                        }
+                        else if (this.selectedLabel == LOOP_END_LABEL_SELECTED)
+                        {
+                            this.tbLoopEnd.Text = samplesValue.ToString();
+                        }
+
+                    }
+                }
+                catch
+                { 
+                
+                }
+            }
         }
     }
 }
