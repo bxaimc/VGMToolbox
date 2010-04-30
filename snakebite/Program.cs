@@ -26,7 +26,6 @@ namespace snakebite
                 Console.WriteLine("   or: snakebite.exe <infile> <outfile> <start offset>");
                 Console.WriteLine();
                 Console.WriteLine("The 3 parameter option will read from <start offset> to EOF.");
-                Console.WriteLine(String.Format("The only current limitation is that cut size cannot exceed [{0}].", int.MaxValue.ToString()));
             }
             else
             {
@@ -76,14 +75,7 @@ namespace snakebite
 
                         long size = ((longEndOffset - longStartOffset) + 1);
 
-                        if (size > (long)int.MaxValue)
-                        {
-                            Console.WriteLine(String.Format("Sorry that cut size is too large: {0}", size.ToString()));
-                        }
-                        else
-                        {
-                            ParseFile.ExtractChunkToFile(fs, longStartOffset, (int)size, fullOutputPath);
-                        }
+                        ParseFile.ExtractChunkToFile(fs, longStartOffset, size, fullOutputPath);
                     }
                 }
                 else

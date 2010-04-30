@@ -55,42 +55,32 @@ namespace VGMToolbox.tools.extract
                     cutLength = (fs.Length - startOffset) + 1;
                 }
 
-                if (cutLength > (long)int.MaxValue)
+                if (!String.IsNullOrEmpty(simpleCutterSnakebiteStruct.NewFileExtension))
                 {
-                    this.progressStruct.Clear();
-                    this.progressStruct.ErrorMessage =
-                        String.Format("ERROR: Cut size is too big, the maximum cut size on your computer is {0} ({1})", int.MaxValue.ToString("X8"), int.MaxValue.ToString());
-                    ReportProgress(this.progress, this.progressStruct);
-                }
-                else
-                {
-                    if (!String.IsNullOrEmpty(simpleCutterSnakebiteStruct.NewFileExtension))
+                    if (!simpleCutterSnakebiteStruct.NewFileExtension.StartsWith("."))
                     {
-                        if (!simpleCutterSnakebiteStruct.NewFileExtension.StartsWith("."))
-                        {
-                            simpleCutterSnakebiteStruct.NewFileExtension = "." + simpleCutterSnakebiteStruct.NewFileExtension;
-                        }
-                        simpleCutterSnakebiteStruct.OutputFile = Path.ChangeExtension(pPath, simpleCutterSnakebiteStruct.NewFileExtension);
+                        simpleCutterSnakebiteStruct.NewFileExtension = "." + simpleCutterSnakebiteStruct.NewFileExtension;
                     }
-                    
-                    if (!Path.IsPathRooted(simpleCutterSnakebiteStruct.OutputFile))
-                    { 
-                        simpleCutterSnakebiteStruct.OutputFile = Path.Combine(Path.GetDirectoryName(pPath), simpleCutterSnakebiteStruct.OutputFile);
-
-                        if (simpleCutterSnakebiteStruct.OutputFile.Equals(pPath))
-                        {
-                            simpleCutterSnakebiteStruct.OutputFile = Path.Combine(Path.GetDirectoryName(simpleCutterSnakebiteStruct.OutputFile),
-                                Path.GetFileNameWithoutExtension(simpleCutterSnakebiteStruct.OutputFile) + "_cut" + 
-                                Path.GetExtension(simpleCutterSnakebiteStruct.OutputFile));
-                        }
-                    }
-                    
-                    ParseFile.ExtractChunkToFile(fs, startOffset, (int)cutLength, simpleCutterSnakebiteStruct.OutputFile, true, true);
-
-                    this.progressStruct.Clear();
-                    this.progressStruct.GenericMessage = String.Format("File <{0}>, extracted.{1}", simpleCutterSnakebiteStruct.OutputFile, Environment.NewLine);
-                    ReportProgress(this.progress, this.progressStruct);
+                    simpleCutterSnakebiteStruct.OutputFile = Path.ChangeExtension(pPath, simpleCutterSnakebiteStruct.NewFileExtension);
                 }
+                
+                if (!Path.IsPathRooted(simpleCutterSnakebiteStruct.OutputFile))
+                { 
+                    simpleCutterSnakebiteStruct.OutputFile = Path.Combine(Path.GetDirectoryName(pPath), simpleCutterSnakebiteStruct.OutputFile);
+
+                    if (simpleCutterSnakebiteStruct.OutputFile.Equals(pPath))
+                    {
+                        simpleCutterSnakebiteStruct.OutputFile = Path.Combine(Path.GetDirectoryName(simpleCutterSnakebiteStruct.OutputFile),
+                            Path.GetFileNameWithoutExtension(simpleCutterSnakebiteStruct.OutputFile) + "_cut" + 
+                            Path.GetExtension(simpleCutterSnakebiteStruct.OutputFile));
+                    }
+                }
+                
+                ParseFile.ExtractChunkToFile(fs, startOffset, cutLength, simpleCutterSnakebiteStruct.OutputFile, true, true);
+
+                this.progressStruct.Clear();
+                this.progressStruct.GenericMessage = String.Format("File <{0}>, extracted.{1}", simpleCutterSnakebiteStruct.OutputFile, Environment.NewLine);
+                ReportProgress(this.progress, this.progressStruct);
             }
         }
     }

@@ -36,7 +36,6 @@ namespace manakut
                 Console.WriteLine("The 4 parameter option will read from <start offset> to EOF.");
                 Console.WriteLine("Use the /lba switch to multiply start offset by 0x800.");
                 Console.WriteLine("Use the /m switch to multiply start offset by the value after the equals sign.");
-                Console.WriteLine(String.Format("The only current limitation is that cut size cannot exceed [{0}].", int.MaxValue.ToString()));
             }
             else
             {
@@ -103,14 +102,7 @@ namespace manakut
                             longStartOffset *= multiplierValue;
                         }
 
-                        if (longCutSize > (long)int.MaxValue)
-                        {
-                            Console.WriteLine(String.Format("Sorry that cut size is too large: {0}", longCutSize.ToString()));
-                        }
-                        else
-                        {
-                            ParseFile.ExtractChunkToFile(fs, longStartOffset, (int)longCutSize, fullOutputPath);
-                        }
+                        ParseFile.ExtractChunkToFile(fs, longStartOffset, longCutSize, fullOutputPath);
                     }
                 }
                 else

@@ -246,7 +246,7 @@ namespace VGMToolbox.format
             outputFileName = String.Format("{0}_{1}{2}", Path.GetFileNameWithoutExtension(outputFileName), fileCount.ToString("X4"), Midi.FILE_EXTENSION);
             outputFileName = Path.Combine(pOutputDirectory, outputFileName);
 
-            ParseFile.ExtractChunkToFile(pStream, this.fileStartOffset, (int) this.totalFileLength, outputFileName, true, true);
+            ParseFile.ExtractChunkToFile(pStream, this.fileStartOffset, this.totalFileLength, outputFileName, true, true);
         }
 
         private void parseTextEvents(Stream pStream, int pTrackIndex, long pOffset, uint pLength)

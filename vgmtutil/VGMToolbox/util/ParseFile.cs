@@ -532,13 +532,13 @@ namespace VGMToolbox.util
             return ret;
         }
 
-        public static void ExtractChunkToFile(Stream stream, long startingOffset, int length, 
+        public static void ExtractChunkToFile(Stream stream, long startingOffset, long length, 
             string filePath)
         {
             ExtractChunkToFile(stream, startingOffset, length, filePath, false, false);
         }
 
-        public static void ExtractChunkToFile(Stream stream, long startingOffset, int length,
+        public static void ExtractChunkToFile(Stream stream, long startingOffset, long length,
             string filePath, bool outputLogFile)
         {
             ExtractChunkToFile(stream, startingOffset, length, filePath, outputLogFile, false);
@@ -552,9 +552,9 @@ namespace VGMToolbox.util
         /// <param name="length">Number of bytes to cut.</param>
         /// <param name="filePath">File path to output the extracted chunk to.</param>
         public static void ExtractChunkToFile(
-            Stream stream, 
-            long startingOffset, 
-            int length, 
+            Stream stream,
+            long startingOffset,
+            long length,
             string filePath,
             bool outputLogFile,
             bool outputSnakebiteBatchFile)
@@ -581,18 +581,18 @@ namespace VGMToolbox.util
                 bw = new BinaryWriter(File.Open(filePath, FileMode.Create, FileAccess.Write));
 
                 int read = 0;
-                int totalBytes = 0;
+                long totalBytes = 0;
                 byte[] bytes = new byte[4096];
                 stream.Seek((long)startingOffset, SeekOrigin.Begin);
 
-                int maxread = length > bytes.Length ? bytes.Length : length;
+                int maxread = length > (long)bytes.Length ? bytes.Length : (int)length;
 
                 while ((read = stream.Read(bytes, 0, maxread)) > 0)
                 {
                     bw.Write(bytes, 0, read);
-                    totalBytes += read;
+                    totalBytes += (long)read;
 
-                    maxread = (length - totalBytes) > bytes.Length ? bytes.Length : (length - totalBytes);
+                    maxread = (length - totalBytes) > (long)bytes.Length ? bytes.Length : (int)(length - totalBytes);
                 }
 
                 if (outputLogFile)
@@ -614,14 +614,14 @@ namespace VGMToolbox.util
                     snakeBiteBatch.AppendLine(
                         String.Format("snakebite.exe \"{0}\" \"{1}\" 0x{2} 0x{3}",
                             Path.GetFileName(((FileStream)stream).Name),
-                            Path.GetFileNameWithoutExtension(((FileStream)stream).Name) + Path.DirectorySeparatorChar + Path.GetFileName(filePath),                                                
+                            Path.GetFileNameWithoutExtension(((FileStream)stream).Name) + Path.DirectorySeparatorChar + Path.GetFileName(filePath),
                             startingOffset.ToString("X8"),
-                            (startingOffset + length - 1).ToString("X8")));                    
-                    
+                            (startingOffset + length - 1).ToString("X8")));
+
                     using (StreamWriter batchWriter = new StreamWriter(Path.Combine(fullOutputDirectory, ParseFile.SnakeBiteBatchFileName), true))
                     {
                         batchWriter.Write(snakeBiteBatch.ToString());
-                    }                
+                    }
                 }
             }
             finally
@@ -884,7 +884,7 @@ namespace VGMToolbox.util
                             if (((minimumCutSize > 0) && (cutSize >= minimumCutSize)) ||
                                 (minimumCutSize < 1))
                             {
-                                ParseFile.ExtractChunkToFile(fs, cutStart, (int)cutSize, Path.Combine(outputFolder, outputFile), outputLog, outputBatchFile);
+                                ParseFile.ExtractChunkToFile(fs, cutStart, cutSize, Path.Combine(outputFolder, outputFile), outputLog, outputBatchFile);
 
                                 ret.AppendFormat(
                                     CultureInfo.CurrentCulture,
@@ -1070,7 +1070,7 @@ namespace VGMToolbox.util
                         cutLength = fileItemArray[j].FileLength;
                     }
 
-                    ParseFile.ExtractChunkToFile(fs, cutOffset, (int)cutLength, fileItemArray[j].FilePath, outputLog, outputBatchFile);
+                    ParseFile.ExtractChunkToFile(fs, cutOffset, cutLength, fileItemArray[j].FilePath, outputLog, outputBatchFile);
                     ret.AppendFormat("{0} extracted.{1}", Path.GetFileName(fileItemArray[j].FilePath), Environment.NewLine);
 
                     previousCutOffset = cutOffset;
