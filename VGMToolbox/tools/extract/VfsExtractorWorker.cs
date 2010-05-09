@@ -36,13 +36,15 @@ namespace VGMToolbox.tools.extract
 
             public bool UsePreviousFilesSizeToDetermineOffset { set; get; }
             public string BeginCuttingFilesAtOffset { set; get; }
-
+            
+            // offset
             public string FileRecordOffsetOffset { set; get; }
             public string FileRecordOffsetLength { set; get; }
             public bool FileRecordOffsetIsLittleEndian { set; get; }
             public bool UseFileRecordOffsetMultiplier { set; get; }
             public string FileRecordOffsetMultiplier { set; get; }
 
+            // length
             public string FileRecordLengthOffset { set; get; }
             public string FileRecordLengthLength { set; get; }
             public bool FileRecordLengthIsLittleEndian { set; get; }
@@ -50,10 +52,20 @@ namespace VGMToolbox.tools.extract
             public bool UseFileRecordLengthMultiplier { set; get; }
             public string FileRecordLengthMultiplier { set; get; }
 
-            public string FileRecordNameOffset { set; get; }
-            public string FileRecordNameLength { set; get; }
-            public string FileRecordNameTerminator { set; get; }
+            // name location
             public bool FileRecordNameIsPresent { set; get; }
+            
+            public bool FileRecordNameIsIncludedInFileRecord { set; get; }
+            public string FileRecordNameOffset { set; get; }
+
+            public bool FileRecordNameAbsoluteOffsetIsPresent { set; get; }
+            public string FileRecordNameAbsoluteOffsetOffset { set; get; }
+            public string FileRecordNameAbsoluteOffsetLength { set; get; }
+            public bool FileRecordNameAbsoluteOffsetIsLittleEndian { set; get; }
+
+            // name size
+            public string FileRecordNameStaticLength { set; get; }
+            public string FileRecordNameTerminator { set; get; } 
 
             public VfsExtractionStruct ToVfsExtractionStruct()
             {
@@ -91,10 +103,21 @@ namespace VGMToolbox.tools.extract
                 ret.UseFileRecordLengthMultiplier = this.UseFileRecordLengthMultiplier;
                 ret.FileRecordLengthMultiplier = this.FileRecordLengthMultiplier;
 
-                ret.FileRecordNameOffset = this.FileRecordNameOffset;
-                ret.FileRecordNameLength = this.FileRecordNameLength;
-                ret.FileRecordNameTerminator = this.FileRecordNameTerminator;
+                // name location
                 ret.FileRecordNameIsPresent = this.FileRecordNameIsPresent;
+                
+                ret.FileRecordNameIsIncludedInFileRecord = this.FileRecordNameIsIncludedInFileRecord;
+                ret.FileRecordNameOffset = this.FileRecordNameOffset;
+                
+                ret.FileRecordNameAbsoluteOffsetIsPresent = this.FileRecordNameAbsoluteOffsetIsPresent;
+                ret.FileRecordNameAbsoluteOffsetOffset = this.FileRecordNameAbsoluteOffsetOffset;
+                ret.FileRecordNameAbsoluteOffsetLength = this.FileRecordNameAbsoluteOffsetLength;
+                ret.FileRecordNameAbsoluteOffsetIsLittleEndian = this.FileRecordNameAbsoluteOffsetIsLittleEndian;
+
+                // name length
+                ret.FileRecordNameStaticLength = this.FileRecordNameStaticLength;
+                ret.FileRecordNameTerminator = this.FileRecordNameTerminator;
+                
                 
                 return ret;
             }

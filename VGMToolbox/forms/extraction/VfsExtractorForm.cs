@@ -39,7 +39,7 @@ namespace VGMToolbox.forms.extraction
             this.createFileCountOffsetEndianList();
             this.rbFileCountEndOffset.Checked = true;
 
-            // file record
+            // offset
             this.rbUseVfsFileOffset.Checked = true;
             this.createFileRecordSizeList();
             this.createFileRecordOffsetSizeList();
@@ -48,13 +48,20 @@ namespace VGMToolbox.forms.extraction
             this.doFileRecordOffsetRadioButtons();
             this.doCbOffsetMultiplier();
 
+            // length
             this.rbUseVfsFileLength.Checked = true;
             this.createFileRecordLengthSizeList();
             this.createFileRecordLengthEndianList();
             this.doFileRecordLengthRadioButtons();
             this.doCbLengthMultiplier();
 
+            // name
             this.doFileRecordNameCheckbox();
+
+            this.createFileNameAbsoluteOffsetSizeList();
+            this.createFileNameAbsoluteOffsetEndianList();
+
+            // presets
             this.loadPresetList();
         }
 
@@ -120,12 +127,14 @@ namespace VGMToolbox.forms.extraction
                 bgStruct.UsePreviousFilesSizeToDetermineOffset = this.rbUseFileSizeToDetermineOffset.Checked;
                 bgStruct.BeginCuttingFilesAtOffset = this.tbUseFileLengthBeginOffset.Text;
 
+                // offset
                 bgStruct.FileRecordOffsetOffset = this.tbFileRecordOffsetOffset.Text;
                 bgStruct.FileRecordOffsetLength = this.comboFileRecordOffsetSize.Text;
                 bgStruct.FileRecordOffsetIsLittleEndian = this.comboFileRecordOffsetByteOrder.Text.Equals(VfsExtractorWorker.LITTLE_ENDIAN);
                 bgStruct.UseFileRecordOffsetMultiplier = this.cbUseOffsetMultiplier.Checked;
                 bgStruct.FileRecordOffsetMultiplier = this.tbFileRecordOffsetMultiplier.Text;
 
+                // length
                 bgStruct.FileRecordLengthOffset = this.tbFileRecordLengthOffset.Text;
                 bgStruct.FileRecordLengthLength = this.comboFileRecordLengthSize.Text;
                 bgStruct.FileRecordLengthIsLittleEndian = this.comboFileRecordLengthByteOrder.Text.Equals(VfsExtractorWorker.LITTLE_ENDIAN);
@@ -133,9 +142,19 @@ namespace VGMToolbox.forms.extraction
                 bgStruct.UseFileRecordLengthMultiplier = this.cbUseLengthMultiplier.Checked;
                 bgStruct.FileRecordLengthMultiplier = tbFileRecordOffsetMultiplier.Text;
 
-                bgStruct.FileRecordNameIsPresent = this.cbFileNameIsPresent.Checked;
+                // name location
+                bgStruct.FileRecordNameIsPresent = this.cbFileNameIsPresent.Checked;                
+                
+                bgStruct.FileRecordNameIsIncludedInFileRecord = this.rbFileRecordFileNameInRecord.Checked;
                 bgStruct.FileRecordNameOffset = this.tbFileRecordNameOffset.Text;
-                bgStruct.FileRecordNameLength = this.tbFileRecordNameSize.Text;
+                
+                bgStruct.FileRecordNameAbsoluteOffsetIsPresent = this.rbFileNameAbsoluteOffset.Checked;
+                bgStruct.FileRecordNameAbsoluteOffsetOffset = this.tbFileRecordNameAbsoluteOffset.Text;
+                bgStruct.FileRecordNameAbsoluteOffsetLength = this.comboFileRecordNameAbsoluteOffsetSize.Text;
+                bgStruct.FileRecordNameAbsoluteOffsetIsLittleEndian = this.comboFileRecordNameAbsoluteOffsetBytesOrder.Text.Equals(VfsExtractorWorker.LITTLE_ENDIAN);
+
+                // name size
+                bgStruct.FileRecordNameStaticLength = this.tbFileRecordNameSize.Text;
                 bgStruct.FileRecordNameTerminator = this.tbFileRecordNameTerminatorBytes.Text;
 
                 base.backgroundWorker_Execute(bgStruct);
@@ -465,19 +484,30 @@ namespace VGMToolbox.forms.extraction
             this.doCbLengthMultiplier();
         }
 
+        private void createFileNameAbsoluteOffsetSizeList()
+        {
+            this.comboFileRecordNameAbsoluteOffsetSize.Items.Add("1");
+            this.comboFileRecordNameAbsoluteOffsetSize.Items.Add("2");
+            this.comboFileRecordNameAbsoluteOffsetSize.Items.Add("4");
+        }
+        private void createFileNameAbsoluteOffsetEndianList()
+        {
+            this.comboFileRecordNameAbsoluteOffsetBytesOrder.Items.Add(VfsExtractorWorker.BIG_ENDIAN);
+            this.comboFileRecordNameAbsoluteOffsetBytesOrder.Items.Add(VfsExtractorWorker.LITTLE_ENDIAN);
+        }
+
         private void doFileRecordNameCheckbox()
         {
             if (this.cbFileNameIsPresent.Checked)
             {
-                this.tbFileRecordNameOffset.Enabled = true;
-                this.tbFileRecordNameOffset.ReadOnly = false;
-
-                this.rbFileRecordNameSize.Enabled = true;
-
+                // radio buttons for location/offset
+                this.rbFileRecordFileNameInRecord.Enabled = true;
+                this.rbFileNameAbsoluteOffset.Enabled = true;
                 
+                this.rbFileRecordNameSize.Enabled = true;
                 this.rbFileRecordNameTerminator.Enabled = true;
 
-
+                // name size
                 if (this.rbFileRecordNameSize.Checked)
                 {
                     this.tbFileRecordNameSize.Enabled = true;
@@ -490,20 +520,24 @@ namespace VGMToolbox.forms.extraction
                 }
                 else if (this.rbFileRecordNameTerminator.Checked)
                 {
-                    this.tbFileRecordNameTerminatorBytes.Enabled = true;
-                    this.tbFileRecordNameTerminatorBytes.ReadOnly = false;
-
                     this.tbFileRecordNameSize.Clear();
                     this.tbFileRecordNameSize.Enabled = false;
                     this.tbFileRecordNameSize.ReadOnly = true;
+
+                    this.tbFileRecordNameTerminatorBytes.Enabled = true;
+                    this.tbFileRecordNameTerminatorBytes.ReadOnly = false;
                     this.lblHexOnly.Enabled = true;
                 }
             }
             else
             {
-                this.tbFileRecordNameOffset.Enabled = false;
-                this.tbFileRecordNameOffset.ReadOnly = true;
+                // radio buttons for location/offset
+                this.rbFileRecordFileNameInRecord.Checked = false;
+                this.rbFileRecordFileNameInRecord.Enabled = false;
+                this.rbFileNameAbsoluteOffset.Checked = false;
+                this.rbFileNameAbsoluteOffset.Enabled = false;
 
+                // name size
                 this.rbFileRecordNameSize.Enabled = false;
                 this.tbFileRecordNameSize.Clear();
                 this.tbFileRecordNameSize.Enabled = false;
@@ -515,6 +549,9 @@ namespace VGMToolbox.forms.extraction
                 this.tbFileRecordNameTerminatorBytes.ReadOnly = true;
                 this.lblHexOnly.Enabled = false;
             }
+
+            this.doRbFileRecordFileNameInRecord();
+            this.doRbFileNameAbsoluteOffset();
         }
         private void cbFileNameIsPresent_CheckedChanged(object sender, EventArgs e)
         {
@@ -527,6 +564,47 @@ namespace VGMToolbox.forms.extraction
         private void rbFileRecordNameTerminator_CheckedChanged(object sender, EventArgs e)
         {
             this.doFileRecordNameCheckbox();
+        }
+
+        private void doRbFileRecordFileNameInRecord()
+        {
+            if (this.rbFileRecordFileNameInRecord.Checked)
+            {
+                this.tbFileRecordNameOffset.Enabled = true;
+                this.tbFileRecordNameOffset.ReadOnly = false;
+            }
+            else
+            {
+                this.tbFileRecordNameOffset.Enabled = false;
+                this.tbFileRecordNameOffset.ReadOnly = true;
+            }
+        }
+        private void rbFileRecordFileNameInRecord_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doRbFileRecordFileNameInRecord();
+        }
+
+        private void doRbFileNameAbsoluteOffset()
+        {
+            if (this.rbFileNameAbsoluteOffset.Checked)
+            {
+                this.tbFileRecordNameAbsoluteOffset.Enabled = true;
+                this.tbFileRecordNameAbsoluteOffset.ReadOnly = false;
+                this.comboFileRecordNameAbsoluteOffsetSize.Enabled = true;
+                this.comboFileRecordNameAbsoluteOffsetBytesOrder.Enabled = true;
+            }
+            else
+            {
+                this.tbFileRecordNameAbsoluteOffset.Enabled = false;
+                this.tbFileRecordNameAbsoluteOffset.ReadOnly = true;
+                this.tbFileRecordNameAbsoluteOffset.Clear();
+                this.comboFileRecordNameAbsoluteOffsetSize.Enabled = false;
+                this.comboFileRecordNameAbsoluteOffsetBytesOrder.Enabled = false;
+            }
+        }
+        private void rbFileNameAbsoluteOffset_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doRbFileNameAbsoluteOffset();
         }
 
         private void doUserHeaderFileCheckbox()
@@ -801,8 +879,15 @@ namespace VGMToolbox.forms.extraction
             if (vfsSettings.FileRecordParameters.ExtractFileName)
             {
                 this.cbFileNameIsPresent.Checked = true;
-                this.tbFileRecordNameOffset.Text = vfsSettings.FileRecordParameters.FileNameOffset;
+
+                // file name in file record
+                if (!String.IsNullOrEmpty(vfsSettings.FileRecordParameters.FileNameOffset))
+                {
+                    this.rbFileRecordFileNameInRecord.Checked = true;
+                    this.tbFileRecordNameOffset.Text = vfsSettings.FileRecordParameters.FileNameOffset;
+                }
                 
+                // name length
                 if (vfsSettings.FileRecordParameters.FileNameLengthMethod.Equals(NameLengthType.staticSize))
                 {
                     this.rbFileRecordNameSize.Checked = true;
@@ -1018,6 +1103,75 @@ namespace VGMToolbox.forms.extraction
         private void btnBrowseOutputFolder_Click(object sender, EventArgs e)
         {
             this.tbOutputFolder.Text = base.browseForFolder(sender, e);
+        }
+
+        // combo box key capture
+        private void comboHeaderSizeOffsetSize_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
+        private void comboHeaderSizeOffsetSize_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void comboFileCountOffsetSize_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
+        private void comboFileCountOffsetSize_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void comboFileRecordOffsetSize_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
+        private void comboFileRecordOffsetSize_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void comboFileRecordLengthSize_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
+        private void comboFileRecordLengthSize_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void comboFileRecordNameAbsoluteOffsetSize_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
+        private void comboFileRecordNameAbsoluteOffsetSize_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void comboFileRecordNameAbsoluteOffsetBytesOrder_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
+        private void comboFileRecordNameAbsoluteOffsetBytesOrder_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void tbOutputFolder_DragEnter(object sender, DragEventArgs e)
+        {
+            base.doDragEnter(sender, e);
+        }
+        private void tbOutputFolder_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            if ((s.Length == 1) && (Directory.Exists(s[0])))
+            {
+                this.tbOutputFolder.Text = s[0];
+            }
         }
     }
 }

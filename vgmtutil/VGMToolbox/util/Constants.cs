@@ -366,11 +366,20 @@ namespace VGMToolbox.util
         public bool UseFileRecordLengthMultiplier { set; get; }
         public string FileRecordLengthMultiplier { set; get; }
         
-        // name
-        public string FileRecordNameOffset { set; get; }
-        public string FileRecordNameLength { set; get; }
-        public string FileRecordNameTerminator { set; get; }
+        // name location
         public bool FileRecordNameIsPresent { set; get; }
+        
+        public bool FileRecordNameIsIncludedInFileRecord { set; get; }        
+        public string FileRecordNameOffset { set; get; }
+
+        public bool FileRecordNameAbsoluteOffsetIsPresent { set; get; }
+        public string FileRecordNameAbsoluteOffsetOffset { set; get; }
+        public string FileRecordNameAbsoluteOffsetLength { set; get; }
+        public bool FileRecordNameAbsoluteOffsetIsLittleEndian { set; get; }
+
+        // name size
+        public string FileRecordNameStaticLength { set; get; }
+        public string FileRecordNameTerminator { set; get; }                
     }
 
     public struct SimpleFileExtractionStruct
