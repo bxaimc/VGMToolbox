@@ -916,7 +916,7 @@ namespace VGMToolbox.util
             return outputFolder;
         }
 
-        public static void ParseVirtualFileSystem(string sourcePath, string headerFilePath, 
+        public static void ParseVirtualFileSystem(string sourcePath, string headerFilePath, string outputFolderPath, 
             VfsExtractionStruct vfsInformation, out string messages, bool outputLog, bool outputBatchFile)
         {
             StringBuilder ret = new StringBuilder();
@@ -1010,7 +1010,7 @@ namespace VGMToolbox.util
                         ((headerSizeValue > 0) && (currentOffset >= headerSizeValue))))
                 {
 
-                    fileItem = GetNextVfsRecord(headerFs, vfsInformation, currentOffset, currentFileCount, sourcePath);
+                    fileItem = GetNextVfsRecord(headerFs, vfsInformation, currentOffset, currentFileCount, sourcePath, outputFolderPath);
 
                     fileItems.Add(fileItem);
 
@@ -1088,11 +1088,21 @@ namespace VGMToolbox.util
             VfsExtractionStruct vfsInformation, 
             long currentStreamOffset,
             long currentFileNumber, 
-            string sourceFilePath)
+            string sourceFilePath,
+            string outputFolderPath)
         {
             SimpleFileExtractionStruct newFileItem = new SimpleFileExtractionStruct();
-            string destinationDirectory = Path.Combine(Path.GetDirectoryName(sourceFilePath), VirtualFileSystemExtractionFolder);
+            string destinationDirectory;                        
             string newFileName;
+
+            if (String.IsNullOrEmpty(outputFolderPath))
+            {
+                destinationDirectory = Path.Combine(Path.GetDirectoryName(sourceFilePath), VirtualFileSystemExtractionFolder);
+            }
+            else
+            {
+                destinationDirectory = Path.GetFullPath(outputFolderPath);
+            }
 
             //----------
             // get name

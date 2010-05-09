@@ -14,6 +14,7 @@ namespace VGMToolbox.tools.extract
         {
             public string[] SourcePaths { set; get; }
             public string HeaderSourcePath { set; get; }
+            public string OutputFolderPath { set; get; }
 
             // total files
             public bool UseFileCountOffset { set; get; }     // user entered value
@@ -112,7 +113,7 @@ namespace VGMToolbox.tools.extract
             VfsExtractionStruct extractionStruct = taskStruct.ToVfsExtractionStruct();
             string output;
 
-            ParseFile.ParseVirtualFileSystem(pPath, taskStruct.HeaderSourcePath, extractionStruct, out output, true, true);
+            ParseFile.ParseVirtualFileSystem(pPath, taskStruct.HeaderSourcePath, taskStruct.OutputFolderPath, extractionStruct, out output, true, true);
 
             this.outputBuffer.Append(output);           
         }

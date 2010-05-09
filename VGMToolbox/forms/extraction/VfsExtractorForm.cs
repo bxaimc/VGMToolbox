@@ -97,6 +97,8 @@ namespace VGMToolbox.forms.extraction
                     bgStruct.HeaderSourcePath = this.tbHeaderFilePath.Text;
                 }
 
+                bgStruct.OutputFolderPath = this.tbOutputFolder.Text;
+
                 // File Count            
                 bgStruct.UseFileCountOffset = this.rbOffsetBasedFileCount.Checked;
                 bgStruct.FileCountValue = this.tbFileCountValue.Text;
@@ -1011,6 +1013,11 @@ namespace VGMToolbox.forms.extraction
 
             this.cbFileNameIsPresent.Checked = false;
             this.doFileRecordNameCheckbox();
+        }
+
+        private void btnBrowseOutputFolder_Click(object sender, EventArgs e)
+        {
+            this.tbOutputFolder.Text = base.browseForFolder(sender, e);
         }
     }
 }
