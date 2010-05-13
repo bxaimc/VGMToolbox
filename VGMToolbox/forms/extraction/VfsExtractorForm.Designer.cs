@@ -58,6 +58,14 @@
             this.rbFileRecordNameTerminator = new System.Windows.Forms.RadioButton();
             this.tbFileRecordNameSize = new System.Windows.Forms.TextBox();
             this.grpFileRecordName = new System.Windows.Forms.GroupBox();
+            this.lblFileNameRecordRelativeLocation = new System.Windows.Forms.Label();
+            this.comboFileRecordNameRelativeLocation = new System.Windows.Forms.ComboBox();
+            this.comboFileRecordNameRelativeOffsetBytesOrder = new System.Windows.Forms.ComboBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.comboFileRecordNameRelativeOffsetSize = new System.Windows.Forms.ComboBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.tbFileRecordNameRelativeOffset = new System.Windows.Forms.TextBox();
+            this.rbFileNameRelativeOffset = new System.Windows.Forms.RadioButton();
             this.comboFileRecordNameAbsoluteOffsetBytesOrder = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.comboFileRecordNameAbsoluteOffsetSize = new System.Windows.Forms.ComboBox();
@@ -124,7 +132,7 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 459);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 521);
             this.pnlLabels.Size = new System.Drawing.Size(789, 19);
             // 
             // pnlTitle
@@ -133,13 +141,13 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 382);
+            this.tbOutput.Location = new System.Drawing.Point(0, 444);
             this.tbOutput.Size = new System.Drawing.Size(789, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 362);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 424);
             this.pnlButtons.Size = new System.Drawing.Size(789, 20);
             // 
             // btnCancel
@@ -392,7 +400,7 @@
             this.grpFileRecordInfo.Controls.Add(this.pnlFileRecordsHeader);
             this.grpFileRecordInfo.Location = new System.Drawing.Point(0, 113);
             this.grpFileRecordInfo.Name = "grpFileRecordInfo";
-            this.grpFileRecordInfo.Size = new System.Drawing.Size(772, 411);
+            this.grpFileRecordInfo.Size = new System.Drawing.Size(772, 455);
             this.grpFileRecordInfo.TabIndex = 9;
             this.grpFileRecordInfo.TabStop = false;
             this.grpFileRecordInfo.Text = "File Record Information";
@@ -405,7 +413,7 @@
             this.grpFileRecordNameSize.Controls.Add(this.rbFileRecordNameTerminator);
             this.grpFileRecordNameSize.Controls.Add(this.tbFileRecordNameSize);
             this.grpFileRecordNameSize.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpFileRecordNameSize.Location = new System.Drawing.Point(3, 332);
+            this.grpFileRecordNameSize.Location = new System.Drawing.Point(3, 382);
             this.grpFileRecordNameSize.Name = "grpFileRecordNameSize";
             this.grpFileRecordNameSize.Size = new System.Drawing.Size(766, 70);
             this.grpFileRecordNameSize.TabIndex = 8;
@@ -461,6 +469,14 @@
             // 
             // grpFileRecordName
             // 
+            this.grpFileRecordName.Controls.Add(this.lblFileNameRecordRelativeLocation);
+            this.grpFileRecordName.Controls.Add(this.comboFileRecordNameRelativeLocation);
+            this.grpFileRecordName.Controls.Add(this.comboFileRecordNameRelativeOffsetBytesOrder);
+            this.grpFileRecordName.Controls.Add(this.label6);
+            this.grpFileRecordName.Controls.Add(this.comboFileRecordNameRelativeOffsetSize);
+            this.grpFileRecordName.Controls.Add(this.label7);
+            this.grpFileRecordName.Controls.Add(this.tbFileRecordNameRelativeOffset);
+            this.grpFileRecordName.Controls.Add(this.rbFileNameRelativeOffset);
             this.grpFileRecordName.Controls.Add(this.comboFileRecordNameAbsoluteOffsetBytesOrder);
             this.grpFileRecordName.Controls.Add(this.label5);
             this.grpFileRecordName.Controls.Add(this.comboFileRecordNameAbsoluteOffsetSize);
@@ -473,10 +489,86 @@
             this.grpFileRecordName.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFileRecordName.Location = new System.Drawing.Point(3, 239);
             this.grpFileRecordName.Name = "grpFileRecordName";
-            this.grpFileRecordName.Size = new System.Drawing.Size(766, 93);
+            this.grpFileRecordName.Size = new System.Drawing.Size(766, 143);
             this.grpFileRecordName.TabIndex = 7;
             this.grpFileRecordName.TabStop = false;
             this.grpFileRecordName.Text = "Individual File Name Location/Offset";
+            // 
+            // lblFileNameRecordRelativeLocation
+            // 
+            this.lblFileNameRecordRelativeLocation.AutoSize = true;
+            this.lblFileNameRecordRelativeLocation.Location = new System.Drawing.Point(90, 115);
+            this.lblFileNameRecordRelativeLocation.Name = "lblFileNameRecordRelativeLocation";
+            this.lblFileNameRecordRelativeLocation.Size = new System.Drawing.Size(113, 13);
+            this.lblFileNameRecordRelativeLocation.TabIndex = 18;
+            this.lblFileNameRecordRelativeLocation.Text = "Offset is Relative From";
+            // 
+            // comboFileRecordNameRelativeLocation
+            // 
+            this.comboFileRecordNameRelativeLocation.FormattingEnabled = true;
+            this.comboFileRecordNameRelativeLocation.Location = new System.Drawing.Point(209, 112);
+            this.comboFileRecordNameRelativeLocation.Name = "comboFileRecordNameRelativeLocation";
+            this.comboFileRecordNameRelativeLocation.Size = new System.Drawing.Size(198, 21);
+            this.comboFileRecordNameRelativeLocation.TabIndex = 17;
+            this.comboFileRecordNameRelativeLocation.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.comboFileRecordNameRelativeLocation_KeyPress);
+            this.comboFileRecordNameRelativeLocation.KeyDown += new System.Windows.Forms.KeyEventHandler(this.comboFileRecordNameRelativeLocation_KeyDown);
+            // 
+            // comboFileRecordNameRelativeOffsetBytesOrder
+            // 
+            this.comboFileRecordNameRelativeOffsetBytesOrder.FormattingEnabled = true;
+            this.comboFileRecordNameRelativeOffsetBytesOrder.Location = new System.Drawing.Point(494, 86);
+            this.comboFileRecordNameRelativeOffsetBytesOrder.Name = "comboFileRecordNameRelativeOffsetBytesOrder";
+            this.comboFileRecordNameRelativeOffsetBytesOrder.Size = new System.Drawing.Size(88, 21);
+            this.comboFileRecordNameRelativeOffsetBytesOrder.TabIndex = 16;
+            this.comboFileRecordNameRelativeOffsetBytesOrder.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.comboFileRecordNameRelativeOffsetBytesOrder_KeyPress);
+            this.comboFileRecordNameRelativeOffsetBytesOrder.KeyDown += new System.Windows.Forms.KeyEventHandler(this.comboFileRecordNameRelativeOffsetBytesOrder_KeyDown);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(413, 89);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(75, 13);
+            this.label6.TabIndex = 15;
+            this.label6.Text = "and byte order";
+            // 
+            // comboFileRecordNameRelativeOffsetSize
+            // 
+            this.comboFileRecordNameRelativeOffsetSize.FormattingEnabled = true;
+            this.comboFileRecordNameRelativeOffsetSize.Location = new System.Drawing.Point(360, 86);
+            this.comboFileRecordNameRelativeOffsetSize.Name = "comboFileRecordNameRelativeOffsetSize";
+            this.comboFileRecordNameRelativeOffsetSize.Size = new System.Drawing.Size(47, 21);
+            this.comboFileRecordNameRelativeOffsetSize.TabIndex = 14;
+            this.comboFileRecordNameRelativeOffsetSize.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.comboFileRecordNameAbsoluteRelativeSize_KeyPress);
+            this.comboFileRecordNameRelativeOffsetSize.KeyDown += new System.Windows.Forms.KeyEventHandler(this.comboFileRecordNameAbsoluteRelativeSize_KeyDown);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(288, 89);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(66, 13);
+            this.label7.TabIndex = 13;
+            this.label7.Text = "and has size";
+            // 
+            // tbFileRecordNameRelativeOffset
+            // 
+            this.tbFileRecordNameRelativeOffset.Location = new System.Drawing.Point(209, 86);
+            this.tbFileRecordNameRelativeOffset.Name = "tbFileRecordNameRelativeOffset";
+            this.tbFileRecordNameRelativeOffset.Size = new System.Drawing.Size(73, 20);
+            this.tbFileRecordNameRelativeOffset.TabIndex = 12;
+            // 
+            // rbFileNameRelativeOffset
+            // 
+            this.rbFileNameRelativeOffset.AutoSize = true;
+            this.rbFileNameRelativeOffset.Location = new System.Drawing.Point(3, 87);
+            this.rbFileNameRelativeOffset.Name = "rbFileNameRelativeOffset";
+            this.rbFileNameRelativeOffset.Size = new System.Drawing.Size(198, 17);
+            this.rbFileNameRelativeOffset.TabIndex = 11;
+            this.rbFileNameRelativeOffset.TabStop = true;
+            this.rbFileNameRelativeOffset.Text = "File Name Relative Offset is at Offset";
+            this.rbFileNameRelativeOffset.UseVisualStyleBackColor = true;
+            this.rbFileNameRelativeOffset.CheckedChanged += new System.EventHandler(this.rbFileNameRelativeOffset_CheckedChanged);
             // 
             // comboFileRecordNameAbsoluteOffsetBytesOrder
             // 
@@ -858,7 +950,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 170);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(789, 192);
+            this.panel1.Size = new System.Drawing.Size(789, 254);
             this.panel1.TabIndex = 10;
             // 
             // grpSourceFiles
@@ -984,7 +1076,7 @@
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(789, 500);
+            this.ClientSize = new System.Drawing.Size(789, 562);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.grpSourceFiles);
             this.Controls.Add(this.grpPresets);
@@ -1109,5 +1201,13 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ComboBox comboFileRecordNameAbsoluteOffsetSize;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox comboFileRecordNameRelativeOffsetBytesOrder;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ComboBox comboFileRecordNameRelativeOffsetSize;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox tbFileRecordNameRelativeOffset;
+        private System.Windows.Forms.RadioButton rbFileNameRelativeOffset;
+        private System.Windows.Forms.Label lblFileNameRecordRelativeLocation;
+        private System.Windows.Forms.ComboBox comboFileRecordNameRelativeLocation;
     }
 }

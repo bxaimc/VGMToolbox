@@ -1080,6 +1080,27 @@ namespace VGMToolbox.util
                     nameOffset = GetVaryingByteValueAtOffset(vfsStream, fileNameOffsetOffset, fileNameOffsetLength,
                         vfsInformation.FileRecordNameAbsoluteOffsetIsLittleEndian);
                 }
+                else if (vfsInformation.FileRecordNameRelativeOffsetIsPresent)
+                {
+                    long fileNameOffsetOffset = currentStreamOffset + VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordNameRelativeOffsetOffset);
+                    long fileNameOffsetLength = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordNameRelativeOffsetLength);
+                    
+                    long relativeNameOffset = GetVaryingByteValueAtOffset(vfsStream, fileNameOffsetOffset, fileNameOffsetLength,
+                        vfsInformation.FileRecordNameRelativeOffsetIsLittleEndian);
+
+                    switch (vfsInformation.FileRecordNameRelativeOffsetLocation)
+                    { 
+                        case VfsFileRecordRelativeOffsetLocationType.FileRecordStart:
+                            nameOffset = currentStreamOffset + relativeNameOffset;
+                            break;
+                        case VfsFileRecordRelativeOffsetLocationType.FileRecordEnd:
+                            nameOffset = currentStreamOffset + ByteConversion.GetLongValueFromString(vfsInformation.FileRecordSize) + relativeNameOffset;
+                            break;
+                        default:
+                            throw new Exception("Invalid relative location type for relative file name offset.");
+                            break;
+                    }
+                }
 
                 //-----------------
                 // get name length
@@ -1099,7 +1120,7 @@ namespace VGMToolbox.util
 
                 if ((nameOffset > 0) && (nameLength > 0))
                 {
-                    byte[] nameBytes = ParseSimpleOffset(vfsStream, nameOffset, (int)nameLength);
+                    byte[] nameBytes = ParseSimpleOffset(vfsStream, nameOffset, (int)nameLength);                                       
                     nameBytes = FileUtil.ReplaceNullByteWithSpace(nameBytes);
                     int codePage = ByteConversion.GetPredictedCodePageForTags(nameBytes);
                     newFileName = ByteConversion.GetEncodedText(nameBytes, codePage).Trim();

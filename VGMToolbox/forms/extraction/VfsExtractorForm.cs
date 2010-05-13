@@ -6,10 +6,11 @@ using System.Xml.Serialization;
 
 using VGMToolbox.plugin;
 using VGMToolbox.tools.extract;
+using VGMToolbox.util;
 
 namespace VGMToolbox.forms.extraction
 {
-    public partial class VfsExtractorForm : AVgmtForm
+    public partial class VfsExtractorForm : VgmtForm
     {
         private static readonly string PLUGIN_PATH =
             Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "plugins"), "VFSExtractor");                
@@ -60,7 +61,9 @@ namespace VGMToolbox.forms.extraction
 
             this.createFileNameAbsoluteOffsetSizeList();
             this.createFileNameAbsoluteOffsetEndianList();
-
+            this.createFileNameRelativeOffsetSizeList();
+            this.createFileNameRelativeOffsetEndianList();
+            this.createFileNameRelativeOffsetLocationList();
             // presets
             this.loadPresetList();
         }
@@ -152,6 +155,21 @@ namespace VGMToolbox.forms.extraction
                 bgStruct.FileRecordNameAbsoluteOffsetOffset = this.tbFileRecordNameAbsoluteOffset.Text;
                 bgStruct.FileRecordNameAbsoluteOffsetLength = this.comboFileRecordNameAbsoluteOffsetSize.Text;
                 bgStruct.FileRecordNameAbsoluteOffsetIsLittleEndian = this.comboFileRecordNameAbsoluteOffsetBytesOrder.Text.Equals(VfsExtractorWorker.LITTLE_ENDIAN);
+
+                bgStruct.FileRecordNameRelativeOffsetIsPresent = this.rbFileNameRelativeOffset.Checked;
+                bgStruct.FileRecordNameRelativeOffsetOffset = this.tbFileRecordNameRelativeOffset.Text;
+                bgStruct.FileRecordNameRelativeOffsetLength = this.comboFileRecordNameRelativeOffsetSize.Text;
+                bgStruct.FileRecordNameRelativeOffsetIsLittleEndian = this.comboFileRecordNameRelativeOffsetBytesOrder.Text.Equals(VfsExtractorWorker.LITTLE_ENDIAN); ;
+
+                switch (this.comboFileRecordNameRelativeLocation.Text)
+                {
+                    case VfsExtractorWorker.RELATIVE_TO_START_OF_FILE_RECORD:
+                        bgStruct.FileRecordNameRelativeOffsetLocation = VfsFileRecordRelativeOffsetLocationType.FileRecordStart;
+                        break;
+                    case VfsExtractorWorker.RELATIVE_TO_END_OF_FILE_RECORD:
+                        bgStruct.FileRecordNameRelativeOffsetLocation = VfsFileRecordRelativeOffsetLocationType.FileRecordEnd;
+                        break;                    
+                }
 
                 // name size
                 bgStruct.FileRecordNameStaticLength = this.tbFileRecordNameSize.Text;
@@ -496,6 +514,23 @@ namespace VGMToolbox.forms.extraction
             this.comboFileRecordNameAbsoluteOffsetBytesOrder.Items.Add(VfsExtractorWorker.LITTLE_ENDIAN);
         }
 
+        private void createFileNameRelativeOffsetSizeList()
+        {
+            this.comboFileRecordNameRelativeOffsetSize.Items.Add("1");
+            this.comboFileRecordNameRelativeOffsetSize.Items.Add("2");
+            this.comboFileRecordNameRelativeOffsetSize.Items.Add("4");
+        }
+        private void createFileNameRelativeOffsetEndianList()
+        {
+            this.comboFileRecordNameRelativeOffsetBytesOrder.Items.Add(VfsExtractorWorker.BIG_ENDIAN);
+            this.comboFileRecordNameRelativeOffsetBytesOrder.Items.Add(VfsExtractorWorker.LITTLE_ENDIAN);
+        }
+        private void createFileNameRelativeOffsetLocationList()
+        {
+            this.comboFileRecordNameRelativeLocation.Items.Add(VfsExtractorWorker.RELATIVE_TO_START_OF_FILE_RECORD);
+            this.comboFileRecordNameRelativeLocation.Items.Add(VfsExtractorWorker.RELATIVE_TO_END_OF_FILE_RECORD);
+        }
+
         private void doFileRecordNameCheckbox()
         {
             if (this.cbFileNameIsPresent.Checked)
@@ -503,6 +538,7 @@ namespace VGMToolbox.forms.extraction
                 // radio buttons for location/offset
                 this.rbFileRecordFileNameInRecord.Enabled = true;
                 this.rbFileNameAbsoluteOffset.Enabled = true;
+                this.rbFileNameRelativeOffset.Enabled = true;
                 
                 this.rbFileRecordNameSize.Enabled = true;
                 this.rbFileRecordNameTerminator.Enabled = true;
@@ -536,6 +572,9 @@ namespace VGMToolbox.forms.extraction
                 this.rbFileRecordFileNameInRecord.Enabled = false;
                 this.rbFileNameAbsoluteOffset.Checked = false;
                 this.rbFileNameAbsoluteOffset.Enabled = false;
+                this.rbFileNameRelativeOffset.Checked = false;
+                this.rbFileNameRelativeOffset.Enabled = false;
+
 
                 // name size
                 this.rbFileRecordNameSize.Enabled = false;
@@ -552,6 +591,7 @@ namespace VGMToolbox.forms.extraction
 
             this.doRbFileRecordFileNameInRecord();
             this.doRbFileNameAbsoluteOffset();
+            this.doRbFileNameRelativeOffset();
         }
         private void cbFileNameIsPresent_CheckedChanged(object sender, EventArgs e)
         {
@@ -605,6 +645,31 @@ namespace VGMToolbox.forms.extraction
         private void rbFileNameAbsoluteOffset_CheckedChanged(object sender, EventArgs e)
         {
             this.doRbFileNameAbsoluteOffset();
+        }
+
+        private void doRbFileNameRelativeOffset()
+        {
+            if (this.rbFileNameRelativeOffset.Checked)
+            {
+                this.tbFileRecordNameRelativeOffset.Enabled = true;
+                this.tbFileRecordNameRelativeOffset.ReadOnly = false;
+                this.comboFileRecordNameRelativeOffsetSize.Enabled = true;
+                this.comboFileRecordNameRelativeOffsetBytesOrder.Enabled = true;
+                this.comboFileRecordNameRelativeLocation.Enabled = true;
+            }
+            else
+            {
+                this.tbFileRecordNameRelativeOffset.Enabled = false;
+                this.tbFileRecordNameRelativeOffset.ReadOnly = true;
+                this.tbFileRecordNameRelativeOffset.Clear();
+                this.comboFileRecordNameRelativeOffsetSize.Enabled = false;
+                this.comboFileRecordNameRelativeOffsetBytesOrder.Enabled = false;
+                this.comboFileRecordNameRelativeLocation.Enabled = false;
+            }
+        }
+        private void rbFileNameRelativeOffset_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doRbFileNameRelativeOffset();
         }
 
         private void doUserHeaderFileCheckbox()
@@ -668,42 +733,6 @@ namespace VGMToolbox.forms.extraction
         {
             string[] dataFiles = new string[] {Path.GetFullPath(this.tbDataFilePath.Text)};
             this.extractFiles(dataFiles, true);
-        }
-
-        private void comboHeaderSizeByteOrder_KeyDown(object sender, KeyEventArgs e)
-        {
-            e.Handled = true;
-        }
-        private void comboHeaderSizeByteOrder_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            e.Handled = true;
-        }
-
-        private void comboFileCountByteOrder_KeyDown(object sender, KeyEventArgs e)
-        {
-            e.Handled = true;
-        }
-        private void comboFileCountByteOrder_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            e.Handled = true;
-        }
-
-        private void comboFileRecordOffsetByteOrder_KeyDown(object sender, KeyEventArgs e)
-        {
-            e.Handled = true;
-        }
-        private void comboFileRecordOffsetByteOrder_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            e.Handled = true;
-        }
-
-        private void comboFileRecordLengthByteOrder_KeyDown(object sender, KeyEventArgs e)
-        {
-            e.Handled = true;
-        }
-        private void comboFileRecordLengthByteOrder_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            e.Handled = true;
         }
 
         private VfsExtractorSettings getPresetFromFile(string filePath)
@@ -1105,6 +1134,20 @@ namespace VGMToolbox.forms.extraction
             this.tbOutputFolder.Text = base.browseForFolder(sender, e);
         }
 
+        private void tbOutputFolder_DragEnter(object sender, DragEventArgs e)
+        {
+            base.doDragEnter(sender, e);
+        }
+        private void tbOutputFolder_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            if ((s.Length == 1) && (Directory.Exists(s[0])))
+            {
+                this.tbOutputFolder.Text = s[0];
+            }
+        }
+
         // combo box key capture
         private void comboHeaderSizeOffsetSize_KeyDown(object sender, KeyEventArgs e)
         {
@@ -1160,18 +1203,67 @@ namespace VGMToolbox.forms.extraction
             e.Handled = true;
         }
 
-        private void tbOutputFolder_DragEnter(object sender, DragEventArgs e)
+        private void comboFileRecordNameAbsoluteRelativeSize_KeyDown(object sender, KeyEventArgs e)
         {
-            base.doDragEnter(sender, e);
+            e.Handled = true;
         }
-        private void tbOutputFolder_DragDrop(object sender, DragEventArgs e)
+        private void comboFileRecordNameAbsoluteRelativeSize_KeyPress(object sender, KeyPressEventArgs e)
         {
-            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+            e.Handled = true;
+        }
 
-            if ((s.Length == 1) && (Directory.Exists(s[0])))
-            {
-                this.tbOutputFolder.Text = s[0];
-            }
+        private void comboFileRecordNameRelativeOffsetBytesOrder_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
+        private void comboFileRecordNameRelativeOffsetBytesOrder_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void comboHeaderSizeByteOrder_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
+        private void comboHeaderSizeByteOrder_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void comboFileCountByteOrder_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
+        private void comboFileCountByteOrder_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void comboFileRecordOffsetByteOrder_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
+        private void comboFileRecordOffsetByteOrder_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void comboFileRecordLengthByteOrder_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
+        private void comboFileRecordLengthByteOrder_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void comboFileRecordNameRelativeLocation_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
+        private void comboFileRecordNameRelativeLocation_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
         }
     }
 }

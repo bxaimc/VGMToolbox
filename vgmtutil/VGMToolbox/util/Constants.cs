@@ -328,6 +328,12 @@ namespace VGMToolbox.util
         }
     }
 
+    public enum VfsFileRecordRelativeOffsetLocationType
+    { 
+        FileRecordStart,
+        FileRecordEnd
+    }
+
     public struct VfsExtractionStruct
     {
         // total files
@@ -376,6 +382,12 @@ namespace VGMToolbox.util
         public string FileRecordNameAbsoluteOffsetOffset { set; get; }
         public string FileRecordNameAbsoluteOffsetLength { set; get; }
         public bool FileRecordNameAbsoluteOffsetIsLittleEndian { set; get; }
+
+        public bool FileRecordNameRelativeOffsetIsPresent { set; get; }
+        public string FileRecordNameRelativeOffsetOffset { set; get; }
+        public string FileRecordNameRelativeOffsetLength { set; get; }
+        public bool FileRecordNameRelativeOffsetIsLittleEndian { set; get; }
+        public VfsFileRecordRelativeOffsetLocationType FileRecordNameRelativeOffsetLocation { set; get; }
 
         // name size
         public string FileRecordNameStaticLength { set; get; }

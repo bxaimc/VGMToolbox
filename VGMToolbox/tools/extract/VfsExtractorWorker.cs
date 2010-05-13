@@ -9,7 +9,10 @@ namespace VGMToolbox.tools.extract
     {
         public const string LITTLE_ENDIAN = "Little Endian";
         public const string BIG_ENDIAN = "Big Endian";
-        
+
+        public const string RELATIVE_TO_START_OF_FILE_RECORD = "Start of File Record";
+        public const string RELATIVE_TO_END_OF_FILE_RECORD = "End of File Record";
+
         public struct VfsExtractorStruct : IVgmtWorkerStruct
         {
             public string[] SourcePaths { set; get; }
@@ -63,6 +66,12 @@ namespace VGMToolbox.tools.extract
             public string FileRecordNameAbsoluteOffsetLength { set; get; }
             public bool FileRecordNameAbsoluteOffsetIsLittleEndian { set; get; }
 
+            public bool FileRecordNameRelativeOffsetIsPresent { set; get; }
+            public string FileRecordNameRelativeOffsetOffset { set; get; }
+            public string FileRecordNameRelativeOffsetLength { set; get; }
+            public bool FileRecordNameRelativeOffsetIsLittleEndian { set; get; }
+            public VfsFileRecordRelativeOffsetLocationType FileRecordNameRelativeOffsetLocation { set; get; }
+
             // name size
             public string FileRecordNameStaticLength { set; get; }
             public string FileRecordNameTerminator { set; get; } 
@@ -113,6 +122,12 @@ namespace VGMToolbox.tools.extract
                 ret.FileRecordNameAbsoluteOffsetOffset = this.FileRecordNameAbsoluteOffsetOffset;
                 ret.FileRecordNameAbsoluteOffsetLength = this.FileRecordNameAbsoluteOffsetLength;
                 ret.FileRecordNameAbsoluteOffsetIsLittleEndian = this.FileRecordNameAbsoluteOffsetIsLittleEndian;
+
+                ret.FileRecordNameRelativeOffsetIsPresent = this.FileRecordNameRelativeOffsetIsPresent;
+                ret.FileRecordNameRelativeOffsetOffset = this.FileRecordNameRelativeOffsetOffset;
+                ret.FileRecordNameRelativeOffsetLength = this.FileRecordNameRelativeOffsetLength;
+                ret.FileRecordNameRelativeOffsetIsLittleEndian = this.FileRecordNameRelativeOffsetIsLittleEndian;
+                ret.FileRecordNameRelativeOffsetLocation = this.FileRecordNameRelativeOffsetLocation;
 
                 // name length
                 ret.FileRecordNameStaticLength = this.FileRecordNameStaticLength;
