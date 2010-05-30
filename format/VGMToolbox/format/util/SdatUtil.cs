@@ -130,7 +130,13 @@ namespace VGMToolbox.format.util
 
         public static void ExtractAndWriteSwavFromSwar(Stream pStream, Swar pSwar, string pOutputPath)
         {
+            ExtractAndWriteSwavFromSwar(pStream, pSwar, pOutputPath, false);
+        }
+        
+        public static void ExtractAndWriteSwavFromSwar(Stream pStream, Swar pSwar, string pOutputPath, bool includeOutputFolderInFileName)
+        {
             string outputFileName;
+            string outputFolderName = Path.GetFileName(pOutputPath);
 
             if (pSwar.SampleOffsets.Length > 0)
             {
@@ -147,7 +153,14 @@ namespace VGMToolbox.format.util
                     Swav.SwavInfo swavInfo = Swav.GetSwavInfo(pStream, pSwar.SampleOffsets[i]);
                     UInt32 fileSize = (swavInfo.LoopOffset + swavInfo.NonLoopLength) * 4;
 
-                    outputFileName = Path.Combine(pOutputPath, i.ToString("X2") + Swav.FILE_EXTENSION);
+                    if (includeOutputFolderInFileName)
+                    {
+                        outputFileName = Path.Combine(pOutputPath, String.Format("{0}_{1}", outputFolderName, i.ToString("X2")) + Swav.FILE_EXTENSION);
+                    }
+                    else
+                    {
+                        outputFileName = Path.Combine(pOutputPath, i.ToString("X2") + Swav.FILE_EXTENSION);
+                    }
 
                     using (BinaryWriter bw = new BinaryWriter(File.Open(outputFileName, FileMode.Create, FileAccess.Write)))
                     {

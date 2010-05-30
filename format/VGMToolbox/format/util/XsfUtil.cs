@@ -391,6 +391,7 @@ namespace VGMToolbox.format.util
         public const string SSEQ2MID_TXT_MARKER = ".sseq:";
         public const string SSEQ2MID_TXT_END_OF_TRACK = "End of Track";
         public const string EMPTY_FILE_DIRECTORY = "Empty_Files";
+        public const string NDSTO2SF_FOLDER_SUFFIX = "_NDSto2SF";
 
         static readonly string SSEQ2MID_SOURCE_PATH =
             Path.Combine(Path.Combine(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "external"), "2sf"), "sseq2mid.exe");
@@ -2260,6 +2261,11 @@ namespace VGMToolbox.format.util
                 string sdatDestinationPath;
                 string testpackDestinationPath;
 
+                string waveArcOutputPath;
+                string swavOutputPath;
+                Swar swar = new Swar();
+                Type dataType;
+
                 ArrayList optimizationList;
                 Time2sfStruct timerStruct;
                 string outputTimerMessages;
@@ -2273,10 +2279,10 @@ namespace VGMToolbox.format.util
                 }
 
                 // Get the Sdat Paths
-                sdatPaths = SdatUtil.ExtractSdatsFromFile(ndsPath, "_NDSto2SF");
+                sdatPaths = SdatUtil.ExtractSdatsFromFile(ndsPath, NDSTO2SF_FOLDER_SUFFIX);                
 
                 if (sdatPaths != null)
-                {
+                {                    
                     // Get count of valid Sdats
                     validSdatCount = GetCountOfValidSdats(sdatPaths);
 
@@ -2307,7 +2313,47 @@ namespace VGMToolbox.format.util
                             {
                                 // extract Strms
                                 sdatToRip.ExtractStrms(sdatStream, ripOutputPath);
+
+                                // extract SWARs => SWAVs
+                                waveArcOutputPath = sdatToRip.ExtractWaveArcs(sdatStream, ripOutputPath);
+
+                                // extract SWAVs
+                                if (!String.IsNullOrEmpty(waveArcOutputPath))
+                                {
+                                    foreach (string f in Directory.GetFiles(waveArcOutputPath, "*" + Swar.FILE_EXTENSION))
+                                    {
+                                        using (FileStream swarFs = File.Open(f, FileMode.Open, FileAccess.Read))
+                                        {
+                                            dataType = FormatUtil.getObjectType(swarFs);
+
+                                            if (dataType != null && dataType.Name.Equals("Swar"))
+                                            {
+                                                swavOutputPath = Path.Combine(waveArcOutputPath, Path.GetFileNameWithoutExtension(f));
+                                                swar.Initialize(swarFs, f);
+
+                                                SdatUtil.ExtractAndWriteSwavFromSwar(swarFs, swar, swavOutputPath, true);
+                                            }
+                                        }
+                                    }
+
+                                    // copy all SWAV to top level folder
+                                    swavOutputPath = Path.Combine(ripOutputPath, "SWAVs from SWARs");
+
+                                    if (!Directory.Exists(swavOutputPath))
+                                    {
+                                        Directory.CreateDirectory(swavOutputPath);
+                                    }
+
+                                    foreach (string f in Directory.GetFiles(waveArcOutputPath, "*" + Swav.FILE_EXTENSION, SearchOption.AllDirectories))
+                                    { 
+                                        File.Move(f, Path.Combine(swavOutputPath, Path.GetFileName(f)));
+                                    }
+
+                                    // delete SWARs
+                                    Directory.Delete(waveArcOutputPath, true);
+                                }
                             }
+
 
                             // build optimization list
                             optimizationList = GetDefaultOptimizationList(sdatDestinationPath);

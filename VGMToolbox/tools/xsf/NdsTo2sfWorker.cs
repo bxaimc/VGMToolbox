@@ -45,21 +45,49 @@ namespace VGMToolbox.tools.xsf
             this.progressStruct.GenericMessage = String.Format("Processing: [{0}]{1}", pPath, Environment.NewLine);
             this.ReportProgress(this.progress, this.progressStruct);
 
+             string ndsTo2sfOutputPath = Path.Combine(Path.GetDirectoryName(pPath), String.Format("{0}{1}", Path.GetFileNameWithoutExtension(pPath), XsfUtil.NDSTO2SF_FOLDER_SUFFIX));
+             
+            //------------------------
+            // extract 2SFs and STRMs
+            //------------------------
             bool filesWereRipped = XsfUtil.NdsTo2sf(pPath, TESTPACK_FULL_PATH);
 
             // output info
             this.progressStruct.Clear();
-            
+
             if (!filesWereRipped)
-            {                
-                this.progressStruct.GenericMessage = String.Format("  No extractable data found.{0}", Environment.NewLine);                
+            {
+                this.progressStruct.GenericMessage = String.Format("  No extractable SSEQ/STRM/SWAR data found.{0}", Environment.NewLine);
             }
             else
             {
-                this.progressStruct.GenericMessage = String.Format("  Data extracted.{0}", Environment.NewLine);            
+                this.progressStruct.GenericMessage = String.Format("  SSEQ/STRM/SWAR Data extracted.{0}", Environment.NewLine);
             }
 
             this.ReportProgress(this.progress, this.progressStruct);
+
+            //---------------
+            // extract SWAVs
+            //---------------
+            this.progressStruct.Clear();
+            this.progressStruct.GenericMessage = String.Format("  Searching for non-SWAR SWAVs{0}", Environment.NewLine);
+            this.ReportProgress(this.progress, this.progressStruct);
+
+            string swavMessages = String.Empty;
+            
+            FindOffsetStruct findOffsetStruct = new FindOffsetStruct();
+            findOffsetStruct.CutFile = true;
+            findOffsetStruct.SearchString = "53574156FFFE";
+            findOffsetStruct.TreatSearchStringAsHex = true;
+            findOffsetStruct.SearchStringOffset = "0";
+            findOffsetStruct.OutputFileExtension = ".swav";
+            findOffsetStruct.IsCutSizeAnOffset = true;
+            findOffsetStruct.CutSize = "8";
+            findOffsetStruct.CutSizeOffsetSize = "4";
+            findOffsetStruct.IsLittleEndian = true;
+            findOffsetStruct.OutputFolder = Path.Combine(ndsTo2sfOutputPath, "SWAVs");
+
+            ParseFile.FindOffsetAndCutFile(pPath, findOffsetStruct, out swavMessages, false, false);
         }
     }
 }

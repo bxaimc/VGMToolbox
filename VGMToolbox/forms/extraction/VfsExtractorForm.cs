@@ -10,7 +10,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.forms.extraction
 {
-    public partial class VfsExtractorForm : VgmtForm
+    public partial class VfsExtractorForm : AVgmtForm
     {
         private static readonly string PLUGIN_PATH =
             Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "plugins"), "VFSExtractor");                
