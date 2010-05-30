@@ -45,8 +45,15 @@ namespace VGMToolbox.tools.xsf
             this.progressStruct.GenericMessage = String.Format("Processing: [{0}]{1}", pPath, Environment.NewLine);
             this.ReportProgress(this.progress, this.progressStruct);
 
-             string ndsTo2sfOutputPath = Path.Combine(Path.GetDirectoryName(pPath), String.Format("{0}{1}", Path.GetFileNameWithoutExtension(pPath), XsfUtil.NDSTO2SF_FOLDER_SUFFIX));
-             
+            string ndsTo2sfOutputPath = Path.Combine(Path.GetDirectoryName(pPath), String.Format("{0}{1}", Path.GetFileNameWithoutExtension(pPath), XsfUtil.NDSTO2SF_FOLDER_SUFFIX));
+
+            // Build Nds object
+            Nds ndsFile = new Nds();
+            using (FileStream ndsStream = File.OpenRead(pPath))
+            {
+                ndsFile.Initialize(ndsStream, pPath);
+            }
+ 
             //------------------------
             // extract 2SFs and STRMs
             //------------------------
@@ -70,7 +77,7 @@ namespace VGMToolbox.tools.xsf
             // extract SWAVs
             //---------------
             this.progressStruct.Clear();
-            this.progressStruct.GenericMessage = String.Format("  Searching for non-SWAR SWAVs{0}", Environment.NewLine);
+            this.progressStruct.GenericMessage = String.Format("  Searching for SWAVs{0}", Environment.NewLine);
             this.ReportProgress(this.progress, this.progressStruct);
 
             string swavMessages = String.Empty;
@@ -85,9 +92,19 @@ namespace VGMToolbox.tools.xsf
             findOffsetStruct.CutSize = "8";
             findOffsetStruct.CutSizeOffsetSize = "4";
             findOffsetStruct.IsLittleEndian = true;
-            findOffsetStruct.OutputFolder = Path.Combine(ndsTo2sfOutputPath, "SWAVs");
+            findOffsetStruct.OutputFolder = Path.Combine(ndsTo2sfOutputPath, "SWAV");
 
             ParseFile.FindOffsetAndCutFile(pPath, findOffsetStruct, out swavMessages, false, false);
+
+            //--------------
+            // extract ADXs
+            //--------------
+            this.progressStruct.Clear();
+            this.progressStruct.GenericMessage = String.Format("  Searching for ADXs{0}", Environment.NewLine);
+            this.ReportProgress(this.progress, this.progressStruct);
+            
+            string adxMessages = String.Empty;
+            CriUtil.ExtractAdxStreams(pPath, ndsFile.GameSerial, Path.Combine(ndsTo2sfOutputPath, "ADX"), out adxMessages);
         }
     }
 }

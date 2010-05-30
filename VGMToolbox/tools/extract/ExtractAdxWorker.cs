@@ -41,7 +41,6 @@ namespace VGMToolbox.tools.extract
             uint sampleRate;
             
             uint totalSamples;
-            uint totalBytes;
 
             uint fileSize;
 
@@ -85,8 +84,7 @@ namespace VGMToolbox.tools.extract
                                 totalHeaderSize = copyrightOffset + 4;
 
                                 // calculate file size
-                                totalBytes = (totalSamples) / (bitDepth * 8);
-                                fileSize = (totalBytes * channelCount * blockSize) + totalHeaderSize;
+                                fileSize = (((totalSamples + 0x1F) / (bitDepth * 8)) * channelCount * blockSize) + totalHeaderSize + blockSize;
 
                                 // extract file
                                 outputFileName = String.Format("{0}_{1}.adx", Path.GetFileNameWithoutExtension(pPath), fileCount.ToString("X8"));
