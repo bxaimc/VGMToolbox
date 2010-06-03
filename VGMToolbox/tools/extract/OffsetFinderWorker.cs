@@ -33,6 +33,7 @@ namespace VGMToolbox.tools.extract
             public string terminatorString;
             public bool treatTerminatorStringAsHex;
             public bool includeTerminatorLength;
+            public bool CutToEofIfTerminatorNotFound { set; get; }
 
             public string extraCutSizeBytes;
 
@@ -105,6 +106,7 @@ namespace VGMToolbox.tools.extract
                 findOffsetStruct.TreatTerminatorStringAsHex = this.treatTerminatorStringAsHex;
                 findOffsetStruct.IncludeTerminatorLength = this.includeTerminatorLength;
                 findOffsetStruct.ExtraCutSizeBytes = this.extraCutSizeBytes;
+                findOffsetStruct.CutToEofIfTerminatorNotFound = this.CutToEofIfTerminatorNotFound;
 
                 findOffsetStruct.DoTerminatorModulo = this.DoTerminatorModulo;
                 findOffsetStruct.TerminatorStringModuloDivisor = this.TerminatorStringModuloDivisor;

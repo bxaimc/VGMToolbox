@@ -133,7 +133,8 @@ namespace VGMToolbox.forms.extraction
                         ofStruct.terminatorString = this.tbTerminatorString.Text;
                         ofStruct.treatTerminatorStringAsHex = this.cbTreatTerminatorAsHex.Checked;
                         ofStruct.includeTerminatorLength = this.cbIncludeTerminatorInLength.Checked;
-                        
+                        ofStruct.CutToEofIfTerminatorNotFound = this.cbCutToEOFWhenTerminatorNotFound.Checked;
+
                         if (cbModOffsetTerminator.Checked)
                         {
                             ofStruct.DoTerminatorModulo = true;
@@ -182,6 +183,8 @@ namespace VGMToolbox.forms.extraction
                 this.tbOffsetModuloTerminatorDivisor.Enabled = false;                
                 this.tbOffsetModuloTerminatorResult.ReadOnly = true;
                 this.tbOffsetModuloTerminatorResult.Enabled = false;
+                this.cbCutToEOFWhenTerminatorNotFound.Checked = false;
+                this.cbCutToEOFWhenTerminatorNotFound.Enabled = false;
             }
             else if (rbOffsetBasedCutSize.Checked)
             {
@@ -198,6 +201,8 @@ namespace VGMToolbox.forms.extraction
                 this.tbOffsetModuloTerminatorDivisor.Enabled = false;
                 this.tbOffsetModuloTerminatorResult.ReadOnly = true;
                 this.tbOffsetModuloTerminatorResult.Enabled = false;
+                this.cbCutToEOFWhenTerminatorNotFound.Checked = false;
+                this.cbCutToEOFWhenTerminatorNotFound.Enabled = false;
             }
             else
             {
@@ -214,6 +219,7 @@ namespace VGMToolbox.forms.extraction
                 this.tbOffsetModuloTerminatorDivisor.Enabled = true;
                 this.tbOffsetModuloTerminatorResult.ReadOnly = false;
                 this.tbOffsetModuloTerminatorResult.Enabled = true;
+                this.cbCutToEOFWhenTerminatorNotFound.Enabled = true;
             }
 
             this.doOffsetModuloTerminatorCheckbox();

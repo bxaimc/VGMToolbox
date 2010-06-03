@@ -194,7 +194,9 @@ namespace VGMToolbox.util
             get { return includeTerminatorLength; }
             set { includeTerminatorLength = value; }
         }
-        
+
+        public bool CutToEofIfTerminatorNotFound { set; get; }
+
         /// <summary>
         /// Gets or sets additional bytes to include in the cut size.
         /// </summary>

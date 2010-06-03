@@ -821,8 +821,16 @@ namespace VGMToolbox.util
                                 terminatorOffset = GetNextOffset(fs, offset + searchBytes.Length, terminatorBytes,
                                     searchCriteria.DoTerminatorModulo, terminatorModuloDivisor,
                                     terminatorModuloResult);
-                                
-                                 cutSize = terminatorOffset - cutStart;
+
+                                // cut to EOF if terminator not found
+                                if (searchCriteria.CutToEofIfTerminatorNotFound && (terminatorOffset == -1))
+                                {
+                                    cutSize = fs.Length - cutStart;
+                                }
+                                else
+                                {
+                                    cutSize = terminatorOffset - cutStart;
+                                }
 
                                 if (searchCriteria.IncludeTerminatorLength)
                                 {

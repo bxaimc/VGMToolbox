@@ -85,6 +85,7 @@
             this.tbOutputExtension = new System.Windows.Forms.TextBox();
             this.lblOutputExtension = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.cbCutToEOFWhenTerminatorNotFound = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -98,31 +99,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 622);
-            this.pnlLabels.Size = new System.Drawing.Size(804, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 580);
+            this.pnlLabels.Size = new System.Drawing.Size(789, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(804, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(789, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 545);
-            this.tbOutput.Size = new System.Drawing.Size(804, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 503);
+            this.tbOutput.Size = new System.Drawing.Size(789, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 525);
-            this.pnlButtons.Size = new System.Drawing.Size(804, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 483);
+            this.pnlButtons.Size = new System.Drawing.Size(789, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(744, 0);
+            this.btnCancel.Location = new System.Drawing.Point(729, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(684, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(669, 0);
             // 
             // grpFiles
             // 
@@ -136,7 +137,7 @@
             this.grpFiles.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFiles.Location = new System.Drawing.Point(0, 23);
             this.grpFiles.Name = "grpFiles";
-            this.grpFiles.Size = new System.Drawing.Size(804, 64);
+            this.grpFiles.Size = new System.Drawing.Size(789, 64);
             this.grpFiles.TabIndex = 5;
             this.grpFiles.TabStop = false;
             this.grpFiles.Text = "Files to Search";
@@ -223,7 +224,7 @@
             this.grpCriteria.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpCriteria.Location = new System.Drawing.Point(0, 87);
             this.grpCriteria.Name = "grpCriteria";
-            this.grpCriteria.Size = new System.Drawing.Size(804, 64);
+            this.grpCriteria.Size = new System.Drawing.Size(789, 64);
             this.grpCriteria.TabIndex = 6;
             this.grpCriteria.TabStop = false;
             this.grpCriteria.Text = "Criteria";
@@ -312,13 +313,14 @@
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox3.Location = new System.Drawing.Point(0, 0);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(804, 344);
+            this.groupBox3.Size = new System.Drawing.Size(772, 366);
             this.groupBox3.TabIndex = 7;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Cut Options (all values are relative to the location of the file to be cut)";
             // 
             // gbCutSizeOptions
             // 
+            this.gbCutSizeOptions.Controls.Add(this.cbCutToEOFWhenTerminatorNotFound);
             this.gbCutSizeOptions.Controls.Add(this.tbLengthMultiplier);
             this.gbCutSizeOptions.Controls.Add(this.cbUseLengthMultiplier);
             this.gbCutSizeOptions.Controls.Add(this.tbOffsetModuloTerminatorResult);
@@ -346,7 +348,7 @@
             this.gbCutSizeOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.gbCutSizeOptions.Location = new System.Drawing.Point(3, 98);
             this.gbCutSizeOptions.Name = "gbCutSizeOptions";
-            this.gbCutSizeOptions.Size = new System.Drawing.Size(798, 243);
+            this.gbCutSizeOptions.Size = new System.Drawing.Size(766, 265);
             this.gbCutSizeOptions.TabIndex = 2;
             this.gbCutSizeOptions.TabStop = false;
             this.gbCutSizeOptions.Text = "Cut Size Options";
@@ -405,7 +407,7 @@
             // 
             // tbExtraCutSizeBytes
             // 
-            this.tbExtraCutSizeBytes.Location = new System.Drawing.Point(162, 206);
+            this.tbExtraCutSizeBytes.Location = new System.Drawing.Point(162, 229);
             this.tbExtraCutSizeBytes.Name = "tbExtraCutSizeBytes";
             this.tbExtraCutSizeBytes.ReadOnly = true;
             this.tbExtraCutSizeBytes.Size = new System.Drawing.Size(57, 20);
@@ -414,7 +416,7 @@
             // cbAddExtraBytes
             // 
             this.cbAddExtraBytes.AutoSize = true;
-            this.cbAddExtraBytes.Location = new System.Drawing.Point(6, 208);
+            this.cbAddExtraBytes.Location = new System.Drawing.Point(6, 231);
             this.cbAddExtraBytes.Name = "cbAddExtraBytes";
             this.cbAddExtraBytes.Size = new System.Drawing.Size(150, 17);
             this.cbAddExtraBytes.TabIndex = 17;
@@ -587,7 +589,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(3, 16);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(798, 82);
+            this.panel2.Size = new System.Drawing.Size(766, 82);
             this.panel2.TabIndex = 19;
             // 
             // btnBrowseOutputFolder
@@ -695,14 +697,24 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 151);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(804, 374);
+            this.panel1.Size = new System.Drawing.Size(789, 332);
             this.panel1.TabIndex = 8;
+            // 
+            // cbCutToEOFWhenTerminatorNotFound
+            // 
+            this.cbCutToEOFWhenTerminatorNotFound.AutoSize = true;
+            this.cbCutToEOFWhenTerminatorNotFound.Location = new System.Drawing.Point(56, 208);
+            this.cbCutToEOFWhenTerminatorNotFound.Name = "cbCutToEOFWhenTerminatorNotFound";
+            this.cbCutToEOFWhenTerminatorNotFound.Size = new System.Drawing.Size(213, 17);
+            this.cbCutToEOFWhenTerminatorNotFound.TabIndex = 25;
+            this.cbCutToEOFWhenTerminatorNotFound.Text = "Cut to EOF when Terminator Not Found";
+            this.cbCutToEOFWhenTerminatorNotFound.UseVisualStyleBackColor = true;
             // 
             // OffsetFinderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(804, 663);
+            this.ClientSize = new System.Drawing.Size(789, 621);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.grpCriteria);
             this.Controls.Add(this.grpFiles);
@@ -796,5 +808,6 @@
         private System.Windows.Forms.TextBox tbOutputFolder;
         private System.Windows.Forms.CheckBox cbUseLengthMultiplier;
         private System.Windows.Forms.TextBox tbLengthMultiplier;
+        private System.Windows.Forms.CheckBox cbCutToEOFWhenTerminatorNotFound;
     }
 }
