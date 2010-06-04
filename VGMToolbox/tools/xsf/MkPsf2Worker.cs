@@ -537,6 +537,7 @@ namespace VGMToolbox.tools.xsf
 
             tempValue = BitConverter.ToInt32(ParseFile.ParseSimpleOffset(pFileStream,
                 PSF2_CSL_SEQ_OFFSET_BEGIN, 4), 0);
+            
             if (tempValue > 0)
             {
                 this.validSequenceArray[0] = true;
