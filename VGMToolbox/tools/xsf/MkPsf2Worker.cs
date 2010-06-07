@@ -520,7 +520,7 @@ namespace VGMToolbox.tools.xsf
                 byte[] seqNumberBytes = ParseFile.ParseSimpleOffset(fs, seqOffset, 4);
                 ret = System.BitConverter.ToInt32(seqNumberBytes, 0);
 
-                ret = ret > 0 ? ret : 1;
+                ret += 1;
 
                 this.buildValidSequenceArray(fs, ret);
 
