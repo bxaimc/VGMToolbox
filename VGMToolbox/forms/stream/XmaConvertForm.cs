@@ -18,7 +18,7 @@ namespace VGMToolbox.forms.stream
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = "XMA Converter";
+            this.lblTitle.Text = "XMA to WAV Converter";
             
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
@@ -26,21 +26,39 @@ namespace VGMToolbox.forms.stream
             InitializeComponent();
 
             this.initializeXmaParseInputCombo();
-
-
+            this.initializeRiffFrequencyCombo();
+            this.initializeRiffChannelsCombo();
         }
 
+        //----------------
+        // initialization
+        //----------------
         private void initializeXmaParseInputCombo()
         {
             this.comboXmaParseInputType.Items.Add("1");
             this.comboXmaParseInputType.Items.Add("2");
+            
             this.comboXmaParseInputType.SelectedItem = "2";
         }
 
-     
-        
-        
-        
+        private void initializeRiffFrequencyCombo()
+        {
+            this.comboRiffFrequency.Items.Add("22050");
+            this.comboRiffFrequency.Items.Add("32000");
+            this.comboRiffFrequency.Items.Add("44100");
+            this.comboRiffFrequency.Items.Add("48000");
+
+            this.comboRiffFrequency.SelectedItem = "48000";
+        }
+
+        private void initializeRiffChannelsCombo()
+        {
+            this.comboRiffChannels.Items.Add(XmaConverterWorker.RIFF_CHANNELS_1);
+            this.comboRiffChannels.Items.Add(XmaConverterWorker.RIFF_CHANNELS_2);
+
+            this.comboRiffChannels.SelectedItem = XmaConverterWorker.RIFF_CHANNELS_2;
+        }        
+                
         //-----------------------------
         // drag and drop functionality
         //-----------------------------
@@ -64,6 +82,25 @@ namespace VGMToolbox.forms.stream
                 taskStruct.XmaParseXmaType = this.comboXmaParseInputType.Text;
                 taskStruct.XmaParseStartOffset = this.tbXmaParseStartOffset.Text;
                 taskStruct.XmaParseBlockSize = this.tbXmaParseBlockSize.Text;
+
+                // RIFF
+                taskStruct.RiffFrequency = this.comboRiffFrequency.Text;
+
+                switch (this.comboRiffChannels.Text)
+                {
+                    case XmaConverterWorker.RIFF_CHANNELS_1:
+                        taskStruct.RiffChannelCount = "1";
+                        break;
+                    case XmaConverterWorker.RIFF_CHANNELS_2:
+                        taskStruct.RiffChannelCount = "2";
+                        break;
+                    default:
+                        taskStruct.RiffChannelCount = "2";
+                        break;
+                }
+
+                // OTHER
+                taskStruct.ShowExeOutput = this.cbShowAllExeOutput.Checked;
 
                 base.backgroundWorker_Execute(taskStruct);
             }
@@ -155,6 +192,24 @@ namespace VGMToolbox.forms.stream
             e.Handled = true;
         }
         private void comboXmaParseInputType_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void comboRiffFrequency_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
+        private void comboRiffFrequency_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void comboRiffChannels_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
+        private void comboRiffChannels_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = true;
         }

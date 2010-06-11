@@ -32,6 +32,10 @@
             this.grpOutputOptions = new System.Windows.Forms.GroupBox();
             this.pnlOptions = new System.Windows.Forms.Panel();
             this.grpRiffHeaderOptions = new System.Windows.Forms.GroupBox();
+            this.comboRiffChannels = new System.Windows.Forms.ComboBox();
+            this.lblRiffChannels = new System.Windows.Forms.Label();
+            this.comboRiffFrequency = new System.Windows.Forms.ComboBox();
+            this.lblRiffFrequency = new System.Windows.Forms.Label();
             this.grpXmaParseOptions = new System.Windows.Forms.GroupBox();
             this.tbXmaParseBlockSize = new System.Windows.Forms.TextBox();
             this.lblXmaParseBlockSize = new System.Windows.Forms.Label();
@@ -39,11 +43,15 @@
             this.lblXmaParseOffset = new System.Windows.Forms.Label();
             this.comboXmaParseInputType = new System.Windows.Forms.ComboBox();
             this.lblXmaParseInputType = new System.Windows.Forms.Label();
+            this.groupOtherOptions = new System.Windows.Forms.GroupBox();
+            this.cbShowAllExeOutput = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
             this.pnlOptions.SuspendLayout();
+            this.grpRiffHeaderOptions.SuspendLayout();
             this.grpXmaParseOptions.SuspendLayout();
+            this.groupOtherOptions.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
@@ -97,6 +105,7 @@
             // pnlOptions
             // 
             this.pnlOptions.AutoScroll = true;
+            this.pnlOptions.Controls.Add(this.groupOtherOptions);
             this.pnlOptions.Controls.Add(this.grpRiffHeaderOptions);
             this.pnlOptions.Controls.Add(this.grpXmaParseOptions);
             this.pnlOptions.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -107,13 +116,55 @@
             // 
             // grpRiffHeaderOptions
             // 
+            this.grpRiffHeaderOptions.Controls.Add(this.comboRiffChannels);
+            this.grpRiffHeaderOptions.Controls.Add(this.lblRiffChannels);
+            this.grpRiffHeaderOptions.Controls.Add(this.comboRiffFrequency);
+            this.grpRiffHeaderOptions.Controls.Add(this.lblRiffFrequency);
             this.grpRiffHeaderOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpRiffHeaderOptions.Location = new System.Drawing.Point(0, 46);
             this.grpRiffHeaderOptions.Name = "grpRiffHeaderOptions";
-            this.grpRiffHeaderOptions.Size = new System.Drawing.Size(789, 56);
+            this.grpRiffHeaderOptions.Size = new System.Drawing.Size(789, 48);
             this.grpRiffHeaderOptions.TabIndex = 1;
             this.grpRiffHeaderOptions.TabStop = false;
             this.grpRiffHeaderOptions.Text = "RIFF Header Options";
+            // 
+            // comboRiffChannels
+            // 
+            this.comboRiffChannels.FormattingEnabled = true;
+            this.comboRiffChannels.Location = new System.Drawing.Point(220, 19);
+            this.comboRiffChannels.Name = "comboRiffChannels";
+            this.comboRiffChannels.Size = new System.Drawing.Size(79, 21);
+            this.comboRiffChannels.TabIndex = 3;
+            this.comboRiffChannels.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.comboRiffChannels_KeyPress);
+            this.comboRiffChannels.KeyDown += new System.Windows.Forms.KeyEventHandler(this.comboRiffChannels_KeyDown);
+            // 
+            // lblRiffChannels
+            // 
+            this.lblRiffChannels.AutoSize = true;
+            this.lblRiffChannels.Location = new System.Drawing.Point(163, 22);
+            this.lblRiffChannels.Name = "lblRiffChannels";
+            this.lblRiffChannels.Size = new System.Drawing.Size(51, 13);
+            this.lblRiffChannels.TabIndex = 2;
+            this.lblRiffChannels.Text = "Channels";
+            // 
+            // comboRiffFrequency
+            // 
+            this.comboRiffFrequency.FormattingEnabled = true;
+            this.comboRiffFrequency.Location = new System.Drawing.Point(69, 19);
+            this.comboRiffFrequency.Name = "comboRiffFrequency";
+            this.comboRiffFrequency.Size = new System.Drawing.Size(77, 21);
+            this.comboRiffFrequency.TabIndex = 1;
+            this.comboRiffFrequency.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.comboRiffFrequency_KeyPress);
+            this.comboRiffFrequency.KeyDown += new System.Windows.Forms.KeyEventHandler(this.comboRiffFrequency_KeyDown);
+            // 
+            // lblRiffFrequency
+            // 
+            this.lblRiffFrequency.AutoSize = true;
+            this.lblRiffFrequency.Location = new System.Drawing.Point(3, 22);
+            this.lblRiffFrequency.Name = "lblRiffFrequency";
+            this.lblRiffFrequency.Size = new System.Drawing.Size(57, 13);
+            this.lblRiffFrequency.TabIndex = 0;
+            this.lblRiffFrequency.Text = "Frequency";
             // 
             // grpXmaParseOptions
             // 
@@ -176,11 +227,32 @@
             // lblXmaParseInputType
             // 
             this.lblXmaParseInputType.AutoSize = true;
-            this.lblXmaParseInputType.Location = new System.Drawing.Point(6, 22);
+            this.lblXmaParseInputType.Location = new System.Drawing.Point(3, 22);
             this.lblXmaParseInputType.Name = "lblXmaParseInputType";
             this.lblXmaParseInputType.Size = new System.Drawing.Size(57, 13);
             this.lblXmaParseInputType.TabIndex = 0;
             this.lblXmaParseInputType.Text = "XMA Type";
+            // 
+            // groupOtherOptions
+            // 
+            this.groupOtherOptions.Controls.Add(this.cbShowAllExeOutput);
+            this.groupOtherOptions.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupOtherOptions.Location = new System.Drawing.Point(0, 94);
+            this.groupOtherOptions.Name = "groupOtherOptions";
+            this.groupOtherOptions.Size = new System.Drawing.Size(789, 58);
+            this.groupOtherOptions.TabIndex = 2;
+            this.groupOtherOptions.TabStop = false;
+            this.groupOtherOptions.Text = "Other Options";
+            // 
+            // cbShowAllExeOutput
+            // 
+            this.cbShowAllExeOutput.AutoSize = true;
+            this.cbShowAllExeOutput.Location = new System.Drawing.Point(6, 19);
+            this.cbShowAllExeOutput.Name = "cbShowAllExeOutput";
+            this.cbShowAllExeOutput.Size = new System.Drawing.Size(226, 17);
+            this.cbShowAllExeOutput.TabIndex = 0;
+            this.cbShowAllExeOutput.Text = "Show All Output from External Applications";
+            this.cbShowAllExeOutput.UseVisualStyleBackColor = true;
             // 
             // XmaConvertForm
             // 
@@ -209,8 +281,12 @@
             this.pnlButtons.ResumeLayout(false);
             this.pnlButtons.PerformLayout();
             this.pnlOptions.ResumeLayout(false);
+            this.grpRiffHeaderOptions.ResumeLayout(false);
+            this.grpRiffHeaderOptions.PerformLayout();
             this.grpXmaParseOptions.ResumeLayout(false);
             this.grpXmaParseOptions.PerformLayout();
+            this.groupOtherOptions.ResumeLayout(false);
+            this.groupOtherOptions.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -229,5 +305,11 @@
         private System.Windows.Forms.TextBox tbXmaParseStartOffset;
         private System.Windows.Forms.Label lblXmaParseOffset;
         private System.Windows.Forms.GroupBox grpRiffHeaderOptions;
+        private System.Windows.Forms.ComboBox comboRiffFrequency;
+        private System.Windows.Forms.Label lblRiffFrequency;
+        private System.Windows.Forms.Label lblRiffChannels;
+        private System.Windows.Forms.ComboBox comboRiffChannels;
+        private System.Windows.Forms.GroupBox groupOtherOptions;
+        private System.Windows.Forms.CheckBox cbShowAllExeOutput;
     }
 }

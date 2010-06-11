@@ -41,6 +41,11 @@ namespace VGMToolbox.plugin
         protected void DoTask(IVgmtWorkerStruct pTaskStruct, DoWorkEventArgs e)
         {
             this.maxFiles = FileUtil.GetFileCount(pTaskStruct.SourcePaths);
+            
+            // reset progress bar if needed
+            this.progressStruct.Clear();
+            this.progressStruct.FileName = String.Empty;
+            ReportProgress(progress, progressStruct);
 
             foreach (string path in pTaskStruct.SourcePaths)
             {
@@ -86,7 +91,6 @@ namespace VGMToolbox.plugin
                                 // output progress
                                 this.progressStruct.Clear();
                                 this.progress = (fileCount * 100) / maxFiles;
-                                this.progressStruct.Clear();
                                 this.progressStruct.FileName = path;
                                 ReportProgress(progress, progressStruct);
                             }

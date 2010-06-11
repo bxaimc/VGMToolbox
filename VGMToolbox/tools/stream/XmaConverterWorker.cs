@@ -13,32 +13,50 @@ namespace VGMToolbox.tools.stream
 {
     public class XmaConverterWorker: AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
+        // xma parse
         public const string XMAPARSE_PATH = "external\\xma\\xma_test.exe";
         public const string XMAPARSE_CRC32 = "7437EE24"; // v0.8
         public static readonly string XMAPARSE_FULL_PATH =
             Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
             XMAPARSE_PATH);
 
+        // to wav
         public const string TOWAV_PATH = "external\\xma\\ToWav.exe";
         public static readonly string TOWAV_FULL_PATH =
             Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
             TOWAV_PATH);
 
-
+        // paths
         private const string WORKING_FOLDER_NAME = "_vgmt_xma_convert";
 
         private const string XMAPARSE_OUTPUT_EXTENSION = ".xmpo";
         private const string RIFF_COPY_OUTPUT_EXTENSION = ".xmariff";
+        private const string TOWAV_OUTPUT_EXTENSION = ".wav";
 
+        // combo items
+        public const string RIFF_CHANNELS_1 = "Mono (1)";
+        public const string RIFF_CHANNELS_2 = "Stereo (2+)";
+
+        // RIFF header
+        public static readonly byte[] RIFF_HEADER_XMA = new byte[] { 
+            0x52, 0x49, 0x46, 0x46, 0xB8, 0x59, 0xA7, 0x00, 0x57, 0x41, 0x56, 0x45, 0x66, 0x6D, 0x74, 0x20,
+            0x20, 0x00, 0x00, 0x00, 0x65, 0x01, 0x10, 0x00, 0xD6, 0x10, 0x00, 0x00, 0x01, 0x00, 0x00, 0x03, 
+            0xE3, 0x9A, 0x00, 0x00, 0x80, 0xBB, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x02, 0x02, 0x00, 0x64, 0x61, 0x74, 0x61, 0x00, 0x58, 0xA7, 0x00};
 
         public struct XmaConverterStruct : IVgmtWorkerStruct
         {
             public string[] SourcePaths { set; get; }
             public string OutputFolder { set; get; }
 
+            public bool ShowExeOutput { set; get; }
+
             public string XmaParseXmaType { set; get; }
             public string XmaParseStartOffset { set; get; }
             public string XmaParseBlockSize { set; get; }
+
+            public string RiffFrequency { set; get; }
+            public string RiffChannelCount { set; get; }
         }
 
         public XmaConverterWorker() : 
@@ -58,6 +76,13 @@ namespace VGMToolbox.tools.stream
             string consoleError;
 
             string xmaParseOutputFilePath;
+            string riffHeaderedFile;
+            string toWavOutputFilePath;
+
+            uint riffFrequency;
+            uint riffChannelCount;
+            uint riffFileSize;
+
             byte[] riffHeaderBytes;
 
             //------------------
@@ -82,26 +107,73 @@ namespace VGMToolbox.tools.stream
             //---------------------------
             // xma_parse.exe
             //---------------------------            
+            this.progressStruct.Clear();
+            this.progressStruct.FileName = pPath;
+            this.progressStruct.GenericMessage = String.Format("---- calling xma_parse.exe{0}", Environment.NewLine);
+            ReportProgress(Constants.ProgressMessageOnly, progressStruct);
+            
             xmaParseOutputFilePath = this.callXmaParse(workingFolder, workingFile, taskStruct, out consoleOutput, out consoleError);
 
-            //-----------------
-            // get RIFF header
-            //-----------------
-            riffHeaderBytes = this.getRiffHeader();
+            // show output
+            if (taskStruct.ShowExeOutput && !String.IsNullOrEmpty(consoleOutput))
+            {
+                showOutput(pPath, consoleOutput, false);
+            }
 
-            //-------------------------
-            // add RIFF header to file
-            //-------------------------
-            FileUtil.AddHeaderToFile(riffHeaderBytes, xmaParseOutputFilePath, Path.ChangeExtension(xmaParseOutputFilePath, RIFF_COPY_OUTPUT_EXTENSION)); 
+            if (String.IsNullOrEmpty(consoleError))
+            {
+                //-----------------
+                // get RIFF header
+                //-----------------
+                this.progressStruct.Clear();
+                this.progressStruct.FileName = pPath;
+                this.progressStruct.GenericMessage = String.Format("---- adding RIFF header.{0}", Environment.NewLine);
+                ReportProgress(Constants.ProgressMessageOnly, progressStruct);
 
-            //-----------
-            // ToWav.exe
-            //-----------
+                riffFrequency = (uint)ByteConversion.GetLongValueFromString(taskStruct.RiffFrequency);
+                riffChannelCount = (uint)ByteConversion.GetLongValueFromString(taskStruct.RiffChannelCount);
+                riffFileSize = (uint)new FileInfo(xmaParseOutputFilePath).Length;
+
+                riffHeaderBytes = this.getRiffHeader(riffFrequency, riffChannelCount, riffFileSize);
+
+                //-------------------------
+                // add RIFF header to file
+                //-------------------------
+                riffHeaderedFile = Path.ChangeExtension(xmaParseOutputFilePath, RIFF_COPY_OUTPUT_EXTENSION);
+                FileUtil.AddHeaderToFile(riffHeaderBytes, xmaParseOutputFilePath, riffHeaderedFile);
+
+                //-----------
+                // ToWav.exe
+                //-----------
+                this.progressStruct.Clear();
+                this.progressStruct.FileName = pPath;
+                this.progressStruct.GenericMessage = String.Format("---- calling ToWav.exe{0}", Environment.NewLine);
+                ReportProgress(Constants.ProgressMessageOnly, progressStruct);
+
+                toWavOutputFilePath = this.callToWav(workingFolder, riffHeaderedFile, taskStruct, out consoleOutput, out consoleError);
+
+                // show output
+                if (taskStruct.ShowExeOutput && !String.IsNullOrEmpty(consoleOutput))
+                {
+                    showOutput(pPath, consoleOutput, false);
+                }
+
+                // dispay ToWav.exe error
+                if (!String.IsNullOrEmpty(consoleError))
+                {                    
+                    showOutput(pPath, consoleError, true);
+                }
+            }
+            else
+            { 
+                // dispay xma_parse.exe error
+                showOutput(pPath, consoleError, true);
+            }
 
             //----------------------
             // clean working folder
             //----------------------
-            this.cleanWorkingFolder(pPath, taskStruct);
+            this.cleanWorkingFolder(pPath, workingFile, taskStruct);
            
         }
 
@@ -136,9 +208,15 @@ namespace VGMToolbox.tools.stream
             return workingFolder;
         }
 
-        private void cleanWorkingFolder(string processingFilePath, XmaConverterStruct taskStruct)
+        private void cleanWorkingFolder(string processingFilePath, string workingFile, XmaConverterStruct taskStruct)
         {
             string workingFolder = getWorkingFolderPath(processingFilePath, taskStruct);
+
+            // delete working copy of source file
+            if (File.Exists(workingFile))
+            {
+                File.Delete(workingFile);
+            }
 
             // delete xma_parse output file(s)
             foreach (string xmpo in Directory.GetFiles(workingFolder, String.Format("*{0}", XMAPARSE_OUTPUT_EXTENSION)))
@@ -229,17 +307,93 @@ namespace VGMToolbox.tools.stream
             xmaParseProcess.Close();
             xmaParseProcess.Dispose();
 
+            xmaParseOutputFilePath = xmaParseWorkingPath = Path.Combine(workingFolder, xmaParseOutputFilePath);
+
             return xmaParseOutputFilePath;
+        }
+
+        private string callToWav(
+            string workingFolder,
+            string riffHeaderedFile,
+            XmaConverterStruct taskStruct,
+            out string consoleOutput,
+            out string consoleError)
+        {
+            string toWavWorkingPath;
+            string toWavOutputFilePath;
+            Process toWavProcess;
+            StringBuilder parameters = new StringBuilder();
+
+            // copy to working folder
+            toWavWorkingPath = Path.Combine(workingFolder, Path.GetFileName(TOWAV_FULL_PATH));
+            File.Copy(TOWAV_FULL_PATH, toWavWorkingPath, true);
+
+            // build parameters
+            parameters.AppendFormat(" \"{0}\"", Path.GetFileName(riffHeaderedFile)); // Filename
+
+            // call function
+            toWavProcess = new Process();
+            toWavProcess.StartInfo = new ProcessStartInfo(toWavWorkingPath);
+            toWavProcess.StartInfo.WorkingDirectory = workingFolder;
+            toWavProcess.StartInfo.Arguments = parameters.ToString();
+            toWavProcess.StartInfo.UseShellExecute = false;
+            toWavProcess.StartInfo.CreateNoWindow = true;
+
+            toWavProcess.StartInfo.RedirectStandardError = true;
+            toWavProcess.StartInfo.RedirectStandardOutput = true;
+
+            bool isSuccess = toWavProcess.Start();
+            consoleOutput = toWavProcess.StandardOutput.ReadToEnd();
+            consoleError = toWavProcess.StandardError.ReadToEnd();
+
+            toWavProcess.WaitForExit();
+            toWavProcess.Close();
+            toWavProcess.Dispose();
+
+            // build output path
+            toWavOutputFilePath = Path.ChangeExtension(riffHeaderedFile, TOWAV_OUTPUT_EXTENSION);
+
+            return toWavOutputFilePath;
         }
 
         //----------------
         // RIFF functions
         //----------------
-        private byte[] getRiffHeader()
+        private byte[] getRiffHeader(uint frequency, uint channelCount, uint fileSize)
         {
-            byte[] riffHeader = new byte[0];
+            byte[] riffHeader = new byte[RIFF_HEADER_XMA.Length];
+            Array.Copy(RIFF_HEADER_XMA, riffHeader, RIFF_HEADER_XMA.Length);
+
+            // file size
+            Array.Copy(BitConverter.GetBytes(fileSize - 8), 0, riffHeader, 4, 4);
+
+            // frequency
+            Array.Copy(BitConverter.GetBytes(frequency), 0, riffHeader, 0x24, 4);
+
+            // channels
+            riffHeader[0x31] = (byte)channelCount;
 
             return riffHeader;
+        }
+        
+        //----------------
+        // output/display
+        //----------------
+        private void showOutput(string path, string message, bool isError)
+        {
+            this.progressStruct.Clear();
+            this.progressStruct.FileName = path;
+
+            if (isError)
+            {
+                this.progressStruct.ErrorMessage = String.Format("ERROR: {0}{1}", message, Environment.NewLine);
+            }
+            else
+            {
+                this.progressStruct.GenericMessage = String.Format("{0}{1}", message, Environment.NewLine);
+            }
+            
+            ReportProgress(this.progress, progressStruct);        
         }
     }
 }
