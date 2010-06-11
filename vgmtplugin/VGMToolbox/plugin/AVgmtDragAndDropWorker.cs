@@ -202,6 +202,9 @@ namespace VGMToolbox.plugin
             this.DoTask((IVgmtWorkerStruct)e.Argument, e);
         }
         
+        /// <summary>
+        /// Tasks to perform in the Finally() clause of a Try/Catch statement.
+        /// </summary>
         protected virtual void DoFinally() { }
 
         /// <summary>

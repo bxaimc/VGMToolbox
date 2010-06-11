@@ -264,5 +264,25 @@ namespace VGMToolbox.util
             return new Regex(pattern, RegexOptions.IgnoreCase).IsMatch(fileName);
         }
 
+        public static void AddHeaderToFile(byte[] headerBytes, string sourceFile, string destinationFile)
+        {
+            int bytesRead;
+            byte[] readBuffer = new byte[Constants.FileReadChunkSize];
+
+            using (FileStream destinationStream = File.Open(destinationFile, FileMode.CreateNew, FileAccess.Write))
+            {
+                // write header
+                destinationStream.Write(headerBytes, 0, headerBytes.Length);
+
+                // write the source file
+                using (FileStream sourceStream = File.Open(sourceFile, FileMode.Open, FileAccess.Read))
+                {
+                    while ((bytesRead = sourceStream.Read(readBuffer, 0, readBuffer.Length)) > 0)
+                    {
+                        destinationStream.Write(readBuffer, 0, bytesRead);
+                    }
+                }
+            }
+        }
     }
 }

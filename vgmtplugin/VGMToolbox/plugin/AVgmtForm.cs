@@ -209,6 +209,26 @@ namespace VGMToolbox.plugin
             return ret;
         }
 
+        protected bool checkIfTextIsParsableAsLong(string textToCheck, string labelValue)
+        {
+            bool isParsableNumber = true;
+
+            if (!String.IsNullOrEmpty(textToCheck))
+            {
+                try
+                {
+                    long tempValue = ByteConversion.GetLongValueFromString(textToCheck);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show(String.Format("Cannot convert \"{0}\" to a number: <{1}>", labelValue, textToCheck), "Conversion Error.");
+                    isParsableNumber = false;
+                }
+            }
+
+            return isParsableNumber;
+        }
+
         private void tbOutput_DoubleClick(object sender, EventArgs e)
         {
             string tempFileName = Path.GetTempFileName();

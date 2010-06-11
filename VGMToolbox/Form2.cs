@@ -10,6 +10,7 @@ using VGMToolbox.forms.examine;
 using VGMToolbox.forms.extraction;
 using VGMToolbox.forms.hoot;
 using VGMToolbox.forms.nsf;
+using VGMToolbox.forms.stream;
 using VGMToolbox.forms.xsf;
 using VGMToolbox.util;
 
@@ -78,6 +79,11 @@ namespace VGMToolbox
             tools_RootNode.Tag = nodeTag;
             tools_RootNode.NodeFont = this.treeviewBoldFont;
 
+            // GBS
+            TreeNode gbs_RootNode = buildGbsTreeNode();
+            gbs_RootNode.Tag = nodeTag;
+            tools_RootNode.Nodes.Add(gbs_RootNode);
+
             // Hoot
             TreeNode hoot_RootNode = buildHootTreeNode();
             hoot_RootNode.Tag = nodeTag;
@@ -88,10 +94,10 @@ namespace VGMToolbox
             nsf_RootNode.Tag = nodeTag;
             tools_RootNode.Nodes.Add(nsf_RootNode);
 
-            // GBS
-            TreeNode gbs_RootNode = buildGbsTreeNode();
-            gbs_RootNode.Tag = nodeTag;
-            tools_RootNode.Nodes.Add(gbs_RootNode);
+            // Stream
+            TreeNode stream_RootNode = buildStreamTreeNode();
+            stream_RootNode.Tag = nodeTag;
+            tools_RootNode.Nodes.Add(stream_RootNode);
 
             // VGM
             TreeNode vgm_RootNode = buildVgmTreeNode();
@@ -1032,6 +1038,37 @@ namespace VGMToolbox
             comp_RootNode.Nodes.Add(ext_ExtractZlibNode);
 
             return comp_RootNode;
+        }
+
+        private TreeNode buildStreamTreeNode()
+        {
+            VGMToolbox.util.NodeTagStruct nodeTag = new VGMToolbox.util.NodeTagStruct();
+            EmptyForm emptyForm = new EmptyForm();
+
+            TreeNode stream_RootNode = new TreeNode("Stream Tools");
+            stream_RootNode.NodeFont = this.treeviewBoldFont;
+
+            // XMA
+            TreeNode xma_RootNode = new TreeNode("XMA");
+            xma_RootNode.NodeFont = this.treeviewBoldFont;
+            nodeTag.FormClass = emptyForm.GetType().Name;
+            xma_RootNode.Tag = nodeTag;
+
+            // XMA Converter
+            TreeNode xmaConverterNode = new TreeNode("XMA Converter");
+
+            // Add XMA Convertor Form
+            XmaConvertForm xmaConverterForm = new XmaConvertForm(xmaConverterNode);
+            this.splitContainer1.Panel2.Controls.Add(xmaConverterForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = xmaConverterForm.GetType().Name;
+            xmaConverterNode.Tag = nodeTag;
+
+            xma_RootNode.Nodes.Add(xmaConverterNode);
+            stream_RootNode.Nodes.Add(xma_RootNode);
+
+            return stream_RootNode;
         }
 
         private void tvMenuTree_doClick(object sender, TreeNodeMouseClickEventArgs e)
