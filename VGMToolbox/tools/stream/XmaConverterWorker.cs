@@ -55,6 +55,7 @@ namespace VGMToolbox.tools.stream
 
             public bool DoXmaParse { set; get; }
             public bool DoRiffHeader { set; get; }
+            public bool DoToWav { set; get; }
 
             public string XmaParseXmaType { set; get; }
             public string XmaParseStartOffset { set; get; }
@@ -67,6 +68,7 @@ namespace VGMToolbox.tools.stream
             public string RiffChannelCount { set; get; }
 
             public bool ShowExeOutput { set; get; }
+            public bool KeepIntermediateFiles { set; get; }
         }
 
         public XmaConverterWorker() : 
@@ -166,7 +168,7 @@ namespace VGMToolbox.tools.stream
             //-----------
             // ToWav.exe
             //-----------
-            if (String.IsNullOrEmpty(consoleError))
+            if ((taskStruct.DoToWav) && (String.IsNullOrEmpty(consoleError)))
             {
                 this.ShowOutput(pPath, "---- calling ToWav.exe", false);
 
@@ -234,18 +236,24 @@ namespace VGMToolbox.tools.stream
                 File.Delete(workingFile);
             }
 
-            // delete xma_parse output file(s)
-            foreach (string xmpo in Directory.GetFiles(workingFolder, String.Format("*{0}", XMAPARSE_OUTPUT_EXTENSION)))
+            //---------------------------
+            // delete intermediate files
+            //---------------------------
+            if (!taskStruct.KeepIntermediateFiles)
             {
-                File.Delete(xmpo);
-            }
+                // delete xma_parse output file(s)
+                foreach (string xmpo in Directory.GetFiles(workingFolder, String.Format("*{0}", XMAPARSE_OUTPUT_EXTENSION)))
+                {
+                    File.Delete(xmpo);
+                }
 
-            // delete riff output file(s)
-            foreach (string riff in Directory.GetFiles(workingFolder, String.Format("*{0}", RIFF_COPY_OUTPUT_EXTENSION)))
-            {
-                File.Delete(riff);
+                // delete riff output file(s)
+                foreach (string riff in Directory.GetFiles(workingFolder, String.Format("*{0}", RIFF_COPY_OUTPUT_EXTENSION)))
+                {
+                    File.Delete(riff);
+                }
             }
-
+            
             // delete xma_test.exe
             string xmaParseWorkingPath = Path.Combine(workingFolder, Path.GetFileName(XMAPARSE_FULL_PATH));
 

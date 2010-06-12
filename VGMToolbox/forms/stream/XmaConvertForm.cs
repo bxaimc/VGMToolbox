@@ -26,6 +26,7 @@ namespace VGMToolbox.forms.stream
 
             this.initializeXmaParseInputSection();
             this.initializeRiffSection();
+            this.initializeToWavSection();
         }
 
         //----------------
@@ -66,7 +67,12 @@ namespace VGMToolbox.forms.stream
 
             this.comboRiffChannels.SelectedItem = XmaConverterWorker.RIFF_CHANNELS_2;
         }
-                          
+
+        private void initializeToWavSection()
+        {
+            this.cbDoToWav.Checked = true;
+        }
+                  
         //-----------------------------
         // drag and drop functionality
         //-----------------------------
@@ -132,8 +138,12 @@ namespace VGMToolbox.forms.stream
                         break;
                 }
 
+                // TOWAV
+                taskStruct.DoToWav = this.cbDoToWav.Checked;
+
                 // OTHER                
                 taskStruct.ShowExeOutput = this.cbShowAllExeOutput.Checked;
+                taskStruct.KeepIntermediateFiles = this.cbKeepTempFiles.Checked;
 
                 base.backgroundWorker_Execute(taskStruct);
             }
