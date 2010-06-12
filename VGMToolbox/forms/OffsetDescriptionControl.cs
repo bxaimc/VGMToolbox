@@ -1,0 +1,120 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Data;
+using System.Text;
+using System.Windows.Forms;
+
+using VGMToolbox.util;
+
+namespace VGMToolbox.forms
+{
+    public partial class OffsetDescriptionControl : UserControl
+    {
+        public OffsetDescriptionControl()
+        {
+            InitializeComponent();
+
+            this.InitializeSizeComboBox();
+            this.InitializeByteOrderComboBox();
+        }
+
+        //---------------
+        // properties
+        //---------------
+        public string OffsetValue
+        {
+            get { return this.tbOffset.Text; }
+            set { this.tbOffset.Text = value; }
+        }
+        
+        public string OffsetSize
+        {
+            get { return this.comboSize.Text; }
+            set { this.comboSize.Text = value; }
+        }
+
+        public string OffsetByteOrder
+        {
+            get { return this.comboByteOrder.Text; }
+            set { this.comboByteOrder.Text = value; }
+        }
+
+        public new bool Enabled
+        {
+            set 
+            {
+                this.tbOffset.Enabled = value;
+                this.comboSize.Enabled = value;
+                this.comboByteOrder.Enabled = value;
+            }
+        }
+
+        //---------
+        // methods
+        //---------
+        public OffsetDescription GetAllValues()
+        {
+            OffsetDescription allValues = new OffsetDescription();
+
+            allValues.OffsetValue = this.tbOffset.Text;
+            allValues.OffsetSize = this.comboSize.Text;
+            allValues.OffsetByteOrder = this.comboByteOrder.Text;
+
+            return allValues;
+        }
+        
+        public void SetAllValues(string offset, string size, string byteOrder)
+        {
+            this.tbOffset.Text = offset;
+            this.comboSize.Text = size;
+            this.comboByteOrder.Text = byteOrder;
+        }
+
+        //----------------
+        // initialization
+        //----------------
+        public void InitializeSizeComboBox()
+        {
+            this.comboSize.Items.Clear();
+            this.comboSize.Items.Add("1");
+            this.comboSize.Items.Add("2");
+            this.comboSize.Items.Add("4");
+
+            this.comboSize.SelectedItem = "4";
+        }
+
+        public void InitializeByteOrderComboBox()
+        {
+            this.comboByteOrder.Items.Clear();
+            this.comboByteOrder.Items.Add(Constants.BigEndianByteOrder);
+            this.comboByteOrder.Items.Add(Constants.LittleEndianByteOrder);
+
+            this.comboByteOrder.SelectedItem = Constants.LittleEndianByteOrder;
+        }
+
+        //-----------------------
+        // combo box key presses
+        //-----------------------
+        private void comboSize_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
+        private void comboSize_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void comboByteOrder_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
+        private void comboByteOrder_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+
+    }
+}

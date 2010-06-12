@@ -432,7 +432,17 @@ namespace VGMToolbox.util
         /// Constant used to send a generic message to the progress bar.
         /// </summary>
         public const int ProgressMessageOnly = -2;
-        
+
+        /// <summary>
+        /// Text description to use when describing a Big Endian option
+        /// </summary>
+        public const string BigEndianByteOrder = "Big Endian";
+
+        /// <summary>
+        /// Text description to use when describing a Little Endian option
+        /// </summary>
+        public const string LittleEndianByteOrder = "Little Endian";
+
         // empty constructor
         private Constants() { }
     }

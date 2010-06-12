@@ -1196,6 +1196,17 @@ namespace VGMToolbox.util
             return GetVaryingByteValueAtOffset(inStream, newValueOffset, newValueLength, valueIsLittleEndian);
         }
 
+        public static long GetVaryingByteValueAtOffset(Stream inStream, OffsetDescription offsetInfo)
+        {
+            long newValueOffset;
+            long newValueLength;
+
+            newValueOffset = VGMToolbox.util.ByteConversion.GetLongValueFromString(offsetInfo.OffsetValue);
+            newValueLength = VGMToolbox.util.ByteConversion.GetLongValueFromString(offsetInfo.OffsetSize);
+
+            return GetVaryingByteValueAtOffset(inStream, newValueOffset, newValueLength, offsetInfo.OffsetByteOrder.Equals(Constants.LittleEndianByteOrder));
+        }
+
         public static long GetVaryingByteValueAtOffset(Stream inStream, long valueOffset, long valueLength,
             Boolean valueIsLittleEndian)
         {

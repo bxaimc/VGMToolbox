@@ -4,6 +4,7 @@ using System.Windows.Forms;
 
 using VGMToolbox.plugin;
 using VGMToolbox.tools.stream;
+using VGMToolbox.util;
 
 namespace VGMToolbox.forms.stream
 {
@@ -46,6 +47,15 @@ namespace VGMToolbox.forms.stream
             this.tbXmaParseStartOffset.Text = "0x00";
             this.tbXmaParseBlockSize.Text = "0x8000";
             this.cbXmaParseIgnoreErrors.Checked = true;
+
+            // radio buttons
+            this.rbXmaParseStartOffsetStatic.Checked = true;
+            this.rbXmaParseBlockSizeStatic.Checked = true;
+            this.rbXmaParseDataSizeStatic.Checked = true;
+
+            this.doXmaParseStartOffsetRadios();
+            this.doXmaParseBlockSizeRadios();
+            this.doXmaParseDataSizeRadios();
         }
 
         private void initializeRiffSection()
@@ -115,11 +125,18 @@ namespace VGMToolbox.forms.stream
 
                 // XMA PARSE
                 taskStruct.DoXmaParse = this.cbDoXmaParse.Checked;
-                taskStruct.XmaParseXmaType = this.comboXmaParseInputType.Text;
-                taskStruct.XmaParseStartOffset = this.tbXmaParseStartOffset.Text;
-                taskStruct.XmaParseBlockSize = this.tbXmaParseBlockSize.Text;
                 taskStruct.XmaParseDoRebuildMode = this.cbXmaParseDoRebuild.Checked;
                 taskStruct.XmaParseIgnoreErrors = this.cbXmaParseIgnoreErrors.Checked;
+                taskStruct.XmaParseXmaType = this.comboXmaParseInputType.Text;
+                                                
+                taskStruct.XmaParseStartOffset = this.tbXmaParseStartOffset.Text;
+                taskStruct.XmaParseStartOffsetOffsetInfo = this.StartOffsetDescription.GetAllValues();
+                
+                taskStruct.XmaParseBlockSize = this.tbXmaParseBlockSize.Text;
+                taskStruct.XmaParseBlockSizeOffsetInfo = this.BlockSizeOffsetDescription.GetAllValues();
+
+                taskStruct.XmaParseDataSize = this.tbXmaParseDataSize.Text;
+                taskStruct.XmaParseDataSizeOffsetInfo = this.DataSizeOffsetDescription.GetAllValues();
 
                 // RIFF
                 taskStruct.DoRiffHeader = this.cbAddRiffHeader.Checked;
@@ -214,9 +231,9 @@ namespace VGMToolbox.forms.stream
             bool isValid = true;
 
             isValid &= base.checkTextBox(this.comboXmaParseInputType.Text, this.lblXmaParseInputType.Text);
-            isValid &= base.checkIfTextIsParsableAsLong(this.tbXmaParseStartOffset.Text, this.lblXmaParseOffset.Text);
-            isValid &= base.checkIfTextIsParsableAsLong(this.tbXmaParseBlockSize.Text, this.lblXmaParseBlockSize.Text);
-            isValid &= base.checkIfTextIsParsableAsLong(this.tbXmaParseDataSize.Text, this.lblXmaParseDataSize.Text);
+            isValid &= base.checkIfTextIsParsableAsLong(this.tbXmaParseStartOffset.Text, this.rbXmaParseStartOffsetStatic.Text);
+            isValid &= base.checkIfTextIsParsableAsLong(this.tbXmaParseBlockSize.Text, this.rbXmaParseBlockSizeStatic.Text);
+            isValid &= base.checkIfTextIsParsableAsLong(this.tbXmaParseDataSize.Text, this.rbXmaParseDataSizeStatic.Text);
 
             return isValid;
         }
@@ -279,23 +296,78 @@ namespace VGMToolbox.forms.stream
             this.tbOutputFolder.Text = base.browseForFolder(sender, e);
         }
 
-        //------------
-        // checkboxes
-        //------------
+        //--------------------------
+        // checkboxes/radio buttons
+        //--------------------------
         private void cbDoXmaParse_CheckedChanged(object sender, EventArgs e)
         {
             this.comboXmaParseInputType.Enabled = this.cbDoXmaParse.Checked;
-            this.tbXmaParseStartOffset.Enabled = this.cbDoXmaParse.Checked;
-            this.tbXmaParseBlockSize.Enabled = this.cbDoXmaParse.Checked;
-            this.tbXmaParseDataSize.Enabled = this.cbDoXmaParse.Checked;
             this.cbXmaParseDoRebuild.Enabled = this.cbDoXmaParse.Checked;
             this.cbXmaParseIgnoreErrors.Enabled = this.cbDoXmaParse.Checked;
+
+            this.rbXmaParseStartOffsetStatic.Enabled = this.cbDoXmaParse.Checked;
+            this.rbXmaParseStartOffsetOffset.Enabled = this.cbDoXmaParse.Checked;
+
+            this.rbXmaParseBlockSizeStatic.Enabled = this.cbDoXmaParse.Checked;
+            this.rbXmaParseBlockSizeOffset.Enabled = this.cbDoXmaParse.Checked;
+
+            this.rbXmaParseDataSizeStatic.Enabled = this.cbDoXmaParse.Checked;
+            this.rbXmaParseDataSizeOffset.Enabled = this.cbDoXmaParse.Checked;
+
+            this.doXmaParseStartOffsetRadios();
+            this.doXmaParseBlockSizeRadios();
+            this.doXmaParseDataSizeRadios();
         }
 
         private void cbAddRiffHeader_CheckedChanged(object sender, EventArgs e)
         {
             this.comboRiffFrequency.Enabled = this.cbAddRiffHeader.Checked;
             this.comboRiffChannels.Enabled = this.cbAddRiffHeader.Checked;
+        }
+
+        // xma_parse - start offset
+        private void doXmaParseStartOffsetRadios()
+        {
+            this.tbXmaParseStartOffset.Enabled = this.rbXmaParseStartOffsetStatic.Checked && this.rbXmaParseStartOffsetStatic.Enabled;
+            this.StartOffsetDescription.Enabled = this.rbXmaParseStartOffsetOffset.Checked && this.rbXmaParseStartOffsetOffset.Enabled;
+        }
+        private void rbXmaParseStartOffsetOffset_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doXmaParseStartOffsetRadios();
+        }
+        private void rbXmaParseStartOffsetStatic_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doXmaParseStartOffsetRadios();
+        }
+
+        // xma parse - block size
+        private void doXmaParseBlockSizeRadios()
+        {
+            this.tbXmaParseBlockSize.Enabled = this.rbXmaParseBlockSizeStatic.Checked && this.rbXmaParseBlockSizeStatic.Enabled;
+            this.BlockSizeOffsetDescription.Enabled = this.rbXmaParseBlockSizeOffset.Checked && this.rbXmaParseBlockSizeOffset.Enabled;
+        }
+        private void rbXmaParseBlockSizeOffset_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doXmaParseBlockSizeRadios();
+        }
+        private void rbXmaParseBlockSizeStatic_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doXmaParseBlockSizeRadios();
+        }
+
+        // xma parse - data size
+        private void doXmaParseDataSizeRadios()
+        {
+            this.tbXmaParseDataSize.Enabled = this.rbXmaParseDataSizeStatic.Checked && this.rbXmaParseDataSizeStatic.Enabled;
+            this.DataSizeOffsetDescription.Enabled = this.rbXmaParseDataSizeOffset.Checked && this.rbXmaParseDataSizeOffset.Enabled;
+        }
+        private void rbXmaParseDataSizeOffset_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doXmaParseDataSizeRadios();
+        }
+        private void rbXmaParseDataSizeStatic_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doXmaParseDataSizeRadios();
         }     
     }
 }

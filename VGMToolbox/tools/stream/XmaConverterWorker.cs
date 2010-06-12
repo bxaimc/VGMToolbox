@@ -49,7 +49,7 @@ namespace VGMToolbox.tools.stream
         #endregion
 
         public struct XmaConverterStruct : IVgmtWorkerStruct
-        {
+        {            
             public string[] SourcePaths { set; get; }
             public string OutputFolder { set; get; }
 
@@ -58,12 +58,18 @@ namespace VGMToolbox.tools.stream
             public bool DoToWav { set; get; }
 
             public string XmaParseXmaType { set; get; }
-            public string XmaParseStartOffset { set; get; }
-            public string XmaParseBlockSize { set; get; }
-            public string XmaParseDataSize { set; get; }
             public bool XmaParseDoRebuildMode { set; get; }
             public bool XmaParseIgnoreErrors { set; get; }
 
+            public string XmaParseStartOffset { set; get; }
+            public OffsetDescription XmaParseStartOffsetOffsetInfo { set; get; }
+
+            public string XmaParseBlockSize { set; get; }
+            public OffsetDescription XmaParseBlockSizeOffsetInfo { set; get; }
+
+            public string XmaParseDataSize { set; get; }
+            public OffsetDescription XmaParseDataSizeOffsetInfo { set; get; }
+            
             public string RiffFrequency { set; get; }
             public string RiffChannelCount { set; get; }
 

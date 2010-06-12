@@ -246,6 +246,12 @@
     <Compile Include="forms\nsf\NsfToM3uForm.Designer.cs">
       <DependentUpon>NsfToM3uForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\OffsetDescriptionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="forms\OffsetDescriptionControl.Designer.cs">
+      <DependentUpon>OffsetDescriptionControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\stream\XmaConvertForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -955,6 +961,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="forms\nsf\NsfToM3uForm.resx">
       <DependentUpon>NsfToM3uForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\OffsetDescriptionControl.resx">
+      <DependentUpon>OffsetDescriptionControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\stream\XmaConvertForm.resx">
       <DependentUpon>XmaConvertForm.cs</DependentUpon>
