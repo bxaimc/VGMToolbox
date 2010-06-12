@@ -44,6 +44,8 @@
             this.comboRiffFrequency = new System.Windows.Forms.ComboBox();
             this.lblRiffFrequency = new System.Windows.Forms.Label();
             this.grpXmaParseOptions = new System.Windows.Forms.GroupBox();
+            this.tbXmaParseDataSize = new System.Windows.Forms.TextBox();
+            this.lblXmaParseDataSize = new System.Windows.Forms.Label();
             this.cbXmaParseDoRebuild = new System.Windows.Forms.CheckBox();
             this.cbDoXmaParse = new System.Windows.Forms.CheckBox();
             this.tbXmaParseBlockSize = new System.Windows.Forms.TextBox();
@@ -52,8 +54,7 @@
             this.lblXmaParseOffset = new System.Windows.Forms.Label();
             this.comboXmaParseInputType = new System.Windows.Forms.ComboBox();
             this.lblXmaParseInputType = new System.Windows.Forms.Label();
-            this.lblXmaParseDataSize = new System.Windows.Forms.Label();
-            this.tbXmaParseDataSize = new System.Windows.Forms.TextBox();
+            this.cbXmaParseIgnoreErrors = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -170,7 +171,7 @@
             // 
             this.groupOtherOptions.Controls.Add(this.cbShowAllExeOutput);
             this.groupOtherOptions.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupOtherOptions.Location = new System.Drawing.Point(0, 150);
+            this.groupOtherOptions.Location = new System.Drawing.Point(0, 171);
             this.groupOtherOptions.Name = "groupOtherOptions";
             this.groupOtherOptions.Size = new System.Drawing.Size(789, 39);
             this.groupOtherOptions.TabIndex = 2;
@@ -195,7 +196,7 @@
             this.grpRiffHeaderOptions.Controls.Add(this.comboRiffFrequency);
             this.grpRiffHeaderOptions.Controls.Add(this.lblRiffFrequency);
             this.grpRiffHeaderOptions.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpRiffHeaderOptions.Location = new System.Drawing.Point(0, 87);
+            this.grpRiffHeaderOptions.Location = new System.Drawing.Point(0, 108);
             this.grpRiffHeaderOptions.Name = "grpRiffHeaderOptions";
             this.grpRiffHeaderOptions.Size = new System.Drawing.Size(789, 63);
             this.grpRiffHeaderOptions.TabIndex = 1;
@@ -253,6 +254,7 @@
             // 
             // grpXmaParseOptions
             // 
+            this.grpXmaParseOptions.Controls.Add(this.cbXmaParseIgnoreErrors);
             this.grpXmaParseOptions.Controls.Add(this.tbXmaParseDataSize);
             this.grpXmaParseOptions.Controls.Add(this.lblXmaParseDataSize);
             this.grpXmaParseOptions.Controls.Add(this.cbXmaParseDoRebuild);
@@ -266,15 +268,31 @@
             this.grpXmaParseOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpXmaParseOptions.Location = new System.Drawing.Point(0, 0);
             this.grpXmaParseOptions.Name = "grpXmaParseOptions";
-            this.grpXmaParseOptions.Size = new System.Drawing.Size(789, 87);
+            this.grpXmaParseOptions.Size = new System.Drawing.Size(789, 108);
             this.grpXmaParseOptions.TabIndex = 0;
             this.grpXmaParseOptions.TabStop = false;
             this.grpXmaParseOptions.Text = "xma_parse Options";
             // 
+            // tbXmaParseDataSize
+            // 
+            this.tbXmaParseDataSize.Location = new System.Drawing.Point(363, 62);
+            this.tbXmaParseDataSize.Name = "tbXmaParseDataSize";
+            this.tbXmaParseDataSize.Size = new System.Drawing.Size(60, 20);
+            this.tbXmaParseDataSize.TabIndex = 9;
+            // 
+            // lblXmaParseDataSize
+            // 
+            this.lblXmaParseDataSize.AutoSize = true;
+            this.lblXmaParseDataSize.Location = new System.Drawing.Point(300, 65);
+            this.lblXmaParseDataSize.Name = "lblXmaParseDataSize";
+            this.lblXmaParseDataSize.Size = new System.Drawing.Size(53, 13);
+            this.lblXmaParseDataSize.TabIndex = 8;
+            this.lblXmaParseDataSize.Text = "Data Size";
+            // 
             // cbXmaParseDoRebuild
             // 
             this.cbXmaParseDoRebuild.AutoSize = true;
-            this.cbXmaParseDoRebuild.Location = new System.Drawing.Point(23, 63);
+            this.cbXmaParseDoRebuild.Location = new System.Drawing.Point(23, 64);
             this.cbXmaParseDoRebuild.Name = "cbXmaParseDoRebuild";
             this.cbXmaParseDoRebuild.Size = new System.Drawing.Size(161, 17);
             this.cbXmaParseDoRebuild.TabIndex = 7;
@@ -343,21 +361,15 @@
             this.lblXmaParseInputType.TabIndex = 0;
             this.lblXmaParseInputType.Text = "XMA Type";
             // 
-            // lblXmaParseDataSize
+            // cbXmaParseIgnoreErrors
             // 
-            this.lblXmaParseDataSize.AutoSize = true;
-            this.lblXmaParseDataSize.Location = new System.Drawing.Point(300, 63);
-            this.lblXmaParseDataSize.Name = "lblXmaParseDataSize";
-            this.lblXmaParseDataSize.Size = new System.Drawing.Size(53, 13);
-            this.lblXmaParseDataSize.TabIndex = 8;
-            this.lblXmaParseDataSize.Text = "Data Size";
-            // 
-            // tbXmaParseDataSize
-            // 
-            this.tbXmaParseDataSize.Location = new System.Drawing.Point(363, 60);
-            this.tbXmaParseDataSize.Name = "tbXmaParseDataSize";
-            this.tbXmaParseDataSize.Size = new System.Drawing.Size(60, 20);
-            this.tbXmaParseDataSize.TabIndex = 9;
+            this.cbXmaParseIgnoreErrors.AutoSize = true;
+            this.cbXmaParseIgnoreErrors.Location = new System.Drawing.Point(23, 87);
+            this.cbXmaParseIgnoreErrors.Name = "cbXmaParseIgnoreErrors";
+            this.cbXmaParseIgnoreErrors.Size = new System.Drawing.Size(86, 17);
+            this.cbXmaParseIgnoreErrors.TabIndex = 10;
+            this.cbXmaParseIgnoreErrors.Text = "Ignore Errors";
+            this.cbXmaParseIgnoreErrors.UseVisualStyleBackColor = true;
             // 
             // XmaConvertForm
             // 
@@ -427,5 +439,6 @@
         private System.Windows.Forms.CheckBox cbXmaParseDoRebuild;
         private System.Windows.Forms.Label lblXmaParseDataSize;
         private System.Windows.Forms.TextBox tbXmaParseDataSize;
+        private System.Windows.Forms.CheckBox cbXmaParseIgnoreErrors;
     }
 }

@@ -61,6 +61,7 @@ namespace VGMToolbox.tools.stream
             public string XmaParseBlockSize { set; get; }
             public string XmaParseDataSize { set; get; }
             public bool XmaParseDoRebuildMode { set; get; }
+            public bool XmaParseIgnoreErrors { set; get; }
 
             public string RiffFrequency { set; get; }
             public string RiffChannelCount { set; get; }
@@ -125,6 +126,12 @@ namespace VGMToolbox.tools.stream
                 if (taskStruct.ShowExeOutput && !String.IsNullOrEmpty(consoleOutput))
                 {
                     this.ShowOutput(pPath, consoleOutput, false);
+                }
+
+                // clear errors if ignore is selected, but only if a file was created
+                if (taskStruct.XmaParseIgnoreErrors && (File.Exists(workingFile)))
+                {
+                    consoleError = String.Empty;
                 }
             }
 

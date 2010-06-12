@@ -44,7 +44,7 @@ namespace VGMToolbox.forms.stream
             // Defaults
             this.tbXmaParseStartOffset.Text = "0x00";
             this.tbXmaParseBlockSize.Text = "0x8000";
-
+            this.cbXmaParseIgnoreErrors.Checked = true;
         }
 
         private void initializeRiffSection()
@@ -113,6 +113,7 @@ namespace VGMToolbox.forms.stream
                 taskStruct.XmaParseStartOffset = this.tbXmaParseStartOffset.Text;
                 taskStruct.XmaParseBlockSize = this.tbXmaParseBlockSize.Text;
                 taskStruct.XmaParseDoRebuildMode = this.cbXmaParseDoRebuild.Checked;
+                taskStruct.XmaParseIgnoreErrors = this.cbXmaParseIgnoreErrors.Checked;
 
                 // RIFF
                 taskStruct.DoRiffHeader = this.cbAddRiffHeader.Checked;
@@ -278,6 +279,7 @@ namespace VGMToolbox.forms.stream
             this.tbXmaParseBlockSize.Enabled = this.cbDoXmaParse.Checked;
             this.tbXmaParseDataSize.Enabled = this.cbDoXmaParse.Checked;
             this.cbXmaParseDoRebuild.Enabled = this.cbDoXmaParse.Checked;
+            this.cbXmaParseIgnoreErrors.Enabled = this.cbDoXmaParse.Checked;
         }
 
         private void cbAddRiffHeader_CheckedChanged(object sender, EventArgs e)
