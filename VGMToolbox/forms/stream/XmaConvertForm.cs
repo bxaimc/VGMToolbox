@@ -205,6 +205,7 @@ namespace VGMToolbox.forms.stream
             isValid &= base.checkTextBox(this.comboXmaParseInputType.Text, this.lblXmaParseInputType.Text);
             isValid &= base.checkIfTextIsParsableAsLong(this.tbXmaParseStartOffset.Text, this.lblXmaParseOffset.Text);
             isValid &= base.checkIfTextIsParsableAsLong(this.tbXmaParseBlockSize.Text, this.lblXmaParseBlockSize.Text);
+            isValid &= base.checkIfTextIsParsableAsLong(this.tbXmaParseDataSize.Text, this.lblXmaParseDataSize.Text);
 
             return isValid;
         }
@@ -275,6 +276,7 @@ namespace VGMToolbox.forms.stream
             this.comboXmaParseInputType.Enabled = this.cbDoXmaParse.Checked;
             this.tbXmaParseStartOffset.Enabled = this.cbDoXmaParse.Checked;
             this.tbXmaParseBlockSize.Enabled = this.cbDoXmaParse.Checked;
+            this.tbXmaParseDataSize.Enabled = this.cbDoXmaParse.Checked;
             this.cbXmaParseDoRebuild.Enabled = this.cbDoXmaParse.Checked;
         }
 

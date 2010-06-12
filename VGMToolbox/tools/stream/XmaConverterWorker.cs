@@ -59,6 +59,7 @@ namespace VGMToolbox.tools.stream
             public string XmaParseXmaType { set; get; }
             public string XmaParseStartOffset { set; get; }
             public string XmaParseBlockSize { set; get; }
+            public string XmaParseDataSize { set; get; }
             public bool XmaParseDoRebuildMode { set; get; }
 
             public string RiffFrequency { set; get; }
@@ -290,6 +291,13 @@ namespace VGMToolbox.tools.stream
             {
                 // allow decimal or hex input, convert to hex for xma_parse.exe
                 parameters.AppendFormat(" -b {0}", ByteConversion.GetLongValueFromString(taskStruct.XmaParseBlockSize).ToString("X"));
+            }
+
+            // block size
+            if (!String.IsNullOrEmpty(taskStruct.XmaParseDataSize))
+            {
+                // allow decimal or hex input, convert to hex for xma_parse.exe
+                parameters.AppendFormat(" -b {0}", ByteConversion.GetLongValueFromString(taskStruct.XmaParseDataSize).ToString("X"));
             }
 
             // output name
