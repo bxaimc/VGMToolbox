@@ -280,8 +280,8 @@ namespace VGMToolbox.forms.stream
 
         private void cbAddRiffHeader_CheckedChanged(object sender, EventArgs e)
         {
-            this.comboRiffFrequency.Enabled = this.cbDoXmaParse.Checked;
-            this.comboRiffChannels.Enabled = this.cbDoXmaParse.Checked;
+            this.comboRiffFrequency.Enabled = this.cbAddRiffHeader.Checked;
+            this.comboRiffChannels.Enabled = this.cbAddRiffHeader.Checked;
         }     
     }
 }
