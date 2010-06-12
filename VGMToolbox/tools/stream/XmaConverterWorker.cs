@@ -61,12 +61,15 @@ namespace VGMToolbox.tools.stream
             public bool XmaParseDoRebuildMode { set; get; }
             public bool XmaParseIgnoreErrors { set; get; }
 
+            public bool XmaParseStartOffsetIsStatic { set; get; }
             public string XmaParseStartOffset { set; get; }
             public OffsetDescription XmaParseStartOffsetOffsetInfo { set; get; }
 
+            public bool XmaParseBlockSizeIsStatic { set; get; }
             public string XmaParseBlockSize { set; get; }
             public OffsetDescription XmaParseBlockSizeOffsetInfo { set; get; }
 
+            public bool XmaParseDataSizeIsStatic { set; get; }
             public string XmaParseDataSize { set; get; }
             public OffsetDescription XmaParseDataSizeOffsetInfo { set; get; }
             
@@ -300,27 +303,45 @@ namespace VGMToolbox.tools.stream
             parameters.AppendFormat(" \"{0}\"", Path.GetFileName(workingFile)); // Filename
             parameters.AppendFormat(" -{0}", taskStruct.XmaParseXmaType); // Input File Type
 
-            // offset
-            if (!String.IsNullOrEmpty(taskStruct.XmaParseStartOffset))
+            using (FileStream workingFileStream = File.OpenRead(workingFile))
             {
-                // allow decimal or hex input, convert to hex for xma_parse.exe
-                parameters.AppendFormat(" -o {0}", ByteConversion.GetLongValueFromString(taskStruct.XmaParseStartOffset).ToString("X"));
-            }
+                // offset
+                if ((taskStruct.XmaParseStartOffsetIsStatic) && (!String.IsNullOrEmpty(taskStruct.XmaParseStartOffset)))
+                {
+                    // allow decimal or hex input, convert to hex for xma_parse.exe
+                    parameters.AppendFormat(" -o {0}", ByteConversion.GetLongValueFromString(taskStruct.XmaParseStartOffset).ToString("X"));
+                }
+                else if (!String.IsNullOrEmpty(taskStruct.XmaParseStartOffsetOffsetInfo.OffsetValue))
+                {
+                    long offsetValue = ParseFile.GetVaryingByteValueAtOffset(workingFileStream, taskStruct.XmaParseStartOffsetOffsetInfo);
+                    parameters.AppendFormat(" -o {0}", offsetValue.ToString("X")); 
+                }
 
-            // block size
-            if (!String.IsNullOrEmpty(taskStruct.XmaParseBlockSize))
-            {
-                // allow decimal or hex input, convert to hex for xma_parse.exe
-                parameters.AppendFormat(" -b {0}", ByteConversion.GetLongValueFromString(taskStruct.XmaParseBlockSize).ToString("X"));
-            }
+                // block size
+                if ((taskStruct.XmaParseBlockSizeIsStatic) && (!String.IsNullOrEmpty(taskStruct.XmaParseBlockSize)))
+                {
+                    // allow decimal or hex input, convert to hex for xma_parse.exe
+                    parameters.AppendFormat(" -b {0}", ByteConversion.GetLongValueFromString(taskStruct.XmaParseBlockSize).ToString("X"));
+                }
+                else if (!String.IsNullOrEmpty(taskStruct.XmaParseBlockSizeOffsetInfo.OffsetValue))
+                {
+                    long blockSizeValue = ParseFile.GetVaryingByteValueAtOffset(workingFileStream, taskStruct.XmaParseBlockSizeOffsetInfo);
+                    parameters.AppendFormat(" -b {0}", blockSizeValue.ToString("X"));
+                }
 
-            // block size
-            if (!String.IsNullOrEmpty(taskStruct.XmaParseDataSize))
-            {
-                // allow decimal or hex input, convert to hex for xma_parse.exe
-                parameters.AppendFormat(" -b {0}", ByteConversion.GetLongValueFromString(taskStruct.XmaParseDataSize).ToString("X"));
+                // data size
+                if ((taskStruct.XmaParseDataSizeIsStatic) && (!String.IsNullOrEmpty(taskStruct.XmaParseDataSize)))
+                {
+                    // allow decimal or hex input, convert to hex for xma_parse.exe
+                    parameters.AppendFormat(" -d {0}", ByteConversion.GetLongValueFromString(taskStruct.XmaParseDataSize).ToString("X"));
+                }
+                else if (!String.IsNullOrEmpty(taskStruct.XmaParseDataSizeOffsetInfo.OffsetValue))
+                {
+                    long dataSizeValue = ParseFile.GetVaryingByteValueAtOffset(workingFileStream, taskStruct.XmaParseDataSizeOffsetInfo);
+                    parameters.AppendFormat(" -d {0}", dataSizeValue.ToString("X"));
+                }
             }
-
+            
             // output name
             xmaParseOutputFilePath = String.Format("{0}{1}", Path.GetFileNameWithoutExtension(workingFile), XMAPARSE_OUTPUT_EXTENSION);
 

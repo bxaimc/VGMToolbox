@@ -128,15 +128,18 @@ namespace VGMToolbox.forms.stream
                 taskStruct.XmaParseDoRebuildMode = this.cbXmaParseDoRebuild.Checked;
                 taskStruct.XmaParseIgnoreErrors = this.cbXmaParseIgnoreErrors.Checked;
                 taskStruct.XmaParseXmaType = this.comboXmaParseInputType.Text;
-                                                
-                taskStruct.XmaParseStartOffset = this.tbXmaParseStartOffset.Text;
-                taskStruct.XmaParseStartOffsetOffsetInfo = this.StartOffsetDescription.GetAllValues();
-                
-                taskStruct.XmaParseBlockSize = this.tbXmaParseBlockSize.Text;
-                taskStruct.XmaParseBlockSizeOffsetInfo = this.BlockSizeOffsetDescription.GetAllValues();
 
+                taskStruct.XmaParseStartOffsetIsStatic = this.rbXmaParseStartOffsetStatic.Checked;
+                taskStruct.XmaParseStartOffset = this.tbXmaParseStartOffset.Text;
+                taskStruct.XmaParseStartOffsetOffsetInfo = this.XmaParseStartOffsetOffsetDescription.GetAllValues();
+
+                taskStruct.XmaParseBlockSizeIsStatic = this.rbXmaParseBlockSizeStatic.Checked;
+                taskStruct.XmaParseBlockSize = this.tbXmaParseBlockSize.Text;
+                taskStruct.XmaParseBlockSizeOffsetInfo = this.XmaParseBlockSizeOffsetDescription.GetAllValues();
+
+                taskStruct.XmaParseDataSizeIsStatic = this.rbXmaParseDataSizeStatic.Checked;
                 taskStruct.XmaParseDataSize = this.tbXmaParseDataSize.Text;
-                taskStruct.XmaParseDataSizeOffsetInfo = this.DataSizeOffsetDescription.GetAllValues();
+                taskStruct.XmaParseDataSizeOffsetInfo = this.XmaParseDataSizeOffsetDescription.GetAllValues();
 
                 // RIFF
                 taskStruct.DoRiffHeader = this.cbAddRiffHeader.Checked;
@@ -231,9 +234,39 @@ namespace VGMToolbox.forms.stream
             bool isValid = true;
 
             isValid &= base.checkTextBox(this.comboXmaParseInputType.Text, this.lblXmaParseInputType.Text);
-            isValid &= base.checkIfTextIsParsableAsLong(this.tbXmaParseStartOffset.Text, this.rbXmaParseStartOffsetStatic.Text);
-            isValid &= base.checkIfTextIsParsableAsLong(this.tbXmaParseBlockSize.Text, this.rbXmaParseBlockSizeStatic.Text);
-            isValid &= base.checkIfTextIsParsableAsLong(this.tbXmaParseDataSize.Text, this.rbXmaParseDataSizeStatic.Text);
+
+            if (this.rbXmaParseStartOffsetStatic.Checked)
+            {
+                isValid &= base.checkIfTextIsParsableAsLong(this.tbXmaParseStartOffset.Text, this.rbXmaParseStartOffsetStatic.Text);
+            }
+            
+            if (this.rbXmaParseBlockSizeStatic.Checked)
+            {
+                isValid &= base.checkIfTextIsParsableAsLong(this.tbXmaParseBlockSize.Text, this.rbXmaParseBlockSizeStatic.Text);
+            }
+
+            if (this.rbXmaParseDataSizeStatic.Checked)
+            {
+                isValid &= base.checkIfTextIsParsableAsLong(this.tbXmaParseDataSize.Text, this.rbXmaParseDataSizeStatic.Text);
+            }
+
+            if (this.rbXmaParseStartOffsetOffset.Checked)
+            {
+                isValid &= base.checkTextBox(this.XmaParseStartOffsetOffsetDescription.OffsetValue, this.rbXmaParseStartOffsetOffset.Text);
+                isValid &= base.checkIfTextIsParsableAsLong(this.XmaParseStartOffsetOffsetDescription.OffsetValue, this.rbXmaParseStartOffsetOffset.Text);
+            }
+
+            if (this.rbXmaParseBlockSizeOffset.Checked)
+            {
+                isValid &= base.checkTextBox(this.XmaParseBlockSizeOffsetDescription.OffsetValue, this.rbXmaParseBlockSizeOffset.Text);
+                isValid &= base.checkIfTextIsParsableAsLong(this.XmaParseBlockSizeOffsetDescription.OffsetValue, this.rbXmaParseBlockSizeOffset.Text);
+            }
+
+            if (this.rbXmaParseDataSizeOffset.Checked)
+            {
+                isValid &= base.checkTextBox(this.XmaParseDataSizeOffsetDescription.OffsetValue, this.rbXmaParseDataSizeOffset.Text);
+                isValid &= base.checkIfTextIsParsableAsLong(this.XmaParseDataSizeOffsetDescription.OffsetValue, this.rbXmaParseDataSizeOffset.Text);
+            }
 
             return isValid;
         }
@@ -329,7 +362,7 @@ namespace VGMToolbox.forms.stream
         private void doXmaParseStartOffsetRadios()
         {
             this.tbXmaParseStartOffset.Enabled = this.rbXmaParseStartOffsetStatic.Checked && this.rbXmaParseStartOffsetStatic.Enabled;
-            this.StartOffsetDescription.Enabled = this.rbXmaParseStartOffsetOffset.Checked && this.rbXmaParseStartOffsetOffset.Enabled;
+            this.XmaParseStartOffsetOffsetDescription.Enabled = this.rbXmaParseStartOffsetOffset.Checked && this.rbXmaParseStartOffsetOffset.Enabled;
         }
         private void rbXmaParseStartOffsetOffset_CheckedChanged(object sender, EventArgs e)
         {
@@ -344,7 +377,7 @@ namespace VGMToolbox.forms.stream
         private void doXmaParseBlockSizeRadios()
         {
             this.tbXmaParseBlockSize.Enabled = this.rbXmaParseBlockSizeStatic.Checked && this.rbXmaParseBlockSizeStatic.Enabled;
-            this.BlockSizeOffsetDescription.Enabled = this.rbXmaParseBlockSizeOffset.Checked && this.rbXmaParseBlockSizeOffset.Enabled;
+            this.XmaParseBlockSizeOffsetDescription.Enabled = this.rbXmaParseBlockSizeOffset.Checked && this.rbXmaParseBlockSizeOffset.Enabled;
         }
         private void rbXmaParseBlockSizeOffset_CheckedChanged(object sender, EventArgs e)
         {
@@ -359,7 +392,7 @@ namespace VGMToolbox.forms.stream
         private void doXmaParseDataSizeRadios()
         {
             this.tbXmaParseDataSize.Enabled = this.rbXmaParseDataSizeStatic.Checked && this.rbXmaParseDataSizeStatic.Enabled;
-            this.DataSizeOffsetDescription.Enabled = this.rbXmaParseDataSizeOffset.Checked && this.rbXmaParseDataSizeOffset.Enabled;
+            this.XmaParseDataSizeOffsetDescription.Enabled = this.rbXmaParseDataSizeOffset.Checked && this.rbXmaParseDataSizeOffset.Enabled;
         }
         private void rbXmaParseDataSizeOffset_CheckedChanged(object sender, EventArgs e)
         {
