@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
 
 using VGMToolbox.plugin;
@@ -25,43 +20,71 @@ namespace VGMToolbox.forms.stream
 
             InitializeComponent();
 
-            this.initializeXmaParseInputCombo();
-            this.initializeRiffFrequencyCombo();
-            this.initializeRiffChannelsCombo();
+            this.tbOutput.Text = String.Format("Convert XMA to WAV using external tools{0}{0}", Environment.NewLine);
+            this.tbOutput.Text += String.Format("* Note: This tool requires 'ToWav.exe' by Xplorer and 'xma_test.exe' (xma_parse) by hcs.{0}", Environment.NewLine);
+            this.tbOutput.Text += String.Format("  Please download both files and place in the following directory: <{0}>{1}", Path.GetDirectoryName(XmaConverterWorker.TOWAV_FULL_PATH), Environment.NewLine);
+
+            this.initializeXmaParseInputSection();
+            this.initializeRiffSection();
         }
 
         //----------------
         // initialization
         //----------------
-        private void initializeXmaParseInputCombo()
+        private void initializeXmaParseInputSection()
         {
+            this.cbDoXmaParse.Checked = true;
+            
+            // XMA Type
             this.comboXmaParseInputType.Items.Add("1");
             this.comboXmaParseInputType.Items.Add("2");
             
             this.comboXmaParseInputType.SelectedItem = "2";
+
+            // Defaults
+            this.tbXmaParseStartOffset.Text = "0x00";
+            this.tbXmaParseBlockSize.Text = "0x8000";
+
         }
 
-        private void initializeRiffFrequencyCombo()
+        private void initializeRiffSection()
         {
+            this.cbAddRiffHeader.Checked = true;
+            
+            // RIFF Frequency
             this.comboRiffFrequency.Items.Add("22050");
+            this.comboRiffFrequency.Items.Add("24000");
             this.comboRiffFrequency.Items.Add("32000");
             this.comboRiffFrequency.Items.Add("44100");
             this.comboRiffFrequency.Items.Add("48000");
 
             this.comboRiffFrequency.SelectedItem = "48000";
-        }
 
-        private void initializeRiffChannelsCombo()
-        {
+            // RIFF Channels
             this.comboRiffChannels.Items.Add(XmaConverterWorker.RIFF_CHANNELS_1);
             this.comboRiffChannels.Items.Add(XmaConverterWorker.RIFF_CHANNELS_2);
 
             this.comboRiffChannels.SelectedItem = XmaConverterWorker.RIFF_CHANNELS_2;
-        }        
-                
+        }
+                          
         //-----------------------------
         // drag and drop functionality
         //-----------------------------
+        private void tbOutputFolder_DragEnter(object sender, DragEventArgs e)
+        {
+            this.doDragEnter(sender, e);
+        }
+
+        private void tbOutputFolder_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            if ((s.Length == 1) && (Directory.Exists(s[0])))
+            {
+                this.tbOutputFolder.Text = s[0];
+            }
+        }        
+
         private void XmaConvertForm_DragEnter(object sender, DragEventArgs e)
         {
             base.doDragEnter(sender, e);
@@ -78,12 +101,21 @@ namespace VGMToolbox.forms.stream
                 string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
                 taskStruct.SourcePaths = s;
 
+                // OUTPUT
+                if (!String.IsNullOrEmpty(this.tbOutputFolder.Text))
+                {
+                    taskStruct.OutputFolder = this.tbOutputFolder.Text.Trim();
+                }
+
                 // XMA PARSE
+                taskStruct.DoXmaParse = this.cbDoXmaParse.Checked;
                 taskStruct.XmaParseXmaType = this.comboXmaParseInputType.Text;
                 taskStruct.XmaParseStartOffset = this.tbXmaParseStartOffset.Text;
                 taskStruct.XmaParseBlockSize = this.tbXmaParseBlockSize.Text;
+                taskStruct.XmaParseDoRebuildMode = this.cbXmaParseDoRebuild.Checked;
 
                 // RIFF
+                taskStruct.DoRiffHeader = this.cbAddRiffHeader.Checked;
                 taskStruct.RiffFrequency = this.comboRiffFrequency.Text;
 
                 switch (this.comboRiffChannels.Text)
@@ -99,7 +131,7 @@ namespace VGMToolbox.forms.stream
                         break;
                 }
 
-                // OTHER
+                // OTHER                
                 taskStruct.ShowExeOutput = this.cbShowAllExeOutput.Checked;
 
                 base.backgroundWorker_Execute(taskStruct);
@@ -114,6 +146,7 @@ namespace VGMToolbox.forms.stream
             bool isValid = true;
 
             isValid &= this.checkPrerequisites();
+            isValid &= this.validateOutputOptions();
             isValid &= this.validateXmaParseOptions();
             
             return isValid;
@@ -150,6 +183,18 @@ namespace VGMToolbox.forms.stream
                 isValid = false;
             }
                         
+            return isValid;
+        }
+
+        private bool validateOutputOptions()
+        {
+            bool isValid = true;
+
+            if (!String.IsNullOrEmpty(this.tbOutputFolder.Text))
+            {
+                isValid &= base.checkFolderExists(this.tbOutputFolder.Text, this.lblOutputFolder.Text);
+            }
+
             return isValid;
         }
 
@@ -213,5 +258,30 @@ namespace VGMToolbox.forms.stream
         {
             e.Handled = true;
         }
+
+        //---------------
+        // output folder
+        //---------------
+        private void btnBrowseOutputFolder_Click(object sender, EventArgs e)
+        {
+            this.tbOutputFolder.Text = base.browseForFolder(sender, e);
+        }
+
+        //------------
+        // checkboxes
+        //------------
+        private void cbDoXmaParse_CheckedChanged(object sender, EventArgs e)
+        {
+            this.comboXmaParseInputType.Enabled = this.cbDoXmaParse.Checked;
+            this.tbXmaParseStartOffset.Enabled = this.cbDoXmaParse.Checked;
+            this.tbXmaParseBlockSize.Enabled = this.cbDoXmaParse.Checked;
+            this.cbXmaParseDoRebuild.Enabled = this.cbDoXmaParse.Checked;
+        }
+
+        private void cbAddRiffHeader_CheckedChanged(object sender, EventArgs e)
+        {
+            this.comboRiffFrequency.Enabled = this.cbDoXmaParse.Checked;
+            this.comboRiffChannels.Enabled = this.cbDoXmaParse.Checked;
+        }     
     }
 }

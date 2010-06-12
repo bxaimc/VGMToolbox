@@ -1086,6 +1086,7 @@
       </SubType>
     </None>
     <None Include="xsd\VfsExtractor.xsd" />
+    <None Include="xsd\XmaConverter.xsd" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\dbutil\dbutil.csproj">

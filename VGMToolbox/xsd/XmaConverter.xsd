@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!-- Header -->
+  <xs:complexType name="Header">
+    <xs:sequence minOccurs="1" maxOccurs="1">
+      <xs:element name="FormatName" type="xs:string" minOccurs="1" maxOccurs="1" />
+      <xs:element name="Author" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- XMA Type -->
+  <xs:simpleType name="XmaType">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="1" />
+      <xs:enumeration value="2" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- RIFF Frequency -->
+  <xs:simpleType name="RiffFrequency">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="22050" />
+      <xs:enumeration value="24000" />
+      <xs:enumeration value="32000" />
+      <xs:enumeration value="44100" />
+      <xs:enumeration value="48000" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- RIFF Channels -->
+  <xs:simpleType name="RiffChannels">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="mono" />
+      <xs:enumeration value="stereo" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!--  xma_parse.exe Parameters -->
+  <xs:complexType name="XmaParseParameters">
+    <xs:sequence minOccurs="1" maxOccurs="1">
+      <xs:element name="XmaType" type="XmaType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="StartOffset" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="BlockSize" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <!--  RIFF Parameters -->
+  <xs:complexType name="RiffParameters">
+    <xs:sequence minOccurs="1" maxOccurs="1">
+      <xs:element name="RiffFrequency" type="RiffFrequency" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="RiffChannels" type="RiffChannels" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Top Level Definition -->
+  <xs:element name="XmaConverterSettings">
+    <xs:complexType>
+      <xs:sequence minOccurs="1" maxOccurs="1">
+        <xs:element name="Header" type="Header" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="XmaParseParameters" type="XmaParseParameters" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="RiffParameters" type="RiffParameters" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="NotesOrWarnings" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

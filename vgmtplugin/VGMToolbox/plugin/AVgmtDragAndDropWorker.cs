@@ -216,6 +216,23 @@ namespace VGMToolbox.plugin
         /// </summary>
         protected virtual void DoFinalTask(IVgmtWorkerStruct pTaskStruct) { }
 
+        protected void ShowOutput(string path, string message, bool isError)
+        {
+            this.progressStruct.Clear();
+            this.progressStruct.FileName = path;
+
+            if (isError)
+            {
+                this.progressStruct.ErrorMessage = String.Format("ERROR: {0}{1}", message, Environment.NewLine);
+            }
+            else
+            {
+                this.progressStruct.GenericMessage = String.Format("{0}{1}", message, Environment.NewLine);
+            }
+            
+            ReportProgress(this.progress, progressStruct);        
+        }
+
         // abstract methods
         protected abstract void DoTaskForFile(string pPath, IVgmtWorkerStruct pTaskStruct, DoWorkEventArgs e);
     }
