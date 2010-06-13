@@ -86,6 +86,8 @@
             this.tbFileRecordLengthOffset = new System.Windows.Forms.TextBox();
             this.rbUseVfsFileLength = new System.Windows.Forms.RadioButton();
             this.grpIndividualFileOffset = new System.Windows.Forms.GroupBox();
+            this.tbByteAlignement = new System.Windows.Forms.TextBox();
+            this.cbDoOffsetByteAlginment = new System.Windows.Forms.CheckBox();
             this.tbFileRecordOffsetMultiplier = new System.Windows.Forms.TextBox();
             this.cbUseOffsetMultiplier = new System.Windows.Forms.CheckBox();
             this.lblUseFileLengthToDetermineOffset = new System.Windows.Forms.Label();
@@ -132,7 +134,7 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 668);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 483);
             this.pnlLabels.Size = new System.Drawing.Size(789, 19);
             // 
             // pnlTitle
@@ -141,13 +143,13 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 591);
+            this.tbOutput.Location = new System.Drawing.Point(0, 406);
             this.tbOutput.Size = new System.Drawing.Size(789, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 571);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 386);
             this.pnlButtons.Size = new System.Drawing.Size(789, 20);
             // 
             // btnCancel
@@ -400,7 +402,7 @@
             this.grpFileRecordInfo.Controls.Add(this.pnlFileRecordsHeader);
             this.grpFileRecordInfo.Location = new System.Drawing.Point(0, 113);
             this.grpFileRecordInfo.Name = "grpFileRecordInfo";
-            this.grpFileRecordInfo.Size = new System.Drawing.Size(772, 455);
+            this.grpFileRecordInfo.Size = new System.Drawing.Size(772, 491);
             this.grpFileRecordInfo.TabIndex = 9;
             this.grpFileRecordInfo.TabStop = false;
             this.grpFileRecordInfo.Text = "File Record Information";
@@ -413,7 +415,7 @@
             this.grpFileRecordNameSize.Controls.Add(this.rbFileRecordNameTerminator);
             this.grpFileRecordNameSize.Controls.Add(this.tbFileRecordNameSize);
             this.grpFileRecordNameSize.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpFileRecordNameSize.Location = new System.Drawing.Point(3, 382);
+            this.grpFileRecordNameSize.Location = new System.Drawing.Point(3, 418);
             this.grpFileRecordNameSize.Name = "grpFileRecordNameSize";
             this.grpFileRecordNameSize.Size = new System.Drawing.Size(766, 70);
             this.grpFileRecordNameSize.TabIndex = 8;
@@ -487,7 +489,7 @@
             this.grpFileRecordName.Controls.Add(this.tbFileRecordNameOffset);
             this.grpFileRecordName.Controls.Add(this.cbFileNameIsPresent);
             this.grpFileRecordName.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpFileRecordName.Location = new System.Drawing.Point(3, 239);
+            this.grpFileRecordName.Location = new System.Drawing.Point(3, 275);
             this.grpFileRecordName.Name = "grpFileRecordName";
             this.grpFileRecordName.Size = new System.Drawing.Size(766, 143);
             this.grpFileRecordName.TabIndex = 7;
@@ -669,7 +671,7 @@
             this.grpIndividualFileLength.Controls.Add(this.tbFileRecordLengthOffset);
             this.grpIndividualFileLength.Controls.Add(this.rbUseVfsFileLength);
             this.grpIndividualFileLength.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpIndividualFileLength.Location = new System.Drawing.Point(3, 147);
+            this.grpIndividualFileLength.Location = new System.Drawing.Point(3, 183);
             this.grpIndividualFileLength.Name = "grpIndividualFileLength";
             this.grpIndividualFileLength.Size = new System.Drawing.Size(766, 92);
             this.grpIndividualFileLength.TabIndex = 6;
@@ -765,6 +767,8 @@
             // 
             // grpIndividualFileOffset
             // 
+            this.grpIndividualFileOffset.Controls.Add(this.tbByteAlignement);
+            this.grpIndividualFileOffset.Controls.Add(this.cbDoOffsetByteAlginment);
             this.grpIndividualFileOffset.Controls.Add(this.tbFileRecordOffsetMultiplier);
             this.grpIndividualFileOffset.Controls.Add(this.cbUseOffsetMultiplier);
             this.grpIndividualFileOffset.Controls.Add(this.lblUseFileLengthToDetermineOffset);
@@ -779,10 +783,28 @@
             this.grpIndividualFileOffset.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpIndividualFileOffset.Location = new System.Drawing.Point(3, 61);
             this.grpIndividualFileOffset.Name = "grpIndividualFileOffset";
-            this.grpIndividualFileOffset.Size = new System.Drawing.Size(766, 86);
+            this.grpIndividualFileOffset.Size = new System.Drawing.Size(766, 122);
             this.grpIndividualFileOffset.TabIndex = 5;
             this.grpIndividualFileOffset.TabStop = false;
             this.grpIndividualFileOffset.Text = "Individual File Offset";
+            // 
+            // tbByteAlignement
+            // 
+            this.tbByteAlignement.Location = new System.Drawing.Point(140, 86);
+            this.tbByteAlignement.Name = "tbByteAlignement";
+            this.tbByteAlignement.Size = new System.Drawing.Size(73, 20);
+            this.tbByteAlignement.TabIndex = 14;
+            // 
+            // cbDoOffsetByteAlginment
+            // 
+            this.cbDoOffsetByteAlginment.AutoSize = true;
+            this.cbDoOffsetByteAlginment.Location = new System.Drawing.Point(21, 88);
+            this.cbDoOffsetByteAlginment.Name = "cbDoOffsetByteAlginment";
+            this.cbDoOffsetByteAlginment.Size = new System.Drawing.Size(117, 17);
+            this.cbDoOffsetByteAlginment.TabIndex = 13;
+            this.cbDoOffsetByteAlginment.Text = "with Byte alignment";
+            this.cbDoOffsetByteAlginment.UseVisualStyleBackColor = true;
+            this.cbDoOffsetByteAlginment.CheckedChanged += new System.EventHandler(this.cbDoOffsetByteAlginment_CheckedChanged);
             // 
             // tbFileRecordOffsetMultiplier
             // 
@@ -950,7 +972,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 170);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(789, 401);
+            this.panel1.Size = new System.Drawing.Size(789, 216);
             this.panel1.TabIndex = 10;
             // 
             // grpSourceFiles
@@ -1076,7 +1098,7 @@
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(789, 709);
+            this.ClientSize = new System.Drawing.Size(789, 524);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.grpSourceFiles);
             this.Controls.Add(this.grpPresets);
@@ -1209,5 +1231,7 @@
         private System.Windows.Forms.RadioButton rbFileNameRelativeOffset;
         private System.Windows.Forms.Label lblFileNameRecordRelativeLocation;
         private System.Windows.Forms.ComboBox comboFileRecordNameRelativeLocation;
+        private System.Windows.Forms.CheckBox cbDoOffsetByteAlginment;
+        private System.Windows.Forms.TextBox tbByteAlignement;
     }
 }

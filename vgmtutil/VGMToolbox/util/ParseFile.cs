@@ -994,7 +994,8 @@ namespace VGMToolbox.util
                 long previousCutLength = -1;
                 long cutOffset;
                 long cutLength;
-                                
+                long byteAlignmentValue;
+                
                 for (int j = 0; j < fileItemArray.Length; j++)
                 {
                     if (vfsInformation.UsePreviousFilesSizeToDetermineOffset)
@@ -1006,6 +1007,14 @@ namespace VGMToolbox.util
                         else
                         {
                             cutOffset = previousCutOffset + previousCutLength;
+
+                            // adjust for byte alignment
+                            if (!String.IsNullOrEmpty(vfsInformation.ByteAlignmentValue))
+                            {
+                                byteAlignmentValue = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.ByteAlignmentValue);
+
+                                cutOffset = (cutOffset + byteAlignmentValue - 1) / byteAlignmentValue * byteAlignmentValue;
+                            }
                         }
 
                         cutLength = fileItemArray[j].FileLength;

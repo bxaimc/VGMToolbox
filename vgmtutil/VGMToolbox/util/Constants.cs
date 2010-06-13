@@ -356,15 +356,16 @@ namespace VGMToolbox.util
         public string FileRecordsStartOffset { set; get; }
         public string FileRecordSize { set; get; }
 
-        public bool UsePreviousFilesSizeToDetermineOffset { set; get; }
-        public string BeginCuttingFilesAtOffset { set; get; }
-
         // offset
         public string FileRecordOffsetOffset { set; get; }
         public string FileRecordOffsetLength { set; get; }
         public bool FileRecordOffsetIsLittleEndian { set; get; }
         public bool UseFileRecordOffsetMultiplier { set; get; }
         public string FileRecordOffsetMultiplier { set; get; }
+
+        public bool UsePreviousFilesSizeToDetermineOffset { set; get; }
+        public string BeginCuttingFilesAtOffset { set; get; }
+        public string ByteAlignmentValue { set; get; }
 
         // length
         public string FileRecordLengthOffset { set; get; }

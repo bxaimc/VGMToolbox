@@ -126,9 +126,7 @@ namespace VGMToolbox.forms.extraction
 
                 // File Records
                 bgStruct.FileRecordsStartOffset = this.tbFileRecordsBeginOffset.Text;
-                bgStruct.FileRecordSize = this.comboFileRecordSize.Text;
-                bgStruct.UsePreviousFilesSizeToDetermineOffset = this.rbUseFileSizeToDetermineOffset.Checked;
-                bgStruct.BeginCuttingFilesAtOffset = this.tbUseFileLengthBeginOffset.Text;
+                bgStruct.FileRecordSize = this.comboFileRecordSize.Text;               
 
                 // offset
                 bgStruct.FileRecordOffsetOffset = this.tbFileRecordOffsetOffset.Text;
@@ -136,6 +134,10 @@ namespace VGMToolbox.forms.extraction
                 bgStruct.FileRecordOffsetIsLittleEndian = this.comboFileRecordOffsetByteOrder.Text.Equals(VfsExtractorWorker.LITTLE_ENDIAN);
                 bgStruct.UseFileRecordOffsetMultiplier = this.cbUseOffsetMultiplier.Checked;
                 bgStruct.FileRecordOffsetMultiplier = this.tbFileRecordOffsetMultiplier.Text;
+
+                bgStruct.UsePreviousFilesSizeToDetermineOffset = this.rbUseFileSizeToDetermineOffset.Checked;
+                bgStruct.BeginCuttingFilesAtOffset = this.tbUseFileLengthBeginOffset.Text;
+                bgStruct.ByteAlignmentValue = this.tbByteAlignement.Text;
 
                 // length
                 bgStruct.FileRecordLengthOffset = this.tbFileRecordLengthOffset.Text;
@@ -387,6 +389,13 @@ namespace VGMToolbox.forms.extraction
                 this.tbUseFileLengthBeginOffset.Clear();
                 this.tbUseFileLengthBeginOffset.Enabled = false;
                 this.tbUseFileLengthBeginOffset.ReadOnly = true;
+
+                this.cbDoOffsetByteAlginment.Checked = false;
+                this.cbDoOffsetByteAlginment.Enabled = false;
+
+                this.tbByteAlignement.Clear();
+                this.tbByteAlignement.Enabled = false;
+                this.tbByteAlignement.ReadOnly = true;
             }
             else if (this.rbUseFileSizeToDetermineOffset.Checked)
             {
@@ -403,10 +412,16 @@ namespace VGMToolbox.forms.extraction
                 this.tbFileRecordOffsetMultiplier.ReadOnly = true;
                 
                 this.tbUseFileLengthBeginOffset.Enabled = true;
-                this.tbUseFileLengthBeginOffset.ReadOnly = false;            
+                this.tbUseFileLengthBeginOffset.ReadOnly = false;
+
+                this.cbDoOffsetByteAlginment.Enabled = true;
+
+                this.tbByteAlignement.Enabled = true;
+                this.tbByteAlignement.ReadOnly = false;
             }
 
             this.doCbOffsetMultiplier();
+            this.doCbDoOffsetByteAlignment();
         }
         private void rbUseVfsFileOffset_CheckedChanged(object sender, EventArgs e)
         {
@@ -1264,6 +1279,25 @@ namespace VGMToolbox.forms.extraction
         private void comboFileRecordNameRelativeLocation_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = true;
+        }
+
+        private void doCbDoOffsetByteAlignment()
+        {
+            if (this.cbDoOffsetByteAlginment.Checked)
+            {
+                this.tbByteAlignement.Enabled = true;
+                this.tbByteAlignement.ReadOnly = false;
+            }
+            else
+            {
+                this.tbByteAlignement.Clear();
+                this.tbByteAlignement.Enabled = false;
+                this.tbByteAlignement.ReadOnly = true;
+            }
+        }
+        private void cbDoOffsetByteAlginment_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doCbDoOffsetByteAlignment();
         }
     }
 }

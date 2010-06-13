@@ -36,9 +36,6 @@ namespace VGMToolbox.tools.extract
             // file information
             public string FileRecordsStartOffset { set; get; }
             public string FileRecordSize { set; get; }
-
-            public bool UsePreviousFilesSizeToDetermineOffset { set; get; }
-            public string BeginCuttingFilesAtOffset { set; get; }
             
             // offset
             public string FileRecordOffsetOffset { set; get; }
@@ -46,6 +43,10 @@ namespace VGMToolbox.tools.extract
             public bool FileRecordOffsetIsLittleEndian { set; get; }
             public bool UseFileRecordOffsetMultiplier { set; get; }
             public string FileRecordOffsetMultiplier { set; get; }
+
+            public bool UsePreviousFilesSizeToDetermineOffset { set; get; }
+            public string BeginCuttingFilesAtOffset { set; get; }
+            public string ByteAlignmentValue { set; get; }
 
             // length
             public string FileRecordLengthOffset { set; get; }
@@ -96,14 +97,15 @@ namespace VGMToolbox.tools.extract
                 ret.FileRecordsStartOffset = this.FileRecordsStartOffset;
                 ret.FileRecordSize = this.FileRecordSize;
 
-                ret.UsePreviousFilesSizeToDetermineOffset = this.UsePreviousFilesSizeToDetermineOffset;
-                ret.BeginCuttingFilesAtOffset = this.BeginCuttingFilesAtOffset;
-
                 ret.FileRecordOffsetOffset = this.FileRecordOffsetOffset;
                 ret.FileRecordOffsetLength = this.FileRecordOffsetLength;
                 ret.FileRecordOffsetIsLittleEndian = this.FileRecordOffsetIsLittleEndian;
                 ret.UseFileRecordOffsetMultiplier = this.UseFileRecordOffsetMultiplier;
                 ret.FileRecordOffsetMultiplier = this.FileRecordOffsetMultiplier;
+
+                ret.UsePreviousFilesSizeToDetermineOffset = this.UsePreviousFilesSizeToDetermineOffset;
+                ret.BeginCuttingFilesAtOffset = this.BeginCuttingFilesAtOffset;
+                ret.ByteAlignmentValue = this.ByteAlignmentValue;
 
                 ret.FileRecordLengthOffset = this.FileRecordLengthOffset;
                 ret.FileRecordLengthLength = this.FileRecordLengthLength;
