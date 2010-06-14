@@ -8,7 +8,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.forms.stream
 {
-    public partial class XmaConvertForm : AVgmtForm
+    public partial class XmaConvertForm : VgmtForm
     {
         public XmaConvertForm(TreeNode pTreeNode)
             : base(pTreeNode)

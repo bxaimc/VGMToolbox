@@ -38,7 +38,9 @@
             this.groupOtherOptions = new System.Windows.Forms.GroupBox();
             this.cbKeepTempFiles = new System.Windows.Forms.CheckBox();
             this.cbShowAllExeOutput = new System.Windows.Forms.CheckBox();
+            this.grpPosFileOptions = new System.Windows.Forms.GroupBox();
             this.grpToWavOptions = new System.Windows.Forms.GroupBox();
+            this.cbToWavInterleaveOutput = new System.Windows.Forms.CheckBox();
             this.cbDoToWav = new System.Windows.Forms.CheckBox();
             this.grpRiffHeaderOptions = new System.Windows.Forms.GroupBox();
             this.cbAddRiffHeader = new System.Windows.Forms.CheckBox();
@@ -175,6 +177,7 @@
             // 
             this.pnlOptions.AutoScroll = true;
             this.pnlOptions.Controls.Add(this.groupOtherOptions);
+            this.pnlOptions.Controls.Add(this.grpPosFileOptions);
             this.pnlOptions.Controls.Add(this.grpToWavOptions);
             this.pnlOptions.Controls.Add(this.grpRiffHeaderOptions);
             this.pnlOptions.Controls.Add(this.grpXmaParseOptions);
@@ -189,7 +192,7 @@
             this.groupOtherOptions.Controls.Add(this.cbKeepTempFiles);
             this.groupOtherOptions.Controls.Add(this.cbShowAllExeOutput);
             this.groupOtherOptions.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupOtherOptions.Location = new System.Drawing.Point(0, 383);
+            this.groupOtherOptions.Location = new System.Drawing.Point(0, 513);
             this.groupOtherOptions.Name = "groupOtherOptions";
             this.groupOtherOptions.Size = new System.Drawing.Size(772, 64);
             this.groupOtherOptions.TabIndex = 2;
@@ -216,16 +219,38 @@
             this.cbShowAllExeOutput.Text = "Show All Output from External Applications";
             this.cbShowAllExeOutput.UseVisualStyleBackColor = true;
             // 
+            // grpPosFileOptions
+            // 
+            this.grpPosFileOptions.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpPosFileOptions.Location = new System.Drawing.Point(0, 413);
+            this.grpPosFileOptions.Name = "grpPosFileOptions";
+            this.grpPosFileOptions.Size = new System.Drawing.Size(772, 100);
+            this.grpPosFileOptions.TabIndex = 4;
+            this.grpPosFileOptions.TabStop = false;
+            this.grpPosFileOptions.Text = ".pos File Options";
+            // 
             // grpToWavOptions
             // 
+            this.grpToWavOptions.Controls.Add(this.cbToWavInterleaveOutput);
             this.grpToWavOptions.Controls.Add(this.cbDoToWav);
             this.grpToWavOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpToWavOptions.Location = new System.Drawing.Point(0, 339);
             this.grpToWavOptions.Name = "grpToWavOptions";
-            this.grpToWavOptions.Size = new System.Drawing.Size(772, 44);
+            this.grpToWavOptions.Size = new System.Drawing.Size(772, 74);
             this.grpToWavOptions.TabIndex = 3;
             this.grpToWavOptions.TabStop = false;
-            this.grpToWavOptions.Text = "ToWav.exe Options";
+            this.grpToWavOptions.Text = "3. ToWav.exe Options";
+            // 
+            // cbToWavInterleaveOutput
+            // 
+            this.cbToWavInterleaveOutput.AutoSize = true;
+            this.cbToWavInterleaveOutput.Enabled = false;
+            this.cbToWavInterleaveOutput.Location = new System.Drawing.Point(3, 42);
+            this.cbToWavInterleaveOutput.Name = "cbToWavInterleaveOutput";
+            this.cbToWavInterleaveOutput.Size = new System.Drawing.Size(327, 17);
+            this.cbToWavInterleaveOutput.TabIndex = 1;
+            this.cbToWavInterleaveOutput.Text = "Interleave Output if Multiple Streams are Created (not functional)";
+            this.cbToWavInterleaveOutput.UseVisualStyleBackColor = true;
             // 
             // cbDoToWav
             // 
@@ -250,7 +275,7 @@
             this.grpRiffHeaderOptions.Size = new System.Drawing.Size(772, 63);
             this.grpRiffHeaderOptions.TabIndex = 1;
             this.grpRiffHeaderOptions.TabStop = false;
-            this.grpRiffHeaderOptions.Text = "RIFF Header Options";
+            this.grpRiffHeaderOptions.Text = "2. RIFF Header Options";
             // 
             // cbAddRiffHeader
             // 
@@ -317,7 +342,7 @@
             this.grpXmaParseOptions.Size = new System.Drawing.Size(772, 276);
             this.grpXmaParseOptions.TabIndex = 0;
             this.grpXmaParseOptions.TabStop = false;
-            this.grpXmaParseOptions.Text = "xma_parse Options";
+            this.grpXmaParseOptions.Text = "1. xma_parse Options";
             // 
             // grpStartOffset
             // 
@@ -623,5 +648,7 @@
         private OffsetDescriptionControl XmaParseStartOffsetOffsetDescription;
         private OffsetDescriptionControl XmaParseBlockSizeOffsetDescription;
         private OffsetDescriptionControl XmaParseDataSizeOffsetDescription;
+        private System.Windows.Forms.CheckBox cbToWavInterleaveOutput;
+        private System.Windows.Forms.GroupBox grpPosFileOptions;
     }
 }

@@ -59,6 +59,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\Ionic.Zip.Debug.dll</HintPath>
     </Reference>
+    <Reference Include="jsutil, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.JScript" />
     <Reference Include="SevenZipSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=20de82c62b055c88, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
@@ -75,6 +77,7 @@
     <Compile Include="VGMToolbox\util\ByteConversion.cs" />
     <Compile Include="VGMToolbox\util\FileUtil.cs" />
     <Compile Include="VGMToolbox\util\IDeepCopy.cs" />
+    <Compile Include="VGMToolbox\util\MathUtil.cs" />
     <Compile Include="VGMToolbox\util\OffsetDescription.cs" />
     <Compile Include="VGMToolbox\util\ParseFile.cs" />
   </ItemGroup>
@@ -90,6 +93,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="lib\Ionic.Zip.XML" />
+    <Content Include="lib\jsutil.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="lib\SevenZipSharp.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
