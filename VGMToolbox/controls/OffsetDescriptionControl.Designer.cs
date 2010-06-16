@@ -1,4 +1,4 @@
-﻿namespace VGMToolbox.forms
+﻿namespace VGMToolbox.controls
 {
     partial class OffsetDescriptionControl
     {
@@ -98,10 +98,10 @@
 
         #endregion
 
-        private System.Windows.Forms.ComboBox comboByteOrder;
         private System.Windows.Forms.Label lblByteOrder;
-        private System.Windows.Forms.ComboBox comboSize;
         private System.Windows.Forms.Label lblSizeLabel;
-        private System.Windows.Forms.TextBox tbOffset;
+        protected System.Windows.Forms.ComboBox comboByteOrder;
+        protected System.Windows.Forms.ComboBox comboSize;
+        protected System.Windows.Forms.TextBox tbOffset;
     }
 }

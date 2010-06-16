@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Text;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 using VGMToolbox.util;
 
-namespace VGMToolbox.forms
+namespace VGMToolbox.controls
 {
     public partial class OffsetDescriptionControl : UserControl
     {
@@ -54,7 +48,7 @@ namespace VGMToolbox.forms
         //---------
         // methods
         //---------
-        public OffsetDescription GetAllValues()
+        public OffsetDescription GetOffsetValues()
         {
             OffsetDescription allValues = new OffsetDescription();
 
@@ -65,7 +59,7 @@ namespace VGMToolbox.forms
             return allValues;
         }
         
-        public void SetAllValues(string offset, string size, string byteOrder)
+        public void SetOffsetValues(string offset, string size, string byteOrder)
         {
             this.tbOffset.Text = offset;
             this.comboSize.Text = size;

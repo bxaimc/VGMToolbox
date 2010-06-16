@@ -8,7 +8,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.forms.stream
 {
-    public partial class XmaConvertForm : VgmtForm
+    public partial class XmaConvertForm : AVgmtForm
     {
         public XmaConvertForm(TreeNode pTreeNode)
             : base(pTreeNode)
@@ -131,15 +131,15 @@ namespace VGMToolbox.forms.stream
 
                 taskStruct.XmaParseStartOffsetIsStatic = this.rbXmaParseStartOffsetStatic.Checked;
                 taskStruct.XmaParseStartOffset = this.tbXmaParseStartOffset.Text;
-                taskStruct.XmaParseStartOffsetOffsetInfo = this.XmaParseStartOffsetOffsetDescription.GetAllValues();
+                taskStruct.XmaParseStartOffsetOffsetInfo = this.XmaParseStartOffsetOffsetDescription.GetOffsetValues();
 
                 taskStruct.XmaParseBlockSizeIsStatic = this.rbXmaParseBlockSizeStatic.Checked;
                 taskStruct.XmaParseBlockSize = this.tbXmaParseBlockSize.Text;
-                taskStruct.XmaParseBlockSizeOffsetInfo = this.XmaParseBlockSizeOffsetDescription.GetAllValues();
+                taskStruct.XmaParseBlockSizeOffsetInfo = this.XmaParseBlockSizeOffsetDescription.GetOffsetValues();
 
                 taskStruct.XmaParseDataSizeIsStatic = this.rbXmaParseDataSizeStatic.Checked;
                 taskStruct.XmaParseDataSize = this.tbXmaParseDataSize.Text;
-                taskStruct.XmaParseDataSizeOffsetInfo = this.XmaParseDataSizeOffsetDescription.GetAllValues();
+                taskStruct.XmaParseDataSizeOffsetInfo = this.XmaParseDataSizeOffsetDescription.GetOffsetValues();
 
                 // RIFF
                 taskStruct.DoRiffHeader = this.cbAddRiffHeader.Checked;

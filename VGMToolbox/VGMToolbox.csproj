@@ -84,6 +84,12 @@
     <Compile Include="auditing\RebuilderWorker.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="controls\CalculatingOffsetDescriptionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="controls\CalculatingOffsetDescriptionControl.Designer.cs">
+      <DependentUpon>CalculatingOffsetDescriptionControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -246,10 +252,10 @@
     <Compile Include="forms\nsf\NsfToM3uForm.Designer.cs">
       <DependentUpon>NsfToM3uForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\OffsetDescriptionControl.cs">
+    <Compile Include="controls\OffsetDescriptionControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="forms\OffsetDescriptionControl.Designer.cs">
+    <Compile Include="controls\OffsetDescriptionControl.Designer.cs">
       <DependentUpon>OffsetDescriptionControl.cs</DependentUpon>
     </Compile>
     <Compile Include="forms\stream\XmaConvertForm.cs">
@@ -906,6 +912,9 @@
     <Content Include="readme.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="controls\CalculatingOffsetDescriptionControl.resx">
+      <DependentUpon>CalculatingOffsetDescriptionControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="forms\audit\DatafileEditorForm.resx">
       <DependentUpon>DatafileEditorForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -962,7 +971,7 @@
     <EmbeddedResource Include="forms\nsf\NsfToM3uForm.resx">
       <DependentUpon>NsfToM3uForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\OffsetDescriptionControl.resx">
+    <EmbeddedResource Include="controls\OffsetDescriptionControl.resx">
       <DependentUpon>OffsetDescriptionControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\stream\XmaConvertForm.resx">
