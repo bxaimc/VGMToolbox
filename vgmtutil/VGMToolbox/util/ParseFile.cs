@@ -943,11 +943,11 @@ namespace VGMToolbox.util
             {
                 if (vfsInformation.UseFileCountOffset)
                 {
-                    fileCountValue = GetVaryingByteValueAtOffset(headerFs, vfsInformation.FileCountOffsetDescription);
+                    fileCountValue = GetVaryingByteValueAtAbsoluteOffset(headerFs, vfsInformation.FileCountOffsetDescription);
                 }
                 else if (vfsInformation.UseHeaderSizeOffset)
                 {
-                    headerSizeValue = GetVaryingByteValueAtOffset(headerFs, vfsInformation.HeaderSizeOffsetDescription);                                   
+                    headerSizeValue = GetVaryingByteValueAtAbsoluteOffset(headerFs, vfsInformation.HeaderSizeOffsetDescription);                                   
                 }
                 else if (vfsInformation.UseStaticHeaderSize)
                 {
@@ -1085,15 +1085,15 @@ namespace VGMToolbox.util
                 //-----------------
                 if (vfsInformation.UseStaticFileNameOffsetWithinRecord)
                 {
-                    nameOffset = currentStreamOffset + VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.StaticFileNameOffsetWithinRecord);
+                    nameOffset = currentStreamOffset + ByteConversion.GetLongValueFromString(vfsInformation.StaticFileNameOffsetWithinRecord);
                 }
                 else if (vfsInformation.UseAbsoluteFileNameOffset)
-                {                    
-                    nameOffset = GetVaryingByteValueAtOffset(vfsStream, vfsInformation.AbsoluteFileNameOffsetDescription);
+                {
+                    nameOffset = GetVaryingByteValueAtRelativeOffset(vfsStream, vfsInformation.AbsoluteFileNameOffsetDescription, currentStreamOffset);
                 }
                 else if (vfsInformation.UseRelativeFileNameOffset)
-                {                    
-                    long relativeNameOffset = GetVaryingByteValueAtOffset(vfsStream, vfsInformation.RelativeFileNameOffsetDescription);
+                {
+                    long relativeNameOffset = GetVaryingByteValueAtRelativeOffset(vfsStream, vfsInformation.RelativeFileNameOffsetDescription, currentStreamOffset);
 
                     switch (vfsInformation.FileRecordNameRelativeOffsetLocation)
                     { 
@@ -1149,7 +1149,7 @@ namespace VGMToolbox.util
             //------------
             if (!vfsInformation.UsePreviousFilesSizeToDetermineOffset)
             {
-                newFileItem.FileOffset = GetVaryingByteValueAtOffset(vfsStream, vfsInformation.FileOffsetOffsetDescription);
+                newFileItem.FileOffset = GetVaryingByteValueAtRelativeOffset(vfsStream, vfsInformation.FileOffsetOffsetDescription, currentStreamOffset);
 
                 if (!String.IsNullOrEmpty(vfsInformation.FileOffsetOffsetDescription.CalculationString))
                 {
@@ -1164,8 +1164,8 @@ namespace VGMToolbox.util
             // get length
             //------------
             if (!vfsInformation.UseLocationOfNextFileToDetermineLength)
-            {                                
-                newFileItem.FileLength = GetVaryingByteValueAtOffset(vfsStream, vfsInformation.FileLengthOffsetDescription);
+            {
+                newFileItem.FileLength = GetVaryingByteValueAtRelativeOffset(vfsStream, vfsInformation.FileLengthOffsetDescription, currentStreamOffset);
 
                 if (!String.IsNullOrEmpty(vfsInformation.FileLengthOffsetDescription.CalculationString))
                 {
@@ -1191,13 +1191,24 @@ namespace VGMToolbox.util
             return GetVaryingByteValueAtOffset(inStream, newValueOffset, newValueLength, valueIsLittleEndian);
         }
 
-        public static long GetVaryingByteValueAtOffset(Stream inStream, OffsetDescription offsetInfo)
+        public static long GetVaryingByteValueAtAbsoluteOffset(Stream inStream, OffsetDescription offsetInfo)
         {
             long newValueOffset;
             long newValueLength;
 
-            newValueOffset = VGMToolbox.util.ByteConversion.GetLongValueFromString(offsetInfo.OffsetValue);
-            newValueLength = VGMToolbox.util.ByteConversion.GetLongValueFromString(offsetInfo.OffsetSize);
+            newValueOffset = ByteConversion.GetLongValueFromString(offsetInfo.OffsetValue);
+            newValueLength = ByteConversion.GetLongValueFromString(offsetInfo.OffsetSize);
+
+            return GetVaryingByteValueAtOffset(inStream, newValueOffset, newValueLength, offsetInfo.OffsetByteOrder.Equals(Constants.LittleEndianByteOrder));
+        }
+
+        public static long GetVaryingByteValueAtRelativeOffset(Stream inStream, OffsetDescription offsetInfo, long currentOffset)
+        {
+            long newValueOffset;
+            long newValueLength;
+
+            newValueOffset = currentOffset + ByteConversion.GetLongValueFromString(offsetInfo.OffsetValue);
+            newValueLength = ByteConversion.GetLongValueFromString(offsetInfo.OffsetSize);
 
             return GetVaryingByteValueAtOffset(inStream, newValueOffset, newValueLength, offsetInfo.OffsetByteOrder.Equals(Constants.LittleEndianByteOrder));
         }

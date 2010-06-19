@@ -313,7 +313,7 @@ namespace VGMToolbox.tools.stream
                 }
                 else if (!String.IsNullOrEmpty(taskStruct.XmaParseStartOffsetOffsetInfo.OffsetValue))
                 {
-                    long offsetValue = ParseFile.GetVaryingByteValueAtOffset(workingFileStream, taskStruct.XmaParseStartOffsetOffsetInfo);
+                    long offsetValue = ParseFile.GetVaryingByteValueAtAbsoluteOffset(workingFileStream, taskStruct.XmaParseStartOffsetOffsetInfo);
                     parameters.AppendFormat(" -o {0}", offsetValue.ToString("X")); 
                 }
 
@@ -325,7 +325,7 @@ namespace VGMToolbox.tools.stream
                 }
                 else if (!String.IsNullOrEmpty(taskStruct.XmaParseBlockSizeOffsetInfo.OffsetValue))
                 {
-                    long blockSizeValue = ParseFile.GetVaryingByteValueAtOffset(workingFileStream, taskStruct.XmaParseBlockSizeOffsetInfo);
+                    long blockSizeValue = ParseFile.GetVaryingByteValueAtAbsoluteOffset(workingFileStream, taskStruct.XmaParseBlockSizeOffsetInfo);
                     parameters.AppendFormat(" -b {0}", blockSizeValue.ToString("X"));
                 }
 
@@ -337,7 +337,7 @@ namespace VGMToolbox.tools.stream
                 }
                 else if (!String.IsNullOrEmpty(taskStruct.XmaParseDataSizeOffsetInfo.OffsetValue))
                 {
-                    long dataSizeValue = ParseFile.GetVaryingByteValueAtOffset(workingFileStream, taskStruct.XmaParseDataSizeOffsetInfo);
+                    long dataSizeValue = ParseFile.GetVaryingByteValueAtAbsoluteOffset(workingFileStream, taskStruct.XmaParseDataSizeOffsetInfo);
                     parameters.AppendFormat(" -d {0}", dataSizeValue.ToString("X"));
                 }
             }
