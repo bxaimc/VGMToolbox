@@ -98,10 +98,10 @@
 
         #endregion
 
-        private System.Windows.Forms.Label lblByteOrder;
-        private System.Windows.Forms.Label lblSizeLabel;
         protected System.Windows.Forms.ComboBox comboByteOrder;
         protected System.Windows.Forms.ComboBox comboSize;
         protected System.Windows.Forms.TextBox tbOffset;
+        protected System.Windows.Forms.Label lblByteOrder;
+        protected System.Windows.Forms.Label lblSizeLabel;
     }
 }

@@ -943,21 +943,19 @@ namespace VGMToolbox.util
             {
                 if (vfsInformation.UseFileCountOffset)
                 {
-                    fileCountValue = GetVaryingByteValueAtOffset(headerFs, vfsInformation.FileCountValueOffset, vfsInformation.FileCountValueLength,
-                        vfsInformation.FileCountValueIsLittleEndian);
+                    fileCountValue = GetVaryingByteValueAtOffset(headerFs, vfsInformation.FileCountOffsetDescription);
                 }
                 else if (vfsInformation.UseHeaderSizeOffset)
                 {
-                    headerSizeValue = GetVaryingByteValueAtOffset(headerFs, vfsInformation.HeaderSizeValueOffset, vfsInformation.HeaderSizeValueLength,
-                        vfsInformation.HeaderSizeValueIsLittleEndian);                                   
+                    headerSizeValue = GetVaryingByteValueAtOffset(headerFs, vfsInformation.HeaderSizeOffsetDescription);                                   
                 }
-                else if (!String.IsNullOrEmpty(vfsInformation.FileCountEndOffset))
+                else if (vfsInformation.UseStaticHeaderSize)
                 {
-                    headerSizeValue = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileCountEndOffset);
+                    headerSizeValue = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.StaticHeaderSize);
                 }
-                else if (!String.IsNullOrEmpty(vfsInformation.FileCountValue))
+                else if (vfsInformation.UseStaticFileCount)
                 {
-                    fileCountValue = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileCountValue);
+                    fileCountValue = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.StaticFileCount);
                 }
 
                 // loop over header, building file list
@@ -976,7 +974,7 @@ namespace VGMToolbox.util
                     currentFileCount++;
                     currentOffset += recordSize;
 
-                    if ((vfsInformation.FileRecordNameIsIncludedInFileRecord) && 
+                    if ((vfsInformation.UseStaticFileNameOffsetWithinRecord) && 
                         (fileItem.FileNameLength != -1))
                     {
                         currentOffset += fileItem.FileNameLength;
@@ -1076,7 +1074,7 @@ namespace VGMToolbox.util
             //----------
             // get name
             //----------
-            if (vfsInformation.FileRecordNameIsPresent)
+            if (vfsInformation.FileNameIsPresent)
             {
                 long nameOffset = -1;
                 long nameLength = -1;
@@ -1085,25 +1083,17 @@ namespace VGMToolbox.util
                 //-----------------
                 // get name offset
                 //-----------------
-                if (vfsInformation.FileRecordNameIsIncludedInFileRecord)
+                if (vfsInformation.UseStaticFileNameOffsetWithinRecord)
                 {
-                    nameOffset = currentStreamOffset + VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordNameOffset);
+                    nameOffset = currentStreamOffset + VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.StaticFileNameOffsetWithinRecord);
                 }
-                else if (vfsInformation.FileRecordNameAbsoluteOffsetIsPresent)
-                {
-                    long fileNameOffsetOffset = currentStreamOffset + VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordNameAbsoluteOffsetOffset);
-                    long fileNameOffsetLength = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordNameAbsoluteOffsetLength);
-
-                    nameOffset = GetVaryingByteValueAtOffset(vfsStream, fileNameOffsetOffset, fileNameOffsetLength,
-                        vfsInformation.FileRecordNameAbsoluteOffsetIsLittleEndian);
+                else if (vfsInformation.UseAbsoluteFileNameOffset)
+                {                    
+                    nameOffset = GetVaryingByteValueAtOffset(vfsStream, vfsInformation.AbsoluteFileNameOffsetDescription);
                 }
-                else if (vfsInformation.FileRecordNameRelativeOffsetIsPresent)
-                {
-                    long fileNameOffsetOffset = currentStreamOffset + VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordNameRelativeOffsetOffset);
-                    long fileNameOffsetLength = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordNameRelativeOffsetLength);
-                    
-                    long relativeNameOffset = GetVaryingByteValueAtOffset(vfsStream, fileNameOffsetOffset, fileNameOffsetLength,
-                        vfsInformation.FileRecordNameRelativeOffsetIsLittleEndian);
+                else if (vfsInformation.UseRelativeFileNameOffset)
+                {                    
+                    long relativeNameOffset = GetVaryingByteValueAtOffset(vfsStream, vfsInformation.RelativeFileNameOffsetDescription);
 
                     switch (vfsInformation.FileRecordNameRelativeOffsetLocation)
                     { 
@@ -1122,15 +1112,15 @@ namespace VGMToolbox.util
                 //-----------------
                 // get name length
                 //-----------------
-                if (!String.IsNullOrEmpty(vfsInformation.FileRecordNameStaticLength))
+                if (vfsInformation.UseStaticFileNameLength)
                 {
                     // static size
-                    nameLength = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordNameStaticLength);
+                    nameLength = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.StaticFileNameLength);
                 }                
-                else if (!String.IsNullOrEmpty(vfsInformation.FileRecordNameTerminator))
+                else if (vfsInformation.UseFileNameTerminatorString)
                 {
                     // terminator
-                    nameTerminatorBytes = ByteConversion.GetBytesFromHexString(vfsInformation.FileRecordNameTerminator);
+                    nameTerminatorBytes = ByteConversion.GetBytesFromHexString(vfsInformation.FileNameTerminatorString);
                     nameLength = (long)ParseFile.GetSegmentLength(vfsStream, (int)nameOffset, nameTerminatorBytes);
                     newFileItem.FileNameLength = nameLength + nameTerminatorBytes.Length;
                 }
@@ -1159,16 +1149,14 @@ namespace VGMToolbox.util
             //------------
             if (!vfsInformation.UsePreviousFilesSizeToDetermineOffset)
             {
-                long fileOffsetOffset = currentStreamOffset + VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordOffsetOffset);
-                long fileOffsetLength = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordOffsetLength);
-                
-                newFileItem.FileOffset = GetVaryingByteValueAtOffset(vfsStream, fileOffsetOffset, fileOffsetLength,
-                    vfsInformation.FileRecordOffsetIsLittleEndian);
-                                               
-                if (vfsInformation.UseFileRecordOffsetMultiplier)
+                newFileItem.FileOffset = GetVaryingByteValueAtOffset(vfsStream, vfsInformation.FileOffsetOffsetDescription);
+
+                if (!String.IsNullOrEmpty(vfsInformation.FileOffsetOffsetDescription.CalculationString))
                 {
-                    long offsetMultiplier = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordOffsetMultiplier);
-                    newFileItem.FileOffset *= offsetMultiplier;
+                    string calculationString =
+                        vfsInformation.FileOffsetOffsetDescription.CalculationString.Replace(CalculatingOffsetDescription.OFFSET_VARIABLE_STRING, newFileItem.FileOffset.ToString());
+                    
+                    newFileItem.FileOffset = ByteConversion.GetLongValueFromString(MathUtil.Evaluate(calculationString));
                 }
             }
 
@@ -1176,17 +1164,15 @@ namespace VGMToolbox.util
             // get length
             //------------
             if (!vfsInformation.UseLocationOfNextFileToDetermineLength)
-            {                
-                long fileLengthOffset = currentStreamOffset + VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordLengthOffset);
-                long fileLengthLength = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordLengthLength);
-                
-                newFileItem.FileLength = GetVaryingByteValueAtOffset(vfsStream, fileLengthOffset, fileLengthLength,
-                    vfsInformation.FileRecordLengthIsLittleEndian);
+            {                                
+                newFileItem.FileLength = GetVaryingByteValueAtOffset(vfsStream, vfsInformation.FileLengthOffsetDescription);
 
-                if (vfsInformation.UseFileRecordLengthMultiplier)
+                if (!String.IsNullOrEmpty(vfsInformation.FileLengthOffsetDescription.CalculationString))
                 {
-                    long lengthMultiplier = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordLengthMultiplier);
-                    newFileItem.FileLength *= lengthMultiplier;
+                    string calculationString =
+                        vfsInformation.FileLengthOffsetDescription.CalculationString.Replace(CalculatingOffsetDescription.OFFSET_VARIABLE_STRING, newFileItem.FileLength.ToString());
+
+                    newFileItem.FileLength = ByteConversion.GetLongValueFromString(MathUtil.Evaluate(calculationString));
                 }
             }
 

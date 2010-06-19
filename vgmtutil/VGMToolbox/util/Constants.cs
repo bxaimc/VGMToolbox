@@ -337,66 +337,59 @@ namespace VGMToolbox.util
     }
 
     public struct VfsExtractionStruct
-    {
-        // total files
-        public bool UseFileCountOffset { set; get; }
-        public string FileCountValue { set; get; }       // user entered value
-        public string FileCountValueOffset { set; get; } // file count is in VFS
-        public string FileCountValueLength { set; get; }
-        public bool FileCountValueIsLittleEndian { set; get; }
-        
+    { 
         // header size
+        public bool UseStaticHeaderSize { set; get; }
+        public string StaticHeaderSize { set; get; }
         public bool UseHeaderSizeOffset { set; get; }
-        public string HeaderSizeValueOffset { set; get; }
-        public string HeaderSizeValueLength { set; get; }
-        public bool HeaderSizeValueIsLittleEndian { set; get; }
-        public string FileCountEndOffset { set; get; }
+        public OffsetDescription HeaderSizeOffsetDescription { set; get; }
 
-        // file information
+        // file count
+        public bool UseStaticFileCount { set; get; }
+        public string StaticFileCount { set; get; }
+        public bool UseFileCountOffset { set; get; }
+        public OffsetDescription FileCountOffsetDescription { set; get; }
+
+        // file record basic information
         public string FileRecordsStartOffset { set; get; }
         public string FileRecordSize { set; get; }
 
-        // offset
-        public string FileRecordOffsetOffset { set; get; }
-        public string FileRecordOffsetLength { set; get; }
-        public bool FileRecordOffsetIsLittleEndian { set; get; }
-        public bool UseFileRecordOffsetMultiplier { set; get; }
-        public string FileRecordOffsetMultiplier { set; get; }
+        // file offset
+        public bool UseFileOffsetOffset { set; get; }
+        public CalculatingOffsetDescription FileOffsetOffsetDescription { set; get; }
 
         public bool UsePreviousFilesSizeToDetermineOffset { set; get; }
         public string BeginCuttingFilesAtOffset { set; get; }
         public string ByteAlignmentValue { set; get; }
 
-        // length
-        public string FileRecordLengthOffset { set; get; }
-        public string FileRecordLengthLength { set; get; }
-        public bool FileRecordLengthIsLittleEndian { set; get; }
+        // file length/size
+        public bool UseFileLengthOffset { set; get; }
+        public CalculatingOffsetDescription FileLengthOffsetDescription { set; get; }
+
         public bool UseLocationOfNextFileToDetermineLength { set; get; }
-        public bool UseFileRecordLengthMultiplier { set; get; }
-        public string FileRecordLengthMultiplier { set; get; }
-        
-        // name location
-        public bool FileRecordNameIsPresent { set; get; }
-        
-        public bool FileRecordNameIsIncludedInFileRecord { set; get; }        
-        public string FileRecordNameOffset { set; get; }
 
-        public bool FileRecordNameAbsoluteOffsetIsPresent { set; get; }
-        public string FileRecordNameAbsoluteOffsetOffset { set; get; }
-        public string FileRecordNameAbsoluteOffsetLength { set; get; }
-        public bool FileRecordNameAbsoluteOffsetIsLittleEndian { set; get; }
+        // file name
+        public bool FileNameIsPresent { set; get; }
 
-        public bool FileRecordNameRelativeOffsetIsPresent { set; get; }
-        public string FileRecordNameRelativeOffsetOffset { set; get; }
-        public string FileRecordNameRelativeOffsetLength { set; get; }
-        public bool FileRecordNameRelativeOffsetIsLittleEndian { set; get; }
+        public bool UseStaticFileNameOffsetWithinRecord { set; get; }
+        public string StaticFileNameOffsetWithinRecord { set; get; }
+
+        public bool UseAbsoluteFileNameOffset { set; get; }
+        public OffsetDescription AbsoluteFileNameOffsetDescription { set; get; }
+
+        public bool UseRelativeFileNameOffset { set; get; }
+        public OffsetDescription RelativeFileNameOffsetDescription { set; get; }
         public VfsFileRecordRelativeOffsetLocationType FileRecordNameRelativeOffsetLocation { set; get; }
 
         // name size
-        public string FileRecordNameStaticLength { set; get; }
-        public string FileRecordNameTerminator { set; get; }                
+        public bool UseStaticFileNameLength { set; get; }
+        public string StaticFileNameLength { set; get; }
+
+        public bool UseFileNameTerminatorString { set; get; }
+        public string FileNameTerminatorString { set; get; }  
     }
 
+    
     public struct SimpleFileExtractionStruct
     {
         public string FilePath { set; get; }
