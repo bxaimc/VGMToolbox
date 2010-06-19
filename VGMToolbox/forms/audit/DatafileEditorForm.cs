@@ -35,7 +35,7 @@ namespace VGMToolbox.forms.audit
             this.datafileSourcePath.Text = base.browseForFile(sender, e);
 
             if ((!String.IsNullOrEmpty(this.datafileSourcePath.Text)) &&
-                (base.checkFileExists(this.datafileSourcePath.Text, this.grpSource.Text)))
+                (TreeViewVgmtForm.checkFileExists(this.datafileSourcePath.Text, this.grpSource.Text)))
             {
                 try
                 {

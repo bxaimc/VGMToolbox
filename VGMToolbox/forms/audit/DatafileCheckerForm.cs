@@ -37,8 +37,8 @@ namespace VGMToolbox.forms.audit
 
         private void btnDatafileChecker_Check_Click(object sender, EventArgs e)
         {
-            if (base.checkFileExists(tbDatafileChecker_SourceFile.Text, this.lblSourceDataFile.Text) &&
-                base.checkFolderExists(tbDatafileChecker_OutputPath.Text, this.lblReportDestination.Text))
+            if (AVgmtForm.checkFileExists(tbDatafileChecker_SourceFile.Text, this.lblSourceDataFile.Text) &&
+                AVgmtForm.checkFolderExists(tbDatafileChecker_OutputPath.Text, this.lblReportDestination.Text))
             {
                 DatafileCheckerWorker.DatafileCheckerStruct datafileCheckerStruct = new DatafileCheckerWorker.DatafileCheckerStruct();
                 datafileCheckerStruct.datafilePath = tbDatafileChecker_SourceFile.Text;

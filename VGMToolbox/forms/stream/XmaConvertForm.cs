@@ -223,7 +223,7 @@ namespace VGMToolbox.forms.stream
 
             if (!String.IsNullOrEmpty(this.tbOutputFolder.Text))
             {
-                isValid &= base.checkFolderExists(this.tbOutputFolder.Text, this.lblOutputFolder.Text);
+                isValid &= AVgmtForm.checkFolderExists(this.tbOutputFolder.Text, this.lblOutputFolder.Text);
             }
 
             return isValid;
@@ -233,39 +233,39 @@ namespace VGMToolbox.forms.stream
         {
             bool isValid = true;
 
-            isValid &= base.checkTextBox(this.comboXmaParseInputType.Text, this.lblXmaParseInputType.Text);
+            isValid &= AVgmtForm.checkTextBox(this.comboXmaParseInputType.Text, this.lblXmaParseInputType.Text);
 
             if (this.rbXmaParseStartOffsetStatic.Checked)
             {
-                isValid &= base.checkIfTextIsParsableAsLong(this.tbXmaParseStartOffset.Text, this.rbXmaParseStartOffsetStatic.Text);
+                isValid &= AVgmtForm.checkIfTextIsParsableAsLong(this.tbXmaParseStartOffset.Text, this.rbXmaParseStartOffsetStatic.Text);
             }
             
             if (this.rbXmaParseBlockSizeStatic.Checked)
             {
-                isValid &= base.checkIfTextIsParsableAsLong(this.tbXmaParseBlockSize.Text, this.rbXmaParseBlockSizeStatic.Text);
+                isValid &= AVgmtForm.checkIfTextIsParsableAsLong(this.tbXmaParseBlockSize.Text, this.rbXmaParseBlockSizeStatic.Text);
             }
 
             if (this.rbXmaParseDataSizeStatic.Checked)
             {
-                isValid &= base.checkIfTextIsParsableAsLong(this.tbXmaParseDataSize.Text, this.rbXmaParseDataSizeStatic.Text);
+                isValid &= AVgmtForm.checkIfTextIsParsableAsLong(this.tbXmaParseDataSize.Text, this.rbXmaParseDataSizeStatic.Text);
             }
 
             if (this.rbXmaParseStartOffsetOffset.Checked)
             {
-                isValid &= base.checkTextBox(this.XmaParseStartOffsetOffsetDescription.OffsetValue, this.rbXmaParseStartOffsetOffset.Text);
-                isValid &= base.checkIfTextIsParsableAsLong(this.XmaParseStartOffsetOffsetDescription.OffsetValue, this.rbXmaParseStartOffsetOffset.Text);
+                isValid &= AVgmtForm.checkTextBox(this.XmaParseStartOffsetOffsetDescription.OffsetValue, this.rbXmaParseStartOffsetOffset.Text);
+                isValid &= AVgmtForm.checkIfTextIsParsableAsLong(this.XmaParseStartOffsetOffsetDescription.OffsetValue, this.rbXmaParseStartOffsetOffset.Text);
             }
 
             if (this.rbXmaParseBlockSizeOffset.Checked)
             {
-                isValid &= base.checkTextBox(this.XmaParseBlockSizeOffsetDescription.OffsetValue, this.rbXmaParseBlockSizeOffset.Text);
-                isValid &= base.checkIfTextIsParsableAsLong(this.XmaParseBlockSizeOffsetDescription.OffsetValue, this.rbXmaParseBlockSizeOffset.Text);
+                isValid &= AVgmtForm.checkTextBox(this.XmaParseBlockSizeOffsetDescription.OffsetValue, this.rbXmaParseBlockSizeOffset.Text);
+                isValid &= AVgmtForm.checkIfTextIsParsableAsLong(this.XmaParseBlockSizeOffsetDescription.OffsetValue, this.rbXmaParseBlockSizeOffset.Text);
             }
 
             if (this.rbXmaParseDataSizeOffset.Checked)
             {
-                isValid &= base.checkTextBox(this.XmaParseDataSizeOffsetDescription.OffsetValue, this.rbXmaParseDataSizeOffset.Text);
-                isValid &= base.checkIfTextIsParsableAsLong(this.XmaParseDataSizeOffsetDescription.OffsetValue, this.rbXmaParseDataSizeOffset.Text);
+                isValid &= AVgmtForm.checkTextBox(this.XmaParseDataSizeOffsetDescription.OffsetValue, this.rbXmaParseDataSizeOffset.Text);
+                isValid &= AVgmtForm.checkIfTextIsParsableAsLong(this.XmaParseDataSizeOffsetDescription.OffsetValue, this.rbXmaParseDataSizeOffset.Text);
             }
 
             return isValid;

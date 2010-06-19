@@ -120,18 +120,18 @@ namespace VGMToolbox.forms.xsf
 
             if (cbOverrideDriverOffset.Checked)
             {
-                ret = ret && base.checkTextBox(this.tbPsfDrvLoad.Text, this.lblPsfDrvLoad.Text);
-                ret = ret && base.checkTextBox(this.tbPsfDrvSize.Text, this.lblPsfDrvSize.Text);
-                ret = ret && base.checkTextBox(this.tbPsfDrvParam.Text, this.lblPsfDrvParam.Text);
-                ret = ret && base.checkTextBox(this.tbPadDrvParamSize.Text, this.lblPadDrvParamSize.Text);
+                ret = ret && AVgmtForm.checkTextBox(this.tbPsfDrvLoad.Text, this.lblPsfDrvLoad.Text);
+                ret = ret && AVgmtForm.checkTextBox(this.tbPsfDrvSize.Text, this.lblPsfDrvSize.Text);
+                ret = ret && AVgmtForm.checkTextBox(this.tbPsfDrvParam.Text, this.lblPsfDrvParam.Text);
+                ret = ret && AVgmtForm.checkTextBox(this.tbPadDrvParamSize.Text, this.lblPadDrvParamSize.Text);
 
-                ret = ret && base.checkTextBox(this.tbMySeq.Text, this.lblMySeq.Text);
-                ret = ret && base.checkTextBox(this.tbMySeqSize.Text, this.lblMySeqSize.Text);
-                ret = ret && base.checkTextBox(this.tbMyVh.Text, this.lblMyVh.Text);
-                ret = ret && base.checkTextBox(this.tbMyVhSize.Text, this.lblMyVhSize.Text);
+                ret = ret && AVgmtForm.checkTextBox(this.tbMySeq.Text, this.lblMySeq.Text);
+                ret = ret && AVgmtForm.checkTextBox(this.tbMySeqSize.Text, this.lblMySeqSize.Text);
+                ret = ret && AVgmtForm.checkTextBox(this.tbMyVh.Text, this.lblMyVh.Text);
+                ret = ret && AVgmtForm.checkTextBox(this.tbMyVhSize.Text, this.lblMyVhSize.Text);
 
-                ret = ret && base.checkTextBox(this.tbMyVb.Text, this.lblMyVb.Text);
-                ret = ret && base.checkTextBox(this.tbMyVbSize.Text, this.lblMyVbSize.Text);
+                ret = ret && AVgmtForm.checkTextBox(this.tbMyVb.Text, this.lblMyVb.Text);
+                ret = ret && AVgmtForm.checkTextBox(this.tbMyVbSize.Text, this.lblMyVbSize.Text);
             }
             
             return ret;
@@ -247,12 +247,12 @@ namespace VGMToolbox.forms.xsf
 
             if (cbOverrideDriverOffset.Checked)
             {
-                ret = ret && base.checkTextBox(this.tbPsfDrvSize.Text, this.lblPsfDrvSize.Text);
-                ret = ret && base.checkTextBox(this.tbPadDrvParamSize.Text, this.lblPadDrvParamSize.Text);
+                ret = ret && AVgmtForm.checkTextBox(this.tbPsfDrvSize.Text, this.lblPsfDrvSize.Text);
+                ret = ret && AVgmtForm.checkTextBox(this.tbPadDrvParamSize.Text, this.lblPadDrvParamSize.Text);
 
-                ret = ret && base.checkTextBox(this.tbMySeqSize.Text, this.lblMySeqSize.Text);
-                ret = ret && base.checkTextBox(this.tbMyVhSize.Text, this.lblMyVhSize.Text);
-                ret = ret && base.checkTextBox(this.tbMyVbSize.Text, this.lblMyVbSize.Text);
+                ret = ret && AVgmtForm.checkTextBox(this.tbMySeqSize.Text, this.lblMySeqSize.Text);
+                ret = ret && AVgmtForm.checkTextBox(this.tbMyVhSize.Text, this.lblMyVhSize.Text);
+                ret = ret && AVgmtForm.checkTextBox(this.tbMyVbSize.Text, this.lblMyVbSize.Text);
             }
 
             return ret;

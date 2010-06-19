@@ -7,9 +7,6 @@ namespace VGMToolbox.tools.extract
 {
     class VfsExtractorWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
-        public const string LITTLE_ENDIAN = "Little Endian";
-        public const string BIG_ENDIAN = "Big Endian";
-
         public const string RELATIVE_TO_START_OF_FILE_RECORD = "Start of File Record";
         public const string RELATIVE_TO_END_OF_FILE_RECORD = "End of File Record";
 

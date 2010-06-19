@@ -146,7 +146,7 @@ namespace VGMToolbox.forms.xsf
             
             if (this.rbForceSepType.Checked)
             {
-                if (!base.checkTextBox(this.tbSepIndexOffset.Text, "SEQ Offset"))
+                if (!AVgmtForm.checkTextBox(this.tbSepIndexOffset.Text, "SEQ Offset"))
                 {
                     ret = false;
                 }

@@ -138,8 +138,8 @@ namespace VGMToolbox.forms.xsf
         {
             bool ret = true;
 
-            ret &= base.checkFolderExists(this.tbV1Source.Text, this.lblV1Folder.Text);
-            ret &= base.checkFolderExists(this.tbV2Source.Text, this.lblV2Folder.Text);
+            ret &= AVgmtForm.checkFolderExists(this.tbV1Source.Text, this.lblV1Folder.Text);
+            ret &= AVgmtForm.checkFolderExists(this.tbV2Source.Text, this.lblV2Folder.Text);
 
             if (this.tbV1Source.Text.Equals(this.tbV2Source.Text))
             {

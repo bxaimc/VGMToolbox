@@ -136,7 +136,7 @@ namespace VGMToolbox.plugin
             return foldername;
         }
 
-        protected bool checkTextBox(string pText, string pFieldName)
+        public static bool checkTextBox(string pText, string pFieldName)
         {
             bool ret = true;
             
@@ -182,7 +182,7 @@ namespace VGMToolbox.plugin
             this.showElapsedTime();
         }
 
-        protected bool checkFileExists(string pPath, string pLabel)
+        public static bool checkFileExists(string pPath, string pLabel)
         {
             bool ret = true;
 
@@ -195,7 +195,7 @@ namespace VGMToolbox.plugin
             return ret;
         }
 
-        protected bool checkFolderExists(string pPath, string pLabel)
+        public static bool checkFolderExists(string pPath, string pLabel)
         {
             bool ret = true;
 
@@ -208,7 +208,7 @@ namespace VGMToolbox.plugin
             return ret;
         }
 
-        protected bool checkIfTextIsParsableAsLong(string textToCheck, string labelValue)
+        public static bool checkIfTextIsParsableAsLong(string textToCheck, string labelValue)
         {
             bool isParsableNumber = true;
 

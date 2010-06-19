@@ -83,7 +83,7 @@ namespace VGMToolbox.forms.xsf
         }        
         private void btnDoTask_Click(object sender, EventArgs e)
         {
-            if (base.checkFolderExists(this.tbSource.Text, this.grpSource.Text))
+            if (AVgmtForm.checkFolderExists(this.tbSource.Text, this.grpSource.Text))
             {
                 string[] paths = new string[] { this.tbSource.Text };
                 recompressData(paths);

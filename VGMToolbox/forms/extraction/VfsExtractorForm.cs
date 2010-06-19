@@ -10,7 +10,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.forms.extraction
 {
-    public partial class VfsExtractorForm : VgmtForm
+    public partial class VfsExtractorForm : AVgmtForm
     {
         private static readonly string PLUGIN_PATH =
             Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "plugins"), "VFSExtractor");                
@@ -40,7 +40,6 @@ namespace VGMToolbox.forms.extraction
             this.createFileRecordSizeList();
 
             this.doFileRecordOffsetRadioButtons();
-            this.doCbOffsetMultiplier();
 
             // length
             this.rbUseVfsFileLength.Checked = true;
@@ -252,23 +251,19 @@ namespace VGMToolbox.forms.extraction
 
             if (this.rbHeaderSizeOffset.Checked)
             {
-                isValid &= base.checkTextBox(this.tbHeaderSizeOffset.Text, this.rbHeaderSizeOffset.Text);
-                isValid &= base.checkTextBox(this.comboHeaderSizeOffsetSize.Text, "Header Size Offset Size");
-                isValid &= base.checkTextBox(this.comboHeaderSizeByteOrder.Text, "Header Size Offset Byte Order");            
+                isValid &= this.headerSizeOffsetDescription.IsValid("Header Size Offset");
             }
             else if (this.rbStaticFileCount.Checked)
             {
-                isValid &= base.checkTextBox(this.tbStaticFileCount.Text, this.rbStaticFileCount.Text);               
+                isValid &= AVgmtForm.checkTextBox(this.tbStaticFileCount.Text, this.rbStaticFileCount.Text);               
             }
             else if (this.rbFileCountOffset.Checked)
             {
-                isValid &= base.checkTextBox(this.tbFileCountOffset.Text, this.rbFileCountOffset.Text);
-                isValid &= base.checkTextBox(this.comboFileCountOffsetSize.Text, "File Count Offset Size");
-                isValid &= base.checkTextBox(this.comboFileCountByteOrder.Text, "File Count Offset Byte Order");
+                isValid &= this.fileCountOffsetDescription.IsValid("File Count Offset");
             }
             else if (this.rbHeaderSizeValue.Checked)
             {
-                isValid &= base.checkTextBox(this.tbHeaderSizeValue.Text, this.rbHeaderSizeValue.Text);
+                isValid &= AVgmtForm.checkTextBox(this.tbHeaderSizeValue.Text, this.rbHeaderSizeValue.Text);
             }
 
             return isValid;
@@ -320,7 +315,6 @@ namespace VGMToolbox.forms.extraction
                 this.tbByteAlignement.ReadOnly = false;
             }
 
-            this.doCbOffsetMultiplier();
             this.doCbDoOffsetByteAlignment();
         }
         private void rbUseVfsFileOffset_CheckedChanged(object sender, EventArgs e)
@@ -581,7 +575,7 @@ namespace VGMToolbox.forms.extraction
                         comboPresets.Items.Add(preset);
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     MessageBox.Show(String.Format("Error loading preset file <{0}>", Path.GetFileName(f)), "Error");
                 }
@@ -607,17 +601,18 @@ namespace VGMToolbox.forms.extraction
                 
                 case HeaderSizeMethod.HeaderSizeOffset:
                     this.rbHeaderSizeOffset.Checked = true;
-                    this.tbHeaderSizeOffset.Text = vfsSettings.HeaderParameters.HeaderSizeOffset;
-                    this.comboHeaderSizeOffsetSize.SelectedItem = vfsSettings.HeaderParameters.HeaderSizeOffsetSize;
+                    this.headerSizeOffsetDescription.OffsetValue = vfsSettings.HeaderParameters.HeaderSizeOffset;
+                    this.headerSizeOffsetDescription.OffsetSize = vfsSettings.HeaderParameters.HeaderSizeOffsetSize;
+                    
                     if (vfsSettings.HeaderParameters.HeaderSizeOffsetEndianessSpecified)
                     {
                         switch (vfsSettings.HeaderParameters.HeaderSizeOffsetEndianess)
                         {
                             case Endianness.big:
-                                this.comboHeaderSizeByteOrder.SelectedItem = VfsExtractorWorker.BIG_ENDIAN;
+                                this.headerSizeOffsetDescription.OffsetByteOrder = Constants.BigEndianByteOrder;
                                 break;
                             case Endianness.little:
-                                this.comboHeaderSizeByteOrder.SelectedItem = VfsExtractorWorker.LITTLE_ENDIAN;
+                                this.headerSizeOffsetDescription.OffsetByteOrder = Constants.LittleEndianByteOrder;
                                 break;
                         }
                     }
@@ -630,17 +625,18 @@ namespace VGMToolbox.forms.extraction
 
                 case HeaderSizeMethod.FileCountOffset:
                     this.rbFileCountOffset.Checked = true;
-                    this.tbFileCountOffset.Text = vfsSettings.HeaderParameters.FileCountOffset;
-                    this.comboFileCountOffsetSize.SelectedItem = vfsSettings.HeaderParameters.FileCountOffsetSize;
+                    this.fileCountOffsetDescription.OffsetValue = vfsSettings.HeaderParameters.FileCountOffset;
+                    this.fileCountOffsetDescription.OffsetSize = vfsSettings.HeaderParameters.FileCountOffsetSize;
+                    
                     if (vfsSettings.HeaderParameters.FileCountOffsetEndianessSpecified)
                     {
                         switch (vfsSettings.HeaderParameters.FileCountOffsetEndianess)
                         {
                             case Endianness.big:
-                                this.comboFileCountByteOrder.SelectedItem = VfsExtractorWorker.BIG_ENDIAN;
+                                this.fileCountOffsetDescription.OffsetByteOrder = Constants.BigEndianByteOrder;
                                 break;
                             case Endianness.little:
-                                this.comboFileCountByteOrder.SelectedItem = VfsExtractorWorker.LITTLE_ENDIAN;
+                                this.fileCountOffsetDescription.OffsetByteOrder = Constants.LittleEndianByteOrder;
                                 break;
                         }
                     }
@@ -660,25 +656,25 @@ namespace VGMToolbox.forms.extraction
             { 
                 case FileOffsetLengthMethod.offset:
                     this.rbUseVfsFileOffset.Checked = true;
-                    this.tbFileRecordOffsetOffset.Text = vfsSettings.FileRecordParameters.FileOffsetOffset;
-                    this.comboFileRecordOffsetSize.SelectedItem = vfsSettings.FileRecordParameters.FileOffsetOffsetSize;
+                    this.fileOffsetOffsetDescription.OffsetValue = vfsSettings.FileRecordParameters.FileOffsetOffset;
+                    this.fileOffsetOffsetDescription.OffsetSize = vfsSettings.FileRecordParameters.FileOffsetOffsetSize;
+                    
                     if (vfsSettings.FileRecordParameters.FileOffsetOffsetEndianessSpecified)
                     {
                         switch (vfsSettings.FileRecordParameters.FileOffsetOffsetEndianess)
                         {
                             case Endianness.big:
-                                this.comboFileRecordOffsetByteOrder.SelectedItem = VfsExtractorWorker.BIG_ENDIAN;
+                                this.fileOffsetOffsetDescription.OffsetByteOrder = Constants.BigEndianByteOrder;
                                 break;
                             case Endianness.little:
-                                this.comboFileRecordOffsetByteOrder.SelectedItem = VfsExtractorWorker.LITTLE_ENDIAN;
+                                this.fileOffsetOffsetDescription.OffsetByteOrder = Constants.LittleEndianByteOrder;
                                 break;
                         }
                     }                    
-                    if (!String.IsNullOrEmpty(vfsSettings.FileRecordParameters.FileOffsetOffsetMultiplier))
-                    {
-                        this.cbUseOffsetMultiplier.Checked = true;
-                        this.tbFileRecordOffsetMultiplier.Text = vfsSettings.FileRecordParameters.FileOffsetOffsetMultiplier;
-                    }                    
+
+                    //------------------------------
+                    // !!! ADD CALCULATION HERE !!!
+                    //------------------------------
                     break;
                 
                 case FileOffsetLengthMethod.length:
@@ -692,25 +688,25 @@ namespace VGMToolbox.forms.extraction
             {
                 case FileOffsetLengthMethod.offset:
                     this.rbUseVfsFileLength.Checked = true;
-                    this.tbFileRecordLengthOffset.Text = vfsSettings.FileRecordParameters.FileLengthOffset;
-                    this.comboFileRecordLengthSize.SelectedItem = vfsSettings.FileRecordParameters.FileLengthOffsetSize;
+                    this.fileLengthOffsetDescription.OffsetValue = vfsSettings.FileRecordParameters.FileLengthOffset;
+                    this.fileLengthOffsetDescription.OffsetSize = vfsSettings.FileRecordParameters.FileLengthOffsetSize;
+                    
                     if (vfsSettings.FileRecordParameters.FileLengthOffsetEndianessSpecified)
                     {
                         switch (vfsSettings.FileRecordParameters.FileLengthOffsetEndianess)
                         {
                             case Endianness.big:
-                                this.comboFileRecordLengthByteOrder.SelectedItem = VfsExtractorWorker.BIG_ENDIAN;
+                                this.fileLengthOffsetDescription.OffsetByteOrder = Constants.BigEndianByteOrder;
                                 break;
                             case Endianness.little:
-                                this.comboFileRecordLengthByteOrder.SelectedItem = VfsExtractorWorker.LITTLE_ENDIAN;
+                                this.fileLengthOffsetDescription.OffsetByteOrder = Constants.LittleEndianByteOrder;
                                 break;
                         }
                     }
-                    if (!String.IsNullOrEmpty(vfsSettings.FileRecordParameters.FileLengthMultiplier))
-                    {
-                        this.cbUseLengthMultiplier.Checked = true;
-                        this.tbFileRecordLengthMultiplier.Text = vfsSettings.FileRecordParameters.FileLengthMultiplier;
-                    }
+
+                    //------------------------------
+                    // !!! ADD CALCULATION HERE !!!
+                    //------------------------------
                     break;
 
                 case FileOffsetLengthMethod.length:
@@ -741,6 +737,10 @@ namespace VGMToolbox.forms.extraction
                     this.rbFileRecordNameTerminator.Checked = true;
                     this.tbFileRecordNameTerminatorBytes.Text = vfsSettings.FileRecordParameters.FileNameTerminator;
                 }
+
+                //------------------------------
+                // !!! FINISH NAME SETTINGS !!!
+                //------------------------------
             }
 
             #endregion
@@ -781,15 +781,15 @@ namespace VGMToolbox.forms.extraction
             else if (this.rbHeaderSizeOffset.Checked)
             {
                 vfsSettings.HeaderParameters.HeaderSizeMethod = HeaderSizeMethod.HeaderSizeOffset;
-                vfsSettings.HeaderParameters.HeaderSizeOffset = this.tbHeaderSizeOffset.Text;
-                vfsSettings.HeaderParameters.HeaderSizeOffsetSize = this.comboHeaderSizeOffsetSize.Text;
+                vfsSettings.HeaderParameters.HeaderSizeOffset = this.headerSizeOffsetDescription.OffsetValue;
+                vfsSettings.HeaderParameters.HeaderSizeOffsetSize = this.headerSizeOffsetDescription.OffsetSize;
 
-                if (this.comboHeaderSizeByteOrder.Text.Equals(VfsExtractorWorker.BIG_ENDIAN))
+                if (this.headerSizeOffsetDescription.OffsetByteOrder.Equals(Constants.BigEndianByteOrder))
                 {
                     vfsSettings.HeaderParameters.HeaderSizeOffsetEndianessSpecified = true;
                     vfsSettings.HeaderParameters.HeaderSizeOffsetEndianess = Endianness.big;
                 }
-                else if (this.comboHeaderSizeByteOrder.Text.Equals(VfsExtractorWorker.LITTLE_ENDIAN))
+                else if (this.headerSizeOffsetDescription.OffsetByteOrder.Equals(Constants.LittleEndianByteOrder))
                 {
                     vfsSettings.HeaderParameters.HeaderSizeOffsetEndianessSpecified = true;
                     vfsSettings.HeaderParameters.HeaderSizeOffsetEndianess = Endianness.little;
@@ -803,15 +803,15 @@ namespace VGMToolbox.forms.extraction
             else if (this.rbFileCountOffset.Checked)
             {
                 vfsSettings.HeaderParameters.HeaderSizeMethod = HeaderSizeMethod.FileCountOffset;
-                vfsSettings.HeaderParameters.FileCountOffset = this.tbFileCountOffset.Text;
-                vfsSettings.HeaderParameters.FileCountOffsetSize = this.comboFileCountOffsetSize.Text;
+                vfsSettings.HeaderParameters.FileCountOffset = this.fileCountOffsetDescription.OffsetValue;
+                vfsSettings.HeaderParameters.FileCountOffsetSize = this.fileCountOffsetDescription.OffsetSize;
 
-                if (this.comboFileCountByteOrder.Text.Equals(VfsExtractorWorker.BIG_ENDIAN))
+                if (this.fileCountOffsetDescription.OffsetByteOrder.Equals(Constants.BigEndianByteOrder))
                 {
                     vfsSettings.HeaderParameters.FileCountOffsetEndianessSpecified = true;
                     vfsSettings.HeaderParameters.FileCountOffsetEndianess = Endianness.big;
                 }
-                else if (this.comboFileCountByteOrder.Text.Equals(VfsExtractorWorker.LITTLE_ENDIAN))
+                else if (this.fileCountOffsetDescription.OffsetByteOrder.Equals(Constants.LittleEndianByteOrder))
                 {
                     vfsSettings.HeaderParameters.FileCountOffsetEndianessSpecified = true;
                     vfsSettings.HeaderParameters.FileCountOffsetEndianess = Endianness.little;
@@ -829,24 +829,23 @@ namespace VGMToolbox.forms.extraction
             if (this.rbUseVfsFileOffset.Checked)
             {
                 vfsSettings.FileRecordParameters.FileOffsetMethod = FileOffsetLengthMethod.offset;
-                vfsSettings.FileRecordParameters.FileOffsetOffset = this.tbFileRecordOffsetOffset.Text;
-                vfsSettings.FileRecordParameters.FileOffsetOffsetSize = this.comboFileRecordOffsetSize.Text;
+                vfsSettings.FileRecordParameters.FileOffsetOffset = this.fileOffsetOffsetDescription.OffsetValue;
+                vfsSettings.FileRecordParameters.FileOffsetOffsetSize = this.fileOffsetOffsetDescription.OffsetSize;
 
-                if (this.comboFileRecordOffsetByteOrder.Text.Equals(VfsExtractorWorker.BIG_ENDIAN))
+                if (this.fileOffsetOffsetDescription.OffsetByteOrder.Equals(Constants.BigEndianByteOrder))
                 {
                     vfsSettings.FileRecordParameters.FileOffsetOffsetEndianessSpecified = true;
                     vfsSettings.FileRecordParameters.FileOffsetOffsetEndianess = Endianness.big;
                 }
-                else if (this.comboFileRecordOffsetByteOrder.Text.Equals(VfsExtractorWorker.LITTLE_ENDIAN))
+                else if (this.fileOffsetOffsetDescription.OffsetByteOrder.Equals(Constants.LittleEndianByteOrder))
                 {
                     vfsSettings.FileRecordParameters.FileOffsetOffsetEndianessSpecified = true;
                     vfsSettings.FileRecordParameters.FileOffsetOffsetEndianess = Endianness.little;
                 }
 
-                if (this.cbUseOffsetMultiplier.Checked)
-                {
-                    vfsSettings.FileRecordParameters.FileOffsetOffsetMultiplier = this.tbFileRecordOffsetMultiplier.Text;
-                }
+                //------------------------------
+                // !!! ADD CALCULATION HERE !!!
+                //------------------------------
             }
             else if (this.rbUseFileSizeToDetermineOffset.Checked)
             {
@@ -858,24 +857,23 @@ namespace VGMToolbox.forms.extraction
             if (this.rbUseVfsFileLength.Checked)
             {
                 vfsSettings.FileRecordParameters.FileLengthMethod = FileOffsetLengthMethod.offset;
-                vfsSettings.FileRecordParameters.FileLengthOffset = this.tbFileRecordLengthOffset.Text;
-                vfsSettings.FileRecordParameters.FileLengthOffsetSize = this.comboFileRecordLengthSize.Text;
+                vfsSettings.FileRecordParameters.FileLengthOffset = this.fileLengthOffsetDescription.OffsetValue;
+                vfsSettings.FileRecordParameters.FileLengthOffsetSize = this.fileLengthOffsetDescription.OffsetSize;
 
-                if (this.comboFileRecordLengthByteOrder.Text.Equals(VfsExtractorWorker.BIG_ENDIAN))
+                if (this.fileLengthOffsetDescription.OffsetByteOrder.Equals(Constants.BigEndianByteOrder))
                 {
                     vfsSettings.FileRecordParameters.FileLengthOffsetEndianessSpecified = true;
                     vfsSettings.FileRecordParameters.FileLengthOffsetEndianess = Endianness.big;
                 }
-                else if (this.comboFileRecordLengthByteOrder.Text.Equals(VfsExtractorWorker.LITTLE_ENDIAN))
+                else if (this.fileLengthOffsetDescription.OffsetByteOrder.Equals(Constants.LittleEndianByteOrder))
                 {
                     vfsSettings.FileRecordParameters.FileLengthOffsetEndianessSpecified = true;
                     vfsSettings.FileRecordParameters.FileLengthOffsetEndianess = Endianness.little;
                 }
 
-                if (this.cbUseLengthMultiplier.Checked)
-                {
-                    vfsSettings.FileRecordParameters.FileLengthMultiplier = this.tbFileRecordLengthMultiplier.Text;
-                }
+                //------------------------------
+                // !!! ADD CALCULATION HERE !!!
+                //------------------------------
             }
             else if (this.rbUseOffsetsToDetermineLength.Checked)
             {
@@ -932,11 +930,9 @@ namespace VGMToolbox.forms.extraction
             this.comboFileRecordSize.ResetText();
 
             this.rbUseVfsFileOffset.Checked = true;
-            this.cbUseOffsetMultiplier.Checked = false;
             this.doFileRecordOffsetRadioButtons();
 
             this.rbUseVfsFileLength.Checked = true;
-            this.cbUseLengthMultiplier.Checked = false;
             this.doFileRecordLengthRadioButtons();
 
             this.cbFileNameIsPresent.Checked = false;
@@ -963,114 +959,6 @@ namespace VGMToolbox.forms.extraction
         }
 
         // combo box key capture
-        private void comboHeaderSizeOffsetSize_KeyDown(object sender, KeyEventArgs e)
-        {
-            e.Handled = true;
-        }
-        private void comboHeaderSizeOffsetSize_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            e.Handled = true;
-        }
-
-        private void comboFileCountOffsetSize_KeyDown(object sender, KeyEventArgs e)
-        {
-            e.Handled = true;
-        }
-        private void comboFileCountOffsetSize_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            e.Handled = true;
-        }
-
-        private void comboFileRecordOffsetSize_KeyDown(object sender, KeyEventArgs e)
-        {
-            e.Handled = true;
-        }
-        private void comboFileRecordOffsetSize_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            e.Handled = true;
-        }
-
-        private void comboFileRecordLengthSize_KeyDown(object sender, KeyEventArgs e)
-        {
-            e.Handled = true;
-        }
-        private void comboFileRecordLengthSize_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            e.Handled = true;
-        }
-
-        private void comboFileRecordNameAbsoluteOffsetSize_KeyDown(object sender, KeyEventArgs e)
-        {
-            e.Handled = true;
-        }
-        private void comboFileRecordNameAbsoluteOffsetSize_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            e.Handled = true;
-        }
-
-        private void comboFileRecordNameAbsoluteOffsetBytesOrder_KeyDown(object sender, KeyEventArgs e)
-        {
-            e.Handled = true;
-        }
-        private void comboFileRecordNameAbsoluteOffsetBytesOrder_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            e.Handled = true;
-        }
-
-        private void comboFileRecordNameAbsoluteRelativeSize_KeyDown(object sender, KeyEventArgs e)
-        {
-            e.Handled = true;
-        }
-        private void comboFileRecordNameAbsoluteRelativeSize_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            e.Handled = true;
-        }
-
-        private void comboFileRecordNameRelativeOffsetBytesOrder_KeyDown(object sender, KeyEventArgs e)
-        {
-            e.Handled = true;
-        }
-        private void comboFileRecordNameRelativeOffsetBytesOrder_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            e.Handled = true;
-        }
-
-        private void comboHeaderSizeByteOrder_KeyDown(object sender, KeyEventArgs e)
-        {
-            e.Handled = true;
-        }
-        private void comboHeaderSizeByteOrder_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            e.Handled = true;
-        }
-
-        private void comboFileCountByteOrder_KeyDown(object sender, KeyEventArgs e)
-        {
-            e.Handled = true;
-        }
-        private void comboFileCountByteOrder_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            e.Handled = true;
-        }
-
-        private void comboFileRecordOffsetByteOrder_KeyDown(object sender, KeyEventArgs e)
-        {
-            e.Handled = true;
-        }
-        private void comboFileRecordOffsetByteOrder_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            e.Handled = true;
-        }
-
-        private void comboFileRecordLengthByteOrder_KeyDown(object sender, KeyEventArgs e)
-        {
-            e.Handled = true;
-        }
-        private void comboFileRecordLengthByteOrder_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            e.Handled = true;
-        }
-
         private void comboFileRecordNameRelativeLocation_KeyDown(object sender, KeyEventArgs e)
         {
             e.Handled = true;

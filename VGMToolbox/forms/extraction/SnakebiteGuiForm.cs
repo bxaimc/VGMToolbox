@@ -183,26 +183,26 @@ namespace VGMToolbox.forms.extraction
 
             if (pCheckInputFile)
             {
-                ret &= base.checkFileExists(this.tbSourceFiles.Text, this.lblSourceFiles.Text);
+                ret &= AVgmtForm.checkFileExists(this.tbSourceFiles.Text, this.lblSourceFiles.Text);
             }
             if (this.rbNameOutput.Checked)
             {
-                ret &= base.checkTextBox(this.tbOutputFile.Text, this.rbNameOutput.Text);
+                ret &= AVgmtForm.checkTextBox(this.tbOutputFile.Text, this.rbNameOutput.Text);
             }
             if (this.rbAutoName.Checked)
             {
-                ret &= base.checkTextBox(this.tbFileExtension.Text, this.rbAutoName.Text);
+                ret &= AVgmtForm.checkTextBox(this.tbFileExtension.Text, this.rbAutoName.Text);
             }
-            
-            ret &= base.checkTextBox(this.tbStartAddress.Text, this.lblStartAddress.Text);
+
+            ret &= AVgmtForm.checkTextBox(this.tbStartAddress.Text, this.lblStartAddress.Text);
 
             if (rbEndAddress.Checked)
             {
-                ret &= base.checkTextBox(this.tbEndAddress.Text, this.rbEndAddress.Text);
+                ret &= AVgmtForm.checkTextBox(this.tbEndAddress.Text, this.rbEndAddress.Text);
             }
             if (rbLength.Checked)
             {
-                ret &= base.checkTextBox(this.tbLength.Text, this.rbLength.Text);
+                ret &= AVgmtForm.checkTextBox(this.tbLength.Text, this.rbLength.Text);
             }
             
             if (pCheckInputFile && (this.tbSourceFiles.Text.Equals(this.tbOutputFile.Text)))

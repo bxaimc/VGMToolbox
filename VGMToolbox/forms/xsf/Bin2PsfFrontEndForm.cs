@@ -278,9 +278,9 @@ namespace VGMToolbox.forms.xsf
                 ret = ret && false;
             }
 
-            ret = ret && base.checkFileExists(this.tbExePath.Text, this.lblDriverPath.Text);
-            ret = ret && base.checkFolderExists(this.tbSourceFilesPath.Text, this.lblSourceFiles.Text);
-            ret = ret && base.checkTextBox(this.tbOutputFolderName.Text, this.lblOutputFolder.Text);
+            ret = ret && AVgmtForm.checkFileExists(this.tbExePath.Text, this.lblDriverPath.Text);
+            ret = ret && AVgmtForm.checkFolderExists(this.tbSourceFilesPath.Text, this.lblSourceFiles.Text);
+            ret = ret && AVgmtForm.checkTextBox(this.tbOutputFolderName.Text, this.lblOutputFolder.Text);
 
             return ret;
         }

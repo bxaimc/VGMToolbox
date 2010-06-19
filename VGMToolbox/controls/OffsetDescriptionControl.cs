@@ -68,6 +68,17 @@ namespace VGMToolbox.controls
             this.comboByteOrder.Text = byteOrder;
         }
 
+        public bool IsValid(string offsetLabel)
+        {
+            bool isValid = true;
+
+            isValid &= AVgmtForm.checkTextBox(this.tbOffset.Text, offsetLabel + " Offset");
+            isValid &= AVgmtForm.checkTextBox(this.comboSize.Text, offsetLabel + " Size");
+            isValid &= AVgmtForm.checkTextBox(this.comboByteOrder.Text, offsetLabel + " Byte Order");
+
+            return isValid;
+        }
+
         //----------------
         // initialization
         //----------------

@@ -257,29 +257,29 @@ namespace VGMToolbox.forms.extraction
 
         private bool validateInputs()
         {
-            bool ret = base.checkTextBox(this.tbSearchString.Text, "Search String");
+            bool ret = AVgmtForm.checkTextBox(this.tbSearchString.Text, "Search String");
 
             if (cbDoCut.Checked)
             {
                 if (!String.IsNullOrEmpty(this.tbOutputFolder.Text))
                 {
-                    ret = ret && base.checkFolderExists(this.tbOutputFolder.Text, this.lblOutputFolder.Text);
+                    ret = ret && AVgmtForm.checkFolderExists(this.tbOutputFolder.Text, this.lblOutputFolder.Text);
                 }
-                ret = ret && base.checkTextBox(this.tbOutputExtension.Text, "Output Extension");
+                ret = ret && AVgmtForm.checkTextBox(this.tbOutputExtension.Text, "Output Extension");
 
                 if (this.rbStaticCutSize.Checked)
                 {
-                    ret = ret && base.checkTextBox(this.tbStaticCutsize.Text, "Static Cut Size");
+                    ret = ret && AVgmtForm.checkTextBox(this.tbStaticCutsize.Text, "Static Cut Size");
                 }
                 else if (rbOffsetBasedCutSize.Checked)
                 {
-                    ret = ret && base.checkTextBox(this.tbCutSizeOffset.Text, "Cut Size Offset");
-                    ret = ret && base.checkTextBox((string)this.cbOffsetSize.Text, "Offset Size");
-                    ret = ret && base.checkTextBox((string)this.cbByteOrder.Text, "Byte Order");
+                    ret = ret && AVgmtForm.checkTextBox(this.tbCutSizeOffset.Text, "Cut Size Offset");
+                    ret = ret && AVgmtForm.checkTextBox((string)this.cbOffsetSize.Text, "Offset Size");
+                    ret = ret && AVgmtForm.checkTextBox((string)this.cbByteOrder.Text, "Byte Order");
                 }
                 else
                 {
-                    ret = ret && base.checkTextBox(this.tbTerminatorString.Text, "Terminator String");
+                    ret = ret && AVgmtForm.checkTextBox(this.tbTerminatorString.Text, "Terminator String");
                 }
             }
 
@@ -517,7 +517,7 @@ namespace VGMToolbox.forms.extraction
                         comboPresets.Items.Add(preset);
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     MessageBox.Show(String.Format("Error loading preset file <{0}>", Path.GetFileName(f)), "Error");
                 }

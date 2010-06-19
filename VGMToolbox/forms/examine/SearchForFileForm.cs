@@ -76,7 +76,7 @@ namespace VGMToolbox.forms.examine
         }
         private void btnDoTask_Click(object sender, EventArgs e)
         {
-            if (base.checkFolderExists(tbSource.Text, this.grpSource.Text))
+            if (AVgmtForm.checkFolderExists(tbSource.Text, this.grpSource.Text))
             {
                 string[] s = new string[1];
                 s[0] = tbSource.Text;

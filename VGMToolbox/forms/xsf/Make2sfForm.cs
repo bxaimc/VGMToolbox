@@ -254,7 +254,7 @@ namespace VGMToolbox.forms.xsf
         }
         private bool CheckInputs()
         {
-            return base.checkFolderExists(tbOutputPath.Text, this.lblOutputPath.Text);
+            return AVgmtForm.checkFolderExists(tbOutputPath.Text, this.lblOutputPath.Text);
         }
 
         private void dataGridSseq_CellEndEdit(object sender, DataGridViewCellEventArgs e)
