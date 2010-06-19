@@ -303,15 +303,6 @@ namespace VGMToolbox.forms.stream
             e.Handled = true;
         }
 
-        private void comboRiffFrequency_KeyDown(object sender, KeyEventArgs e)
-        {
-            e.Handled = true;
-        }
-        private void comboRiffFrequency_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            e.Handled = true;
-        }
-
         private void comboRiffChannels_KeyDown(object sender, KeyEventArgs e)
         {
             e.Handled = true;
