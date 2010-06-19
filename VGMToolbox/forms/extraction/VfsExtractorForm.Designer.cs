@@ -32,11 +32,11 @@
             this.fileCountOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
             this.headerSizeOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
             this.rbHeaderSizeOffset = new System.Windows.Forms.RadioButton();
-            this.tbFileCountEndOffset = new System.Windows.Forms.TextBox();
-            this.rbFileCountEndOffset = new System.Windows.Forms.RadioButton();
-            this.tbFileCountValue = new System.Windows.Forms.TextBox();
-            this.rbOffsetBasedFileCount = new System.Windows.Forms.RadioButton();
-            this.rbUserEnteredFileCount = new System.Windows.Forms.RadioButton();
+            this.tbHeaderSizeValue = new System.Windows.Forms.TextBox();
+            this.rbHeaderSizeValue = new System.Windows.Forms.RadioButton();
+            this.tbStaticFileCount = new System.Windows.Forms.TextBox();
+            this.rbFileCountOffset = new System.Windows.Forms.RadioButton();
+            this.rbStaticFileCount = new System.Windows.Forms.RadioButton();
             this.grpPresets = new System.Windows.Forms.GroupBox();
             this.btnRefresh = new System.Windows.Forms.Button();
             this.btnSavePreset = new System.Windows.Forms.Button();
@@ -60,11 +60,11 @@
             this.tbFileRecordNameOffset = new System.Windows.Forms.TextBox();
             this.cbFileNameIsPresent = new System.Windows.Forms.CheckBox();
             this.grpIndividualFileLength = new System.Windows.Forms.GroupBox();
-            this.calculatingOffsetDescriptionControl1 = new VGMToolbox.controls.CalculatingOffsetDescriptionControl();
+            this.fileLengthOffsetDescription = new VGMToolbox.controls.CalculatingOffsetDescriptionControl();
             this.rbUseOffsetsToDetermineLength = new System.Windows.Forms.RadioButton();
             this.rbUseVfsFileLength = new System.Windows.Forms.RadioButton();
             this.grpIndividualFileOffset = new System.Windows.Forms.GroupBox();
-            this.fileOffsetOffsetDescriptionControl1 = new VGMToolbox.controls.CalculatingOffsetDescriptionControl();
+            this.fileOffsetOffsetDescription = new VGMToolbox.controls.CalculatingOffsetDescriptionControl();
             this.tbByteAlignement = new System.Windows.Forms.TextBox();
             this.cbDoOffsetByteAlginment = new System.Windows.Forms.CheckBox();
             this.lblUseFileLengthToDetermineOffset = new System.Windows.Forms.Label();
@@ -106,7 +106,7 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 443);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 441);
             this.pnlLabels.Size = new System.Drawing.Size(789, 19);
             // 
             // pnlTitle
@@ -115,13 +115,13 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 366);
+            this.tbOutput.Location = new System.Drawing.Point(0, 364);
             this.tbOutput.Size = new System.Drawing.Size(789, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 346);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 344);
             this.pnlButtons.Size = new System.Drawing.Size(789, 20);
             // 
             // btnCancel
@@ -138,11 +138,11 @@
             this.grpFileCount.Controls.Add(this.fileCountOffsetDescription);
             this.grpFileCount.Controls.Add(this.headerSizeOffsetDescription);
             this.grpFileCount.Controls.Add(this.rbHeaderSizeOffset);
-            this.grpFileCount.Controls.Add(this.tbFileCountEndOffset);
-            this.grpFileCount.Controls.Add(this.rbFileCountEndOffset);
-            this.grpFileCount.Controls.Add(this.tbFileCountValue);
-            this.grpFileCount.Controls.Add(this.rbOffsetBasedFileCount);
-            this.grpFileCount.Controls.Add(this.rbUserEnteredFileCount);
+            this.grpFileCount.Controls.Add(this.tbHeaderSizeValue);
+            this.grpFileCount.Controls.Add(this.rbHeaderSizeValue);
+            this.grpFileCount.Controls.Add(this.tbStaticFileCount);
+            this.grpFileCount.Controls.Add(this.rbFileCountOffset);
+            this.grpFileCount.Controls.Add(this.rbStaticFileCount);
             this.grpFileCount.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFileCount.Location = new System.Drawing.Point(0, 0);
             this.grpFileCount.Name = "grpFileCount";
@@ -182,56 +182,56 @@
             this.rbHeaderSizeOffset.Text = "Header Size is at Offset";
             this.rbHeaderSizeOffset.UseVisualStyleBackColor = true;
             // 
-            // tbFileCountEndOffset
+            // tbHeaderSizeValue
             // 
-            this.tbFileCountEndOffset.Location = new System.Drawing.Point(148, 18);
-            this.tbFileCountEndOffset.Name = "tbFileCountEndOffset";
-            this.tbFileCountEndOffset.Size = new System.Drawing.Size(70, 20);
-            this.tbFileCountEndOffset.TabIndex = 9;
+            this.tbHeaderSizeValue.Location = new System.Drawing.Point(148, 18);
+            this.tbHeaderSizeValue.Name = "tbHeaderSizeValue";
+            this.tbHeaderSizeValue.Size = new System.Drawing.Size(70, 20);
+            this.tbHeaderSizeValue.TabIndex = 9;
             // 
-            // rbFileCountEndOffset
+            // rbHeaderSizeValue
             // 
-            this.rbFileCountEndOffset.AutoSize = true;
-            this.rbFileCountEndOffset.Location = new System.Drawing.Point(6, 19);
-            this.rbFileCountEndOffset.Name = "rbFileCountEndOffset";
-            this.rbFileCountEndOffset.Size = new System.Drawing.Size(130, 17);
-            this.rbFileCountEndOffset.TabIndex = 8;
-            this.rbFileCountEndOffset.TabStop = true;
-            this.rbFileCountEndOffset.Text = "Header Ends at Offset";
-            this.rbFileCountEndOffset.UseVisualStyleBackColor = true;
-            this.rbFileCountEndOffset.CheckedChanged += new System.EventHandler(this.rbFileCountEndOffset_CheckedChanged);
+            this.rbHeaderSizeValue.AutoSize = true;
+            this.rbHeaderSizeValue.Location = new System.Drawing.Point(6, 19);
+            this.rbHeaderSizeValue.Name = "rbHeaderSizeValue";
+            this.rbHeaderSizeValue.Size = new System.Drawing.Size(130, 17);
+            this.rbHeaderSizeValue.TabIndex = 8;
+            this.rbHeaderSizeValue.TabStop = true;
+            this.rbHeaderSizeValue.Text = "Header Ends at Offset";
+            this.rbHeaderSizeValue.UseVisualStyleBackColor = true;
+            this.rbHeaderSizeValue.CheckedChanged += new System.EventHandler(this.rbFileCountEndOffset_CheckedChanged);
             // 
-            // tbFileCountValue
+            // tbStaticFileCount
             // 
-            this.tbFileCountValue.Location = new System.Drawing.Point(148, 65);
-            this.tbFileCountValue.MaxLength = 10;
-            this.tbFileCountValue.Name = "tbFileCountValue";
-            this.tbFileCountValue.Size = new System.Drawing.Size(70, 20);
-            this.tbFileCountValue.TabIndex = 3;
+            this.tbStaticFileCount.Location = new System.Drawing.Point(148, 65);
+            this.tbStaticFileCount.MaxLength = 10;
+            this.tbStaticFileCount.Name = "tbStaticFileCount";
+            this.tbStaticFileCount.Size = new System.Drawing.Size(70, 20);
+            this.tbStaticFileCount.TabIndex = 3;
             // 
-            // rbOffsetBasedFileCount
+            // rbFileCountOffset
             // 
-            this.rbOffsetBasedFileCount.AutoSize = true;
-            this.rbOffsetBasedFileCount.Location = new System.Drawing.Point(6, 89);
-            this.rbOffsetBasedFileCount.Name = "rbOffsetBasedFileCount";
-            this.rbOffsetBasedFileCount.Size = new System.Drawing.Size(125, 17);
-            this.rbOffsetBasedFileCount.TabIndex = 1;
-            this.rbOffsetBasedFileCount.TabStop = true;
-            this.rbOffsetBasedFileCount.Text = "File Count is at Offset";
-            this.rbOffsetBasedFileCount.UseVisualStyleBackColor = true;
-            this.rbOffsetBasedFileCount.CheckedChanged += new System.EventHandler(this.rbOffsetBasedFileCount_CheckedChanged);
+            this.rbFileCountOffset.AutoSize = true;
+            this.rbFileCountOffset.Location = new System.Drawing.Point(6, 89);
+            this.rbFileCountOffset.Name = "rbFileCountOffset";
+            this.rbFileCountOffset.Size = new System.Drawing.Size(125, 17);
+            this.rbFileCountOffset.TabIndex = 1;
+            this.rbFileCountOffset.TabStop = true;
+            this.rbFileCountOffset.Text = "File Count is at Offset";
+            this.rbFileCountOffset.UseVisualStyleBackColor = true;
+            this.rbFileCountOffset.CheckedChanged += new System.EventHandler(this.rbOffsetBasedFileCount_CheckedChanged);
             // 
-            // rbUserEnteredFileCount
+            // rbStaticFileCount
             // 
-            this.rbUserEnteredFileCount.AutoSize = true;
-            this.rbUserEnteredFileCount.Location = new System.Drawing.Point(6, 66);
-            this.rbUserEnteredFileCount.Name = "rbUserEnteredFileCount";
-            this.rbUserEnteredFileCount.Size = new System.Drawing.Size(107, 17);
-            this.rbUserEnteredFileCount.TabIndex = 0;
-            this.rbUserEnteredFileCount.TabStop = true;
-            this.rbUserEnteredFileCount.Text = "File Count Equals";
-            this.rbUserEnteredFileCount.UseVisualStyleBackColor = true;
-            this.rbUserEnteredFileCount.CheckedChanged += new System.EventHandler(this.rbUserEnteredFileCount_CheckedChanged);
+            this.rbStaticFileCount.AutoSize = true;
+            this.rbStaticFileCount.Location = new System.Drawing.Point(6, 66);
+            this.rbStaticFileCount.Name = "rbStaticFileCount";
+            this.rbStaticFileCount.Size = new System.Drawing.Size(107, 17);
+            this.rbStaticFileCount.TabIndex = 0;
+            this.rbStaticFileCount.TabStop = true;
+            this.rbStaticFileCount.Text = "File Count Equals";
+            this.rbStaticFileCount.UseVisualStyleBackColor = true;
+            this.rbStaticFileCount.CheckedChanged += new System.EventHandler(this.rbUserEnteredFileCount_CheckedChanged);
             // 
             // grpPresets
             // 
@@ -477,7 +477,7 @@
             // 
             // grpIndividualFileLength
             // 
-            this.grpIndividualFileLength.Controls.Add(this.calculatingOffsetDescriptionControl1);
+            this.grpIndividualFileLength.Controls.Add(this.fileLengthOffsetDescription);
             this.grpIndividualFileLength.Controls.Add(this.rbUseOffsetsToDetermineLength);
             this.grpIndividualFileLength.Controls.Add(this.rbUseVfsFileLength);
             this.grpIndividualFileLength.Dock = System.Windows.Forms.DockStyle.Top;
@@ -488,16 +488,16 @@
             this.grpIndividualFileLength.TabStop = false;
             this.grpIndividualFileLength.Text = "Individual File Length";
             // 
-            // calculatingOffsetDescriptionControl1
+            // fileLengthOffsetDescription
             // 
-            this.calculatingOffsetDescriptionControl1.CalculationValue = "";
-            this.calculatingOffsetDescriptionControl1.Location = new System.Drawing.Point(90, 15);
-            this.calculatingOffsetDescriptionControl1.Name = "calculatingOffsetDescriptionControl1";
-            this.calculatingOffsetDescriptionControl1.OffsetByteOrder = "Little Endian";
-            this.calculatingOffsetDescriptionControl1.OffsetSize = "4";
-            this.calculatingOffsetDescriptionControl1.OffsetValue = "";
-            this.calculatingOffsetDescriptionControl1.Size = new System.Drawing.Size(422, 53);
-            this.calculatingOffsetDescriptionControl1.TabIndex = 10;
+            this.fileLengthOffsetDescription.CalculationValue = "";
+            this.fileLengthOffsetDescription.Location = new System.Drawing.Point(90, 15);
+            this.fileLengthOffsetDescription.Name = "fileLengthOffsetDescription";
+            this.fileLengthOffsetDescription.OffsetByteOrder = "Little Endian";
+            this.fileLengthOffsetDescription.OffsetSize = "4";
+            this.fileLengthOffsetDescription.OffsetValue = "";
+            this.fileLengthOffsetDescription.Size = new System.Drawing.Size(422, 53);
+            this.fileLengthOffsetDescription.TabIndex = 10;
             // 
             // rbUseOffsetsToDetermineLength
             // 
@@ -525,7 +525,7 @@
             // 
             // grpIndividualFileOffset
             // 
-            this.grpIndividualFileOffset.Controls.Add(this.fileOffsetOffsetDescriptionControl1);
+            this.grpIndividualFileOffset.Controls.Add(this.fileOffsetOffsetDescription);
             this.grpIndividualFileOffset.Controls.Add(this.tbByteAlignement);
             this.grpIndividualFileOffset.Controls.Add(this.cbDoOffsetByteAlginment);
             this.grpIndividualFileOffset.Controls.Add(this.lblUseFileLengthToDetermineOffset);
@@ -540,16 +540,16 @@
             this.grpIndividualFileOffset.TabStop = false;
             this.grpIndividualFileOffset.Text = "Individual File Offset";
             // 
-            // fileOffsetOffsetDescriptionControl1
+            // fileOffsetOffsetDescription
             // 
-            this.fileOffsetOffsetDescriptionControl1.CalculationValue = "";
-            this.fileOffsetOffsetDescriptionControl1.Location = new System.Drawing.Point(84, 15);
-            this.fileOffsetOffsetDescriptionControl1.Name = "fileOffsetOffsetDescriptionControl1";
-            this.fileOffsetOffsetDescriptionControl1.OffsetByteOrder = "Little Endian";
-            this.fileOffsetOffsetDescriptionControl1.OffsetSize = "4";
-            this.fileOffsetOffsetDescriptionControl1.OffsetValue = "";
-            this.fileOffsetOffsetDescriptionControl1.Size = new System.Drawing.Size(422, 53);
-            this.fileOffsetOffsetDescriptionControl1.TabIndex = 15;
+            this.fileOffsetOffsetDescription.CalculationValue = "";
+            this.fileOffsetOffsetDescription.Location = new System.Drawing.Point(84, 15);
+            this.fileOffsetOffsetDescription.Name = "fileOffsetOffsetDescription";
+            this.fileOffsetOffsetDescription.OffsetByteOrder = "Little Endian";
+            this.fileOffsetOffsetDescription.OffsetSize = "4";
+            this.fileOffsetOffsetDescription.OffsetValue = "";
+            this.fileOffsetOffsetDescription.Size = new System.Drawing.Size(422, 53);
+            this.fileOffsetOffsetDescription.TabIndex = 15;
             // 
             // tbByteAlignement
             // 
@@ -672,7 +672,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 170);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(789, 176);
+            this.panel1.Size = new System.Drawing.Size(789, 174);
             this.panel1.TabIndex = 10;
             // 
             // grpSourceFiles
@@ -798,7 +798,7 @@
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(789, 484);
+            this.ClientSize = new System.Drawing.Size(789, 482);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.grpSourceFiles);
             this.Controls.Add(this.grpPresets);
@@ -845,12 +845,12 @@
         #endregion
 
         private System.Windows.Forms.GroupBox grpFileCount;
-        private System.Windows.Forms.RadioButton rbOffsetBasedFileCount;
-        private System.Windows.Forms.RadioButton rbUserEnteredFileCount;
+        private System.Windows.Forms.RadioButton rbFileCountOffset;
+        private System.Windows.Forms.RadioButton rbStaticFileCount;
         private System.Windows.Forms.GroupBox grpPresets;
-        private System.Windows.Forms.TextBox tbFileCountValue;
-        private System.Windows.Forms.RadioButton rbFileCountEndOffset;
-        private System.Windows.Forms.TextBox tbFileCountEndOffset;
+        private System.Windows.Forms.TextBox tbStaticFileCount;
+        private System.Windows.Forms.RadioButton rbHeaderSizeValue;
+        private System.Windows.Forms.TextBox tbHeaderSizeValue;
         private System.Windows.Forms.GroupBox grpFileRecordInfo;
         private System.Windows.Forms.Label lblFileRecordSize;
         private System.Windows.Forms.ComboBox comboFileRecordSize;
@@ -901,8 +901,8 @@
         private System.Windows.Forms.TextBox tbByteAlignement;
         private VGMToolbox.controls.OffsetDescriptionControl headerSizeOffsetDescription;
         private VGMToolbox.controls.OffsetDescriptionControl fileCountOffsetDescription;
-        private VGMToolbox.controls.CalculatingOffsetDescriptionControl fileOffsetOffsetDescriptionControl1;
-        private VGMToolbox.controls.CalculatingOffsetDescriptionControl calculatingOffsetDescriptionControl1;
+        private VGMToolbox.controls.CalculatingOffsetDescriptionControl fileOffsetOffsetDescription;
+        private VGMToolbox.controls.CalculatingOffsetDescriptionControl fileLengthOffsetDescription;
         private VGMToolbox.controls.OffsetDescriptionControl fileNameRelativeOffsetOffsetDescription;
         private VGMToolbox.controls.OffsetDescriptionControl fileNameAbsoluteOffsetOffsetDescription;
     }

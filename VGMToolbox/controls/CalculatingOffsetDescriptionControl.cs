@@ -6,6 +6,8 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 
+using VGMToolbox.util;
+
 namespace VGMToolbox.controls
 {
     public partial class CalculatingOffsetDescriptionControl : OffsetDescriptionControl
@@ -31,6 +33,18 @@ namespace VGMToolbox.controls
                 base.Enabled = value;
                 this.tbCalculation.Enabled = value;
             }
+        }
+
+        public new CalculatingOffsetDescription GetOffsetValues()
+        {
+            CalculatingOffsetDescription allValues = new CalculatingOffsetDescription();
+
+            allValues.OffsetValue = this.tbOffset.Text;
+            allValues.OffsetSize = this.comboSize.Text;
+            allValues.OffsetByteOrder = this.comboByteOrder.Text;
+            allValues.CalculationString = this.tbCalculation.Text;
+
+            return allValues;
         }
     }
 }

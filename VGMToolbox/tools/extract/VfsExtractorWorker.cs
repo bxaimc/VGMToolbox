@@ -14,7 +14,7 @@ namespace VGMToolbox.tools.extract
         public const string RELATIVE_TO_END_OF_FILE_RECORD = "End of File Record";
 
         public struct VfsExtractorStruct : IVgmtWorkerStruct
-        {
+        {            
             public string[] SourcePaths { set; get; }
             public string HeaderSourcePath { set; get; }
             public string OutputFolderPath { set; get; }

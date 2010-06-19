@@ -1007,7 +1007,7 @@ namespace VGMToolbox.util
                             cutOffset = previousCutOffset + previousCutLength;
 
                             // adjust for byte alignment
-                            if (!String.IsNullOrEmpty(vfsInformation.ByteAlignmentValue))
+                            if (vfsInformation.UseByteAlignmentValue)
                             {
                                 byteAlignmentValue = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.ByteAlignmentValue);
 

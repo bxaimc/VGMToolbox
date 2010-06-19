@@ -1,6 +1,8 @@
 ﻿using System.Windows.Forms;
 
+using VGMToolbox.plugin;
 using VGMToolbox.util;
+
 
 namespace VGMToolbox.controls
 {

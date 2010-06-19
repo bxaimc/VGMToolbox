@@ -360,6 +360,7 @@ namespace VGMToolbox.util
 
         public bool UsePreviousFilesSizeToDetermineOffset { set; get; }
         public string BeginCuttingFilesAtOffset { set; get; }
+        public bool UseByteAlignmentValue { set; get; }
         public string ByteAlignmentValue { set; get; }
 
         // file length/size
