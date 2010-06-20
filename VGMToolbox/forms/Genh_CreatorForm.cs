@@ -35,7 +35,7 @@ namespace VGMToolbox.forms
             this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_Title"];            
             this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_IntroText"];
             
-            this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_GroupSourceFiles"];
+            //this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_GroupSourceFiles"];
             this.tbSourceDirectory.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_tbSourceDirectory"];
             this.lblFilenameFilter.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_LblFilenameFilter"];
             this.grpFormat.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_GroupFormat"];
