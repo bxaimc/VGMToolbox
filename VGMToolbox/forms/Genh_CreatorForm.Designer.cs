@@ -48,6 +48,8 @@
             this.cbCapcomHack = new System.Windows.Forms.CheckBox();
             this.tbRightCoef = new System.Windows.Forms.TextBox();
             this.grpLoopOptions = new System.Windows.Forms.GroupBox();
+            this.cbLoopEndBytesToSamples = new System.Windows.Forms.CheckBox();
+            this.cbLoopStartBytesToSamples = new System.Windows.Forms.CheckBox();
             this.lblLoopStart = new System.Windows.Forms.Label();
             this.cbUseLoopEndOffset = new System.Windows.Forms.CheckBox();
             this.lblLoopEnd = new System.Windows.Forms.Label();
@@ -63,6 +65,7 @@
             this.grpGeneralOptions = new System.Windows.Forms.GroupBox();
             this.lblHeaderSkip = new System.Windows.Forms.Label();
             this.cbHeaderSkip = new System.Windows.Forms.ComboBox();
+            this.lblInterleave = new System.Windows.Forms.Label();
             this.cbInterleave = new System.Windows.Forms.ComboBox();
             this.cbChannels = new System.Windows.Forms.ComboBox();
             this.lblFrequency = new System.Windows.Forms.Label();
@@ -70,7 +73,6 @@
             this.cbFrequency = new System.Windows.Forms.ComboBox();
             this.frequencyOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
             this.lblChannels = new System.Windows.Forms.Label();
-            this.lblInterleave = new System.Windows.Forms.Label();
             this.grpFunction = new System.Windows.Forms.GroupBox();
             this.lblFilenameFilter = new System.Windows.Forms.Label();
             this.tbFilenameFilter = new System.Windows.Forms.TextBox();
@@ -93,7 +95,7 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 677);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 543);
             this.pnlLabels.Size = new System.Drawing.Size(789, 19);
             // 
             // pnlTitle
@@ -102,13 +104,13 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 600);
+            this.tbOutput.Location = new System.Drawing.Point(0, 466);
             this.tbOutput.Size = new System.Drawing.Size(789, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 580);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 446);
             this.pnlButtons.Size = new System.Drawing.Size(789, 20);
             // 
             // btnCancel
@@ -126,7 +128,7 @@
             this.grpFormat.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFormat.Location = new System.Drawing.Point(0, 0);
             this.grpFormat.Name = "grpFormat";
-            this.grpFormat.Size = new System.Drawing.Size(783, 41);
+            this.grpFormat.Size = new System.Drawing.Size(766, 41);
             this.grpFormat.TabIndex = 7;
             this.grpFormat.TabStop = false;
             this.grpFormat.Text = "Format";
@@ -222,7 +224,7 @@
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpOptions.Location = new System.Drawing.Point(0, 178);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(789, 402);
+            this.grpOptions.Size = new System.Drawing.Size(789, 268);
             this.grpOptions.TabIndex = 12;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
@@ -230,6 +232,7 @@
             // pnlOptions
             // 
             this.pnlOptions.AutoScroll = true;
+            this.pnlOptions.AutoSize = true;
             this.pnlOptions.Controls.Add(this.grpCoefOptions);
             this.pnlOptions.Controls.Add(this.grpLoopOptions);
             this.pnlOptions.Controls.Add(this.grpGeneralOptions);
@@ -237,7 +240,7 @@
             this.pnlOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlOptions.Location = new System.Drawing.Point(3, 16);
             this.pnlOptions.Name = "pnlOptions";
-            this.pnlOptions.Size = new System.Drawing.Size(783, 383);
+            this.pnlOptions.Size = new System.Drawing.Size(783, 249);
             this.pnlOptions.TabIndex = 0;
             // 
             // grpCoefOptions
@@ -250,7 +253,7 @@
             this.grpCoefOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpCoefOptions.Location = new System.Drawing.Point(0, 281);
             this.grpCoefOptions.Name = "grpCoefOptions";
-            this.grpCoefOptions.Size = new System.Drawing.Size(783, 67);
+            this.grpCoefOptions.Size = new System.Drawing.Size(766, 67);
             this.grpCoefOptions.TabIndex = 37;
             this.grpCoefOptions.TabStop = false;
             this.grpCoefOptions.Text = "Coefficients";
@@ -299,6 +302,8 @@
             // 
             // grpLoopOptions
             // 
+            this.grpLoopOptions.Controls.Add(this.cbLoopEndBytesToSamples);
+            this.grpLoopOptions.Controls.Add(this.cbLoopStartBytesToSamples);
             this.grpLoopOptions.Controls.Add(this.lblLoopStart);
             this.grpLoopOptions.Controls.Add(this.cbUseLoopEndOffset);
             this.grpLoopOptions.Controls.Add(this.lblLoopEnd);
@@ -314,10 +319,30 @@
             this.grpLoopOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpLoopOptions.Location = new System.Drawing.Point(0, 152);
             this.grpLoopOptions.Name = "grpLoopOptions";
-            this.grpLoopOptions.Size = new System.Drawing.Size(783, 129);
+            this.grpLoopOptions.Size = new System.Drawing.Size(766, 129);
             this.grpLoopOptions.TabIndex = 36;
             this.grpLoopOptions.TabStop = false;
             this.grpLoopOptions.Text = "Looping";
+            // 
+            // cbLoopEndBytesToSamples
+            // 
+            this.cbLoopEndBytesToSamples.AutoSize = true;
+            this.cbLoopEndBytesToSamples.Location = new System.Drawing.Point(486, 88);
+            this.cbLoopEndBytesToSamples.Name = "cbLoopEndBytesToSamples";
+            this.cbLoopEndBytesToSamples.Size = new System.Drawing.Size(107, 17);
+            this.cbLoopEndBytesToSamples.TabIndex = 36;
+            this.cbLoopEndBytesToSamples.Text = "Bytes to Samples";
+            this.cbLoopEndBytesToSamples.UseVisualStyleBackColor = true;
+            // 
+            // cbLoopStartBytesToSamples
+            // 
+            this.cbLoopStartBytesToSamples.AutoSize = true;
+            this.cbLoopStartBytesToSamples.Location = new System.Drawing.Point(486, 40);
+            this.cbLoopStartBytesToSamples.Name = "cbLoopStartBytesToSamples";
+            this.cbLoopStartBytesToSamples.Size = new System.Drawing.Size(107, 17);
+            this.cbLoopStartBytesToSamples.TabIndex = 35;
+            this.cbLoopStartBytesToSamples.Text = "Bytes to Samples";
+            this.cbLoopStartBytesToSamples.UseVisualStyleBackColor = true;
             // 
             // lblLoopStart
             // 
@@ -456,7 +481,7 @@
             this.grpGeneralOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpGeneralOptions.Location = new System.Drawing.Point(0, 41);
             this.grpGeneralOptions.Name = "grpGeneralOptions";
-            this.grpGeneralOptions.Size = new System.Drawing.Size(783, 111);
+            this.grpGeneralOptions.Size = new System.Drawing.Size(766, 111);
             this.grpGeneralOptions.TabIndex = 35;
             this.grpGeneralOptions.TabStop = false;
             this.grpGeneralOptions.Text = "General";
@@ -479,6 +504,15 @@
             this.cbHeaderSkip.TabIndex = 21;
             this.cbHeaderSkip.Text = "0";
             this.cbHeaderSkip.SelectedValueChanged += new System.EventHandler(this.cbHeaderSkip_SelectedValueChanged);
+            // 
+            // lblInterleave
+            // 
+            this.lblInterleave.AutoSize = true;
+            this.lblInterleave.Location = new System.Drawing.Point(241, 16);
+            this.lblInterleave.Name = "lblInterleave";
+            this.lblInterleave.Size = new System.Drawing.Size(54, 13);
+            this.lblInterleave.TabIndex = 3;
+            this.lblInterleave.Text = "Interleave";
             // 
             // cbInterleave
             // 
@@ -517,6 +551,7 @@
             this.cbUseFrequencyOffset.TabIndex = 30;
             this.cbUseFrequencyOffset.Text = "Use Offset";
             this.cbUseFrequencyOffset.UseVisualStyleBackColor = true;
+            this.cbUseFrequencyOffset.CheckedChanged += new System.EventHandler(this.cbUseFrequencyOffset_CheckedChanged);
             // 
             // cbFrequency
             // 
@@ -545,15 +580,6 @@
             this.lblChannels.Size = new System.Drawing.Size(51, 13);
             this.lblChannels.TabIndex = 5;
             this.lblChannels.Text = "Channels";
-            // 
-            // lblInterleave
-            // 
-            this.lblInterleave.AutoSize = true;
-            this.lblInterleave.Location = new System.Drawing.Point(241, 16);
-            this.lblInterleave.Name = "lblInterleave";
-            this.lblInterleave.Size = new System.Drawing.Size(54, 13);
-            this.lblInterleave.TabIndex = 3;
-            this.lblInterleave.Text = "Interleave";
             // 
             // grpFunction
             // 
@@ -621,7 +647,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(789, 718);
+            this.ClientSize = new System.Drawing.Size(789, 584);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpFunction);
             this.Name = "Genh_CreatorForm";
@@ -642,6 +668,7 @@
             this.contextMenuRefresh.ResumeLayout(false);
             this.contextMenuBytesToSamples.ResumeLayout(false);
             this.grpOptions.ResumeLayout(false);
+            this.grpOptions.PerformLayout();
             this.pnlOptions.ResumeLayout(false);
             this.grpCoefOptions.ResumeLayout(false);
             this.grpCoefOptions.PerformLayout();
@@ -706,5 +733,7 @@
         private System.Windows.Forms.TextBox tbSourceDirectory;
         private System.Windows.Forms.ListBox lbFiles;
         private System.Windows.Forms.Button btnBrowseDirectory;
+        private System.Windows.Forms.CheckBox cbLoopEndBytesToSamples;
+        private System.Windows.Forms.CheckBox cbLoopStartBytesToSamples;
     }
 }

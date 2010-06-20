@@ -16,7 +16,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.forms
 {
-    public partial class Genh_CreatorForm : AVgmtForm
+    public partial class Genh_CreatorForm : VgmtForm
     {
         public const int NO_LABEL_SELECTED = -1;
         public const int LOOP_START_LABEL_SELECTED = 1;
@@ -72,6 +72,8 @@ namespace VGMToolbox.forms
 
             // setup looping section
             this.doLoopCheckboxes();
+
+            this.doFrequencyCheckbox();
 
             this.selectedLabel = NO_LABEL_SELECTED;
         }
@@ -244,8 +246,8 @@ namespace VGMToolbox.forms
         private void doLoopStartCheckbox()
         {
             this.loopStartOffsetDescription.Enabled = cbUseLoopStartOffset.Checked;
-            this.tbLoopStart.Enabled = !cbUseLoopStartOffset.Checked;
-
+            this.cbLoopStartBytesToSamples.Enabled = cbUseLoopStartOffset.Checked;
+            this.tbLoopStart.Enabled = !cbUseLoopStartOffset.Checked;            
         }
         private void cbUseLoopStartOffset_CheckedChanged(object sender, EventArgs e)
         {
@@ -255,6 +257,7 @@ namespace VGMToolbox.forms
         private void doLoopEndCheckbox()
         {
             this.loopEndOffsetDescription.Enabled = cbUseLoopEndOffset.Checked;
+            this.cbLoopEndBytesToSamples.Enabled = cbUseLoopEndOffset.Checked;
             this.tbLoopEnd.Enabled = !cbUseLoopEndOffset.Checked;
 
         }
@@ -731,5 +734,15 @@ namespace VGMToolbox.forms
         }
 
         #endregion
+
+        private void doFrequencyCheckbox()
+        {
+            this.frequencyOffsetDescription.Enabled = this.cbUseFrequencyOffset.Checked;
+            this.cbFrequency.Enabled = !this.cbUseFrequencyOffset.Checked;
+        }        
+        private void cbUseFrequencyOffset_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doFrequencyCheckbox();
+        }
     }
 }
