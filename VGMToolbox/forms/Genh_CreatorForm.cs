@@ -16,7 +16,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.forms
 {
-    public partial class Genh_CreatorForm : AVgmtForm
+    public partial class Genh_CreatorForm : VgmtForm
     {
         public const int NO_LABEL_SELECTED = -1;
         public const int LOOP_START_LABEL_SELECTED = 1;
@@ -31,7 +31,7 @@ namespace VGMToolbox.forms
             : base(pTreeNode)
         {
             InitializeComponent();
-
+            
             this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_Title"];            
             this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_IntroText"];
             
@@ -64,11 +64,17 @@ namespace VGMToolbox.forms
             rbCreate.Checked = true;
             this.updateFormForTask();
 
+            // hide edit button
             rbEdit.Hide();
+
+            // setup looping section
+            this.doLoopCheckboxes();
 
             this.selectedLabel = NO_LABEL_SELECTED;
         }
-             
+
+        #region INITIALIZE FUNCTIONS
+        
         private void loadFormats()
         {
             this.comboFormat.DataSource = SqlLiteUtil.GetSimpleDataTable(DB_PATH, "GenhFormats", "GenhFormatDescription");
@@ -121,6 +127,8 @@ namespace VGMToolbox.forms
             this.cbFrequency.Items.Add("48000");
 
         }
+        
+        #endregion
 
         private void comboFormat_KeyDown(object sender, KeyEventArgs e)
         {
@@ -188,31 +196,70 @@ namespace VGMToolbox.forms
             this.showLoopPointsForSelectedFile();
         }
 
+        #region LOOPING GUI
+
         private void doLoopCheckboxes()
         {
             if (cbManualEntry.Checked)
             {
                 this.tbLoopStart.ReadOnly = false;
+                this.cbUseLoopStartOffset.Enabled = true;
+
                 this.tbLoopEnd.ReadOnly = false;
+                this.cbUseLoopEndOffset.Enabled = true;
             }
             else if (cbNoLoops.Checked || cbFindLoop.Checked)
             {
                 this.tbLoopStart.Clear();
                 this.tbLoopStart.ReadOnly = true;
+                this.cbUseLoopStartOffset.Checked = false;
+                this.cbUseLoopStartOffset.Enabled = false;
 
                 this.tbLoopEnd.Clear();
                 this.tbLoopEnd.ReadOnly = true;
+                this.cbUseLoopEndOffset.Checked = false;
+                this.cbUseLoopEndOffset.Enabled = false;
             }
             else if (cbLoopFileEnd.Checked)
             {
                 this.tbLoopStart.ReadOnly = false;
+                this.cbUseLoopStartOffset.Enabled = true;
 
                 this.tbLoopEnd.Clear();
-                this.tbLoopEnd.ReadOnly = true;            
+                this.tbLoopEnd.ReadOnly = true;                
+                this.cbUseLoopEndOffset.Checked = false;
+                this.cbUseLoopEndOffset.Enabled = false;
             }
 
+            this.doLoopStartCheckbox();
+            this.doLoopEndCheckbox();
             this.showLoopPointsForSelectedFile();
         }
+
+        private void doLoopStartCheckbox()
+        {
+            this.loopStartOffsetDescription.Enabled = cbUseLoopStartOffset.Checked;
+            this.tbLoopStart.Enabled = !cbUseLoopStartOffset.Checked;
+
+        }
+        private void cbUseLoopStartOffset_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doLoopStartCheckbox();
+        }
+
+        private void doLoopEndCheckbox()
+        {
+            this.loopEndOffsetDescription.Enabled = cbUseLoopEndOffset.Checked;
+            this.tbLoopEnd.Enabled = !cbUseLoopEndOffset.Checked;
+
+        }
+        private void cbUseLoopEndOffset_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doLoopEndCheckbox();
+        }
+
+
+        #endregion
 
         private GenhCreatorStruct getGenhParameters()
         {
@@ -580,6 +627,8 @@ namespace VGMToolbox.forms
             this.showLoopPointsForSelectedFile();
         }
 
+        #region BYTES TO SAMPLES
+
         private bool isPs2AdpcmSelected()
         {
             bool ret = false;
@@ -675,5 +724,7 @@ namespace VGMToolbox.forms
                 }
             }
         }
+
+        #endregion
     }
 }
