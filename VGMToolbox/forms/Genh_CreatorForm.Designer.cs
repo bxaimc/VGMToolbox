@@ -47,33 +47,36 @@
             this.bytesToSamplesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grpOptions = new System.Windows.Forms.GroupBox();
             this.pnlOptions = new System.Windows.Forms.Panel();
-            this.cbUseLoopEndOffset = new System.Windows.Forms.CheckBox();
-            this.loopEndOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
-            this.cbUseLoopStartOffset = new System.Windows.Forms.CheckBox();
-            this.loopStartOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
-            this.cbUseFrequencyOffset = new System.Windows.Forms.CheckBox();
-            this.frequencyOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
-            this.cbFindLoop = new System.Windows.Forms.RadioButton();
-            this.lblHeaderSkip = new System.Windows.Forms.Label();
-            this.cbLoopFileEnd = new System.Windows.Forms.RadioButton();
-            this.lblInterleave = new System.Windows.Forms.Label();
-            this.cbNoLoops = new System.Windows.Forms.RadioButton();
-            this.lblChannels = new System.Windows.Forms.Label();
-            this.cbFrequency = new System.Windows.Forms.ComboBox();
-            this.lblFrequency = new System.Windows.Forms.Label();
-            this.cbManualEntry = new System.Windows.Forms.RadioButton();
-            this.tbLoopStart = new System.Windows.Forms.TextBox();
-            this.cbChannels = new System.Windows.Forms.ComboBox();
-            this.lblLoopStart = new System.Windows.Forms.Label();
-            this.cbInterleave = new System.Windows.Forms.ComboBox();
-            this.tbLoopEnd = new System.Windows.Forms.TextBox();
-            this.cbHeaderSkip = new System.Windows.Forms.ComboBox();
-            this.lblLoopEnd = new System.Windows.Forms.Label();
-            this.cbCapcomHack = new System.Windows.Forms.CheckBox();
-            this.tbRightCoef = new System.Windows.Forms.TextBox();
-            this.lblLeftCoef = new System.Windows.Forms.Label();
+            this.grpCoefOptions = new System.Windows.Forms.GroupBox();
             this.lblRightCoef = new System.Windows.Forms.Label();
             this.tbLeftCoef = new System.Windows.Forms.TextBox();
+            this.lblLeftCoef = new System.Windows.Forms.Label();
+            this.cbCapcomHack = new System.Windows.Forms.CheckBox();
+            this.tbRightCoef = new System.Windows.Forms.TextBox();
+            this.grpLoopOptions = new System.Windows.Forms.GroupBox();
+            this.lblLoopStart = new System.Windows.Forms.Label();
+            this.cbUseLoopEndOffset = new System.Windows.Forms.CheckBox();
+            this.lblLoopEnd = new System.Windows.Forms.Label();
+            this.loopEndOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
+            this.tbLoopEnd = new System.Windows.Forms.TextBox();
+            this.cbUseLoopStartOffset = new System.Windows.Forms.CheckBox();
+            this.tbLoopStart = new System.Windows.Forms.TextBox();
+            this.loopStartOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
+            this.cbManualEntry = new System.Windows.Forms.RadioButton();
+            this.cbFindLoop = new System.Windows.Forms.RadioButton();
+            this.cbNoLoops = new System.Windows.Forms.RadioButton();
+            this.cbLoopFileEnd = new System.Windows.Forms.RadioButton();
+            this.grpGeneralOptions = new System.Windows.Forms.GroupBox();
+            this.lblHeaderSkip = new System.Windows.Forms.Label();
+            this.cbHeaderSkip = new System.Windows.Forms.ComboBox();
+            this.cbInterleave = new System.Windows.Forms.ComboBox();
+            this.cbChannels = new System.Windows.Forms.ComboBox();
+            this.lblFrequency = new System.Windows.Forms.Label();
+            this.cbUseFrequencyOffset = new System.Windows.Forms.CheckBox();
+            this.cbFrequency = new System.Windows.Forms.ComboBox();
+            this.frequencyOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
+            this.lblChannels = new System.Windows.Forms.Label();
+            this.lblInterleave = new System.Windows.Forms.Label();
             this.grpFunction = new System.Windows.Forms.GroupBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
@@ -84,6 +87,9 @@
             this.contextMenuBytesToSamples.SuspendLayout();
             this.grpOptions.SuspendLayout();
             this.pnlOptions.SuspendLayout();
+            this.grpCoefOptions.SuspendLayout();
+            this.grpLoopOptions.SuspendLayout();
+            this.grpGeneralOptions.SuspendLayout();
             this.grpFunction.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -123,7 +129,7 @@
             this.lbFiles.Location = new System.Drawing.Point(3, 69);
             this.lbFiles.Name = "lbFiles";
             this.lbFiles.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lbFiles.Size = new System.Drawing.Size(359, 82);
+            this.lbFiles.Size = new System.Drawing.Size(388, 82);
             this.lbFiles.TabIndex = 5;
             this.lbFiles.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lbFiles_MouseUp);
             this.lbFiles.SelectedIndexChanged += new System.EventHandler(this.lbFiles_SelectedIndexChanged);
@@ -137,7 +143,7 @@
             this.grpSourceFiles.Controls.Add(this.btnBrowseDirectory);
             this.grpSourceFiles.Location = new System.Drawing.Point(142, 29);
             this.grpSourceFiles.Name = "grpSourceFiles";
-            this.grpSourceFiles.Size = new System.Drawing.Size(365, 156);
+            this.grpSourceFiles.Size = new System.Drawing.Size(397, 156);
             this.grpSourceFiles.TabIndex = 6;
             this.grpSourceFiles.TabStop = false;
             this.grpSourceFiles.Text = "Source Files";
@@ -164,14 +170,14 @@
             // 
             this.tbSourceDirectory.Location = new System.Drawing.Point(3, 16);
             this.tbSourceDirectory.Name = "tbSourceDirectory";
-            this.tbSourceDirectory.Size = new System.Drawing.Size(216, 20);
+            this.tbSourceDirectory.Size = new System.Drawing.Size(350, 20);
             this.tbSourceDirectory.TabIndex = 6;
             this.tbSourceDirectory.TextChanged += new System.EventHandler(this.tbSourceDirectory_TextChanged);
             this.tbSourceDirectory.Click += new System.EventHandler(this.tbSourceDirectory_Click);
             // 
             // btnBrowseDirectory
             // 
-            this.btnBrowseDirectory.Location = new System.Drawing.Point(225, 15);
+            this.btnBrowseDirectory.Location = new System.Drawing.Point(359, 16);
             this.btnBrowseDirectory.Name = "btnBrowseDirectory";
             this.btnBrowseDirectory.Size = new System.Drawing.Size(32, 20);
             this.btnBrowseDirectory.TabIndex = 9;
@@ -184,7 +190,7 @@
             this.grpFormat.Controls.Add(this.comboFormat);
             this.grpFormat.Location = new System.Drawing.Point(3, 191);
             this.grpFormat.Name = "grpFormat";
-            this.grpFormat.Size = new System.Drawing.Size(506, 41);
+            this.grpFormat.Size = new System.Drawing.Size(536, 41);
             this.grpFormat.TabIndex = 7;
             this.grpFormat.TabStop = false;
             this.grpFormat.Text = "Format";
@@ -194,7 +200,7 @@
             this.comboFormat.FormattingEnabled = true;
             this.comboFormat.Location = new System.Drawing.Point(6, 14);
             this.comboFormat.Name = "comboFormat";
-            this.comboFormat.Size = new System.Drawing.Size(495, 21);
+            this.comboFormat.Size = new System.Drawing.Size(527, 21);
             this.comboFormat.TabIndex = 0;
             this.comboFormat.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.comboFormat_KeyPress);
             this.comboFormat.SelectedValueChanged += new System.EventHandler(this.comboFormat_SelectedValueChanged);
@@ -279,7 +285,7 @@
             this.grpOptions.Controls.Add(this.pnlOptions);
             this.grpOptions.Location = new System.Drawing.Point(3, 238);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(504, 160);
+            this.grpOptions.Size = new System.Drawing.Size(536, 156);
             this.grpOptions.TabIndex = 12;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
@@ -287,43 +293,109 @@
             // pnlOptions
             // 
             this.pnlOptions.AutoScroll = true;
-            this.pnlOptions.Controls.Add(this.cbUseLoopEndOffset);
-            this.pnlOptions.Controls.Add(this.loopEndOffsetDescription);
-            this.pnlOptions.Controls.Add(this.cbUseLoopStartOffset);
-            this.pnlOptions.Controls.Add(this.loopStartOffsetDescription);
-            this.pnlOptions.Controls.Add(this.cbUseFrequencyOffset);
-            this.pnlOptions.Controls.Add(this.frequencyOffsetDescription);
-            this.pnlOptions.Controls.Add(this.cbFindLoop);
-            this.pnlOptions.Controls.Add(this.lblHeaderSkip);
-            this.pnlOptions.Controls.Add(this.cbLoopFileEnd);
+            this.pnlOptions.Controls.Add(this.grpCoefOptions);
+            this.pnlOptions.Controls.Add(this.grpLoopOptions);
+            this.pnlOptions.Controls.Add(this.grpGeneralOptions);
             this.pnlOptions.Controls.Add(this.lblInterleave);
-            this.pnlOptions.Controls.Add(this.cbNoLoops);
-            this.pnlOptions.Controls.Add(this.lblChannels);
-            this.pnlOptions.Controls.Add(this.cbFrequency);
-            this.pnlOptions.Controls.Add(this.lblFrequency);
-            this.pnlOptions.Controls.Add(this.cbManualEntry);
-            this.pnlOptions.Controls.Add(this.tbLoopStart);
-            this.pnlOptions.Controls.Add(this.cbChannels);
-            this.pnlOptions.Controls.Add(this.lblLoopStart);
-            this.pnlOptions.Controls.Add(this.cbInterleave);
-            this.pnlOptions.Controls.Add(this.tbLoopEnd);
-            this.pnlOptions.Controls.Add(this.cbHeaderSkip);
-            this.pnlOptions.Controls.Add(this.lblLoopEnd);
-            this.pnlOptions.Controls.Add(this.cbCapcomHack);
-            this.pnlOptions.Controls.Add(this.tbRightCoef);
-            this.pnlOptions.Controls.Add(this.lblLeftCoef);
-            this.pnlOptions.Controls.Add(this.lblRightCoef);
-            this.pnlOptions.Controls.Add(this.tbLeftCoef);
             this.pnlOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlOptions.Location = new System.Drawing.Point(3, 16);
             this.pnlOptions.Name = "pnlOptions";
-            this.pnlOptions.Size = new System.Drawing.Size(498, 141);
+            this.pnlOptions.Size = new System.Drawing.Size(530, 137);
             this.pnlOptions.TabIndex = 0;
+            // 
+            // grpCoefOptions
+            // 
+            this.grpCoefOptions.Controls.Add(this.lblRightCoef);
+            this.grpCoefOptions.Controls.Add(this.tbLeftCoef);
+            this.grpCoefOptions.Controls.Add(this.lblLeftCoef);
+            this.grpCoefOptions.Controls.Add(this.cbCapcomHack);
+            this.grpCoefOptions.Controls.Add(this.tbRightCoef);
+            this.grpCoefOptions.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpCoefOptions.Location = new System.Drawing.Point(0, 240);
+            this.grpCoefOptions.Name = "grpCoefOptions";
+            this.grpCoefOptions.Size = new System.Drawing.Size(513, 67);
+            this.grpCoefOptions.TabIndex = 37;
+            this.grpCoefOptions.TabStop = false;
+            this.grpCoefOptions.Text = "Coefficients";
+            // 
+            // lblRightCoef
+            // 
+            this.lblRightCoef.AutoSize = true;
+            this.lblRightCoef.Location = new System.Drawing.Point(6, 22);
+            this.lblRightCoef.Name = "lblRightCoef";
+            this.lblRightCoef.Size = new System.Drawing.Size(102, 13);
+            this.lblRightCoef.TabIndex = 15;
+            this.lblRightCoef.Text = "Coef: Right Channel";
+            // 
+            // tbLeftCoef
+            // 
+            this.tbLeftCoef.Location = new System.Drawing.Point(114, 45);
+            this.tbLeftCoef.Name = "tbLeftCoef";
+            this.tbLeftCoef.Size = new System.Drawing.Size(100, 20);
+            this.tbLeftCoef.TabIndex = 16;
+            // 
+            // lblLeftCoef
+            // 
+            this.lblLeftCoef.AutoSize = true;
+            this.lblLeftCoef.Location = new System.Drawing.Point(6, 48);
+            this.lblLeftCoef.Name = "lblLeftCoef";
+            this.lblLeftCoef.Size = new System.Drawing.Size(95, 13);
+            this.lblLeftCoef.TabIndex = 17;
+            this.lblLeftCoef.Text = "Coef: Left Channel";
+            // 
+            // cbCapcomHack
+            // 
+            this.cbCapcomHack.AutoSize = true;
+            this.cbCapcomHack.Location = new System.Drawing.Point(221, 47);
+            this.cbCapcomHack.Name = "cbCapcomHack";
+            this.cbCapcomHack.Size = new System.Drawing.Size(94, 17);
+            this.cbCapcomHack.TabIndex = 18;
+            this.cbCapcomHack.Text = "Capcom Hack";
+            this.cbCapcomHack.UseVisualStyleBackColor = true;
+            // 
+            // tbRightCoef
+            // 
+            this.tbRightCoef.Location = new System.Drawing.Point(114, 19);
+            this.tbRightCoef.Name = "tbRightCoef";
+            this.tbRightCoef.Size = new System.Drawing.Size(100, 20);
+            this.tbRightCoef.TabIndex = 14;
+            // 
+            // grpLoopOptions
+            // 
+            this.grpLoopOptions.Controls.Add(this.lblLoopStart);
+            this.grpLoopOptions.Controls.Add(this.cbUseLoopEndOffset);
+            this.grpLoopOptions.Controls.Add(this.lblLoopEnd);
+            this.grpLoopOptions.Controls.Add(this.loopEndOffsetDescription);
+            this.grpLoopOptions.Controls.Add(this.tbLoopEnd);
+            this.grpLoopOptions.Controls.Add(this.cbUseLoopStartOffset);
+            this.grpLoopOptions.Controls.Add(this.tbLoopStart);
+            this.grpLoopOptions.Controls.Add(this.loopStartOffsetDescription);
+            this.grpLoopOptions.Controls.Add(this.cbManualEntry);
+            this.grpLoopOptions.Controls.Add(this.cbFindLoop);
+            this.grpLoopOptions.Controls.Add(this.cbNoLoops);
+            this.grpLoopOptions.Controls.Add(this.cbLoopFileEnd);
+            this.grpLoopOptions.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpLoopOptions.Location = new System.Drawing.Point(0, 111);
+            this.grpLoopOptions.Name = "grpLoopOptions";
+            this.grpLoopOptions.Size = new System.Drawing.Size(513, 129);
+            this.grpLoopOptions.TabIndex = 36;
+            this.grpLoopOptions.TabStop = false;
+            this.grpLoopOptions.Text = "Looping";
+            // 
+            // lblLoopStart
+            // 
+            this.lblLoopStart.AutoSize = true;
+            this.lblLoopStart.Location = new System.Drawing.Point(12, 16);
+            this.lblLoopStart.Name = "lblLoopStart";
+            this.lblLoopStart.Size = new System.Drawing.Size(105, 13);
+            this.lblLoopStart.TabIndex = 9;
+            this.lblLoopStart.Text = "Loop Start (Samples)";
+            this.lblLoopStart.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lblLoopStart_MouseUp);
             // 
             // cbUseLoopEndOffset
             // 
             this.cbUseLoopEndOffset.AutoSize = true;
-            this.cbUseLoopEndOffset.Location = new System.Drawing.Point(17, 182);
+            this.cbUseLoopEndOffset.Location = new System.Drawing.Point(26, 88);
             this.cbUseLoopEndOffset.Name = "cbUseLoopEndOffset";
             this.cbUseLoopEndOffset.Size = new System.Drawing.Size(76, 17);
             this.cbUseLoopEndOffset.TabIndex = 34;
@@ -331,9 +403,19 @@
             this.cbUseLoopEndOffset.UseVisualStyleBackColor = true;
             this.cbUseLoopEndOffset.CheckedChanged += new System.EventHandler(this.cbUseLoopEndOffset_CheckedChanged);
             // 
+            // lblLoopEnd
+            // 
+            this.lblLoopEnd.AutoSize = true;
+            this.lblLoopEnd.Location = new System.Drawing.Point(12, 65);
+            this.lblLoopEnd.Name = "lblLoopEnd";
+            this.lblLoopEnd.Size = new System.Drawing.Size(102, 13);
+            this.lblLoopEnd.TabIndex = 11;
+            this.lblLoopEnd.Text = "Loop End (Samples)";
+            this.lblLoopEnd.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lblLoopEnd_MouseUp);
+            // 
             // loopEndOffsetDescription
             // 
-            this.loopEndOffsetDescription.Location = new System.Drawing.Point(99, 177);
+            this.loopEndOffsetDescription.Location = new System.Drawing.Point(108, 83);
             this.loopEndOffsetDescription.Name = "loopEndOffsetDescription";
             this.loopEndOffsetDescription.OffsetByteOrder = "Little Endian";
             this.loopEndOffsetDescription.OffsetSize = "4";
@@ -341,10 +423,17 @@
             this.loopEndOffsetDescription.Size = new System.Drawing.Size(372, 24);
             this.loopEndOffsetDescription.TabIndex = 33;
             // 
+            // tbLoopEnd
+            // 
+            this.tbLoopEnd.Location = new System.Drawing.Point(123, 62);
+            this.tbLoopEnd.Name = "tbLoopEnd";
+            this.tbLoopEnd.Size = new System.Drawing.Size(100, 20);
+            this.tbLoopEnd.TabIndex = 10;
+            // 
             // cbUseLoopStartOffset
             // 
             this.cbUseLoopStartOffset.AutoSize = true;
-            this.cbUseLoopStartOffset.Location = new System.Drawing.Point(17, 134);
+            this.cbUseLoopStartOffset.Location = new System.Drawing.Point(26, 40);
             this.cbUseLoopStartOffset.Name = "cbUseLoopStartOffset";
             this.cbUseLoopStartOffset.Size = new System.Drawing.Size(76, 17);
             this.cbUseLoopStartOffset.TabIndex = 32;
@@ -352,9 +441,16 @@
             this.cbUseLoopStartOffset.UseVisualStyleBackColor = true;
             this.cbUseLoopStartOffset.CheckedChanged += new System.EventHandler(this.cbUseLoopStartOffset_CheckedChanged);
             // 
+            // tbLoopStart
+            // 
+            this.tbLoopStart.Location = new System.Drawing.Point(122, 13);
+            this.tbLoopStart.Name = "tbLoopStart";
+            this.tbLoopStart.Size = new System.Drawing.Size(100, 20);
+            this.tbLoopStart.TabIndex = 8;
+            // 
             // loopStartOffsetDescription
             // 
-            this.loopStartOffsetDescription.Location = new System.Drawing.Point(99, 129);
+            this.loopStartOffsetDescription.Location = new System.Drawing.Point(108, 35);
             this.loopStartOffsetDescription.Name = "loopStartOffsetDescription";
             this.loopStartOffsetDescription.OffsetByteOrder = "Little Endian";
             this.loopStartOffsetDescription.OffsetSize = "4";
@@ -362,30 +458,23 @@
             this.loopStartOffsetDescription.Size = new System.Drawing.Size(372, 24);
             this.loopStartOffsetDescription.TabIndex = 31;
             // 
-            // cbUseFrequencyOffset
+            // cbManualEntry
             // 
-            this.cbUseFrequencyOffset.AutoSize = true;
-            this.cbUseFrequencyOffset.Location = new System.Drawing.Point(19, 78);
-            this.cbUseFrequencyOffset.Name = "cbUseFrequencyOffset";
-            this.cbUseFrequencyOffset.Size = new System.Drawing.Size(76, 17);
-            this.cbUseFrequencyOffset.TabIndex = 30;
-            this.cbUseFrequencyOffset.Text = "Use Offset";
-            this.cbUseFrequencyOffset.UseVisualStyleBackColor = true;
-            // 
-            // frequencyOffsetDescription
-            // 
-            this.frequencyOffsetDescription.Location = new System.Drawing.Point(101, 73);
-            this.frequencyOffsetDescription.Name = "frequencyOffsetDescription";
-            this.frequencyOffsetDescription.OffsetByteOrder = "Little Endian";
-            this.frequencyOffsetDescription.OffsetSize = "4";
-            this.frequencyOffsetDescription.OffsetValue = "";
-            this.frequencyOffsetDescription.Size = new System.Drawing.Size(372, 24);
-            this.frequencyOffsetDescription.TabIndex = 29;
+            this.cbManualEntry.AutoSize = true;
+            this.cbManualEntry.Checked = true;
+            this.cbManualEntry.Location = new System.Drawing.Point(14, 108);
+            this.cbManualEntry.Name = "cbManualEntry";
+            this.cbManualEntry.Size = new System.Drawing.Size(87, 17);
+            this.cbManualEntry.TabIndex = 28;
+            this.cbManualEntry.TabStop = true;
+            this.cbManualEntry.Text = "Manual Entry";
+            this.cbManualEntry.UseVisualStyleBackColor = true;
+            this.cbManualEntry.CheckedChanged += new System.EventHandler(this.cbManualEntry_CheckedChanged);
             // 
             // cbFindLoop
             // 
             this.cbFindLoop.AutoSize = true;
-            this.cbFindLoop.Location = new System.Drawing.Point(269, 202);
+            this.cbFindLoop.Location = new System.Drawing.Point(278, 108);
             this.cbFindLoop.Name = "cbFindLoop";
             this.cbFindLoop.Size = new System.Drawing.Size(72, 17);
             this.cbFindLoop.TabIndex = 27;
@@ -393,25 +482,131 @@
             this.cbFindLoop.UseVisualStyleBackColor = true;
             this.cbFindLoop.CheckedChanged += new System.EventHandler(this.cbFindLoop_CheckedChanged);
             // 
-            // lblHeaderSkip
+            // cbNoLoops
             // 
-            this.lblHeaderSkip.AutoSize = true;
-            this.lblHeaderSkip.Location = new System.Drawing.Point(4, 5);
-            this.lblHeaderSkip.Name = "lblHeaderSkip";
-            this.lblHeaderSkip.Size = new System.Drawing.Size(66, 13);
-            this.lblHeaderSkip.TabIndex = 1;
-            this.lblHeaderSkip.Text = "Header Skip";
+            this.cbNoLoops.AutoSize = true;
+            this.cbNoLoops.Location = new System.Drawing.Point(107, 108);
+            this.cbNoLoops.Name = "cbNoLoops";
+            this.cbNoLoops.Size = new System.Drawing.Size(71, 17);
+            this.cbNoLoops.TabIndex = 25;
+            this.cbNoLoops.Text = "No Loops";
+            this.cbNoLoops.UseVisualStyleBackColor = true;
+            this.cbNoLoops.CheckedChanged += new System.EventHandler(this.cbNoLoops_CheckedChanged);
             // 
             // cbLoopFileEnd
             // 
             this.cbLoopFileEnd.AutoSize = true;
-            this.cbLoopFileEnd.Location = new System.Drawing.Point(178, 202);
+            this.cbLoopFileEnd.Location = new System.Drawing.Point(187, 108);
             this.cbLoopFileEnd.Name = "cbLoopFileEnd";
             this.cbLoopFileEnd.Size = new System.Drawing.Size(85, 17);
             this.cbLoopFileEnd.TabIndex = 26;
             this.cbLoopFileEnd.Text = "Use File End";
             this.cbLoopFileEnd.UseVisualStyleBackColor = true;
             this.cbLoopFileEnd.CheckedChanged += new System.EventHandler(this.cbLoopFileEnd_CheckedChanged);
+            // 
+            // grpGeneralOptions
+            // 
+            this.grpGeneralOptions.Controls.Add(this.lblHeaderSkip);
+            this.grpGeneralOptions.Controls.Add(this.cbHeaderSkip);
+            this.grpGeneralOptions.Controls.Add(this.cbInterleave);
+            this.grpGeneralOptions.Controls.Add(this.cbChannels);
+            this.grpGeneralOptions.Controls.Add(this.lblFrequency);
+            this.grpGeneralOptions.Controls.Add(this.cbUseFrequencyOffset);
+            this.grpGeneralOptions.Controls.Add(this.cbFrequency);
+            this.grpGeneralOptions.Controls.Add(this.frequencyOffsetDescription);
+            this.grpGeneralOptions.Controls.Add(this.lblChannels);
+            this.grpGeneralOptions.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpGeneralOptions.Location = new System.Drawing.Point(0, 0);
+            this.grpGeneralOptions.Name = "grpGeneralOptions";
+            this.grpGeneralOptions.Size = new System.Drawing.Size(513, 111);
+            this.grpGeneralOptions.TabIndex = 35;
+            this.grpGeneralOptions.TabStop = false;
+            this.grpGeneralOptions.Text = "General";
+            // 
+            // lblHeaderSkip
+            // 
+            this.lblHeaderSkip.AutoSize = true;
+            this.lblHeaderSkip.Location = new System.Drawing.Point(9, 16);
+            this.lblHeaderSkip.Name = "lblHeaderSkip";
+            this.lblHeaderSkip.Size = new System.Drawing.Size(66, 13);
+            this.lblHeaderSkip.TabIndex = 1;
+            this.lblHeaderSkip.Text = "Header Skip";
+            // 
+            // cbHeaderSkip
+            // 
+            this.cbHeaderSkip.FormattingEnabled = true;
+            this.cbHeaderSkip.Location = new System.Drawing.Point(92, 13);
+            this.cbHeaderSkip.Name = "cbHeaderSkip";
+            this.cbHeaderSkip.Size = new System.Drawing.Size(100, 21);
+            this.cbHeaderSkip.TabIndex = 21;
+            this.cbHeaderSkip.Text = "0";
+            this.cbHeaderSkip.SelectedValueChanged += new System.EventHandler(this.cbHeaderSkip_SelectedValueChanged);
+            // 
+            // cbInterleave
+            // 
+            this.cbInterleave.FormattingEnabled = true;
+            this.cbInterleave.Location = new System.Drawing.Point(301, 13);
+            this.cbInterleave.Name = "cbInterleave";
+            this.cbInterleave.Size = new System.Drawing.Size(100, 21);
+            this.cbInterleave.TabIndex = 22;
+            this.cbInterleave.Text = "0";
+            this.cbInterleave.SelectedValueChanged += new System.EventHandler(this.cbInterleave_SelectedValueChanged);
+            // 
+            // cbChannels
+            // 
+            this.cbChannels.FormattingEnabled = true;
+            this.cbChannels.Location = new System.Drawing.Point(92, 38);
+            this.cbChannels.Name = "cbChannels";
+            this.cbChannels.Size = new System.Drawing.Size(100, 21);
+            this.cbChannels.TabIndex = 23;
+            this.cbChannels.SelectedValueChanged += new System.EventHandler(this.cbChannels_SelectedValueChanged);
+            // 
+            // lblFrequency
+            // 
+            this.lblFrequency.AutoSize = true;
+            this.lblFrequency.Location = new System.Drawing.Point(10, 65);
+            this.lblFrequency.Name = "lblFrequency";
+            this.lblFrequency.Size = new System.Drawing.Size(57, 13);
+            this.lblFrequency.TabIndex = 7;
+            this.lblFrequency.Text = "Frequency";
+            // 
+            // cbUseFrequencyOffset
+            // 
+            this.cbUseFrequencyOffset.AutoSize = true;
+            this.cbUseFrequencyOffset.Location = new System.Drawing.Point(24, 89);
+            this.cbUseFrequencyOffset.Name = "cbUseFrequencyOffset";
+            this.cbUseFrequencyOffset.Size = new System.Drawing.Size(76, 17);
+            this.cbUseFrequencyOffset.TabIndex = 30;
+            this.cbUseFrequencyOffset.Text = "Use Offset";
+            this.cbUseFrequencyOffset.UseVisualStyleBackColor = true;
+            // 
+            // cbFrequency
+            // 
+            this.cbFrequency.FormattingEnabled = true;
+            this.cbFrequency.Location = new System.Drawing.Point(92, 62);
+            this.cbFrequency.Name = "cbFrequency";
+            this.cbFrequency.Size = new System.Drawing.Size(100, 21);
+            this.cbFrequency.TabIndex = 24;
+            this.cbFrequency.SelectedValueChanged += new System.EventHandler(this.cbFrequency_SelectedValueChanged);
+            // 
+            // frequencyOffsetDescription
+            // 
+            this.frequencyOffsetDescription.Location = new System.Drawing.Point(106, 84);
+            this.frequencyOffsetDescription.Name = "frequencyOffsetDescription";
+            this.frequencyOffsetDescription.OffsetByteOrder = "Little Endian";
+            this.frequencyOffsetDescription.OffsetSize = "4";
+            this.frequencyOffsetDescription.OffsetValue = "";
+            this.frequencyOffsetDescription.Size = new System.Drawing.Size(372, 24);
+            this.frequencyOffsetDescription.TabIndex = 29;
+            // 
+            // lblChannels
+            // 
+            this.lblChannels.AutoSize = true;
+            this.lblChannels.Location = new System.Drawing.Point(9, 41);
+            this.lblChannels.Name = "lblChannels";
+            this.lblChannels.Size = new System.Drawing.Size(51, 13);
+            this.lblChannels.TabIndex = 5;
+            this.lblChannels.Text = "Channels";
             // 
             // lblInterleave
             // 
@@ -421,162 +616,6 @@
             this.lblInterleave.Size = new System.Drawing.Size(54, 13);
             this.lblInterleave.TabIndex = 3;
             this.lblInterleave.Text = "Interleave";
-            // 
-            // cbNoLoops
-            // 
-            this.cbNoLoops.AutoSize = true;
-            this.cbNoLoops.Location = new System.Drawing.Point(98, 202);
-            this.cbNoLoops.Name = "cbNoLoops";
-            this.cbNoLoops.Size = new System.Drawing.Size(71, 17);
-            this.cbNoLoops.TabIndex = 25;
-            this.cbNoLoops.Text = "No Loops";
-            this.cbNoLoops.UseVisualStyleBackColor = true;
-            this.cbNoLoops.CheckedChanged += new System.EventHandler(this.cbNoLoops_CheckedChanged);
-            // 
-            // lblChannels
-            // 
-            this.lblChannels.AutoSize = true;
-            this.lblChannels.Location = new System.Drawing.Point(4, 30);
-            this.lblChannels.Name = "lblChannels";
-            this.lblChannels.Size = new System.Drawing.Size(51, 13);
-            this.lblChannels.TabIndex = 5;
-            this.lblChannels.Text = "Channels";
-            // 
-            // cbFrequency
-            // 
-            this.cbFrequency.FormattingEnabled = true;
-            this.cbFrequency.Location = new System.Drawing.Point(87, 51);
-            this.cbFrequency.Name = "cbFrequency";
-            this.cbFrequency.Size = new System.Drawing.Size(100, 21);
-            this.cbFrequency.TabIndex = 24;
-            this.cbFrequency.SelectedValueChanged += new System.EventHandler(this.cbFrequency_SelectedValueChanged);
-            // 
-            // lblFrequency
-            // 
-            this.lblFrequency.AutoSize = true;
-            this.lblFrequency.Location = new System.Drawing.Point(5, 54);
-            this.lblFrequency.Name = "lblFrequency";
-            this.lblFrequency.Size = new System.Drawing.Size(57, 13);
-            this.lblFrequency.TabIndex = 7;
-            this.lblFrequency.Text = "Frequency";
-            // 
-            // cbManualEntry
-            // 
-            this.cbManualEntry.AutoSize = true;
-            this.cbManualEntry.Checked = true;
-            this.cbManualEntry.Location = new System.Drawing.Point(5, 202);
-            this.cbManualEntry.Name = "cbManualEntry";
-            this.cbManualEntry.Size = new System.Drawing.Size(87, 17);
-            this.cbManualEntry.TabIndex = 28;
-            this.cbManualEntry.TabStop = true;
-            this.cbManualEntry.Text = "Manual Entry";
-            this.cbManualEntry.UseVisualStyleBackColor = true;
-            this.cbManualEntry.CheckedChanged += new System.EventHandler(this.cbManualEntry_CheckedChanged);
-            // 
-            // tbLoopStart
-            // 
-            this.tbLoopStart.Location = new System.Drawing.Point(113, 107);
-            this.tbLoopStart.Name = "tbLoopStart";
-            this.tbLoopStart.Size = new System.Drawing.Size(100, 20);
-            this.tbLoopStart.TabIndex = 8;
-            // 
-            // cbChannels
-            // 
-            this.cbChannels.FormattingEnabled = true;
-            this.cbChannels.Location = new System.Drawing.Point(87, 27);
-            this.cbChannels.Name = "cbChannels";
-            this.cbChannels.Size = new System.Drawing.Size(100, 21);
-            this.cbChannels.TabIndex = 23;
-            this.cbChannels.SelectedValueChanged += new System.EventHandler(this.cbChannels_SelectedValueChanged);
-            // 
-            // lblLoopStart
-            // 
-            this.lblLoopStart.AutoSize = true;
-            this.lblLoopStart.Location = new System.Drawing.Point(3, 110);
-            this.lblLoopStart.Name = "lblLoopStart";
-            this.lblLoopStart.Size = new System.Drawing.Size(105, 13);
-            this.lblLoopStart.TabIndex = 9;
-            this.lblLoopStart.Text = "Loop Start (Samples)";
-            this.lblLoopStart.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lblLoopStart_MouseUp);
-            // 
-            // cbInterleave
-            // 
-            this.cbInterleave.FormattingEnabled = true;
-            this.cbInterleave.Location = new System.Drawing.Point(296, 2);
-            this.cbInterleave.Name = "cbInterleave";
-            this.cbInterleave.Size = new System.Drawing.Size(100, 21);
-            this.cbInterleave.TabIndex = 22;
-            this.cbInterleave.Text = "0";
-            this.cbInterleave.SelectedValueChanged += new System.EventHandler(this.cbInterleave_SelectedValueChanged);
-            // 
-            // tbLoopEnd
-            // 
-            this.tbLoopEnd.Location = new System.Drawing.Point(114, 156);
-            this.tbLoopEnd.Name = "tbLoopEnd";
-            this.tbLoopEnd.Size = new System.Drawing.Size(100, 20);
-            this.tbLoopEnd.TabIndex = 10;
-            // 
-            // cbHeaderSkip
-            // 
-            this.cbHeaderSkip.FormattingEnabled = true;
-            this.cbHeaderSkip.Location = new System.Drawing.Point(87, 2);
-            this.cbHeaderSkip.Name = "cbHeaderSkip";
-            this.cbHeaderSkip.Size = new System.Drawing.Size(100, 21);
-            this.cbHeaderSkip.TabIndex = 21;
-            this.cbHeaderSkip.Text = "0";
-            this.cbHeaderSkip.SelectedValueChanged += new System.EventHandler(this.cbHeaderSkip_SelectedValueChanged);
-            // 
-            // lblLoopEnd
-            // 
-            this.lblLoopEnd.AutoSize = true;
-            this.lblLoopEnd.Location = new System.Drawing.Point(3, 159);
-            this.lblLoopEnd.Name = "lblLoopEnd";
-            this.lblLoopEnd.Size = new System.Drawing.Size(102, 13);
-            this.lblLoopEnd.TabIndex = 11;
-            this.lblLoopEnd.Text = "Loop End (Samples)";
-            this.lblLoopEnd.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lblLoopEnd_MouseUp);
-            // 
-            // cbCapcomHack
-            // 
-            this.cbCapcomHack.AutoSize = true;
-            this.cbCapcomHack.Location = new System.Drawing.Point(217, 247);
-            this.cbCapcomHack.Name = "cbCapcomHack";
-            this.cbCapcomHack.Size = new System.Drawing.Size(94, 17);
-            this.cbCapcomHack.TabIndex = 18;
-            this.cbCapcomHack.Text = "Capcom Hack";
-            this.cbCapcomHack.UseVisualStyleBackColor = true;
-            // 
-            // tbRightCoef
-            // 
-            this.tbRightCoef.Location = new System.Drawing.Point(110, 219);
-            this.tbRightCoef.Name = "tbRightCoef";
-            this.tbRightCoef.Size = new System.Drawing.Size(100, 20);
-            this.tbRightCoef.TabIndex = 14;
-            // 
-            // lblLeftCoef
-            // 
-            this.lblLeftCoef.AutoSize = true;
-            this.lblLeftCoef.Location = new System.Drawing.Point(2, 248);
-            this.lblLeftCoef.Name = "lblLeftCoef";
-            this.lblLeftCoef.Size = new System.Drawing.Size(95, 13);
-            this.lblLeftCoef.TabIndex = 17;
-            this.lblLeftCoef.Text = "Coef: Left Channel";
-            // 
-            // lblRightCoef
-            // 
-            this.lblRightCoef.AutoSize = true;
-            this.lblRightCoef.Location = new System.Drawing.Point(2, 222);
-            this.lblRightCoef.Name = "lblRightCoef";
-            this.lblRightCoef.Size = new System.Drawing.Size(102, 13);
-            this.lblRightCoef.TabIndex = 15;
-            this.lblRightCoef.Text = "Coef: Right Channel";
-            // 
-            // tbLeftCoef
-            // 
-            this.tbLeftCoef.Location = new System.Drawing.Point(110, 245);
-            this.tbLeftCoef.Name = "tbLeftCoef";
-            this.tbLeftCoef.Size = new System.Drawing.Size(100, 20);
-            this.tbLeftCoef.TabIndex = 16;
             // 
             // grpFunction
             // 
@@ -624,6 +663,12 @@
             this.grpOptions.ResumeLayout(false);
             this.pnlOptions.ResumeLayout(false);
             this.pnlOptions.PerformLayout();
+            this.grpCoefOptions.ResumeLayout(false);
+            this.grpCoefOptions.PerformLayout();
+            this.grpLoopOptions.ResumeLayout(false);
+            this.grpLoopOptions.PerformLayout();
+            this.grpGeneralOptions.ResumeLayout(false);
+            this.grpGeneralOptions.PerformLayout();
             this.grpFunction.ResumeLayout(false);
             this.grpFunction.PerformLayout();
             this.ResumeLayout(false);
@@ -679,5 +724,8 @@
         private VGMToolbox.controls.OffsetDescriptionControl loopStartOffsetDescription;
         private System.Windows.Forms.CheckBox cbUseLoopEndOffset;
         private VGMToolbox.controls.OffsetDescriptionControl loopEndOffsetDescription;
+        private System.Windows.Forms.GroupBox grpGeneralOptions;
+        private System.Windows.Forms.GroupBox grpLoopOptions;
+        private System.Windows.Forms.GroupBox grpCoefOptions;
     }
 }

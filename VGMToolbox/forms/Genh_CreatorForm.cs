@@ -16,7 +16,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.forms
 {
-    public partial class Genh_CreatorForm : VgmtForm
+    public partial class Genh_CreatorForm : AVgmtForm
     {
         public const int NO_LABEL_SELECTED = -1;
         public const int LOOP_START_LABEL_SELECTED = 1;
@@ -66,6 +66,9 @@ namespace VGMToolbox.forms
 
             // hide edit button
             rbEdit.Hide();
+
+            // hide coefficients
+            this.grpCoefOptions.Hide();
 
             // setup looping section
             this.doLoopCheckboxes();
@@ -163,6 +166,7 @@ namespace VGMToolbox.forms
 
             if (Convert.ToUInt16(drv.Row.ItemArray[0]) == 12)
             {
+                this.grpCoefOptions.Show();
                 lblRightCoef.Show();
                 tbRightCoef.Show();
                 lblLeftCoef.Show();
@@ -171,6 +175,7 @@ namespace VGMToolbox.forms
             }
             else
             {
+                this.grpCoefOptions.Hide();
                 lblRightCoef.Hide();
                 tbRightCoef.Hide();
                 lblLeftCoef.Hide();
