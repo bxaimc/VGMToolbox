@@ -12,115 +12,36 @@ namespace VGMToolbox.tools.genh
 {
     public struct GenhCreatorStruct : IVgmtWorkerStruct
     {
-        private string format;
-        private string headerSkip;
-        private string interleave;
-        private string channels;
-        private string frequency;
-        private string loopStart;
-        private string loopEnd;
-        private bool noLoops;
-        private bool useFileEnd;
-        private bool findLoop;
-        private string coefRightChannel;
-        private string coefLeftChannel;
-        private bool capcomHack;
-        private bool outputHeaderOnly;
-        private string[] sourcePaths;
-        private bool doCreation;
-        private bool doEdit;
-        private bool doExtract;
+        public string Format { set; get; }
+        public string HeaderSkip { set; get; }
+        public string Interleave { set; get; }
+        public string Channels { set; get; }
+        
+        public string Frequency { set; get; }
+        public bool UseFrequencyOffset { set; get; }
+        public OffsetDescription FrequencyOffsetDescription { set; get; }
 
-        public string Format
-        {
-            set { format = value; }
-            get { return format; }
-        }
-        public string HeaderSkip
-        {
-            set { headerSkip = value; }
-            get { return headerSkip; }
-        }
-        public string Interleave
-        {
-            set { interleave = value; }
-            get { return interleave; }
-        }
-        public string Channels
-        {
-            set { channels = value; }
-            get { return channels; }
-        }
-        public string Frequency
-        {
-            set { frequency = value; }
-            get { return frequency; }
-        }
-        public string LoopStart
-        {
-            set { loopStart = value; }
-            get { return loopStart; }
-        }
-        public string LoopEnd
-        {
-            set { loopEnd = value; }
-            get { return loopEnd; }
-        }
-        public bool NoLoops
-        {
-            set { noLoops = value; }
-            get { return noLoops; }
-        }
-        public bool UseFileEnd
-        {
-            set { useFileEnd = value; }
-            get { return useFileEnd; }
-        }
-        public bool FindLoop
-        {
-            set { findLoop = value; }
-            get { return findLoop; }
-        }
-        public string CoefRightChannel
-        {
-            set { coefRightChannel = value; }
-            get { return coefRightChannel; }
-        }
-        public string CoefLeftChannel
-        {
-            set { coefLeftChannel = value; }
-            get { return coefLeftChannel; }
-        }
-        public bool CapcomHack
-        {
-            set { capcomHack = value; }
-            get { return capcomHack; }
-        }
-        public bool OutputHeaderOnly
-        {
-            set { outputHeaderOnly = value; }
-            get { return outputHeaderOnly; }
-        }
-        public string[] SourcePaths
-        {
-            get { return sourcePaths; }
-            set { sourcePaths = value; }
-        }
-        public bool DoCreation
-        {
-            set { doCreation = value; }
-            get { return doCreation; }
-        }
-        public bool DoEdit
-        {
-            set { doEdit = value; }
-            get { return doEdit; }
-        }
-        public bool DoExtract
-        {
-            set { doExtract = value; }
-            get { return doExtract; }
-        }
+        public string LoopStart { set; get; }
+        public bool UseLoopStartOffset { set; get; }
+        public OffsetDescription LoopStartOffsetDescription { set; get; }
+        public bool DoLoopStartBytesToSamples { set; get; }
+        
+        public string LoopEnd { set; get; }
+        public bool UseLoopEndOffset { set; get; }
+        public OffsetDescription LoopEndOffsetDescription { set; get; }
+        public bool DoLoopEndBytesToSamples { set; get; }
+
+        public bool NoLoops { set; get; }
+        public bool UseFileEnd { set; get; }
+        public bool FindLoop { set; get; }
+        public string CoefRightChannel { set; get; }
+        public string CoefLeftChannel { set; get; }
+        public bool CapcomHack { set; get; }
+        public bool OutputHeaderOnly { set; get; }
+        public string[] SourcePaths { set; get; }
+        public bool DoCreation { set; get; }
+        public bool DoEdit { set; get; }
+        public bool DoExtract { set; get; }
 
         public GenhCreationStruct ToGenhCreationStruct()
         {
@@ -130,9 +51,21 @@ namespace VGMToolbox.tools.genh
             genhCreationStruct.HeaderSkip = this.HeaderSkip;
             genhCreationStruct.Interleave = this.Interleave;
             genhCreationStruct.Channels = this.Channels;
+            
             genhCreationStruct.Frequency = this.Frequency;
+            genhCreationStruct.UseFrequencyOffset = this.UseFrequencyOffset;
+            genhCreationStruct.FrequencyOffsetDescription = this.FrequencyOffsetDescription;
+
             genhCreationStruct.LoopStart = this.LoopStart;
+            genhCreationStruct.UseLoopStartOffset = this.UseLoopStartOffset;
+            genhCreationStruct.LoopStartOffsetDescription = this.LoopStartOffsetDescription;
+            genhCreationStruct.DoLoopStartBytesToSamples = this.DoLoopStartBytesToSamples;
+
             genhCreationStruct.LoopEnd = this.LoopEnd;
+            genhCreationStruct.UseLoopEndOffset = this.UseLoopEndOffset;
+            genhCreationStruct.LoopEndOffsetDescription = this.LoopEndOffsetDescription;
+            genhCreationStruct.DoLoopEndBytesToSamples = this.DoLoopEndBytesToSamples;            
+                                        
             genhCreationStruct.NoLoops = this.NoLoops;
             genhCreationStruct.UseFileEnd = this.UseFileEnd;
             genhCreationStruct.FindLoop = this.FindLoop;

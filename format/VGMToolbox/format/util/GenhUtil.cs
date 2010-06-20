@@ -17,10 +17,21 @@ namespace VGMToolbox.format.util
         public string HeaderSkip;
         public string Interleave;
         public string Channels;
+        
         public string Frequency;
+        public bool UseFrequencyOffset { set; get; }
+        public OffsetDescription FrequencyOffsetDescription { set; get; }
 
         public string LoopStart;
+        public bool UseLoopStartOffset { set; get; }
+        public OffsetDescription LoopStartOffsetDescription { set; get; }
+        public bool DoLoopStartBytesToSamples { set; get; }
+
         public string LoopEnd;
+        public bool UseLoopEndOffset { set; get; }
+        public OffsetDescription LoopEndOffsetDescription { set; get; }
+        public bool DoLoopEndBytesToSamples { set; get; }
+
         public bool NoLoops;
         public bool UseFileEnd;
         public bool FindLoop;
@@ -35,6 +46,7 @@ namespace VGMToolbox.format.util
 
     public sealed class GenhUtil
     {
+        public const int UNKNOWN_SAMPLE_COUNT = -1;
         private const int SONY_ADPCM_LOOP_HACK_BYTE_COUNT = 0x30;
         private const string GENH_BATCH_FILE_NAME = "vgmt_genh_copy.bat";
 
@@ -65,18 +77,19 @@ namespace VGMToolbox.format.util
             int dspInterleaveType =
                 GetDspInterleave(pGenhCreationStruct.Interleave, pGenhCreationStruct.Channels);
 
+            //--------------
+            // looping info
+            //--------------
             if (pGenhCreationStruct.NoLoops)
             {
                 pGenhCreationStruct.LoopStart = Genh.EMPTY_SAMPLE_COUNT;
                 pGenhCreationStruct.LoopEnd = GetFileEndLoopEnd(pSourcePath, pGenhCreationStruct);
             }
-
-            if (pGenhCreationStruct.UseFileEnd)
+            else if (pGenhCreationStruct.UseFileEnd)
             {
                 pGenhCreationStruct.LoopEnd = GetFileEndLoopEnd(pSourcePath, pGenhCreationStruct);
             }
-
-            if (pGenhCreationStruct.FindLoop)
+            else if (pGenhCreationStruct.FindLoop)
             {
                 string loopStartFound;
                 string loopEndFound;
@@ -91,6 +104,51 @@ namespace VGMToolbox.format.util
                 {
                     pGenhCreationStruct.LoopStart = Genh.EMPTY_SAMPLE_COUNT;
                     pGenhCreationStruct.LoopEnd = GetFileEndLoopEnd(pSourcePath, pGenhCreationStruct);
+                }
+            }
+
+            //---------------------
+            // offset based values
+            //---------------------
+            if (pGenhCreationStruct.UseLoopStartOffset || 
+                pGenhCreationStruct.UseLoopEndOffset ||
+                pGenhCreationStruct.UseFrequencyOffset)
+            {
+                int formatId = (int)VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.Format);
+                int channels = (int)VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.Channels);
+                int interleave = (int)VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.Interleave);
+                
+                using (FileStream inputFs = File.Open(pSourcePath, FileMode.Open, FileAccess.Read))
+                {
+                    if (pGenhCreationStruct.UseLoopStartOffset)
+                    {
+                        long loopStart = ParseFile.GetVaryingByteValueAtAbsoluteOffset(inputFs, pGenhCreationStruct.LoopStartOffsetDescription);
+
+                        if (pGenhCreationStruct.DoLoopStartBytesToSamples)
+                        {
+                            loopStart = BytesToSamples(formatId, (int)loopStart, channels, interleave);
+                        }
+
+                        pGenhCreationStruct.LoopStart = ((int)loopStart).ToString();
+                    }
+
+                    if (pGenhCreationStruct.UseLoopEndOffset)
+                    {
+                        long loopEnd = ParseFile.GetVaryingByteValueAtAbsoluteOffset(inputFs, pGenhCreationStruct.LoopEndOffsetDescription);
+
+                        if (pGenhCreationStruct.DoLoopEndBytesToSamples)
+                        {
+                            loopEnd = BytesToSamples(formatId, (int)loopEnd, channels, interleave);
+                        }
+                        
+                        pGenhCreationStruct.LoopEnd = ((int)loopEnd).ToString();
+                    }
+
+                    if (pGenhCreationStruct.UseFrequencyOffset)
+                    {
+                        long frequency = ParseFile.GetVaryingByteValueAtAbsoluteOffset(inputFs, pGenhCreationStruct.FrequencyOffsetDescription);
+                        pGenhCreationStruct.Frequency = ((int)frequency).ToString();                    
+                    }
                 }
             }
 
@@ -228,7 +286,10 @@ namespace VGMToolbox.format.util
 
             FileInfo fi = new FileInfo(Path.GetFullPath(pSourcePath));
             int fileLength = (int)fi.Length;
-
+            
+            loopEnd = BytesToSamples(formatId, (fileLength - headerSkip), channels, interleave);
+            
+            /*
             switch (formatId)
             {
                 case 0x00: // "0x00 - PlayStation 4-bit ADPCM"
@@ -286,8 +347,75 @@ namespace VGMToolbox.format.util
                 default:
                     break;
             }
-
+            */
             return loopEnd.ToString();
+        }
+
+        public static int BytesToSamples(int formatId, int byteValue, int channels, int interleave)
+        { 
+            int sampleCount = UNKNOWN_SAMPLE_COUNT;
+            int frames, lastFrame;
+
+            switch (formatId)
+            {
+                case 0x00: // "0x00 - PlayStation 4-bit ADPCM"
+                case 0x0E: // "0x0E - PlayStation 4-bit ADPCM (with bad flags)
+                    sampleCount = (byteValue / 16 / channels * 28);
+                    break;
+
+                case 0x01: // "0x01 - XBOX 4-bit IMA ADPCM"
+                    sampleCount = (byteValue / 36 / channels * 64);
+                    break;
+
+                case 0x02: // "0x02 - GameCube ADP/DTK 4-bit ADPCM"
+                    sampleCount = (byteValue / 32 * 28);
+                    break;
+
+                case 0x03: // "0x03 - PCM RAW (Big Endian)"
+                case 0x04: // "0x04 - PCM RAW (Little Endian)
+                    sampleCount = (byteValue / 2 / channels);
+                    break;
+
+                case 0x05: // "0x05 - PCM RAW (8-Bit)"
+                case 0x0D: // "0x05 - PCM RAW (8-Bit unsigned)"
+                    sampleCount = (byteValue / channels);
+                    break;
+
+                case 0x06: // "0x06 - Squareroot-delta-exact 8-bit DPCM"
+                    sampleCount = (byteValue / 1 / channels);
+                    break;
+
+                case 0x08: // "0x08 - MPEG Layer Audio File (MP1/2/3)"
+                    // Not Implemented
+                    break;
+
+                case 0x07: // "0x07 - Interleaved DVI 4-Bit IMA ADPCM"
+                case 0x09: // "0x09 - 4-bit IMA ADPCM"
+                case 0x0A: // "0x0A - Yamaha AICA 4-bit ADPCM"    
+                    sampleCount = (byteValue / channels * 2);
+                    break;
+
+                case 0x0B: // 0x0B - Microsoft 4-bit ADPCM
+                    frames = byteValue / interleave;
+                    lastFrame = byteValue - (frames * interleave);
+                    sampleCount = (frames * (interleave - (14 - 2))) + (lastFrame - (14 - 2));
+                    break;
+
+                case 0x0C: // "0x0C - Nintendo GameCube DSP 4-bit ADPCM"
+                    sampleCount = (byteValue / channels / 8 * 14);
+                    break;
+
+                case 0x0F: // "0x0F - Microsoft 4-bit IMA ADPCM"
+                    sampleCount = (byteValue / 0x800) * (0x800 - 4 * channels) * 2 / channels + ((byteValue % 0x800) != 0 ? (byteValue % 0x800 - 4 * channels) * 2 / channels : 0);
+                    break;
+
+                default:
+                    sampleCount = UNKNOWN_SAMPLE_COUNT;
+                    break;
+
+            }
+
+            return sampleCount;
         }
 
         public static bool GetPsAdpcmLoop(string pSourcePath, 

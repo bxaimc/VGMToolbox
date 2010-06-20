@@ -16,7 +16,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.forms
 {
-    public partial class Genh_CreatorForm : VgmtForm
+    public partial class Genh_CreatorForm : AVgmtForm
     {
         public const int NO_LABEL_SELECTED = -1;
         public const int LOOP_START_LABEL_SELECTED = 1;
@@ -281,9 +281,21 @@ namespace VGMToolbox.forms
             genhStruct.HeaderSkip = this.cbHeaderSkip.Text;
             genhStruct.Interleave = this.cbInterleave.Text;
             genhStruct.Channels = this.cbChannels.Text;
+            
             genhStruct.Frequency = this.cbFrequency.Text;
+            genhStruct.UseFrequencyOffset = this.cbUseFrequencyOffset.Checked;
+            genhStruct.FrequencyOffsetDescription = this.frequencyOffsetDescription.GetOffsetValues();
+
             genhStruct.LoopStart = this.tbLoopStart.Text;
-            genhStruct.LoopEnd = this.tbLoopEnd.Text;
+            genhStruct.UseLoopStartOffset = this.cbUseLoopStartOffset.Checked;
+            genhStruct.LoopStartOffsetDescription = this.loopStartOffsetDescription.GetOffsetValues();
+            genhStruct.DoLoopStartBytesToSamples = this.cbLoopStartBytesToSamples.Checked;
+
+            genhStruct.LoopEnd = this.tbLoopEnd.Text;            
+            genhStruct.UseLoopEndOffset = this.cbUseLoopEndOffset.Checked;
+            genhStruct.LoopEndOffsetDescription = this.loopEndOffsetDescription.GetOffsetValues();
+            genhStruct.DoLoopEndBytesToSamples = this.cbLoopEndBytesToSamples.Checked;
+        
             genhStruct.NoLoops = this.cbNoLoops.Checked;
             genhStruct.UseFileEnd = this.cbLoopFileEnd.Checked;
             genhStruct.FindLoop = this.cbFindLoop.Checked;
@@ -322,6 +334,7 @@ namespace VGMToolbox.forms
                 base.backgroundWorker_Execute(genhStruct);
             }
         }
+        
         public static bool ValidateInputs(GenhCreatorStruct pGenhCreatorStruct,
             out string pErrorMessages)
         {
@@ -361,7 +374,8 @@ namespace VGMToolbox.forms
             }
 
             // Frequency
-            if (String.IsNullOrEmpty(pGenhCreatorStruct.Frequency.Trim()))
+            if (String.IsNullOrEmpty(pGenhCreatorStruct.Frequency.Trim()) &&
+                String.IsNullOrEmpty(pGenhCreatorStruct.FrequencyOffsetDescription.OffsetValue))
             {
                 isValid = false;
                 errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageFrequency"]);
@@ -371,7 +385,8 @@ namespace VGMToolbox.forms
             // Loop Start
             if (!pGenhCreatorStruct.NoLoops &&
                 !pGenhCreatorStruct.FindLoop &&
-                String.IsNullOrEmpty(pGenhCreatorStruct.LoopStart.Trim()))
+                String.IsNullOrEmpty(pGenhCreatorStruct.LoopStart.Trim()) &&
+                String.IsNullOrEmpty(pGenhCreatorStruct.LoopStartOffsetDescription.OffsetValue))
             {
                 isValid = false;
                 errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageLoopStart1"]);
@@ -379,6 +394,7 @@ namespace VGMToolbox.forms
             }
             else if (!pGenhCreatorStruct.NoLoops &&
                      !pGenhCreatorStruct.FindLoop &&
+                     !String.IsNullOrEmpty(pGenhCreatorStruct.LoopStart) &&
                      VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreatorStruct.LoopStart.Trim()) < 0)
             {
                 isValid = false;
@@ -390,7 +406,8 @@ namespace VGMToolbox.forms
             if (!pGenhCreatorStruct.NoLoops && 
                 !pGenhCreatorStruct.UseFileEnd && 
                 !pGenhCreatorStruct.FindLoop &&
-                String.IsNullOrEmpty(pGenhCreatorStruct.LoopEnd.Trim()))
+                String.IsNullOrEmpty(pGenhCreatorStruct.LoopEnd.Trim()) &&
+                String.IsNullOrEmpty(pGenhCreatorStruct.LoopEndOffsetDescription.OffsetValue))
             {
                 isValid = false;
                 errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageLoopEnd"]);

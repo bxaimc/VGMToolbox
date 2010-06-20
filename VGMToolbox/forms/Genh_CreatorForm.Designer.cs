@@ -616,6 +616,7 @@
             this.tbFilenameFilter.Name = "tbFilenameFilter";
             this.tbFilenameFilter.Size = new System.Drawing.Size(174, 20);
             this.tbFilenameFilter.TabIndex = 15;
+            this.tbFilenameFilter.TextChanged += new System.EventHandler(this.tbFilenameFilter_TextChanged);
             // 
             // tbSourceDirectory
             // 
@@ -623,6 +624,8 @@
             this.tbSourceDirectory.Name = "tbSourceDirectory";
             this.tbSourceDirectory.Size = new System.Drawing.Size(350, 20);
             this.tbSourceDirectory.TabIndex = 13;
+            this.tbSourceDirectory.TextChanged += new System.EventHandler(this.tbSourceDirectory_TextChanged);
+            this.tbSourceDirectory.Click += new System.EventHandler(this.tbSourceDirectory_Click);
             // 
             // lbFiles
             // 
@@ -633,6 +636,8 @@
             this.lbFiles.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.lbFiles.Size = new System.Drawing.Size(388, 82);
             this.lbFiles.TabIndex = 12;
+            this.lbFiles.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lbFiles_MouseUp);
+            this.lbFiles.SelectedIndexChanged += new System.EventHandler(this.lbFiles_SelectedIndexChanged);
             // 
             // btnBrowseDirectory
             // 
