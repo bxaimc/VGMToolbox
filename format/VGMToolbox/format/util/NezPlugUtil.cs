@@ -58,27 +58,33 @@ namespace VGMToolbox.format.util
         {
             NezPlugM3uEntry m3uEntry = new NezPlugM3uEntry();
 
+            string escapedCommaString = "\\,";
+            string replaceCommaString = "|*|";
+            string plainCommaString = ",";
+
             string[] stringDelimtier = new string[] { "::" };
             string[] splitLine = pString.Split(stringDelimtier, StringSplitOptions.None);
 
             if (splitLine.Length > 1)
             {
                 char[] charDelimtier = new char[] { ',' };
+
+                splitLine[1] = splitLine[1].Replace(escapedCommaString, replaceCommaString);
                 string[] splitData = splitLine[1].Split(charDelimtier, StringSplitOptions.None);
 
                 if (splitLine.Length > 0)
                 {
-                    m3uEntry.filename = splitLine[0];
+                    m3uEntry.filename = splitLine[0].Replace(replaceCommaString, plainCommaString);
                 }
 
                 if (splitData.Length > 0)
                 {
-                    m3uEntry.format = splitData[0];
+                    m3uEntry.format = splitData[0].Replace(replaceCommaString, plainCommaString);
                 }
 
                 if (splitData.Length > 1)
                 {
-                    m3uEntry.songNumber = (int)VGMToolbox.util.ByteConversion.GetLongValueFromString(splitData[1].Replace("$", "0x"));
+                    m3uEntry.songNumber = (int)VGMToolbox.util.ByteConversion.GetLongValueFromString(splitData[1].Replace(replaceCommaString, plainCommaString).Replace("$", "0x"));
                 }
                 else
                 {
@@ -87,27 +93,27 @@ namespace VGMToolbox.format.util
 
                 if (splitData.Length > 2)
                 {
-                    m3uEntry.title = splitData[2];
+                    m3uEntry.title = splitData[2].Replace(replaceCommaString, plainCommaString);
                 }
 
                 if (splitData.Length > 3)
                 {
-                    m3uEntry.time = splitData[3];
+                    m3uEntry.time = splitData[3].Replace(replaceCommaString, plainCommaString);
                 }
 
                 if (splitData.Length > 4)
                 {
-                    m3uEntry.loop = splitData[4];
+                    m3uEntry.loop = splitData[4].Replace(replaceCommaString, plainCommaString);
                 }
 
                 if (splitData.Length > 5)
                 {
-                    m3uEntry.fade = splitData[5];
+                    m3uEntry.fade = splitData[5].Replace(replaceCommaString, plainCommaString);
                 }
 
                 if (splitData.Length > 6)
                 {
-                    m3uEntry.loopCount = splitData[6];
+                    m3uEntry.loopCount = splitData[6].Replace(replaceCommaString, plainCommaString);
                 }
             }
 

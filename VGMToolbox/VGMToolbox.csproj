@@ -800,7 +800,9 @@
     <Content Include="external\xma\dir.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="hoot\dir.txt" />
+    <Content Include="hoot\dir.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="ICSharpCode.SharpZipLib.dll.COPYING.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
