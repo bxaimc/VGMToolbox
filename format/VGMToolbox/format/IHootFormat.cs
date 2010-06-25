@@ -15,6 +15,9 @@ namespace VGMToolbox.format
         bool UsesPlaylist();
         NezPlugM3uEntry[] GetPlaylistEntries();
 
+        bool HasMultipleFilesPerSet();
+        string GetSetName();
+
         string GetHootDriverAlias();
         string GetHootDriverType();
         string GetHootDriver();

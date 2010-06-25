@@ -5,11 +5,12 @@ using System.Security.Cryptography;
 
 using ICSharpCode.SharpZipLib.Checksums;
 
+using VGMToolbox.format.util;
 using VGMToolbox.util;
 
 namespace VGMToolbox.format
 {
-    public class Spc : IFormat
+    public class Spc : IFormat, IHootFormat
     {
         private static readonly byte[] ASCII_SIGNATURE = 
             new byte[] { 0x53, 0x4E, 0x45, 0x53, 0x2D, 0x53, 0x50, 0x43, 0x37,
@@ -30,6 +31,10 @@ namespace VGMToolbox.format
         private const string EXID666_SUBCHUNK_ID_DUMPDATE = "05";
         private const string EXID666_SUBCHUNK_ID_OST_TRACK = "12";
 
+        private const string HOOT_DRIVER_ALIAS = "SNES";
+        private const string HOOT_DRIVER_TYPE = "spc";
+        private const string HOOT_DRIVER = "snes";
+        private const string HOOT_CHIP = "SPC700";
 
         private const int SIG_OFFSET = 0x00;
         private const int SIG_LENGTH = 0x21;
@@ -610,6 +615,35 @@ namespace VGMToolbox.format
 
         public bool UsesLibraries() { return false; }
         public bool IsLibraryPresent() { return true; }
+
+        #endregion
+
+        #region HOOT
+
+        public int GetStartingSong() { return -1; }
+        public int GetTotalSongs() { return 1; }
+        public string GetSongName() 
+        { 
+            return ByteConversion.GetEncodedText(
+                    FileUtil.ReplaceNullByteWithSpace(this.IdSongTitle), 
+                    ByteConversion.GetPredictedCodePageForTags(this.IdSongTitle)).Trim();
+        }
+
+        public bool UsesPlaylist() { return false; }
+        public NezPlugM3uEntry[] GetPlaylistEntries() { return null; }
+
+        public bool HasMultipleFilesPerSet() { return true; }
+        public string GetSetName()
+        {
+            return ByteConversion.GetEncodedText(
+                FileUtil.ReplaceNullByteWithSpace(this.IdGameTitle),
+                ByteConversion.GetPredictedCodePageForTags(this.IdGameTitle)).Trim();
+        }
+
+        public string GetHootDriverAlias() { return HOOT_DRIVER_ALIAS; }
+        public string GetHootDriverType() { return HOOT_DRIVER_TYPE; }
+        public string GetHootDriver() { return HOOT_DRIVER; }
+        public string GetHootChips() { return HOOT_CHIP; }
 
         #endregion
     }

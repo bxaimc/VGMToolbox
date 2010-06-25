@@ -131,6 +131,38 @@ namespace VGMToolbox.util
             return filenames;
         }
 
+        public static bool Is7zSupportedArchive(string pArchivePath)
+        {
+            string archivePath = Path.GetFullPath(pArchivePath);
+            SevenZipExtractor sevenZipExtractor = null;
+            bool ret = false;
+
+            if (File.Exists(archivePath))
+            {
+                try
+                {
+                    SevenZipExtractor.SetLibraryPath(SevenZipDll);
+                    sevenZipExtractor = new SevenZipExtractor(archivePath);
+                    sevenZipExtractor.Check();
+
+                    ret = true;
+                }
+                catch (Exception)
+                {
+                    ret = false;
+                }
+                finally
+                {
+                    if (sevenZipExtractor != null)
+                    {
+                        sevenZipExtractor.Dispose();
+                    }
+                }
+            }
+            
+            return ret;
+        }
+
         /// <summary>
         /// Extracts a file from an archive.  The file will be output to a subfolder in the archive's directory; 
         /// named with the original archive name.
@@ -193,7 +225,49 @@ namespace VGMToolbox.util
                 }                
             }
         }
-        
+
+        public static void ExtractAllFilesFromArchive(string pArchivePath, string pOutputPath)
+        {
+            string archivePath = Path.GetFullPath(pArchivePath);
+            SevenZipExtractor sevenZipExtractor = null;
+            string outputDir;
+
+            if (File.Exists(archivePath))
+            {
+                try
+                {
+                    if (!String.IsNullOrEmpty(pOutputPath))
+                    {
+                        outputDir = pOutputPath;
+                    }
+                    else
+                    {
+                        outputDir = Path.Combine(Path.GetDirectoryName(archivePath), Path.GetFileNameWithoutExtension(archivePath));
+                    }
+
+                    if (!Directory.Exists(outputDir))
+                    {
+                        Directory.CreateDirectory(outputDir);
+                    }
+
+                    SevenZipExtractor.SetLibraryPath(SevenZipDll);
+                    sevenZipExtractor = new SevenZipExtractor(archivePath);
+                    sevenZipExtractor.ExtractArchive(outputDir);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+                finally
+                {
+                    if (sevenZipExtractor != null)
+                    {
+                        sevenZipExtractor.Dispose();
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Compress input folder (recursively) with 7zip Ultra compression.
         /// </summary>

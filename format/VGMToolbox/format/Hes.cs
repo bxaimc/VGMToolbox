@@ -302,6 +302,9 @@ namespace format.VGMToolbox.format
             return entries;
         }
 
+        public bool HasMultipleFilesPerSet() { return false; }
+        public string GetSetName() { return null; }
+
         #endregion
     }
 }

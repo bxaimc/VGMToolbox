@@ -356,6 +356,9 @@ namespace VGMToolbox.format
             return entries;
         }
 
+        public bool HasMultipleFilesPerSet() { return false; }
+        public string GetSetName() { return ByteConversion.GetAsciiText(this.songName); }
+
         #endregion
 
         #region EMBEDDED TAG METHODS
