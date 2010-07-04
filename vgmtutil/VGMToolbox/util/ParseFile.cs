@@ -582,7 +582,7 @@ namespace VGMToolbox.util
 
                 int read = 0;
                 long totalBytes = 0;
-                byte[] bytes = new byte[4096];
+                byte[] bytes = new byte[Constants.FileReadChunkSize];
                 stream.Seek((long)startingOffset, SeekOrigin.Begin);
 
                 int maxread = length > (long)bytes.Length ? bytes.Length : (int)length;
