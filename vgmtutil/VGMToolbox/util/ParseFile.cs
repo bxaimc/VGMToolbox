@@ -532,6 +532,34 @@ namespace VGMToolbox.util
             return ret;
         }
 
+        public static bool CompareSegmentUsingSourceOffset(byte[] sourceArray, int sourceOffset, 
+            int numBytesToCompare, byte[] target)
+        {
+            bool ret = true;
+            uint j = 0;
+
+            if (sourceArray.Length > 0)
+            {
+                for (int i = sourceOffset; 
+                    (i < sourceOffset + target.Length) || (i < sourceOffset + numBytesToCompare); i++)
+                {
+                    if (sourceArray[i] != target[j])
+                    {
+                        ret = false;
+                        break;
+                    }
+
+                    j++;
+                }
+            }
+            else
+            {
+                ret = false;
+            }
+
+            return ret;
+        }
+
         public static void ExtractChunkToFile(Stream stream, long startingOffset, long length, 
             string filePath)
         {
@@ -894,6 +922,8 @@ namespace VGMToolbox.util
                             {
                                 ParseFile.ExtractChunkToFile(fs, cutStart, cutSize, Path.Combine(outputFolder, outputFile), outputLog, outputBatchFile);
 
+                                // ParseFile.ExtractChunkToFile(fs, cutStart, cutSize, Path.Combine(outputFolder, outputFile), false, false);
+
                                 ret.AppendFormat(
                                     CultureInfo.CurrentCulture,
                                     "  Extracted [{3}] begining at 0x{0}, for string found at: 0x{1}, with size 0x{2}",
@@ -1037,8 +1067,11 @@ namespace VGMToolbox.util
                         cutLength = fileItemArray[j].FileLength;
                     }
 
-                    ParseFile.ExtractChunkToFile(fs, cutOffset, cutLength, fileItemArray[j].FilePath, outputLog, outputBatchFile);
-                    ret.AppendFormat("{0} extracted.{1}", Path.GetFileName(fileItemArray[j].FilePath), Environment.NewLine);
+                    if (cutLength > 0)
+                    {
+                        ParseFile.ExtractChunkToFile(fs, cutOffset, cutLength, fileItemArray[j].FilePath, outputLog, outputBatchFile);
+                        ret.AppendFormat("{0} extracted.{1}", Path.GetFileName(fileItemArray[j].FilePath), Environment.NewLine);
+                    }
 
                     previousCutOffset = cutOffset;
                     previousCutLength = cutLength;
