@@ -28,12 +28,19 @@ namespace VGMToolbox.tools.stream
             Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
             TOWAV_PATH);
 
+        // xmaencode
+        public const string XMAENCODE_PATH = "external\\xma\\xmaencode.exe";
+        public static readonly string XMAENCODE_FULL_PATH =
+            Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+            XMAENCODE_PATH);
+
         // paths
         private const string WORKING_FOLDER_NAME = "_vgmt_xma_convert";
 
         private const string XMAPARSE_OUTPUT_EXTENSION = ".xmpo";
         private const string RIFF_COPY_OUTPUT_EXTENSION = ".xmariff";
         private const string TOWAV_OUTPUT_EXTENSION = ".wav";
+        private const string XMAENCODE_OUTPUT_EXTENSION = ".wav";
 
         // combo items
         public const string RIFF_CHANNELS_1 = "Mono (1)";
@@ -56,6 +63,7 @@ namespace VGMToolbox.tools.stream
             public bool DoXmaParse { set; get; }
             public bool DoRiffHeader { set; get; }
             public bool DoToWav { set; get; }
+            public bool DoXmaEncode { set; get; }
 
             public string XmaParseXmaType { set; get; }
             public bool XmaParseDoRebuildMode { set; get; }
@@ -196,6 +204,28 @@ namespace VGMToolbox.tools.stream
                     this.ShowOutput(pPath, consoleError, true);
                 }                        
             }
+            //---------------
+            // XmaEncode.exe
+            //---------------
+            else if ((taskStruct.DoXmaEncode) && (String.IsNullOrEmpty(consoleError)))
+            {
+                this.ShowOutput(pPath, "---- calling xmaencode.exe", false);
+
+                // call xmaencode.exe and set working file for next step (if ever needed)
+                workingFile = this.callXmaEncode(workingFolder, workingFile, taskStruct, out consoleOutput, out consoleError);
+
+                // show output
+                if (taskStruct.ShowExeOutput && !String.IsNullOrEmpty(consoleOutput))
+                {
+                    this.ShowOutput(pPath, consoleOutput, false);
+                }
+
+                // dispay xmaencode.exe error
+                if (!String.IsNullOrEmpty(consoleError))
+                {
+                    this.ShowOutput(pPath, consoleError, true);
+                }
+            }
 
             //----------------------
             // clean working folder
@@ -242,7 +272,12 @@ namespace VGMToolbox.tools.stream
             // delete working copy of source file
             if (File.Exists(workingFile))
             {
-                File.Delete(workingFile);
+                // extensions are corrected in each function
+                if ((taskStruct.DoXmaEncode && !Path.GetExtension(workingFile).ToLower().Equals(XMAENCODE_OUTPUT_EXTENSION)) ||
+                    (taskStruct.DoToWav && !Path.GetExtension(workingFile).ToLower().Equals(TOWAV_OUTPUT_EXTENSION)))
+                {
+                    File.Delete(workingFile);
+                }
             }
 
             //---------------------------
@@ -277,6 +312,14 @@ namespace VGMToolbox.tools.stream
             if (File.Exists(toWavWorkingPath))
             {
                 File.Delete(toWavWorkingPath);
+            }
+
+            // delete xmaencode.exe
+            string xmaencodeWorkingPath = Path.Combine(workingFolder, Path.GetFileName(XMAENCODE_FULL_PATH));
+
+            if (File.Exists(xmaencodeWorkingPath))
+            {
+                File.Delete(xmaencodeWorkingPath);
             }
         }        
 
@@ -390,6 +433,13 @@ namespace VGMToolbox.tools.stream
             Process toWavProcess;
             StringBuilder parameters = new StringBuilder();
 
+            // update extension in case other steps were skipped
+            if (Path.GetExtension(riffHeaderedFile).ToLower().Equals(TOWAV_OUTPUT_EXTENSION))
+            {
+                File.Move(riffHeaderedFile, Path.ChangeExtension(riffHeaderedFile, RIFF_COPY_OUTPUT_EXTENSION));
+                riffHeaderedFile = Path.ChangeExtension(riffHeaderedFile, RIFF_COPY_OUTPUT_EXTENSION);
+            }
+
             // copy to working folder
             toWavWorkingPath = Path.Combine(workingFolder, Path.GetFileName(TOWAV_FULL_PATH));
             File.Copy(TOWAV_FULL_PATH, toWavWorkingPath, true);
@@ -420,6 +470,59 @@ namespace VGMToolbox.tools.stream
             toWavOutputFilePath = Path.ChangeExtension(riffHeaderedFile, TOWAV_OUTPUT_EXTENSION);
 
             return toWavOutputFilePath;
+        }
+
+        private string callXmaEncode(
+            string workingFolder,
+            string riffHeaderedFile,
+            XmaConverterStruct taskStruct,
+            out string consoleOutput,
+            out string consoleError)
+        {
+            string exeWorkingPath;
+            string exeOutputFilePath;
+            string riffFileName;
+            Process exeProcess;
+            StringBuilder parameters = new StringBuilder();
+
+            // update extension in case other steps were skipped
+            if (Path.GetExtension(riffHeaderedFile).ToLower().Equals(XMAENCODE_OUTPUT_EXTENSION))
+            {
+                File.Move(riffHeaderedFile, Path.ChangeExtension(riffHeaderedFile, RIFF_COPY_OUTPUT_EXTENSION));
+                riffHeaderedFile = Path.ChangeExtension(riffHeaderedFile, RIFF_COPY_OUTPUT_EXTENSION);
+            }
+
+            // copy to working folder
+            exeWorkingPath = Path.Combine(workingFolder, Path.GetFileName(XMAENCODE_FULL_PATH));
+            File.Copy(XMAENCODE_FULL_PATH, exeWorkingPath, true);
+
+            // build parameters
+            riffFileName = Path.GetFileName(riffHeaderedFile);
+            parameters.AppendFormat(" /X \"{0}\" \"{1}\" /V", Path.ChangeExtension(riffFileName, XMAENCODE_OUTPUT_EXTENSION), riffFileName); // Filename
+
+            // call function
+            exeProcess = new Process();
+            exeProcess.StartInfo = new ProcessStartInfo(exeWorkingPath);
+            exeProcess.StartInfo.WorkingDirectory = workingFolder;
+            exeProcess.StartInfo.Arguments = parameters.ToString();
+            exeProcess.StartInfo.UseShellExecute = false;
+            exeProcess.StartInfo.CreateNoWindow = true;
+
+            exeProcess.StartInfo.RedirectStandardError = true;
+            exeProcess.StartInfo.RedirectStandardOutput = true;
+
+            bool isSuccess = exeProcess.Start();
+            consoleOutput = exeProcess.StandardOutput.ReadToEnd();
+            consoleError = exeProcess.StandardError.ReadToEnd();
+
+            exeProcess.WaitForExit();
+            exeProcess.Close();
+            exeProcess.Dispose();
+
+            // build output path
+            exeOutputFilePath = Path.ChangeExtension(riffHeaderedFile, XMAENCODE_OUTPUT_EXTENSION);
+
+            return exeOutputFilePath;
         }
 
         //----------------

@@ -80,7 +80,7 @@ namespace VGMToolbox.forms.stream
 
         private void initializeToWavSection()
         {
-            this.cbDoToWav.Checked = true;
+            this.rbDoXmaEncode.Checked = true;
         }
                   
         //-----------------------------
@@ -159,7 +159,10 @@ namespace VGMToolbox.forms.stream
                 }
 
                 // TOWAV
-                taskStruct.DoToWav = this.cbDoToWav.Checked;
+                taskStruct.DoToWav = this.rbDoToWav.Checked;
+
+                // XMAENCODE
+                taskStruct.DoXmaEncode = this.rbDoXmaEncode.Checked;
 
                 // OTHER                
                 taskStruct.ShowExeOutput = this.cbShowAllExeOutput.Checked;
@@ -179,7 +182,8 @@ namespace VGMToolbox.forms.stream
             isValid &= this.checkPrerequisites();
             isValid &= this.validateOutputOptions();
             isValid &= this.validateXmaParseOptions();
-            
+            isValid &= this.validateFrequencyOptions();
+
             return isValid;
         }
 
@@ -188,7 +192,7 @@ namespace VGMToolbox.forms.stream
             bool isValid = true;
             string errorMessage;
 
-            if (!File.Exists(XmaConverterWorker.TOWAV_FULL_PATH))
+            if (rbDoToWav.Checked && !File.Exists(XmaConverterWorker.TOWAV_FULL_PATH))
             {
                 errorMessage = 
                     String.Format(
@@ -200,8 +204,8 @@ namespace VGMToolbox.forms.stream
 
                 isValid = false;
             }
-            
-            if (!File.Exists(XmaConverterWorker.XMAPARSE_FULL_PATH))
+
+            if (cbDoXmaParse.Checked && !File.Exists(XmaConverterWorker.XMAPARSE_FULL_PATH))
             {
                 errorMessage =
                     String.Format(
@@ -213,7 +217,20 @@ namespace VGMToolbox.forms.stream
 
                 isValid = false;
             }
-                        
+
+            if (rbDoXmaEncode.Checked && !File.Exists(XmaConverterWorker.XMAENCODE_FULL_PATH))
+            {
+                errorMessage =
+                    String.Format(
+                        "Cannot find \"{0}\".  \"{0}\" is not included and should be placed in the following directory: <{1}>",
+                        Path.GetFileName(XmaConverterWorker.XMAENCODE_FULL_PATH),
+                        Path.GetDirectoryName(XmaConverterWorker.XMAENCODE_FULL_PATH));
+
+                MessageBox.Show(errorMessage, "Missing File");
+
+                isValid = false;
+            }
+            
             return isValid;
         }
 
@@ -269,6 +286,23 @@ namespace VGMToolbox.forms.stream
             }
 
             return isValid;
+        }
+
+        private bool validateFrequencyOptions()
+        {
+            bool isValid = true;
+
+            if (this.cbAddRiffHeader.Checked)
+            {
+                isValid &= AVgmtForm.checkTextBox(this.comboRiffFrequency.Text, this.lblRiffFrequency.Text);
+
+                if (isValid)
+                {
+                    isValid &= AVgmtForm.checkIfTextIsParsableAsLong(this.comboRiffFrequency.Text, this.lblRiffFrequency.Text);
+                }
+            }
+
+            return isValid;        
         }
 
         //----------------------------

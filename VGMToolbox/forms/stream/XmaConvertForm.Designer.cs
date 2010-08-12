@@ -39,7 +39,8 @@
             this.cbKeepTempFiles = new System.Windows.Forms.CheckBox();
             this.cbShowAllExeOutput = new System.Windows.Forms.CheckBox();
             this.grpToWavOptions = new System.Windows.Forms.GroupBox();
-            this.cbDoToWav = new System.Windows.Forms.CheckBox();
+            this.rbDoToWav = new System.Windows.Forms.RadioButton();
+            this.rbDoXmaEncode = new System.Windows.Forms.RadioButton();
             this.grpRiffHeaderOptions = new System.Windows.Forms.GroupBox();
             this.cbAddRiffHeader = new System.Windows.Forms.CheckBox();
             this.comboRiffChannels = new System.Windows.Forms.ComboBox();
@@ -83,38 +84,38 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 437);
-            this.pnlLabels.Size = new System.Drawing.Size(789, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 580);
+            this.pnlLabels.Size = new System.Drawing.Size(790, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(789, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(790, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 360);
-            this.tbOutput.Size = new System.Drawing.Size(789, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 503);
+            this.tbOutput.Size = new System.Drawing.Size(790, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 340);
-            this.pnlButtons.Size = new System.Drawing.Size(789, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 483);
+            this.pnlButtons.Size = new System.Drawing.Size(790, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(729, 0);
+            this.btnCancel.Location = new System.Drawing.Point(730, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(669, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(670, 0);
             // 
             // grpPresets
             // 
             this.grpPresets.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpPresets.Location = new System.Drawing.Point(0, 23);
             this.grpPresets.Name = "grpPresets";
-            this.grpPresets.Size = new System.Drawing.Size(789, 40);
+            this.grpPresets.Size = new System.Drawing.Size(790, 40);
             this.grpPresets.TabIndex = 5;
             this.grpPresets.TabStop = false;
             this.grpPresets.Text = "Presets";
@@ -128,7 +129,7 @@
             this.grpOutputOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpOutputOptions.Location = new System.Drawing.Point(0, 63);
             this.grpOutputOptions.Name = "grpOutputOptions";
-            this.grpOutputOptions.Size = new System.Drawing.Size(789, 70);
+            this.grpOutputOptions.Size = new System.Drawing.Size(790, 70);
             this.grpOutputOptions.TabIndex = 6;
             this.grpOutputOptions.TabStop = false;
             this.grpOutputOptions.Text = "Output Options";
@@ -181,7 +182,7 @@
             this.pnlOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlOptions.Location = new System.Drawing.Point(0, 133);
             this.pnlOptions.Name = "pnlOptions";
-            this.pnlOptions.Size = new System.Drawing.Size(789, 207);
+            this.pnlOptions.Size = new System.Drawing.Size(790, 350);
             this.pnlOptions.TabIndex = 7;
             // 
             // groupOtherOptions
@@ -189,9 +190,9 @@
             this.groupOtherOptions.Controls.Add(this.cbKeepTempFiles);
             this.groupOtherOptions.Controls.Add(this.cbShowAllExeOutput);
             this.groupOtherOptions.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupOtherOptions.Location = new System.Drawing.Point(0, 379);
+            this.groupOtherOptions.Location = new System.Drawing.Point(0, 402);
             this.groupOtherOptions.Name = "groupOtherOptions";
-            this.groupOtherOptions.Size = new System.Drawing.Size(772, 64);
+            this.groupOtherOptions.Size = new System.Drawing.Size(773, 64);
             this.groupOtherOptions.TabIndex = 2;
             this.groupOtherOptions.TabStop = false;
             this.groupOtherOptions.Text = "Other Options";
@@ -218,24 +219,37 @@
             // 
             // grpToWavOptions
             // 
-            this.grpToWavOptions.Controls.Add(this.cbDoToWav);
+            this.grpToWavOptions.Controls.Add(this.rbDoToWav);
+            this.grpToWavOptions.Controls.Add(this.rbDoXmaEncode);
             this.grpToWavOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpToWavOptions.Location = new System.Drawing.Point(0, 339);
             this.grpToWavOptions.Name = "grpToWavOptions";
-            this.grpToWavOptions.Size = new System.Drawing.Size(772, 40);
+            this.grpToWavOptions.Size = new System.Drawing.Size(773, 63);
             this.grpToWavOptions.TabIndex = 3;
             this.grpToWavOptions.TabStop = false;
-            this.grpToWavOptions.Text = "3. ToWav.exe Options";
+            this.grpToWavOptions.Text = "3. WAV Conversion Options";
             // 
-            // cbDoToWav
+            // rbDoToWav
             // 
-            this.cbDoToWav.AutoSize = true;
-            this.cbDoToWav.Location = new System.Drawing.Point(3, 19);
-            this.cbDoToWav.Name = "cbDoToWav";
-            this.cbDoToWav.Size = new System.Drawing.Size(213, 17);
-            this.cbDoToWav.TabIndex = 0;
-            this.cbDoToWav.Text = "Execute ToWav.exe on the Ouput Files";
-            this.cbDoToWav.UseVisualStyleBackColor = true;
+            this.rbDoToWav.AutoSize = true;
+            this.rbDoToWav.Location = new System.Drawing.Point(3, 42);
+            this.rbDoToWav.Name = "rbDoToWav";
+            this.rbDoToWav.Size = new System.Drawing.Size(215, 17);
+            this.rbDoToWav.TabIndex = 2;
+            this.rbDoToWav.TabStop = true;
+            this.rbDoToWav.Text = "Execute ToWav.exe on the Output Files";
+            this.rbDoToWav.UseVisualStyleBackColor = true;
+            // 
+            // rbDoXmaEncode
+            // 
+            this.rbDoXmaEncode.AutoSize = true;
+            this.rbDoXmaEncode.Location = new System.Drawing.Point(3, 19);
+            this.rbDoXmaEncode.Name = "rbDoXmaEncode";
+            this.rbDoXmaEncode.Size = new System.Drawing.Size(234, 17);
+            this.rbDoXmaEncode.TabIndex = 1;
+            this.rbDoXmaEncode.TabStop = true;
+            this.rbDoXmaEncode.Text = "Execute xmaencode.exe on the Output Files";
+            this.rbDoXmaEncode.UseVisualStyleBackColor = true;
             // 
             // grpRiffHeaderOptions
             // 
@@ -247,7 +261,7 @@
             this.grpRiffHeaderOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpRiffHeaderOptions.Location = new System.Drawing.Point(0, 276);
             this.grpRiffHeaderOptions.Name = "grpRiffHeaderOptions";
-            this.grpRiffHeaderOptions.Size = new System.Drawing.Size(772, 63);
+            this.grpRiffHeaderOptions.Size = new System.Drawing.Size(773, 63);
             this.grpRiffHeaderOptions.TabIndex = 1;
             this.grpRiffHeaderOptions.TabStop = false;
             this.grpRiffHeaderOptions.Text = "2. RIFF Header Options";
@@ -312,7 +326,7 @@
             this.grpXmaParseOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpXmaParseOptions.Location = new System.Drawing.Point(0, 0);
             this.grpXmaParseOptions.Name = "grpXmaParseOptions";
-            this.grpXmaParseOptions.Size = new System.Drawing.Size(772, 276);
+            this.grpXmaParseOptions.Size = new System.Drawing.Size(773, 276);
             this.grpXmaParseOptions.TabIndex = 0;
             this.grpXmaParseOptions.TabStop = false;
             this.grpXmaParseOptions.Text = "1. xma_parse Options";
@@ -326,7 +340,7 @@
             this.grpStartOffset.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.grpStartOffset.Location = new System.Drawing.Point(3, 63);
             this.grpStartOffset.Name = "grpStartOffset";
-            this.grpStartOffset.Size = new System.Drawing.Size(766, 74);
+            this.grpStartOffset.Size = new System.Drawing.Size(767, 74);
             this.grpStartOffset.TabIndex = 13;
             this.grpStartOffset.TabStop = false;
             this.grpStartOffset.Text = "Start Offset";
@@ -381,7 +395,7 @@
             this.grpBlockSize.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.grpBlockSize.Location = new System.Drawing.Point(3, 137);
             this.grpBlockSize.Name = "grpBlockSize";
-            this.grpBlockSize.Size = new System.Drawing.Size(766, 69);
+            this.grpBlockSize.Size = new System.Drawing.Size(767, 69);
             this.grpBlockSize.TabIndex = 12;
             this.grpBlockSize.TabStop = false;
             this.grpBlockSize.Text = "Block Size";
@@ -436,7 +450,7 @@
             this.grpXmaParseDataSize.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.grpXmaParseDataSize.Location = new System.Drawing.Point(3, 206);
             this.grpXmaParseDataSize.Name = "grpXmaParseDataSize";
-            this.grpXmaParseDataSize.Size = new System.Drawing.Size(766, 67);
+            this.grpXmaParseDataSize.Size = new System.Drawing.Size(767, 67);
             this.grpXmaParseDataSize.TabIndex = 11;
             this.grpXmaParseDataSize.TabStop = false;
             this.grpXmaParseDataSize.Text = "Data Size";
@@ -537,7 +551,7 @@
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(789, 478);
+            this.ClientSize = new System.Drawing.Size(790, 621);
             this.Controls.Add(this.pnlOptions);
             this.Controls.Add(this.grpOutputOptions);
             this.Controls.Add(this.grpPresets);
@@ -608,7 +622,6 @@
         private System.Windows.Forms.CheckBox cbXmaParseIgnoreErrors;
         private System.Windows.Forms.CheckBox cbKeepTempFiles;
         private System.Windows.Forms.GroupBox grpToWavOptions;
-        private System.Windows.Forms.CheckBox cbDoToWav;
         private System.Windows.Forms.GroupBox grpXmaParseDataSize;
         private System.Windows.Forms.RadioButton rbXmaParseDataSizeOffset;
         private System.Windows.Forms.RadioButton rbXmaParseDataSizeStatic;
@@ -621,5 +634,7 @@
         private VGMToolbox.controls.OffsetDescriptionControl XmaParseStartOffsetOffsetDescription;
         private VGMToolbox.controls.OffsetDescriptionControl XmaParseBlockSizeOffsetDescription;
         private VGMToolbox.controls.OffsetDescriptionControl XmaParseDataSizeOffsetDescription;
+        private System.Windows.Forms.RadioButton rbDoToWav;
+        private System.Windows.Forms.RadioButton rbDoXmaEncode;
     }
 }
