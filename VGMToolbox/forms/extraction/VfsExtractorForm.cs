@@ -168,6 +168,10 @@ namespace VGMToolbox.forms.extraction
             bool isValid = true;
 
             isValid &= this.validateFileCountSection();
+            
+            // add File Record Validation
+            
+            isValid &= this.validateFileNameSection();
 
             return isValid;
         }
@@ -267,7 +271,58 @@ namespace VGMToolbox.forms.extraction
             }
 
             return isValid;
-        }        
+        }
+        
+        private bool validateFileNameSection()
+        {
+            bool isValid = true;
+
+            if (this.cbFileNameIsPresent.Checked)
+            {
+                if (!this.rbFileRecordFileNameInRecord.Checked &&
+                    !this.rbFileNameAbsoluteOffset.Checked &&
+                    !this.rbFileNameRelativeOffset.Checked)
+                {
+                    MessageBox.Show("Please choose a File Name Location/Offset type.", "Required Field Missing.");
+                    isValid = false;
+                }
+                else if (!this.rbFileRecordNameSize.Checked &&
+                         !this.rbFileRecordNameTerminator.Checked)
+                {
+                    MessageBox.Show("Please choose a File Name Size type.", "Required Field Missing.");
+                    isValid = false;
+                }
+                else
+                { 
+                    // File Name Location/Offset
+                    if (this.rbFileRecordFileNameInRecord.Checked)
+                    {
+                        isValid &= AVgmtForm.checkTextBox(this.tbFileRecordNameOffset.Text, this.rbFileRecordFileNameInRecord.Text);
+                    }
+                    else if (this.rbFileNameAbsoluteOffset.Checked)
+                    {
+                        isValid &= this.fileNameAbsoluteOffsetOffsetDescription.IsValid("File Name Absolute Offset Information");
+                    }
+                    else if (this.rbFileNameRelativeOffset.Checked)
+                    {
+                        isValid &= this.fileNameRelativeOffsetOffsetDescription.IsValid("File Name Relative Offset Information");
+                        isValid &= AVgmtForm.checkTextBox(this.comboFileRecordNameRelativeLocation.Text, this.lblFileNameRecordRelativeLocation.Text);
+                    }
+
+                    // File Name Size
+                    if (this.rbFileRecordNameSize.Checked)
+                    {
+                        isValid &= AVgmtForm.checkTextBox(this.tbFileRecordNameSize.Text, this.rbFileRecordNameSize.Text);
+                    }
+                    else if (this.rbFileRecordNameTerminator.Checked)
+                    {
+                        isValid &= AVgmtForm.checkTextBox(this.tbFileRecordNameTerminatorBytes.Text, this.rbFileRecordNameTerminator.Text);
+                    }
+                }
+            }
+
+            return isValid;
+        }
 
         ///////////////
         // File Record
@@ -672,9 +727,15 @@ namespace VGMToolbox.forms.extraction
                         }
                     }                    
 
-                    //------------------------------
-                    // !!! ADD CALCULATION HERE !!!
-                    //------------------------------
+                    if (!String.IsNullOrEmpty(vfsSettings.FileRecordParameters.FileOffsetCalculation))
+                    {
+                        this.fileOffsetOffsetDescription.CalculationValue = vfsSettings.FileRecordParameters.FileOffsetCalculation;
+                    }
+                    else if (!String.IsNullOrEmpty(vfsSettings.FileRecordParameters.FileOffsetOffsetMultiplier))
+                    {
+                        this.fileOffsetOffsetDescription.CalculationValue = String.Format("($V * {0})", vfsSettings.FileRecordParameters.FileOffsetOffsetMultiplier);
+                    }
+
                     break;
                 
                 case FileOffsetLengthMethod.length:
@@ -704,9 +765,15 @@ namespace VGMToolbox.forms.extraction
                         }
                     }
 
-                    //------------------------------
-                    // !!! ADD CALCULATION HERE !!!
-                    //------------------------------
+                    if (!String.IsNullOrEmpty(vfsSettings.FileRecordParameters.FileLengthCalculation))
+                    {
+                        this.fileLengthOffsetDescription.CalculationValue = vfsSettings.FileRecordParameters.FileLengthCalculation;
+                    }
+                    else if (!String.IsNullOrEmpty(vfsSettings.FileRecordParameters.FileLengthMultiplier))
+                    {
+                        this.fileLengthOffsetDescription.CalculationValue = String.Format("($V * {0})", vfsSettings.FileRecordParameters.FileLengthMultiplier);
+                    }
+
                     break;
 
                 case FileOffsetLengthMethod.length:
@@ -719,13 +786,58 @@ namespace VGMToolbox.forms.extraction
             {
                 this.cbFileNameIsPresent.Checked = true;
 
-                // file name in file record
-                if (!String.IsNullOrEmpty(vfsSettings.FileRecordParameters.FileNameOffset))
-                {
-                    this.rbFileRecordFileNameInRecord.Checked = true;
-                    this.tbFileRecordNameOffset.Text = vfsSettings.FileRecordParameters.FileNameOffset;
+                switch (vfsSettings.FileRecordParameters.FileNameLocationType)
+                { 
+                    case NameLocationType.fileRecord:
+                        this.rbFileRecordFileNameInRecord.Checked = true;
+                        this.tbFileRecordNameOffset.Text = vfsSettings.FileRecordParameters.FileNameOffset;
+                        break;
+                    
+                    case NameLocationType.absoluteOffset:
+                        this.rbFileNameAbsoluteOffset.Checked = true;
+                        this.fileNameAbsoluteOffsetOffsetDescription.OffsetValue = vfsSettings.FileRecordParameters.FileNameAbsoluteOffsetOffset;
+                        this.fileNameAbsoluteOffsetOffsetDescription.OffsetSize = vfsSettings.FileRecordParameters.FileNameAbsoluteOffsetSize;
+
+                        switch (vfsSettings.FileRecordParameters.FileNameAbsoluteOffsetEndianess)
+                        {
+                            case Endianness.big:
+                                this.fileNameAbsoluteOffsetOffsetDescription.OffsetByteOrder = Constants.BigEndianByteOrder;
+                                break;
+                            case Endianness.little:
+                                this.fileNameAbsoluteOffsetOffsetDescription.OffsetByteOrder = Constants.LittleEndianByteOrder;
+                                break;
+                        }
+
+                        break;
+                    case NameLocationType.relativeOffset:
+                        this.rbFileNameRelativeOffset.Checked = true;
+
+                        this.fileNameRelativeOffsetOffsetDescription.OffsetValue = vfsSettings.FileRecordParameters.FileNameRelativeOffsetOffset;
+                        this.fileNameRelativeOffsetOffsetDescription.OffsetSize = vfsSettings.FileRecordParameters.FileNameRelativeOffsetSize;
+
+                        switch (vfsSettings.FileRecordParameters.FileNameRelativeOffsetEndianess)
+                        {
+                            case Endianness.big:
+                                this.fileNameRelativeOffsetOffsetDescription.OffsetByteOrder = Constants.BigEndianByteOrder;
+                                break;
+                            case Endianness.little:
+                                this.fileNameRelativeOffsetOffsetDescription.OffsetByteOrder = Constants.LittleEndianByteOrder;
+                                break;
+                        }
+
+                        switch (vfsSettings.FileRecordParameters.FileNameRelativeOffsetLocation)
+                        {
+                            case RelativeLocationType.fileRecordStart:
+                                this.comboFileRecordNameRelativeLocation.SelectedText = VfsExtractorWorker.RELATIVE_TO_START_OF_FILE_RECORD;
+                                break;
+                            case RelativeLocationType.fileRecordEnd:
+                                this.comboFileRecordNameRelativeLocation.SelectedText = VfsExtractorWorker.RELATIVE_TO_END_OF_FILE_RECORD;
+                                break;
+                        }
+
+                        break;
                 }
-                
+
                 // name length
                 if (vfsSettings.FileRecordParameters.FileNameLengthMethod.Equals(NameLengthType.staticSize))
                 {
@@ -737,10 +849,6 @@ namespace VGMToolbox.forms.extraction
                     this.rbFileRecordNameTerminator.Checked = true;
                     this.tbFileRecordNameTerminatorBytes.Text = vfsSettings.FileRecordParameters.FileNameTerminator;
                 }
-
-                //------------------------------
-                // !!! FINISH NAME SETTINGS !!!
-                //------------------------------
             }
 
             #endregion
@@ -843,9 +951,7 @@ namespace VGMToolbox.forms.extraction
                     vfsSettings.FileRecordParameters.FileOffsetOffsetEndianess = Endianness.little;
                 }
 
-                //------------------------------
-                // !!! ADD CALCULATION HERE !!!
-                //------------------------------
+                vfsSettings.FileRecordParameters.FileOffsetCalculation = this.fileOffsetOffsetDescription.CalculationValue;
             }
             else if (this.rbUseFileSizeToDetermineOffset.Checked)
             {
@@ -871,9 +977,7 @@ namespace VGMToolbox.forms.extraction
                     vfsSettings.FileRecordParameters.FileLengthOffsetEndianess = Endianness.little;
                 }
 
-                //------------------------------
-                // !!! ADD CALCULATION HERE !!!
-                //------------------------------
+                vfsSettings.FileRecordParameters.FileLengthCalculation = this.fileLengthOffsetDescription.CalculationValue;
             }
             else if (this.rbUseOffsetsToDetermineLength.Checked)
             {
@@ -884,8 +988,59 @@ namespace VGMToolbox.forms.extraction
             if (this.cbFileNameIsPresent.Checked)
             {
                 vfsSettings.FileRecordParameters.ExtractFileName = true;
-                vfsSettings.FileRecordParameters.FileNameOffset = this.tbFileRecordNameOffset.Text;
 
+                if (this.rbFileRecordFileNameInRecord.Checked)
+                {
+                    vfsSettings.FileRecordParameters.FileNameLocationType = NameLocationType.fileRecord;
+                    vfsSettings.FileRecordParameters.FileNameLocationTypeSpecified = true;
+                    vfsSettings.FileRecordParameters.FileNameOffset = this.tbFileRecordNameOffset.Text;
+                }
+                else if (this.rbFileNameAbsoluteOffset.Checked)
+                {
+                    vfsSettings.FileRecordParameters.FileNameLocationType = NameLocationType.absoluteOffset;
+                    vfsSettings.FileRecordParameters.FileNameLocationTypeSpecified = true;
+
+                    vfsSettings.FileRecordParameters.FileNameAbsoluteOffsetOffset = this.fileNameAbsoluteOffsetOffsetDescription.OffsetValue;
+                    vfsSettings.FileRecordParameters.FileNameAbsoluteOffsetSize = this.fileNameAbsoluteOffsetOffsetDescription.OffsetSize;
+
+                    if (this.fileNameAbsoluteOffsetOffsetDescription.OffsetByteOrder.Equals(Constants.LittleEndianByteOrder))
+                    {
+                        vfsSettings.FileRecordParameters.FileNameAbsoluteOffsetEndianess = Endianness.little;
+                    }
+                    else
+                    {
+                        vfsSettings.FileRecordParameters.FileNameAbsoluteOffsetEndianess = Endianness.big;
+                    }
+                }
+                else if (this.rbFileNameRelativeOffset.Checked)
+                {
+                    vfsSettings.FileRecordParameters.FileNameLocationType = NameLocationType.relativeOffset;
+                    vfsSettings.FileRecordParameters.FileNameLocationTypeSpecified = true;
+
+                    vfsSettings.FileRecordParameters.FileNameRelativeOffsetOffset = this.fileNameRelativeOffsetOffsetDescription.OffsetValue;
+                    vfsSettings.FileRecordParameters.FileNameRelativeOffsetSize = this.fileNameRelativeOffsetOffsetDescription.OffsetSize;
+
+                    if (this.fileNameRelativeOffsetOffsetDescription.OffsetByteOrder.Equals(Constants.LittleEndianByteOrder))
+                    {
+                        vfsSettings.FileRecordParameters.FileNameRelativeOffsetEndianess = Endianness.little;
+                    }
+                    else
+                    {
+                        vfsSettings.FileRecordParameters.FileNameRelativeOffsetEndianess = Endianness.big;
+                    }
+
+                    switch (this.comboFileRecordNameRelativeLocation.Text)
+                    { 
+                        case VfsExtractorWorker.RELATIVE_TO_START_OF_FILE_RECORD:
+                            vfsSettings.FileRecordParameters.FileNameRelativeOffsetLocation = RelativeLocationType.fileRecordStart;
+                            vfsSettings.FileRecordParameters.FileNameRelativeOffsetLocationSpecified = true;
+                            break;
+                        case VfsExtractorWorker.RELATIVE_TO_END_OF_FILE_RECORD:
+                            vfsSettings.FileRecordParameters.FileNameRelativeOffsetLocation = RelativeLocationType.fileRecordEnd;
+                            vfsSettings.FileRecordParameters.FileNameRelativeOffsetLocationSpecified = true;
+                            break;
+                    }
+                }
 
                 if (this.rbFileRecordNameSize.Checked)
                 {

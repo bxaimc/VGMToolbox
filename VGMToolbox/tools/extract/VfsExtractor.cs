@@ -26,7 +26,7 @@ namespace VGMToolbox.tools.extract
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class VfsExtractorSettings : IComparable, ISerializablePreset
+    public partial class VfsExtractorSettings
     {
 
         private Header headerField;
@@ -114,6 +114,8 @@ namespace VGMToolbox.tools.extract
 
         private string fileOffsetOffsetMultiplierField;
 
+        private string fileOffsetCalculationField;
+
         private string fileCutStartOffsetField;
 
         private FileOffsetLengthMethod fileLengthMethodField;
@@ -128,9 +130,35 @@ namespace VGMToolbox.tools.extract
 
         private string fileLengthMultiplierField;
 
+        private string fileLengthCalculationField;
+
         private bool extractFileNameField;
 
+        private NameLocationType fileNameLocationTypeField;
+
+        private bool fileNameLocationTypeFieldSpecified;
+
         private string fileNameOffsetField;
+
+        private string fileNameAbsoluteOffsetOffsetField;
+
+        private string fileNameAbsoluteOffsetSizeField;
+
+        private Endianness fileNameAbsoluteOffsetEndianessField;
+
+        private bool fileNameAbsoluteOffsetEndianessFieldSpecified;
+
+        private string fileNameRelativeOffsetOffsetField;
+
+        private string fileNameRelativeOffsetSizeField;
+
+        private Endianness fileNameRelativeOffsetEndianessField;
+
+        private bool fileNameRelativeOffsetEndianessFieldSpecified;
+
+        private RelativeLocationType fileNameRelativeOffsetLocationField;
+
+        private bool fileNameRelativeOffsetLocationFieldSpecified;
 
         private NameLengthType fileNameLengthMethodField;
 
@@ -251,6 +279,19 @@ namespace VGMToolbox.tools.extract
         }
 
         /// <remarks/>
+        public string FileOffsetCalculation
+        {
+            get
+            {
+                return this.fileOffsetCalculationField;
+            }
+            set
+            {
+                this.fileOffsetCalculationField = value;
+            }
+        }
+
+        /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType = "integer")]
         public string FileCutStartOffset
         {
@@ -347,6 +388,19 @@ namespace VGMToolbox.tools.extract
         }
 
         /// <remarks/>
+        public string FileLengthCalculation
+        {
+            get
+            {
+                return this.fileLengthCalculationField;
+            }
+            set
+            {
+                this.fileLengthCalculationField = value;
+            }
+        }
+
+        /// <remarks/>
         public bool ExtractFileName
         {
             get
@@ -356,6 +410,33 @@ namespace VGMToolbox.tools.extract
             set
             {
                 this.extractFileNameField = value;
+            }
+        }
+
+        /// <remarks/>
+        public NameLocationType FileNameLocationType
+        {
+            get
+            {
+                return this.fileNameLocationTypeField;
+            }
+            set
+            {
+                this.fileNameLocationTypeField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool FileNameLocationTypeSpecified
+        {
+            get
+            {
+                return this.fileNameLocationTypeFieldSpecified;
+            }
+            set
+            {
+                this.fileNameLocationTypeFieldSpecified = value;
             }
         }
 
@@ -370,6 +451,143 @@ namespace VGMToolbox.tools.extract
             set
             {
                 this.fileNameOffsetField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType = "integer")]
+        public string FileNameAbsoluteOffsetOffset
+        {
+            get
+            {
+                return this.fileNameAbsoluteOffsetOffsetField;
+            }
+            set
+            {
+                this.fileNameAbsoluteOffsetOffsetField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType = "integer")]
+        public string FileNameAbsoluteOffsetSize
+        {
+            get
+            {
+                return this.fileNameAbsoluteOffsetSizeField;
+            }
+            set
+            {
+                this.fileNameAbsoluteOffsetSizeField = value;
+            }
+        }
+
+        /// <remarks/>
+        public Endianness FileNameAbsoluteOffsetEndianess
+        {
+            get
+            {
+                return this.fileNameAbsoluteOffsetEndianessField;
+            }
+            set
+            {
+                this.fileNameAbsoluteOffsetEndianessField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool FileNameAbsoluteOffsetEndianessSpecified
+        {
+            get
+            {
+                return this.fileNameAbsoluteOffsetEndianessFieldSpecified;
+            }
+            set
+            {
+                this.fileNameAbsoluteOffsetEndianessFieldSpecified = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType = "integer")]
+        public string FileNameRelativeOffsetOffset
+        {
+            get
+            {
+                return this.fileNameRelativeOffsetOffsetField;
+            }
+            set
+            {
+                this.fileNameRelativeOffsetOffsetField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType = "integer")]
+        public string FileNameRelativeOffsetSize
+        {
+            get
+            {
+                return this.fileNameRelativeOffsetSizeField;
+            }
+            set
+            {
+                this.fileNameRelativeOffsetSizeField = value;
+            }
+        }
+
+        /// <remarks/>
+        public Endianness FileNameRelativeOffsetEndianess
+        {
+            get
+            {
+                return this.fileNameRelativeOffsetEndianessField;
+            }
+            set
+            {
+                this.fileNameRelativeOffsetEndianessField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool FileNameRelativeOffsetEndianessSpecified
+        {
+            get
+            {
+                return this.fileNameRelativeOffsetEndianessFieldSpecified;
+            }
+            set
+            {
+                this.fileNameRelativeOffsetEndianessFieldSpecified = value;
+            }
+        }
+
+        /// <remarks/>
+        public RelativeLocationType FileNameRelativeOffsetLocation
+        {
+            get
+            {
+                return this.fileNameRelativeOffsetLocationField;
+            }
+            set
+            {
+                this.fileNameRelativeOffsetLocationField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool FileNameRelativeOffsetLocationSpecified
+        {
+            get
+            {
+                return this.fileNameRelativeOffsetLocationFieldSpecified;
+            }
+            set
+            {
+                this.fileNameRelativeOffsetLocationFieldSpecified = value;
             }
         }
 
@@ -439,6 +657,35 @@ namespace VGMToolbox.tools.extract
 
         /// <remarks/>
         length,
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.3038")]
+    [System.SerializableAttribute()]
+    public enum NameLocationType
+    {
+
+        /// <remarks/>
+        fileRecord,
+
+        /// <remarks/>
+        absoluteOffset,
+
+        /// <remarks/>
+        relativeOffset,
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.3038")]
+    [System.SerializableAttribute()]
+    public enum RelativeLocationType
+    {
+
+        /// <remarks/>
+        fileRecordStart,
+
+        /// <remarks/>
+        fileRecordEnd,
     }
 
     /// <remarks/>
@@ -654,4 +901,5 @@ namespace VGMToolbox.tools.extract
         /// <remarks/>
         FileCountOffset,
     }
+
 }

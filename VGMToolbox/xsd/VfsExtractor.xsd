@@ -35,6 +35,23 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <!-- Name Location -->
+  <xs:simpleType name="NameLocationType">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="fileRecord" />
+      <xs:enumeration value="absoluteOffset" />
+      <xs:enumeration value="relativeOffset" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Relative Location Type -->
+  <xs:simpleType name="RelativeLocationType">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="fileRecordStart" />
+      <xs:enumeration value="fileRecordEnd" />
+    </xs:restriction>
+  </xs:simpleType>
+  
   <!-- Name Length -->
   <xs:simpleType name="NameLengthType">
     <xs:restriction base="xs:NMTOKEN">
@@ -76,7 +93,8 @@
       <xs:element name="FileOffsetOffsetSize" type="xs:integer" minOccurs="0" maxOccurs="1"/>
       <xs:element name="FileOffsetOffsetEndianess" type="Endianness" minOccurs="0" maxOccurs="1"/>            
       <xs:element name="FileOffsetOffsetMultiplier" type="xs:integer" minOccurs="0" maxOccurs="1"/>
-      
+      <xs:element name="FileOffsetCalculation" type="xs:string" minOccurs="0" maxOccurs="1"/>
+
       <xs:element name="FileCutStartOffset" type="xs:integer" minOccurs="0" maxOccurs="1"/>
       
       <!-- File Length Section -->
@@ -86,11 +104,26 @@
       <xs:element name="FileLengthOffsetSize" type="xs:integer" minOccurs="0" maxOccurs="1"/>
       <xs:element name="FileLengthOffsetEndianess" type="Endianness" minOccurs="0" maxOccurs="1"/>            
       <xs:element name="FileLengthMultiplier" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="FileLengthCalculation" type="xs:string" minOccurs="0" maxOccurs="1"/>
             
       <!-- File Name Section -->
       <xs:element name="ExtractFileName" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
       
+      <!-- File Name Location -->      
+      <xs:element name="FileNameLocationType" type="NameLocationType" minOccurs="0" maxOccurs="1"/>
+
       <xs:element name="FileNameOffset" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+
+      <xs:element name="FileNameAbsoluteOffsetOffset" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="FileNameAbsoluteOffsetSize" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="FileNameAbsoluteOffsetEndianess" type="Endianness" minOccurs="0" maxOccurs="1"/>
+
+      <xs:element name="FileNameRelativeOffsetOffset" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="FileNameRelativeOffsetSize" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="FileNameRelativeOffsetEndianess" type="Endianness" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="FileNameRelativeOffsetLocation" type="RelativeLocationType" minOccurs="0" maxOccurs="1"/>
+
+      <!-- File Name Size -->
       <xs:element name="FileNameLengthMethod" type="NameLengthType" minOccurs="0" maxOccurs="1"/>
       <xs:element name="FileNameSize" type="xs:integer" minOccurs="0" maxOccurs="1"/>
       <xs:element name="FileNameTerminator" type="xs:string" minOccurs="0" maxOccurs="1"/>
