@@ -42,13 +42,16 @@
             this.rbDoToWav = new System.Windows.Forms.RadioButton();
             this.rbDoXmaEncode = new System.Windows.Forms.RadioButton();
             this.grpRiffHeaderOptions = new System.Windows.Forms.GroupBox();
+            this.rbAddManualChannels = new System.Windows.Forms.RadioButton();
+            this.rbGetChannelsFromRiff = new System.Windows.Forms.RadioButton();
+            this.rbGetFrequencyFromRiff = new System.Windows.Forms.RadioButton();
+            this.rbAddManualFrequency = new System.Windows.Forms.RadioButton();
             this.cbAddRiffHeader = new System.Windows.Forms.CheckBox();
             this.comboRiffChannels = new System.Windows.Forms.ComboBox();
-            this.lblRiffChannels = new System.Windows.Forms.Label();
             this.comboRiffFrequency = new System.Windows.Forms.ComboBox();
-            this.lblRiffFrequency = new System.Windows.Forms.Label();
             this.grpXmaParseOptions = new System.Windows.Forms.GroupBox();
             this.grpStartOffset = new System.Windows.Forms.GroupBox();
+            this.rbStartOffsetIsAfterRiff = new System.Windows.Forms.RadioButton();
             this.XmaParseStartOffsetOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
             this.rbXmaParseStartOffsetOffset = new System.Windows.Forms.RadioButton();
             this.rbXmaParseStartOffsetStatic = new System.Windows.Forms.RadioButton();
@@ -59,6 +62,7 @@
             this.rbXmaParseBlockSizeStatic = new System.Windows.Forms.RadioButton();
             this.tbXmaParseBlockSize = new System.Windows.Forms.TextBox();
             this.grpXmaParseDataSize = new System.Windows.Forms.GroupBox();
+            this.rbGetdataSizeFromRiff = new System.Windows.Forms.RadioButton();
             this.XmaParseDataSizeOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
             this.rbXmaParseDataSizeOffset = new System.Windows.Forms.RadioButton();
             this.rbXmaParseDataSizeStatic = new System.Windows.Forms.RadioButton();
@@ -68,6 +72,8 @@
             this.cbDoXmaParse = new System.Windows.Forms.CheckBox();
             this.comboXmaParseInputType = new System.Windows.Forms.ComboBox();
             this.lblXmaParseInputType = new System.Windows.Forms.Label();
+            this.grpChannels = new System.Windows.Forms.GroupBox();
+            this.grpFrequency = new System.Windows.Forms.GroupBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -80,11 +86,13 @@
             this.grpStartOffset.SuspendLayout();
             this.grpBlockSize.SuspendLayout();
             this.grpXmaParseDataSize.SuspendLayout();
+            this.grpChannels.SuspendLayout();
+            this.grpFrequency.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 580);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 471);
             this.pnlLabels.Size = new System.Drawing.Size(790, 19);
             // 
             // pnlTitle
@@ -93,13 +101,13 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 503);
+            this.tbOutput.Location = new System.Drawing.Point(0, 394);
             this.tbOutput.Size = new System.Drawing.Size(790, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 483);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 374);
             this.pnlButtons.Size = new System.Drawing.Size(790, 20);
             // 
             // btnCancel
@@ -182,7 +190,7 @@
             this.pnlOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlOptions.Location = new System.Drawing.Point(0, 133);
             this.pnlOptions.Name = "pnlOptions";
-            this.pnlOptions.Size = new System.Drawing.Size(790, 350);
+            this.pnlOptions.Size = new System.Drawing.Size(790, 241);
             this.pnlOptions.TabIndex = 7;
             // 
             // groupOtherOptions
@@ -190,7 +198,7 @@
             this.groupOtherOptions.Controls.Add(this.cbKeepTempFiles);
             this.groupOtherOptions.Controls.Add(this.cbShowAllExeOutput);
             this.groupOtherOptions.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupOtherOptions.Location = new System.Drawing.Point(0, 402);
+            this.groupOtherOptions.Location = new System.Drawing.Point(0, 504);
             this.groupOtherOptions.Name = "groupOtherOptions";
             this.groupOtherOptions.Size = new System.Drawing.Size(773, 64);
             this.groupOtherOptions.TabIndex = 2;
@@ -222,7 +230,7 @@
             this.grpToWavOptions.Controls.Add(this.rbDoToWav);
             this.grpToWavOptions.Controls.Add(this.rbDoXmaEncode);
             this.grpToWavOptions.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpToWavOptions.Location = new System.Drawing.Point(0, 339);
+            this.grpToWavOptions.Location = new System.Drawing.Point(0, 441);
             this.grpToWavOptions.Name = "grpToWavOptions";
             this.grpToWavOptions.Size = new System.Drawing.Size(773, 63);
             this.grpToWavOptions.TabIndex = 3;
@@ -253,18 +261,64 @@
             // 
             // grpRiffHeaderOptions
             // 
+            this.grpRiffHeaderOptions.Controls.Add(this.grpFrequency);
+            this.grpRiffHeaderOptions.Controls.Add(this.grpChannels);
             this.grpRiffHeaderOptions.Controls.Add(this.cbAddRiffHeader);
-            this.grpRiffHeaderOptions.Controls.Add(this.comboRiffChannels);
-            this.grpRiffHeaderOptions.Controls.Add(this.lblRiffChannels);
-            this.grpRiffHeaderOptions.Controls.Add(this.comboRiffFrequency);
-            this.grpRiffHeaderOptions.Controls.Add(this.lblRiffFrequency);
             this.grpRiffHeaderOptions.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpRiffHeaderOptions.Location = new System.Drawing.Point(0, 276);
+            this.grpRiffHeaderOptions.Location = new System.Drawing.Point(0, 310);
             this.grpRiffHeaderOptions.Name = "grpRiffHeaderOptions";
-            this.grpRiffHeaderOptions.Size = new System.Drawing.Size(773, 63);
+            this.grpRiffHeaderOptions.Size = new System.Drawing.Size(773, 131);
             this.grpRiffHeaderOptions.TabIndex = 1;
             this.grpRiffHeaderOptions.TabStop = false;
             this.grpRiffHeaderOptions.Text = "2. RIFF Header Options";
+            // 
+            // rbAddManualChannels
+            // 
+            this.rbAddManualChannels.AutoSize = true;
+            this.rbAddManualChannels.Location = new System.Drawing.Point(6, 19);
+            this.rbAddManualChannels.Name = "rbAddManualChannels";
+            this.rbAddManualChannels.Size = new System.Drawing.Size(91, 17);
+            this.rbAddManualChannels.TabIndex = 8;
+            this.rbAddManualChannels.TabStop = true;
+            this.rbAddManualChannels.Text = "Use Channels";
+            this.rbAddManualChannels.UseVisualStyleBackColor = true;
+            this.rbAddManualChannels.CheckedChanged += new System.EventHandler(this.rbAddManualChannels_CheckedChanged);
+            // 
+            // rbGetChannelsFromRiff
+            // 
+            this.rbGetChannelsFromRiff.AutoSize = true;
+            this.rbGetChannelsFromRiff.Location = new System.Drawing.Point(201, 19);
+            this.rbGetChannelsFromRiff.Name = "rbGetChannelsFromRiff";
+            this.rbGetChannelsFromRiff.Size = new System.Drawing.Size(179, 17);
+            this.rbGetChannelsFromRiff.TabIndex = 7;
+            this.rbGetChannelsFromRiff.TabStop = true;
+            this.rbGetChannelsFromRiff.Text = "Get Channels From RIFF Header";
+            this.rbGetChannelsFromRiff.UseVisualStyleBackColor = true;
+            this.rbGetChannelsFromRiff.CheckedChanged += new System.EventHandler(this.rbGetChannelsFromRiff_CheckedChanged);
+            // 
+            // rbGetFrequencyFromRiff
+            // 
+            this.rbGetFrequencyFromRiff.AutoSize = true;
+            this.rbGetFrequencyFromRiff.Location = new System.Drawing.Point(201, 21);
+            this.rbGetFrequencyFromRiff.Name = "rbGetFrequencyFromRiff";
+            this.rbGetFrequencyFromRiff.Size = new System.Drawing.Size(185, 17);
+            this.rbGetFrequencyFromRiff.TabIndex = 6;
+            this.rbGetFrequencyFromRiff.TabStop = true;
+            this.rbGetFrequencyFromRiff.Text = "Get Frequency From RIFF Header";
+            this.rbGetFrequencyFromRiff.UseVisualStyleBackColor = true;
+            this.rbGetFrequencyFromRiff.CheckedChanged += new System.EventHandler(this.rbGetFrequencyFromRiff_CheckedChanged);
+            // 
+            // rbAddManualFrequency
+            // 
+            this.rbAddManualFrequency.AutoSize = true;
+            this.rbAddManualFrequency.Location = new System.Drawing.Point(6, 19);
+            this.rbAddManualFrequency.Name = "rbAddManualFrequency";
+            this.rbAddManualFrequency.Size = new System.Drawing.Size(97, 17);
+            this.rbAddManualFrequency.TabIndex = 5;
+            this.rbAddManualFrequency.TabStop = true;
+            this.rbAddManualFrequency.Text = "Use Frequency";
+            this.rbAddManualFrequency.UseVisualStyleBackColor = true;
+            this.rbAddManualFrequency.CheckedChanged += new System.EventHandler(this.rbAddManualFrequency_CheckedChanged);
             // 
             // cbAddRiffHeader
             // 
@@ -280,38 +334,20 @@
             // comboRiffChannels
             // 
             this.comboRiffChannels.FormattingEnabled = true;
-            this.comboRiffChannels.Location = new System.Drawing.Point(230, 36);
+            this.comboRiffChannels.Location = new System.Drawing.Point(109, 15);
             this.comboRiffChannels.Name = "comboRiffChannels";
-            this.comboRiffChannels.Size = new System.Drawing.Size(79, 21);
+            this.comboRiffChannels.Size = new System.Drawing.Size(77, 21);
             this.comboRiffChannels.TabIndex = 3;
             this.comboRiffChannels.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.comboRiffChannels_KeyPress);
             this.comboRiffChannels.KeyDown += new System.Windows.Forms.KeyEventHandler(this.comboRiffChannels_KeyDown);
             // 
-            // lblRiffChannels
-            // 
-            this.lblRiffChannels.AutoSize = true;
-            this.lblRiffChannels.Location = new System.Drawing.Point(173, 39);
-            this.lblRiffChannels.Name = "lblRiffChannels";
-            this.lblRiffChannels.Size = new System.Drawing.Size(51, 13);
-            this.lblRiffChannels.TabIndex = 2;
-            this.lblRiffChannels.Text = "Channels";
-            // 
             // comboRiffFrequency
             // 
             this.comboRiffFrequency.FormattingEnabled = true;
-            this.comboRiffFrequency.Location = new System.Drawing.Point(83, 36);
+            this.comboRiffFrequency.Location = new System.Drawing.Point(109, 18);
             this.comboRiffFrequency.Name = "comboRiffFrequency";
             this.comboRiffFrequency.Size = new System.Drawing.Size(77, 21);
             this.comboRiffFrequency.TabIndex = 1;
-            // 
-            // lblRiffFrequency
-            // 
-            this.lblRiffFrequency.AutoSize = true;
-            this.lblRiffFrequency.Location = new System.Drawing.Point(20, 39);
-            this.lblRiffFrequency.Name = "lblRiffFrequency";
-            this.lblRiffFrequency.Size = new System.Drawing.Size(57, 13);
-            this.lblRiffFrequency.TabIndex = 0;
-            this.lblRiffFrequency.Text = "Frequency";
             // 
             // grpXmaParseOptions
             // 
@@ -326,24 +362,36 @@
             this.grpXmaParseOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpXmaParseOptions.Location = new System.Drawing.Point(0, 0);
             this.grpXmaParseOptions.Name = "grpXmaParseOptions";
-            this.grpXmaParseOptions.Size = new System.Drawing.Size(773, 276);
+            this.grpXmaParseOptions.Size = new System.Drawing.Size(773, 310);
             this.grpXmaParseOptions.TabIndex = 0;
             this.grpXmaParseOptions.TabStop = false;
             this.grpXmaParseOptions.Text = "1. xma_parse Options";
             // 
             // grpStartOffset
             // 
+            this.grpStartOffset.Controls.Add(this.rbStartOffsetIsAfterRiff);
             this.grpStartOffset.Controls.Add(this.XmaParseStartOffsetOffsetDescription);
             this.grpStartOffset.Controls.Add(this.rbXmaParseStartOffsetOffset);
             this.grpStartOffset.Controls.Add(this.rbXmaParseStartOffsetStatic);
             this.grpStartOffset.Controls.Add(this.tbXmaParseStartOffset);
             this.grpStartOffset.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.grpStartOffset.Location = new System.Drawing.Point(3, 63);
+            this.grpStartOffset.Location = new System.Drawing.Point(3, 61);
             this.grpStartOffset.Name = "grpStartOffset";
-            this.grpStartOffset.Size = new System.Drawing.Size(767, 74);
+            this.grpStartOffset.Size = new System.Drawing.Size(767, 86);
             this.grpStartOffset.TabIndex = 13;
             this.grpStartOffset.TabStop = false;
             this.grpStartOffset.Text = "Start Offset";
+            // 
+            // rbStartOffsetIsAfterRiff
+            // 
+            this.rbStartOffsetIsAfterRiff.AutoSize = true;
+            this.rbStartOffsetIsAfterRiff.Location = new System.Drawing.Point(6, 65);
+            this.rbStartOffsetIsAfterRiff.Name = "rbStartOffsetIsAfterRiff";
+            this.rbStartOffsetIsAfterRiff.Size = new System.Drawing.Size(185, 17);
+            this.rbStartOffsetIsAfterRiff.TabIndex = 7;
+            this.rbStartOffsetIsAfterRiff.TabStop = true;
+            this.rbStartOffsetIsAfterRiff.Text = "Set Start Offset after RIFF Header";
+            this.rbStartOffsetIsAfterRiff.UseVisualStyleBackColor = true;
             // 
             // XmaParseStartOffsetOffsetDescription
             // 
@@ -393,7 +441,7 @@
             this.grpBlockSize.Controls.Add(this.rbXmaParseBlockSizeStatic);
             this.grpBlockSize.Controls.Add(this.tbXmaParseBlockSize);
             this.grpBlockSize.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.grpBlockSize.Location = new System.Drawing.Point(3, 137);
+            this.grpBlockSize.Location = new System.Drawing.Point(3, 147);
             this.grpBlockSize.Name = "grpBlockSize";
             this.grpBlockSize.Size = new System.Drawing.Size(767, 69);
             this.grpBlockSize.TabIndex = 12;
@@ -443,17 +491,29 @@
             // 
             // grpXmaParseDataSize
             // 
+            this.grpXmaParseDataSize.Controls.Add(this.rbGetdataSizeFromRiff);
             this.grpXmaParseDataSize.Controls.Add(this.XmaParseDataSizeOffsetDescription);
             this.grpXmaParseDataSize.Controls.Add(this.rbXmaParseDataSizeOffset);
             this.grpXmaParseDataSize.Controls.Add(this.rbXmaParseDataSizeStatic);
             this.grpXmaParseDataSize.Controls.Add(this.tbXmaParseDataSize);
             this.grpXmaParseDataSize.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.grpXmaParseDataSize.Location = new System.Drawing.Point(3, 206);
+            this.grpXmaParseDataSize.Location = new System.Drawing.Point(3, 216);
             this.grpXmaParseDataSize.Name = "grpXmaParseDataSize";
-            this.grpXmaParseDataSize.Size = new System.Drawing.Size(767, 67);
+            this.grpXmaParseDataSize.Size = new System.Drawing.Size(767, 91);
             this.grpXmaParseDataSize.TabIndex = 11;
             this.grpXmaParseDataSize.TabStop = false;
             this.grpXmaParseDataSize.Text = "Data Size";
+            // 
+            // rbGetdataSizeFromRiff
+            // 
+            this.rbGetdataSizeFromRiff.AutoSize = true;
+            this.rbGetdataSizeFromRiff.Location = new System.Drawing.Point(6, 67);
+            this.rbGetdataSizeFromRiff.Name = "rbGetdataSizeFromRiff";
+            this.rbGetdataSizeFromRiff.Size = new System.Drawing.Size(178, 17);
+            this.rbGetdataSizeFromRiff.TabIndex = 11;
+            this.rbGetdataSizeFromRiff.TabStop = true;
+            this.rbGetdataSizeFromRiff.Text = "Get Data Size from RIFF Header";
+            this.rbGetdataSizeFromRiff.UseVisualStyleBackColor = true;
             // 
             // XmaParseDataSizeOffsetDescription
             // 
@@ -546,12 +606,38 @@
             this.lblXmaParseInputType.TabIndex = 0;
             this.lblXmaParseInputType.Text = "XMA Type";
             // 
+            // grpChannels
+            // 
+            this.grpChannels.Controls.Add(this.rbAddManualChannels);
+            this.grpChannels.Controls.Add(this.rbGetChannelsFromRiff);
+            this.grpChannels.Controls.Add(this.comboRiffChannels);
+            this.grpChannels.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.grpChannels.Location = new System.Drawing.Point(3, 86);
+            this.grpChannels.Name = "grpChannels";
+            this.grpChannels.Size = new System.Drawing.Size(767, 42);
+            this.grpChannels.TabIndex = 9;
+            this.grpChannels.TabStop = false;
+            this.grpChannels.Text = "Channels";
+            // 
+            // grpFrequency
+            // 
+            this.grpFrequency.Controls.Add(this.rbAddManualFrequency);
+            this.grpFrequency.Controls.Add(this.comboRiffFrequency);
+            this.grpFrequency.Controls.Add(this.rbGetFrequencyFromRiff);
+            this.grpFrequency.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.grpFrequency.Location = new System.Drawing.Point(3, 42);
+            this.grpFrequency.Name = "grpFrequency";
+            this.grpFrequency.Size = new System.Drawing.Size(767, 44);
+            this.grpFrequency.TabIndex = 10;
+            this.grpFrequency.TabStop = false;
+            this.grpFrequency.Text = "Frequency";
+            // 
             // XmaConvertForm
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(790, 621);
+            this.ClientSize = new System.Drawing.Size(790, 512);
             this.Controls.Add(this.pnlOptions);
             this.Controls.Add(this.grpOutputOptions);
             this.Controls.Add(this.grpPresets);
@@ -589,6 +675,10 @@
             this.grpBlockSize.PerformLayout();
             this.grpXmaParseDataSize.ResumeLayout(false);
             this.grpXmaParseDataSize.PerformLayout();
+            this.grpChannels.ResumeLayout(false);
+            this.grpChannels.PerformLayout();
+            this.grpFrequency.ResumeLayout(false);
+            this.grpFrequency.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -606,8 +696,6 @@
         private System.Windows.Forms.TextBox tbXmaParseStartOffset;
         private System.Windows.Forms.GroupBox grpRiffHeaderOptions;
         private System.Windows.Forms.ComboBox comboRiffFrequency;
-        private System.Windows.Forms.Label lblRiffFrequency;
-        private System.Windows.Forms.Label lblRiffChannels;
         private System.Windows.Forms.ComboBox comboRiffChannels;
         private System.Windows.Forms.GroupBox groupOtherOptions;
         private System.Windows.Forms.CheckBox cbShowAllExeOutput;
@@ -636,5 +724,13 @@
         private VGMToolbox.controls.OffsetDescriptionControl XmaParseDataSizeOffsetDescription;
         private System.Windows.Forms.RadioButton rbDoToWav;
         private System.Windows.Forms.RadioButton rbDoXmaEncode;
+        private System.Windows.Forms.RadioButton rbStartOffsetIsAfterRiff;
+        private System.Windows.Forms.RadioButton rbGetdataSizeFromRiff;
+        private System.Windows.Forms.RadioButton rbGetFrequencyFromRiff;
+        private System.Windows.Forms.RadioButton rbAddManualFrequency;
+        private System.Windows.Forms.RadioButton rbGetChannelsFromRiff;
+        private System.Windows.Forms.RadioButton rbAddManualChannels;
+        private System.Windows.Forms.GroupBox grpFrequency;
+        private System.Windows.Forms.GroupBox grpChannels;
     }
 }

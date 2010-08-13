@@ -438,6 +438,11 @@ namespace VGMToolbox.util
         /// </summary>
         public const string LittleEndianByteOrder = "Little Endian";
 
+        public static readonly byte[] RiffHeaderBytes = new byte[] { 0x52, 0x49, 0x46, 0x46 };
+        public static readonly byte[] RiffDataBytes = new byte[] { 0x64, 0x61, 0x74, 0x61 };
+        public static readonly byte[] RiffWaveBytes = new byte[] { 0x57, 0x41, 0x56, 0x45 };
+        public static readonly byte[] RiffFmtBytes = new byte[] { 0x66, 0x6D, 0x74, 0x20 };
+
         // empty constructor
         private Constants() { }
     }

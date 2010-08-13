@@ -70,6 +70,8 @@ namespace VGMToolbox.forms.stream
             this.comboRiffFrequency.Items.Add("48000");
 
             this.comboRiffFrequency.SelectedItem = "48000";
+            this.rbAddManualFrequency.Checked = true;
+            this.rbAddManualChannels.Checked = true;
 
             // RIFF Channels
             this.comboRiffChannels.Items.Add(XmaConverterWorker.RIFF_CHANNELS_1);
@@ -132,6 +134,7 @@ namespace VGMToolbox.forms.stream
                 taskStruct.XmaParseStartOffsetIsStatic = this.rbXmaParseStartOffsetStatic.Checked;
                 taskStruct.XmaParseStartOffset = this.tbXmaParseStartOffset.Text;
                 taskStruct.XmaParseStartOffsetOffsetInfo = this.XmaParseStartOffsetOffsetDescription.GetOffsetValues();
+                taskStruct.StartOffsetAfterRiffHeader = this.rbStartOffsetIsAfterRiff.Checked;
 
                 taskStruct.XmaParseBlockSizeIsStatic = this.rbXmaParseBlockSizeStatic.Checked;
                 taskStruct.XmaParseBlockSize = this.tbXmaParseBlockSize.Text;
@@ -140,10 +143,13 @@ namespace VGMToolbox.forms.stream
                 taskStruct.XmaParseDataSizeIsStatic = this.rbXmaParseDataSizeStatic.Checked;
                 taskStruct.XmaParseDataSize = this.tbXmaParseDataSize.Text;
                 taskStruct.XmaParseDataSizeOffsetInfo = this.XmaParseDataSizeOffsetDescription.GetOffsetValues();
+                taskStruct.GetDataSizeFromRiffHeader = this.rbGetdataSizeFromRiff.Checked;
 
                 // RIFF
                 taskStruct.DoRiffHeader = this.cbAddRiffHeader.Checked;
                 taskStruct.RiffFrequency = this.comboRiffFrequency.Text;
+                taskStruct.GetFrequencyFromRiffHeader = this.rbGetFrequencyFromRiff.Checked;
+                taskStruct.GetChannelsFromRiffHeader = this.rbGetChannelsFromRiff.Checked;
 
                 switch (this.comboRiffChannels.Text)
                 {
@@ -294,11 +300,11 @@ namespace VGMToolbox.forms.stream
 
             if (this.cbAddRiffHeader.Checked)
             {
-                isValid &= AVgmtForm.checkTextBox(this.comboRiffFrequency.Text, this.lblRiffFrequency.Text);
+                isValid &= AVgmtForm.checkTextBox(this.comboRiffFrequency.Text, this.rbAddManualFrequency.Text);
 
                 if (isValid)
                 {
-                    isValid &= AVgmtForm.checkIfTextIsParsableAsLong(this.comboRiffFrequency.Text, this.lblRiffFrequency.Text);
+                    isValid &= AVgmtForm.checkIfTextIsParsableAsLong(this.comboRiffFrequency.Text, this.rbAddManualFrequency.Text);
                 }
             }
 
@@ -426,6 +432,32 @@ namespace VGMToolbox.forms.stream
         private void rbXmaParseDataSizeStatic_CheckedChanged(object sender, EventArgs e)
         {
             this.doXmaParseDataSizeRadios();
+        }
+
+        private void doFrequencyRadios()
+        {
+            this.comboRiffFrequency.Enabled = this.rbAddManualFrequency.Checked;
+        }
+        private void rbAddManualFrequency_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doFrequencyRadios();
+        }
+        private void rbGetFrequencyFromRiff_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doFrequencyRadios();
+        }
+
+        private void doChannelRadios()
+        {
+            this.comboRiffChannels.Enabled = rbAddManualChannels.Checked;
+        }
+        private void rbAddManualChannels_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doChannelRadios();
+        }
+        private void rbGetChannelsFromRiff_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doChannelRadios();
         }     
     }
 }
