@@ -591,7 +591,8 @@ namespace VGMToolbox.util
             StringBuilder logInfo = new StringBuilder();
             StringBuilder snakeBiteBatch = new StringBuilder();
             BinaryWriter bw = null;
-            string fullOutputDirectory = Path.GetDirectoryName(Path.GetFullPath(filePath));
+            string fullFilePath = Path.GetFullPath(filePath);
+            string fullOutputDirectory = Path.GetDirectoryName(fullFilePath);            
 
             // create output folder if needed
             if (!Directory.Exists(fullOutputDirectory))
@@ -604,9 +605,16 @@ namespace VGMToolbox.util
                 }
             }
 
+            // check if file exists and change name as needed
+            if (File.Exists(fullFilePath))
+            {
+                int fileCount = Directory.GetFiles(fullOutputDirectory, (Path.GetFileName(fullFilePath) + "*"), SearchOption.TopDirectoryOnly).Length;
+                fullFilePath = Path.Combine(fullOutputDirectory, String.Format("{0}_{1}{2}", Path.GetFileNameWithoutExtension(fullFilePath), fileCount.ToString("X3"), Path.GetExtension(fullFilePath)));
+            }
+
             try
             {
-                bw = new BinaryWriter(File.Open(filePath, FileMode.Create, FileAccess.Write));
+                bw = new BinaryWriter(File.Open(fullFilePath, FileMode.Create, FileAccess.Write));
 
                 int read = 0;
                 long totalBytes = 0;
@@ -629,7 +637,7 @@ namespace VGMToolbox.util
                         String.Format("Extracted - Offset: 0x{0}    Length: 0x{1}    File: {2}",
                             startingOffset.ToString("X8"),
                             length.ToString("X8"),
-                            Path.GetFileName(filePath)));
+                            Path.GetFileName(fullFilePath)));
 
                     using (StreamWriter logWriter = new StreamWriter(Path.Combine(fullOutputDirectory, ParseFile.LogFileName), true))
                     {
@@ -642,7 +650,7 @@ namespace VGMToolbox.util
                     snakeBiteBatch.AppendLine(
                         String.Format("snakebite.exe \"{0}\" \"{1}\" 0x{2} 0x{3}",
                             Path.GetFileName(((FileStream)stream).Name),
-                            Path.GetFileNameWithoutExtension(((FileStream)stream).Name) + Path.DirectorySeparatorChar + Path.GetFileName(filePath),
+                            Path.GetFileNameWithoutExtension(((FileStream)stream).Name) + Path.DirectorySeparatorChar + Path.GetFileName(fullFilePath),
                             startingOffset.ToString("X8"),
                             (startingOffset + length - 1).ToString("X8")));
 
