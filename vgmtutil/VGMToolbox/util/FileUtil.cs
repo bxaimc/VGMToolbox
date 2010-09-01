@@ -218,6 +218,40 @@ namespace VGMToolbox.util
             }
         }
 
+        public static void RemoveChunkFromFile(string path, long startingOffset, long length)
+        {
+            string fullPath = Path.GetFullPath(path);
+            
+            int bytesRead;
+            byte[] bytes = new byte[1024];
+            
+            string ret = String.Empty;
+
+            if (File.Exists(fullPath))
+            {
+                string destinationPath = Path.ChangeExtension(fullPath, ".cut");                                
+
+                using (FileStream sourceFs = File.OpenRead(fullPath))
+                {
+                    // extract initial chunk
+                    ParseFile.ExtractChunkToFile(sourceFs, 0, startingOffset, destinationPath);
+
+                    // append remainder
+                    using (FileStream outFs = File.Open(destinationPath, FileMode.Append, FileAccess.Write))
+                    {
+                        sourceFs.Position = startingOffset + length;
+                        bytesRead = sourceFs.Read(bytes, 0, bytes.Length);
+
+                        while (bytesRead > 0)
+                        {
+                            outFs.Write(bytes, 0, bytesRead);
+                            bytesRead = sourceFs.Read(bytes, 0, bytes.Length);
+                        }
+                    }
+                }
+            }
+        }
+
         public static bool ExecuteExternalProgram(
             string pathToExecuatable, 
             string arguments, 

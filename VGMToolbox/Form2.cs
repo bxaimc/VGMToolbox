@@ -789,6 +789,17 @@ namespace VGMToolbox
             nodeTag.FormClass = emptyForm.GetType().Name;
             ext_GenericNode.Tag = nodeTag;
 
+            // Byte Remover
+            TreeNode ext_ByteRemoverNode = new TreeNode("Byte Remover");
+
+            // Add Offset Finder Form
+            ByteRemoverForm extract_ByteRemoverForm = new ByteRemoverForm(ext_ByteRemoverNode);
+            this.splitContainer1.Panel2.Controls.Add(extract_ByteRemoverForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = extract_ByteRemoverForm.GetType().Name;
+            ext_ByteRemoverNode.Tag = nodeTag;
+
             // Snakebite
             TreeNode ext_SimpleCutterNode = 
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SimpleCutterNode"]);
@@ -930,6 +941,7 @@ namespace VGMToolbox
             nodeTag.FormClass = extAdxForm.GetType().Name;
             ext_ExtractAdxNode.Tag = nodeTag;
 
+            ext_GenericNode.Nodes.Add(ext_ByteRemoverNode);
             ext_GenericNode.Nodes.Add(ext_SimpleCutterNode);
             ext_GenericNode.Nodes.Add(ext_OffsetFinderNode);
             ext_GenericNode.Nodes.Add(ext_VfsExtractorNode);
