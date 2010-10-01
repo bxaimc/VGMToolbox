@@ -59,7 +59,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\Ionic.Zip.Debug.dll</HintPath>
     </Reference>
-    <Reference Include="jsutil, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="jsutil, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Microsoft.JScript" />
     <Reference Include="SevenZipSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=20de82c62b055c88, processorArchitecture=MSIL">
       <Private>False</Private>
