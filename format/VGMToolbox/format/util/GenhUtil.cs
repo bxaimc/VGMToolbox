@@ -433,6 +433,7 @@ namespace VGMToolbox.format.util
 
             long headerSkip = VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.HeaderSkip);
             int channels = (int)VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.Channels);
+            int interleave = (int)VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.Interleave);
             string fullIncomingPath = Path.GetFullPath(pSourcePath);
 
             byte[] checkByte = new byte[1];
@@ -455,6 +456,7 @@ namespace VGMToolbox.format.util
                     if (checkByte[0] == 0x06)
                     {
                         loopStart = br.BaseStream.Position - 2 - headerSkip;
+
                         break;
                     }
                     else
@@ -473,6 +475,12 @@ namespace VGMToolbox.format.util
                     if (checkByte[0] == 0x03)
                     {
                         loopEnd = br.BaseStream.Position + 0x0E - headerSkip;
+
+                        if (channels > 1)
+                        {
+                            loopEnd -= interleave;
+                        }
+
                         break;
                     }
                     else if (br.BaseStream.Position >= 0x11)

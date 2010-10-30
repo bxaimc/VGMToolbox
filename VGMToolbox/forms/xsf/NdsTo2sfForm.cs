@@ -95,6 +95,7 @@ namespace VGMToolbox.forms.xsf
             {
                 NdsTo2sfWorker.NdsTo2sfStruct bwStruct = new NdsTo2sfWorker.NdsTo2sfStruct();
                 bwStruct.SourcePaths = s;
+                bwStruct.UseSmapNames = this.cbUseSmapNames.Checked;
 
                 base.backgroundWorker_Execute(bwStruct);
             }

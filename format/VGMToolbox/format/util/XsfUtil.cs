@@ -2097,7 +2097,7 @@ namespace VGMToolbox.format.util
         }
 
         public static void Make2sfSet(string pRomPath, string pSdatPath,
-            int[] allowedSequences, string pOutputFolder)
+            int[] allowedSequences, string pOutputFolder, bool useSmapNames)
         {
             int read;
             byte[] data = new byte[Constants.FileReadChunkSize];
@@ -2110,6 +2110,11 @@ namespace VGMToolbox.format.util
             UInt32 dataLength = 0;
             long totalRomSize;
             FileInfo fi;
+
+            Smap smap = new Smap();
+            string[] dupeSeqNames;
+            string tempMini2sfName;
+            string renameMini2sfName;
 
             System.Text.Encoding enc = System.Text.Encoding.ASCII;
             byte[] tagData;
@@ -2138,12 +2143,12 @@ namespace VGMToolbox.format.util
 
                     // write SDAT                                        
                     using (FileStream sdatStream = File.OpenRead(pSdatPath))
-                    {
+                    {                        
                         while ((read = sdatStream.Read(data, 0, data.Length)) > 0)
                         {
                             zs.Write(data, 0, read);
                         }
-                        zs.Flush();
+                        zs.Flush();                        
                     }
                 }
 
@@ -2187,6 +2192,11 @@ namespace VGMToolbox.format.util
             byte[] mini2sfData = new byte[MINI2SF_DATA_START.Length + 2];
             Array.ConstrainedCopy(MINI2SF_DATA_START, 0, mini2sfData, 0, MINI2SF_DATA_START.Length);
 
+            // Get SMAP for File Names
+            if (useSmapNames)
+            {                
+                smap = SdatUtil.GetSmapFromSdat(pSdatPath);            
+            }
 
             foreach (int i in allowedSequences)
             {
@@ -2208,9 +2218,17 @@ namespace VGMToolbox.format.util
                         CRC32 crc32Calc = new CRC32();
                         mini2sfCrc32 = crc32Calc.GetCrc32(new System.IO.MemoryStream(compressedMs.ToArray()));
 
-                        // write mini2sf to disk
-                        mini2sfFileName = Path.Combine(pOutputFolder, String.Format("{0}-{1}.mini2sf", sdatPrefix, i.ToString("x4")));
+                        // build file names for mini2sfs
+                        if (useSmapNames)
+                        {
+                            mini2sfFileName = Path.Combine(pOutputFolder, String.Format("{0} - {1}.mini2sf", i.ToString("x4"), smap.SseqSection[i].label));                           
+                        }
+                        else
+                        {                            
+                            mini2sfFileName = Path.Combine(pOutputFolder, String.Format("{0}-{1}.mini2sf", sdatPrefix, i.ToString("x4")));
+                        }
 
+                        // write mini2sf to disk
                         using (FileStream mini2sfFs = File.Open(mini2sfFileName, FileMode.Create, FileAccess.Write))
                         {
                             using (BinaryWriter bw = new BinaryWriter(mini2sfFs))
@@ -2242,7 +2260,7 @@ namespace VGMToolbox.format.util
             }
         }
 
-        public static bool NdsTo2sf(string ndsPath, string testPackPath)
+        public static bool NdsTo2sf(string ndsPath, string testPackPath, bool useSmapNames)
         {
             bool filesWereRipped = false;
             
@@ -2372,7 +2390,8 @@ namespace VGMToolbox.format.util
                                     testpackDestinationPath,
                                     sdatDestinationPath,
                                     (int[])optimizationList.ToArray(typeof(int)),
-                                    ripOutputPath);
+                                    ripOutputPath,
+                                    useSmapNames);
 
                                 // delete testpack
                                 File.Delete(testpackDestinationPath);

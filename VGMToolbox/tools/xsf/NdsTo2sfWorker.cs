@@ -23,12 +23,8 @@ namespace VGMToolbox.tools.xsf
 
         public struct NdsTo2sfStruct : IVgmtWorkerStruct
         {
-            private string[] sourcePaths;
-            public string[] SourcePaths
-            {
-                get { return sourcePaths; }
-                set { sourcePaths = value; }
-            }
+            public string[] SourcePaths { get; set; }
+            public bool UseSmapNames { set; get; }
         }
 
         public NdsTo2sfWorker()
@@ -45,6 +41,7 @@ namespace VGMToolbox.tools.xsf
             this.progressStruct.GenericMessage = String.Format("Processing: [{0}]{1}", pPath, Environment.NewLine);
             this.ReportProgress(this.progress, this.progressStruct);
 
+            NdsTo2sfStruct workingStruct = (NdsTo2sfStruct)pMk2sfStruct;
             string ndsTo2sfOutputPath = Path.Combine(Path.GetDirectoryName(pPath), String.Format("{0}{1}", Path.GetFileNameWithoutExtension(pPath), XsfUtil.NDSTO2SF_FOLDER_SUFFIX));
 
             // Build Nds object
@@ -57,7 +54,7 @@ namespace VGMToolbox.tools.xsf
             //------------------------
             // extract 2SFs and STRMs
             //------------------------
-            bool filesWereRipped = XsfUtil.NdsTo2sf(pPath, TESTPACK_FULL_PATH);
+            bool filesWereRipped = XsfUtil.NdsTo2sf(pPath, TESTPACK_FULL_PATH, workingStruct.UseSmapNames);
 
             // output info
             this.progressStruct.Clear();

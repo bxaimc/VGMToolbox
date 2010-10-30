@@ -67,31 +67,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 507);
-            this.pnlLabels.Size = new System.Drawing.Size(787, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 460);
+            this.pnlLabels.Size = new System.Drawing.Size(791, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(787, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(791, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 430);
-            this.tbOutput.Size = new System.Drawing.Size(787, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 383);
+            this.tbOutput.Size = new System.Drawing.Size(791, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 410);
-            this.pnlButtons.Size = new System.Drawing.Size(787, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 363);
+            this.pnlButtons.Size = new System.Drawing.Size(791, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(727, 0);
+            this.btnCancel.Location = new System.Drawing.Point(731, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(667, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(671, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpSourcePaths
@@ -105,7 +105,7 @@
             this.grpSourcePaths.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSourcePaths.Location = new System.Drawing.Point(0, 23);
             this.grpSourcePaths.Name = "grpSourcePaths";
-            this.grpSourcePaths.Size = new System.Drawing.Size(787, 72);
+            this.grpSourcePaths.Size = new System.Drawing.Size(791, 72);
             this.grpSourcePaths.TabIndex = 5;
             this.grpSourcePaths.TabStop = false;
             this.grpSourcePaths.Text = "Source Paths";
@@ -178,7 +178,7 @@
             this.grpSetInformation.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSetInformation.Location = new System.Drawing.Point(0, 95);
             this.grpSetInformation.Name = "grpSetInformation";
-            this.grpSetInformation.Size = new System.Drawing.Size(787, 114);
+            this.grpSetInformation.Size = new System.Drawing.Size(791, 114);
             this.grpSetInformation.TabIndex = 6;
             this.grpSetInformation.TabStop = false;
             this.grpSetInformation.Text = "Set Information";
@@ -286,7 +286,7 @@
             this.dataGridSseq.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridSseq.Location = new System.Drawing.Point(0, 209);
             this.dataGridSseq.Name = "dataGridSseq";
-            this.dataGridSseq.Size = new System.Drawing.Size(787, 201);
+            this.dataGridSseq.Size = new System.Drawing.Size(791, 154);
             this.dataGridSseq.TabIndex = 9;
             this.dataGridSseq.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridSseq_CellEndEdit);
             // 
@@ -373,7 +373,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(787, 548);
+            this.ClientSize = new System.Drawing.Size(791, 501);
             this.Controls.Add(this.dataGridSseq);
             this.Controls.Add(this.grpSetInformation);
             this.Controls.Add(this.grpSourcePaths);
