@@ -476,10 +476,10 @@ namespace VGMToolbox.format.util
                     {
                         loopEnd = br.BaseStream.Position + 0x0E - headerSkip;
 
-                        if (channels > 1)
-                        {
-                            loopEnd -= interleave;
-                        }
+                        //if (channels > 1)
+                        //{
+                        //    loopEnd -= interleave;
+                        //}
 
                         break;
                     }
