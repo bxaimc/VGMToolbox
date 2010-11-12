@@ -10,12 +10,12 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.format
 {
-    class Genh : IFormat
+    public class Genh : IFormat
     {
         public static readonly byte[] ASCII_SIGNATURE = new byte[] { 0x47, 0x45, 0x4E, 0x48 };
         private const string FORMAT_ABBREVIATION = "GENH";
         
-        public static readonly byte[] CURRENT_VERSION = new byte[] { 0x56, 0x47, 0x30, 0x31 };
+        public static readonly byte[] CURRENT_VERSION = new byte[] { 0x56, 0x47, 0x30, 0x32 };
         
         public const UInt32 GENH_HEADER_SIZE = 0x1000;
         public const string FILE_EXTENSION = ".genh";
@@ -49,6 +49,24 @@ namespace VGMToolbox.format
 
         private const int HEADER_LENGTH_OFFSET = 0x20;
         private const int HEADER_LENGTH_LENGTH = 0x04;
+
+        private const int LEFT_COEF_OFFSET = 0x24;
+        private const int LEFT_COEF_LENGTH = 0x04;
+
+        private const int RIGHT_COEF_OFFSET = 0x28;
+        private const int RIGHT_COEF_LENGTH = 0x04;
+
+        private const int DSP_INTERLEAVE_OFFSET = 0x2C;
+        private const int DSP_INTERLEAVE_LENGTH = 0x04;
+
+        private const int CAPCOM_HACK_FLAG_OFFSET = 0x30;
+        private const int CAPCOM_HACK_FLAG_LENGTH = 0x01;
+
+        private const int SPLIT_COEF1_OFFSET = 0x34;
+        private const int SPLIT_COEF1_LENGTH = 0x04;
+
+        private const int SPLIT_COEF2_OFFSET = 0x38;
+        private const int SPLIT_COEF2_LENGTH = 0x04;
 
         private const int ORIG_FILENAME_OFFSET = 0x200;
         private const int ORIG_FILENAME_LENGTH = 0x100;

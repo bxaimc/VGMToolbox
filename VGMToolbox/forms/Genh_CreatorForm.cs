@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using VGMToolbox.dbutil;
+using VGMToolbox.format;
 using VGMToolbox.format.util;
 using VGMToolbox.plugin;
 using VGMToolbox.tools.genh;
@@ -65,7 +66,7 @@ namespace VGMToolbox.forms
             this.updateFormForTask();
 
             // hide edit button
-            rbEdit.Hide();
+            // rbEdit.Hide();
 
             // hide coefficients
             this.grpCoefOptions.Hide();
@@ -190,17 +191,24 @@ namespace VGMToolbox.forms
         }
         private void lbFiles_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (lbFiles.SelectedIndices.Count > 1)
+            if (this.rbCreate.Checked)
             {
-                this.tbLoopEnd.Text = String.Empty;
-
-                if (this.cbFindLoop.Checked)
+                if (lbFiles.SelectedIndices.Count > 1)
                 {
-                    this.tbLoopStart.Text = String.Empty;
+                    this.tbLoopEnd.Text = String.Empty;
+
+                    if (this.cbFindLoop.Checked)
+                    {
+                        this.tbLoopStart.Text = String.Empty;
+                    }
                 }
+
+                this.showLoopPointsForSelectedFile();
             }
-            
-            this.showLoopPointsForSelectedFile();
+            else if (this.rbEdit.Checked)
+            {
+                this.loadGenhFileForEditing();
+            }
         }
 
         #region LOOPING GUI
@@ -313,6 +321,26 @@ namespace VGMToolbox.forms
             }
 
             return genhStruct;
+        }
+        private void setGenhParameters(GenhCreationStruct genhStruct)
+        {
+            this.comboFormat.SelectedValue = genhStruct.Format;
+            this.cbHeaderSkip.Text = genhStruct.HeaderSkip;
+            this.cbInterleave.Text = genhStruct.Interleave;
+            this.cbChannels.Text = genhStruct.Channels;
+
+            this.cbFrequency.Text = genhStruct.Frequency;
+            this.cbUseFrequencyOffset.Checked = genhStruct.UseFrequencyOffset;
+
+            this.tbLoopStart.Text = genhStruct.LoopStart;
+            this.cbLoopStartBytesToSamples.Checked = false;
+
+            this.tbLoopEnd.Text = genhStruct.LoopEnd;
+            this.cbLoopEndBytesToSamples.Checked = false;
+
+            this.tbRightCoef.Text = genhStruct.CoefRightChannel;
+            this.tbLeftCoef.Text = genhStruct.CoefLeftChannel;
+            this.cbCapcomHack.Checked = genhStruct.CapcomHack;
         }
 
         private void btnDoTask_Click(object sender, EventArgs e)
@@ -519,6 +547,8 @@ namespace VGMToolbox.forms
             }
             else if (rbEdit.Checked)
             {
+                this.btnDoTask.Enabled = false;
+                
                 this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_BtnDoTaskEdit"];
                 grpOptions.Show();
                 grpFormat.Show();
@@ -630,6 +660,27 @@ namespace VGMToolbox.forms
                         this.tbLoopEnd.Clear();
                         this.tbOutput.Clear();
                         this.tbOutput.Text += String.Format("{0}{1}", ex.Message, Environment.NewLine);
+                    }
+                }
+            }
+        }
+
+        private void loadGenhFileForEditing()
+        {
+            if (lbFiles.SelectedIndices.Count == 1)
+            {
+                string editPath = Path.Combine(this.tbSourceDirectory.Text, this.lbFiles.SelectedItem.ToString());
+
+                if (GenhUtil.IsGenhFile(editPath))
+                {
+                    using (FileStream fs = File.OpenRead(editPath))
+                    {
+                        Genh itemToEdit = new Genh();
+                        itemToEdit.Initialize(fs, editPath);
+
+                        // Set initial values
+                        GenhCreationStruct gcStruct = GenhUtil.GetGenhCreationStruct(itemToEdit);
+                        this.setGenhParameters(gcStruct);
                     }
                 }
             }

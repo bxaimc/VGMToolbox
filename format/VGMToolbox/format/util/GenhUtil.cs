@@ -197,7 +197,7 @@ namespace VGMToolbox.format.util
 
                         if (pGenhCreationStruct.CapcomHack)
                         {
-                            bw.Write(new byte[] { 0x01 });
+                            bw.Write((UInt32)1);
                             bw.Write((UInt32)(VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.CoefLeftChannel) + Genh.GENH_HEADER_SIZE + 0x10));
                             bw.Write((UInt32)(VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.CoefRightChannel) + Genh.GENH_HEADER_SIZE + 0x10));
                         }
@@ -571,6 +571,53 @@ namespace VGMToolbox.format.util
             }
 
             return batchOutputPath;
+        }
+
+        public static GenhCreationStruct GetGenhCreationStruct(Genh genhItem)
+        { 
+            GenhCreationStruct gcStruct = new GenhCreationStruct();
+
+            int formatValue = BitConverter.ToInt32(genhItem.Identifier, 0);
+            gcStruct.Format = formatValue.ToString();
+            gcStruct.HeaderSkip = "0x" + BitConverter.ToInt32(genhItem.HeaderLength, 0).ToString("X4");
+            gcStruct.Interleave = "0x" + BitConverter.ToInt32(genhItem.Interleave, 0).ToString("X4");
+            gcStruct.Channels = BitConverter.ToInt32(genhItem.Channels, 0).ToString();
+        
+            gcStruct.Frequency = BitConverter.ToInt32(genhItem.Frequency, 0).ToString();
+
+            int loopStartValue = BitConverter.ToInt32(genhItem.LoopStart, 0);
+            if (loopStartValue > -1)
+            {
+                gcStruct.LoopStart = loopStartValue.ToString();
+            }
+            else
+            {
+                gcStruct.LoopStart = String.Empty;          
+            }
+
+            int loopEndValue = BitConverter.ToInt32(genhItem.LoopEnd, 0);
+            if (loopEndValue > 0)
+            {
+                gcStruct.LoopEnd = loopEndValue.ToString();
+                gcStruct.UseLoopEndOffset = true;
+            }
+            else
+            {
+                gcStruct.LoopEnd = String.Empty;
+                gcStruct.UseLoopEndOffset = false;            
+            }
+
+            if (formatValue == 12)
+            {
+                /*
+                    public string CoefRightChannel;
+                    public string CoefLeftChannel;
+                    public bool CapcomHack;
+
+                */
+            }
+            
+            return gcStruct;
         }
     }
 }
