@@ -540,6 +540,8 @@ namespace VGMToolbox.forms
         {
             if (rbCreate.Checked)
             {
+                this.btnDoTask.Enabled = true;
+                
                 this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_BtnDoTaskCreate"];
                 grpOptions.Show();
                 grpFormat.Show();
@@ -556,6 +558,8 @@ namespace VGMToolbox.forms
             }
             else if (rbExtract.Checked)
             {
+                this.btnDoTask.Enabled = true;
+                
                 this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_BtnDoTaskExtract"];
                 grpOptions.Hide();
                 grpFormat.Hide();

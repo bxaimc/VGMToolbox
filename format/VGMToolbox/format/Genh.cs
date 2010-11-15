@@ -109,6 +109,12 @@ namespace VGMToolbox.format
         public byte[] OriginalFileName { get { return originalFileName; } }
         public byte[] OriginalFileSize { get { return originalFileSize; } }
         public byte[] VersionNumber { get { return versionNumber; } }
+        public byte[] LeftCoef { get; set; }
+        public byte[] RightCoef { get; set; }
+        public byte[] DspInterleave { get; set; }
+        public byte[] CapcomHackFlag { get; set; }
+        public byte[] SplitCoef1 { get; set; }
+        public byte[] SplitCoef2 { get; set; }
 
         Dictionary<string, string> tagHash = new Dictionary<string, string>();
 
