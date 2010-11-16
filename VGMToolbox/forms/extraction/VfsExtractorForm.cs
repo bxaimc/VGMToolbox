@@ -735,6 +735,10 @@ namespace VGMToolbox.forms.extraction
                     {
                         this.fileOffsetOffsetDescription.CalculationValue = String.Format("($V * {0})", vfsSettings.FileRecordParameters.FileOffsetOffsetMultiplier);
                     }
+                    else
+                    { 
+                        this.fileOffsetOffsetDescription.CalculationValue = String.Empty;
+                    }
 
                     break;
                 
@@ -772,6 +776,10 @@ namespace VGMToolbox.forms.extraction
                     else if (!String.IsNullOrEmpty(vfsSettings.FileRecordParameters.FileLengthMultiplier))
                     {
                         this.fileLengthOffsetDescription.CalculationValue = String.Format("($V * {0})", vfsSettings.FileRecordParameters.FileLengthMultiplier);
+                    }
+                    else
+                    {
+                        this.fileLengthOffsetDescription.CalculationValue = String.Empty;
                     }
 
                     break;
