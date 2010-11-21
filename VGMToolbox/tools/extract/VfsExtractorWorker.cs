@@ -15,6 +15,7 @@ namespace VGMToolbox.tools.extract
             public string[] SourcePaths { set; get; }
             public string HeaderSourcePath { set; get; }
             public string OutputFolderPath { set; get; }
+            public bool OutputLogFiles { set; get; }
 
             public VfsExtractionStruct VfsExtractionInformation { set; get; }
         }
@@ -32,7 +33,9 @@ namespace VGMToolbox.tools.extract
             VfsExtractionStruct extractionStruct = taskStruct.VfsExtractionInformation;
             string output;
 
-            ParseFile.ParseVirtualFileSystem(pPath, taskStruct.HeaderSourcePath, taskStruct.OutputFolderPath, extractionStruct, out output, true, true);
+            ParseFile.ParseVirtualFileSystem(pPath, taskStruct.HeaderSourcePath, 
+                taskStruct.OutputFolderPath, extractionStruct, out output,
+                taskStruct.OutputLogFiles, taskStruct.OutputLogFiles);
 
             this.outputBuffer.Append(output);           
         }

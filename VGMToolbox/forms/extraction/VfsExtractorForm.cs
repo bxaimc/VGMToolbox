@@ -95,6 +95,7 @@ namespace VGMToolbox.forms.extraction
                 }
 
                 bgStruct.OutputFolderPath = this.tbOutputFolder.Text;
+                bgStruct.OutputLogFiles = this.cbOutputLogFiles.Checked;
 
                 // header size
                 vfsExtractionInformation.UseStaticHeaderSize = this.rbHeaderSizeValue.Checked;
