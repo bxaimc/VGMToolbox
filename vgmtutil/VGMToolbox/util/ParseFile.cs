@@ -1183,7 +1183,7 @@ namespace VGMToolbox.util
                                 currentFileNumber.ToString("X8"));
             }
 
-            newFileItem.FilePath = Path.Combine(destinationDirectory, newFileName);
+            newFileItem.FilePath = Path.Combine(destinationDirectory, RemoveLeadingPathSeparator(newFileName));
 
             //------------
             // get offset
@@ -1283,6 +1283,26 @@ namespace VGMToolbox.util
             }
 
             return newValue;
+        }
+
+        public static string RemoveLeadingPathSeparator(string pathToCheck)
+        {
+            char firstChar;
+            string ret = pathToCheck;
+
+            if (!String.IsNullOrEmpty(pathToCheck) && pathToCheck.Length > 0)
+            {
+                firstChar = pathToCheck.ToCharArray()[0];
+
+                if (firstChar.Equals(Path.DirectorySeparatorChar) ||
+                    firstChar.Equals(Path.AltDirectorySeparatorChar) ||
+                    firstChar.Equals(Path.VolumeSeparatorChar))
+                {
+                    ret = pathToCheck.Substring(1);
+                }
+            }
+
+            return ret;
         }
     }
 }

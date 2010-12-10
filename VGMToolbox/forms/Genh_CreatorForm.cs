@@ -782,7 +782,7 @@ namespace VGMToolbox.forms
                     }
 
 
-                    if (loopValue > 0)
+                    if (loopValue >= 0)
                     {
                         long channelCount = ByteConversion.GetLongValueFromString(this.cbChannels.Text);
                         long samplesValue = (loopValue / 16 / channelCount * 28);
