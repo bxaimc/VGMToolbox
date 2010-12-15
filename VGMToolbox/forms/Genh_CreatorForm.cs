@@ -731,7 +731,7 @@ namespace VGMToolbox.forms
                 Point p = new Point(e.X, e.Y);
 
                 if (tbLoopStart.Enabled && !tbLoopStart.ReadOnly &&
-                    !String.IsNullOrEmpty(this.tbLoopStart.Text) && isPs2AdpcmSelected())
+                    !String.IsNullOrEmpty(this.tbLoopStart.Text))
                 {
                     this.selectedLabel = LOOP_START_LABEL_SELECTED;
                     
@@ -748,7 +748,7 @@ namespace VGMToolbox.forms
                 Point p = new Point(e.X, e.Y);
 
                 if (tbLoopEnd.Enabled && !tbLoopEnd.ReadOnly &&
-                    !String.IsNullOrEmpty(this.tbLoopEnd.Text) && isPs2AdpcmSelected())
+                    !String.IsNullOrEmpty(this.tbLoopEnd.Text))
                 {
                     this.selectedLabel = LOOP_END_LABEL_SELECTED;
                     
@@ -785,7 +785,11 @@ namespace VGMToolbox.forms
                     if (loopValue >= 0)
                     {
                         long channelCount = ByteConversion.GetLongValueFromString(this.cbChannels.Text);
-                        long samplesValue = (loopValue / 16 / channelCount * 28);
+                        DataRowView drv = (DataRowView)this.comboFormat.SelectedItem;
+                        UInt16 formatId = Convert.ToUInt16(drv.Row.ItemArray[0]);
+                        long interleave = ByteConversion.GetLongValueFromString(this.cbInterleave.Text);
+                        
+                        long samplesValue = GenhUtil.BytesToSamples((int)formatId, (int)loopValue, (int)channelCount, (int)interleave);
 
                         if (this.selectedLabel == LOOP_START_LABEL_SELECTED)
                         {

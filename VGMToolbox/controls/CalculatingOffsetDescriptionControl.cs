@@ -46,5 +46,11 @@ namespace VGMToolbox.controls
 
             return allValues;
         }
+
+        public new void Reset()
+        {
+            base.Reset();
+            this.tbCalculation.Clear();
+        }
     }
 }

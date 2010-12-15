@@ -122,6 +122,14 @@ namespace VGMToolbox.controls
             e.Handled = true;
         }
 
-
+        //---------
+        // reset
+        //---------
+        public void Reset()
+        {
+            this.tbOffset.Clear();
+            this.InitializeSizeComboBox();
+            this.InitializeByteOrderComboBox();
+        }
     }
 }

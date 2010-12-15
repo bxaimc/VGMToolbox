@@ -1150,5 +1150,82 @@ namespace VGMToolbox.forms.extraction
         {
             this.doCbDoOffsetByteAlignment();
         }
+
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            this.resetForm();
+        }
+
+        private void resetForm()
+        {
+            this.tbDataFilePath.Clear();
+            this.cbUseHeaderFile.Checked = false;
+            this.tbHeaderFilePath.Clear();
+            this.tbOutputFolder.Clear();
+            this.cbOutputLogFiles.Checked = false;
+
+            this.rbHeaderSizeValue.Checked = false;
+            this.tbHeaderSizeValue.Clear();
+            this.rbHeaderSizeOffset.Checked = false;
+            this.headerSizeOffsetDescription.Reset();
+            this.rbStaticFileCount.Checked = false;
+            this.tbStaticFileCount.Clear();
+            this.rbFileCountOffset.Checked = false;
+            this.fileCountOffsetDescription.Reset();
+
+            this.tbFileRecordsBeginOffset.Clear();
+            this.comboFileRecordSize.SelectedText = String.Empty;
+
+            this.rbUseVfsFileOffset.Checked = false;
+            this.fileOffsetOffsetDescription.Reset();
+            this.rbUseFileSizeToDetermineOffset.Checked = false;
+            this.tbUseFileLengthBeginOffset.Clear();
+            this.cbDoOffsetByteAlginment.Checked = false;
+            this.tbByteAlignement.Clear();
+
+            this.rbUseVfsFileLength.Checked = false;
+            this.fileLengthOffsetDescription.Reset();
+            this.rbUseOffsetsToDetermineLength.Checked = false;
+
+            this.cbFileNameIsPresent.Checked = false;
+            this.rbFileRecordFileNameInRecord.Checked = false;
+            this.tbFileRecordNameOffset.Clear();
+            this.rbFileNameAbsoluteOffset.Checked = false;
+            this.fileNameAbsoluteOffsetOffsetDescription.Reset();
+            this.rbFileNameRelativeOffset.Checked = false;
+            this.fileNameRelativeOffsetOffsetDescription.Reset();
+            this.comboFileRecordNameRelativeLocation.SelectedText = String.Empty;
+
+            this.rbFileRecordNameSize.Checked = false;
+            this.tbFileRecordNameSize.Clear();
+            this.rbFileRecordNameTerminator.Checked = false;
+            this.tbFileRecordNameTerminatorBytes.Clear();
+
+            this.resetHeaderSection();
+            this.resetFileRecordSection();
+            
+            // header file
+            this.doUserHeaderFileCheckbox();
+
+            // file count
+            this.rbHeaderSizeValue.Checked = true;
+
+            // offset
+            this.rbUseVfsFileOffset.Checked = true;
+            this.createFileRecordSizeList();
+
+            this.doFileRecordOffsetRadioButtons();
+
+            // length
+            this.rbUseVfsFileLength.Checked = true;
+            this.doFileRecordLengthRadioButtons();
+
+            // name
+            this.doFileRecordNameCheckbox();
+            this.createFileNameRelativeOffsetLocationList();
+
+            // presets
+            this.loadPresetList();
+        }
     }
 }
