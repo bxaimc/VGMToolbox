@@ -318,6 +318,12 @@
     <Compile Include="forms\TreeViewVgmtForm.Designer.cs">
       <DependentUpon>TreeViewVgmtForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\xsf\PspSeqDataFinderForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\xsf\PspSeqDataFinderForm.Designer.cs">
+      <DependentUpon>PspSeqDataFinderForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\xsf\PsxSepToSeqExtractorForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -715,6 +721,9 @@
     <Compile Include="tools\xsf\PsfStubMakerWorker.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\xsf\PspSeqDataFinderWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\xsf\PsxSepToSeqExtractorWorker.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1019,6 +1028,9 @@
     <EmbeddedResource Include="forms\TreeViewVgmtForm.resx">
       <DependentUpon>TreeViewVgmtForm.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\xsf\PspSeqDataFinderForm.resx">
+      <DependentUpon>PspSeqDataFinderForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\xsf\PsxSepToSeqExtractorForm.resx">
       <DependentUpon>PsxSepToSeqExtractorForm.cs</DependentUpon>

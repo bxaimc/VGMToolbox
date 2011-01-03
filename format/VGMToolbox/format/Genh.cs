@@ -136,6 +136,13 @@ namespace VGMToolbox.format
             this.originalFileSize = ParseFile.ParseSimpleOffset(pStream, ORIG_FILESIZE_OFFSET, ORIG_FILESIZE_LENGTH);
             this.versionNumber = ParseFile.ParseSimpleOffset(pStream, GENH_VERSION_OFFSET, GENH_VERSION_LENGTH);
 
+            this.LeftCoef = ParseFile.ParseSimpleOffset(pStream, LEFT_COEF_OFFSET, LEFT_COEF_LENGTH);
+            this.RightCoef = ParseFile.ParseSimpleOffset(pStream, RIGHT_COEF_OFFSET, RIGHT_COEF_LENGTH);
+            this.DspInterleave  = ParseFile.ParseSimpleOffset(pStream, DSP_INTERLEAVE_OFFSET, DSP_INTERLEAVE_LENGTH);
+            this.CapcomHackFlag  = ParseFile.ParseSimpleOffset(pStream, CAPCOM_HACK_FLAG_OFFSET, CAPCOM_HACK_FLAG_LENGTH);
+            this.SplitCoef1  = ParseFile.ParseSimpleOffset(pStream, SPLIT_COEF1_OFFSET, SPLIT_COEF1_LENGTH);
+            this.SplitCoef2 = ParseFile.ParseSimpleOffset(pStream, SPLIT_COEF2_OFFSET, SPLIT_COEF2_LENGTH);
+
             this.initializeTagHash();
         }
 

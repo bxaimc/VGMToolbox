@@ -388,6 +388,7 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_Psf2RootNode"]);
             TreeNode ssf_RootNode = 
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SsfRootNode"]);
+            TreeNode psp_RootNode = new TreeNode("PSP");
 
             // NDS to 2SF
             TreeNode ndsTo2sfNode = new TreeNode(ConfigurationSettings.AppSettings["MenuTree_NdsTo2sfNode"]);
@@ -656,6 +657,20 @@ namespace VGMToolbox
             nodeTag.FormClass = psxSepToSeqExtractorForm.GetType().Name;
             psxSepSeqExtractorNode.Tag = nodeTag;
 
+            //////////////////////
+            // PSP DATA EXTRACTOR
+            //////////////////////
+            TreeNode pspSeqDataExtractorNode =
+                new TreeNode("PSP Data Finder");
+
+            // Add Form
+            PspSeqDataFinderForm pspSeqDataExtractorForm = new PspSeqDataFinderForm(pspSeqDataExtractorNode);
+            this.splitContainer1.Panel2.Controls.Add(pspSeqDataExtractorForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = pspSeqDataExtractorForm.GetType().Name;
+            pspSeqDataExtractorNode.Tag = nodeTag;
+
             // SSFMAKE
             TreeNode xsf_SsfMakeFENode = 
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SsfMakeFENode"]);
@@ -760,6 +775,11 @@ namespace VGMToolbox
             psf2_RootNode.Nodes.Add(xsf_Psf2SqExtractorNode);
             psf2_RootNode.Nodes.Add(xsf_Psf2TimerNode);
             xsf_RootNode.Nodes.Add(psf2_RootNode);
+
+            psp_RootNode.NodeFont = this.treeviewBoldFont;
+            psp_RootNode.Tag = nodeTag;
+            psp_RootNode.Nodes.Add(pspSeqDataExtractorNode);
+            xsf_RootNode.Nodes.Add(psp_RootNode);
 
             ssf_RootNode.NodeFont = this.treeviewBoldFont;
             ssf_RootNode.Tag = nodeTag;
