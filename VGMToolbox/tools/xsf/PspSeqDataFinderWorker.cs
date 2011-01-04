@@ -57,6 +57,13 @@ namespace VGMToolbox.tools.xsf
             PphdStruct phdObject;
             ArrayList phdArrayList = new ArrayList();
 
+            string midName;
+            int midNumber = 0;
+            Psf.ProbableItemStruct midEntry;
+            ArrayList midFiles = new ArrayList();
+            bool midNamingMessageDisplayed = false;
+            Midi midiFile = new Midi();
+
             Psf.ProbableItemStruct potentialPbd;
             Psf.ProbableItemStruct[] potentialPbdList;
             byte[] pbdRow = new byte[Psf.SONY_ADPCM_ROW_SIZE];
@@ -106,6 +113,61 @@ namespace VGMToolbox.tools.xsf
                     offset += 1;
                 }
 
+                #endregion
+
+                // get MID Files
+                #region MID EXTRACT
+                this.progressStruct.Clear();
+                this.progressStruct.GenericMessage = String.Format("  Extracting MID{0}", Environment.NewLine);
+                this.ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
+
+                midEntry = new Psf.ProbableItemStruct();
+                offset = 0;
+
+                // build file list
+                while ((offset = ParseFile.GetNextOffset(fs, offset, Midi.ASCII_SIGNATURE_MTHD)) > -1)
+                {
+                    midiFile.Initialize(fs, pPath, offset);
+                    midEntry.offset = midiFile.FileStartOffset;
+                    midEntry.length = (uint)midiFile.TotalFileLength;
+                    midFiles.Add(midEntry);
+                                      
+                    offset += 1;
+                }
+
+                foreach (Psf.ProbableItemStruct mid in midFiles)
+                {
+                    if (pspStruct.ReorderMidFiles)
+                    {
+                        if (phdArrayList.Count < midFiles.Count)
+                        {
+                            if (!midNamingMessageDisplayed)
+                            {
+                                this.progressStruct.Clear();
+                                this.progressStruct.ErrorMessage = String.Format(
+                                    "Warning, cannot reorder MID files, there are less PHD files than MID files.{0}", Environment.NewLine);
+                                this.ReportProgress(this.progress, this.progressStruct);
+                                midNamingMessageDisplayed = true;
+                            }
+
+                            midName = String.Format("{0}_{1}.MID", Path.GetFileNameWithoutExtension(pPath), midNumber++.ToString("X4"));
+                        }
+                        else
+                        {
+                            phdObject = (PphdStruct)phdArrayList[phdArrayList.Count - midFiles.Count + midNumber++];
+                            midName = Path.ChangeExtension(phdObject.FileName, ".MID");
+                        }
+                    }
+                    else
+                    {
+                        midName = String.Format("{0}_{1}.MID", Path.GetFileNameWithoutExtension(pPath), midNumber++.ToString("X4"));
+                    }
+
+                    ParseFile.ExtractChunkToFile(fs, mid.offset, (int)mid.length,
+                        Path.Combine(destinationFolder, midName), true, true);
+
+
+                }
                 #endregion
 
                 // get PBD files

@@ -146,6 +146,7 @@ namespace VGMToolbox.format
                     VGMToolbox.util.ByteConversion.GetUInt32BigEndian(this.midiTracks[i].TrackLength));
             }
 
+            tagHash.Clear();
             tagHash.Add("MIDI Type", 
                 VGMToolbox.util.ByteConversion.GetUInt16BigEndian(this.fileFormat).ToString());
             tagHash.Add("Total Tracks", numberOfTracks.ToString());
