@@ -279,12 +279,7 @@ namespace VGMToolbox.tools.xsf
                         this.ReportProgress(this.progress, this.progressStruct);
                     }
                     else
-                    {
-                        if (i == 0x9E)
-                        {
-                            int ggg = 1;
-                        }
-                        
+                    {                        
                         for (int j = 0; j < potentialBdList.Length; j++)
                         {
                             // we have a potential match or are at the last item.
