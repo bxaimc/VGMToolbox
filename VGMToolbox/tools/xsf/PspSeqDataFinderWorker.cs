@@ -319,7 +319,7 @@ namespace VGMToolbox.tools.xsf
                 }
             }
 
-            phdObject.length = phdObject.vagSectionOffset + 0x20 + ((phdObject.maxVagInfoNumber + 1) * phdObject.vagInfoSize);
+            phdObject.length = phdObject.vagSectionOffset - offset + 0x20 + ((phdObject.maxVagInfoNumber + 1) * phdObject.vagInfoSize);
 
             return phdObject;
         }
