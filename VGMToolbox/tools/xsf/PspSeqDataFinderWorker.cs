@@ -11,7 +11,9 @@ namespace VGMToolbox.tools.xsf
 {
     class PspSeqDataFinderWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
-        public static readonly byte[] PPHD_SIGNATURE = new byte[] { 0x50, 0x50, 0x48, 0x44 };
+        public static readonly byte[] PPHD_SIGNATURE = new byte[] { 0x50, 0x50, 0x48, 0x44,
+                                                                    0x38, 0x00, 0x00, 0x00, 
+                                                                    0x00, 0x00, 0x01, 0x00};
 
         #region STRUCTURES
         public struct PspSeqDataFinderStruct : IVgmtWorkerStruct
