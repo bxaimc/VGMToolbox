@@ -995,6 +995,10 @@ namespace VGMToolbox.util
                 {
                     fileCountValue = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.StaticFileCount);
                 }
+                else if (vfsInformation.ReadHeaderToEof)
+                {
+                    headerSizeValue = headerFs.Length;               
+                }
 
                 // loop over header, building file list
                 long currentOffset = VGMToolbox.util.ByteConversion.GetLongValueFromString(vfsInformation.FileRecordsStartOffset);

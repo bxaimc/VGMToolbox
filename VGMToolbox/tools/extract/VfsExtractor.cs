@@ -900,6 +900,9 @@ namespace VGMToolbox.tools.extract
 
         /// <remarks/>
         FileCountOffset,
+
+        /// <remarks/>
+        ReadHeaderToEof,
     }
 
 }

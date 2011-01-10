@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.grpFileCount = new System.Windows.Forms.GroupBox();
+            this.rbReadHeaderToEof = new System.Windows.Forms.RadioButton();
             this.fileCountOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
             this.headerSizeOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
             this.rbHeaderSizeOffset = new System.Windows.Forms.RadioButton();
@@ -108,39 +109,40 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 575);
-            this.pnlLabels.Size = new System.Drawing.Size(795, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 533);
+            this.pnlLabels.Size = new System.Drawing.Size(801, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(795, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(801, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 498);
-            this.tbOutput.Size = new System.Drawing.Size(795, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 456);
+            this.tbOutput.Size = new System.Drawing.Size(801, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
             this.pnlButtons.Controls.Add(this.btnReset);
-            this.pnlButtons.Location = new System.Drawing.Point(0, 478);
-            this.pnlButtons.Size = new System.Drawing.Size(795, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 436);
+            this.pnlButtons.Size = new System.Drawing.Size(801, 20);
             this.pnlButtons.Controls.SetChildIndex(this.btnReset, 0);
             this.pnlButtons.Controls.SetChildIndex(this.btnCancel, 0);
             this.pnlButtons.Controls.SetChildIndex(this.btnDoTask, 0);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(735, 0);
+            this.btnCancel.Location = new System.Drawing.Point(741, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(675, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(681, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpFileCount
             // 
+            this.grpFileCount.Controls.Add(this.rbReadHeaderToEof);
             this.grpFileCount.Controls.Add(this.fileCountOffsetDescription);
             this.grpFileCount.Controls.Add(this.headerSizeOffsetDescription);
             this.grpFileCount.Controls.Add(this.rbHeaderSizeOffset);
@@ -152,10 +154,22 @@
             this.grpFileCount.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFileCount.Location = new System.Drawing.Point(0, 0);
             this.grpFileCount.Name = "grpFileCount";
-            this.grpFileCount.Size = new System.Drawing.Size(778, 113);
+            this.grpFileCount.Size = new System.Drawing.Size(784, 131);
             this.grpFileCount.TabIndex = 7;
             this.grpFileCount.TabStop = false;
             this.grpFileCount.Text = "Header Size or File Count";
+            // 
+            // rbReadHeaderToEof
+            // 
+            this.rbReadHeaderToEof.AutoSize = true;
+            this.rbReadHeaderToEof.Location = new System.Drawing.Point(6, 112);
+            this.rbReadHeaderToEof.Name = "rbReadHeaderToEof";
+            this.rbReadHeaderToEof.Size = new System.Drawing.Size(125, 17);
+            this.rbReadHeaderToEof.TabIndex = 18;
+            this.rbReadHeaderToEof.TabStop = true;
+            this.rbReadHeaderToEof.Text = "Read Header to EOF";
+            this.rbReadHeaderToEof.UseVisualStyleBackColor = true;
+            this.rbReadHeaderToEof.CheckedChanged += new System.EventHandler(this.rbReadHeaderToEof_CheckedChanged);
             // 
             // fileCountOffsetDescription
             // 
@@ -248,7 +262,7 @@
             this.grpPresets.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpPresets.Location = new System.Drawing.Point(0, 23);
             this.grpPresets.Name = "grpPresets";
-            this.grpPresets.Size = new System.Drawing.Size(795, 43);
+            this.grpPresets.Size = new System.Drawing.Size(801, 43);
             this.grpPresets.TabIndex = 8;
             this.grpPresets.TabStop = false;
             this.grpPresets.Text = "Presets";
@@ -300,9 +314,9 @@
             this.grpFileRecordInfo.Controls.Add(this.grpIndividualFileOffset);
             this.grpFileRecordInfo.Controls.Add(this.pnlFileRecordsHeader);
             this.grpFileRecordInfo.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpFileRecordInfo.Location = new System.Drawing.Point(0, 113);
+            this.grpFileRecordInfo.Location = new System.Drawing.Point(0, 131);
             this.grpFileRecordInfo.Name = "grpFileRecordInfo";
-            this.grpFileRecordInfo.Size = new System.Drawing.Size(778, 481);
+            this.grpFileRecordInfo.Size = new System.Drawing.Size(784, 481);
             this.grpFileRecordInfo.TabIndex = 9;
             this.grpFileRecordInfo.TabStop = false;
             this.grpFileRecordInfo.Text = "File Record Information";
@@ -317,7 +331,7 @@
             this.grpFileRecordNameSize.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFileRecordNameSize.Location = new System.Drawing.Point(3, 408);
             this.grpFileRecordNameSize.Name = "grpFileRecordNameSize";
-            this.grpFileRecordNameSize.Size = new System.Drawing.Size(772, 70);
+            this.grpFileRecordNameSize.Size = new System.Drawing.Size(778, 70);
             this.grpFileRecordNameSize.TabIndex = 8;
             this.grpFileRecordNameSize.TabStop = false;
             this.grpFileRecordNameSize.Text = "Individual File Name Size";
@@ -383,7 +397,7 @@
             this.grpFileRecordName.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFileRecordName.Location = new System.Drawing.Point(3, 265);
             this.grpFileRecordName.Name = "grpFileRecordName";
-            this.grpFileRecordName.Size = new System.Drawing.Size(772, 143);
+            this.grpFileRecordName.Size = new System.Drawing.Size(778, 143);
             this.grpFileRecordName.TabIndex = 7;
             this.grpFileRecordName.TabStop = false;
             this.grpFileRecordName.Text = "Individual File Name Location/Offset";
@@ -489,7 +503,7 @@
             this.grpIndividualFileLength.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpIndividualFileLength.Location = new System.Drawing.Point(3, 176);
             this.grpIndividualFileLength.Name = "grpIndividualFileLength";
-            this.grpIndividualFileLength.Size = new System.Drawing.Size(772, 89);
+            this.grpIndividualFileLength.Size = new System.Drawing.Size(778, 89);
             this.grpIndividualFileLength.TabIndex = 6;
             this.grpIndividualFileLength.TabStop = false;
             this.grpIndividualFileLength.Text = "Individual File Length";
@@ -541,7 +555,7 @@
             this.grpIndividualFileOffset.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpIndividualFileOffset.Location = new System.Drawing.Point(3, 61);
             this.grpIndividualFileOffset.Name = "grpIndividualFileOffset";
-            this.grpIndividualFileOffset.Size = new System.Drawing.Size(772, 115);
+            this.grpIndividualFileOffset.Size = new System.Drawing.Size(778, 115);
             this.grpIndividualFileOffset.TabIndex = 5;
             this.grpIndividualFileOffset.TabStop = false;
             this.grpIndividualFileOffset.Text = "Individual File Offset";
@@ -625,7 +639,7 @@
             this.pnlFileRecordsHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlFileRecordsHeader.Location = new System.Drawing.Point(3, 16);
             this.pnlFileRecordsHeader.Name = "pnlFileRecordsHeader";
-            this.pnlFileRecordsHeader.Size = new System.Drawing.Size(772, 45);
+            this.pnlFileRecordsHeader.Size = new System.Drawing.Size(778, 45);
             this.pnlFileRecordsHeader.TabIndex = 4;
             // 
             // lblFileRecordSizeNameWarning
@@ -678,7 +692,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 195);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(795, 283);
+            this.panel1.Size = new System.Drawing.Size(801, 241);
             this.panel1.TabIndex = 10;
             // 
             // grpSourceFiles
@@ -697,7 +711,7 @@
             this.grpSourceFiles.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSourceFiles.Location = new System.Drawing.Point(0, 66);
             this.grpSourceFiles.Name = "grpSourceFiles";
-            this.grpSourceFiles.Size = new System.Drawing.Size(795, 129);
+            this.grpSourceFiles.Size = new System.Drawing.Size(801, 129);
             this.grpSourceFiles.TabIndex = 10;
             this.grpSourceFiles.TabStop = false;
             this.grpSourceFiles.Text = "Source Files/Destination Folder";
@@ -826,7 +840,7 @@
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(795, 616);
+            this.ClientSize = new System.Drawing.Size(801, 574);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.grpSourceFiles);
             this.Controls.Add(this.grpPresets);
@@ -935,5 +949,6 @@
         private VGMToolbox.controls.OffsetDescriptionControl fileNameAbsoluteOffsetOffsetDescription;
         private System.Windows.Forms.CheckBox cbOutputLogFiles;
         private System.Windows.Forms.Button btnReset;
+        private System.Windows.Forms.RadioButton rbReadHeaderToEof;
     }
 }

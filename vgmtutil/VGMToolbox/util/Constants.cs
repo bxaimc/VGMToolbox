@@ -343,6 +343,7 @@ namespace VGMToolbox.util
         public string StaticHeaderSize { set; get; }
         public bool UseHeaderSizeOffset { set; get; }
         public OffsetDescription HeaderSizeOffsetDescription { set; get; }
+        public bool ReadHeaderToEof { set; get; }
 
         // file count
         public bool UseStaticFileCount { set; get; }

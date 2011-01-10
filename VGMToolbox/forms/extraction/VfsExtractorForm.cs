@@ -102,6 +102,7 @@ namespace VGMToolbox.forms.extraction
                 vfsExtractionInformation.StaticHeaderSize = this.tbHeaderSizeValue.Text;
                 vfsExtractionInformation.UseHeaderSizeOffset = this.rbHeaderSizeOffset.Checked;                        
                 vfsExtractionInformation.HeaderSizeOffsetDescription = this.headerSizeOffsetDescription.GetOffsetValues();
+                vfsExtractionInformation.ReadHeaderToEof = this.rbReadHeaderToEof.Checked;
 
                 // file count
                 vfsExtractionInformation.UseStaticFileCount = this.rbStaticFileCount.Checked;                
@@ -236,6 +237,20 @@ namespace VGMToolbox.forms.extraction
                 this.tbHeaderSizeValue.Enabled = true;
                 this.tbHeaderSizeValue.ReadOnly = false;            
             }
+            else if (this.rbReadHeaderToEof.Checked)
+            {
+                this.headerSizeOffsetDescription.Enabled = false;
+
+                this.tbStaticFileCount.Clear();
+                this.tbStaticFileCount.Enabled = false;
+                this.tbStaticFileCount.ReadOnly = true;
+
+                this.fileCountOffsetDescription.Enabled = false;
+
+                this.tbHeaderSizeValue.Clear();
+                this.tbHeaderSizeValue.Enabled = false;
+                this.tbHeaderSizeValue.ReadOnly = true;
+            }
         }
         private void rbUserEnteredFileCount_CheckedChanged(object sender, EventArgs e)
         {
@@ -246,6 +261,10 @@ namespace VGMToolbox.forms.extraction
             this.doFileCountRadioButtons();
         }
         private void rbFileCountEndOffset_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doFileCountRadioButtons();
+        }
+        private void rbReadHeaderToEof_CheckedChanged(object sender, EventArgs e)
         {
             this.doFileCountRadioButtons();
         }
@@ -699,6 +718,10 @@ namespace VGMToolbox.forms.extraction
                     }
 
                     break;
+                
+                case HeaderSizeMethod.ReadHeaderToEof:
+                    this.rbReadHeaderToEof.Checked = true;
+                    break;
             }
 
             #endregion
@@ -935,6 +958,10 @@ namespace VGMToolbox.forms.extraction
                     vfsSettings.HeaderParameters.FileCountOffsetEndianess = Endianness.little;
                 }
             }
+            else if (this.rbReadHeaderToEof.Checked)
+            {
+                vfsSettings.HeaderParameters.HeaderSizeMethod = HeaderSizeMethod.ReadHeaderToEof;
+            }
 
             #endregion
 
@@ -1156,7 +1183,6 @@ namespace VGMToolbox.forms.extraction
         {
             this.resetForm();
         }
-
         private void resetForm()
         {
             this.tbDataFilePath.Clear();
@@ -1227,6 +1253,6 @@ namespace VGMToolbox.forms.extraction
 
             // presets
             this.loadPresetList();
-        }
+        }        
     }
 }
