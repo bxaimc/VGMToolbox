@@ -654,10 +654,12 @@ namespace VGMToolbox.forms.extraction
 
                 if (this.cbByteOrder.SelectedItem.Equals("Little Endian"))
                 {
+                    preset.SearchParameters.CutParameters.CutSizeOffsetEndianessSpecified = true;
                     preset.SearchParameters.CutParameters.CutSizeOffsetEndianess = Endianness.little;
                 }
                 else if (this.cbByteOrder.SelectedItem.Equals("Big Endian"))
                 {
+                    preset.SearchParameters.CutParameters.CutSizeOffsetEndianessSpecified = true;
                     preset.SearchParameters.CutParameters.CutSizeOffsetEndianess = Endianness.big;
                 }
 
