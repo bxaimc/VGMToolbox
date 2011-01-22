@@ -29,6 +29,10 @@
         private void InitializeComponent()
         {
             this.grpPresets = new System.Windows.Forms.GroupBox();
+            this.btnRefresh = new System.Windows.Forms.Button();
+            this.btnSavePreset = new System.Windows.Forms.Button();
+            this.btnLoadPreset = new System.Windows.Forms.Button();
+            this.comboPresets = new System.Windows.Forms.ComboBox();
             this.grpOutputOptions = new System.Windows.Forms.GroupBox();
             this.btnBrowseOutputFolder = new System.Windows.Forms.Button();
             this.lblOutputFolderDefault = new System.Windows.Forms.Label();
@@ -89,6 +93,7 @@
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
+            this.grpPresets.SuspendLayout();
             this.grpOutputOptions.SuspendLayout();
             this.pnlOptions.SuspendLayout();
             this.groupOtherOptions.SuspendLayout();
@@ -135,6 +140,10 @@
             // 
             // grpPresets
             // 
+            this.grpPresets.Controls.Add(this.btnRefresh);
+            this.grpPresets.Controls.Add(this.btnSavePreset);
+            this.grpPresets.Controls.Add(this.btnLoadPreset);
+            this.grpPresets.Controls.Add(this.comboPresets);
             this.grpPresets.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpPresets.Location = new System.Drawing.Point(0, 23);
             this.grpPresets.Name = "grpPresets";
@@ -142,6 +151,44 @@
             this.grpPresets.TabIndex = 5;
             this.grpPresets.TabStop = false;
             this.grpPresets.Text = "Presets";
+            // 
+            // btnRefresh
+            // 
+            this.btnRefresh.Image = global::VGMToolbox.Properties.Resources.Button_Refresh_16x16;
+            this.btnRefresh.Location = new System.Drawing.Point(507, 13);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(21, 21);
+            this.btnRefresh.TabIndex = 7;
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            // 
+            // btnSavePreset
+            // 
+            this.btnSavePreset.Location = new System.Drawing.Point(457, 13);
+            this.btnSavePreset.Name = "btnSavePreset";
+            this.btnSavePreset.Size = new System.Drawing.Size(48, 21);
+            this.btnSavePreset.TabIndex = 6;
+            this.btnSavePreset.Text = "Save";
+            this.btnSavePreset.UseVisualStyleBackColor = true;
+            this.btnSavePreset.Click += new System.EventHandler(this.btnSavePreset_Click);
+            // 
+            // btnLoadPreset
+            // 
+            this.btnLoadPreset.Location = new System.Drawing.Point(407, 13);
+            this.btnLoadPreset.Name = "btnLoadPreset";
+            this.btnLoadPreset.Size = new System.Drawing.Size(48, 21);
+            this.btnLoadPreset.TabIndex = 5;
+            this.btnLoadPreset.Text = "Load";
+            this.btnLoadPreset.UseVisualStyleBackColor = true;
+            this.btnLoadPreset.Click += new System.EventHandler(this.btnLoadPreset_Click);
+            // 
+            // comboPresets
+            // 
+            this.comboPresets.FormattingEnabled = true;
+            this.comboPresets.Location = new System.Drawing.Point(6, 13);
+            this.comboPresets.Name = "comboPresets";
+            this.comboPresets.Size = new System.Drawing.Size(395, 21);
+            this.comboPresets.TabIndex = 4;
             // 
             // grpOutputOptions
             // 
@@ -813,6 +860,7 @@
             this.pnlTitle.PerformLayout();
             this.pnlButtons.ResumeLayout(false);
             this.pnlButtons.PerformLayout();
+            this.grpPresets.ResumeLayout(false);
             this.grpOutputOptions.ResumeLayout(false);
             this.grpOutputOptions.PerformLayout();
             this.pnlOptions.ResumeLayout(false);
@@ -905,5 +953,9 @@
         private VGMToolbox.controls.CalculatingOffsetDescriptionControl loopEndValueOffsetDescription;
         private System.Windows.Forms.TextBox tbLoopEndStatic;
         private System.Windows.Forms.RadioButton rbLoopEndStatic;
+        private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.Button btnSavePreset;
+        private System.Windows.Forms.Button btnLoadPreset;
+        private System.Windows.Forms.ComboBox comboPresets;
     }
 }

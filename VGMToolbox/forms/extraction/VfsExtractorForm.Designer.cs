@@ -109,7 +109,7 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 533);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 386);
             this.pnlLabels.Size = new System.Drawing.Size(801, 19);
             // 
             // pnlTitle
@@ -118,14 +118,14 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 456);
+            this.tbOutput.Location = new System.Drawing.Point(0, 309);
             this.tbOutput.Size = new System.Drawing.Size(801, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
             this.pnlButtons.Controls.Add(this.btnReset);
-            this.pnlButtons.Location = new System.Drawing.Point(0, 436);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 289);
             this.pnlButtons.Size = new System.Drawing.Size(801, 20);
             this.pnlButtons.Controls.SetChildIndex(this.btnReset, 0);
             this.pnlButtons.Controls.SetChildIndex(this.btnCancel, 0);
@@ -692,7 +692,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 195);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(801, 241);
+            this.panel1.Size = new System.Drawing.Size(801, 94);
             this.panel1.TabIndex = 10;
             // 
             // grpSourceFiles
@@ -840,7 +840,7 @@
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(801, 574);
+            this.ClientSize = new System.Drawing.Size(801, 427);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.grpSourceFiles);
             this.Controls.Add(this.grpPresets);

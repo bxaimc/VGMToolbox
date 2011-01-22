@@ -1,15 +1,21 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Serialization;
 
+using VGMToolbox.forms.extraction;
 using VGMToolbox.plugin;
 using VGMToolbox.tools.stream;
 using VGMToolbox.util;
 
 namespace VGMToolbox.forms.stream
 {
-    public partial class XmaConvertForm : AVgmtForm
+    public partial class XmaConvertForm : VgmtForm
     {
+        private static readonly string PLUGIN_PATH =
+            Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "plugins"), "XmaConverter");                
+        
         public XmaConvertForm(TreeNode pTreeNode)
             : base(pTreeNode)
         {
@@ -49,6 +55,15 @@ namespace VGMToolbox.forms.stream
             this.tbXmaParseBlockSize.Text = "0x8000";
             this.cbXmaParseIgnoreErrors.Checked = true;
 
+            this.tbXmaParseStartOffset.Clear();
+            this.XmaParseStartOffsetOffsetDescription.Reset();
+
+            this.tbXmaParseBlockSize.Clear();
+            this.XmaParseBlockSizeOffsetDescription.Reset();
+
+            this.tbXmaParseDataSize.Clear();
+            this.XmaParseDataSizeOffsetDescription.Reset();
+
             // radio buttons
             this.rbXmaParseStartOffsetStatic.Checked = true;
             this.rbXmaParseBlockSizeStatic.Checked = true;
@@ -62,7 +77,8 @@ namespace VGMToolbox.forms.stream
         private void initializeRiffSection()
         {
             this.cbAddRiffHeader.Checked = true;
-            
+            this.comboRiffFrequency.Items.Clear();
+
             // RIFF Frequency
             this.comboRiffFrequency.Items.Add("22050");
             this.comboRiffFrequency.Items.Add("24000");
@@ -565,6 +581,361 @@ namespace VGMToolbox.forms.stream
         private void rbLoopEndOffset_CheckedChanged(object sender, EventArgs e)
         {
             this.doPosLoopEndRadios();
+        }
+
+        // Preset Processing
+        private XmaConverterSettings getPresetFromFile(string filePath)
+        {
+            XmaConverterSettings preset = null;
+
+            preset = new XmaConverterSettings();
+            XmlSerializer serializer = new XmlSerializer(preset.GetType());
+            using (FileStream xmlFs = File.OpenRead(filePath))
+            {
+                using (XmlTextReader textReader = new XmlTextReader(xmlFs))
+                {
+                    preset = (XmaConverterSettings)serializer.Deserialize(textReader);
+                }
+            }
+
+            return preset;
+        }
+
+        private string getEndiannessStringForXmlValue(Endianness xmlValue)
+        {
+            string ret = Constants.LittleEndianByteOrder;
+
+            switch(xmlValue)
+            {
+                case Endianness.big:
+                    ret = Constants.BigEndianByteOrder;
+                    break;
+                case Endianness.little:
+                    ret = Constants.LittleEndianByteOrder;
+                    break;
+            }
+
+            return ret;
+        }
+        private Endianness getEndiannessForStringValue(string textValue)
+        {
+            Endianness ret = Endianness.little;
+
+            switch (textValue)
+            {
+                case Constants.BigEndianByteOrder:
+                    ret = Endianness.big;
+                    break;
+                case Constants.LittleEndianByteOrder:
+                    ret = Endianness.little;
+                    break;
+            }
+
+            return ret;
+        }
+
+        private void loadPresetList()
+        {
+            comboPresets.Items.Clear();
+
+            foreach (string f in Directory.GetFiles(PLUGIN_PATH, "*.xml", SearchOption.TopDirectoryOnly))
+            {
+                try
+                {
+                    XmaConverterSettings preset = getPresetFromFile(f);
+
+                    if ((preset != null) && (!String.IsNullOrEmpty(preset.Header.FormatName)))
+                    {
+                        comboPresets.Items.Add(preset);
+                    }
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show(String.Format("Error loading preset file <{0}>", Path.GetFileName(f)), "Error");
+                }
+            }
+
+            comboPresets.Sorted = true;
+        }
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            this.loadPresetList();
+        }
+
+        private void loadXmaConverterSettings(XmaConverterSettings xmaSettings)
+        {
+            #region XMA PARSE
+
+            //general
+            this.cbDoXmaParse.Checked = xmaSettings.UseXmaParse;
+
+            if (xmaSettings.XmaParseParameters.XmaTypeSpecified)
+            {
+                switch (xmaSettings.XmaParseParameters.XmaType)
+                { 
+                    case XmaType.Item1:
+                        this.comboXmaParseInputType.Text = "1";
+                        break;
+                    case XmaType.Item2:
+                        this.comboXmaParseInputType.Text = "2";
+                        break;
+                    default:
+                        this.comboXmaParseInputType.Text = String.Empty;
+                        break;
+                }
+            }
+
+            this.cbXmaParseDoRebuild.Checked = xmaSettings.XmaParseParameters.RebuildXmaSpecified && xmaSettings.XmaParseParameters.RebuildXma;
+            this.cbXmaParseIgnoreErrors.Checked = xmaSettings.XmaParseParameters.IgnoreXmaParseErrorsSpecified && xmaSettings.XmaParseParameters.IgnoreXmaParseErrors;
+
+            // start offset
+            this.rbXmaParseStartOffsetStatic.Checked = xmaSettings.XmaParseParameters.UseStaticStartOffset;
+            this.rbXmaParseStartOffsetOffset.Checked = xmaSettings.XmaParseParameters.UseDynamicStartOffset;
+            this.rbStartOffsetIsAfterRiff.Checked = xmaSettings.XmaParseParameters.SetStartOffsetAfterRiffHeader;
+
+            this.tbXmaParseStartOffset.Text = xmaSettings.XmaParseParameters.StartOffsetStatic;
+
+            if (xmaSettings.XmaParseParameters.UseDynamicStartOffset)
+            {
+                this.XmaParseStartOffsetOffsetDescription.OffsetValue = xmaSettings.XmaParseParameters.StartOffsetOffset;
+                this.XmaParseStartOffsetOffsetDescription.OffsetSize = xmaSettings.XmaParseParameters.StartOffsetOffsetSize;
+                this.XmaParseStartOffsetOffsetDescription.OffsetByteOrder = getEndiannessStringForXmlValue(xmaSettings.XmaParseParameters.StartOffsetOffsetEndianess);
+            }
+
+            // block size
+            this.rbXmaParseBlockSizeStatic.Checked = xmaSettings.XmaParseParameters.UseStaticBlockSize;
+            this.rbXmaParseBlockSizeOffset.Checked = xmaSettings.XmaParseParameters.UseDynamicBlockSize;
+
+            this.tbXmaParseBlockSize.Text = xmaSettings.XmaParseParameters.BlockSizeStatic;
+
+            if (xmaSettings.XmaParseParameters.UseDynamicBlockSize)
+            {
+                this.XmaParseBlockSizeOffsetDescription.OffsetValue = xmaSettings.XmaParseParameters.BlockSizeOffset;
+                this.XmaParseBlockSizeOffsetDescription.OffsetSize = xmaSettings.XmaParseParameters.BlockSizeOffsetSize;
+                this.XmaParseBlockSizeOffsetDescription.OffsetByteOrder = getEndiannessStringForXmlValue(xmaSettings.XmaParseParameters.BlockSizeOffsetEndianess);
+            }
+
+            // data size                        
+            this.rbXmaParseDataSizeStatic.Checked = xmaSettings.XmaParseParameters.UseStaticDataSize;
+            this.rbXmaParseDataSizeOffset.Checked = xmaSettings.XmaParseParameters.UseDynamicDataSize;
+            this.rbGetDataSizeFromRiff.Checked = xmaSettings.XmaParseParameters.GetDataSizeFromRiffHeader;
+
+            this.tbXmaParseDataSize.Text = xmaSettings.XmaParseParameters.DataSizeStatic;
+
+            if (xmaSettings.XmaParseParameters.UseDynamicDataSize)
+            {
+                this.XmaParseDataSizeOffsetDescription.OffsetValue = xmaSettings.XmaParseParameters.DataSizeOffset;
+                this.XmaParseDataSizeOffsetDescription.OffsetSize = xmaSettings.XmaParseParameters.DataSizeOffsetSize;
+                this.XmaParseDataSizeOffsetDescription.OffsetByteOrder = getEndiannessStringForXmlValue(xmaSettings.XmaParseParameters.DataSizeOffsetEndianess);
+            }
+
+            #endregion
+
+            #region RIFF HEADER
+
+            this.cbAddRiffHeader.Checked = xmaSettings.AddRiffHeader;
+
+            if (xmaSettings.AddRiffHeader)
+            {
+                // Frequency
+                if (xmaSettings.RiffParameters.UseStaticFrequency)
+                {
+                    this.rbAddManualFrequency.Checked = true;
+                    this.comboRiffFrequency.Text = xmaSettings.RiffParameters.FrequencyStatic;
+                }
+
+                this.rbGetFrequencyFromRiff.Checked = xmaSettings.RiffParameters.GetChannelsFromRiffHeader;
+
+                // Channels
+                if (xmaSettings.RiffParameters.UseStaticChannels)
+                {
+                    this.rbAddManualChannels.Checked = true;
+
+                    switch (xmaSettings.RiffParameters.ChannelStatic)
+                    {
+                        case "mono":
+                            this.comboRiffChannels.Text = XmaConverterWorker.RIFF_CHANNELS_1;
+                            break;
+                        case "stereo":
+                            this.comboRiffChannels.Text = XmaConverterWorker.RIFF_CHANNELS_2;
+                            break;
+                        default:
+                            this.comboRiffChannels.Text = XmaConverterWorker.RIFF_CHANNELS_2;
+                            break;
+                    }
+                }
+
+                this.rbGetChannelsFromRiff.Checked = xmaSettings.RiffParameters.GetChannelsFromRiffHeader;
+            }
+            
+            #endregion
+
+            #region WAV CONVERSION
+
+            this.rbDoToWav.Checked = xmaSettings.WavConversionParameters.UseToWav;
+            this.rbDoXmaEncode.Checked = xmaSettings.WavConversionParameters.UseXmaEncode;
+            
+            #endregion
+        }        
+        private void loadSelectedPreset()
+        {
+            XmaConverterSettings preset = (XmaConverterSettings)this.comboPresets.SelectedItem;
+
+            if (preset != null)
+            {
+                this.initializeXmaParseInputSection();        
+                this.initializeRiffSection();
+                this.initializePosMakerSection();
+                this.initializeToWavSection();
+
+                this.loadXmaConverterSettings(preset);
+
+                if (!String.IsNullOrEmpty(preset.NotesOrWarnings))
+                {
+                    MessageBox.Show(preset.NotesOrWarnings, "Notes/Warnings");
+                }
+            }
+        }
+        private void btnLoadPreset_Click(object sender, EventArgs e)
+        {
+            this.loadSelectedPreset();
+        }
+
+        private XmaConverterSettings buildPresetForCurrentValues()
+        {
+            XmaConverterSettings xmaSettings = new XmaConverterSettings();
+
+            #region XMA PARSE
+
+            //general
+            xmaSettings.UseXmaParse = this.cbDoXmaParse.Checked;
+
+            if (!String.IsNullOrEmpty(this.comboXmaParseInputType.Text))
+            {
+                xmaSettings.XmaParseParameters.XmaTypeSpecified = true;
+
+                switch (this.comboXmaParseInputType.Text)
+                {
+                    case "1":
+                        xmaSettings.XmaParseParameters.XmaType = XmaType.Item1;
+                        break;
+                    case "2":
+                        xmaSettings.XmaParseParameters.XmaType = XmaType.Item2;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                xmaSettings.XmaParseParameters.XmaTypeSpecified = false;
+            }
+
+            xmaSettings.XmaParseParameters.RebuildXmaSpecified = true;
+            xmaSettings.XmaParseParameters.RebuildXma = this.cbXmaParseDoRebuild.Checked;
+            xmaSettings.XmaParseParameters.IgnoreXmaParseErrorsSpecified = true;
+            xmaSettings.XmaParseParameters.IgnoreXmaParseErrors = this.cbXmaParseIgnoreErrors.Checked;
+
+            // start offset
+            xmaSettings.XmaParseParameters.UseStaticStartOffset = this.rbXmaParseStartOffsetStatic.Checked;
+            xmaSettings.XmaParseParameters.UseDynamicStartOffset = this.rbXmaParseStartOffsetOffset.Checked;
+            xmaSettings.XmaParseParameters.SetStartOffsetAfterRiffHeader = this.rbStartOffsetIsAfterRiff.Checked;
+
+            xmaSettings.XmaParseParameters.StartOffsetStatic = this.tbXmaParseStartOffset.Text;
+
+            if (this.rbXmaParseStartOffsetOffset.Checked)
+            {
+                xmaSettings.XmaParseParameters.StartOffsetOffset = this.XmaParseStartOffsetOffsetDescription.OffsetValue;
+                xmaSettings.XmaParseParameters.StartOffsetOffsetSize = this.XmaParseStartOffsetOffsetDescription.OffsetSize;
+                xmaSettings.XmaParseParameters.StartOffsetOffsetEndianessSpecified = true;
+                xmaSettings.XmaParseParameters.StartOffsetOffsetEndianess = getEndiannessForStringValue(this.XmaParseStartOffsetOffsetDescription.OffsetByteOrder);
+            }
+
+            // block size
+            xmaSettings.XmaParseParameters.UseStaticBlockSize = this.rbXmaParseBlockSizeStatic.Checked;
+            xmaSettings.XmaParseParameters.UseDynamicBlockSize = this.rbXmaParseBlockSizeOffset.Checked;
+
+            xmaSettings.XmaParseParameters.BlockSizeStatic = this.tbXmaParseBlockSize.Text;
+
+            if (this.rbXmaParseBlockSizeOffset.Checked)
+            {
+                xmaSettings.XmaParseParameters.BlockSizeOffset = this.XmaParseBlockSizeOffsetDescription.OffsetValue;
+                xmaSettings.XmaParseParameters.BlockSizeOffsetSize = this.XmaParseBlockSizeOffsetDescription.OffsetSize;
+                xmaSettings.XmaParseParameters.BlockSizeOffsetEndianessSpecified = true;
+                xmaSettings.XmaParseParameters.BlockSizeOffsetEndianess = getEndiannessForStringValue(this.XmaParseBlockSizeOffsetDescription.OffsetByteOrder);
+            }
+
+            // data size                        
+            xmaSettings.XmaParseParameters.UseStaticDataSize = this.rbXmaParseDataSizeStatic.Checked;
+            xmaSettings.XmaParseParameters.UseDynamicDataSize = this.rbXmaParseDataSizeOffset.Checked;
+            xmaSettings.XmaParseParameters.GetDataSizeFromRiffHeader = this.rbGetDataSizeFromRiff.Checked;
+
+            xmaSettings.XmaParseParameters.DataSizeStatic = this.tbXmaParseDataSize.Text;
+
+            if (this.rbXmaParseDataSizeOffset.Checked)
+            {
+                xmaSettings.XmaParseParameters.DataSizeOffset = this.XmaParseDataSizeOffsetDescription.OffsetValue;
+                xmaSettings.XmaParseParameters.DataSizeOffsetSize = this.XmaParseDataSizeOffsetDescription.OffsetSize;
+                xmaSettings.XmaParseParameters.DataSizeOffsetEndianessSpecified = true;
+                xmaSettings.XmaParseParameters.DataSizeOffsetEndianess = getEndiannessForStringValue(this.XmaParseDataSizeOffsetDescription.OffsetByteOrder);
+            }
+
+            #endregion
+
+            #region RIFF HEADER
+
+            xmaSettings.AddRiffHeader = this.cbAddRiffHeader.Checked;
+
+            // Frequency
+            if (this.rbAddManualFrequency.Checked)
+            {
+                xmaSettings.RiffParameters.UseStaticFrequency = true;
+                xmaSettings.RiffParameters.FrequencyStatic = this.comboRiffFrequency.Text;
+            }
+
+            xmaSettings.RiffParameters.GetChannelsFromRiffHeader = this.rbGetFrequencyFromRiff.Checked;
+
+            // Channels
+            if (this.rbAddManualChannels.Checked)
+            {
+                xmaSettings.RiffParameters.UseStaticChannels = true;
+
+                switch (this.comboRiffChannels.Text)
+                {
+                    case XmaConverterWorker.RIFF_CHANNELS_1:
+                        xmaSettings.RiffParameters.ChannelStatic = "mono";
+                        break;
+                    case XmaConverterWorker.RIFF_CHANNELS_2:
+                        xmaSettings.RiffParameters.ChannelStatic = "stereo";
+                        break;
+                    default:
+                        xmaSettings.RiffParameters.ChannelStatic = "ERROR";
+                        break;
+                }
+            }
+
+            xmaSettings.RiffParameters.GetChannelsFromRiffHeader = this.rbGetChannelsFromRiff.Checked;
+
+            #endregion
+
+            #region WAV CONVERSION
+
+            xmaSettings.WavConversionParameters.UseToWav = this.rbDoToWav.Checked;
+            xmaSettings.WavConversionParameters.UseXmaEncode = this.rbDoXmaEncode.Checked;
+
+            #endregion
+
+            return xmaSettings;
+        }
+        private void btnSavePreset_Click(object sender, EventArgs e)
+        {
+            XmaConverterSettings preset = buildPresetForCurrentValues();
+
+            if (preset != null)
+            {
+                SavePresetForm saveForm = new SavePresetForm(preset);
+                saveForm.Show();
+            }
         }
     }
 }
