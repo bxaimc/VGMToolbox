@@ -27,14 +27,17 @@ namespace VGMToolbox.forms.stream
 
             InitializeComponent();
 
-            this.tbOutput.Text = String.Format("Convert XMA to WAV using external tools{0}{0}", Environment.NewLine);
-            this.tbOutput.Text += String.Format("* Note: This tool requires 'ToWav.exe' by Xplorer and 'xma_test.exe' (xma_parse) by hcs.{0}", Environment.NewLine);
+            this.tbOutput.Text = String.Format("- Convert XMA to WAV using external tools{0}", Environment.NewLine);
+            this.tbOutput.Text += String.Format("- Preset .xml files should be placed in: <{0}>{1}", PLUGIN_PATH, Environment.NewLine);
+            this.tbOutput.Text += String.Format("* Note: This tool requires 'ToWav.exe' by Xplorer, 'xma_test.exe' (xma_parse) by hcs, and (optionally) xmaencode.exe.{0}", Environment.NewLine);
             this.tbOutput.Text += String.Format("  Please download both files and place in the following directory: <{0}>{1}", Path.GetDirectoryName(XmaConverterWorker.TOWAV_FULL_PATH), Environment.NewLine);
 
             this.initializeXmaParseInputSection();
             this.initializeRiffSection();
             this.initializePosMakerSection();
             this.initializeToWavSection();
+
+            this.loadPresetList();
         }
 
         //----------------
@@ -106,7 +109,7 @@ namespace VGMToolbox.forms.stream
 
         private void initializeToWavSection()
         {
-            this.rbDoXmaEncode.Checked = true;
+            this.rbDoToWav.Checked = true;
         }
                   
         //-----------------------------
@@ -636,7 +639,8 @@ namespace VGMToolbox.forms.stream
 
         private void loadPresetList()
         {
-            comboPresets.Items.Clear();
+            this.comboPresets.Items.Clear();
+            this.comboPresets.Text = String.Empty;
 
             foreach (string f in Directory.GetFiles(PLUGIN_PATH, "*.xml", SearchOption.TopDirectoryOnly))
             {
