@@ -44,6 +44,9 @@ namespace VGMToolbox.controls
                 this.tbOffset.Enabled = value;
                 this.comboSize.Enabled = value;
                 this.comboByteOrder.Enabled = value;
+
+                this.lblSizeLabel.Enabled = value;
+                this.lblByteOrder.Enabled = value;
             }
         }
 

@@ -63,6 +63,7 @@ namespace VGMToolbox.tools.stream
             public bool DoXmaParse { set; get; }
             public bool DoRiffHeader { set; get; }
             public bool DoToWav { set; get; }
+            public bool DoPosMaker { set; get; }
             public bool DoXmaEncode { set; get; }
 
             public string XmaParseXmaType { set; get; }
@@ -87,6 +88,14 @@ namespace VGMToolbox.tools.stream
             public string RiffChannelCount { set; get; }
             public bool GetFrequencyFromRiffHeader { set; get; }
             public bool GetChannelsFromRiffHeader { set; get; }
+
+            public bool PosLoopStartIsStatic { set; get; }
+            public string PosLoopStartStaticValue { set; get; }
+            public CalculatingOffsetDescription PosLoopStartOffsetInfo { set; get; }
+
+            public bool PosLoopEndIsStatic { set; get; }
+            public string PosLoopEndStaticValue { set; get; }
+            public CalculatingOffsetDescription PosLoopEndOffsetInfo { set; get; }
 
             public bool ShowExeOutput { set; get; }
             public bool KeepIntermediateFiles { set; get; }
@@ -115,6 +124,10 @@ namespace VGMToolbox.tools.stream
 
             string riffHeaderedFile;
             byte[] riffHeaderBytes;
+
+            uint loopStart;
+            uint loopEnd;
+            byte[] posBytes;
 
             //------------------
             // output file name
@@ -203,7 +216,51 @@ namespace VGMToolbox.tools.stream
                 // dispay xma_parse.exe error
                 this.ShowOutput(pPath, consoleError, true);
             }
-    
+
+            //-----------
+            // POS Maker
+            //-----------
+            if ((taskStruct.DoPosMaker) && (String.IsNullOrEmpty(consoleError)))
+            {
+                this.ShowOutput(pPath, "---- creating POS file", false);
+
+                // loop start
+                if (taskStruct.PosLoopStartIsStatic)
+                {
+                    loopStart = (uint)ByteConversion.GetLongValueFromString(taskStruct.PosLoopStartStaticValue);
+                }
+                else
+                { 
+                    using(FileStream fs = File.OpenRead(workingSourceFile))
+                    {
+                        loopStart = (uint)ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, taskStruct.PosLoopStartOffsetInfo); 
+                    }
+                }
+
+                // loop end
+                if (taskStruct.PosLoopEndIsStatic)
+                {
+                    loopEnd = (uint)ByteConversion.GetLongValueFromString(taskStruct.PosLoopEndStaticValue);
+                }
+                else
+                {
+                    using (FileStream fs = File.OpenRead(workingSourceFile))
+                    {
+                        loopEnd = (uint)ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, taskStruct.PosLoopEndOffsetInfo);
+                    }
+                }
+
+                // build .pos array and write to file
+                posBytes = new byte[8];
+                Array.Copy(BitConverter.GetBytes(loopStart), 0, posBytes, 0, 4);
+                Array.Copy(BitConverter.GetBytes(loopEnd), 0, posBytes, 4, 4);
+
+                using (FileStream fs = File.Open(Path.ChangeExtension(workingSourceFile, ".pos"), FileMode.Create, FileAccess.Write))
+                {
+                    fs.Write(posBytes, 0, posBytes.Length);
+                }
+            }
+
             //-----------
             // ToWav.exe
             //-----------

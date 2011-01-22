@@ -27,6 +27,7 @@ namespace VGMToolbox.forms.stream
 
             this.initializeXmaParseInputSection();
             this.initializeRiffSection();
+            this.initializePosMakerSection();
             this.initializeToWavSection();
         }
 
@@ -78,6 +79,11 @@ namespace VGMToolbox.forms.stream
             this.comboRiffChannels.Items.Add(XmaConverterWorker.RIFF_CHANNELS_2);
 
             this.comboRiffChannels.SelectedItem = XmaConverterWorker.RIFF_CHANNELS_2;
+        }
+
+        private void initializePosMakerSection()
+        {
+            this.cbMakePosFile.Checked = true;
         }
 
         private void initializeToWavSection()
@@ -143,7 +149,7 @@ namespace VGMToolbox.forms.stream
                 taskStruct.XmaParseDataSizeIsStatic = this.rbXmaParseDataSizeStatic.Checked;
                 taskStruct.XmaParseDataSize = this.tbXmaParseDataSize.Text;
                 taskStruct.XmaParseDataSizeOffsetInfo = this.XmaParseDataSizeOffsetDescription.GetOffsetValues();
-                taskStruct.GetDataSizeFromRiffHeader = this.rbGetdataSizeFromRiff.Checked;
+                taskStruct.GetDataSizeFromRiffHeader = this.rbGetDataSizeFromRiff.Checked;
 
                 // RIFF
                 taskStruct.DoRiffHeader = this.cbAddRiffHeader.Checked;
@@ -163,6 +169,17 @@ namespace VGMToolbox.forms.stream
                         taskStruct.RiffChannelCount = "2";
                         break;
                 }
+
+                // POS MAKER
+                taskStruct.DoPosMaker = this.cbMakePosFile.Checked;
+            
+                taskStruct.PosLoopStartIsStatic = this.rbLoopStartStatic.Checked;
+                taskStruct.PosLoopStartStaticValue = this.tbLoopStartStatic.Text;
+                taskStruct.PosLoopStartOffsetInfo = this.loopStartValueOffsetDescription.GetOffsetValues();
+
+                taskStruct.PosLoopEndIsStatic = this.rbLoopEndStatic.Checked;
+                taskStruct.PosLoopEndStaticValue = this.tbLoopEndStatic.Text;
+                taskStruct.PosLoopEndOffsetInfo = this.loopEndValueOffsetDescription.GetOffsetValues();
 
                 // TOWAV
                 taskStruct.DoToWav = this.rbDoToWav.Checked;
@@ -189,6 +206,7 @@ namespace VGMToolbox.forms.stream
             isValid &= this.validateOutputOptions();
             isValid &= this.validateXmaParseOptions();
             isValid &= this.validateFrequencyOptions();
+            isValid &= this.validatePosMakerOptions();
 
             return isValid;
         }
@@ -311,6 +329,11 @@ namespace VGMToolbox.forms.stream
             return isValid;        
         }
 
+        private bool validatePosMakerOptions()
+        {
+            return true;
+        }
+
         //----------------------------
         // background worker defaults
         //----------------------------
@@ -382,7 +405,6 @@ namespace VGMToolbox.forms.stream
             this.doXmaParseBlockSizeRadios();
             this.doXmaParseDataSizeRadios();
         }
-
         private void cbAddRiffHeader_CheckedChanged(object sender, EventArgs e)
         {
             this.comboRiffFrequency.Enabled = this.cbAddRiffHeader.Checked;
@@ -394,6 +416,7 @@ namespace VGMToolbox.forms.stream
         {
             this.tbXmaParseStartOffset.Enabled = this.rbXmaParseStartOffsetStatic.Checked && this.rbXmaParseStartOffsetStatic.Enabled;
             this.XmaParseStartOffsetOffsetDescription.Enabled = this.rbXmaParseStartOffsetOffset.Checked && this.rbXmaParseStartOffsetOffset.Enabled;
+            this.rbStartOffsetIsAfterRiff.Enabled = this.cbDoXmaParse.Checked;
         }
         private void rbXmaParseStartOffsetOffset_CheckedChanged(object sender, EventArgs e)
         {
@@ -403,6 +426,10 @@ namespace VGMToolbox.forms.stream
         {
             this.doXmaParseStartOffsetRadios();
         }
+        private void rbStartOffsetIsAfterRiff_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doXmaParseStartOffsetRadios();
+        }        
 
         // xma parse - block size
         private void doXmaParseBlockSizeRadios()
@@ -424,6 +451,7 @@ namespace VGMToolbox.forms.stream
         {
             this.tbXmaParseDataSize.Enabled = this.rbXmaParseDataSizeStatic.Checked && this.rbXmaParseDataSizeStatic.Enabled;
             this.XmaParseDataSizeOffsetDescription.Enabled = this.rbXmaParseDataSizeOffset.Checked && this.rbXmaParseDataSizeOffset.Enabled;
+            this.rbGetDataSizeFromRiff.Enabled = this.cbDoXmaParse.Checked;
         }
         private void rbXmaParseDataSizeOffset_CheckedChanged(object sender, EventArgs e)
         {
@@ -433,6 +461,10 @@ namespace VGMToolbox.forms.stream
         {
             this.doXmaParseDataSizeRadios();
         }
+        private void rbGetDataSizeFromRiff_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doXmaParseDataSizeRadios();
+        }     
 
         private void doFrequencyRadios()
         {
@@ -458,6 +490,47 @@ namespace VGMToolbox.forms.stream
         private void rbGetChannelsFromRiff_CheckedChanged(object sender, EventArgs e)
         {
             this.doChannelRadios();
-        }     
+        }
+        
+        // pos maker
+        private void cbMakePosFile_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doPosLoopStartRadios();
+            this.doPosLoopEndRadios();
+        }
+
+        // pos maker - loop start
+        private void doPosLoopStartRadios()
+        {
+            this.rbLoopStartStatic.Enabled = this.cbMakePosFile.Checked;
+            this.tbLoopStartStatic.Enabled = this.rbLoopStartStatic.Checked;
+            this.rbLoopStartOffset.Enabled = this.cbMakePosFile.Checked;
+            this.loopStartValueOffsetDescription.Enabled = this.rbLoopStartOffset.Enabled && this.rbLoopStartOffset.Checked;
+        }
+        private void rbLoopStartStatic_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doPosLoopStartRadios();
+        }
+        private void rbLoopStartOffset_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doPosLoopStartRadios();
+        }
+
+        // pos maker - loop end
+        private void doPosLoopEndRadios()
+        {
+            this.rbLoopEndStatic.Enabled = this.cbMakePosFile.Checked;
+            this.tbLoopEndStatic.Enabled = this.rbLoopEndStatic.Checked;
+            this.rbLoopEndOffset.Enabled = this.cbMakePosFile.Checked;
+            this.loopEndValueOffsetDescription.Enabled = this.rbLoopEndOffset.Enabled && this.rbLoopEndOffset.Checked;
+        }
+        private void rbLoopEndStatic_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doPosLoopEndRadios();
+        }
+        private void rbLoopEndOffset_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doPosLoopEndRadios();
+        }
     }
 }

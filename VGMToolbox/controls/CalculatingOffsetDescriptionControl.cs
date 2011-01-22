@@ -32,6 +32,9 @@ namespace VGMToolbox.controls
             {
                 base.Enabled = value;
                 this.tbCalculation.Enabled = value;
+
+                this.label1.Enabled = value;
+                this.lblAtOffset.Enabled = value;
             }
         }
 
