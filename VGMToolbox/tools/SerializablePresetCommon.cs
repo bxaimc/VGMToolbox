@@ -41,4 +41,17 @@ namespace VGMToolbox.tools
             }
         }
     }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.3038")]
+    [System.SerializableAttribute()]
+    public enum Endianness
+    {
+
+        /// <remarks/>
+        little,
+
+        /// <remarks/>
+        big,
+    }
 }

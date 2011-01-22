@@ -5,6 +5,7 @@ using System.Xml;
 using System.Xml.Serialization;
 
 using VGMToolbox.plugin;
+using VGMToolbox.tools;
 using VGMToolbox.tools.extract;
 using VGMToolbox.util;
 

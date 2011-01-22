@@ -10,6 +10,7 @@ using System.Xml.Serialization;
 
 using VGMToolbox.dbutil;
 using VGMToolbox.plugin;
+using VGMToolbox.tools;
 using VGMToolbox.tools.extract;
 
 namespace VGMToolbox.forms.extraction
