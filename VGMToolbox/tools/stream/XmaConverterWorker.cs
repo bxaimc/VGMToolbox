@@ -233,7 +233,15 @@ namespace VGMToolbox.tools.stream
                 { 
                     using(FileStream fs = File.OpenRead(workingSourceFile))
                     {
-                        loopStart = (uint)ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, taskStruct.PosLoopStartOffsetInfo); 
+                        loopStart = (uint)ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, taskStruct.PosLoopStartOffsetInfo);
+
+                        if (!String.IsNullOrEmpty(taskStruct.PosLoopStartOffsetInfo.CalculationString))
+                        {
+                            string calculationString =
+                                taskStruct.PosLoopStartOffsetInfo.CalculationString.Replace(CalculatingOffsetDescription.OFFSET_VARIABLE_STRING, loopStart.ToString());
+
+                            loopStart = (uint)ByteConversion.GetLongValueFromString(MathUtil.Evaluate(calculationString));
+                        }
                     }
                 }
 
@@ -247,6 +255,14 @@ namespace VGMToolbox.tools.stream
                     using (FileStream fs = File.OpenRead(workingSourceFile))
                     {
                         loopEnd = (uint)ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, taskStruct.PosLoopEndOffsetInfo);
+
+                        if (!String.IsNullOrEmpty(taskStruct.PosLoopEndOffsetInfo.CalculationString))
+                        {
+                            string calculationString =
+                                taskStruct.PosLoopEndOffsetInfo.CalculationString.Replace(CalculatingOffsetDescription.OFFSET_VARIABLE_STRING, loopEnd.ToString());
+
+                            loopEnd = (uint)ByteConversion.GetLongValueFromString(MathUtil.Evaluate(calculationString));
+                        }
                     }
                 }
 
