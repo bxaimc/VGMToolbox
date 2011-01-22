@@ -53,7 +53,7 @@ namespace VGMToolbox.dbutil
 
                 return dt;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;                
             }
@@ -92,7 +92,7 @@ namespace VGMToolbox.dbutil
 
                 return dt;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }

@@ -1431,7 +1431,7 @@ namespace VGMToolbox.format.sdat
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 ret = false;
                 newSdat = null;

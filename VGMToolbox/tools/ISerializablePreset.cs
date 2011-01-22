@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace VGMToolbox.tools.extract
+namespace VGMToolbox.tools
 {
     public interface ISerializablePreset
     {

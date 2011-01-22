@@ -83,7 +83,9 @@ namespace VGMToolbox.forms.stream
 
         private void initializePosMakerSection()
         {
-            this.cbMakePosFile.Checked = true;
+            this.cbMakePosFile.Checked = false;
+            this.rbLoopStartOffset.Checked = true;
+            this.rbLoopEndOffset.Checked = true;
         }
 
         private void initializeToWavSection()
@@ -205,7 +207,7 @@ namespace VGMToolbox.forms.stream
             isValid &= this.checkPrerequisites();
             isValid &= this.validateOutputOptions();
             isValid &= this.validateXmaParseOptions();
-            isValid &= this.validateFrequencyOptions();
+            isValid &= this.validateRiffOptions();
             isValid &= this.validatePosMakerOptions();
 
             return isValid;
@@ -312,18 +314,21 @@ namespace VGMToolbox.forms.stream
             return isValid;
         }
 
-        private bool validateFrequencyOptions()
+        private bool validateRiffOptions()
         {
             bool isValid = true;
 
             if (this.cbAddRiffHeader.Checked)
             {
-                isValid &= AVgmtForm.checkTextBox(this.comboRiffFrequency.Text, this.rbAddManualFrequency.Text);
-
-                if (isValid)
+                if (this.rbAddManualFrequency.Checked)
                 {
-                    isValid &= AVgmtForm.checkIfTextIsParsableAsLong(this.comboRiffFrequency.Text, this.rbAddManualFrequency.Text);
-                }
+                    isValid &= AVgmtForm.checkTextBox(this.comboRiffFrequency.Text, this.rbAddManualFrequency.Text);
+
+                    if (isValid)
+                    {
+                        isValid &= AVgmtForm.checkIfTextIsParsableAsLong(this.comboRiffFrequency.Text, this.rbAddManualFrequency.Text);
+                    }
+                }                
             }
 
             return isValid;        
@@ -331,7 +336,30 @@ namespace VGMToolbox.forms.stream
 
         private bool validatePosMakerOptions()
         {
-            return true;
+            bool isValid = true;
+
+            if (this.cbMakePosFile.Checked)
+            {
+                if (this.rbLoopStartStatic.Checked)
+                {
+                    isValid &= AVgmtForm.checkTextBox(this.tbLoopStartStatic.Text, this.rbLoopStartStatic.Text);
+                }
+                if (this.rbLoopEndStatic.Checked)
+                {
+                    isValid &= AVgmtForm.checkTextBox(this.tbLoopEndStatic.Text, this.rbLoopEndStatic.Text);
+                }
+
+                if (this.rbLoopStartOffset.Checked)
+                {
+                    isValid &= this.loopStartValueOffsetDescription.Validate();
+                }
+                if (this.rbLoopEndOffset.Checked)
+                {
+                    isValid &= this.loopEndValueOffsetDescription.Validate();
+                }                                
+            }
+
+            return isValid; 
         }
 
         //----------------------------
@@ -409,6 +437,12 @@ namespace VGMToolbox.forms.stream
         {
             this.comboRiffFrequency.Enabled = this.cbAddRiffHeader.Checked;
             this.comboRiffChannels.Enabled = this.cbAddRiffHeader.Checked;
+
+            this.rbGetFrequencyFromRiff.Enabled = this.cbAddRiffHeader.Checked;
+            this.rbAddManualFrequency.Enabled = this.cbAddRiffHeader.Checked;
+
+            this.rbGetChannelsFromRiff.Enabled = this.cbAddRiffHeader.Checked;
+            this.rbAddManualChannels.Enabled = this.cbAddRiffHeader.Checked;
         }
 
         // xma_parse - start offset

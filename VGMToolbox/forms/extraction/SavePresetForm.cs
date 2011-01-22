@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
 
-using VGMToolbox.tools.extract;
+using VGMToolbox.tools;
 
 namespace VGMToolbox.forms.extraction
 {
