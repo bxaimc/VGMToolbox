@@ -586,7 +586,9 @@ namespace VGMToolbox.forms.stream
             this.doPosLoopEndRadios();
         }
 
+        //--------------------
         // Preset Processing
+        //--------------------
         private XmaConverterSettings getPresetFromFile(string filePath)
         {
             XmaConverterSettings preset = null;
