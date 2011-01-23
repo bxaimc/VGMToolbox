@@ -112,7 +112,7 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 529);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 421);
             this.pnlLabels.Size = new System.Drawing.Size(801, 19);
             // 
             // pnlTitle
@@ -121,13 +121,13 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 452);
+            this.tbOutput.Location = new System.Drawing.Point(0, 344);
             this.tbOutput.Size = new System.Drawing.Size(801, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 432);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 324);
             this.pnlButtons.Size = new System.Drawing.Size(801, 20);
             // 
             // btnCancel
@@ -253,7 +253,7 @@
             this.pnlOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlOptions.Location = new System.Drawing.Point(0, 133);
             this.pnlOptions.Name = "pnlOptions";
-            this.pnlOptions.Size = new System.Drawing.Size(801, 299);
+            this.pnlOptions.Size = new System.Drawing.Size(801, 191);
             this.pnlOptions.TabIndex = 7;
             // 
             // groupOtherOptions
@@ -839,7 +839,7 @@
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(801, 570);
+            this.ClientSize = new System.Drawing.Size(801, 462);
             this.Controls.Add(this.pnlOptions);
             this.Controls.Add(this.grpOutputOptions);
             this.Controls.Add(this.grpPresets);

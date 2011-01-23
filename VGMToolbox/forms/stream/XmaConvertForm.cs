@@ -11,7 +11,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.forms.stream
 {
-    public partial class XmaConvertForm : VgmtForm
+    public partial class XmaConvertForm : AVgmtForm
     {
         private static readonly string PLUGIN_PATH =
             Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "plugins"), "XmaConverter");                
