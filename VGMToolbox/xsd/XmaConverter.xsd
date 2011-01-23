@@ -119,14 +119,14 @@
       <xs:element name="StartOffsetCalculation" type="xs:string" minOccurs="0" maxOccurs="1"/>
 
       <!--- End Offset -->
-      <xs:element name="UseStaticStartOffset" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
-      <xs:element name="UseDynamicStartOffset" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="UseStaticEndOffset" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="UseDynamicEndOffset" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
 
-      <xs:element name="StartOffsetStatic" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="EndOffsetStatic" type="xs:string" minOccurs="0" maxOccurs="1"/>
 
-      <xs:element name="StartOffsetOffset" type="xs:integer" minOccurs="0" maxOccurs="1"/>
-      <xs:element name="StartOffsetOffsetSize" type="xs:integer" minOccurs="0" maxOccurs="1"/>
-      <xs:element name="StartOffsetOffsetEndianess" type="Endianness" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="EndOffsetOffset" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="EndOffsetOffsetSize" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="EndOffsetOffsetEndianess" type="Endianness" minOccurs="0" maxOccurs="1"/>
       <xs:element name="EndOffsetCalculation" type="xs:string" minOccurs="0" maxOccurs="1"/>
 
     </xs:sequence>

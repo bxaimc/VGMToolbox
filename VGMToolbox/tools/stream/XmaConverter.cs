@@ -23,7 +23,6 @@ namespace VGMToolbox.tools.stream
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-
     public partial class XmaConverterSettings
     {
 
@@ -226,24 +225,23 @@ namespace VGMToolbox.tools.stream
 
         private string startOffsetCalculationField;
 
-        private bool useStaticStartOffset1Field;
+        private bool useStaticEndOffsetField;
 
-        private bool useDynamicStartOffset1Field;
+        private bool useDynamicEndOffsetField;
 
-        private string startOffsetStatic1Field;
+        private string endOffsetStaticField;
 
-        private string startOffsetOffset1Field;
+        private string endOffsetOffsetField;
 
-        private string startOffsetOffsetSize1Field;
+        private string endOffsetOffsetSizeField;
 
-        private Endianness startOffsetOffsetEndianess1Field;
+        private Endianness endOffsetOffsetEndianessField;
 
-        private bool startOffsetOffsetEndianess1FieldSpecified;
+        private bool endOffsetOffsetEndianessFieldSpecified;
 
         private string endOffsetCalculationField;
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order = 0)]
         public bool UseStaticStartOffset
         {
             get
@@ -257,7 +255,6 @@ namespace VGMToolbox.tools.stream
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order = 1)]
         public bool UseDynamicStartOffset
         {
             get
@@ -271,7 +268,6 @@ namespace VGMToolbox.tools.stream
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order = 2)]
         public string StartOffsetStatic
         {
             get
@@ -285,7 +281,7 @@ namespace VGMToolbox.tools.stream
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType = "integer", Order = 3)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType = "integer")]
         public string StartOffsetOffset
         {
             get
@@ -299,7 +295,7 @@ namespace VGMToolbox.tools.stream
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType = "integer", Order = 4)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType = "integer")]
         public string StartOffsetOffsetSize
         {
             get
@@ -313,7 +309,6 @@ namespace VGMToolbox.tools.stream
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order = 5)]
         public Endianness StartOffsetOffsetEndianess
         {
             get
@@ -341,7 +336,6 @@ namespace VGMToolbox.tools.stream
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order = 6)]
         public string StartOffsetCalculation
         {
             get
@@ -355,105 +349,100 @@ namespace VGMToolbox.tools.stream
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("UseStaticStartOffset", Order = 7)]
-        public bool UseStaticStartOffset1
+        public bool UseStaticEndOffset
         {
             get
             {
-                return this.useStaticStartOffset1Field;
+                return this.useStaticEndOffsetField;
             }
             set
             {
-                this.useStaticStartOffset1Field = value;
+                this.useStaticEndOffsetField = value;
             }
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("UseDynamicStartOffset", Order = 8)]
-        public bool UseDynamicStartOffset1
+        public bool UseDynamicEndOffset
         {
             get
             {
-                return this.useDynamicStartOffset1Field;
+                return this.useDynamicEndOffsetField;
             }
             set
             {
-                this.useDynamicStartOffset1Field = value;
+                this.useDynamicEndOffsetField = value;
             }
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("StartOffsetStatic", Order = 9)]
-        public string StartOffsetStatic1
+        public string EndOffsetStatic
         {
             get
             {
-                return this.startOffsetStatic1Field;
+                return this.endOffsetStaticField;
             }
             set
             {
-                this.startOffsetStatic1Field = value;
+                this.endOffsetStaticField = value;
             }
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("StartOffsetOffset", DataType = "integer", Order = 10)]
-        public string StartOffsetOffset1
+        [System.Xml.Serialization.XmlElementAttribute(DataType = "integer")]
+        public string EndOffsetOffset
         {
             get
             {
-                return this.startOffsetOffset1Field;
+                return this.endOffsetOffsetField;
             }
             set
             {
-                this.startOffsetOffset1Field = value;
+                this.endOffsetOffsetField = value;
             }
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("StartOffsetOffsetSize", DataType = "integer", Order = 11)]
-        public string StartOffsetOffsetSize1
+        [System.Xml.Serialization.XmlElementAttribute(DataType = "integer")]
+        public string EndOffsetOffsetSize
         {
             get
             {
-                return this.startOffsetOffsetSize1Field;
+                return this.endOffsetOffsetSizeField;
             }
             set
             {
-                this.startOffsetOffsetSize1Field = value;
+                this.endOffsetOffsetSizeField = value;
             }
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("StartOffsetOffsetEndianess", Order = 12)]
-        public Endianness StartOffsetOffsetEndianess1
+        public Endianness EndOffsetOffsetEndianess
         {
             get
             {
-                return this.startOffsetOffsetEndianess1Field;
+                return this.endOffsetOffsetEndianessField;
             }
             set
             {
-                this.startOffsetOffsetEndianess1Field = value;
+                this.endOffsetOffsetEndianessField = value;
             }
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool StartOffsetOffsetEndianess1Specified
+        public bool EndOffsetOffsetEndianessSpecified
         {
             get
             {
-                return this.startOffsetOffsetEndianess1FieldSpecified;
+                return this.endOffsetOffsetEndianessFieldSpecified;
             }
             set
             {
-                this.startOffsetOffsetEndianess1FieldSpecified = value;
+                this.endOffsetOffsetEndianessFieldSpecified = value;
             }
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order = 13)]
         public string EndOffsetCalculation
         {
             get
@@ -1049,4 +1038,5 @@ namespace VGMToolbox.tools.stream
         [System.Xml.Serialization.XmlEnumAttribute("2")]
         Item2,
     }
+
 }

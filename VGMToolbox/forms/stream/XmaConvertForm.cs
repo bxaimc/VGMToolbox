@@ -774,6 +774,40 @@ namespace VGMToolbox.forms.stream
             
             #endregion
 
+            #region POS MAKER
+
+            this.cbMakePosFile.Checked = xmaSettings.CreatePosFile;
+
+            // loop start
+            this.rbLoopStartStatic.Checked = xmaSettings.PosFileParameters.UseStaticStartOffset;
+            this.rbLoopStartOffset.Checked = xmaSettings.PosFileParameters.UseDynamicStartOffset;
+
+            this.tbLoopStartStatic.Text = xmaSettings.PosFileParameters.StartOffsetStatic;
+
+            if (xmaSettings.PosFileParameters.UseDynamicStartOffset)
+            {
+                this.loopStartValueOffsetDescription.OffsetValue = xmaSettings.PosFileParameters.StartOffsetOffset;
+                this.loopStartValueOffsetDescription.OffsetSize = xmaSettings.PosFileParameters.StartOffsetOffsetSize;
+                this.loopStartValueOffsetDescription.OffsetByteOrder = getEndiannessStringForXmlValue(xmaSettings.PosFileParameters.StartOffsetOffsetEndianess);
+                this.loopStartValueOffsetDescription.CalculationValue = xmaSettings.PosFileParameters.StartOffsetCalculation;
+            }
+
+            // loop end
+            this.rbLoopEndStatic.Checked = xmaSettings.PosFileParameters.UseStaticEndOffset;
+            this.rbLoopEndOffset.Checked = xmaSettings.PosFileParameters.UseDynamicEndOffset;
+
+            this.tbLoopEndStatic.Text = xmaSettings.PosFileParameters.EndOffsetStatic;
+
+            if (xmaSettings.PosFileParameters.UseDynamicEndOffset)
+            {
+                this.loopEndValueOffsetDescription.OffsetValue = xmaSettings.PosFileParameters.EndOffsetOffset;
+                this.loopEndValueOffsetDescription.OffsetSize = xmaSettings.PosFileParameters.EndOffsetOffsetSize;
+                this.loopEndValueOffsetDescription.OffsetByteOrder = getEndiannessStringForXmlValue(xmaSettings.PosFileParameters.EndOffsetOffsetEndianess);
+                this.loopEndValueOffsetDescription.CalculationValue = xmaSettings.PosFileParameters.EndOffsetCalculation;
+            }
+
+            #endregion
+
             #region WAV CONVERSION
 
             this.rbDoToWav.Checked = xmaSettings.WavConversionParameters.UseToWav;
@@ -919,6 +953,42 @@ namespace VGMToolbox.forms.stream
             }
 
             xmaSettings.RiffParameters.GetChannelsFromRiffHeader = this.rbGetChannelsFromRiff.Checked;
+
+            #endregion
+
+            #region POS MAKER
+
+            xmaSettings.CreatePosFile = this.cbMakePosFile.Checked;
+
+            // loop start
+            xmaSettings.PosFileParameters.UseStaticStartOffset = this.rbLoopStartStatic.Checked;
+            xmaSettings.PosFileParameters.UseDynamicStartOffset = this.rbLoopStartOffset.Checked;
+
+            xmaSettings.PosFileParameters.StartOffsetStatic = this.tbLoopStartStatic.Text;
+
+            if (this.rbLoopStartOffset.Checked)
+            {
+                xmaSettings.PosFileParameters.StartOffsetOffset = this.loopStartValueOffsetDescription.OffsetValue;
+                xmaSettings.PosFileParameters.StartOffsetOffsetSize = this.loopStartValueOffsetDescription.OffsetSize;
+                xmaSettings.PosFileParameters.StartOffsetOffsetEndianessSpecified = true;
+                xmaSettings.PosFileParameters.StartOffsetOffsetEndianess = getEndiannessForStringValue(this.loopStartValueOffsetDescription.OffsetByteOrder);
+                xmaSettings.PosFileParameters.StartOffsetCalculation = this.loopStartValueOffsetDescription.CalculationValue;
+            }
+
+            // loop end
+            xmaSettings.PosFileParameters.UseStaticEndOffset = this.rbLoopEndStatic.Checked;
+            xmaSettings.PosFileParameters.UseDynamicEndOffset = this.rbLoopEndOffset.Checked;
+
+            xmaSettings.PosFileParameters.EndOffsetStatic = this.tbLoopEndStatic.Text;
+
+            if (this.rbLoopEndOffset.Checked)
+            {
+                xmaSettings.PosFileParameters.EndOffsetOffset = this.loopEndValueOffsetDescription.OffsetValue;
+                xmaSettings.PosFileParameters.EndOffsetOffsetSize = this.loopEndValueOffsetDescription.OffsetSize;
+                xmaSettings.PosFileParameters.EndOffsetOffsetEndianessSpecified = true;
+                xmaSettings.PosFileParameters.EndOffsetOffsetEndianess = getEndiannessForStringValue(this.loopEndValueOffsetDescription.OffsetByteOrder);
+                xmaSettings.PosFileParameters.EndOffsetCalculation = this.loopEndValueOffsetDescription.CalculationValue;
+            }
 
             #endregion
 
