@@ -750,7 +750,7 @@ namespace VGMToolbox.forms.stream
                     this.comboRiffFrequency.Text = xmaSettings.RiffParameters.FrequencyStatic;
                 }
 
-                this.rbGetFrequencyFromRiff.Checked = xmaSettings.RiffParameters.GetChannelsFromRiffHeader;
+                this.rbGetFrequencyFromRiff.Checked = xmaSettings.RiffParameters.GetFrequencyFromRiffHeader;
 
                 // Channels
                 if (xmaSettings.RiffParameters.UseStaticChannels)
@@ -933,7 +933,7 @@ namespace VGMToolbox.forms.stream
                 xmaSettings.RiffParameters.FrequencyStatic = this.comboRiffFrequency.Text;
             }
 
-            xmaSettings.RiffParameters.GetChannelsFromRiffHeader = this.rbGetFrequencyFromRiff.Checked;
+            xmaSettings.RiffParameters.GetFrequencyFromRiffHeader = this.rbGetFrequencyFromRiff.Checked;
 
             // Channels
             if (this.rbAddManualChannels.Checked)
