@@ -48,6 +48,7 @@ namespace VGMToolbox.forms.stream
             this.cbDoXmaParse.Checked = true;
             
             // XMA Type
+            this.comboXmaParseInputType.Items.Clear();
             this.comboXmaParseInputType.Items.Add("1");
             this.comboXmaParseInputType.Items.Add("2");
             
@@ -174,9 +175,15 @@ namespace VGMToolbox.forms.stream
 
                 // RIFF
                 taskStruct.DoRiffHeader = this.cbAddRiffHeader.Checked;
+                
                 taskStruct.RiffFrequency = this.comboRiffFrequency.Text;
                 taskStruct.GetFrequencyFromRiffHeader = this.rbGetFrequencyFromRiff.Checked;
+                taskStruct.GetFrequencyFromOffset = this.rbFrequencyOffset.Checked;
+                taskStruct.RiffHeaderFrequencyOffsetInfo = this.frequencyOffsetDescription.GetOffsetValues();
+
                 taskStruct.GetChannelsFromRiffHeader = this.rbGetChannelsFromRiff.Checked;
+                taskStruct.GetChannelsFromOffset = this.rbNumberOfChannelsOffset.Checked;
+                taskStruct.RiffHeaderChannelOffsetInfo = this.numberOfChannelsOffsetDescription.GetOffsetValues();
 
                 switch (this.comboRiffChannels.Text)
                 {
@@ -339,6 +346,7 @@ namespace VGMToolbox.forms.stream
 
             if (this.cbAddRiffHeader.Checked)
             {
+                // Frequency
                 if (this.rbAddManualFrequency.Checked)
                 {
                     isValid &= AVgmtForm.checkTextBox(this.comboRiffFrequency.Text, this.rbAddManualFrequency.Text);
@@ -347,7 +355,17 @@ namespace VGMToolbox.forms.stream
                     {
                         isValid &= AVgmtForm.checkIfTextIsParsableAsLong(this.comboRiffFrequency.Text, this.rbAddManualFrequency.Text);
                     }
-                }                
+                }
+                else if (this.rbFrequencyOffset.Checked)
+                {
+                    isValid &= this.frequencyOffsetDescription.Validate();
+                }
+
+                // Channels
+                if (this.rbNumberOfChannelsOffset.Checked)
+                {
+                    isValid &= this.numberOfChannelsOffsetDescription.Validate();
+                }
             }
 
             return isValid;        
@@ -522,6 +540,7 @@ namespace VGMToolbox.forms.stream
         private void doFrequencyRadios()
         {
             this.comboRiffFrequency.Enabled = this.rbAddManualFrequency.Checked;
+            this.frequencyOffsetDescription.Enabled = this.rbFrequencyOffset.Checked;
         }
         private void rbAddManualFrequency_CheckedChanged(object sender, EventArgs e)
         {
@@ -531,10 +550,15 @@ namespace VGMToolbox.forms.stream
         {
             this.doFrequencyRadios();
         }
-
+        private void rbFrequencyOffset_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doChannelRadios();
+        }
+        
         private void doChannelRadios()
         {
             this.comboRiffChannels.Enabled = rbAddManualChannels.Checked;
+            this.numberOfChannelsOffsetDescription.Enabled = rbNumberOfChannelsOffset.Checked;
         }
         private void rbAddManualChannels_CheckedChanged(object sender, EventArgs e)
         {
@@ -544,7 +568,11 @@ namespace VGMToolbox.forms.stream
         {
             this.doChannelRadios();
         }
-        
+        private void rbNumberOfChannelsOffset_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doChannelRadios();
+        }
+
         // pos maker
         private void cbMakePosFile_CheckedChanged(object sender, EventArgs e)
         {
@@ -749,6 +777,14 @@ namespace VGMToolbox.forms.stream
                     this.rbAddManualFrequency.Checked = true;
                     this.comboRiffFrequency.Text = xmaSettings.RiffParameters.FrequencyStatic;
                 }
+                else if (xmaSettings.RiffParameters.GetFrequencyFromOffset)
+                {
+                    this.rbFrequencyOffset.Checked = true;
+                    
+                    this.frequencyOffsetDescription.OffsetValue = xmaSettings.RiffParameters.FrequencyOffset;
+                    this.frequencyOffsetDescription.OffsetSize = xmaSettings.RiffParameters.FrequencyOffsetSize;
+                    this.frequencyOffsetDescription.OffsetByteOrder = getEndiannessStringForXmlValue(xmaSettings.RiffParameters.FrequencyOffsetEndianess);
+                }
 
                 this.rbGetFrequencyFromRiff.Checked = xmaSettings.RiffParameters.GetFrequencyFromRiffHeader;
 
@@ -769,6 +805,14 @@ namespace VGMToolbox.forms.stream
                             this.comboRiffChannels.Text = XmaConverterWorker.RIFF_CHANNELS_2;
                             break;
                     }
+                }
+                else if (xmaSettings.RiffParameters.GetChannelsFromOffset)
+                {
+                    this.rbNumberOfChannelsOffset.Checked = true;
+
+                    this.numberOfChannelsOffsetDescription.OffsetValue = xmaSettings.RiffParameters.ChannelOffset;
+                    this.numberOfChannelsOffsetDescription.OffsetSize = xmaSettings.RiffParameters.ChannelOffsetSize;
+                    this.numberOfChannelsOffsetDescription.OffsetByteOrder = getEndiannessStringForXmlValue(xmaSettings.RiffParameters.ChannelOffsetEndianess);
                 }
 
                 this.rbGetChannelsFromRiff.Checked = xmaSettings.RiffParameters.GetChannelsFromRiffHeader;
@@ -932,6 +976,14 @@ namespace VGMToolbox.forms.stream
                 xmaSettings.RiffParameters.UseStaticFrequency = true;
                 xmaSettings.RiffParameters.FrequencyStatic = this.comboRiffFrequency.Text;
             }
+            else if (this.rbFrequencyOffset.Checked)
+            {
+                xmaSettings.RiffParameters.GetFrequencyFromOffset = true;
+                xmaSettings.RiffParameters.FrequencyOffset = this.frequencyOffsetDescription.OffsetValue;
+                xmaSettings.RiffParameters.FrequencyOffsetSize = this.frequencyOffsetDescription.OffsetSize;
+                xmaSettings.RiffParameters.FrequencyOffsetEndianessSpecified = true;
+                xmaSettings.RiffParameters.FrequencyOffsetEndianess = getEndiannessForStringValue(this.frequencyOffsetDescription.OffsetByteOrder);
+            }
 
             xmaSettings.RiffParameters.GetFrequencyFromRiffHeader = this.rbGetFrequencyFromRiff.Checked;
 
@@ -952,6 +1004,14 @@ namespace VGMToolbox.forms.stream
                         xmaSettings.RiffParameters.ChannelStatic = "ERROR";
                         break;
                 }
+            }
+            else if (this.rbNumberOfChannelsOffset.Checked)
+            {                
+                xmaSettings.RiffParameters.GetChannelsFromOffset = true;
+                xmaSettings.RiffParameters.ChannelOffset = this.numberOfChannelsOffsetDescription.OffsetValue;
+                xmaSettings.RiffParameters.ChannelOffsetSize = this.numberOfChannelsOffsetDescription.OffsetSize;
+                xmaSettings.RiffParameters.ChannelOffsetEndianessSpecified = true;
+                xmaSettings.RiffParameters.ChannelOffsetEndianess = getEndiannessForStringValue(this.numberOfChannelsOffsetDescription.OffsetByteOrder);
             }
 
             xmaSettings.RiffParameters.GetChannelsFromRiffHeader = this.rbGetChannelsFromRiff.Checked;

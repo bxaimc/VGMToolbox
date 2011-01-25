@@ -92,15 +92,25 @@
     <xs:sequence minOccurs="1" maxOccurs="1">
       <!-- Frequency -->
       <xs:element name="UseStaticFrequency" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="GetFrequencyFromOffset" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
       <xs:element name="GetFrequencyFromRiffHeader" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
-
-      <xs:element name="FrequencyStatic" type="xs:string" minOccurs="0" maxOccurs="1"/>
       
+      <xs:element name="FrequencyStatic" type="xs:string" minOccurs="0" maxOccurs="1"/>
+
+      <xs:element name="FrequencyOffset" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="FrequencyOffsetSize" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="FrequencyOffsetEndianess" type="Endianness" minOccurs="0" maxOccurs="1"/>
+
       <!-- Channels -->
       <xs:element name="UseStaticChannels" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="GetChannelsFromOffset" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
       <xs:element name="GetChannelsFromRiffHeader" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
-
+      
       <xs:element name="ChannelStatic" type="xs:string" minOccurs="0" maxOccurs="1"/>
+
+      <xs:element name="ChannelOffset" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ChannelOffsetSize" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ChannelOffsetEndianess" type="Endianness" minOccurs="0" maxOccurs="1"/>      
     </xs:sequence>
   </xs:complexType>
 

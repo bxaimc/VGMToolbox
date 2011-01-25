@@ -48,19 +48,25 @@
             this.grpPosFileMaker = new System.Windows.Forms.GroupBox();
             this.grpPosEndOffset = new System.Windows.Forms.GroupBox();
             this.rbLoopEndOffset = new System.Windows.Forms.RadioButton();
+            this.loopEndValueOffsetDescription = new VGMToolbox.controls.CalculatingOffsetDescriptionControl();
             this.tbLoopEndStatic = new System.Windows.Forms.TextBox();
             this.rbLoopEndStatic = new System.Windows.Forms.RadioButton();
             this.grpPosStartOffset = new System.Windows.Forms.GroupBox();
             this.rbLoopStartOffset = new System.Windows.Forms.RadioButton();
+            this.loopStartValueOffsetDescription = new VGMToolbox.controls.CalculatingOffsetDescriptionControl();
             this.tbLoopStartStatic = new System.Windows.Forms.TextBox();
             this.rbLoopStartStatic = new System.Windows.Forms.RadioButton();
             this.cbMakePosFile = new System.Windows.Forms.CheckBox();
             this.grpRiffHeaderOptions = new System.Windows.Forms.GroupBox();
             this.grpFrequency = new System.Windows.Forms.GroupBox();
+            this.frequencyOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
+            this.rbFrequencyOffset = new System.Windows.Forms.RadioButton();
             this.rbAddManualFrequency = new System.Windows.Forms.RadioButton();
             this.comboRiffFrequency = new System.Windows.Forms.ComboBox();
             this.rbGetFrequencyFromRiff = new System.Windows.Forms.RadioButton();
             this.grpChannels = new System.Windows.Forms.GroupBox();
+            this.numberOfChannelsOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
+            this.rbNumberOfChannelsOffset = new System.Windows.Forms.RadioButton();
             this.rbAddManualChannels = new System.Windows.Forms.RadioButton();
             this.rbGetChannelsFromRiff = new System.Windows.Forms.RadioButton();
             this.comboRiffChannels = new System.Windows.Forms.ComboBox();
@@ -68,15 +74,18 @@
             this.grpXmaParseOptions = new System.Windows.Forms.GroupBox();
             this.grpStartOffset = new System.Windows.Forms.GroupBox();
             this.rbStartOffsetIsAfterRiff = new System.Windows.Forms.RadioButton();
+            this.XmaParseStartOffsetOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
             this.rbXmaParseStartOffsetOffset = new System.Windows.Forms.RadioButton();
             this.rbXmaParseStartOffsetStatic = new System.Windows.Forms.RadioButton();
             this.tbXmaParseStartOffset = new System.Windows.Forms.TextBox();
             this.grpBlockSize = new System.Windows.Forms.GroupBox();
+            this.XmaParseBlockSizeOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
             this.rbXmaParseBlockSizeOffset = new System.Windows.Forms.RadioButton();
             this.rbXmaParseBlockSizeStatic = new System.Windows.Forms.RadioButton();
             this.tbXmaParseBlockSize = new System.Windows.Forms.TextBox();
             this.grpXmaParseDataSize = new System.Windows.Forms.GroupBox();
             this.rbGetDataSizeFromRiff = new System.Windows.Forms.RadioButton();
+            this.XmaParseDataSizeOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
             this.rbXmaParseDataSizeOffset = new System.Windows.Forms.RadioButton();
             this.rbXmaParseDataSizeStatic = new System.Windows.Forms.RadioButton();
             this.tbXmaParseDataSize = new System.Windows.Forms.TextBox();
@@ -85,11 +94,6 @@
             this.cbDoXmaParse = new System.Windows.Forms.CheckBox();
             this.comboXmaParseInputType = new System.Windows.Forms.ComboBox();
             this.lblXmaParseInputType = new System.Windows.Forms.Label();
-            this.loopEndValueOffsetDescription = new VGMToolbox.controls.CalculatingOffsetDescriptionControl();
-            this.loopStartValueOffsetDescription = new VGMToolbox.controls.CalculatingOffsetDescriptionControl();
-            this.XmaParseStartOffsetOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
-            this.XmaParseBlockSizeOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
-            this.XmaParseDataSizeOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -112,7 +116,7 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 421);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 487);
             this.pnlLabels.Size = new System.Drawing.Size(801, 19);
             // 
             // pnlTitle
@@ -121,13 +125,13 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 344);
+            this.tbOutput.Location = new System.Drawing.Point(0, 410);
             this.tbOutput.Size = new System.Drawing.Size(801, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 324);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 390);
             this.pnlButtons.Size = new System.Drawing.Size(801, 20);
             // 
             // btnCancel
@@ -253,7 +257,7 @@
             this.pnlOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlOptions.Location = new System.Drawing.Point(0, 133);
             this.pnlOptions.Name = "pnlOptions";
-            this.pnlOptions.Size = new System.Drawing.Size(801, 191);
+            this.pnlOptions.Size = new System.Drawing.Size(801, 257);
             this.pnlOptions.TabIndex = 7;
             // 
             // groupOtherOptions
@@ -261,7 +265,7 @@
             this.groupOtherOptions.Controls.Add(this.cbKeepTempFiles);
             this.groupOtherOptions.Controls.Add(this.cbShowAllExeOutput);
             this.groupOtherOptions.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupOtherOptions.Location = new System.Drawing.Point(0, 729);
+            this.groupOtherOptions.Location = new System.Drawing.Point(0, 813);
             this.groupOtherOptions.Name = "groupOtherOptions";
             this.groupOtherOptions.Size = new System.Drawing.Size(784, 64);
             this.groupOtherOptions.TabIndex = 2;
@@ -293,7 +297,7 @@
             this.grpToWavOptions.Controls.Add(this.rbDoToWav);
             this.grpToWavOptions.Controls.Add(this.rbDoXmaEncode);
             this.grpToWavOptions.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpToWavOptions.Location = new System.Drawing.Point(0, 666);
+            this.grpToWavOptions.Location = new System.Drawing.Point(0, 750);
             this.grpToWavOptions.Name = "grpToWavOptions";
             this.grpToWavOptions.Size = new System.Drawing.Size(784, 63);
             this.grpToWavOptions.TabIndex = 3;
@@ -328,7 +332,7 @@
             this.grpPosFileMaker.Controls.Add(this.grpPosStartOffset);
             this.grpPosFileMaker.Controls.Add(this.cbMakePosFile);
             this.grpPosFileMaker.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpPosFileMaker.Location = new System.Drawing.Point(0, 441);
+            this.grpPosFileMaker.Location = new System.Drawing.Point(0, 525);
             this.grpPosFileMaker.Name = "grpPosFileMaker";
             this.grpPosFileMaker.Size = new System.Drawing.Size(784, 225);
             this.grpPosFileMaker.TabIndex = 4;
@@ -360,6 +364,17 @@
             this.rbLoopEndOffset.Text = "Loop End Value is";
             this.rbLoopEndOffset.UseVisualStyleBackColor = true;
             this.rbLoopEndOffset.CheckedChanged += new System.EventHandler(this.rbLoopEndOffset_CheckedChanged);
+            // 
+            // loopEndValueOffsetDescription
+            // 
+            this.loopEndValueOffsetDescription.CalculationValue = "";
+            this.loopEndValueOffsetDescription.Location = new System.Drawing.Point(118, 40);
+            this.loopEndValueOffsetDescription.Name = "loopEndValueOffsetDescription";
+            this.loopEndValueOffsetDescription.OffsetByteOrder = "Little Endian";
+            this.loopEndValueOffsetDescription.OffsetSize = "4";
+            this.loopEndValueOffsetDescription.OffsetValue = "";
+            this.loopEndValueOffsetDescription.Size = new System.Drawing.Size(422, 52);
+            this.loopEndValueOffsetDescription.TabIndex = 6;
             // 
             // tbLoopEndStatic
             // 
@@ -406,6 +421,17 @@
             this.rbLoopStartOffset.UseVisualStyleBackColor = true;
             this.rbLoopStartOffset.CheckedChanged += new System.EventHandler(this.rbLoopStartOffset_CheckedChanged);
             // 
+            // loopStartValueOffsetDescription
+            // 
+            this.loopStartValueOffsetDescription.CalculationValue = "";
+            this.loopStartValueOffsetDescription.Location = new System.Drawing.Point(118, 40);
+            this.loopStartValueOffsetDescription.Name = "loopStartValueOffsetDescription";
+            this.loopStartValueOffsetDescription.OffsetByteOrder = "Little Endian";
+            this.loopStartValueOffsetDescription.OffsetSize = "4";
+            this.loopStartValueOffsetDescription.OffsetValue = "";
+            this.loopStartValueOffsetDescription.Size = new System.Drawing.Size(422, 52);
+            this.loopStartValueOffsetDescription.TabIndex = 2;
+            // 
             // tbLoopStartStatic
             // 
             this.tbLoopStartStatic.Location = new System.Drawing.Point(169, 18);
@@ -445,23 +471,47 @@
             this.grpRiffHeaderOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpRiffHeaderOptions.Location = new System.Drawing.Point(0, 310);
             this.grpRiffHeaderOptions.Name = "grpRiffHeaderOptions";
-            this.grpRiffHeaderOptions.Size = new System.Drawing.Size(784, 131);
+            this.grpRiffHeaderOptions.Size = new System.Drawing.Size(784, 215);
             this.grpRiffHeaderOptions.TabIndex = 1;
             this.grpRiffHeaderOptions.TabStop = false;
             this.grpRiffHeaderOptions.Text = "2. RIFF Header Options";
             // 
             // grpFrequency
             // 
+            this.grpFrequency.Controls.Add(this.frequencyOffsetDescription);
+            this.grpFrequency.Controls.Add(this.rbFrequencyOffset);
             this.grpFrequency.Controls.Add(this.rbAddManualFrequency);
             this.grpFrequency.Controls.Add(this.comboRiffFrequency);
             this.grpFrequency.Controls.Add(this.rbGetFrequencyFromRiff);
             this.grpFrequency.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.grpFrequency.Location = new System.Drawing.Point(3, 42);
+            this.grpFrequency.Location = new System.Drawing.Point(3, 35);
             this.grpFrequency.Name = "grpFrequency";
-            this.grpFrequency.Size = new System.Drawing.Size(778, 44);
+            this.grpFrequency.Size = new System.Drawing.Size(778, 90);
             this.grpFrequency.TabIndex = 10;
             this.grpFrequency.TabStop = false;
             this.grpFrequency.Text = "Frequency";
+            // 
+            // frequencyOffsetDescription
+            // 
+            this.frequencyOffsetDescription.Location = new System.Drawing.Point(156, 40);
+            this.frequencyOffsetDescription.Name = "frequencyOffsetDescription";
+            this.frequencyOffsetDescription.OffsetByteOrder = "Little Endian";
+            this.frequencyOffsetDescription.OffsetSize = "4";
+            this.frequencyOffsetDescription.OffsetValue = "";
+            this.frequencyOffsetDescription.Size = new System.Drawing.Size(372, 27);
+            this.frequencyOffsetDescription.TabIndex = 12;
+            // 
+            // rbFrequencyOffset
+            // 
+            this.rbFrequencyOffset.AutoSize = true;
+            this.rbFrequencyOffset.Location = new System.Drawing.Point(6, 45);
+            this.rbFrequencyOffset.Name = "rbFrequencyOffset";
+            this.rbFrequencyOffset.Size = new System.Drawing.Size(151, 17);
+            this.rbFrequencyOffset.TabIndex = 11;
+            this.rbFrequencyOffset.TabStop = true;
+            this.rbFrequencyOffset.Text = "Frequency Size is at Offset";
+            this.rbFrequencyOffset.UseVisualStyleBackColor = true;
+            this.rbFrequencyOffset.CheckedChanged += new System.EventHandler(this.rbFrequencyOffset_CheckedChanged);
             // 
             // rbAddManualFrequency
             // 
@@ -478,7 +528,7 @@
             // comboRiffFrequency
             // 
             this.comboRiffFrequency.FormattingEnabled = true;
-            this.comboRiffFrequency.Location = new System.Drawing.Point(109, 18);
+            this.comboRiffFrequency.Location = new System.Drawing.Point(156, 18);
             this.comboRiffFrequency.Name = "comboRiffFrequency";
             this.comboRiffFrequency.Size = new System.Drawing.Size(77, 21);
             this.comboRiffFrequency.TabIndex = 1;
@@ -486,7 +536,7 @@
             // rbGetFrequencyFromRiff
             // 
             this.rbGetFrequencyFromRiff.AutoSize = true;
-            this.rbGetFrequencyFromRiff.Location = new System.Drawing.Point(201, 21);
+            this.rbGetFrequencyFromRiff.Location = new System.Drawing.Point(6, 68);
             this.rbGetFrequencyFromRiff.Name = "rbGetFrequencyFromRiff";
             this.rbGetFrequencyFromRiff.Size = new System.Drawing.Size(185, 17);
             this.rbGetFrequencyFromRiff.TabIndex = 6;
@@ -497,16 +547,40 @@
             // 
             // grpChannels
             // 
+            this.grpChannels.Controls.Add(this.numberOfChannelsOffsetDescription);
+            this.grpChannels.Controls.Add(this.rbNumberOfChannelsOffset);
             this.grpChannels.Controls.Add(this.rbAddManualChannels);
             this.grpChannels.Controls.Add(this.rbGetChannelsFromRiff);
             this.grpChannels.Controls.Add(this.comboRiffChannels);
             this.grpChannels.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.grpChannels.Location = new System.Drawing.Point(3, 86);
+            this.grpChannels.Location = new System.Drawing.Point(3, 125);
             this.grpChannels.Name = "grpChannels";
-            this.grpChannels.Size = new System.Drawing.Size(778, 42);
+            this.grpChannels.Size = new System.Drawing.Size(778, 87);
             this.grpChannels.TabIndex = 9;
             this.grpChannels.TabStop = false;
             this.grpChannels.Text = "Channels";
+            // 
+            // numberOfChannelsOffsetDescription
+            // 
+            this.numberOfChannelsOffsetDescription.Location = new System.Drawing.Point(184, 39);
+            this.numberOfChannelsOffsetDescription.Name = "numberOfChannelsOffsetDescription";
+            this.numberOfChannelsOffsetDescription.OffsetByteOrder = "Little Endian";
+            this.numberOfChannelsOffsetDescription.OffsetSize = "4";
+            this.numberOfChannelsOffsetDescription.OffsetValue = "";
+            this.numberOfChannelsOffsetDescription.Size = new System.Drawing.Size(372, 27);
+            this.numberOfChannelsOffsetDescription.TabIndex = 14;
+            // 
+            // rbNumberOfChannelsOffset
+            // 
+            this.rbNumberOfChannelsOffset.AutoSize = true;
+            this.rbNumberOfChannelsOffset.Location = new System.Drawing.Point(6, 44);
+            this.rbNumberOfChannelsOffset.Name = "rbNumberOfChannelsOffset";
+            this.rbNumberOfChannelsOffset.Size = new System.Drawing.Size(174, 17);
+            this.rbNumberOfChannelsOffset.TabIndex = 13;
+            this.rbNumberOfChannelsOffset.TabStop = true;
+            this.rbNumberOfChannelsOffset.Text = "Number of Channels is at Offset";
+            this.rbNumberOfChannelsOffset.UseVisualStyleBackColor = true;
+            this.rbNumberOfChannelsOffset.CheckedChanged += new System.EventHandler(this.rbNumberOfChannelsOffset_CheckedChanged);
             // 
             // rbAddManualChannels
             // 
@@ -523,7 +597,7 @@
             // rbGetChannelsFromRiff
             // 
             this.rbGetChannelsFromRiff.AutoSize = true;
-            this.rbGetChannelsFromRiff.Location = new System.Drawing.Point(201, 19);
+            this.rbGetChannelsFromRiff.Location = new System.Drawing.Point(6, 65);
             this.rbGetChannelsFromRiff.Name = "rbGetChannelsFromRiff";
             this.rbGetChannelsFromRiff.Size = new System.Drawing.Size(179, 17);
             this.rbGetChannelsFromRiff.TabIndex = 7;
@@ -535,7 +609,7 @@
             // comboRiffChannels
             // 
             this.comboRiffChannels.FormattingEnabled = true;
-            this.comboRiffChannels.Location = new System.Drawing.Point(109, 15);
+            this.comboRiffChannels.Location = new System.Drawing.Point(184, 18);
             this.comboRiffChannels.Name = "comboRiffChannels";
             this.comboRiffChannels.Size = new System.Drawing.Size(77, 21);
             this.comboRiffChannels.TabIndex = 3;
@@ -598,6 +672,16 @@
             this.rbStartOffsetIsAfterRiff.UseVisualStyleBackColor = true;
             this.rbStartOffsetIsAfterRiff.CheckedChanged += new System.EventHandler(this.rbStartOffsetIsAfterRiff_CheckedChanged);
             // 
+            // XmaParseStartOffsetOffsetDescription
+            // 
+            this.XmaParseStartOffsetOffsetDescription.Location = new System.Drawing.Point(136, 39);
+            this.XmaParseStartOffsetOffsetDescription.Name = "XmaParseStartOffsetOffsetDescription";
+            this.XmaParseStartOffsetOffsetDescription.OffsetByteOrder = "Little Endian";
+            this.XmaParseStartOffsetOffsetDescription.OffsetSize = "4";
+            this.XmaParseStartOffsetOffsetDescription.OffsetValue = "";
+            this.XmaParseStartOffsetOffsetDescription.Size = new System.Drawing.Size(372, 27);
+            this.XmaParseStartOffsetOffsetDescription.TabIndex = 6;
+            // 
             // rbXmaParseStartOffsetOffset
             // 
             this.rbXmaParseStartOffsetOffset.AutoSize = true;
@@ -642,6 +726,16 @@
             this.grpBlockSize.TabIndex = 12;
             this.grpBlockSize.TabStop = false;
             this.grpBlockSize.Text = "Block Size";
+            // 
+            // XmaParseBlockSizeOffsetDescription
+            // 
+            this.XmaParseBlockSizeOffsetDescription.Location = new System.Drawing.Point(136, 40);
+            this.XmaParseBlockSizeOffsetDescription.Name = "XmaParseBlockSizeOffsetDescription";
+            this.XmaParseBlockSizeOffsetDescription.OffsetByteOrder = "Little Endian";
+            this.XmaParseBlockSizeOffsetDescription.OffsetSize = "4";
+            this.XmaParseBlockSizeOffsetDescription.OffsetValue = "";
+            this.XmaParseBlockSizeOffsetDescription.Size = new System.Drawing.Size(372, 27);
+            this.XmaParseBlockSizeOffsetDescription.TabIndex = 6;
             // 
             // rbXmaParseBlockSizeOffset
             // 
@@ -700,6 +794,16 @@
             this.rbGetDataSizeFromRiff.Text = "Get Data Size from RIFF Header";
             this.rbGetDataSizeFromRiff.UseVisualStyleBackColor = true;
             this.rbGetDataSizeFromRiff.CheckedChanged += new System.EventHandler(this.rbGetDataSizeFromRiff_CheckedChanged);
+            // 
+            // XmaParseDataSizeOffsetDescription
+            // 
+            this.XmaParseDataSizeOffsetDescription.Location = new System.Drawing.Point(136, 40);
+            this.XmaParseDataSizeOffsetDescription.Name = "XmaParseDataSizeOffsetDescription";
+            this.XmaParseDataSizeOffsetDescription.OffsetByteOrder = "Little Endian";
+            this.XmaParseDataSizeOffsetDescription.OffsetSize = "4";
+            this.XmaParseDataSizeOffsetDescription.OffsetValue = "";
+            this.XmaParseDataSizeOffsetDescription.Size = new System.Drawing.Size(372, 27);
+            this.XmaParseDataSizeOffsetDescription.TabIndex = 10;
             // 
             // rbXmaParseDataSizeOffset
             // 
@@ -782,64 +886,12 @@
             this.lblXmaParseInputType.TabIndex = 0;
             this.lblXmaParseInputType.Text = "XMA Type";
             // 
-            // loopEndValueOffsetDescription
-            // 
-            this.loopEndValueOffsetDescription.CalculationValue = "";
-            this.loopEndValueOffsetDescription.Location = new System.Drawing.Point(118, 40);
-            this.loopEndValueOffsetDescription.Name = "loopEndValueOffsetDescription";
-            this.loopEndValueOffsetDescription.OffsetByteOrder = "Little Endian";
-            this.loopEndValueOffsetDescription.OffsetSize = "4";
-            this.loopEndValueOffsetDescription.OffsetValue = "";
-            this.loopEndValueOffsetDescription.Size = new System.Drawing.Size(422, 52);
-            this.loopEndValueOffsetDescription.TabIndex = 6;
-            // 
-            // loopStartValueOffsetDescription
-            // 
-            this.loopStartValueOffsetDescription.CalculationValue = "";
-            this.loopStartValueOffsetDescription.Location = new System.Drawing.Point(118, 40);
-            this.loopStartValueOffsetDescription.Name = "loopStartValueOffsetDescription";
-            this.loopStartValueOffsetDescription.OffsetByteOrder = "Little Endian";
-            this.loopStartValueOffsetDescription.OffsetSize = "4";
-            this.loopStartValueOffsetDescription.OffsetValue = "";
-            this.loopStartValueOffsetDescription.Size = new System.Drawing.Size(422, 52);
-            this.loopStartValueOffsetDescription.TabIndex = 2;
-            // 
-            // XmaParseStartOffsetOffsetDescription
-            // 
-            this.XmaParseStartOffsetOffsetDescription.Location = new System.Drawing.Point(136, 39);
-            this.XmaParseStartOffsetOffsetDescription.Name = "XmaParseStartOffsetOffsetDescription";
-            this.XmaParseStartOffsetOffsetDescription.OffsetByteOrder = "Little Endian";
-            this.XmaParseStartOffsetOffsetDescription.OffsetSize = "4";
-            this.XmaParseStartOffsetOffsetDescription.OffsetValue = "";
-            this.XmaParseStartOffsetOffsetDescription.Size = new System.Drawing.Size(372, 27);
-            this.XmaParseStartOffsetOffsetDescription.TabIndex = 6;
-            // 
-            // XmaParseBlockSizeOffsetDescription
-            // 
-            this.XmaParseBlockSizeOffsetDescription.Location = new System.Drawing.Point(136, 40);
-            this.XmaParseBlockSizeOffsetDescription.Name = "XmaParseBlockSizeOffsetDescription";
-            this.XmaParseBlockSizeOffsetDescription.OffsetByteOrder = "Little Endian";
-            this.XmaParseBlockSizeOffsetDescription.OffsetSize = "4";
-            this.XmaParseBlockSizeOffsetDescription.OffsetValue = "";
-            this.XmaParseBlockSizeOffsetDescription.Size = new System.Drawing.Size(372, 27);
-            this.XmaParseBlockSizeOffsetDescription.TabIndex = 6;
-            // 
-            // XmaParseDataSizeOffsetDescription
-            // 
-            this.XmaParseDataSizeOffsetDescription.Location = new System.Drawing.Point(136, 40);
-            this.XmaParseDataSizeOffsetDescription.Name = "XmaParseDataSizeOffsetDescription";
-            this.XmaParseDataSizeOffsetDescription.OffsetByteOrder = "Little Endian";
-            this.XmaParseDataSizeOffsetDescription.OffsetSize = "4";
-            this.XmaParseDataSizeOffsetDescription.OffsetValue = "";
-            this.XmaParseDataSizeOffsetDescription.Size = new System.Drawing.Size(372, 27);
-            this.XmaParseDataSizeOffsetDescription.TabIndex = 10;
-            // 
             // XmaConvertForm
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(801, 462);
+            this.ClientSize = new System.Drawing.Size(801, 528);
             this.Controls.Add(this.pnlOptions);
             this.Controls.Add(this.grpOutputOptions);
             this.Controls.Add(this.grpPresets);
@@ -957,5 +1009,9 @@
         private System.Windows.Forms.Button btnSavePreset;
         private System.Windows.Forms.Button btnLoadPreset;
         private System.Windows.Forms.ComboBox comboPresets;
+        private VGMToolbox.controls.OffsetDescriptionControl frequencyOffsetDescription;
+        private System.Windows.Forms.RadioButton rbFrequencyOffset;
+        private VGMToolbox.controls.OffsetDescriptionControl numberOfChannelsOffsetDescription;
+        private System.Windows.Forms.RadioButton rbNumberOfChannelsOffset;
     }
 }

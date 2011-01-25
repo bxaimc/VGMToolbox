@@ -85,10 +85,15 @@ namespace VGMToolbox.tools.stream
             public bool GetDataSizeFromRiffHeader { set; get; }
 
             public string RiffFrequency { set; get; }
-            public string RiffChannelCount { set; get; }
+            public bool GetFrequencyFromOffset { set; get; }
+            public OffsetDescription RiffHeaderFrequencyOffsetInfo { set; get; }
             public bool GetFrequencyFromRiffHeader { set; get; }
-            public bool GetChannelsFromRiffHeader { set; get; }
 
+            public string RiffChannelCount { set; get; }
+            public bool GetChannelsFromOffset { set; get; }
+            public OffsetDescription RiffHeaderChannelOffsetInfo { set; get; }            
+            public bool GetChannelsFromRiffHeader { set; get; }
+            
             public bool PosLoopStartIsStatic { set; get; }
             public string PosLoopStartStaticValue { set; get; }
             public CalculatingOffsetDescription PosLoopStartOffsetInfo { set; get; }
@@ -183,6 +188,13 @@ namespace VGMToolbox.tools.stream
                 {
                     riffFrequency = (uint)getFrequencyFromRiffHeader(workingSourceFile);
                 }
+                else if (taskStruct.GetFrequencyFromOffset)
+                {
+                    using (FileStream fs = File.OpenRead(workingSourceFile))
+                    {
+                        riffFrequency = (uint)ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, taskStruct.RiffHeaderFrequencyOffsetInfo);
+                    }
+                }
                 else
                 {
                     riffFrequency = (uint)ByteConversion.GetLongValueFromString(taskStruct.RiffFrequency);
@@ -192,6 +204,18 @@ namespace VGMToolbox.tools.stream
                 if (taskStruct.GetChannelsFromRiffHeader)
                 {
                     riffChannelCount = this.getChannelsFromRiffHeader(workingSourceFile);
+                }
+                else if (taskStruct.GetChannelsFromOffset)
+                {
+                    using (FileStream fs = File.OpenRead(workingSourceFile))
+                    {
+                        riffChannelCount = (uint)ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, taskStruct.RiffHeaderChannelOffsetInfo);
+
+                        if (riffChannelCount > 2)
+                        {
+                            riffChannelCount = 2;
+                        }
+                    }
                 }
                 else
                 {
