@@ -246,6 +246,12 @@
     <Compile Include="forms\hoot\XmlBuilderForm.Designer.cs">
       <DependentUpon>XmlBuilderForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\other\InternalNameFileRenamerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\other\InternalNameFileRenamerForm.Designer.cs">
+      <DependentUpon>InternalNameFileRenamerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\nsf\Nsfe2NsfM3uForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1014,6 +1020,9 @@
     <EmbeddedResource Include="forms\hoot\HootAuditorForm.resx">
       <DependentUpon>HootAuditorForm.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\other\InternalNameFileRenamerForm.resx">
+      <DependentUpon>InternalNameFileRenamerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\nsf\NsfToM3uForm.resx">
       <DependentUpon>NsfToM3uForm.cs</DependentUpon>

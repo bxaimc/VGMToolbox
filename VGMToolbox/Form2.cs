@@ -10,6 +10,7 @@ using VGMToolbox.forms.examine;
 using VGMToolbox.forms.extraction;
 using VGMToolbox.forms.hoot;
 using VGMToolbox.forms.nsf;
+using VGMToolbox.forms.other;
 using VGMToolbox.forms.stream;
 using VGMToolbox.forms.xsf;
 using VGMToolbox.util;
@@ -118,6 +119,11 @@ namespace VGMToolbox
             TreeNode comp_RootNode = buildCompressionTreeNode();
             comp_RootNode.Tag = nodeTag;
             tools_RootNode.Nodes.Add(comp_RootNode);
+
+            // Other
+            TreeNode other_RootNode = buildOtherTreeNode();
+            other_RootNode.Tag = nodeTag;
+            tools_RootNode.Nodes.Add(other_RootNode);
 
             // add Tools node to Root
             rootNode.Nodes.Add(tools_RootNode);
@@ -1103,6 +1109,32 @@ namespace VGMToolbox
             return stream_RootNode;
         }
 
+        private TreeNode buildOtherTreeNode()
+        {
+            VGMToolbox.util.NodeTagStruct nodeTag = new VGMToolbox.util.NodeTagStruct();
+            TreeNode other_RootNode = new TreeNode("Other");
+            other_RootNode.NodeFont = this.treeviewBoldFont;
+
+            nodeTag = new VGMToolbox.util.NodeTagStruct();
+            EmptyForm emptyForm = new EmptyForm();
+            nodeTag.FormClass = emptyForm.GetType().Name;
+
+            // INTERNAL RENAMER
+            TreeNode internalRenamerNode = new TreeNode("Internal Renamer");
+
+            // Add Form
+            InternalNameFileRenamerForm other_InternalRenamerForm =
+                new InternalNameFileRenamerForm(internalRenamerNode);
+            this.splitContainer1.Panel2.Controls.Add(other_InternalRenamerForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = other_InternalRenamerForm.GetType().Name;
+            internalRenamerNode.Tag = nodeTag;
+
+            other_RootNode.Nodes.Add(internalRenamerNode);
+
+            return other_RootNode;
+        }
         private void tvMenuTree_doClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             if (e.Node.Tag != null)
