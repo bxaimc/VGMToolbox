@@ -60,6 +60,8 @@ namespace VGMToolbox.tools.stream
             public string[] SourcePaths { set; get; }
             public string OutputFolder { set; get; }
 
+            public int NumberOfStreams { set; get; }
+
             public bool DoXmaParse { set; get; }
             public bool DoRiffHeader { set; get; }
             public bool DoToWav { set; get; }
@@ -150,201 +152,206 @@ namespace VGMToolbox.tools.stream
             workingSourceFile = Path.Combine(workingFolder, Path.GetFileName(pPath));
             File.Copy(pPath, workingSourceFile, true);
 
-            // set working file
-            workingFile = workingSourceFile;
+            taskStruct.NumberOfStreams = 1;
 
-            //---------------------------
-            // xma_parse.exe
-            //---------------------------            
-            if (taskStruct.DoXmaParse)
+            for (int i = 0; i < taskStruct.NumberOfStreams; i++)
             {
-                this.ShowOutput(pPath, "---- calling xma_parse.exe", false);
+                // set working file
+                workingFile = workingSourceFile;
 
-                // call xma_parse and set output as working_file for next step
-                workingFile = this.callXmaParse(workingFolder, workingFile, taskStruct, out consoleOutput, out consoleError);
-
-                // show output
-                if (taskStruct.ShowExeOutput && !String.IsNullOrEmpty(consoleOutput))
+                //---------------------------
+                // xma_parse.exe
+                //---------------------------            
+                if (taskStruct.DoXmaParse)
                 {
-                    this.ShowOutput(pPath, consoleOutput, false);
-                }
+                    this.ShowOutput(pPath, "---- calling xma_parse.exe", false);
 
-                // clear errors if ignore is selected, but only if a file was created
-                if (taskStruct.XmaParseIgnoreErrors && (File.Exists(workingFile)))
-                {
-                    consoleError = String.Empty;
-                }
-            }
+                    // call xma_parse and set output as working_file for next step
+                    workingFile = this.callXmaParse(workingFolder, workingFile, taskStruct, out consoleOutput, out consoleError);
 
-            if ((taskStruct.DoRiffHeader) && (String.IsNullOrEmpty(consoleError)))
-            {
-                //-----------------
-                // get RIFF header
-                //-----------------
-                this.ShowOutput(pPath, "---- adding RIFF header.", false);
-
-                // frequency
-                if (taskStruct.GetFrequencyFromRiffHeader)
-                {
-                    riffFrequency = (uint)getFrequencyFromRiffHeader(workingSourceFile);
-                }
-                else if (taskStruct.GetFrequencyFromOffset)
-                {
-                    using (FileStream fs = File.OpenRead(workingSourceFile))
+                    // show output
+                    if (taskStruct.ShowExeOutput && !String.IsNullOrEmpty(consoleOutput))
                     {
-                        riffFrequency = (uint)ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, taskStruct.RiffHeaderFrequencyOffsetInfo);
+                        this.ShowOutput(pPath, consoleOutput, false);
                     }
-                }
-                else
-                {
-                    riffFrequency = (uint)ByteConversion.GetLongValueFromString(taskStruct.RiffFrequency);
-                }
-                
-                // channels
-                if (taskStruct.GetChannelsFromRiffHeader)
-                {
-                    riffChannelCount = this.getChannelsFromRiffHeader(workingSourceFile);
-                }
-                else if (taskStruct.GetChannelsFromOffset)
-                {
-                    using (FileStream fs = File.OpenRead(workingSourceFile))
-                    {
-                        riffChannelCount = (uint)ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, taskStruct.RiffHeaderChannelOffsetInfo);
 
-                        if (riffChannelCount > 2)
+                    // clear errors if ignore is selected, but only if a file was created
+                    if (taskStruct.XmaParseIgnoreErrors && (File.Exists(workingFile)))
+                    {
+                        consoleError = String.Empty;
+                    }
+                } // 
+
+                if ((taskStruct.DoRiffHeader) && (String.IsNullOrEmpty(consoleError)))
+                {
+                    //-----------------
+                    // get RIFF header
+                    //-----------------
+                    this.ShowOutput(pPath, "---- adding RIFF header.", false);
+
+                    // frequency
+                    if (taskStruct.GetFrequencyFromRiffHeader)
+                    {
+                        riffFrequency = (uint)getFrequencyFromRiffHeader(workingSourceFile);
+                    }
+                    else if (taskStruct.GetFrequencyFromOffset)
+                    {
+                        using (FileStream fs = File.OpenRead(workingSourceFile))
                         {
-                            riffChannelCount = 2;
+                            riffFrequency = (uint)ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, taskStruct.RiffHeaderFrequencyOffsetInfo);
                         }
                     }
-                }
-                else
-                {
-                    riffChannelCount = (uint)ByteConversion.GetLongValueFromString(taskStruct.RiffChannelCount);
-                }
-                
-                riffFileSize = (uint)new FileInfo(workingFile).Length;
-
-                riffHeaderBytes = this.getRiffHeader(riffFrequency, riffChannelCount, riffFileSize);
-
-                //-------------------------
-                // add RIFF header to file
-                //-------------------------
-                riffHeaderedFile = Path.ChangeExtension(workingFile, RIFF_COPY_OUTPUT_EXTENSION);
-                FileUtil.AddHeaderToFile(riffHeaderBytes, workingFile, riffHeaderedFile);
-
-                // set working file for next
-                workingFile = riffHeaderedFile;
-            }
-            else if (!String.IsNullOrEmpty(consoleError))
-            {
-                // dispay xma_parse.exe error
-                this.ShowOutput(pPath, consoleError, true);
-            }
-
-            //-----------
-            // POS Maker
-            //-----------
-            if ((taskStruct.DoPosMaker) && (String.IsNullOrEmpty(consoleError)))
-            {
-                this.ShowOutput(pPath, "---- creating POS file", false);
-
-                // loop start
-                if (taskStruct.PosLoopStartIsStatic)
-                {
-                    loopStart = (uint)ByteConversion.GetLongValueFromString(taskStruct.PosLoopStartStaticValue);
-                }
-                else
-                { 
-                    using(FileStream fs = File.OpenRead(workingSourceFile))
+                    else
                     {
-                        loopStart = (uint)ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, taskStruct.PosLoopStartOffsetInfo);
+                        riffFrequency = (uint)ByteConversion.GetLongValueFromString(taskStruct.RiffFrequency);
+                    }
 
-                        if (!String.IsNullOrEmpty(taskStruct.PosLoopStartOffsetInfo.CalculationString))
+                    // channels
+                    if (taskStruct.GetChannelsFromRiffHeader)
+                    {
+                        riffChannelCount = this.getChannelsFromRiffHeader(workingSourceFile);
+                    }
+                    else if (taskStruct.GetChannelsFromOffset)
+                    {
+                        using (FileStream fs = File.OpenRead(workingSourceFile))
                         {
-                            string calculationString =
-                                taskStruct.PosLoopStartOffsetInfo.CalculationString.Replace(CalculatingOffsetDescription.OFFSET_VARIABLE_STRING, loopStart.ToString());
+                            riffChannelCount = (uint)ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, taskStruct.RiffHeaderChannelOffsetInfo);
 
-                            loopStart = (uint)ByteConversion.GetLongValueFromString(MathUtil.Evaluate(calculationString));
+                            if (riffChannelCount > 2)
+                            {
+                                riffChannelCount = 2;
+                            }
                         }
                     }
-                }
-
-                // loop end
-                if (taskStruct.PosLoopEndIsStatic)
-                {
-                    loopEnd = (uint)ByteConversion.GetLongValueFromString(taskStruct.PosLoopEndStaticValue);
-                }
-                else
-                {
-                    using (FileStream fs = File.OpenRead(workingSourceFile))
+                    else
                     {
-                        loopEnd = (uint)ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, taskStruct.PosLoopEndOffsetInfo);
-
-                        if (!String.IsNullOrEmpty(taskStruct.PosLoopEndOffsetInfo.CalculationString))
-                        {
-                            string calculationString =
-                                taskStruct.PosLoopEndOffsetInfo.CalculationString.Replace(CalculatingOffsetDescription.OFFSET_VARIABLE_STRING, loopEnd.ToString());
-
-                            loopEnd = (uint)ByteConversion.GetLongValueFromString(MathUtil.Evaluate(calculationString));
-                        }
+                        riffChannelCount = (uint)ByteConversion.GetLongValueFromString(taskStruct.RiffChannelCount);
                     }
+
+                    riffFileSize = (uint)new FileInfo(workingFile).Length;
+
+                    riffHeaderBytes = this.getRiffHeader(riffFrequency, riffChannelCount, riffFileSize);
+
+                    //-------------------------
+                    // add RIFF header to file
+                    //-------------------------
+                    riffHeaderedFile = Path.ChangeExtension(workingFile, RIFF_COPY_OUTPUT_EXTENSION);
+                    FileUtil.AddHeaderToFile(riffHeaderBytes, workingFile, riffHeaderedFile);
+
+                    // set working file for next
+                    workingFile = riffHeaderedFile;
                 }
-
-                // build .pos array and write to file
-                posBytes = new byte[8];
-                Array.Copy(BitConverter.GetBytes(loopStart), 0, posBytes, 0, 4);
-                Array.Copy(BitConverter.GetBytes(loopEnd), 0, posBytes, 4, 4);
-
-                using (FileStream fs = File.Open(Path.ChangeExtension(workingSourceFile, ".pos"), FileMode.Create, FileAccess.Write))
+                else if (!String.IsNullOrEmpty(consoleError))
                 {
-                    fs.Write(posBytes, 0, posBytes.Length);
-                }
-            }
-
-            //-----------
-            // ToWav.exe
-            //-----------
-            if ((taskStruct.DoToWav) && (String.IsNullOrEmpty(consoleError)))
-            {
-                this.ShowOutput(pPath, "---- calling ToWav.exe", false);
-
-                // call ToWav.exe and set working file for next step (if ever needed)
-                workingFile = this.callToWav(workingFolder, workingFile, taskStruct, out consoleOutput, out consoleError);
-
-                // show output
-                if (taskStruct.ShowExeOutput && !String.IsNullOrEmpty(consoleOutput))
-                {
-                    this.ShowOutput(pPath, consoleOutput, false);
-                }
-
-                // dispay ToWav.exe error
-                if (!String.IsNullOrEmpty(consoleError))
-                {
-                    this.ShowOutput(pPath, consoleError, true);
-                }                        
-            }
-            //---------------
-            // XmaEncode.exe
-            //---------------
-            else if ((taskStruct.DoXmaEncode) && (String.IsNullOrEmpty(consoleError)))
-            {
-                this.ShowOutput(pPath, "---- calling xmaencode.exe", false);
-
-                // call xmaencode.exe and set working file for next step (if ever needed)
-                workingFile = this.callXmaEncode(workingFolder, workingFile, taskStruct, out consoleOutput, out consoleError);
-
-                // show output
-                if (taskStruct.ShowExeOutput && !String.IsNullOrEmpty(consoleOutput))
-                {
-                    this.ShowOutput(pPath, consoleOutput, false);
-                }
-
-                // dispay xmaencode.exe error
-                if (!String.IsNullOrEmpty(consoleError))
-                {
+                    // dispay xma_parse.exe error
                     this.ShowOutput(pPath, consoleError, true);
                 }
-            }
+
+                //-----------
+                // POS Maker
+                //-----------
+                if ((taskStruct.DoPosMaker) && (String.IsNullOrEmpty(consoleError)))
+                {
+                    this.ShowOutput(pPath, "---- creating POS file", false);
+
+                    // loop start
+                    if (taskStruct.PosLoopStartIsStatic)
+                    {
+                        loopStart = (uint)ByteConversion.GetLongValueFromString(taskStruct.PosLoopStartStaticValue);
+                    }
+                    else
+                    {
+                        using (FileStream fs = File.OpenRead(workingSourceFile))
+                        {
+                            loopStart = (uint)ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, taskStruct.PosLoopStartOffsetInfo);
+
+                            if (!String.IsNullOrEmpty(taskStruct.PosLoopStartOffsetInfo.CalculationString))
+                            {
+                                string calculationString =
+                                    taskStruct.PosLoopStartOffsetInfo.CalculationString.Replace(CalculatingOffsetDescription.OFFSET_VARIABLE_STRING, loopStart.ToString());
+
+                                loopStart = (uint)ByteConversion.GetLongValueFromString(MathUtil.Evaluate(calculationString));
+                            }
+                        }
+                    }
+
+                    // loop end
+                    if (taskStruct.PosLoopEndIsStatic)
+                    {
+                        loopEnd = (uint)ByteConversion.GetLongValueFromString(taskStruct.PosLoopEndStaticValue);
+                    }
+                    else
+                    {
+                        using (FileStream fs = File.OpenRead(workingSourceFile))
+                        {
+                            loopEnd = (uint)ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, taskStruct.PosLoopEndOffsetInfo);
+
+                            if (!String.IsNullOrEmpty(taskStruct.PosLoopEndOffsetInfo.CalculationString))
+                            {
+                                string calculationString =
+                                    taskStruct.PosLoopEndOffsetInfo.CalculationString.Replace(CalculatingOffsetDescription.OFFSET_VARIABLE_STRING, loopEnd.ToString());
+
+                                loopEnd = (uint)ByteConversion.GetLongValueFromString(MathUtil.Evaluate(calculationString));
+                            }
+                        }
+                    }
+
+                    // build .pos array and write to file
+                    posBytes = new byte[8];
+                    Array.Copy(BitConverter.GetBytes(loopStart), 0, posBytes, 0, 4);
+                    Array.Copy(BitConverter.GetBytes(loopEnd), 0, posBytes, 4, 4);
+
+                    using (FileStream fs = File.Open(Path.ChangeExtension(workingSourceFile, ".pos"), FileMode.Create, FileAccess.Write))
+                    {
+                        fs.Write(posBytes, 0, posBytes.Length);
+                    }
+                }
+
+                //-----------
+                // ToWav.exe
+                //-----------
+                if ((taskStruct.DoToWav) && (String.IsNullOrEmpty(consoleError)))
+                {
+                    this.ShowOutput(pPath, "---- calling ToWav.exe", false);
+
+                    // call ToWav.exe and set working file for next step (if ever needed)
+                    workingFile = this.callToWav(workingFolder, workingFile, taskStruct, out consoleOutput, out consoleError);
+
+                    // show output
+                    if (taskStruct.ShowExeOutput && !String.IsNullOrEmpty(consoleOutput))
+                    {
+                        this.ShowOutput(pPath, consoleOutput, false);
+                    }
+
+                    // dispay ToWav.exe error
+                    if (!String.IsNullOrEmpty(consoleError))
+                    {
+                        this.ShowOutput(pPath, consoleError, true);
+                    }
+                }
+                //---------------
+                // XmaEncode.exe
+                //---------------
+                else if ((taskStruct.DoXmaEncode) && (String.IsNullOrEmpty(consoleError)))
+                {
+                    this.ShowOutput(pPath, "---- calling xmaencode.exe", false);
+
+                    // call xmaencode.exe and set working file for next step (if ever needed)
+                    workingFile = this.callXmaEncode(workingFolder, workingFile, taskStruct, out consoleOutput, out consoleError);
+
+                    // show output
+                    if (taskStruct.ShowExeOutput && !String.IsNullOrEmpty(consoleOutput))
+                    {
+                        this.ShowOutput(pPath, consoleOutput, false);
+                    }
+
+                    // dispay xmaencode.exe error
+                    if (!String.IsNullOrEmpty(consoleError))
+                    {
+                        this.ShowOutput(pPath, consoleError, true);
+                    }
+                }
+            } // for (int i = 0; i < taskStruct.NumberOfStreams; i++)
 
             //----------------------
             // clean working folder

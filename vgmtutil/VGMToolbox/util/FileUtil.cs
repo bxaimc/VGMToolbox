@@ -318,5 +318,42 @@ namespace VGMToolbox.util
                 }
             }
         }
+
+        public static void RenameFileUsingInternalName(string path,
+            long offset, int length, byte[] terminatorBytes)
+        {
+            string destinationDirectory = Path.GetDirectoryName(path);
+            string destinationFile;
+
+            int nameLength;
+            byte[] nameByteArray;
+
+            using (FileStream fs = File.OpenRead(path))
+            {
+                if (terminatorBytes != null)
+                {
+                    nameLength = ParseFile.GetSegmentLength(fs, (int)offset, terminatorBytes);
+                }
+                else
+                {
+                    nameLength = length;
+                }
+                    
+                nameByteArray = ParseFile.ParseSimpleOffset(fs, offset, nameLength);
+                destinationFile = ByteConversion.GetAsciiText(FileUtil.ReplaceNullByteWithSpace(nameByteArray)).Trim();
+                destinationFile = Path.Combine(destinationDirectory, destinationFile);
+            }
+
+            // try to copy using the new name
+            try
+            {
+                File.Copy(path, destinationFile);
+                File.Delete(path);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
     }
 }
