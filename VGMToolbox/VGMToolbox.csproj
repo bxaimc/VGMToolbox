@@ -682,6 +682,9 @@
     <Compile Include="tools\nsf\NsfeM3uBuilderWorker.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\other\InternalNameFileRenamerWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\SerializablePresetCommon.cs" />
     <Compile Include="tools\stream\XmaConverter.cs" />
     <Compile Include="tools\stream\XmaConverterStatic.cs" />

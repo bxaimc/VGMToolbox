@@ -320,10 +320,11 @@ namespace VGMToolbox.util
         }
 
         public static void RenameFileUsingInternalName(string path,
-            long offset, int length, byte[] terminatorBytes)
+            long offset, int length, byte[] terminatorBytes, bool maintainFileExtension)
         {
             string destinationDirectory = Path.GetDirectoryName(path);
             string destinationFile;
+            string originalExtension;
 
             int nameLength;
             byte[] nameByteArray;
@@ -338,21 +339,40 @@ namespace VGMToolbox.util
                 {
                     nameLength = length;
                 }
-                    
+
+                if (nameLength < 1)
+                {
+                    throw new ArgumentOutOfRangeException("Name Length", "Name Length is less than 1.");        
+                }
+
+                if (maintainFileExtension)
+                {
+                    originalExtension = Path.GetExtension(path);
+                }
+
                 nameByteArray = ParseFile.ParseSimpleOffset(fs, offset, nameLength);
-                destinationFile = ByteConversion.GetAsciiText(FileUtil.ReplaceNullByteWithSpace(nameByteArray)).Trim();
+                destinationFile = ByteConversion.GetAsciiText(FileUtil.ReplaceNullByteWithSpace(nameByteArray)).Trim();                
                 destinationFile = Path.Combine(destinationDirectory, destinationFile);
+
+                if (maintainFileExtension)
+                {
+                    originalExtension = Path.GetExtension(path);
+                    destinationFile = Path.ChangeExtension(destinationFile, originalExtension);
+                }
             }
 
             // try to copy using the new name
-            try
+            if (!path.Equals(destinationFile))
             {
-                File.Copy(path, destinationFile);
-                File.Delete(path);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message, ex);
+                try
+                {
+                    File.Copy(path, destinationFile);
+                    File.Delete(path);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message, ex);
+                }
             }
         }
     }
