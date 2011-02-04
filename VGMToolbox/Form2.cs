@@ -1131,7 +1131,19 @@ namespace VGMToolbox
             nodeTag.FormClass = other_InternalRenamerForm.GetType().Name;
             internalRenamerNode.Tag = nodeTag;
 
+            // INTERLEAVER
+            TreeNode interleaverNode = new TreeNode("Interleaver");
+
+            // Add Form
+            InterleaverForm other_InterleaverForm = new InterleaverForm(interleaverNode);
+            this.splitContainer1.Panel2.Controls.Add(other_InterleaverForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = other_InterleaverForm.GetType().Name;
+            interleaverNode.Tag = nodeTag;
+
             other_RootNode.Nodes.Add(internalRenamerNode);
+            other_RootNode.Nodes.Add(interleaverNode);
 
             return other_RootNode;
         }
