@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
-
-using VGMToolbox.plugin;
 
 namespace VGMToolbox.controls
 {
@@ -100,6 +93,19 @@ namespace VGMToolbox.controls
         {
             this.btnMoveFileUp.Visible = showButtons;
             this.btnMoveFileDown.Visible = showButtons;
+        }
+
+        public string[] GetFileList()
+        {
+            int index = 0;
+            string[] ret = new string[this.lbFileList.Items.Count];
+
+            foreach (object item in this.lbFileList.Items)
+            {
+                ret[index++] = item.ToString();
+            }
+
+            return ret;
         }
     }
 }

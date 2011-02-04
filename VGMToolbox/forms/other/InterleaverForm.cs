@@ -20,6 +20,22 @@ namespace VGMToolbox.forms.other
             this.tbOutput.Text = "Interleave files according to the options.";
             
             this.btnDoTask.Text = "Interleave";
+            this.rbUseFillBytes.Checked = true;
+        }
+
+        private void doFillBytesRadios()
+        {
+            this.tbFillBytes.Enabled = this.rbUseFillBytes.Checked;
+            this.tbFillBytes.Text = this.rbUseFillBytes.Checked ? this.tbFillBytes.Text : String.Empty;
+        }
+
+        private void rbNoFillBytes_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doFillBytesRadios();
+        }
+        private void rbUseFillBytes_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doFillBytesRadios();
         }
     }
 }
