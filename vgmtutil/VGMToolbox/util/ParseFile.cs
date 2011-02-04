@@ -1238,13 +1238,18 @@ namespace VGMToolbox.util
 
         public static long GetVaryingByteValueAtAbsoluteOffset(Stream inStream, OffsetDescription offsetInfo)
         {
+            return GetVaryingByteValueAtAbsoluteOffset(inStream, offsetInfo, false);
+        }
+        
+        public static long GetVaryingByteValueAtAbsoluteOffset(Stream inStream, OffsetDescription offsetInfo, bool allowNegativeOffset)
+        {
             long newValueOffset;
             long newValueLength;
 
             newValueOffset = ByteConversion.GetLongValueFromString(offsetInfo.OffsetValue);
             newValueLength = ByteConversion.GetLongValueFromString(offsetInfo.OffsetSize);
 
-            return GetVaryingByteValueAtOffset(inStream, newValueOffset, newValueLength, offsetInfo.OffsetByteOrder.Equals(Constants.LittleEndianByteOrder));
+            return GetVaryingByteValueAtOffset(inStream, newValueOffset, newValueLength, offsetInfo.OffsetByteOrder.Equals(Constants.LittleEndianByteOrder), allowNegativeOffset);
         }
 
         public static long GetVaryingByteValueAtRelativeOffset(Stream inStream, OffsetDescription offsetInfo, long currentOffset)
@@ -1260,8 +1265,20 @@ namespace VGMToolbox.util
 
         public static long GetVaryingByteValueAtOffset(Stream inStream, long valueOffset, long valueLength,
             Boolean valueIsLittleEndian)
+        { 
+            return GetVaryingByteValueAtOffset(inStream, valueOffset, valueLength, 
+                valueIsLittleEndian, false);
+        }
+
+        public static long GetVaryingByteValueAtOffset(Stream inStream, long valueOffset, long valueLength,
+            Boolean valueIsLittleEndian, bool allowNegativeOffset)
         {
             long newValue;
+
+            if (allowNegativeOffset && (valueOffset < 0))
+            {
+                valueOffset = inStream.Length + valueOffset;
+            }
 
             byte[] newValueBytes = ParseFile.ParseSimpleOffset(inStream, valueOffset, (int)valueLength);
 

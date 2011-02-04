@@ -19,7 +19,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{8A96D568-CB21-4E64-8FD2-849A8E2B2D4F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -967,6 +967,7 @@
     </Content>
     <EmbeddedResource Include="controls\CalculatingOffsetDescriptionControl.resx">
       <DependentUpon>CalculatingOffsetDescriptionControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\audit\DatafileEditorForm.resx">
       <DependentUpon>DatafileEditorForm.cs</DependentUpon>
@@ -986,9 +987,11 @@
     </EmbeddedResource>
     <EmbeddedResource Include="forms\extraction\ByteRemoverForm.resx">
       <DependentUpon>ByteRemoverForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\extraction\ExtractAdxForm.resx">
       <DependentUpon>ExtractAdxForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\extraction\ExtractCdxaForm.resx">
       <DependentUpon>ExtractCdxaForm.cs</DependentUpon>
@@ -996,6 +999,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="forms\extraction\ExtractSonyAdpcmForm.resx">
       <DependentUpon>ExtractSonyAdpcmForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\extraction\MidiExtractorForm.resx">
       <DependentUpon>MidiExtractorForm.cs</DependentUpon>
@@ -1015,6 +1019,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="forms\extraction\VfsExtractorForm.resx">
       <DependentUpon>VfsExtractorForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\Genh_CreatorForm.resx">
       <DependentUpon>Genh_CreatorForm.cs</DependentUpon>
@@ -1026,15 +1031,19 @@
     </EmbeddedResource>
     <EmbeddedResource Include="forms\other\InternalNameFileRenamerForm.resx">
       <DependentUpon>InternalNameFileRenamerForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\nsf\NsfToM3uForm.resx">
       <DependentUpon>NsfToM3uForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="controls\OffsetDescriptionControl.resx">
       <DependentUpon>OffsetDescriptionControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\stream\XmaConvertForm.resx">
       <DependentUpon>XmaConvertForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\xsf\EasyPsfDriverExtractorForm.resx">
       <DependentUpon>EasyPsfDriverExtractorForm.cs</DependentUpon>
@@ -1046,6 +1055,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="forms\xsf\Psf2SettingsUpdaterForm.resx">
       <DependentUpon>Psf2SettingsUpdaterForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\xsf\PsfDataFinderForm.resx">
       <DependentUpon>PsfDataFinderForm.cs</DependentUpon>
@@ -1061,6 +1071,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="forms\xsf\PspSeqDataFinderForm.resx">
       <DependentUpon>PspSeqDataFinderForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\xsf\PsxSepToSeqExtractorForm.resx">
       <DependentUpon>PsxSepToSeqExtractorForm.cs</DependentUpon>

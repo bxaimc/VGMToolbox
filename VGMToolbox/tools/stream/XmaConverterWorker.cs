@@ -198,7 +198,7 @@ namespace VGMToolbox.tools.stream
                     {
                         using (FileStream fs = File.OpenRead(workingSourceFile))
                         {
-                            riffFrequency = (uint)ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, taskStruct.RiffHeaderFrequencyOffsetInfo);
+                            riffFrequency = (uint)ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, taskStruct.RiffHeaderFrequencyOffsetInfo, true);
                         }
                     }
                     else
@@ -215,7 +215,7 @@ namespace VGMToolbox.tools.stream
                     {
                         using (FileStream fs = File.OpenRead(workingSourceFile))
                         {
-                            riffChannelCount = (uint)ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, taskStruct.RiffHeaderChannelOffsetInfo);
+                            riffChannelCount = (uint)ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, taskStruct.RiffHeaderChannelOffsetInfo, true);
 
                             if (riffChannelCount > 2)
                             {
@@ -263,7 +263,7 @@ namespace VGMToolbox.tools.stream
                     {
                         using (FileStream fs = File.OpenRead(workingSourceFile))
                         {
-                            loopStart = (uint)ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, taskStruct.PosLoopStartOffsetInfo);
+                            loopStart = (uint)ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, taskStruct.PosLoopStartOffsetInfo, true);
 
                             if (!String.IsNullOrEmpty(taskStruct.PosLoopStartOffsetInfo.CalculationString))
                             {
@@ -284,7 +284,7 @@ namespace VGMToolbox.tools.stream
                     {
                         using (FileStream fs = File.OpenRead(workingSourceFile))
                         {
-                            loopEnd = (uint)ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, taskStruct.PosLoopEndOffsetInfo);
+                            loopEnd = (uint)ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, taskStruct.PosLoopEndOffsetInfo, true);
 
                             if (!String.IsNullOrEmpty(taskStruct.PosLoopEndOffsetInfo.CalculationString))
                             {
@@ -487,7 +487,7 @@ namespace VGMToolbox.tools.stream
                 }
                 else if (!String.IsNullOrEmpty(taskStruct.XmaParseStartOffsetOffsetInfo.OffsetValue))
                 {
-                    long offsetValue = ParseFile.GetVaryingByteValueAtAbsoluteOffset(workingFileStream, taskStruct.XmaParseStartOffsetOffsetInfo);
+                    long offsetValue = ParseFile.GetVaryingByteValueAtAbsoluteOffset(workingFileStream, taskStruct.XmaParseStartOffsetOffsetInfo, true);
                     parameters.AppendFormat(" -o {0}", offsetValue.ToString("X"));
                 }
 
@@ -499,7 +499,7 @@ namespace VGMToolbox.tools.stream
                 }
                 else if (!String.IsNullOrEmpty(taskStruct.XmaParseBlockSizeOffsetInfo.OffsetValue))
                 {
-                    long blockSizeValue = ParseFile.GetVaryingByteValueAtAbsoluteOffset(workingFileStream, taskStruct.XmaParseBlockSizeOffsetInfo);
+                    long blockSizeValue = ParseFile.GetVaryingByteValueAtAbsoluteOffset(workingFileStream, taskStruct.XmaParseBlockSizeOffsetInfo, true);
                     parameters.AppendFormat(" -b {0}", blockSizeValue.ToString("X"));
                 }
 
@@ -516,7 +516,7 @@ namespace VGMToolbox.tools.stream
                 }
                 else if (!String.IsNullOrEmpty(taskStruct.XmaParseDataSizeOffsetInfo.OffsetValue))
                 {
-                    long dataSizeValue = ParseFile.GetVaryingByteValueAtAbsoluteOffset(workingFileStream, taskStruct.XmaParseDataSizeOffsetInfo);
+                    long dataSizeValue = ParseFile.GetVaryingByteValueAtAbsoluteOffset(workingFileStream, taskStruct.XmaParseDataSizeOffsetInfo, true);
                     parameters.AppendFormat(" -d {0}", dataSizeValue.ToString("X"));
                 }
             }
