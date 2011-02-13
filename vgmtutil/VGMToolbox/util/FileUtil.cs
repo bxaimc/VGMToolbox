@@ -366,6 +366,10 @@ namespace VGMToolbox.util
             {
                 try
                 {
+                    if (!Directory.Exists(Path.GetDirectoryName(destinationFile)))
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(destinationFile));
+                    }
                     File.Copy(path, destinationFile);
                     File.Delete(path);
                 }
