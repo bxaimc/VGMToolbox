@@ -30,6 +30,7 @@ namespace VGMToolbox.format
         public enum MpegSupportedDataFormats
         { 
             SofdecVideo,
+            SonyPssVideo,
         }
 
         public struct BlockSizeStruct
@@ -145,6 +146,15 @@ namespace VGMToolbox.format
             return MpegStream.DefaultVideoExtension;
         }
 
+        protected virtual bool IsThisAnAudioBlock(byte[] blockToCheck)
+        {
+            return ((blockToCheck[3] >= 0xC0) && (blockToCheck[3] <= 0xDF));
+        }
+        protected virtual bool IsThisAVideoBlock(byte[] blockToCheck)
+        {
+            return ((blockToCheck[3] >= 0xE0) && (blockToCheck[3] <= 0xEF));
+        }
+
         public void DemultiplexStreams()
         {
             using (FileStream fs = File.OpenRead(this.FilePath))
@@ -204,7 +214,8 @@ namespace VGMToolbox.format
                                 blockSize = (uint)BitConverter.ToUInt16(blockSizeArray, 0);
                                 
                                 // if block type is audio or video, extract it
-                                if ((currentBlockId[3] >= 0xC0) && (currentBlockId[3] <= 0xEF))
+                                if (this.IsThisAnAudioBlock(currentBlockId) || 
+                                    this.IsThisAVideoBlock(currentBlockId))
                                 {
                                     if (!streamOutputWriters.ContainsKey(currentBlockIdVal))
                                     {
@@ -218,7 +229,7 @@ namespace VGMToolbox.format
                                         outputFileName = outputFileName + "_" + BitConverter.ToUInt32(currentBlockIdNaming, 0).ToString("X8");
 
                                         // add proper extension
-                                        if ((currentBlockId[3] >= 0xC0) && (currentBlockId[3] <= 0xDF))
+                                        if (this.IsThisAnAudioBlock(currentBlockId))
                                         {
                                             outputFileName += this.GetAudioFileExtension();
                                         }
@@ -234,15 +245,31 @@ namespace VGMToolbox.format
                                         streamOutputWriters[currentBlockIdVal] = new FileStream(outputFileName, FileMode.Create, FileAccess.Write);
                                     }
 
-                                   // write the block
-                                    if (this.SkipAudioPacketHeaderOnExtraction())
+                                    // write the block
+                                    if (this.IsThisAnAudioBlock(currentBlockId))
                                     {
-                                        streamOutputWriters[currentBlockIdVal].Write(ParseFile.ParseSimpleOffset(fs, currentOffset + currentBlockId.Length + blockSizeArray.Length + this.GetAudioPacketHeaderSize(), (int)(blockSize - this.GetAudioPacketHeaderSize())), 0, (int)(blockSize - this.GetAudioPacketHeaderSize()));
+                                        // write audio
+                                        if (this.SkipAudioPacketHeaderOnExtraction())
+                                        {
+                                            streamOutputWriters[currentBlockIdVal].Write(ParseFile.ParseSimpleOffset(fs, currentOffset + currentBlockId.Length + blockSizeArray.Length + this.GetAudioPacketHeaderSize(), (int)(blockSize - this.GetAudioPacketHeaderSize())), 0, (int)(blockSize - this.GetAudioPacketHeaderSize()));
+                                        }
+                                        else
+                                        {
+                                            streamOutputWriters[currentBlockIdVal].Write(ParseFile.ParseSimpleOffset(fs, currentOffset + currentBlockId.Length + blockSizeArray.Length, (int)blockSize), 0, (int)blockSize);
+                                        }                                        
                                     }
                                     else
                                     {
-                                        streamOutputWriters[currentBlockIdVal].Write(ParseFile.ParseSimpleOffset(fs, currentOffset + currentBlockId.Length + blockSizeArray.Length, (int)blockSize), 0, (int)blockSize);
-                                    }
+                                        // write video
+                                        if (this.SkipVideoPacketHeaderOnExtraction())
+                                        {
+                                            streamOutputWriters[currentBlockIdVal].Write(ParseFile.ParseSimpleOffset(fs, currentOffset + currentBlockId.Length + blockSizeArray.Length + this.GetVideoPacketHeaderSize(), (int)(blockSize - this.GetVideoPacketHeaderSize())), 0, (int)(blockSize - this.GetVideoPacketHeaderSize()));
+                                        }
+                                        else
+                                        {
+                                            streamOutputWriters[currentBlockIdVal].Write(ParseFile.ParseSimpleOffset(fs, currentOffset + currentBlockId.Length + blockSizeArray.Length, (int)blockSize), 0, (int)blockSize);
+                                        }
+                                    }                                    
                                 }
 
                                 // move to next block
@@ -256,7 +283,7 @@ namespace VGMToolbox.format
                     else
                     { 
                         Array.Reverse(currentBlockId);
-                        throw new FormatException(String.Format("Block ID not found in table: 0x{0}", BitConverter.ToUInt32(currentBlockId, 0).ToString("X8")));
+                        throw new FormatException(String.Format("Block ID at 0x{0} not found in table: 0x{1}", currentOffset.ToString("X8"), BitConverter.ToUInt32(currentBlockId, 0).ToString("X8")));
                     }
 
                     // exit loop if EOF block found

@@ -22,6 +22,15 @@ namespace VGMToolbox.forms.stream
 
             this.tbOutput.Text = "Demux streams using an MPEG container format." + Environment.NewLine;
             this.tbOutput.Text += "Currently supported formats: SFD";
+
+            this.initializeFormatList();
+        }
+
+        private void initializeFormatList()
+        {
+            this.comboFormat.Items.Clear();
+            this.comboFormat.Items.Add("PSS");
+            this.comboFormat.Items.Add("SFD");
         }
 
         protected override IVgmtBackgroundWorker getBackgroundWorker()
@@ -55,7 +64,7 @@ namespace VGMToolbox.forms.stream
             taskStruct.SourcePaths = s;
 
             // format
-            taskStruct.SourceFormat = MpegStream.MpegSupportedDataFormats.SofdecVideo;
+            taskStruct.SourceFormat = this.comboFormat.SelectedItem.ToString();
 
             
             

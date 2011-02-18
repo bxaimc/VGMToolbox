@@ -12,7 +12,7 @@ namespace VGMToolbox.tools.stream
         
         public struct MpegDemuxStruct : IVgmtWorkerStruct
         {
-            public MpegStream.MpegSupportedDataFormats SourceFormat { set; get; }
+            public string SourceFormat { set; get; }
             public string[] SourcePaths { set; get; }
         }
 
@@ -24,11 +24,17 @@ namespace VGMToolbox.tools.stream
             MpegDemuxStruct demuxStruct = (MpegDemuxStruct)pMpegDemuxStruct;
 
             switch (demuxStruct.SourceFormat)
-            { 
-                case MpegStream.MpegSupportedDataFormats.SofdecVideo:
+            {
+                case "PSS":
+                    SonyPssStream sps = new SonyPssStream(path);
+                    sps.DemultiplexStreams();
+                    break;
+
+                case "SFD":
                     SofdecStream ss = new SofdecStream(path);
                     ss.DemultiplexStreams();
                     break;
+
                 default:
                     throw new FormatException("Source format not defined.");
             }            

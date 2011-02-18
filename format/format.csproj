@@ -84,6 +84,7 @@
     <Compile Include="VGMToolbox\format\sdat\Swav.cs" />
     <Compile Include="VGMToolbox\format\Sgc.cs" />
     <Compile Include="VGMToolbox\format\SofdecStream.cs" />
+    <Compile Include="VGMToolbox\format\SonyPssStream.cs" />
     <Compile Include="VGMToolbox\format\util\CdxaUtil.cs" />
     <Compile Include="VGMToolbox\format\util\CriUtil.cs" />
     <Compile Include="VGMToolbox\format\util\FormatUtil.cs" />
