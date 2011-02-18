@@ -282,6 +282,12 @@
     <Compile Include="controls\OffsetDescriptionControl.Designer.cs">
       <DependentUpon>OffsetDescriptionControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\stream\MpegDemuxForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\stream\MpegDemuxForm.Designer.cs">
+      <DependentUpon>MpegDemuxForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\stream\XmaConvertForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -698,6 +704,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\SerializablePresetCommon.cs" />
+    <Compile Include="tools\stream\MpegDemuxWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\stream\XmaConverter.cs" />
     <Compile Include="tools\stream\XmaConverterStatic.cs" />
     <Compile Include="tools\stream\XmaConverterWorker.cs">
@@ -1059,6 +1068,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="controls\OffsetDescriptionControl.resx">
       <DependentUpon>OffsetDescriptionControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\stream\MpegDemuxForm.resx">
+      <DependentUpon>MpegDemuxForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\stream\XmaConvertForm.resx">

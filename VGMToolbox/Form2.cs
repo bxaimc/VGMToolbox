@@ -1103,6 +1103,22 @@ namespace VGMToolbox
             nodeTag.FormClass = xmaConverterForm.GetType().Name;
             xmaConverterNode.Tag = nodeTag;
 
+            ///////////
+            // VARIOUS
+            ///////////
+            // MPEG Demuxer
+            TreeNode mpegDemuxNode = new TreeNode("MPEG Demultiplexer");
+
+            // Add MPEG Demuxer Form
+            MpegDemuxForm mpegDemuxForm = new MpegDemuxForm(mpegDemuxNode);
+            this.splitContainer1.Panel2.Controls.Add(mpegDemuxForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = mpegDemuxForm.GetType().Name;
+            mpegDemuxNode.Tag = nodeTag;
+
+            stream_RootNode.Nodes.Add(mpegDemuxNode);
+
             xma_RootNode.Nodes.Add(xmaConverterNode);
             stream_RootNode.Nodes.Add(xma_RootNode);
 

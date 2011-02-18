@@ -27,6 +27,11 @@ namespace VGMToolbox.format
             Eof
         }
 
+        public enum MpegSupportedDataFormats
+        { 
+            SofdecVideo,
+        }
+
         public struct BlockSizeStruct
         {
             public PacketSizeType SizeType;
@@ -38,6 +43,8 @@ namespace VGMToolbox.format
                 this.Size = sizeValue;
             }
         }
+
+        #region Dictionary Initialization
 
         protected Dictionary<uint, BlockSizeStruct> BlockIdDictionary =
             new Dictionary<uint, BlockSizeStruct>
@@ -107,6 +114,7 @@ namespace VGMToolbox.format
                 {BitConverter.ToUInt32(new byte[] { 0x00, 0x00, 0x01, 0xEE }, 0), new BlockSizeStruct(PacketSizeType.SizeBytes, 2)}, // Video Stream, two bytes following equal length (Big Endian)
                 {BitConverter.ToUInt32(new byte[] { 0x00, 0x00, 0x01, 0xEF }, 0), new BlockSizeStruct(PacketSizeType.SizeBytes, 2)}, // Video Stream, two bytes following equal length (Big Endian)
             };
+        #endregion
 
         public string FilePath { get; set; }
 
@@ -196,9 +204,7 @@ namespace VGMToolbox.format
                                 blockSize = (uint)BitConverter.ToUInt16(blockSizeArray, 0);
                                 
                                 // if block type is audio or video, extract it
-                                if (((currentBlockId[3] & 0xC0) == 0xC0) ||
-                                    ((currentBlockId[3] & 0xD0) == 0xD0) ||
-                                    ((currentBlockId[3] & 0xE0) == 0xE0))
+                                if ((currentBlockId[3] >= 0xC0) && (currentBlockId[3] <= 0xEF))
                                 {
                                     if (!streamOutputWriters.ContainsKey(currentBlockIdVal))
                                     {
@@ -212,8 +218,7 @@ namespace VGMToolbox.format
                                         outputFileName = outputFileName + "_" + BitConverter.ToUInt32(currentBlockIdNaming, 0).ToString("X8");
 
                                         // add proper extension
-                                        if (((currentBlockId[3] & 0xC0) == 0xC0) ||
-                                            ((currentBlockId[3] & 0xD0) == 0xD0))
+                                        if ((currentBlockId[3] >= 0xC0) && (currentBlockId[3] <= 0xDF))
                                         {
                                             outputFileName += this.GetAudioFileExtension();
                                         }
