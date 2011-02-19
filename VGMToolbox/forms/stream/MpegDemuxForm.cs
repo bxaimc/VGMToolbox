@@ -29,10 +29,11 @@ namespace VGMToolbox.forms.stream
         private void initializeFormatList()
         {
             this.comboFormat.Items.Clear();
+            this.comboFormat.Items.Add("PMF");
             this.comboFormat.Items.Add("PSS");
             this.comboFormat.Items.Add("SFD");
             
-            this.comboFormat.SelectedItem = "PSS";
+            this.comboFormat.SelectedItem = "PMF";
         }
 
         protected override IVgmtBackgroundWorker getBackgroundWorker()

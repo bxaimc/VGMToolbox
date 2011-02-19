@@ -25,6 +25,11 @@ namespace VGMToolbox.tools.stream
 
             switch (demuxStruct.SourceFormat)
             {
+                case "PMF":
+                    SonyPmfStream pmfStream = new SonyPmfStream(path);
+                    pmfStream.DemultiplexStreams();
+                    break;
+                
                 case "PSS":
                     SonyPssStream sps = new SonyPssStream(path);
                     sps.DemultiplexStreams();
