@@ -1172,10 +1172,11 @@ namespace VGMToolbox.util
 
                 if ((nameOffset > 0) && (nameLength > 0))
                 {
-                    byte[] nameBytes = ParseSimpleOffset(vfsStream, nameOffset, (int)nameLength);                                       
+                    byte[] nameBytes = ParseSimpleOffset(vfsStream, nameOffset, (int)nameLength);                    
                     nameBytes = FileUtil.ReplaceNullByteWithSpace(nameBytes);
                     int codePage = ByteConversion.GetPredictedCodePageForTags(nameBytes);
                     newFileName = ByteConversion.GetEncodedText(nameBytes, codePage).Trim();
+                    //newFileName = TrimFileNameToNullBytes(newFileName);
                 }
             }
             
@@ -1186,7 +1187,7 @@ namespace VGMToolbox.util
                                 Path.GetFileNameWithoutExtension(sourceFilePath), 
                                 currentFileNumber.ToString("X8"));
             }
-
+            
             newFileItem.FilePath = Path.Combine(destinationDirectory, RemoveLeadingPathSeparator(newFileName));
 
             //------------
@@ -1326,43 +1327,54 @@ namespace VGMToolbox.util
             return ret;
         }
 
-    }
-
-    public class ByteArrayComparer : IEqualityComparer<byte[]>
-    {
-        public bool Equals(byte[] left, byte[] right)
+        public static string RemoveIllegalCharactersFromPath(string path)
         {
-            if (left == null || right == null)
-            {
-                return left == right;
-            }
+            char[] illegalFileNameChars = Path.GetInvalidFileNameChars();
+            char[] illegalPathChars = Path.GetInvalidPathChars();
 
-            if (left.Length != right.Length)
+            foreach (char c in path.ToCharArray())
             {
-                return false;
-            }
-
-            for (int i = 0; i < left.Length; i++)
-            {
-                if (left[i] != right[i])
+                for (int i = 0; i < illegalFileNameChars.Length; i++)
                 {
-                    return false;
+                    if (c == illegalFileNameChars[i])
+                    {
+                        path.Replace(illegalFileNameChars[i], '_');
+                        continue;
+                    }
+                }
+
+                for (int i = 0; i < illegalPathChars.Length; i++)
+                {
+                    if (c == illegalPathChars[i])
+                    {
+                        path.Replace(illegalPathChars[i], '_');
+                        continue;
+                    }
                 }
             }
-            return true;
+
+            return path.Trim();
         }
 
-        public int GetHashCode(byte[] key)
+        public static string TrimFileNameToNullBytes(string path)
         {
-            if (key == null)
-                throw new ArgumentNullException("key");
-            int sum = 0;
+            byte[] stringBytes;
+            int nameLength = path.Length;
 
-            foreach (byte cur in key)
+            stringBytes = Encoding.ASCII.GetBytes(path);
+
+            for (int i = 0; i < stringBytes.Length; i++)
             {
-                sum += cur;
+                if (stringBytes[i] == 0)
+                {
+                    nameLength = i;
+                    break;
+                }
             }
-            return sum;
+
+            path = path.Substring(0, nameLength);
+
+            return path;
         }
     }
 }

@@ -95,31 +95,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 510);
-            this.pnlLabels.Size = new System.Drawing.Size(699, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 542);
+            this.pnlLabels.Size = new System.Drawing.Size(846, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(699, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(846, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 433);
-            this.tbOutput.Size = new System.Drawing.Size(699, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 465);
+            this.tbOutput.Size = new System.Drawing.Size(846, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 413);
-            this.pnlButtons.Size = new System.Drawing.Size(699, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 445);
+            this.pnlButtons.Size = new System.Drawing.Size(846, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(639, 0);
+            this.btnCancel.Location = new System.Drawing.Point(786, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(579, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(726, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpFormat
@@ -128,7 +128,7 @@
             this.grpFormat.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFormat.Location = new System.Drawing.Point(0, 0);
             this.grpFormat.Name = "grpFormat";
-            this.grpFormat.Size = new System.Drawing.Size(676, 41);
+            this.grpFormat.Size = new System.Drawing.Size(823, 41);
             this.grpFormat.TabIndex = 7;
             this.grpFormat.TabStop = false;
             this.grpFormat.Text = "Format";
@@ -195,12 +195,12 @@
             this.contextMenuRefresh.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.refreshFileListToolStripMenuItem});
             this.contextMenuRefresh.Name = "contextMenuRefresh";
-            this.contextMenuRefresh.Size = new System.Drawing.Size(162, 26);
+            this.contextMenuRefresh.Size = new System.Drawing.Size(151, 26);
             // 
             // refreshFileListToolStripMenuItem
             // 
             this.refreshFileListToolStripMenuItem.Name = "refreshFileListToolStripMenuItem";
-            this.refreshFileListToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.refreshFileListToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.refreshFileListToolStripMenuItem.Text = "Refresh File List";
             this.refreshFileListToolStripMenuItem.Click += new System.EventHandler(this.refreshFileListToolStripMenuItem_Click);
             // 
@@ -209,12 +209,12 @@
             this.contextMenuBytesToSamples.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.bytesToSamplesToolStripMenuItem});
             this.contextMenuBytesToSamples.Name = "contextMenuBytesToSamples";
-            this.contextMenuBytesToSamples.Size = new System.Drawing.Size(168, 26);
+            this.contextMenuBytesToSamples.Size = new System.Drawing.Size(157, 26);
             // 
             // bytesToSamplesToolStripMenuItem
             // 
             this.bytesToSamplesToolStripMenuItem.Name = "bytesToSamplesToolStripMenuItem";
-            this.bytesToSamplesToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.bytesToSamplesToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
             this.bytesToSamplesToolStripMenuItem.Text = "Bytes to Samples";
             this.bytesToSamplesToolStripMenuItem.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bytesToSamplesToolStripMenuItem_MouseUp);
             // 
@@ -224,7 +224,7 @@
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpOptions.Location = new System.Drawing.Point(0, 178);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(699, 235);
+            this.grpOptions.Size = new System.Drawing.Size(846, 267);
             this.grpOptions.TabIndex = 12;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
@@ -240,7 +240,7 @@
             this.pnlOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlOptions.Location = new System.Drawing.Point(3, 16);
             this.pnlOptions.Name = "pnlOptions";
-            this.pnlOptions.Size = new System.Drawing.Size(693, 216);
+            this.pnlOptions.Size = new System.Drawing.Size(840, 248);
             this.pnlOptions.TabIndex = 0;
             // 
             // grpCoefOptions
@@ -253,7 +253,7 @@
             this.grpCoefOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpCoefOptions.Location = new System.Drawing.Point(0, 281);
             this.grpCoefOptions.Name = "grpCoefOptions";
-            this.grpCoefOptions.Size = new System.Drawing.Size(676, 67);
+            this.grpCoefOptions.Size = new System.Drawing.Size(823, 67);
             this.grpCoefOptions.TabIndex = 37;
             this.grpCoefOptions.TabStop = false;
             this.grpCoefOptions.Text = "Coefficients";
@@ -319,7 +319,7 @@
             this.grpLoopOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpLoopOptions.Location = new System.Drawing.Point(0, 152);
             this.grpLoopOptions.Name = "grpLoopOptions";
-            this.grpLoopOptions.Size = new System.Drawing.Size(676, 129);
+            this.grpLoopOptions.Size = new System.Drawing.Size(823, 129);
             this.grpLoopOptions.TabIndex = 36;
             this.grpLoopOptions.TabStop = false;
             this.grpLoopOptions.Text = "Looping";
@@ -481,7 +481,7 @@
             this.grpGeneralOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpGeneralOptions.Location = new System.Drawing.Point(0, 41);
             this.grpGeneralOptions.Name = "grpGeneralOptions";
-            this.grpGeneralOptions.Size = new System.Drawing.Size(676, 111);
+            this.grpGeneralOptions.Size = new System.Drawing.Size(823, 111);
             this.grpGeneralOptions.TabIndex = 35;
             this.grpGeneralOptions.TabStop = false;
             this.grpGeneralOptions.Text = "General";
@@ -595,7 +595,7 @@
             this.grpFunction.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFunction.Location = new System.Drawing.Point(0, 23);
             this.grpFunction.Name = "grpFunction";
-            this.grpFunction.Size = new System.Drawing.Size(699, 155);
+            this.grpFunction.Size = new System.Drawing.Size(846, 155);
             this.grpFunction.TabIndex = 13;
             this.grpFunction.TabStop = false;
             this.grpFunction.Text = "Functions";
@@ -647,12 +647,13 @@
             this.btnBrowseDirectory.TabIndex = 14;
             this.btnBrowseDirectory.Text = "...";
             this.btnBrowseDirectory.UseVisualStyleBackColor = true;
+            this.btnBrowseDirectory.Click += new System.EventHandler(this.btnBrowseDirectory_Click);
             // 
             // Genh_CreatorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(699, 551);
+            this.ClientSize = new System.Drawing.Size(846, 583);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpFunction);
             this.Name = "Genh_CreatorForm";

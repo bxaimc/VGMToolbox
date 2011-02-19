@@ -54,7 +54,7 @@ namespace VGMToolbox.format
                 // System Packets
                 //********************
                 {BitConverter.ToUInt32(MpegStream.PacketEndByes, 0), new BlockSizeStruct(PacketSizeType.Eof, -1)},   // Program End
-                {BitConverter.ToUInt32(MpegStream.PacketStartByes, 0), new BlockSizeStruct(PacketSizeType.Static, 0xD)}, // Pack Header
+                {BitConverter.ToUInt32(MpegStream.PacketStartByes, 0), new BlockSizeStruct(PacketSizeType.Static, 0xE)}, // Pack Header
                 {BitConverter.ToUInt32(new byte[] { 0x00, 0x00, 0x01, 0xBB }, 0), new BlockSizeStruct(PacketSizeType.SizeBytes, 2)}, // System Header, two bytes following equal length (Big Endian)
                 {BitConverter.ToUInt32(new byte[] { 0x00, 0x00, 0x01, 0xBE }, 0), new BlockSizeStruct(PacketSizeType.SizeBytes, 2)}, // Padding Stream, two bytes following equal length (Big Endian)
                 {BitConverter.ToUInt32(new byte[] { 0x00, 0x00, 0x01, 0xBF }, 0), new BlockSizeStruct(PacketSizeType.SizeBytes, 2)}, // Private Stream, two bytes following equal length (Big Endian)
@@ -214,8 +214,8 @@ namespace VGMToolbox.format
                                 blockSize = (uint)BitConverter.ToUInt16(blockSizeArray, 0);
                                 
                                 // if block type is audio or video, extract it
-                                if (this.IsThisAnAudioBlock(currentBlockId) || 
-                                    this.IsThisAVideoBlock(currentBlockId))
+                                // if (this.IsThisAnAudioBlock(currentBlockId) || this.IsThisAVideoBlock(currentBlockId))
+                                if (this.IsThisAnAudioBlock(currentBlockId))
                                 {
                                     if (!streamOutputWriters.ContainsKey(currentBlockIdVal))
                                     {
@@ -233,10 +233,10 @@ namespace VGMToolbox.format
                                         {
                                             outputFileName += this.GetAudioFileExtension();
                                         }
-                                        else
-                                        {
-                                            outputFileName += this.GetVideoFileExtension();
-                                        }
+                                        // else
+                                        // {
+                                        //     outputFileName += this.GetVideoFileExtension();
+                                        // }
 
                                         // add output directory
                                         outputFileName = Path.Combine(Path.GetDirectoryName(this.FilePath), outputFileName);
@@ -258,18 +258,18 @@ namespace VGMToolbox.format
                                             streamOutputWriters[currentBlockIdVal].Write(ParseFile.ParseSimpleOffset(fs, currentOffset + currentBlockId.Length + blockSizeArray.Length, (int)blockSize), 0, (int)blockSize);
                                         }                                        
                                     }
-                                    else
-                                    {
-                                        // write video
-                                        if (this.SkipVideoPacketHeaderOnExtraction())
-                                        {
-                                            streamOutputWriters[currentBlockIdVal].Write(ParseFile.ParseSimpleOffset(fs, currentOffset + currentBlockId.Length + blockSizeArray.Length + this.GetVideoPacketHeaderSize(), (int)(blockSize - this.GetVideoPacketHeaderSize())), 0, (int)(blockSize - this.GetVideoPacketHeaderSize()));
-                                        }
-                                        else
-                                        {
-                                            streamOutputWriters[currentBlockIdVal].Write(ParseFile.ParseSimpleOffset(fs, currentOffset + currentBlockId.Length + blockSizeArray.Length, (int)blockSize), 0, (int)blockSize);
-                                        }
-                                    }                                    
+                                    //else
+                                    //{
+                                    //    // write video
+                                    //    if (this.SkipVideoPacketHeaderOnExtraction())
+                                    //    {
+                                    //        streamOutputWriters[currentBlockIdVal].Write(ParseFile.ParseSimpleOffset(fs, currentOffset + currentBlockId.Length + blockSizeArray.Length + this.GetVideoPacketHeaderSize(), (int)(blockSize - this.GetVideoPacketHeaderSize())), 0, (int)(blockSize - this.GetVideoPacketHeaderSize()));
+                                    //    }
+                                    //    else
+                                    //    {
+                                    //        streamOutputWriters[currentBlockIdVal].Write(ParseFile.ParseSimpleOffset(fs, currentOffset + currentBlockId.Length + blockSizeArray.Length, (int)blockSize), 0, (int)blockSize);
+                                    //    }
+                                    //}                                    
                                 }
 
                                 // move to next block

@@ -13,15 +13,15 @@ namespace VGMToolbox.forms.stream
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = "MPEG Format Demultiplexer";
+            this.lblTitle.Text = "MPEG Format Audio Extractor";
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();            
             
             InitializeComponent();
 
-            this.tbOutput.Text = "Demux streams using an MPEG container format." + Environment.NewLine;
-            this.tbOutput.Text += "Currently supported formats: SFD";
+            this.tbOutput.Text = "Extract audio streams from movies using an MPEG container format." + Environment.NewLine;
+            this.tbOutput.Text += "Currently supported formats: PSS, SFD";
 
             this.initializeFormatList();
         }
@@ -31,6 +31,8 @@ namespace VGMToolbox.forms.stream
             this.comboFormat.Items.Clear();
             this.comboFormat.Items.Add("PSS");
             this.comboFormat.Items.Add("SFD");
+            
+            this.comboFormat.SelectedItem = "PSS";
         }
 
         protected override IVgmtBackgroundWorker getBackgroundWorker()
