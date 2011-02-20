@@ -25,6 +25,11 @@ namespace VGMToolbox.tools.stream
 
             switch (demuxStruct.SourceFormat)
             {
+                case "MPEG":
+                    MpegStream mpegStream = new MpegStream(path);
+                    mpegStream.DemultiplexStreams();
+                    break;
+
                 case "PMF":
                     SonyPmfStream pmfStream = new SonyPmfStream(path);
                     pmfStream.DemultiplexStreams();

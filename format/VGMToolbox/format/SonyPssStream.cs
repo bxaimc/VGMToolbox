@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace VGMToolbox.format
 {
@@ -10,36 +11,17 @@ namespace VGMToolbox.format
         public SonyPssStream(string path)
             : base(path)
         {
+            this.FileExtensionAudio = DefaultAudioExtension;
+            this.FileExtensionVideo = DefaultVideoExtension;
+            
             base.BlockIdDictionary[BitConverter.ToUInt32(MpegStream.PacketStartByes, 0)] = new BlockSizeStruct(PacketSizeType.Static, 0xE); // Pack Header
             base.BlockIdDictionary[BitConverter.ToUInt32(new byte[] { 0x00, 0x00, 0x01, 0xBD }, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 2); // Audio Stream, two bytes following equal length (Big Endian)
             base.BlockIdDictionary[BitConverter.ToUInt32(new byte[] { 0x00, 0x00, 0x01, 0xBF }, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 2); // Audio Stream, two bytes following equal length (Big Endian)
         }
 
-        protected override int GetAudioPacketHeaderSize()
+        protected override int GetAudioPacketHeaderSize(Stream readStream, long currentOffset)
         {
             return 0x11;
-        }
-        protected override bool SkipAudioPacketHeaderOnExtraction()
-        {
-            return true;
-        }
-
-        protected override int GetVideoPacketHeaderSize()
-        {
-            return 0;
-        }
-        protected override bool SkipVideoPacketHeaderOnExtraction()
-        {
-            return false;
-        }
-
-        protected override string GetAudioFileExtension()
-        {
-            return SonyPssStream.DefaultAudioExtension;
-        }
-        protected override string GetVideoFileExtension()
-        {
-            return SonyPssStream.DefaultVideoExtension;
         }
 
         protected override bool IsThisAnAudioBlock(byte[] blockToCheck)

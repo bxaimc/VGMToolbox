@@ -18,6 +18,8 @@ namespace VGMToolbox.format
         public MpegStream(string path)
         {
             this.FilePath = path;
+            this.FileExtensionAudio = DefaultAudioExtension;
+            this.FileExtensionVideo = DefaultVideoExtension;
         }
 
         public enum PacketSizeType
@@ -118,32 +120,12 @@ namespace VGMToolbox.format
         #endregion
 
         public string FilePath { get; set; }
+        public string FileExtensionAudio { get; set; }
+        public string FileExtensionVideo { get; set; }
 
-        protected virtual int GetAudioPacketHeaderSize()
+        protected virtual int GetAudioPacketHeaderSize(Stream readStream, long currentOffset)
         {
             return 0;
-        }
-        protected virtual bool SkipAudioPacketHeaderOnExtraction()
-        {
-            return false;
-        }
-
-        protected virtual int GetVideoPacketHeaderSize()
-        {
-            return 0;
-        }
-        protected virtual bool SkipVideoPacketHeaderOnExtraction()
-        {
-            return false;
-        }
-
-        protected virtual string GetAudioFileExtension()
-        {
-            return MpegStream.DefaultAudioExtension;
-        }
-        protected virtual string GetVideoFileExtension()
-        {
-            return MpegStream.DefaultVideoExtension;
         }
 
         protected virtual bool IsThisAnAudioBlock(byte[] blockToCheck)
@@ -168,7 +150,9 @@ namespace VGMToolbox.format
                 
                 BlockSizeStruct blockStruct = new BlockSizeStruct();
                 byte[] blockSizeArray;
-                uint blockSize;                
+                uint blockSize;
+                int audioBlockSkipSize;
+                byte[] secondaryBlocks;
 
                 bool eofFlagFound = false;
 
@@ -182,6 +166,11 @@ namespace VGMToolbox.format
                 {
                     currentBlockId = ParseFile.ParseSimpleOffset(fs, currentOffset, 4);
                     currentBlockIdVal = BitConverter.ToUInt32(currentBlockId, 0);
+
+                    //if (currentBlockIdVal == 0xbd010000)
+                    //{
+                    //    int ggg = 1;
+                    //}
 
                     if (BlockIdDictionary.ContainsKey(currentBlockIdVal))
                     {
@@ -231,11 +220,11 @@ namespace VGMToolbox.format
                                         // add proper extension
                                         if (this.IsThisAnAudioBlock(currentBlockId))
                                         {
-                                            outputFileName += this.GetAudioFileExtension();
+                                            outputFileName += this.FileExtensionAudio;
                                         }
                                         // else
                                         // {
-                                        //     outputFileName += this.GetVideoFileExtension();
+                                        //     outputFileName += this.FileExtensionVideo;
                                         // }
 
                                         // add output directory
@@ -249,14 +238,8 @@ namespace VGMToolbox.format
                                     if (this.IsThisAnAudioBlock(currentBlockId))
                                     {
                                         // write audio
-                                        if (this.SkipAudioPacketHeaderOnExtraction())
-                                        {
-                                            streamOutputWriters[currentBlockIdVal].Write(ParseFile.ParseSimpleOffset(fs, currentOffset + currentBlockId.Length + blockSizeArray.Length + this.GetAudioPacketHeaderSize(), (int)(blockSize - this.GetAudioPacketHeaderSize())), 0, (int)(blockSize - this.GetAudioPacketHeaderSize()));
-                                        }
-                                        else
-                                        {
-                                            streamOutputWriters[currentBlockIdVal].Write(ParseFile.ParseSimpleOffset(fs, currentOffset + currentBlockId.Length + blockSizeArray.Length, (int)blockSize), 0, (int)blockSize);
-                                        }                                        
+                                        audioBlockSkipSize = this.GetAudioPacketHeaderSize(fs, currentOffset);
+                                        streamOutputWriters[currentBlockIdVal].Write(ParseFile.ParseSimpleOffset(fs, currentOffset + currentBlockId.Length + blockSizeArray.Length + audioBlockSkipSize, (int)(blockSize - audioBlockSkipSize)), 0, (int)(blockSize - audioBlockSkipSize));
                                     }
                                     //else
                                     //{

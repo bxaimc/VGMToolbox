@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace VGMToolbox.format
 {
@@ -9,34 +10,15 @@ namespace VGMToolbox.format
 
         public SofdecStream(string path): base(path) 
         {
+            this.FileExtensionAudio = DefaultAudioExtension;
+            this.FileExtensionVideo = DefaultVideoExtension;
+            
             base.BlockIdDictionary[BitConverter.ToUInt32(MpegStream.PacketStartByes, 0)] = new BlockSizeStruct(PacketSizeType.Static, 0xC); // Pack Header
         }
 
-        protected override int GetAudioPacketHeaderSize()
+        protected override int GetAudioPacketHeaderSize(Stream readStream, long currentOffset)
         {
             return 7;
-        }
-        protected override bool SkipAudioPacketHeaderOnExtraction()
-        {
-            return true;
-        }
-
-        protected override int GetVideoPacketHeaderSize()
-        {
-            return 0;
-        }
-        protected override bool SkipVideoPacketHeaderOnExtraction()
-        {
-            return false;
-        }
-
-        protected override string GetAudioFileExtension()
-        {
-            return SofdecStream.DefaultAudioExtension;
-        }
-        protected override string GetVideoFileExtension()
-        {
-            return SofdecStream.DefaultVideoExtension;
         }
     }
 }

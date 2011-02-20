@@ -1,4 +1,7 @@
 ﻿using System;
+using System.IO;
+
+using VGMToolbox.util;
 
 namespace VGMToolbox.format
 {
@@ -10,36 +13,41 @@ namespace VGMToolbox.format
         public SonyPmfStream(string path)
             : base(path)
         {
+            this.FileExtensionAudio = DefaultAudioExtension;
+            this.FileExtensionVideo = DefaultVideoExtension;
+
             base.BlockIdDictionary[BitConverter.ToUInt32(MpegStream.PacketStartByes, 0)] = new BlockSizeStruct(PacketSizeType.Static, 0xE); // Pack Header
             base.BlockIdDictionary[BitConverter.ToUInt32(new byte[] { 0x00, 0x00, 0x01, 0xBD }, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 2); // Audio Stream, two bytes following equal length (Big Endian)
             base.BlockIdDictionary[BitConverter.ToUInt32(new byte[] { 0x00, 0x00, 0x01, 0xBF }, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 2); // Audio Stream, two bytes following equal length (Big Endian)
         }
 
-        protected override int GetAudioPacketHeaderSize()
+        protected override int GetAudioPacketHeaderSize(Stream readStream, long currentOffset)
         {
-            return 0x11;
-        }
-        protected override bool SkipAudioPacketHeaderOnExtraction()
-        {
-            return true;
-        }
+            int headerSize;
+            UInt16 checkBytes;
+            OffsetDescription od = new OffsetDescription();
 
-        protected override int GetVideoPacketHeaderSize()
-        {
-            return 0;
-        }
-        protected override bool SkipVideoPacketHeaderOnExtraction()
-        {
-            return false;
-        }
+            od.OffsetByteOrder = Constants.BigEndianByteOrder;
+            od.OffsetSize = "2";
+            od.OffsetValue = "6";
 
-        protected override string GetAudioFileExtension()
-        {
-            return SonyPmfStream.DefaultAudioExtension;
-        }
-        protected override string GetVideoFileExtension()
-        {
-            return SonyPmfStream.DefaultVideoExtension;
+            checkBytes = (UInt16)ParseFile.GetVaryingByteValueAtRelativeOffset(readStream, od, currentOffset);
+
+            switch (checkBytes)
+            {
+                // Thanks to  FastElbJa for this information
+                case 0x8180:
+                    headerSize = 0x0c;
+                    break;
+                case 0x8181:
+                    headerSize = 0x17;
+                    break;
+                default:
+                    headerSize = 0;
+                    // throw new FormatException(String.Format("Unexpected secondary bytes found for block starting at 0x{0}: 0x{1}", currentOffset.ToString("X8"), checkBytes.ToString("X4")));
+                    break;
+            }
+            return headerSize;
         }
 
         protected override bool IsThisAnAudioBlock(byte[] blockToCheck)
