@@ -167,11 +167,6 @@ namespace VGMToolbox.format
                     currentBlockId = ParseFile.ParseSimpleOffset(fs, currentOffset, 4);
                     currentBlockIdVal = BitConverter.ToUInt32(currentBlockId, 0);
 
-                    //if (currentBlockIdVal == 0xbd010000)
-                    //{
-                    //    int ggg = 1;
-                    //}
-
                     if (BlockIdDictionary.ContainsKey(currentBlockIdVal))
                     {
                         blockStruct = BlockIdDictionary[currentBlockIdVal];

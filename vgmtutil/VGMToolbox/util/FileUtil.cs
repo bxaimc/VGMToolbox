@@ -370,6 +370,15 @@ namespace VGMToolbox.util
                     {
                         Directory.CreateDirectory(Path.GetDirectoryName(destinationFile));
                     }
+
+                    if (File.Exists(destinationFile))
+                    {
+                        string[] sameNamedFiles = Directory.GetFiles(Path.GetDirectoryName(destinationFile), Path.GetFileNameWithoutExtension(destinationFile) + "*"); 
+
+                        // rename to prevent overwrite
+                        destinationFile = Path.Combine(Path.GetDirectoryName(destinationFile), String.Format("{0}_{1}{2}", Path.GetFileNameWithoutExtension(destinationFile), sameNamedFiles.Length.ToString("D4"), Path.GetExtension(destinationFile)));
+                    }
+
                     File.Copy(path, destinationFile);
                     File.Delete(path);
                 }
