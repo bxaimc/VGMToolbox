@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 
 using VGMToolbox.format;
 using VGMToolbox.plugin;
@@ -26,10 +27,22 @@ namespace VGMToolbox.tools.stream
             switch (demuxStruct.SourceFormat)
             {
                 case "MPEG":
-                    MpegStream mpegStream = new MpegStream(path);
-                    mpegStream.DemultiplexStreams();
+                    int mpegType = Mpeg2Stream.GetMpegStreamType(path);
+                    
+                    switch (mpegType)
+                    {
+                        case 1:
+                            Mpeg1Stream mpeg1Stream = new Mpeg1Stream(path);
+                            mpeg1Stream.DemultiplexStreams();
+                            break;
+                        case 2:
+                            Mpeg2Stream mpeg2Stream = new Mpeg2Stream(path);
+                            mpeg2Stream.DemultiplexStreams();
+                            break;
+                        default:
+                            throw new FormatException(String.Format("Unsupported MPEG type, for file: {0}", Path.GetFileName(path)));
+                    }
                     break;
-
                 case "PMF":
                     SonyPmfStream pmfStream = new SonyPmfStream(path);
                     pmfStream.DemultiplexStreams();

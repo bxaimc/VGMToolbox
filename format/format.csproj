@@ -75,7 +75,8 @@
     <Compile Include="VGMToolbox\format\IGd3TagFormat.cs" />
     <Compile Include="VGMToolbox\format\IXsfTagFormat.cs" />
     <Compile Include="VGMToolbox\format\Midi.cs" />
-    <Compile Include="VGMToolbox\format\MpegStream.cs" />
+    <Compile Include="VGMToolbox\format\Mpeg1Stream.cs" />
+    <Compile Include="VGMToolbox\format\Mpeg2Stream.cs" />
     <Compile Include="VGMToolbox\format\Nds.cs" />
     <Compile Include="VGMToolbox\format\Psf.cs" />
     <Compile Include="VGMToolbox\format\PsxSequence.cs" />

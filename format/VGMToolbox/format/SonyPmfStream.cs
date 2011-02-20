@@ -5,7 +5,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.format
 {
-    public class SonyPmfStream : MpegStream
+    public class SonyPmfStream : Mpeg2Stream
     {
         new public const string DefaultAudioExtension = ".at3";
         new public const string DefaultVideoExtension = ".avi";
@@ -16,7 +16,7 @@ namespace VGMToolbox.format
             this.FileExtensionAudio = DefaultAudioExtension;
             this.FileExtensionVideo = DefaultVideoExtension;
 
-            base.BlockIdDictionary[BitConverter.ToUInt32(MpegStream.PacketStartByes, 0)] = new BlockSizeStruct(PacketSizeType.Static, 0xE); // Pack Header
+            base.BlockIdDictionary[BitConverter.ToUInt32(Mpeg2Stream.PacketStartByes, 0)] = new BlockSizeStruct(PacketSizeType.Static, 0xE); // Pack Header
             base.BlockIdDictionary[BitConverter.ToUInt32(new byte[] { 0x00, 0x00, 0x01, 0xBD }, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 2); // Audio Stream, two bytes following equal length (Big Endian)
             base.BlockIdDictionary[BitConverter.ToUInt32(new byte[] { 0x00, 0x00, 0x01, 0xBF }, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 2); // Audio Stream, two bytes following equal length (Big Endian)
         }
