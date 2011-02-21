@@ -19,7 +19,16 @@ namespace VGMToolbox.format
 
         protected override int GetAudioPacketHeaderSize(Stream readStream, long currentOffset)
         {
-            return 7;
+            int paddingByteCount = 0;
+            readStream.Position = currentOffset + 6;
+
+            // skip stuffing bytes
+            while (readStream.ReadByte() == 0xFF)
+            {
+                paddingByteCount++;
+            }
+
+            return paddingByteCount + 7;
         }
 
         protected override int GetVideoPacketHeaderSize(Stream readStream, long currentOffset)

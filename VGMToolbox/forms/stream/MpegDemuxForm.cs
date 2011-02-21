@@ -13,14 +13,14 @@ namespace VGMToolbox.forms.stream
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = "MPEG Format Audio Extractor";
+            this.lblTitle.Text = "MPEG Container Demultiplexer";
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();            
             
             InitializeComponent();
 
-            this.tbOutput.Text = "Extract audio streams from movies using an MPEG container format." + Environment.NewLine;
+            this.tbOutput.Text = "Demultiplex streams from movies using an MPEG container format." + Environment.NewLine;
             this.tbOutput.Text += "Currently supported formats: MPEG1, PSS, SFD";
 
             this.initializeFormatList();
