@@ -2112,9 +2112,6 @@ namespace VGMToolbox.format.util
             FileInfo fi;
 
             Smap smap = new Smap();
-            string[] dupeSeqNames;
-            string tempMini2sfName;
-            string renameMini2sfName;
 
             System.Text.Encoding enc = System.Text.Encoding.ASCII;
             byte[] tagData;

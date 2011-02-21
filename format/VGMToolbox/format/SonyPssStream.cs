@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using VGMToolbox.util;
 
 namespace VGMToolbox.format
 {
@@ -20,7 +21,7 @@ namespace VGMToolbox.format
         }
 
         protected override int GetAudioPacketHeaderSize(Stream readStream, long currentOffset)
-        {
+        {            
             return 0x11;
         }
 

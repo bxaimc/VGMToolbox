@@ -27,7 +27,7 @@ namespace VGMToolbox.tools.stream
             switch (demuxStruct.SourceFormat)
             {
                 case "MPEG":
-                    int mpegType = Mpeg2Stream.GetMpegStreamType(path);
+                    int mpegType = MpegStream.GetMpegStreamType(path);
                     
                     switch (mpegType)
                     {
