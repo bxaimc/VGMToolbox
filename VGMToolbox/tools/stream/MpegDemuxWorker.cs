@@ -43,6 +43,11 @@ namespace VGMToolbox.tools.stream
                             throw new FormatException(String.Format("Unsupported MPEG type, for file: {0}", Path.GetFileName(path)));
                     }
                     break;
+                case "PAM":
+                    SonyPamStream pamStream = new SonyPamStream(path);
+                    pamStream.DemultiplexStreams();
+                    break;
+                
                 case "PMF":
                     SonyPmfStream pmfStream = new SonyPmfStream(path);
                     pmfStream.DemultiplexStreams();

@@ -315,6 +315,18 @@ namespace VGMToolbox.util
             return destinationPath;
         }
 
+        public static string RemoveAllChunksFromFile(string path, byte[] chunkToRemove)
+        {
+            string destinationPath;
+
+            using (FileStream fs = File.OpenRead(path))
+            {
+                destinationPath = RemoveAllChunksFromFile(fs, chunkToRemove);
+            }
+            
+            return destinationPath;
+        }
+
         public static bool ExecuteExternalProgram(
             string pathToExecuatable, 
             string arguments, 

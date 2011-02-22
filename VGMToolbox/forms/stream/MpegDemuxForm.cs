@@ -32,6 +32,7 @@ namespace VGMToolbox.forms.stream
         {
             this.comboFormat.Items.Clear();
             this.comboFormat.Items.Add("MPEG");
+            this.comboFormat.Items.Add("PAM");
             this.comboFormat.Items.Add("PMF");
             this.comboFormat.Items.Add("PSS");
             this.comboFormat.Items.Add("SFD");
