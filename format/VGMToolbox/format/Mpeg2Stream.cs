@@ -21,12 +21,7 @@ namespace VGMToolbox.format
             base.BlockIdDictionary[BitConverter.ToUInt32(Mpeg2Stream.PacketStartByes, 0)] = new BlockSizeStruct(PacketSizeType.Static, 0xE); // Pack Header
         }
 
-        protected override int GetAudioPacketHeaderSize(Stream readStream, long currentOffset)
-        {            
-            return 0x11;
-        }
-
-        protected override int GetVideoPacketHeaderSize(Stream readStream, long currentOffset)
+        protected int GetStandardPesHeaderSize(Stream readStream, long currentOffset)
         {
             byte checkBytes;
             OffsetDescription od = new OffsetDescription();
@@ -38,6 +33,16 @@ namespace VGMToolbox.format
             checkBytes = (byte)ParseFile.GetVaryingByteValueAtRelativeOffset(readStream, od, currentOffset);
 
             return checkBytes + 3;
+        }
+
+        protected override int GetAudioPacketHeaderSize(Stream readStream, long currentOffset)
+        {            
+            return GetStandardPesHeaderSize(readStream, currentOffset);
+        }
+
+        protected override int GetVideoPacketHeaderSize(Stream readStream, long currentOffset)
+        {
+            return GetStandardPesHeaderSize(readStream, currentOffset);
         }
     }
 }
