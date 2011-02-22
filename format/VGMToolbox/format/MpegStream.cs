@@ -132,6 +132,11 @@ namespace VGMToolbox.format
             return ((blockToCheck[3] >= 0xE0) && (blockToCheck[3] <= 0xEF));
         }
 
+        protected virtual void DoFinalTasks(Dictionary<uint, FileStream> outputFiles)
+        { 
+        
+        }
+
         public void DemultiplexStreams()
         {
             using (FileStream fs = File.OpenRead(this.FilePath))
@@ -223,7 +228,7 @@ namespace VGMToolbox.format
                                             outputFileName = Path.Combine(Path.GetDirectoryName(this.FilePath), outputFileName);
 
                                             // add an output stream for writing
-                                            streamOutputWriters[currentBlockIdVal] = new FileStream(outputFileName, FileMode.Create, FileAccess.Write);
+                                            streamOutputWriters[currentBlockIdVal] = new FileStream(outputFileName, FileMode.Create, FileAccess.ReadWrite);
                                         }
 
                                         // write the block
@@ -269,6 +274,11 @@ namespace VGMToolbox.format
                     throw new FormatException(String.Format("Cannot find Pack Header for file: {0}{1}", Path.GetFileName(this.FilePath), Environment.NewLine));
                 }
 
+                ///////////////////////////////////
+                // Perform any final tasks needed
+                ///////////////////////////////////
+                this.DoFinalTasks(streamOutputWriters);
+
                 //////////////////////////
                 // close all open writers
                 //////////////////////////
@@ -284,8 +294,11 @@ namespace VGMToolbox.format
             //////////////////////////
             foreach (uint b in writers.Keys)
             {
-                writers[b].Close();
-                writers[b].Dispose();
+                if (writers[b].CanRead)
+                {
+                    writers[b].Close();
+                    writers[b].Dispose();
+                }
             }        
         }
         

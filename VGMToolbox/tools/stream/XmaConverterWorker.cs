@@ -159,6 +159,7 @@ namespace VGMToolbox.tools.stream
                 // set working file
                 workingFile = workingSourceFile;
 
+                #region XMAPARSE
                 //---------------------------
                 // xma_parse.exe
                 //---------------------------            
@@ -181,7 +182,9 @@ namespace VGMToolbox.tools.stream
                         consoleError = String.Empty;
                     }
                 } // 
+                #endregion
 
+                #region RIFF HEADER
                 if ((taskStruct.DoRiffHeader) && (String.IsNullOrEmpty(consoleError)))
                 {
                     //-----------------
@@ -246,7 +249,9 @@ namespace VGMToolbox.tools.stream
                     // dispay xma_parse.exe error
                     this.ShowOutput(pPath, consoleError, true);
                 }
+                #endregion
 
+                #region POS CREATOR
                 //-----------
                 // POS Maker
                 //-----------
@@ -306,7 +311,9 @@ namespace VGMToolbox.tools.stream
                         fs.Write(posBytes, 0, posBytes.Length);
                     }
                 }
+                #endregion
 
+                #region TOWAV
                 //-----------
                 // ToWav.exe
                 //-----------
@@ -329,6 +336,9 @@ namespace VGMToolbox.tools.stream
                         this.ShowOutput(pPath, consoleError, true);
                     }
                 }
+                #endregion
+
+                #region XMAENCODE
                 //---------------
                 // XmaEncode.exe
                 //---------------
@@ -351,7 +361,9 @@ namespace VGMToolbox.tools.stream
                         this.ShowOutput(pPath, consoleError, true);
                     }
                 }
+                #endregion
             } // for (int i = 0; i < taskStruct.NumberOfStreams; i++)
+                
 
             //----------------------
             // clean working folder

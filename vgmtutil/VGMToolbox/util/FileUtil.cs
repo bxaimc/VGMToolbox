@@ -252,6 +252,69 @@ namespace VGMToolbox.util
             }
         }
 
+        public static string RemoveAllChunksFromFile(FileStream fs, byte[] chunkToRemove)
+        {
+            int bytesRead;
+            
+            long currentReadOffset = 0;
+            long totalBytesRead = 0;
+            int maxReadSize = 0;
+            long currentChunkSize;
+
+            byte[] bytes = new byte[Constants.FileReadChunkSize];
+            long[] offsets = ParseFile.GetAllOffsets(fs, 0, chunkToRemove, false, -1, -1, true);
+
+            string destinationPath = Path.ChangeExtension(fs.Name, ".cut");
+
+            using (FileStream destinationFs = File.OpenWrite(destinationPath))
+            {                
+                for (int i = 0; i < offsets.Length; i++)
+                {
+                    // move position
+                    fs.Position = currentReadOffset;
+
+                    // get length of current size to write
+                    currentChunkSize = offsets[i] - currentReadOffset;
+
+                    // calculcate max cut size for this loop iteration
+                    maxReadSize = (currentChunkSize - totalBytesRead) > (long)bytes.Length ? bytes.Length : (int)(currentChunkSize - totalBytesRead);
+
+                    while ((bytesRead = fs.Read(bytes, 0, maxReadSize)) > 0)
+                    {
+                        destinationFs.Write(bytes, 0, bytesRead);
+                        totalBytesRead += (long)bytesRead;
+
+                        maxReadSize = (currentChunkSize - totalBytesRead) > (long)bytes.Length ? bytes.Length : (int)(currentChunkSize - totalBytesRead);
+                    }
+
+                    totalBytesRead = 0;
+                    currentReadOffset = offsets[i] + chunkToRemove.Length;
+                }
+               
+                ////////////////////////////
+                // write remainder of file
+                ////////////////////////////
+                // move position
+                fs.Position = currentReadOffset;
+
+                // get length of current size to write
+                currentChunkSize = fs.Length - currentReadOffset;
+
+                // calculcate max cut size
+                maxReadSize = (currentChunkSize - totalBytesRead) > (long)bytes.Length ? bytes.Length : (int)(currentChunkSize - totalBytesRead);
+
+                while ((bytesRead = fs.Read(bytes, 0, maxReadSize)) > 0)
+                {
+                    destinationFs.Write(bytes, 0, bytesRead);
+                    totalBytesRead += (long)bytesRead;
+
+                    maxReadSize = (currentChunkSize - totalBytesRead) > (long)bytes.Length ? bytes.Length : (int)(currentChunkSize - totalBytesRead);
+                }
+            }
+
+            return destinationPath;
+        }
+
         public static bool ExecuteExternalProgram(
             string pathToExecuatable, 
             string arguments, 

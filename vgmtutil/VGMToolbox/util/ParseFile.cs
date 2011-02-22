@@ -384,6 +384,69 @@ namespace VGMToolbox.util
             return ret;
         }
 
+        public static long[] GetAllOffsets(Stream stream, long startingOffset,
+            byte[] searchBytes, bool doOffsetModulo, long offsetModuloDivisor,
+            long offsetModuloResult, bool returnStreamToIncomingPosition)
+        {
+            long initialStreamPosition = 0;
+
+            if (returnStreamToIncomingPosition)
+            {
+                initialStreamPosition = stream.Position;
+            }
+
+            long absoluteOffset = startingOffset;
+            long relativeOffset;
+            long actualOffset;
+            byte[] checkBytes = new byte[Constants.FileReadChunkSize];
+            int checkBytesRead;
+            byte[] compareBytes;
+
+            ArrayList offsetList = new ArrayList();
+            long[] ret;
+
+            while (absoluteOffset < stream.Length)
+            {
+                stream.Position = absoluteOffset;
+                checkBytesRead = stream.Read(checkBytes, 0, Constants.FileReadChunkSize);
+                relativeOffset = 0;
+
+                while (relativeOffset < checkBytesRead)
+                {
+                    actualOffset = absoluteOffset + relativeOffset;
+
+                    if ((!doOffsetModulo) ||
+                        (actualOffset % offsetModuloDivisor == offsetModuloResult))
+                    {
+                        if ((relativeOffset + searchBytes.Length) < checkBytes.Length)
+                        {
+                            compareBytes = new byte[searchBytes.Length];
+                            Array.Copy(checkBytes, relativeOffset, compareBytes, 0, searchBytes.Length);
+
+                            if (CompareSegment(compareBytes, 0, searchBytes))
+                            {
+                                offsetList.Add(actualOffset);
+                            }
+                        }
+                    }
+
+                    relativeOffset++;
+                }
+
+                absoluteOffset += Constants.FileReadChunkSize - searchBytes.Length;
+            }
+
+            // return stream to incoming position
+            if (returnStreamToIncomingPosition)
+            {
+                stream.Position = initialStreamPosition;
+            }
+
+            ret = (long[])offsetList.ToArray(typeof(long));
+
+            return ret;
+        }
+
         /// <summary>
         /// Get the offset of the first instance of pSearchBytes after the input offset.
         /// </summary>

@@ -21,7 +21,9 @@ namespace VGMToolbox.forms.stream
             InitializeComponent();
 
             this.tbOutput.Text = "Demultiplex streams from movies using an MPEG container format." + Environment.NewLine;
-            this.tbOutput.Text += "Currently supported formats: MPEG1, PSS, SFD";
+            this.tbOutput.Text += "- Currently supported formats: MPEG1, PMF, PSS, SFD" + Environment.NewLine;
+            this.tbOutput.Text += "- Output file extensions are default values, be sure to verify types after extraction." + Environment.NewLine;
+            this.tbOutput.Text += "- The following types require headers added after extraction: PMF (AT3).";
 
             this.initializeFormatList();
         }
@@ -30,7 +32,7 @@ namespace VGMToolbox.forms.stream
         {
             this.comboFormat.Items.Clear();
             this.comboFormat.Items.Add("MPEG");
-            // this.comboFormat.Items.Add("PMF");
+            this.comboFormat.Items.Add("PMF");
             this.comboFormat.Items.Add("PSS");
             this.comboFormat.Items.Add("SFD");
             
