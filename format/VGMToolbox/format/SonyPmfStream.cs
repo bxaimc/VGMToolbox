@@ -4,8 +4,6 @@ using System.IO;
 
 using VGMToolbox.util;
 
-using VGMToolbox.util;
-
 namespace VGMToolbox.format
 {
     public class SonyPmfStream : Mpeg2Stream
@@ -38,6 +36,7 @@ namespace VGMToolbox.format
 
             switch (checkBytes)
             {
+                // Thanks to FastElbJa and creator of pmfdemuxer (used to compare output) for this information
                 case 0x8180:
                     headerSize = 0x0C;
                     break;
@@ -64,7 +63,7 @@ namespace VGMToolbox.format
             return ((blockToCheck[3] >= 0xE0) && (blockToCheck[3] <= 0xEF));
         }
 
-        protected override void DoFinalTasks(Dictionary<uint, FileStream> outputFiles)
+        protected override void DoFinalTasks(Dictionary<uint, FileStream> outputFiles, bool addHeader)
         {
             byte[] headerBytes;
             string sourceFile; 
@@ -73,7 +72,6 @@ namespace VGMToolbox.format
             {
                 if (this.IsThisAnAudioBlock(BitConverter.GetBytes(streamId)))
                 {
-                    // seems to always be 0F D0 28 5C 00 00 00 00?
                     headerBytes = ParseFile.ParseSimpleOffset(outputFiles[streamId], 0, 8);
 
                     // remove all header chunks

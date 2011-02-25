@@ -38,6 +38,7 @@ namespace VGMToolbox.format
 
             switch (checkBytes)
             {
+                // Thanks to FastElbJa and creator of pmfdemuxer (used to compare output) for this information
                 case 0x8180:
                     headerSize = 0x0C;
                     break;
@@ -64,18 +65,16 @@ namespace VGMToolbox.format
             return ((blockToCheck[3] >= 0xE0) && (blockToCheck[3] <= 0xEF));
         }
 
-        protected override void DoFinalTasks(Dictionary<uint, FileStream> outputFiles)
+        protected override void DoFinalTasks(Dictionary<uint, FileStream> outputFiles, bool addHeader)
         {
-            byte[] headerBytes1;
-            byte[] headerBytes2;
+            byte[] headerBytes;
             string sourceFile;
 
             foreach (uint streamId in outputFiles.Keys)
             {
                 if (this.IsThisAnAudioBlock(BitConverter.GetBytes(streamId)))
                 {
-                    headerBytes1 = ParseFile.ParseSimpleOffset(outputFiles[streamId], 0, 0x1C);
-                    headerBytes2 = ParseFile.ParseSimpleOffset(outputFiles[streamId], 0, 0x0F);
+                    headerBytes = ParseFile.ParseSimpleOffset(outputFiles[streamId], 0, 0x8);
 
                     // remove all header chunks
                     string cleanedFile = FileUtil.RemoveAllChunksFromFile(outputFiles[streamId], headerBytes);

@@ -30,8 +30,9 @@
         {
             this.grpSourceFiles = new System.Windows.Forms.GroupBox();
             this.grpOptions = new System.Windows.Forms.GroupBox();
-            this.comboFormat = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.comboFormat = new System.Windows.Forms.ComboBox();
+            this.cbAddHeader = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -41,31 +42,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 427);
-            this.pnlLabels.Size = new System.Drawing.Size(691, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 487);
+            this.pnlLabels.Size = new System.Drawing.Size(830, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(691, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(830, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 350);
-            this.tbOutput.Size = new System.Drawing.Size(691, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 410);
+            this.tbOutput.Size = new System.Drawing.Size(830, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 330);
-            this.pnlButtons.Size = new System.Drawing.Size(691, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 390);
+            this.pnlButtons.Size = new System.Drawing.Size(830, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(631, 0);
+            this.btnCancel.Location = new System.Drawing.Point(770, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(571, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(710, 0);
             // 
             // grpSourceFiles
             // 
@@ -73,30 +74,23 @@
             this.grpSourceFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpSourceFiles.Location = new System.Drawing.Point(0, 23);
             this.grpSourceFiles.Name = "grpSourceFiles";
-            this.grpSourceFiles.Size = new System.Drawing.Size(691, 307);
+            this.grpSourceFiles.Size = new System.Drawing.Size(830, 367);
             this.grpSourceFiles.TabIndex = 5;
             this.grpSourceFiles.TabStop = false;
             this.grpSourceFiles.Text = "Drop Files Here";
             // 
             // grpOptions
             // 
+            this.grpOptions.Controls.Add(this.cbAddHeader);
             this.grpOptions.Controls.Add(this.label1);
             this.grpOptions.Controls.Add(this.comboFormat);
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.grpOptions.Location = new System.Drawing.Point(3, 208);
+            this.grpOptions.Location = new System.Drawing.Point(3, 300);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(685, 96);
+            this.grpOptions.Size = new System.Drawing.Size(824, 64);
             this.grpOptions.TabIndex = 0;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
-            // 
-            // comboFormat
-            // 
-            this.comboFormat.FormattingEnabled = true;
-            this.comboFormat.Location = new System.Drawing.Point(51, 13);
-            this.comboFormat.Name = "comboFormat";
-            this.comboFormat.Size = new System.Drawing.Size(121, 21);
-            this.comboFormat.TabIndex = 0;
             // 
             // label1
             // 
@@ -107,12 +101,31 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "Format";
             // 
+            // comboFormat
+            // 
+            this.comboFormat.FormattingEnabled = true;
+            this.comboFormat.Location = new System.Drawing.Point(51, 13);
+            this.comboFormat.Name = "comboFormat";
+            this.comboFormat.Size = new System.Drawing.Size(121, 21);
+            this.comboFormat.TabIndex = 0;
+            this.comboFormat.SelectedIndexChanged += new System.EventHandler(this.comboFormat_SelectedIndexChanged);
+            // 
+            // cbAddHeader
+            // 
+            this.cbAddHeader.AutoSize = true;
+            this.cbAddHeader.Location = new System.Drawing.Point(9, 40);
+            this.cbAddHeader.Name = "cbAddHeader";
+            this.cbAddHeader.Size = new System.Drawing.Size(130, 17);
+            this.cbAddHeader.TabIndex = 2;
+            this.cbAddHeader.Text = "Add Header to Output";
+            this.cbAddHeader.UseVisualStyleBackColor = true;
+            // 
             // MpegDemuxForm
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(691, 468);
+            this.ClientSize = new System.Drawing.Size(830, 528);
             this.Controls.Add(this.grpSourceFiles);
             this.Name = "MpegDemuxForm";
             this.Text = "MpegDemuxForm";
@@ -143,5 +156,6 @@
         private System.Windows.Forms.GroupBox grpOptions;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox comboFormat;
+        private System.Windows.Forms.CheckBox cbAddHeader;
     }
 }

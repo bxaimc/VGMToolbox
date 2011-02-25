@@ -30,6 +30,11 @@ namespace VGMToolbox.format
             SonyPssVideo,
         }
 
+        public struct MpegDemuxOptions
+        {
+            public bool AddHeader { set; get; }
+        }
+
         public struct BlockSizeStruct
         {
             public PacketSizeType SizeType;
@@ -132,12 +137,12 @@ namespace VGMToolbox.format
             return ((blockToCheck[3] >= 0xE0) && (blockToCheck[3] <= 0xEF));
         }
 
-        protected virtual void DoFinalTasks(Dictionary<uint, FileStream> outputFiles)
+        protected virtual void DoFinalTasks(Dictionary<uint, FileStream> outputFiles, bool addHeader)
         { 
         
         }
 
-        public void DemultiplexStreams()
+        public void DemultiplexStreams(bool addHeader)
         {
             using (FileStream fs = File.OpenRead(this.FilePath))
             {
@@ -277,7 +282,7 @@ namespace VGMToolbox.format
                 ///////////////////////////////////
                 // Perform any final tasks needed
                 ///////////////////////////////////
-                this.DoFinalTasks(streamOutputWriters);
+                this.DoFinalTasks(streamOutputWriters, addHeader);
 
                 //////////////////////////
                 // close all open writers

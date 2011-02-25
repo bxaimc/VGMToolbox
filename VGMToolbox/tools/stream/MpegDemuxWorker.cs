@@ -8,12 +8,12 @@ using VGMToolbox.plugin;
 namespace VGMToolbox.tools.stream
 {
     class MpegDemuxWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
-    {
-        
-        
+    {                
         public struct MpegDemuxStruct : IVgmtWorkerStruct
         {
             public string SourceFormat { set; get; }
+            public bool AddHeader { set; get; }
+            
             public string[] SourcePaths { set; get; }
         }
 
@@ -33,11 +33,11 @@ namespace VGMToolbox.tools.stream
                     {
                         case 1:
                             Mpeg1Stream mpeg1Stream = new Mpeg1Stream(path);
-                            mpeg1Stream.DemultiplexStreams();
+                            mpeg1Stream.DemultiplexStreams(demuxStruct.AddHeader);
                             break;
                         case 2:
                             Mpeg2Stream mpeg2Stream = new Mpeg2Stream(path);
-                            mpeg2Stream.DemultiplexStreams();
+                            mpeg2Stream.DemultiplexStreams(demuxStruct.AddHeader);
                             break;
                         default:
                             throw new FormatException(String.Format("Unsupported MPEG type, for file: {0}", Path.GetFileName(path)));
@@ -45,22 +45,22 @@ namespace VGMToolbox.tools.stream
                     break;
                 case "PAM":
                     SonyPamStream pamStream = new SonyPamStream(path);
-                    pamStream.DemultiplexStreams();
+                    pamStream.DemultiplexStreams(demuxStruct.AddHeader);
                     break;
                 
                 case "PMF":
                     SonyPmfStream pmfStream = new SonyPmfStream(path);
-                    pmfStream.DemultiplexStreams();
+                    pmfStream.DemultiplexStreams(demuxStruct.AddHeader);
                     break;
                 
                 case "PSS":
                     SonyPssStream sps = new SonyPssStream(path);
-                    sps.DemultiplexStreams();
+                    sps.DemultiplexStreams(demuxStruct.AddHeader);
                     break;
 
                 case "SFD":
                     SofdecStream ss = new SofdecStream(path);
-                    ss.DemultiplexStreams();
+                    ss.DemultiplexStreams(demuxStruct.AddHeader);
                     break;
 
                 default:
