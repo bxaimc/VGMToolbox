@@ -74,7 +74,7 @@ namespace VGMToolbox.forms.stream
 
             // format
             taskStruct.SourceFormat = this.comboFormat.SelectedItem.ToString();
-            
+            taskStruct.AddHeader = this.cbAddHeader.Checked;
             
             base.backgroundWorker_Execute(taskStruct);
         }
