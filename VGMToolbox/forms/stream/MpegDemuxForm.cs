@@ -21,11 +21,9 @@ namespace VGMToolbox.forms.stream
             InitializeComponent();
 
             this.tbOutput.Text = "Demultiplex streams from movies using an MPEG container format." + Environment.NewLine;
-            this.tbOutput.Text += "- Currently supported formats: MPEG1, MPEG2?, PAM, PMF, PSS, SFD" + Environment.NewLine;
+            this.tbOutput.Text += "- Currently supported formats: MPEG1, MPEG2?, PAM (single audio stream only), PMF (single audio stream only), PSS, SFD" + Environment.NewLine;
             this.tbOutput.Text += "- Output file extensions are default values, be sure to verify types after extraction." + Environment.NewLine;
-            this.tbOutput.Text += "- The following types require headers added after extraction: PAM (AT3), PMF (AT3)." + Environment.NewLine;
-            this.tbOutput.Text += "- 'Add Header' feature not yet functional." + Environment.NewLine;
-
+            this.tbOutput.Text += "- The following types require headers added after extraction for playback: PAM, PMF." + Environment.NewLine;
 
             this.initializeFormatList();
         }

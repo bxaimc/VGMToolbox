@@ -66,25 +66,40 @@ namespace VGMToolbox.format
         protected override void DoFinalTasks(Dictionary<uint, FileStream> outputFiles, bool addHeader)
         {
             byte[] headerBytes;
-            string sourceFile; 
+            byte[] aa3HeaderBytes;
+            uint headerBlock;
+            string sourceFile;
 
             foreach (uint streamId in outputFiles.Keys)
             {
                 if (this.IsThisAnAudioBlock(BitConverter.GetBytes(streamId)))
                 {
-                    headerBytes = ParseFile.ParseSimpleOffset(outputFiles[streamId], 0, 8);
+                    headerBytes = ParseFile.ParseSimpleOffset(outputFiles[streamId], 0, 0x8);
 
                     // remove all header chunks
                     string cleanedFile = FileUtil.RemoveAllChunksFromFile(outputFiles[streamId], headerBytes);
 
                     // close stream and rename file
                     sourceFile = outputFiles[streamId].Name;
-                    
+
                     outputFiles[streamId].Close();
                     outputFiles[streamId].Dispose();
 
                     File.Delete(sourceFile);
                     File.Move(cleanedFile, sourceFile);
+
+                    // add header
+                    if (addHeader)
+                    {
+                        Array.Reverse(headerBytes);
+                        headerBlock = BitConverter.ToUInt32(headerBytes, 4);
+
+                        string headeredFile = Path.ChangeExtension(sourceFile, Atrac3Plus.FileExtension);
+                        aa3HeaderBytes = Atrac3Plus.GetAa3Header(headerBlock);
+                        FileUtil.AddHeaderToFile(aa3HeaderBytes, sourceFile, headeredFile);
+
+                        File.Delete(sourceFile);
+                    }
                 }
             }
         }
