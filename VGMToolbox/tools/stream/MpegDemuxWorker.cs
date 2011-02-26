@@ -65,7 +65,9 @@ namespace VGMToolbox.tools.stream
 
                 default:
                     throw new FormatException("Source format not defined.");
-            }            
+            }
+
+            this.outputBuffer.Append(Path.GetFileName(path));
         }               
     }
 }

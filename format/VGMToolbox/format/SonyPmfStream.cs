@@ -10,6 +10,12 @@ namespace VGMToolbox.format
     {
         new public const string DefaultAudioExtension = ".at3";
 
+        public const string Atrac3AudioExtension = ".at3";
+        public const string LpcmAudioExtension = ".lpcm";
+
+        public static readonly byte[] Atrac3Bytes = new byte[] { 0x1E, 0x60, 0x14, 0x00 };
+        public static readonly byte[] LpcmBytes = new byte[] { 0x1E, 0x61, 0x80, 0x40 };
+
         public const string M2vVideoExtension = ".m2v";
         public const string AvcVideoExtension = ".264";
 
@@ -25,7 +31,6 @@ namespace VGMToolbox.format
 
             base.BlockIdDictionary[BitConverter.ToUInt32(Mpeg2Stream.PacketStartByes, 0)] = new BlockSizeStruct(PacketSizeType.Static, 0xE); // Pack Header
             base.BlockIdDictionary[BitConverter.ToUInt32(new byte[] { 0x00, 0x00, 0x01, 0xBD }, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 2); // Audio Stream, two bytes following equal length (Big Endian)
-            // base.BlockIdDictionary[BitConverter.ToUInt32(new byte[] { 0x00, 0x00, 0x01, 0xBF }, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 2); // Audio Stream, two bytes following equal length (Big Endian)
         }
 
         protected override int GetAudioPacketHeaderSize(Stream readStream, long currentOffset)
@@ -43,16 +48,18 @@ namespace VGMToolbox.format
             switch (checkBytes)
             {
                 // Thanks to FastElbJa and creator of pmfdemuxer (used to compare output) for this information
+                case 0x8100:
+                    headerSize = 0x07;
+                    break;
                 case 0x8180:
+                case 0x8101:
                     headerSize = 0x0C;
                     break;
                 case 0x8181:
                     headerSize = 0x0F;
                     break;
                 default:
-                    headerSize = 0;
-                    // throw new FormatException(String.Format("Unexpected secondary bytes found for block starting at 0x{0}: 0x{1}", currentOffset.ToString("X8"), checkBytes.ToString("X4")));
-                    break;
+                    throw new FormatException(String.Format("Unexpected secondary bytes found for block starting at 0x{0}: 0x{1}", currentOffset.ToString("X8"), checkBytes.ToString("X4")));
             }
             return headerSize;
         }
@@ -84,16 +91,35 @@ namespace VGMToolbox.format
 
         protected override bool IsThisAnAudioBlock(byte[] blockToCheck)
         {
-            return ((blockToCheck[3] >= 0xBD) &&
-                    (blockToCheck[3] <= 0xDF) &&
-                    (blockToCheck[3] != 0xBE) &&
-                    (blockToCheck[3] != 0xBF));
+            return (blockToCheck[3] == 0xBD);
         }
         protected override bool IsThisAVideoBlock(byte[] blockToCheck)
         {
             return ((blockToCheck[3] >= 0xE0) && (blockToCheck[3] <= 0xEF));
         }
 
+        protected override string GetAudioFileExtension(Stream readStream, long currentOffset)
+        {
+            string fileExtension;
+            byte[] checkBytes;
+
+            checkBytes = ParseFile.ParseSimpleOffset(readStream, (currentOffset + 0xE), 4);
+
+            if (ParseFile.CompareSegment(checkBytes, 0, Atrac3Bytes))
+            {
+                fileExtension = Atrac3AudioExtension;
+            }
+            else if (ParseFile.CompareSegment(checkBytes, 0, LpcmBytes))
+            {
+                fileExtension = LpcmAudioExtension;
+            }
+            else
+            {
+                fileExtension = ".bin";
+            }
+
+            return fileExtension;
+        }
         protected override string GetVideoFileExtension(Stream readStream, long currentOffset)
         {
             string fileExtension;
@@ -127,7 +153,8 @@ namespace VGMToolbox.format
 
             foreach (uint streamId in outputFiles.Keys)
             {
-                if (this.IsThisAnAudioBlock(BitConverter.GetBytes(streamId)))
+                if (this.IsThisAnAudioBlock(BitConverter.GetBytes(streamId)) &&
+                    outputFiles[streamId].Name.EndsWith(Atrac3AudioExtension))
                 {
                     headerBytes = ParseFile.ParseSimpleOffset(outputFiles[streamId], 0, 0x8);
 

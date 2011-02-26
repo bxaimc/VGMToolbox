@@ -62,19 +62,14 @@ namespace VGMToolbox.format
                     headerSize = 0x0F;
                     break;
                 default:
-                    headerSize = 0;
-                    // throw new FormatException(String.Format("Unexpected secondary bytes found for block starting at 0x{0}: 0x{1}", currentOffset.ToString("X8"), checkBytes.ToString("X4")));
-                    break;
+                    throw new FormatException(String.Format("Unexpected secondary bytes found for block starting at 0x{0}: 0x{1}", currentOffset.ToString("X8"), checkBytes.ToString("X4")));
             }
             return headerSize;
         }
 
         protected override bool IsThisAnAudioBlock(byte[] blockToCheck)
         {
-            return ((blockToCheck[3] >= 0xBD) &&
-                    (blockToCheck[3] <= 0xDF) &&
-                    (blockToCheck[3] != 0xBE) &&
-                    (blockToCheck[3] != 0xBF));
+            return (blockToCheck[3] == 0xBD);
         }
         protected override bool IsThisAVideoBlock(byte[] blockToCheck)
         {
@@ -140,36 +135,34 @@ namespace VGMToolbox.format
 
             foreach (uint streamId in outputFiles.Keys)
             {
-                if (this.IsThisAnAudioBlock(BitConverter.GetBytes(streamId)))
+                if (this.IsThisAnAudioBlock(BitConverter.GetBytes(streamId)) &&
+                    outputFiles[streamId].Name.EndsWith(Atrac3AudioExtension))
                 {
                     headerBytes = ParseFile.ParseSimpleOffset(outputFiles[streamId], 0, 0x8);
 
-                    if (BitConverter.ToUInt32(headerBytes, 0) != 0)
+                    // remove all header chunks
+                    string cleanedFile = FileUtil.RemoveAllChunksFromFile(outputFiles[streamId], headerBytes);
+
+                    // close stream and rename file
+                    sourceFile = outputFiles[streamId].Name;
+
+                    outputFiles[streamId].Close();
+                    outputFiles[streamId].Dispose();
+
+                    File.Delete(sourceFile);
+                    File.Move(cleanedFile, sourceFile);
+
+                    // add header
+                    if (addHeader)
                     {
-                        // remove all header chunks
-                        string cleanedFile = FileUtil.RemoveAllChunksFromFile(outputFiles[streamId], headerBytes);
+                        Array.Reverse(headerBytes);
+                        headerBlock = BitConverter.ToUInt32(headerBytes, 4);
 
-                        // close stream and rename file
-                        sourceFile = outputFiles[streamId].Name;
-
-                        outputFiles[streamId].Close();
-                        outputFiles[streamId].Dispose();
+                        string headeredFile = Path.ChangeExtension(sourceFile, Atrac3Plus.FileExtension);
+                        aa3HeaderBytes = Atrac3Plus.GetAa3Header(headerBlock);
+                        FileUtil.AddHeaderToFile(aa3HeaderBytes, sourceFile, headeredFile);
 
                         File.Delete(sourceFile);
-                        File.Move(cleanedFile, sourceFile);
-
-                        // add header
-                        if (addHeader)
-                        {
-                            Array.Reverse(headerBytes);
-                            headerBlock = BitConverter.ToUInt32(headerBytes, 4);
-
-                            string headeredFile = Path.ChangeExtension(sourceFile, Atrac3Plus.FileExtension);
-                            aa3HeaderBytes = Atrac3Plus.GetAa3Header(headerBlock);
-                            FileUtil.AddHeaderToFile(aa3HeaderBytes, sourceFile, headeredFile);
-
-                            File.Delete(sourceFile);
-                        }
                     }
                 }
             }
