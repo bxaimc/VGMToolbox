@@ -245,9 +245,9 @@ namespace VGMToolbox.format
                                                 if (this.TotalAudioStreams > 1)
                                                 {
                                                     currentStreamQueue.Clear();
-                                                    currentStreamQueue.Enqueue((byte)(this.TotalAudioStreams));
+                                                    currentStreamQueue.Enqueue((byte)(this.TotalAudioStreams - 1));
 
-                                                    for (byte i = 0; i < this.TotalAudioStreams - 1; i++)
+                                                    for (byte i = 1; i < this.TotalAudioStreams; i++)
                                                     {
                                                         currentStreamQueue.Enqueue((byte)(i - 1));
                                                     }                                                                                                                                                            
