@@ -88,6 +88,7 @@ namespace VGMToolbox.tools.xsf
             public string sourcePath;
             public string outputFolder;
             public string dspFile;
+            public string customMapFile;
             
             public bool findData;
             public bool TryAllCombinations { set; get; }
@@ -102,73 +103,6 @@ namespace VGMToolbox.tools.xsf
             WorkerReportsProgress = true;
             WorkerSupportsCancellation = true;
         }
-
-        /*
-        private void makeSsfsOld(SsfMakeStruct pSsfMakeStruct, DoWorkEventArgs e)
-        {
-            this.progressStruct = new VGMToolbox.util.ProgressStruct();
-            
-            // first run (only run if no DSP)
-            pSsfMakeStruct.map = this.getMapFile(pSsfMakeStruct);
-            
-            // check if a suitable default map was found
-            if (!String.IsNullOrEmpty(pSsfMakeStruct.map))
-            {
-                // prepare working dir
-                if (prepareWorkingDir(pSsfMakeStruct))
-                {
-                    // report progress
-                    this.progressStruct = new VGMToolbox.util.ProgressStruct();
-                    this.progressStruct.newNode = null;
-                    this.progressStruct.genericMessage = 
-                        "Working Directory Prepared" + Environment.NewLine;
-                    ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);
-
-                    // modify script
-                    if (this.customizeScript(pSsfMakeStruct))
-                    {
-                        // report progress
-                        this.progressStruct = new VGMToolbox.util.ProgressStruct();
-                        this.progressStruct.newNode = null;
-                        this.progressStruct.genericMessage =
-                            "Script Modified" + Environment.NewLine;
-                        ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);                    
-
-                        // execute script
-                        if (executeScript())
-                        {
-                            // report progress
-                            this.progressStruct = new VGMToolbox.util.ProgressStruct();
-                            this.progressStruct.newNode = null;
-                            this.progressStruct.genericMessage =
-                                "Script Executed" + Environment.NewLine;
-                            ReportProgress(Constants.PROGRESS_MSG_ONLY, this.progressStruct);                                            
-                        }
-                    
-                    }
-                }
-
-
-
-
-                // cleanup working folder
-                //Directory.Delete(WORKING_FOLDER, true);
-            }
-            else
-            { 
-                // no suitable map found
-                progressStruct = new VGMToolbox.util.ProgressStruct();
-                progressStruct.newNode = null;
-                progressStruct.filename = null;
-                progressStruct.errorMessage = "ERROR: No suitable map file was found.";
-                ReportProgress(0, progressStruct);
-
-                // for now, return (dynamic map creation in the future?)
-            }
-
-            return;
-        }
-        */
  
         private void makeSsfs(SsfMakeStruct pSsfMakeStruct, DoWorkEventArgs e)
         {
@@ -340,8 +274,15 @@ namespace VGMToolbox.tools.xsf
                                     pSsfMakeStruct.useDsp = "1";
                                 }
 
-                                pSsfMakeStruct.map = getMapFile(pSsfMakeStruct, seqFile, toneFileName);
-
+                                if (String.IsNullOrEmpty(pSsfMakeStruct.customMapFile))
+                                {
+                                    pSsfMakeStruct.map = getMapFile(pSsfMakeStruct, seqFile, toneFileName);
+                                }
+                                else
+                                {
+                                    pSsfMakeStruct.map = Path.GetFileName(pSsfMakeStruct.customMapFile);
+                                }
+                                
                                 if (!String.IsNullOrEmpty(pSsfMakeStruct.map))
                                 {
                                     totalTracks = this.getNumberOfTracks(seqFile);
@@ -393,7 +334,14 @@ namespace VGMToolbox.tools.xsf
                                 pSsfMakeStruct.useDsp = "1";
                             }
 
-                            pSsfMakeStruct.map = getMapFile(pSsfMakeStruct, seqFile, toneFileName);
+                            if (String.IsNullOrEmpty(pSsfMakeStruct.customMapFile))
+                            {
+                                pSsfMakeStruct.map = getMapFile(pSsfMakeStruct, seqFile, toneFileName);
+                            }
+                            else
+                            {
+                                pSsfMakeStruct.map = Path.GetFileName(pSsfMakeStruct.customMapFile);
+                            }
 
                             if (!String.IsNullOrEmpty(pSsfMakeStruct.map))
                             {
@@ -501,7 +449,17 @@ namespace VGMToolbox.tools.xsf
                 }
 
                 // copy needed files
-                string mapFileSourcePath = Path.Combine(SSFMAKE_FOLDER_PATH, pSsfMakeStruct.map);
+                string mapFileSourcePath;
+
+                if (String.IsNullOrEmpty(pSsfMakeStruct.customMapFile))
+                {
+                    mapFileSourcePath = Path.Combine(SSFMAKE_FOLDER_PATH, pSsfMakeStruct.map);
+                }
+                else
+                {
+                    mapFileSourcePath = pSsfMakeStruct.customMapFile;
+                }
+                
                 string mapFileDestinationPath = Path.Combine(WORKING_FOLDER, pSsfMakeStruct.map);
 
                 File.Copy(mapFileSourcePath, mapFileDestinationPath, true);

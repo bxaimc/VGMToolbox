@@ -30,6 +30,7 @@
         {
             this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.cbTryAllCombinations = new System.Windows.Forms.CheckBox();
             this.cbSeekData = new System.Windows.Forms.CheckBox();
             this.grpSettings = new System.Windows.Forms.GroupBox();
             this.cbMatchSeqBank = new System.Windows.Forms.CheckBox();
@@ -57,7 +58,9 @@
             this.lblDriver = new System.Windows.Forms.Label();
             this.tbSourcePath = new System.Windows.Forms.TextBox();
             this.tbDriver = new System.Windows.Forms.TextBox();
-            this.cbTryAllCombinations = new System.Windows.Forms.CheckBox();
+            this.tbCustomMapFile = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.btnBrowseCustomMap = new System.Windows.Forms.Button();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -69,31 +72,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 480);
-            this.pnlLabels.Size = new System.Drawing.Size(998, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 421);
+            this.pnlLabels.Size = new System.Drawing.Size(830, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(998, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(830, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 403);
-            this.tbOutput.Size = new System.Drawing.Size(998, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 344);
+            this.tbOutput.Size = new System.Drawing.Size(830, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 383);
-            this.pnlButtons.Size = new System.Drawing.Size(998, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 324);
+            this.pnlButtons.Size = new System.Drawing.Size(830, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(938, 0);
+            this.btnCancel.Location = new System.Drawing.Point(770, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(878, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(710, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnExecute_Click);
             // 
             // panel1
@@ -105,7 +108,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 23);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(998, 360);
+            this.panel1.Size = new System.Drawing.Size(830, 301);
             this.panel1.TabIndex = 5;
             // 
             // groupBox3
@@ -113,12 +116,22 @@
             this.groupBox3.Controls.Add(this.cbTryAllCombinations);
             this.groupBox3.Controls.Add(this.cbSeekData);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox3.Location = new System.Drawing.Point(0, 222);
+            this.groupBox3.Location = new System.Drawing.Point(0, 251);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(998, 103);
+            this.groupBox3.Size = new System.Drawing.Size(813, 103);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Options";
+            // 
+            // cbTryAllCombinations
+            // 
+            this.cbTryAllCombinations.AutoSize = true;
+            this.cbTryAllCombinations.Location = new System.Drawing.Point(6, 81);
+            this.cbTryAllCombinations.Name = "cbTryAllCombinations";
+            this.cbTryAllCombinations.Size = new System.Drawing.Size(323, 17);
+            this.cbTryAllCombinations.TabIndex = 1;
+            this.cbTryAllCombinations.Text = "Try all combinations of SEQ and BIN (good for finding matches)";
+            this.cbTryAllCombinations.UseVisualStyleBackColor = true;
             // 
             // cbSeekData
             // 
@@ -148,9 +161,9 @@
             this.grpSettings.Controls.Add(this.tbSequenceTrack);
             this.grpSettings.Controls.Add(this.tbSequenceBank);
             this.grpSettings.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpSettings.Location = new System.Drawing.Point(0, 124);
+            this.grpSettings.Location = new System.Drawing.Point(0, 153);
             this.grpSettings.Name = "grpSettings";
-            this.grpSettings.Size = new System.Drawing.Size(998, 98);
+            this.grpSettings.Size = new System.Drawing.Size(813, 98);
             this.grpSettings.TabIndex = 1;
             this.grpSettings.TabStop = false;
             this.grpSettings.Text = "Settings";
@@ -274,6 +287,9 @@
             // 
             // groupFiles
             // 
+            this.groupFiles.Controls.Add(this.btnBrowseCustomMap);
+            this.groupFiles.Controls.Add(this.label1);
+            this.groupFiles.Controls.Add(this.tbCustomMapFile);
             this.groupFiles.Controls.Add(this.btnBrowseDsp);
             this.groupFiles.Controls.Add(this.lblSingleDspFile);
             this.groupFiles.Controls.Add(this.tbDspFile);
@@ -288,7 +304,7 @@
             this.groupFiles.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupFiles.Location = new System.Drawing.Point(0, 0);
             this.groupFiles.Name = "groupFiles";
-            this.groupFiles.Size = new System.Drawing.Size(998, 124);
+            this.groupFiles.Size = new System.Drawing.Size(813, 153);
             this.groupFiles.TabIndex = 0;
             this.groupFiles.TabStop = false;
             this.groupFiles.Text = "Files";
@@ -397,21 +413,40 @@
             this.tbDriver.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbDriver_DragDrop);
             this.tbDriver.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbDriver_DragEnter);
             // 
-            // cbTryAllCombinations
+            // tbCustomMapFile
             // 
-            this.cbTryAllCombinations.AutoSize = true;
-            this.cbTryAllCombinations.Location = new System.Drawing.Point(6, 81);
-            this.cbTryAllCombinations.Name = "cbTryAllCombinations";
-            this.cbTryAllCombinations.Size = new System.Drawing.Size(323, 17);
-            this.cbTryAllCombinations.TabIndex = 1;
-            this.cbTryAllCombinations.Text = "Try all combinations of SEQ and BIN (good for finding matches)";
-            this.cbTryAllCombinations.UseVisualStyleBackColor = true;
+            this.tbCustomMapFile.AllowDrop = true;
+            this.tbCustomMapFile.Location = new System.Drawing.Point(140, 123);
+            this.tbCustomMapFile.Name = "tbCustomMapFile";
+            this.tbCustomMapFile.Size = new System.Drawing.Size(247, 20);
+            this.tbCustomMapFile.TabIndex = 14;
+            this.tbCustomMapFile.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbCustomMapFile_DragDrop);
+            this.tbCustomMapFile.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbCustomMapFile_DragEnter);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 126);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(87, 13);
+            this.label1.TabIndex = 15;
+            this.label1.Text = "Custom MAP File";
+            // 
+            // btnBrowseCustomMap
+            // 
+            this.btnBrowseCustomMap.Location = new System.Drawing.Point(393, 123);
+            this.btnBrowseCustomMap.Name = "btnBrowseCustomMap";
+            this.btnBrowseCustomMap.Size = new System.Drawing.Size(25, 20);
+            this.btnBrowseCustomMap.TabIndex = 16;
+            this.btnBrowseCustomMap.Text = "...";
+            this.btnBrowseCustomMap.UseVisualStyleBackColor = true;
+            this.btnBrowseCustomMap.Click += new System.EventHandler(this.btnBrowseCustomMap_Click);
             // 
             // SsfMakeFrontEndForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(998, 521);
+            this.ClientSize = new System.Drawing.Size(830, 462);
             this.Controls.Add(this.panel1);
             this.Name = "SsfMakeFrontEndForm";
             this.Text = "SsfMakeFrontEndForm";
@@ -470,6 +505,9 @@
         private System.Windows.Forms.TextBox tbDspFile;
         private System.Windows.Forms.Button btnBrowseDsp;
         private System.Windows.Forms.CheckBox cbTryAllCombinations;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox tbCustomMapFile;
+        private System.Windows.Forms.Button btnBrowseCustomMap;
 
     }
 }

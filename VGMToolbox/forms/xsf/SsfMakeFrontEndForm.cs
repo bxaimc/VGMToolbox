@@ -66,7 +66,7 @@ namespace VGMToolbox.forms.xsf
             smStruct.effectNumber = tbEffect.Text;
             smStruct.useDsp = "0"; // logic within worker will set this
             smStruct.driver = tbDriver.Text;
-            // smStruct.map = tbMapFile.Text.Trim();
+            smStruct.customMapFile = tbCustomMapFile.Text.Trim();
             smStruct.dspFile = tbDspFile.Text;
 
             smStruct.sourcePath = tbSourcePath.Text;
@@ -166,6 +166,27 @@ namespace VGMToolbox.forms.xsf
             {
                 this.tbDspFile.Text = s[0];
             }
+        }
+
+        private void btnBrowseCustomMap_Click(object sender, EventArgs e)
+        {
+            this.tbCustomMapFile.Text = base.browseForFile(sender, e);
+        }
+
+        private void tbCustomMapFile_DragEnter(object sender, DragEventArgs e)
+        {
+            base.doDragEnter(sender, e);
+        }
+
+        private void tbCustomMapFile_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            if ((s.Length == 1) && (File.Exists(s[0])))
+            {
+                this.tbCustomMapFile.Text = s[0];
+            }
+
         }
     }
 }
