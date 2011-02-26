@@ -9,14 +9,19 @@ namespace VGMToolbox.format
     public class SonyPmfStream : Mpeg2Stream
     {
         new public const string DefaultAudioExtension = ".at3";
-        new public const string DefaultVideoExtension = ".264";
+
+        public const string M2vVideoExtension = ".m2v";
+        public const string AvcVideoExtension = ".264";
+
+        public static readonly byte[] M2vBytes = new byte[] { 0x00, 0x00, 0x01, 0xB3 };
+        public static readonly byte[] AvcBytes = new byte[] { 0x00, 0x00, 0x00, 0x01 };
 
         public SonyPmfStream(string path)
             : base(path)
         {
             this.UsesSameIdForMultipleAudioTracks = true;
             this.FileExtensionAudio = DefaultAudioExtension;
-            this.FileExtensionVideo = DefaultVideoExtension;
+            this.FileExtensionVideo = AvcVideoExtension;
 
             base.BlockIdDictionary[BitConverter.ToUInt32(Mpeg2Stream.PacketStartByes, 0)] = new BlockSizeStruct(PacketSizeType.Static, 0xE); // Pack Header
             base.BlockIdDictionary[BitConverter.ToUInt32(new byte[] { 0x00, 0x00, 0x01, 0xBD }, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 2); // Audio Stream, two bytes following equal length (Big Endian)
@@ -87,6 +92,30 @@ namespace VGMToolbox.format
         protected override bool IsThisAVideoBlock(byte[] blockToCheck)
         {
             return ((blockToCheck[3] >= 0xE0) && (blockToCheck[3] <= 0xEF));
+        }
+
+        protected override string GetVideoFileExtension(Stream readStream, long currentOffset)
+        {
+            string fileExtension;
+            byte[] checkBytes;
+            int videoHeaderSize = this.GetVideoPacketHeaderSize(readStream, currentOffset);
+
+            checkBytes = ParseFile.ParseSimpleOffset(readStream, (currentOffset + videoHeaderSize + 6), 4);
+
+            if (ParseFile.CompareSegment(checkBytes, 0, AvcBytes))
+            {
+                fileExtension = AvcVideoExtension;
+            }
+            else if (ParseFile.CompareSegment(checkBytes, 0, M2vBytes))
+            {
+                fileExtension = M2vVideoExtension;
+            }
+            else
+            {
+                fileExtension = ".bin";
+            }
+
+            return fileExtension;
         }
 
         protected override void DoFinalTasks(Dictionary<uint, FileStream> outputFiles, bool addHeader)

@@ -145,6 +145,16 @@ namespace VGMToolbox.format
             return ((blockToCheck[3] >= 0xE0) && (blockToCheck[3] <= 0xEF));
         }
 
+        protected virtual string GetAudioFileExtension(Stream readStream, long currentOffset)
+        {
+            return this.FileExtensionAudio;
+        }
+
+        protected virtual string GetVideoFileExtension(Stream readStream, long currentOffset)
+        {
+            return this.FileExtensionVideo;
+        }
+
         protected virtual void DoFinalTasks(Dictionary<uint, FileStream> outputFiles, bool addHeader)
         { 
         
@@ -271,6 +281,8 @@ namespace VGMToolbox.format
                                         {
                                             currentStreamKey = currentBlockIdVal;
                                         }
+                                        
+                                        // check if we've already started parsing this stream
                                         if (!streamOutputWriters.ContainsKey(currentStreamKey))
                                         {
                                             // convert block id to little endian for naming
@@ -284,11 +296,11 @@ namespace VGMToolbox.format
                                             // add proper extension
                                             if (this.IsThisAnAudioBlock(currentBlockId))
                                             {
-                                                outputFileName += this.FileExtensionAudio;
+                                                outputFileName += this.GetAudioFileExtension(fs, currentOffset);
                                             }
                                             else
                                             {
-                                                outputFileName += this.FileExtensionVideo;
+                                                outputFileName += this.GetVideoFileExtension(fs, currentOffset);
                                             }
 
                                             // add output directory
