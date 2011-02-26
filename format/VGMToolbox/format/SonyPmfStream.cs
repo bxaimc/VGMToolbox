@@ -9,11 +9,12 @@ namespace VGMToolbox.format
     public class SonyPmfStream : Mpeg2Stream
     {
         new public const string DefaultAudioExtension = ".at3";
-        new public const string DefaultVideoExtension = ".avi";
+        new public const string DefaultVideoExtension = ".264";
 
         public SonyPmfStream(string path)
             : base(path)
         {
+            this.UsesSameIdForMultipleAudioTracks = true;
             this.FileExtensionAudio = DefaultAudioExtension;
             this.FileExtensionVideo = DefaultVideoExtension;
 
@@ -49,6 +50,31 @@ namespace VGMToolbox.format
                     break;
             }
             return headerSize;
+        }
+
+        protected override bool IsThisAStartingBlock(Stream readStream, long currentOffset)
+        {
+            bool isStartingBlock = false;
+            UInt16 checkBytes;
+            OffsetDescription od = new OffsetDescription();
+
+            od.OffsetByteOrder = Constants.BigEndianByteOrder;
+            od.OffsetSize = "2";
+            od.OffsetValue = "6";
+
+            checkBytes = (UInt16)ParseFile.GetVaryingByteValueAtRelativeOffset(readStream, od, currentOffset);
+
+            switch (checkBytes)
+            {
+                // Thanks to FastElbJa for this information
+                case 0x8181:
+                    isStartingBlock = true;
+                    break;
+                default:
+                    isStartingBlock = false;
+                    break;
+            }
+            return isStartingBlock;        
         }
 
         protected override bool IsThisAnAudioBlock(byte[] blockToCheck)

@@ -15,6 +15,9 @@ namespace VGMToolbox.format
         public MpegStream(string path)
         {
             this.FilePath = path;
+            
+            this.UsesSameIdForMultipleAudioTracks = false;
+            this.TotalAudioStreams = 0;
         }
 
         public enum PacketSizeType
@@ -123,6 +126,9 @@ namespace VGMToolbox.format
         public string FileExtensionAudio { get; set; }
         public string FileExtensionVideo { get; set; }
 
+        public bool UsesSameIdForMultipleAudioTracks { set; get; } // for PMF/PAM, who use 000001BD for all audio tracks
+        public int TotalAudioStreams { set; get; }        
+
         protected abstract int GetAudioPacketHeaderSize(Stream readStream, long currentOffset);
 
         protected abstract int GetVideoPacketHeaderSize(Stream readStream, long currentOffset);
@@ -131,6 +137,8 @@ namespace VGMToolbox.format
         {
             return ((blockToCheck[3] >= 0xC0) && (blockToCheck[3] <= 0xDF));
         }
+
+        protected virtual bool IsThisAStartingBlock(Stream readStream, long currentOffset) { return false; }
 
         protected virtual bool IsThisAVideoBlock(byte[] blockToCheck)
         {
@@ -142,7 +150,7 @@ namespace VGMToolbox.format
         
         }
 
-        public void DemultiplexStreams(bool addHeader)
+        public virtual void DemultiplexStreams(bool addHeader)
         {
             using (FileStream fs = File.OpenRead(this.FilePath))
             {
@@ -165,18 +173,31 @@ namespace VGMToolbox.format
                 Dictionary<uint, FileStream> streamOutputWriters = new Dictionary<uint, FileStream>();
                 string outputFileName;
 
+                // PMF/PAM use multiple tracks with the same id: 000001BD
+                bool checkForMultipleTracksPerId = this.UsesSameIdForMultipleAudioTracks;
+                Queue<byte> currentStreamQueue = new Queue<byte>(20);
+                byte dequeuedValue;
+                uint currentStreamKey; // going to use currentStreamQueue and currentBlockId to make a unique ID
+                bool isAudioBlock;
+
                 // look for first packet
                 currentOffset = ParseFile.GetNextOffset(fs, 0, Mpeg2Stream.PacketStartByes);
 
                 if (currentOffset != -1)
                 {
+                    currentStreamQueue.Enqueue(0);
+                    
                     while (currentOffset < fileSize)
                     {
+                        // get the current blockk
                         currentBlockId = ParseFile.ParseSimpleOffset(fs, currentOffset, 4);
+                        
+                        // get value to use as key to hash table
                         currentBlockIdVal = BitConverter.ToUInt32(currentBlockId, 0);
 
                         if (BlockIdDictionary.ContainsKey(currentBlockIdVal))
                         {
+                            // get info about this block type
                             blockStruct = BlockIdDictionary[currentBlockIdVal];
 
                             switch (blockStruct.SizeType)
@@ -206,13 +227,54 @@ namespace VGMToolbox.format
                                     blockSize = (uint)BitConverter.ToUInt16(blockSizeArray, 0);
 
                                     // if block type is audio or video, extract it
-                                    if (this.IsThisAnAudioBlock(currentBlockId) || this.IsThisAVideoBlock(currentBlockId))
+                                    isAudioBlock = this.IsThisAnAudioBlock(currentBlockId);
+
+                                    if (isAudioBlock || this.IsThisAVideoBlock(currentBlockId))
                                     {
-                                        if (!streamOutputWriters.ContainsKey(currentBlockIdVal))
+                                        // check for the next track start if we have a
+                                        //  multi track format
+                                        if (checkForMultipleTracksPerId &&
+                                            this.UsesSameIdForMultipleAudioTracks &&
+                                            isAudioBlock)
+                                        {
+                                            if (this.IsThisAStartingBlock(fs, currentOffset))
+                                            {
+                                                this.TotalAudioStreams++;
+
+                                                // reset circular queue to include newest stream
+                                                if (this.TotalAudioStreams > 1)
+                                                {
+                                                    currentStreamQueue.Clear();
+                                                    currentStreamQueue.Enqueue((byte)(this.TotalAudioStreams));
+
+                                                    for (byte i = 0; i < this.TotalAudioStreams - 1; i++)
+                                                    {
+                                                        currentStreamQueue.Enqueue((byte)(i - 1));
+                                                    }                                                                                                                                                            
+                                                }
+                                            }
+                                            else // all track starts found, stop looking
+                                            {
+                                                checkForMultipleTracksPerId = false;
+                                            }
+                                        }
+
+                                        // if audio block, get the stream number from the queue
+                                        if (isAudioBlock)
+                                        {
+                                            // should be unchanged for non-multi track types
+                                            dequeuedValue = currentStreamQueue.Dequeue();
+                                            currentStreamKey = (dequeuedValue) | currentBlockIdVal;
+                                            currentStreamQueue.Enqueue(dequeuedValue);
+                                        }
+                                        else
+                                        {
+                                            currentStreamKey = currentBlockIdVal;
+                                        }
+                                        if (!streamOutputWriters.ContainsKey(currentStreamKey))
                                         {
                                             // convert block id to little endian for naming
-                                            currentBlockIdNaming = new byte[currentBlockId.Length];
-                                            Array.Copy(currentBlockId, currentBlockIdNaming, currentBlockId.Length);
+                                            currentBlockIdNaming = BitConverter.GetBytes(currentStreamKey);
                                             Array.Reverse(currentBlockIdNaming);
 
                                             // build output file name
@@ -233,7 +295,7 @@ namespace VGMToolbox.format
                                             outputFileName = Path.Combine(Path.GetDirectoryName(this.FilePath), outputFileName);
 
                                             // add an output stream for writing
-                                            streamOutputWriters[currentBlockIdVal] = new FileStream(outputFileName, FileMode.Create, FileAccess.ReadWrite);
+                                            streamOutputWriters[currentStreamKey] = new FileStream(outputFileName, FileMode.Create, FileAccess.ReadWrite);
                                         }
 
                                         // write the block
@@ -241,13 +303,13 @@ namespace VGMToolbox.format
                                         {
                                             // write audio
                                             audioBlockSkipSize = this.GetAudioPacketHeaderSize(fs, currentOffset);
-                                            streamOutputWriters[currentBlockIdVal].Write(ParseFile.ParseSimpleOffset(fs, currentOffset + currentBlockId.Length + blockSizeArray.Length + audioBlockSkipSize, (int)(blockSize - audioBlockSkipSize)), 0, (int)(blockSize - audioBlockSkipSize));
+                                            streamOutputWriters[currentStreamKey].Write(ParseFile.ParseSimpleOffset(fs, currentOffset + currentBlockId.Length + blockSizeArray.Length + audioBlockSkipSize, (int)(blockSize - audioBlockSkipSize)), 0, (int)(blockSize - audioBlockSkipSize));
                                         }
                                         else
                                         {
                                             // write video
                                             videoBlockSkipSize = this.GetVideoPacketHeaderSize(fs, currentOffset);
-                                            streamOutputWriters[currentBlockIdVal].Write(ParseFile.ParseSimpleOffset(fs, currentOffset + currentBlockId.Length + blockSizeArray.Length + videoBlockSkipSize, (int)(blockSize - videoBlockSkipSize)), 0, (int)(blockSize - videoBlockSkipSize));
+                                            streamOutputWriters[currentStreamKey].Write(ParseFile.ParseSimpleOffset(fs, currentOffset + currentBlockId.Length + blockSizeArray.Length + videoBlockSkipSize, (int)(blockSize - videoBlockSkipSize)), 0, (int)(blockSize - videoBlockSkipSize));
                                         }                                    
                                     }
 
@@ -259,7 +321,7 @@ namespace VGMToolbox.format
                                     break;
                             }
                         }
-                        else
+                        else // this is an undexpected block type
                         {
                             this.closeAllWriters(streamOutputWriters);
                             Array.Reverse(currentBlockId);

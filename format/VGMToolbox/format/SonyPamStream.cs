@@ -4,8 +4,6 @@ using System.IO;
 
 using VGMToolbox.util;
 
-using VGMToolbox.util;
-
 namespace VGMToolbox.format
 {
     public class SonyPamStream : Mpeg2Stream
@@ -16,6 +14,7 @@ namespace VGMToolbox.format
         public SonyPamStream(string path)
             : base(path)
         {
+            this.UsesSameIdForMultipleAudioTracks = false;
             this.FileExtensionAudio = DefaultAudioExtension;
             this.FileExtensionVideo = DefaultVideoExtension;
 

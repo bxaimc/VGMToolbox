@@ -22,8 +22,9 @@ namespace VGMToolbox.forms.stream
 
             this.tbOutput.Text = "Demultiplex streams from movies using an MPEG container format." + Environment.NewLine;
             this.tbOutput.Text += "- Currently supported formats: MPEG1, MPEG2?, PAM (single audio stream only), PMF (single audio stream only), PSS, SFD" + Environment.NewLine;
-            this.tbOutput.Text += "- Output file extensions are default values, be sure to verify types after extraction." + Environment.NewLine;
-            this.tbOutput.Text += "- The following types require headers added after extraction for playback: PAM, PMF." + Environment.NewLine;
+            this.tbOutput.Text += "- The following audio types require headers added after extraction for playback: PAM, PMF." + Environment.NewLine;
+            this.tbOutput.Text += "- MKVMerge can be used to add raw .264 data to a viewable container file." + Environment.NewLine;
+
 
             this.initializeFormatList();
         }
