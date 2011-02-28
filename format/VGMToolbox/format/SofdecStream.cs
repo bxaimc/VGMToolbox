@@ -8,7 +8,7 @@ namespace VGMToolbox.format
     {        
         new public const string DefaultVideoExtension = ".m2v";
 
-        new public const string AdxAudioExtension = ".adx";
+        public const string AdxAudioExtension = ".adx";
         public const string AixAudioExtension = ".aix";
 
         public static readonly byte[] AixSignatureBytes = new byte[] { 0x41, 0x49, 0x58, 0x46 };

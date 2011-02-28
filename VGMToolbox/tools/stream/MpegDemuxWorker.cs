@@ -13,6 +13,8 @@ namespace VGMToolbox.tools.stream
         {
             public string SourceFormat { set; get; }
             public bool AddHeader { set; get; }
+            public bool ExtractAudio { set; get; }
+            public bool ExtractVideo { set; get; }
             
             public string[] SourcePaths { set; get; }
         }
@@ -67,7 +69,7 @@ namespace VGMToolbox.tools.stream
                     throw new FormatException("Source format not defined.");
             }
 
-            this.outputBuffer.Append(Path.GetFileName(path));
+            this.outputBuffer.Append(Path.GetFileName(path) + Environment.NewLine);
         }               
     }
 }

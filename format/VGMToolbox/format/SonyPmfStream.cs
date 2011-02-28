@@ -16,10 +16,7 @@ namespace VGMToolbox.format
         public static readonly byte[] Atrac3Bytes = new byte[] { 0x1E, 0x60, 0x14, 0x00 };
         public static readonly byte[] LpcmBytes = new byte[] { 0x1E, 0x61, 0x80, 0x40 };
 
-        public const string M2vVideoExtension = ".m2v";
         public const string AvcVideoExtension = ".264";
-
-        public static readonly byte[] M2vBytes = new byte[] { 0x00, 0x00, 0x01, 0xB3 };
         public static readonly byte[] AvcBytes = new byte[] { 0x00, 0x00, 0x00, 0x01 };
 
         public SonyPmfStream(string path)
@@ -35,6 +32,7 @@ namespace VGMToolbox.format
 
         protected override int GetAudioPacketHeaderSize(Stream readStream, long currentOffset)
         {
+            /*
             int headerSize;
             UInt16 checkBytes;
             OffsetDescription od = new OffsetDescription();
@@ -62,6 +60,18 @@ namespace VGMToolbox.format
                     throw new FormatException(String.Format("Unexpected secondary bytes found for block starting at 0x{0}: 0x{1}", currentOffset.ToString("X8"), checkBytes.ToString("X4")));
             }
             return headerSize;
+            */
+            
+            byte checkBytes;
+            OffsetDescription od = new OffsetDescription();
+
+            od.OffsetByteOrder = Constants.BigEndianByteOrder;
+            od.OffsetSize = "1";
+            od.OffsetValue = "8";
+
+            checkBytes = (byte)ParseFile.GetVaryingByteValueAtRelativeOffset(readStream, od, currentOffset);
+
+            return checkBytes + 7;           
         }
 
         protected override bool IsThisAStartingBlock(Stream readStream, long currentOffset)
@@ -131,10 +141,6 @@ namespace VGMToolbox.format
             if (ParseFile.CompareSegment(checkBytes, 0, AvcBytes))
             {
                 fileExtension = AvcVideoExtension;
-            }
-            else if (ParseFile.CompareSegment(checkBytes, 0, M2vBytes))
-            {
-                fileExtension = M2vVideoExtension;
             }
             else
             {

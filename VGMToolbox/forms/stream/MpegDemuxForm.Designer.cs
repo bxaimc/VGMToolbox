@@ -30,9 +30,9 @@
         {
             this.grpSourceFiles = new System.Windows.Forms.GroupBox();
             this.grpOptions = new System.Windows.Forms.GroupBox();
+            this.cbAddHeader = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.comboFormat = new System.Windows.Forms.ComboBox();
-            this.cbAddHeader = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -92,6 +92,16 @@
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
             // 
+            // cbAddHeader
+            // 
+            this.cbAddHeader.AutoSize = true;
+            this.cbAddHeader.Location = new System.Drawing.Point(9, 40);
+            this.cbAddHeader.Name = "cbAddHeader";
+            this.cbAddHeader.Size = new System.Drawing.Size(130, 17);
+            this.cbAddHeader.TabIndex = 2;
+            this.cbAddHeader.Text = "Add Header to Output";
+            this.cbAddHeader.UseVisualStyleBackColor = true;
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -109,16 +119,6 @@
             this.comboFormat.Size = new System.Drawing.Size(121, 21);
             this.comboFormat.TabIndex = 0;
             this.comboFormat.SelectedIndexChanged += new System.EventHandler(this.comboFormat_SelectedIndexChanged);
-            // 
-            // cbAddHeader
-            // 
-            this.cbAddHeader.AutoSize = true;
-            this.cbAddHeader.Location = new System.Drawing.Point(9, 40);
-            this.cbAddHeader.Name = "cbAddHeader";
-            this.cbAddHeader.Size = new System.Drawing.Size(130, 17);
-            this.cbAddHeader.TabIndex = 2;
-            this.cbAddHeader.Text = "Add Header to Output";
-            this.cbAddHeader.UseVisualStyleBackColor = true;
             // 
             // MpegDemuxForm
             // 
