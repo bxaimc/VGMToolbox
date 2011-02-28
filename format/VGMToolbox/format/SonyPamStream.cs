@@ -10,6 +10,8 @@ namespace VGMToolbox.format
     {
         new public const string DefaultAudioExtension = ".at3";
 
+        new public static readonly byte[] Atrac3Bytes = new byte[] { 0x1E, 0x60, 0x14, 0x00 };
+
         public const string Ac3AudioExtension = ".ac3";
         public static readonly byte[] Ac3Bytes = new byte[] { 0x1E, 0x60, 0x14, 0x30 };
 
