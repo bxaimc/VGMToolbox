@@ -13,7 +13,7 @@ namespace VGMToolbox.format
         public const string Atrac3AudioExtension = ".at3";
         public const string LpcmAudioExtension = ".lpcm";
 
-        public static readonly byte[] Atrac3Bytes = new byte[] { 0x1E, 0x60, 0x04, 0x00 };
+        public static readonly byte[] Atrac3Bytes = new byte[] { 0x1E, 0x60, 0x04 };
         public static readonly byte[] LpcmBytes = new byte[] { 0x1E, 0x61, 0x80, 0x40 };
 
         public const string AvcVideoExtension = ".264";
@@ -113,7 +113,7 @@ namespace VGMToolbox.format
             string fileExtension;
             byte[] checkBytes;
 
-            checkBytes = ParseFile.ParseSimpleOffset(readStream, (currentOffset + 0xE), 4);
+            checkBytes = ParseFile.ParseSimpleOffset(readStream, (currentOffset + 0xE), 3);
 
             if (ParseFile.CompareSegment(checkBytes, 0, Atrac3Bytes))
             {
