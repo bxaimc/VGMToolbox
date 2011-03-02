@@ -18,12 +18,6 @@ namespace VGMToolbox.format
         public const string M2vVideoExtension = ".m2v";
         public static readonly byte[] M2vBytes = new byte[] { 0x00, 0x00, 0x01, 0xB3 };
 
-        /* 
-         For the following values, stream ID is at the offset, from location of ID (000001BD):
-         * 0x8181: 0x11
-         * 0x8180: 0x0E
-         * 0x8100: 0x09                  
-         */
         public SonyPamStream(string path)
             : base(path)
         {

@@ -74,31 +74,6 @@ namespace VGMToolbox.format
             return checkBytes + 7;           
         }
 
-        protected override bool IsThisAStartingBlock(Stream readStream, long currentOffset)
-        {
-            bool isStartingBlock = false;
-            UInt16 checkBytes;
-            OffsetDescription od = new OffsetDescription();
-
-            od.OffsetByteOrder = Constants.BigEndianByteOrder;
-            od.OffsetSize = "2";
-            od.OffsetValue = "6";
-
-            checkBytes = (UInt16)ParseFile.GetVaryingByteValueAtRelativeOffset(readStream, od, currentOffset);
-
-            switch (checkBytes)
-            {
-                // Thanks to FastElbJa for this information
-                case 0x8181:
-                    isStartingBlock = true;
-                    break;
-                default:
-                    isStartingBlock = false;
-                    break;
-            }
-            return isStartingBlock;        
-        }
-
         protected override bool IsThisAnAudioBlock(byte[] blockToCheck)
         {
             return (blockToCheck[3] == 0xBD);
@@ -148,6 +123,46 @@ namespace VGMToolbox.format
             }
 
             return fileExtension;
+        }
+
+        protected override byte GetStreamId(Stream readStream, long currentOffset) 
+        {
+            byte streamId;
+            UInt16 checkBytes;
+            int offsetToCheck;
+            OffsetDescription od = new OffsetDescription();
+
+            od.OffsetByteOrder = Constants.BigEndianByteOrder;
+            od.OffsetSize = "2";
+            od.OffsetValue = "6";
+
+            checkBytes = (UInt16)ParseFile.GetVaryingByteValueAtRelativeOffset(readStream, od, currentOffset);
+
+            switch (checkBytes)
+            {
+                case 0x8100:
+                    offsetToCheck = 0x09;
+                    break;
+                case 0x8180:
+                    offsetToCheck = 0x0E;
+                    break;
+                case 0x8101:
+                    offsetToCheck = 0x0C;
+                    break;
+                case 0x8181:
+                    offsetToCheck = 0x11;
+                    break;
+                default:
+                    throw new FormatException(String.Format("Unexpected secondary bytes found for block starting at 0x{0}: 0x{1}", currentOffset.ToString("X8"), checkBytes.ToString("X4")));
+            }
+
+            do
+            {
+               streamId = ParseFile.ParseSimpleOffset(readStream, currentOffset + offsetToCheck, 1)[0];
+               offsetToCheck++;
+            } while (streamId == 0xFF);
+
+            return streamId;
         }
 
         protected override void DoFinalTasks(Dictionary<uint, FileStream> outputFiles, bool addHeader)

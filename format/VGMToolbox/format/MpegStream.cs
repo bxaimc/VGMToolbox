@@ -138,8 +138,6 @@ namespace VGMToolbox.format
             return ((blockToCheck[3] >= 0xC0) && (blockToCheck[3] <= 0xDF));
         }
 
-        protected virtual bool IsThisAStartingBlock(Stream readStream, long currentOffset) { return false; }
-
         protected virtual bool IsThisAVideoBlock(byte[] blockToCheck)
         {
             return ((blockToCheck[3] >= 0xE0) && (blockToCheck[3] <= 0xEF));
@@ -154,6 +152,8 @@ namespace VGMToolbox.format
         {
             return this.FileExtensionVideo;
         }
+
+        protected virtual byte GetStreamId(Stream readStream, long currentOffset) { return 0; }
 
         protected virtual void DoFinalTasks(Dictionary<uint, FileStream> outputFiles, bool addHeader)
         { 
@@ -184,9 +184,7 @@ namespace VGMToolbox.format
                 string outputFileName;
 
                 // PMF/PAM use multiple tracks with the same id: 000001BD
-                bool checkForMultipleTracksPerId = this.UsesSameIdForMultipleAudioTracks;
-                Queue<byte> currentStreamQueue = new Queue<byte>(20);
-                byte dequeuedValue;
+                byte streamId;
                 uint currentStreamKey; // going to use currentStreamQueue and currentBlockId to make a unique ID
                 bool isAudioBlock;
 
@@ -194,9 +192,7 @@ namespace VGMToolbox.format
                 currentOffset = ParseFile.GetNextOffset(fs, 0, Mpeg2Stream.PacketStartByes);
 
                 if (currentOffset != -1)
-                {
-                    currentStreamQueue.Enqueue(0);
-                    
+                {                    
                     while (currentOffset < fileSize)
                     {
                         // get the current blockk
@@ -241,41 +237,11 @@ namespace VGMToolbox.format
 
                                     if (isAudioBlock || this.IsThisAVideoBlock(currentBlockId))
                                     {
-                                        // check for the next track start if we have a
-                                        //  multi track format
-                                        if (checkForMultipleTracksPerId &&
-                                            this.UsesSameIdForMultipleAudioTracks &&
-                                            isAudioBlock)
-                                        {
-                                            if (this.IsThisAStartingBlock(fs, currentOffset))
-                                            {
-                                                this.TotalAudioStreams++;
-
-                                                // reset circular queue to include newest stream
-                                                if (this.TotalAudioStreams > 1)
-                                                {
-                                                    currentStreamQueue.Clear();
-                                                    currentStreamQueue.Enqueue((byte)(this.TotalAudioStreams - 1));
-
-                                                    for (byte i = 1; i < this.TotalAudioStreams; i++)
-                                                    {
-                                                        currentStreamQueue.Enqueue((byte)(i - 1));
-                                                    }                                                                                                                                                            
-                                                }
-                                            }
-                                            else // all track starts found, stop looking
-                                            {
-                                                checkForMultipleTracksPerId = false;
-                                            }
-                                        }
-
                                         // if audio block, get the stream number from the queue
-                                        if (isAudioBlock)
+                                        if (isAudioBlock && this.UsesSameIdForMultipleAudioTracks)
                                         {
-                                            // should be unchanged for non-multi track types
-                                            dequeuedValue = currentStreamQueue.Dequeue();
-                                            currentStreamKey = (dequeuedValue) | currentBlockIdVal;
-                                            currentStreamQueue.Enqueue(dequeuedValue);
+                                            streamId = this.GetStreamId(fs, currentOffset);
+                                            currentStreamKey = (streamId | currentBlockIdVal);
                                         }
                                         else
                                         {
