@@ -128,39 +128,12 @@ namespace VGMToolbox.format
         protected override byte GetStreamId(Stream readStream, long currentOffset) 
         {
             byte streamId;
-            UInt16 checkBytes;
+            byte sizeValue;
             int offsetToCheck;
-            OffsetDescription od = new OffsetDescription();
 
-            od.OffsetByteOrder = Constants.BigEndianByteOrder;
-            od.OffsetSize = "2";
-            od.OffsetValue = "6";
-
-            checkBytes = (UInt16)ParseFile.GetVaryingByteValueAtRelativeOffset(readStream, od, currentOffset);
-
-            switch (checkBytes)
-            {
-                case 0x8100:
-                    offsetToCheck = 0x09;
-                    break;
-                case 0x8180:
-                    offsetToCheck = 0x0E;
-                    break;
-                case 0x8101:
-                    offsetToCheck = 0x0C;
-                    break;
-                case 0x8181:
-                    offsetToCheck = 0x11;
-                    break;
-                default:
-                    throw new FormatException(String.Format("Unexpected secondary bytes found for block starting at 0x{0}: 0x{1}", currentOffset.ToString("X8"), checkBytes.ToString("X4")));
-            }
-
-            do
-            {
-               streamId = ParseFile.ParseSimpleOffset(readStream, currentOffset + offsetToCheck, 1)[0];
-               offsetToCheck++;
-            } while (streamId == 0xFF);
+            sizeValue = ParseFile.ParseSimpleOffset(readStream, currentOffset + 8, 1)[0];
+            offsetToCheck = sizeValue + 6 + 7 - 4;
+            streamId = ParseFile.ParseSimpleOffset(readStream, currentOffset + offsetToCheck, 1)[0];
 
             return streamId;
         }
