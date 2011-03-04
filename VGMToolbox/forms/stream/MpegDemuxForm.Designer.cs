@@ -33,6 +33,9 @@
             this.cbAddHeader = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.comboFormat = new System.Windows.Forms.ComboBox();
+            this.rbExtractAudioAndVideo = new System.Windows.Forms.RadioButton();
+            this.rbExtractAudioOnly = new System.Windows.Forms.RadioButton();
+            this.rbExtractVideoOnly = new System.Windows.Forms.RadioButton();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -42,31 +45,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 487);
-            this.pnlLabels.Size = new System.Drawing.Size(830, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 446);
+            this.pnlLabels.Size = new System.Drawing.Size(691, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(830, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(691, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 410);
-            this.tbOutput.Size = new System.Drawing.Size(830, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 369);
+            this.tbOutput.Size = new System.Drawing.Size(691, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 390);
-            this.pnlButtons.Size = new System.Drawing.Size(830, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 349);
+            this.pnlButtons.Size = new System.Drawing.Size(691, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(770, 0);
+            this.btnCancel.Location = new System.Drawing.Point(631, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(710, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(571, 0);
             // 
             // grpSourceFiles
             // 
@@ -74,20 +77,23 @@
             this.grpSourceFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpSourceFiles.Location = new System.Drawing.Point(0, 23);
             this.grpSourceFiles.Name = "grpSourceFiles";
-            this.grpSourceFiles.Size = new System.Drawing.Size(830, 367);
+            this.grpSourceFiles.Size = new System.Drawing.Size(691, 326);
             this.grpSourceFiles.TabIndex = 5;
             this.grpSourceFiles.TabStop = false;
             this.grpSourceFiles.Text = "Drop Files Here";
             // 
             // grpOptions
             // 
+            this.grpOptions.Controls.Add(this.rbExtractVideoOnly);
+            this.grpOptions.Controls.Add(this.rbExtractAudioOnly);
+            this.grpOptions.Controls.Add(this.rbExtractAudioAndVideo);
             this.grpOptions.Controls.Add(this.cbAddHeader);
             this.grpOptions.Controls.Add(this.label1);
             this.grpOptions.Controls.Add(this.comboFormat);
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.grpOptions.Location = new System.Drawing.Point(3, 300);
+            this.grpOptions.Location = new System.Drawing.Point(3, 238);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(824, 64);
+            this.grpOptions.Size = new System.Drawing.Size(685, 85);
             this.grpOptions.TabIndex = 0;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
@@ -120,12 +126,44 @@
             this.comboFormat.TabIndex = 0;
             this.comboFormat.SelectedIndexChanged += new System.EventHandler(this.comboFormat_SelectedIndexChanged);
             // 
+            // rbExtractAudioAndVideo
+            // 
+            this.rbExtractAudioAndVideo.AutoSize = true;
+            this.rbExtractAudioAndVideo.Checked = true;
+            this.rbExtractAudioAndVideo.Location = new System.Drawing.Point(202, 14);
+            this.rbExtractAudioAndVideo.Name = "rbExtractAudioAndVideo";
+            this.rbExtractAudioAndVideo.Size = new System.Drawing.Size(139, 17);
+            this.rbExtractAudioAndVideo.TabIndex = 3;
+            this.rbExtractAudioAndVideo.TabStop = true;
+            this.rbExtractAudioAndVideo.Text = "Extract Audio and Video";
+            this.rbExtractAudioAndVideo.UseVisualStyleBackColor = true;
+            // 
+            // rbExtractAudioOnly
+            // 
+            this.rbExtractAudioOnly.AutoSize = true;
+            this.rbExtractAudioOnly.Location = new System.Drawing.Point(202, 38);
+            this.rbExtractAudioOnly.Name = "rbExtractAudioOnly";
+            this.rbExtractAudioOnly.Size = new System.Drawing.Size(112, 17);
+            this.rbExtractAudioOnly.TabIndex = 4;
+            this.rbExtractAudioOnly.Text = "Extract Audio Only";
+            this.rbExtractAudioOnly.UseVisualStyleBackColor = true;
+            // 
+            // rbExtractVideoOnly
+            // 
+            this.rbExtractVideoOnly.AutoSize = true;
+            this.rbExtractVideoOnly.Location = new System.Drawing.Point(202, 62);
+            this.rbExtractVideoOnly.Name = "rbExtractVideoOnly";
+            this.rbExtractVideoOnly.Size = new System.Drawing.Size(112, 17);
+            this.rbExtractVideoOnly.TabIndex = 5;
+            this.rbExtractVideoOnly.Text = "Extract Video Only";
+            this.rbExtractVideoOnly.UseVisualStyleBackColor = true;
+            // 
             // MpegDemuxForm
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(830, 528);
+            this.ClientSize = new System.Drawing.Size(691, 487);
             this.Controls.Add(this.grpSourceFiles);
             this.Name = "MpegDemuxForm";
             this.Text = "MpegDemuxForm";
@@ -157,5 +195,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox comboFormat;
         private System.Windows.Forms.CheckBox cbAddHeader;
+        private System.Windows.Forms.RadioButton rbExtractVideoOnly;
+        private System.Windows.Forms.RadioButton rbExtractAudioOnly;
+        private System.Windows.Forms.RadioButton rbExtractAudioAndVideo;
     }
 }

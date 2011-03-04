@@ -15,7 +15,7 @@ namespace VGMToolbox.format
         public const string Ac3AudioExtension = ".ac3";
         
         public const string M2vVideoExtension = ".m2v";
-        new public static readonly byte[] M2vBytes = new byte[] { 0x00, 0x00, 0x01, 0xB3 };
+        public static readonly byte[] M2vBytes = new byte[] { 0x00, 0x00, 0x01, 0xB3 };
 
         public SonyPamStream(string path)
             : base(path)

@@ -50,6 +50,13 @@ namespace VGMToolbox.format
             }
         }
 
+        public struct DemuxOptionsStruct
+        {
+            public bool AddHeader { set; get; }
+            public bool ExtractVideo { set; get; }
+            public bool ExtractAudio { set; get; }
+        }
+
         #region Dictionary Initialization
 
         protected Dictionary<uint, BlockSizeStruct> BlockIdDictionary =
@@ -160,7 +167,7 @@ namespace VGMToolbox.format
         
         }
 
-        public virtual void DemultiplexStreams(bool addHeader)
+        public virtual void DemultiplexStreams(DemuxOptionsStruct demuxOptions)
         {
             using (FileStream fs = File.OpenRead(this.FilePath))
             {
@@ -183,9 +190,8 @@ namespace VGMToolbox.format
                 Dictionary<uint, FileStream> streamOutputWriters = new Dictionary<uint, FileStream>();
                 string outputFileName;
 
-                // PMF/PAM use multiple tracks with the same id: 000001BD
-                byte streamId;
-                uint currentStreamKey; // going to use currentStreamQueue and currentBlockId to make a unique ID
+                byte streamId;          // for types that have multiple streams in the same block ID
+                uint currentStreamKey;  // hash key for each file
                 bool isAudioBlock;
 
                 // look for first packet
@@ -235,7 +241,8 @@ namespace VGMToolbox.format
                                     // if block type is audio or video, extract it
                                     isAudioBlock = this.IsThisAnAudioBlock(currentBlockId);
 
-                                    if (isAudioBlock || this.IsThisAVideoBlock(currentBlockId))
+                                    if ((demuxOptions.ExtractAudio && isAudioBlock) || 
+                                        (demuxOptions.ExtractVideo && this.IsThisAVideoBlock(currentBlockId)))
                                     {
                                         // if audio block, get the stream number from the queue
                                         if (isAudioBlock && this.UsesSameIdForMultipleAudioTracks)
@@ -322,7 +329,7 @@ namespace VGMToolbox.format
                 ///////////////////////////////////
                 // Perform any final tasks needed
                 ///////////////////////////////////
-                this.DoFinalTasks(streamOutputWriters, addHeader);
+                this.DoFinalTasks(streamOutputWriters, demuxOptions.AddHeader);
 
                 //////////////////////////
                 // close all open writers

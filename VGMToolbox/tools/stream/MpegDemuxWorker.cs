@@ -25,6 +25,11 @@ namespace VGMToolbox.tools.stream
         protected override void DoTaskForFile(string path, IVgmtWorkerStruct pMpegDemuxStruct, DoWorkEventArgs e)
         {
             MpegDemuxStruct demuxStruct = (MpegDemuxStruct)pMpegDemuxStruct;
+            MpegStream.DemuxOptionsStruct demuxOptions = new MpegStream.DemuxOptionsStruct();
+
+            demuxOptions.AddHeader = demuxStruct.AddHeader;
+            demuxOptions.ExtractAudio = demuxStruct.ExtractAudio;
+            demuxOptions.ExtractVideo = demuxStruct.ExtractVideo;
 
             switch (demuxStruct.SourceFormat)
             {
@@ -35,11 +40,11 @@ namespace VGMToolbox.tools.stream
                     {
                         case 1:
                             Mpeg1Stream mpeg1Stream = new Mpeg1Stream(path);
-                            mpeg1Stream.DemultiplexStreams(demuxStruct.AddHeader);
+                            mpeg1Stream.DemultiplexStreams(demuxOptions);
                             break;
                         case 2:
                             Mpeg2Stream mpeg2Stream = new Mpeg2Stream(path);
-                            mpeg2Stream.DemultiplexStreams(demuxStruct.AddHeader);
+                            mpeg2Stream.DemultiplexStreams(demuxOptions);
                             break;
                         default:
                             throw new FormatException(String.Format("Unsupported MPEG type, for file: {0}", Path.GetFileName(path)));
@@ -47,22 +52,22 @@ namespace VGMToolbox.tools.stream
                     break;
                 case "PAM":
                     SonyPamStream pamStream = new SonyPamStream(path);
-                    pamStream.DemultiplexStreams(demuxStruct.AddHeader);
+                    pamStream.DemultiplexStreams(demuxOptions);
                     break;
                 
                 case "PMF":
                     SonyPmfStream pmfStream = new SonyPmfStream(path);
-                    pmfStream.DemultiplexStreams(demuxStruct.AddHeader);
+                    pmfStream.DemultiplexStreams(demuxOptions);
                     break;
                 
                 case "PSS":
                     SonyPssStream sps = new SonyPssStream(path);
-                    sps.DemultiplexStreams(demuxStruct.AddHeader);
+                    sps.DemultiplexStreams(demuxOptions);
                     break;
 
                 case "SFD":
                     SofdecStream ss = new SofdecStream(path);
-                    ss.DemultiplexStreams(demuxStruct.AddHeader);
+                    ss.DemultiplexStreams(demuxOptions);
                     break;
 
                 default:

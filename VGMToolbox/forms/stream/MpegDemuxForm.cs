@@ -74,8 +74,14 @@ namespace VGMToolbox.forms.stream
 
             // format
             taskStruct.SourceFormat = this.comboFormat.SelectedItem.ToString();
-            taskStruct.AddHeader = this.cbAddHeader.Checked;
             
+            // options
+            taskStruct.AddHeader = this.cbAddHeader.Checked;
+            taskStruct.ExtractAudio = (this.rbExtractAudioAndVideo.Checked || 
+                                       this.rbExtractAudioOnly.Checked);
+            taskStruct.ExtractVideo = (this.rbExtractAudioAndVideo.Checked ||
+                                       this.rbExtractVideoOnly.Checked);
+
             base.backgroundWorker_Execute(taskStruct);
         }
 
