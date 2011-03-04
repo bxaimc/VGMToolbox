@@ -13,10 +13,9 @@ namespace VGMToolbox.format
         new public static readonly byte[] Atrac3Bytes = new byte[] { 0x1E, 0x60, 0x14 };
 
         public const string Ac3AudioExtension = ".ac3";
-        public static readonly byte[] Ac3Bytes = new byte[] { 0x1E, 0x60, 0x14, 0x30 };
-
+        
         public const string M2vVideoExtension = ".m2v";
-        public static readonly byte[] M2vBytes = new byte[] { 0x00, 0x00, 0x01, 0xB3 };
+        new public static readonly byte[] M2vBytes = new byte[] { 0x00, 0x00, 0x01, 0xB3 };
 
         public SonyPamStream(string path)
             : base(path)
@@ -34,23 +33,26 @@ namespace VGMToolbox.format
             string fileExtension;
             byte[] checkBytes;
 
-            checkBytes = ParseFile.ParseSimpleOffset(readStream, (currentOffset + 0xE), 3);
+            byte streamId = this.GetStreamId(readStream, currentOffset);
 
-            if (ParseFile.CompareSegment(checkBytes, 0, Atrac3Bytes))
-            {
-                fileExtension = Atrac3AudioExtension;
-            }
-            else if (ParseFile.CompareSegment(checkBytes, 0, Ac3Bytes))
-            {
-                fileExtension = Ac3AudioExtension;
-            }
-            else if (ParseFile.CompareSegment(checkBytes, 0, LpcmBytes))
-            {
-                fileExtension = LpcmAudioExtension;
-            }
-            else
-            {
-                fileExtension = ".bin";
+            switch (streamId)
+            { 
+                case 0x30:
+                    fileExtension = Ac3AudioExtension;
+                    break;
+                case 0x40:
+                    fileExtension = LpcmAudioExtension;
+                    break;
+                default:
+                    if (streamId < 0x20)
+                    {
+                        fileExtension = Atrac3AudioExtension;
+                    }
+                    else
+                    {
+                        fileExtension = ".bin";
+                    }
+                    break;
             }
 
             return fileExtension;

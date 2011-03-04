@@ -7,6 +7,7 @@ namespace VGMToolbox.format
     public class Atrac3Plus
     {
         public const string FileExtension = ".aa3";
+        public const string FileExtensionPsp = ".oma";
 
         public static readonly byte[] Aa3HeaderChunk =
             new byte[] {0x65, 0x61, 0x33, 0x03, 0x00, 0x00, 0x00, 0x00, 0x07, 0x76, 0x47, 0x45, 0x4F, 0x42, 0x00, 0x00,
