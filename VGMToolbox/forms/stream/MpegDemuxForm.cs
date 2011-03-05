@@ -22,9 +22,7 @@ namespace VGMToolbox.forms.stream
 
             this.tbOutput.Text = "Demultiplex streams from movies using an MPEG container format." + Environment.NewLine;
             this.tbOutput.Text += "- Currently supported formats: MPEG1, MPEG2?, PAM, PMF, PSS, SFD" + Environment.NewLine;
-            this.tbOutput.Text += "- .AT3 files require headers added after extraction for playback." + Environment.NewLine;
-            this.tbOutput.Text += "- PAM .LPCM files require a header added after extraction for playback.  Seems 0xC may be the standard interleave, with 48000 as the common frequency." + Environment.NewLine;
-            this.tbOutput.Text += "- MKVMerge can be used to add raw .264 data to a viewable container file." + Environment.NewLine;
+            this.tbOutput.Text += "- MKVMerge can be used to add raw .264 data or .AC3 data to a container file for playback." + Environment.NewLine;
 
 
             this.initializeFormatList();

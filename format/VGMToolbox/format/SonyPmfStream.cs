@@ -13,6 +13,8 @@ namespace VGMToolbox.format
         public const string Atrac3AudioExtension = ".at3";
         public const string LpcmAudioExtension = ".lpcm";
 
+        public const byte LpcmStreamId = 0x40;
+
         public static readonly byte[] Atrac3Bytes = new byte[] { 0x1E, 0x60, 0x04 };
         public static readonly byte[] LpcmBytes = new byte[] { 0x1E, 0x61, 0x80, 0x40 };
 
@@ -86,21 +88,23 @@ namespace VGMToolbox.format
         protected override string GetAudioFileExtension(Stream readStream, long currentOffset)
         {
             string fileExtension;
-            byte[] checkBytes;
+            byte streamId = this.GetStreamId(readStream, currentOffset);
 
-            checkBytes = ParseFile.ParseSimpleOffset(readStream, (currentOffset + 0xE), 3);
-
-            if (ParseFile.CompareSegment(checkBytes, 0, Atrac3Bytes))
+            switch (streamId)
             {
-                fileExtension = Atrac3AudioExtension;
-            }
-            else if (ParseFile.CompareSegment(checkBytes, 0, LpcmBytes))
-            {
-                fileExtension = LpcmAudioExtension;
-            }
-            else
-            {
-                fileExtension = ".bin";
+                case LpcmStreamId:
+                    fileExtension = LpcmAudioExtension;
+                    break;
+                default:
+                    if (streamId < 0x20)
+                    {
+                        fileExtension = Atrac3AudioExtension;
+                    }
+                    else
+                    {
+                        fileExtension = ".bin";
+                    }
+                    break;
             }
 
             return fileExtension;
@@ -138,7 +142,7 @@ namespace VGMToolbox.format
             return streamId;
         }
 
-        protected override void DoFinalTasks(Dictionary<uint, FileStream> outputFiles, bool addHeader)
+        protected override void DoFinalTasks(FileStream sourceFileStream, Dictionary<uint, FileStream> outputFiles, bool addHeader)
         {
             byte[] headerBytes;
             byte[] aa3HeaderBytes;
@@ -170,7 +174,7 @@ namespace VGMToolbox.format
                         Array.Reverse(headerBytes);
                         headerBlock = BitConverter.ToUInt32(headerBytes, 4);
 
-                        string headeredFile = Path.ChangeExtension(sourceFile, Atrac3Plus.FileExtension);
+                        string headeredFile = Path.ChangeExtension(sourceFile, Atrac3Plus.FileExtensionPsp);
                         aa3HeaderBytes = Atrac3Plus.GetAa3Header(headerBlock);
                         FileUtil.AddHeaderToFile(aa3HeaderBytes, sourceFile, headeredFile);
 

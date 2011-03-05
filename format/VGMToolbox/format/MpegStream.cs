@@ -162,7 +162,7 @@ namespace VGMToolbox.format
 
         protected virtual byte GetStreamId(Stream readStream, long currentOffset) { return 0; }
 
-        protected virtual void DoFinalTasks(Dictionary<uint, FileStream> outputFiles, bool addHeader)
+        protected virtual void DoFinalTasks(FileStream sourceFileStream, Dictionary<uint, FileStream> outputFiles, bool addHeader)
         { 
         
         }
@@ -329,7 +329,7 @@ namespace VGMToolbox.format
                 ///////////////////////////////////
                 // Perform any final tasks needed
                 ///////////////////////////////////
-                this.DoFinalTasks(streamOutputWriters, demuxOptions.AddHeader);
+                this.DoFinalTasks(fs, streamOutputWriters, demuxOptions.AddHeader);
 
                 //////////////////////////
                 // close all open writers
