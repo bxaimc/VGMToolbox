@@ -18,7 +18,7 @@ namespace VGMToolbox.format
         public const string M2vVideoExtension = ".m2v";
         public static readonly byte[] M2vBytes = new byte[] { 0x00, 0x00, 0x01, 0xB3 };
 
-        public static readonly byte[] PamAudioStreamInfoStartBytes = new byte[] { 0x80, 0x00, 0x00, 0x00, 0xBD };
+        public static readonly byte[] PamAudioStreamInfoStartBytes = new byte[] { 0x00, 0x00, 0x00, 0xBD };
 
         public SonyPamStream(string path)
             : base(path)
@@ -141,12 +141,12 @@ namespace VGMToolbox.format
                         // find matching info block
                         while ((streamInfoOffset > -1))
                         {
-                            streamIdCheckByte = ParseFile.ParseSimpleOffset(sourceFileStream, streamInfoOffset + 0x5, 1)[0];
+                            streamIdCheckByte = ParseFile.ParseSimpleOffset(sourceFileStream, streamInfoOffset + 0x4, 1)[0];
 
                             if (streamIdCheckByte == streamIdByte)
                             {
                                 // get channel count
-                                channelCount = ParseFile.ParseSimpleOffset(sourceFileStream, streamInfoOffset + 0x12, 1)[0];
+                                channelCount = ParseFile.ParseSimpleOffset(sourceFileStream, streamInfoOffset + 0x11, 1)[0];
 
                                 // close stream and build GENH file
                                 sourceFile = outputFiles[streamId].Name;
