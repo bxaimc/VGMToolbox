@@ -90,21 +90,17 @@ namespace VGMToolbox.format
             string fileExtension;
             byte streamId = this.GetStreamId(readStream, currentOffset);
 
-            switch (streamId)
+            if (streamId < 0x20)
             {
-                case LpcmStreamId:
-                    fileExtension = LpcmAudioExtension;
-                    break;
-                default:
-                    if (streamId < 0x20)
-                    {
-                        fileExtension = Atrac3AudioExtension;
-                    }
-                    else
-                    {
-                        fileExtension = ".bin";
-                    }
-                    break;
+                fileExtension = Atrac3AudioExtension;
+            }
+            else if ((streamId >= 0x40) && (streamId < 0x50))
+            {
+                fileExtension = LpcmAudioExtension;
+            }
+            else
+            {
+                fileExtension = ".bin";
             }
 
             return fileExtension;
