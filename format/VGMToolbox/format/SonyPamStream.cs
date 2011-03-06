@@ -154,7 +154,7 @@ namespace VGMToolbox.format
                                 gcStruct = new GenhCreationStruct();
                                 gcStruct.Format = "0x03";
                                 gcStruct.HeaderSkip = "0";
-                                gcStruct.Interleave = "0xC";
+                                gcStruct.Interleave = "0x2";
                                 gcStruct.Channels = channelCount.ToString();
                                 gcStruct.Frequency = "48000";
                                 gcStruct.NoLoops = true;
