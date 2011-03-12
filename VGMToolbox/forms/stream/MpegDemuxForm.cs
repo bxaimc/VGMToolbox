@@ -22,6 +22,7 @@ namespace VGMToolbox.forms.stream
 
             this.tbOutput.Text = "Demultiplex streams from movies using an MPEG container format." + Environment.NewLine;
             this.tbOutput.Text += "- Currently supported formats: MPEG1, MPEG2?, PAM, PMF, PSS, SFD" + Environment.NewLine;
+            this.tbOutput.Text += "- If the MPEG does not work for your file, be sure to try DVD Video, since it can handle specialized audio types." + Environment.NewLine;
             this.tbOutput.Text += "- MKVMerge can be used to add raw .264 data or .AC3 data to a container file for playback." + Environment.NewLine;
 
 
@@ -31,13 +32,14 @@ namespace VGMToolbox.forms.stream
         private void initializeFormatList()
         {
             this.comboFormat.Items.Clear();
+            this.comboFormat.Items.Add("DVD Video");
             this.comboFormat.Items.Add("MPEG");
             this.comboFormat.Items.Add("PAM");
             this.comboFormat.Items.Add("PMF");
             this.comboFormat.Items.Add("PSS");
             this.comboFormat.Items.Add("SFD");
-            
-            this.comboFormat.SelectedItem = "PSS";
+
+            this.comboFormat.SelectedItem = "DVD Video";
         }
 
         protected override IVgmtBackgroundWorker getBackgroundWorker()

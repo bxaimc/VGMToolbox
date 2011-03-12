@@ -1250,9 +1250,9 @@ namespace VGMToolbox.util
                                 Path.GetFileNameWithoutExtension(sourceFilePath), 
                                 currentFileNumber.ToString("X8"));
             }
-            
-            newFileItem.FilePath = Path.Combine(destinationDirectory, RemoveLeadingPathSeparator(newFileName));
 
+            newFileItem.FilePath = Path.Combine(destinationDirectory, RemoveLeadingPathSeparator(newFileName));
+            
             //------------
             // get offset
             //------------

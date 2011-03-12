@@ -14,10 +14,8 @@ namespace VGMToolbox.format
 
         public MpegStream(string path)
         {
-            this.FilePath = path;
-            
+            this.FilePath = path;            
             this.UsesSameIdForMultipleAudioTracks = false;
-            this.TotalAudioStreams = 0;
         }
 
         public enum PacketSizeType
@@ -25,12 +23,6 @@ namespace VGMToolbox.format
             Static,
             SizeBytes,
             Eof
-        }
-
-        public enum MpegSupportedDataFormats
-        {
-            SofdecVideo,
-            SonyPssVideo,
         }
 
         public struct MpegDemuxOptions
@@ -68,6 +60,7 @@ namespace VGMToolbox.format
                 {BitConverter.ToUInt32(Mpeg2Stream.PacketEndByes, 0), new BlockSizeStruct(PacketSizeType.Eof, -1)},   // Program End
                 {BitConverter.ToUInt32(Mpeg2Stream.PacketStartByes, 0), new BlockSizeStruct(PacketSizeType.Static, 0xE)}, // Pack Header
                 {BitConverter.ToUInt32(new byte[] { 0x00, 0x00, 0x01, 0xBB }, 0), new BlockSizeStruct(PacketSizeType.SizeBytes, 2)}, // System Header, two bytes following equal length (Big Endian)
+                {BitConverter.ToUInt32(new byte[] { 0x00, 0x00, 0x01, 0xBD }, 0), new BlockSizeStruct(PacketSizeType.SizeBytes, 2)}, // Private Stream, two bytes following equal length (Big Endian)
                 {BitConverter.ToUInt32(new byte[] { 0x00, 0x00, 0x01, 0xBE }, 0), new BlockSizeStruct(PacketSizeType.SizeBytes, 2)}, // Padding Stream, two bytes following equal length (Big Endian)
                 {BitConverter.ToUInt32(new byte[] { 0x00, 0x00, 0x01, 0xBF }, 0), new BlockSizeStruct(PacketSizeType.SizeBytes, 2)}, // Private Stream, two bytes following equal length (Big Endian)
 
@@ -132,17 +125,21 @@ namespace VGMToolbox.format
         public string FilePath { get; set; }
         public string FileExtensionAudio { get; set; }
         public string FileExtensionVideo { get; set; }
+        
+        protected Dictionary<byte, string> StreamIdFileType = new Dictionary<byte, string>();
 
-        public bool UsesSameIdForMultipleAudioTracks { set; get; } // for PMF/PAM, who use 000001BD for all audio tracks
-        public int TotalAudioStreams { set; get; }        
+        public bool UsesSameIdForMultipleAudioTracks { set; get; } // for PMF/PAM/DVD, who use 000001BD for all audio tracks
 
         protected abstract int GetAudioPacketHeaderSize(Stream readStream, long currentOffset);
+
+        protected virtual int GetAudioPacketSubHeaderSize(Stream readStream, long currentOffset, byte streamId) { return 0; }
 
         protected abstract int GetVideoPacketHeaderSize(Stream readStream, long currentOffset);
 
         protected virtual bool IsThisAnAudioBlock(byte[] blockToCheck)
         {
-            return ((blockToCheck[3] >= 0xC0) && (blockToCheck[3] <= 0xDF));
+            return ((blockToCheck[3] >= 0xC0) && 
+                    (blockToCheck[3] <= 0xDF));
         }
 
         protected virtual bool IsThisAVideoBlock(byte[] blockToCheck)
@@ -190,9 +187,10 @@ namespace VGMToolbox.format
                 Dictionary<uint, FileStream> streamOutputWriters = new Dictionary<uint, FileStream>();
                 string outputFileName;
 
-                byte streamId;          // for types that have multiple streams in the same block ID
+                byte streamId = 0;          // for types that have multiple streams in the same block ID
                 uint currentStreamKey;  // hash key for each file
                 bool isAudioBlock;
+                string audioFileExtension;
 
                 // look for first packet
                 currentOffset = ParseFile.GetNextOffset(fs, 0, Mpeg2Stream.PacketStartByes);
@@ -201,7 +199,7 @@ namespace VGMToolbox.format
                 {                    
                     while (currentOffset < fileSize)
                     {
-                        // get the current blockk
+                        // get the current block
                         currentBlockId = ParseFile.ParseSimpleOffset(fs, currentOffset, 4);
                         
                         // get value to use as key to hash table
@@ -244,7 +242,10 @@ namespace VGMToolbox.format
                                     if ((demuxOptions.ExtractAudio && isAudioBlock) || 
                                         (demuxOptions.ExtractVideo && this.IsThisAVideoBlock(currentBlockId)))
                                     {
-                                        // if audio block, get the stream number from the queue
+                                        // reset stream id
+                                        streamId = 0;
+                                        
+                                        // if audio block, get the stream number from the queue                                                                                
                                         if (isAudioBlock && this.UsesSameIdForMultipleAudioTracks)
                                         {
                                             streamId = this.GetStreamId(fs, currentOffset);
@@ -269,11 +270,15 @@ namespace VGMToolbox.format
                                             // add proper extension
                                             if (this.IsThisAnAudioBlock(currentBlockId))
                                             {
-                                                outputFileName += this.GetAudioFileExtension(fs, currentOffset);
+                                                audioFileExtension = this.GetAudioFileExtension(fs, currentOffset);
+                                                outputFileName += audioFileExtension;
+
+                                                this.StreamIdFileType.Add(streamId, audioFileExtension);
                                             }
                                             else
                                             {
-                                                outputFileName += this.GetVideoFileExtension(fs, currentOffset);
+                                                this.FileExtensionVideo = this.GetVideoFileExtension(fs, currentOffset);
+                                                outputFileName += this.FileExtensionVideo;
                                             }
 
                                             // add output directory
@@ -287,7 +292,7 @@ namespace VGMToolbox.format
                                         if (this.IsThisAnAudioBlock(currentBlockId))
                                         {
                                             // write audio
-                                            audioBlockSkipSize = this.GetAudioPacketHeaderSize(fs, currentOffset);
+                                            audioBlockSkipSize = this.GetAudioPacketHeaderSize(fs, currentOffset) + GetAudioPacketSubHeaderSize(fs, currentOffset, streamId);
                                             streamOutputWriters[currentStreamKey].Write(ParseFile.ParseSimpleOffset(fs, currentOffset + currentBlockId.Length + blockSizeArray.Length + audioBlockSkipSize, (int)(blockSize - audioBlockSkipSize)), 0, (int)(blockSize - audioBlockSkipSize));
                                         }
                                         else

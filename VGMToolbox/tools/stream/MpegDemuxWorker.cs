@@ -33,6 +33,10 @@ namespace VGMToolbox.tools.stream
 
             switch (demuxStruct.SourceFormat)
             {
+                case "DVD Video":
+                    DvdVideoStream dvdStream = new DvdVideoStream(path);
+                    dvdStream.DemultiplexStreams(demuxOptions);
+                    break;
                 case "MPEG":
                     int mpegType = MpegStream.GetMpegStreamType(path);
                     

@@ -37,12 +37,17 @@ namespace VGMToolbox.format
 
         protected override int GetAudioPacketHeaderSize(Stream readStream, long currentOffset)
         {            
-            return GetStandardPesHeaderSize(readStream, currentOffset);
+            int packetSize = GetStandardPesHeaderSize(readStream, currentOffset);
+            return packetSize;
         }
-
         protected override int GetVideoPacketHeaderSize(Stream readStream, long currentOffset)
         {
             return GetStandardPesHeaderSize(readStream, currentOffset);
+        }
+
+        protected override string GetAudioFileExtension(Stream readStream, long currentOffset)
+        {           
+            return DefaultAudioExtension;
         }
     }
 }

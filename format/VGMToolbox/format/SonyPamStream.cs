@@ -10,10 +10,9 @@ namespace VGMToolbox.format
     public class SonyPamStream : SonyPmfStream
     {
         new public const string DefaultAudioExtension = ".at3";
+        public const string Ac3AudioExtension = ".ac3";
 
         new public static readonly byte[] Atrac3Bytes = new byte[] { 0x1E, 0x60, 0x14 };
-
-        public const string Ac3AudioExtension = ".ac3";
         
         public const string M2vVideoExtension = ".m2v";
         public static readonly byte[] M2vBytes = new byte[] { 0x00, 0x00, 0x01, 0xB3 };
