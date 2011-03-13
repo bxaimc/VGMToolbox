@@ -61,6 +61,9 @@ namespace VGMToolbox.format
                 case DtsAudioExtension:
                     subHeaderSize = 4;
                     break;
+                case LpcmFileExtension:
+                    subHeaderSize = 7;
+                    break;
                 default:
                     subHeaderSize = 0;
                     break;
