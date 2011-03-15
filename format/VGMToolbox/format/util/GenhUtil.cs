@@ -526,7 +526,7 @@ namespace VGMToolbox.format.util
             return ret;
         }
 
-        public static string ExtractGenhFile(string pSourcePath, bool outputExtractionLog, bool outputExtractionFile)
+        public static string ExtractGenhFile(string pSourcePath, bool extractHeaderToFile, bool outputExtractionLog, bool outputExtractionFile)
         {
             string outputFileName = null;
             string headerOutputFileName = null;
@@ -541,11 +541,14 @@ namespace VGMToolbox.format.util
                     Int32 originalFileSize = BitConverter.ToInt32(genhFile.OriginalFileSize, 0);
                     string originalFileName = System.Text.Encoding.ASCII.GetString(genhFile.OriginalFileName);
                     
-                    outputFileName = Path.Combine(Path.GetDirectoryName(pSourcePath), originalFileName).Trim();
-                    headerOutputFileName = Path.Combine(Path.GetDirectoryName(pSourcePath), String.Format("{0}{1}", originalFileName.Trim(), Genh.FILE_EXTENSION_HEADER)).Trim();
+                    outputFileName = Path.Combine(Path.GetDirectoryName(pSourcePath), originalFileName).Trim();                    
+                    ParseFile.ExtractChunkToFile(fs, headerLength, originalFileSize, outputFileName, outputExtractionLog, outputExtractionFile);                    
 
-                    ParseFile.ExtractChunkToFile(fs, headerLength, originalFileSize, outputFileName, outputExtractionLog, outputExtractionFile);
-                    ParseFile.ExtractChunkToFile(fs, 0, headerLength, headerOutputFileName, outputExtractionLog, outputExtractionFile);
+                    if (extractHeaderToFile)
+                    {
+                        headerOutputFileName = Path.Combine(Path.GetDirectoryName(pSourcePath), String.Format("{0}{1}", originalFileName.Trim(), Genh.FILE_EXTENSION_HEADER)).Trim();
+                        ParseFile.ExtractChunkToFile(fs, 0, headerLength, headerOutputFileName, outputExtractionLog, outputExtractionFile);
+                    }
 
                     FileInfo fi = new FileInfo(outputFileName);
                     if (fi.Length != (long)originalFileSize)
@@ -579,7 +582,7 @@ namespace VGMToolbox.format.util
 
             int formatValue = BitConverter.ToInt32(genhItem.Identifier, 0);
             gcStruct.Format = formatValue.ToString();
-            gcStruct.HeaderSkip = "0x" + BitConverter.ToInt32(genhItem.HeaderLength, 0).ToString("X4");
+            gcStruct.HeaderSkip = "0x" + ((BitConverter.ToInt32(genhItem.AudioStart, 0) - BitConverter.ToInt32(genhItem.HeaderLength, 0))).ToString("X4");
             gcStruct.Interleave = "0x" + BitConverter.ToInt32(genhItem.Interleave, 0).ToString("X4");
             gcStruct.Channels = BitConverter.ToInt32(genhItem.Channels, 0).ToString();
         

@@ -65,9 +65,6 @@ namespace VGMToolbox.forms
             rbCreate.Checked = true;
             this.updateFormForTask();
 
-            // hide edit button
-            // rbEdit.Hide();
-
             // hide coefficients
             this.grpCoefOptions.Hide();
 
@@ -549,7 +546,7 @@ namespace VGMToolbox.forms
             }
             else if (rbEdit.Checked)
             {
-                this.btnDoTask.Enabled = false;
+                this.btnDoTask.Enabled = true;
                 
                 this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_BtnDoTaskEdit"];
                 grpOptions.Show();

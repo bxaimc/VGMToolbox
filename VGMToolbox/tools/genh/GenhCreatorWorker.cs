@@ -95,10 +95,12 @@ namespace VGMToolbox.tools.genh
         private void createGenhs(GenhCreatorStruct pGenhCreatorStruct, DoWorkEventArgs e)
         {
             int progress;
+            GenhCreationStruct genhCreationStruct;
 
             this.maxFiles = pGenhCreatorStruct.SourcePaths.Length;
             
             string outputFilePath = String.Empty;
+            string extractedFilePath;
             string outputMessageAction = String.Empty;
             StringBuilder outputMessage = new StringBuilder();
 
@@ -122,17 +124,33 @@ namespace VGMToolbox.tools.genh
                 {
                     if (pGenhCreatorStruct.DoExtract)
                     {
-                        outputFilePath = GenhUtil.ExtractGenhFile(file, true, true);
+                        outputFilePath = GenhUtil.ExtractGenhFile(file, true, true, true);
                         outputMessageAction = "Extracted";
                     }
                     else
                     {
-                        GenhCreationStruct genhCreationStruct = pGenhCreatorStruct.ToGenhCreationStruct();
+                        genhCreationStruct = pGenhCreatorStruct.ToGenhCreationStruct();
 
                         if (pGenhCreatorStruct.DoCreation)
                         {
                             outputFilePath = GenhUtil.CreateGenhFile(file, genhCreationStruct);
                             outputMessageAction = "Created";
+                        }
+                        else if (pGenhCreatorStruct.DoEdit)
+                        {
+                            extractedFilePath = GenhUtil.ExtractGenhFile(file, false, false, false);
+
+                            if (!String.IsNullOrEmpty(extractedFilePath))
+                            {
+                                genhCreationStruct.SourcePaths = new string[1];
+                                genhCreationStruct.SourcePaths[0] = extractedFilePath;
+
+                                outputFilePath = GenhUtil.CreateGenhFile(extractedFilePath, genhCreationStruct);
+
+                                File.Delete(extractedFilePath);
+                            }
+                            
+                            outputMessageAction = "Edited";
                         }
                     }
 
@@ -156,9 +174,7 @@ namespace VGMToolbox.tools.genh
                 }
             }
         }
-
         
-
         protected override void OnDoWork(DoWorkEventArgs e)
         {
             GenhCreatorStruct genhCreatorStruct = (GenhCreatorStruct)e.Argument;
