@@ -159,6 +159,8 @@ namespace VGMToolbox.format
 
         protected virtual byte GetStreamId(Stream readStream, long currentOffset) { return 0; }
 
+        protected virtual long GetStartOffset(Stream readStream, long currentOffset) { return 0; }
+
         protected virtual void DoFinalTasks(FileStream sourceFileStream, Dictionary<uint, FileStream> outputFiles, bool addHeader)
         { 
         
@@ -169,7 +171,7 @@ namespace VGMToolbox.format
             using (FileStream fs = File.OpenRead(this.FilePath))
             {
                 long fileSize = fs.Length;
-                long currentOffset;
+                long currentOffset = 0;
 
                 byte[] currentBlockId;
                 uint currentBlockIdVal;
@@ -193,7 +195,8 @@ namespace VGMToolbox.format
                 string audioFileExtension;
 
                 // look for first packet
-                currentOffset = ParseFile.GetNextOffset(fs, 0, Mpeg2Stream.PacketStartByes);
+                currentOffset = this.GetStartOffset(fs, currentOffset);
+                currentOffset = ParseFile.GetNextOffset(fs, currentOffset, Mpeg2Stream.PacketStartByes);
 
                 if (currentOffset != -1)
                 {                    

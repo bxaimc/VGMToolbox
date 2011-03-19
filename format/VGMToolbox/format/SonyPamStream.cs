@@ -30,6 +30,21 @@ namespace VGMToolbox.format
             base.BlockIdDictionary[BitConverter.ToUInt32(new byte[] { 0x00, 0x00, 0x01, 0xBD }, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 2); // Audio Stream, two bytes following equal length (Big Endian)
         }
 
+        protected override long GetStartOffset(Stream readStream, long currentOffset) 
+        {
+            long startOffset = 0;
+
+            uint seekOffsets = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(readStream, 0x90, 4));
+            uint seekCount = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(readStream, 0x94, 4));
+
+            if (seekOffsets > 0)
+            { 
+                startOffset = seekOffsets + (seekCount * 0x0C);
+            }
+
+            return startOffset;
+        }
+
         protected override string GetAudioFileExtension(Stream readStream, long currentOffset)
         {
             string fileExtension;
