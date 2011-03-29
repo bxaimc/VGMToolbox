@@ -69,6 +69,7 @@
     <Compile Include="VGMToolbox\format\brsar\Brsar.cs" />
     <Compile Include="VGMToolbox\format\brsar\BrsarSymbSection.cs" />
     <Compile Include="VGMToolbox\format\Cdxa.cs" />
+    <Compile Include="VGMToolbox\format\CriUsmStream.cs" />
     <Compile Include="VGMToolbox\format\DvdVideoStream.cs" />
     <Compile Include="VGMToolbox\format\Genh.cs" />
     <Compile Include="VGMToolbox\format\Hes.cs" />

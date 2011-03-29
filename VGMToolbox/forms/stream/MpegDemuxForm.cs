@@ -38,6 +38,7 @@ namespace VGMToolbox.forms.stream
             this.comboFormat.Items.Add("PMF");
             this.comboFormat.Items.Add("PSS");
             this.comboFormat.Items.Add("SFD");
+            this.comboFormat.Items.Add("USM");
 
             this.comboFormat.SelectedItem = "DVD Video";
         }

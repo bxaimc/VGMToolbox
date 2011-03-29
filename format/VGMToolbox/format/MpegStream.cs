@@ -9,8 +9,8 @@ namespace VGMToolbox.format
 {
     public abstract class MpegStream
     {
-        public static readonly byte[] PacketStartByes = new byte[] { 0x00, 0x00, 0x01, 0xBA };
-        public static readonly byte[] PacketEndByes = new byte[] { 0x00, 0x00, 0x01, 0xB9 };
+        protected static readonly byte[] PacketStartBytes = new byte[] { 0x00, 0x00, 0x01, 0xBA };
+        protected static readonly byte[] PacketEndBytes = new byte[] { 0x00, 0x00, 0x01, 0xB9 };
 
         public MpegStream(string path)
         {
@@ -57,8 +57,8 @@ namespace VGMToolbox.format
                 //********************
                 // System Packets
                 //********************
-                {BitConverter.ToUInt32(Mpeg2Stream.PacketEndByes, 0), new BlockSizeStruct(PacketSizeType.Eof, -1)},   // Program End
-                {BitConverter.ToUInt32(Mpeg2Stream.PacketStartByes, 0), new BlockSizeStruct(PacketSizeType.Static, 0xE)}, // Pack Header
+                {BitConverter.ToUInt32(MpegStream.PacketEndBytes, 0), new BlockSizeStruct(PacketSizeType.Eof, -1)},   // Program End
+                {BitConverter.ToUInt32(MpegStream.PacketStartBytes, 0), new BlockSizeStruct(PacketSizeType.Static, 0xE)}, // Pack Header
                 {BitConverter.ToUInt32(new byte[] { 0x00, 0x00, 0x01, 0xBB }, 0), new BlockSizeStruct(PacketSizeType.SizeBytes, 2)}, // System Header, two bytes following equal length (Big Endian)
                 {BitConverter.ToUInt32(new byte[] { 0x00, 0x00, 0x01, 0xBD }, 0), new BlockSizeStruct(PacketSizeType.SizeBytes, 2)}, // Private Stream, two bytes following equal length (Big Endian)
                 {BitConverter.ToUInt32(new byte[] { 0x00, 0x00, 0x01, 0xBE }, 0), new BlockSizeStruct(PacketSizeType.SizeBytes, 2)}, // Padding Stream, two bytes following equal length (Big Endian)
@@ -130,11 +130,19 @@ namespace VGMToolbox.format
 
         public bool UsesSameIdForMultipleAudioTracks { set; get; } // for PMF/PAM/DVD, who use 000001BD for all audio tracks
 
+        protected virtual byte[] GetPacketStartBytes() { return MpegStream.PacketStartBytes; }
+
+        protected virtual byte[] GetPacketEndBytes() { return MpegStream.PacketEndBytes; }
+
         protected abstract int GetAudioPacketHeaderSize(Stream readStream, long currentOffset);
 
         protected virtual int GetAudioPacketSubHeaderSize(Stream readStream, long currentOffset, byte streamId) { return 0; }
 
         protected abstract int GetVideoPacketHeaderSize(Stream readStream, long currentOffset);
+
+        protected virtual int GetAudioPacketFooterSize(Stream readStream, long currentOffset) { return 0; }
+
+        protected virtual int GetVideoPacketFooterSize(Stream readStream, long currentOffset) { return 0; }
 
         protected virtual bool IsThisAnAudioBlock(byte[] blockToCheck)
         {
@@ -184,6 +192,9 @@ namespace VGMToolbox.format
                 int audioBlockSkipSize;
                 int videoBlockSkipSize;
 
+                int audioBlockFooterSize;
+                int videoBlockFooterSize;
+
                 bool eofFlagFound = false;
 
                 Dictionary<uint, FileStream> streamOutputWriters = new Dictionary<uint, FileStream>();
@@ -196,7 +207,7 @@ namespace VGMToolbox.format
 
                 // look for first packet
                 currentOffset = this.GetStartOffset(fs, currentOffset);
-                currentOffset = ParseFile.GetNextOffset(fs, currentOffset, Mpeg2Stream.PacketStartByes);
+                currentOffset = ParseFile.GetNextOffset(fs, currentOffset, this.GetPacketStartBytes());
 
                 if (currentOffset != -1)
                 {                    
@@ -235,10 +246,25 @@ namespace VGMToolbox.format
                                 case PacketSizeType.SizeBytes:
 
                                     // Get the block size
-                                    blockSizeArray = ParseFile.ParseSimpleOffset(fs, currentOffset + currentBlockId.Length, 2);
+                                    blockSizeArray = ParseFile.ParseSimpleOffset(fs, currentOffset + currentBlockId.Length, blockStruct.Size);
                                     Array.Reverse(blockSizeArray);
-                                    blockSize = (uint)BitConverter.ToUInt16(blockSizeArray, 0);
 
+                                    switch (blockStruct.Size)
+                                    {
+                                        case 4:
+                                            blockSize = (uint)BitConverter.ToUInt32(blockSizeArray, 0);
+                                            break;
+                                        case 2:
+                                            blockSize = (uint)BitConverter.ToUInt16(blockSizeArray, 0);
+                                            break;
+                                        case 1:
+                                            blockSize = (uint)blockSizeArray[0];
+                                            break;
+                                        default:
+                                            throw new ArgumentOutOfRangeException(String.Format("Unhandled size block size.{0}", Environment.NewLine));
+                                    }
+                                    
+                                    
                                     // if block type is audio or video, extract it
                                     isAudioBlock = this.IsThisAnAudioBlock(currentBlockId);
 
@@ -296,13 +322,15 @@ namespace VGMToolbox.format
                                         {
                                             // write audio
                                             audioBlockSkipSize = this.GetAudioPacketHeaderSize(fs, currentOffset) + GetAudioPacketSubHeaderSize(fs, currentOffset, streamId);
-                                            streamOutputWriters[currentStreamKey].Write(ParseFile.ParseSimpleOffset(fs, currentOffset + currentBlockId.Length + blockSizeArray.Length + audioBlockSkipSize, (int)(blockSize - audioBlockSkipSize)), 0, (int)(blockSize - audioBlockSkipSize));
+                                            audioBlockFooterSize = this.GetAudioPacketFooterSize(fs, currentOffset);
+                                            streamOutputWriters[currentStreamKey].Write(ParseFile.ParseSimpleOffset(fs, currentOffset + currentBlockId.Length + blockSizeArray.Length + audioBlockSkipSize, (int)(blockSize - audioBlockSkipSize)), 0, (int)(blockSize - audioBlockSkipSize - audioBlockFooterSize));
                                         }
                                         else
                                         {
                                             // write video
                                             videoBlockSkipSize = this.GetVideoPacketHeaderSize(fs, currentOffset);
-                                            streamOutputWriters[currentStreamKey].Write(ParseFile.ParseSimpleOffset(fs, currentOffset + currentBlockId.Length + blockSizeArray.Length + videoBlockSkipSize, (int)(blockSize - videoBlockSkipSize)), 0, (int)(blockSize - videoBlockSkipSize));
+                                            videoBlockFooterSize = this.GetVideoPacketFooterSize(fs, currentOffset);
+                                            streamOutputWriters[currentStreamKey].Write(ParseFile.ParseSimpleOffset(fs, currentOffset + currentBlockId.Length + blockSizeArray.Length + videoBlockSkipSize, (int)(blockSize - videoBlockSkipSize)), 0, (int)(blockSize - videoBlockSkipSize - videoBlockFooterSize));
                                         }                                    
                                     }
 
@@ -369,7 +397,7 @@ namespace VGMToolbox.format
             using (FileStream fs = File.OpenRead(path))
             {
                 // look for first packet
-                long currentOffset = ParseFile.GetNextOffset(fs, 0, Mpeg2Stream.PacketStartByes);
+                long currentOffset = ParseFile.GetNextOffset(fs, 0, MpegStream.PacketStartBytes);
 
                 if (currentOffset != -1)
                 {

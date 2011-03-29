@@ -18,7 +18,7 @@ namespace VGMToolbox.format
             this.FileExtensionAudio = DefaultAudioExtension;
             this.FileExtensionVideo = DefaultVideoExtension;
 
-            base.BlockIdDictionary[BitConverter.ToUInt32(Mpeg2Stream.PacketStartByes, 0)] = new BlockSizeStruct(PacketSizeType.Static, 0xE); // Pack Header
+            base.BlockIdDictionary[BitConverter.ToUInt32(MpegStream.PacketStartBytes, 0)] = new BlockSizeStruct(PacketSizeType.Static, 0xE); // Pack Header
         }
 
         protected int GetStandardPesHeaderSize(Stream readStream, long currentOffset)

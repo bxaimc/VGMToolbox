@@ -74,6 +74,11 @@ namespace VGMToolbox.tools.stream
                     ss.DemultiplexStreams(demuxOptions);
                     break;
 
+                case "USM":
+                    CriUsmStream cus = new CriUsmStream(path);
+                    cus.DemultiplexStreams(demuxOptions);
+                    break;
+
                 default:
                     throw new FormatException("Source format not defined.");
             }
