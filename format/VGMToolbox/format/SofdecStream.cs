@@ -17,7 +17,7 @@ namespace VGMToolbox.format
         {
             this.FileExtensionAudio = AdxAudioExtension;
             this.FileExtensionVideo = DefaultVideoExtension;          
-        }
+        }        
 
         protected override string GetAudioFileExtension(Stream readStream, long currentOffset)
         {

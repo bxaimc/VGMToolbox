@@ -15,6 +15,8 @@ namespace VGMToolbox.format
         protected static readonly byte[] SFV_BYTES = new byte[] { 0x40, 0x53, 0x46, 0x56 };
         protected static readonly byte[] SFA_BYTES = new byte[] { 0x40, 0x53, 0x46, 0x41 };
 
+        protected static readonly byte[] UTF_BYTES = new byte[] { 0x40, 0x55, 0x54, 0x46 };
+
         protected static readonly byte[] HEADER_END_BYTES = 
             new byte[] { 0x23, 0x48, 0x45, 0x41, 0x44, 0x45, 0x52, 0x20, 
                          0x45, 0x4E, 0x44, 0x20, 0x20, 0x20, 0x20, 0x20, 
@@ -119,6 +121,82 @@ namespace VGMToolbox.format
             checkBytes = (UInt16)ParseFile.GetVaryingByteValueAtRelativeOffset(readStream, od, currentOffset);
 
             return checkBytes;
+        }
+
+        protected override void DoFinalTasks(FileStream sourceFileStream, Dictionary<uint, FileStream> outputFiles, bool addHeader)
+        {          
+            long headerEndOffset;
+            long metadataEndOffset;
+            long headerSize;
+
+            long footerOffset;
+            long footerSize;
+
+            string sourceFileName;
+            string workingFile;
+            string fileExtension;
+
+            foreach (uint streamId in outputFiles.Keys)
+            {
+                sourceFileName = outputFiles[streamId].Name;
+                
+                //--------------------------
+                // get header size
+                //--------------------------
+                headerEndOffset = ParseFile.GetNextOffset(outputFiles[streamId], 0, HEADER_END_BYTES);
+                metadataEndOffset = ParseFile.GetNextOffset(outputFiles[streamId], 0, METADATA_END_BYTES);
+
+                if (metadataEndOffset > headerEndOffset)
+                {
+                    headerSize = metadataEndOffset + METADATA_END_BYTES.Length;
+                }
+                else
+                {
+                    headerSize = headerEndOffset + METADATA_END_BYTES.Length;
+                }
+
+                //-----------------
+                // get footer size
+                //-----------------
+                footerOffset = ParseFile.GetNextOffset(outputFiles[streamId], 0, CONTENTS_END_BYTES);
+                footerSize = outputFiles[streamId].Length - footerOffset;
+
+                //------------------------------------------
+                // check data to adjust extension if needed
+                //------------------------------------------
+                if (this.IsThisAnAudioBlock(BitConverter.GetBytes(streamId & 0xFFFFFFF0))) // may need to change mask if more than 0xF streams
+                {
+                    byte[] checkBytes = ParseFile.ParseSimpleOffset(outputFiles[streamId], headerSize, 4);
+
+                    if (ParseFile.CompareSegment(checkBytes, 0, SofdecStream.AixSignatureBytes))
+                    {
+                        fileExtension = SofdecStream.AixAudioExtension;
+                    }
+                    else if (checkBytes[0] == 0x80)
+                    {
+                        fileExtension = SofdecStream.AdxAudioExtension;
+                    }
+                    else
+                    {
+                        fileExtension = ".bin";
+                    }
+                }
+                else
+                {
+                    fileExtension = Path.GetExtension(sourceFileName);
+                }
+                
+                outputFiles[streamId].Close();
+                outputFiles[streamId].Dispose();
+
+                workingFile = FileUtil.RemoveChunkFromFile(sourceFileName, 0, headerSize);
+                File.Copy(workingFile, sourceFileName, true);
+                File.Delete(workingFile);
+
+                workingFile = FileUtil.RemoveChunkFromFile(sourceFileName, footerOffset, footerSize);
+                File.Copy(workingFile, Path.ChangeExtension(sourceFileName, fileExtension), true);
+                File.Delete(workingFile);
+            }
         }
     }
 }

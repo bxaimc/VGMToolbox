@@ -218,7 +218,7 @@ namespace VGMToolbox.util
             }
         }
 
-        public static void RemoveChunkFromFile(string path, long startingOffset, long length)
+        public static string RemoveChunkFromFile(string path, long startingOffset, long length)
         {
             string fullPath = Path.GetFullPath(path);
             
@@ -248,8 +248,12 @@ namespace VGMToolbox.util
                             bytesRead = sourceFs.Read(bytes, 0, bytes.Length);
                         }
                     }
-                }
+
+                    ret = destinationPath;
+                }                
             }
+
+            return ret;
         }
 
         public static string RemoveAllChunksFromFile(FileStream fs, byte[] chunkToRemove)
