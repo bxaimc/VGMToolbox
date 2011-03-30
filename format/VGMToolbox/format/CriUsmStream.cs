@@ -158,7 +158,7 @@ namespace VGMToolbox.format
                 //-----------------
                 // get footer size
                 //-----------------
-                footerOffset = ParseFile.GetNextOffset(outputFiles[streamId], 0, CONTENTS_END_BYTES);
+                footerOffset = ParseFile.GetNextOffset(outputFiles[streamId], 0, CONTENTS_END_BYTES) - headerSize;
                 footerSize = outputFiles[streamId].Length - footerOffset;
 
                 //------------------------------------------
