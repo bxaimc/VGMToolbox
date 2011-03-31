@@ -14,6 +14,7 @@ namespace VGMToolbox.format
         protected static readonly byte[] CRID_BYTES = new byte[] { 0x43, 0x52, 0x49, 0x44 };
         protected static readonly byte[] SFV_BYTES = new byte[] { 0x40, 0x53, 0x46, 0x56 };
         protected static readonly byte[] SFA_BYTES = new byte[] { 0x40, 0x53, 0x46, 0x41 };
+        protected static readonly byte[] SBT_BYTES = new byte[] { 0x40, 0x53, 0x42, 0x54 };
 
         protected static readonly byte[] UTF_BYTES = new byte[] { 0x40, 0x55, 0x54, 0x46 };
 
@@ -46,6 +47,7 @@ namespace VGMToolbox.format
             base.BlockIdDictionary[BitConverter.ToUInt32(CRID_BYTES, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 4); // CRID
             base.BlockIdDictionary[BitConverter.ToUInt32(SFV_BYTES, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 4); // @SFV
             base.BlockIdDictionary[BitConverter.ToUInt32(SFA_BYTES, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 4); // @SFA
+            base.BlockIdDictionary[BitConverter.ToUInt32(SBT_BYTES, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 4); // @SBT
         }
 
         protected override byte[] GetPacketStartBytes() { return CRID_BYTES; }
