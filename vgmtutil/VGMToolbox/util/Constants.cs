@@ -390,7 +390,6 @@ namespace VGMToolbox.util
         public bool UseFileNameTerminatorString { set; get; }
         public string FileNameTerminatorString { set; get; }  
     }
-
     
     public struct SimpleFileExtractionStruct
     {

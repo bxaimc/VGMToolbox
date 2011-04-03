@@ -453,5 +453,109 @@ namespace VGMToolbox.util
                 }
             }
         }
+
+        public static void InterleaveFiles(string[] sourceFiles, uint interleaveValue,
+            long startOffest, byte[] paddingBytes, string destinationFile)
+        {
+            long currentOffset = 0;
+            long maxLength = 0;
+            long sizeDifference = 0;
+            long bytesToWrite;
+            long bytesRemaining;
+
+            FileStream[] inputStreams = new FileStream[sourceFiles.Length];
+            long[] fileLengths = new long[sourceFiles.Length];
+            destinationFile = Path.GetFullPath(destinationFile);
+
+            // open destination file for writing
+            using (FileStream destinationStream = File.OpenWrite(destinationFile))
+            {
+                try
+                {
+                    // build input streams array                   
+                    for (int i = 0; i < sourceFiles.Length; i++)
+                    {
+                        inputStreams[i] = File.OpenRead(sourceFiles[i]);
+                        fileLengths[i] = inputStreams[i].Length;
+
+                        // get max file length
+                        if (maxLength < fileLengths[i])
+                        {
+                            maxLength = fileLengths[i];
+                        }
+                    }
+
+                    // write out blocks
+                    currentOffset = startOffest;
+
+                    while (currentOffset < maxLength)
+                    {
+                        for (int i = 0; i < sourceFiles.Length; i++)
+                        {                            
+                            if (currentOffset + interleaveValue < fileLengths[i])
+                            {
+                                // write from file
+                                destinationStream.Write(
+                                    ParseFile.ParseSimpleOffset(inputStreams[i], currentOffset, (int)interleaveValue), 
+                                    0, (int)interleaveValue);  
+                            }
+                            else if (currentOffset < fileLengths[i])
+                            {
+                                // write some from file, some from padding
+                                sizeDifference = (currentOffset + interleaveValue) - fileLengths[i];
+
+                                // write from file
+                                destinationStream.Write(
+                                    ParseFile.ParseSimpleOffset(inputStreams[i], currentOffset, (int)(interleaveValue - sizeDifference)),
+                                    0, (int)(int)(interleaveValue - sizeDifference));
+
+                                // write padding bytes
+                                bytesRemaining = sizeDifference;
+
+                                while (bytesRemaining > 0)
+                                {
+                                    bytesToWrite = bytesRemaining > paddingBytes.Length ? paddingBytes.Length : bytesRemaining;
+                                    destinationStream.Write(paddingBytes, 0, (int)bytesToWrite);
+                                    bytesRemaining -= bytesToWrite;
+                                }
+                            }
+                            else
+                            {
+                                // write padding bytes
+                                bytesRemaining = interleaveValue;
+
+                                while (bytesRemaining > 0)
+                                {
+                                    bytesToWrite = bytesRemaining > paddingBytes.Length ? paddingBytes.Length : bytesRemaining;
+                                    destinationStream.Write(paddingBytes, 0, (int)bytesToWrite);
+                                    bytesRemaining -= bytesToWrite;
+                                }
+                            }
+                        }
+
+                        // increment offset
+                        currentOffset += interleaveValue;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message, ex);
+                }
+                finally
+                {
+                    // close all readers
+                    for (int i = 0; i < inputStreams.Length; i++)
+                    {
+                        if (inputStreams[i].CanRead)
+                        {
+                            inputStreams[i].Close();
+                            inputStreams[i].Dispose();
+                        }
+                    }                
+                }
+
+                
+            }
+        }
     }
 }
