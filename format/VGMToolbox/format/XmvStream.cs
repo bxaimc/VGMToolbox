@@ -34,6 +34,7 @@ namespace VGMToolbox.format
             public byte[] VideoHeight { set; get; }
 
             public UInt32 AudioStreamCount { set; get; }
+            public string OutputPath { set; get; }
 
             public XmvAudioDataHeader[] AudioHeaders { set; get; }
         }
@@ -76,7 +77,7 @@ namespace VGMToolbox.format
             this.FilePath = path;
         }
 
-        public void DemultiplexStreams()
+        public void DemultiplexStreams(MpegStream.DemuxOptionsStruct demuxStruct)
         {
             long fileSize;
             long currentOffset = 0;
@@ -89,7 +90,7 @@ namespace VGMToolbox.format
 
             Dictionary<string, FileStream> streamOutputWriters = new Dictionary<string, FileStream>();
             long audioStreamOffset;
-            // string outputPath;
+            long videoStreamOffset;
 
             GenhCreationStruct gcStruct;
             string genhFile;
@@ -146,30 +147,55 @@ namespace VGMToolbox.format
                     videoPacketSize &= 0x000FFFFF;
                     videoPacketSize -= (this.FileHeader.AudioStreamCount * 4);
 
-                    // setup audio for writing
-                    audioStreamPacketSizes = new long[this.FileHeader.AudioStreamCount];
-                    audioStreamOffset = currentOffset + 0xC + (this.FileHeader.AudioStreamCount * 4) + videoPacketSize;
-
-                    for (uint i = 0; i < this.FileHeader.AudioStreamCount; i++)
+                    //------------------
+                    // write video data
+                    //------------------
+                    if (demuxStruct.ExtractVideo)
                     {
-                        audioStreamPacketSizes[i] = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, currentOffset + 0xC + (i * 4), 4), 0);
+                        this.FileHeader.OutputPath = Path.Combine(Path.GetDirectoryName(this.FilePath), String.Format("{0}.raw.wmv", Path.GetFileNameWithoutExtension(this.FilePath)));
 
-                        // write audio streams
-                        this.FileHeader.AudioHeaders[i].OutputPath = Path.Combine(Path.GetDirectoryName(this.FilePath), String.Format("{0}_{1}.wav", Path.GetFileNameWithoutExtension(this.FilePath), i.ToString("X2")));
 
                         // add output stream to Dictionary
-                        if (!streamOutputWriters.ContainsKey(this.FileHeader.AudioHeaders[i].OutputPath))
+                        if (!streamOutputWriters.ContainsKey(this.FileHeader.OutputPath))
                         {
-                            streamOutputWriters.Add(this.FileHeader.AudioHeaders[i].OutputPath, new FileStream(this.FileHeader.AudioHeaders[i].OutputPath, FileMode.Create, FileAccess.ReadWrite));
+                            streamOutputWriters.Add(this.FileHeader.OutputPath, new FileStream(this.FileHeader.OutputPath, FileMode.Create, FileAccess.ReadWrite));
                         }
 
-                        // write this audio packet
-                        streamOutputWriters[this.FileHeader.AudioHeaders[i].OutputPath].Write(ParseFile.ParseSimpleOffset(fs, audioStreamOffset, (int)audioStreamPacketSizes[i]), 0, (int)audioStreamPacketSizes[i]);
+                        // write the video packet
+                        videoStreamOffset = currentOffset + 0xC + (this.FileHeader.AudioStreamCount * 4);
+                        streamOutputWriters[this.FileHeader.OutputPath].Write(ParseFile.ParseSimpleOffset(fs, videoStreamOffset, (int)videoPacketSize), 0, (int)videoPacketSize);
+                    }
 
-                        // increase source offset to next packet
-                        audioStreamOffset += audioStreamPacketSizes[i];
-                    }                    
+                    //------------------
+                    // write audio data
+                    //------------------
+                    if (demuxStruct.ExtractAudio)
+                    {
+                        // setup audio for writing
+                        audioStreamPacketSizes = new long[this.FileHeader.AudioStreamCount];
+                        audioStreamOffset = currentOffset + 0xC + (this.FileHeader.AudioStreamCount * 4) + videoPacketSize;
 
+                        for (uint i = 0; i < this.FileHeader.AudioStreamCount; i++)
+                        {
+                            audioStreamPacketSizes[i] = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, currentOffset + 0xC + (i * 4), 4), 0);
+
+                            // write audio streams
+                            this.FileHeader.AudioHeaders[i].OutputPath = Path.Combine(Path.GetDirectoryName(this.FilePath), String.Format("{0}_{1}.wav", Path.GetFileNameWithoutExtension(this.FilePath), i.ToString("X2")));
+
+                            // add output stream to Dictionary
+                            if (!streamOutputWriters.ContainsKey(this.FileHeader.AudioHeaders[i].OutputPath))
+                            {
+                                streamOutputWriters.Add(this.FileHeader.AudioHeaders[i].OutputPath, new FileStream(this.FileHeader.AudioHeaders[i].OutputPath, FileMode.Create, FileAccess.ReadWrite));
+                            }
+
+                            // write this audio packet
+                            streamOutputWriters[this.FileHeader.AudioHeaders[i].OutputPath].Write(ParseFile.ParseSimpleOffset(fs, audioStreamOffset, (int)audioStreamPacketSizes[i]), 0, (int)audioStreamPacketSizes[i]);
+
+                            // increase source offset to next packet
+                            audioStreamOffset += audioStreamPacketSizes[i];
+                        }
+                    }
+                    
                     currentOffset = blockStart + packetSize;
                 } // (currentOffset < fileSize)
 
@@ -186,26 +212,34 @@ namespace VGMToolbox.format
                 // interleave audio
                 // needed at all, ONLY FOR MULTI-STREAM, SINGLE CHANNEL PER STREAM?  
 
+                //------------------
                 // add audio header
-                for (int i = 0; i < this.FileHeader.AudioStreamCount; i++)
+                //------------------
+                if (demuxStruct.ExtractAudio && demuxStruct.AddHeader)
                 {
-                    gcStruct = new GenhCreationStruct();
-                    gcStruct.Format = "0x01";
-                    gcStruct.HeaderSkip = "0";
-                    gcStruct.Interleave = "0x1";
-                    gcStruct.Channels = BitConverter.ToUInt16(this.FileHeader.AudioHeaders[i].ChannelCount, 0).ToString();
-                    gcStruct.Frequency = BitConverter.ToUInt16(this.FileHeader.AudioHeaders[i].SamplesPerSecond, 0).ToString();
-                    gcStruct.NoLoops = true;
-
-                    genhFile = GenhUtil.CreateGenhFile(this.FileHeader.AudioHeaders[i].OutputPath, gcStruct);
-
-                    // delete original file
-                    if (!String.IsNullOrEmpty(genhFile))
+                    for (int i = 0; i < this.FileHeader.AudioStreamCount; i++)
                     {
-                        File.Delete(this.FileHeader.AudioHeaders[i].OutputPath);
-                    }                
+                        gcStruct = new GenhCreationStruct();
+                        gcStruct.Format = "0x01";
+                        gcStruct.HeaderSkip = "0";
+                        gcStruct.Interleave = "0x1";
+                        gcStruct.Channels = BitConverter.ToUInt16(this.FileHeader.AudioHeaders[i].ChannelCount, 0).ToString();
+                        gcStruct.Frequency = BitConverter.ToUInt16(this.FileHeader.AudioHeaders[i].SamplesPerSecond, 0).ToString();
+                        gcStruct.NoLoops = true;
+
+                        genhFile = GenhUtil.CreateGenhFile(this.FileHeader.AudioHeaders[i].OutputPath, gcStruct);
+
+                        // delete original file
+                        if (!String.IsNullOrEmpty(genhFile))
+                        {
+                            File.Delete(this.FileHeader.AudioHeaders[i].OutputPath);
+                        }
+                    }
                 }
+                
+                //------------------
                 // add video header
+                //------------------
 
             }
         }

@@ -93,6 +93,7 @@ namespace VGMToolbox.forms.stream
             { 
                 case "PAM":
                 case "PMF":
+                case "XMV":
                     this.cbAddHeader.Enabled = true;
                     break;
                 default:

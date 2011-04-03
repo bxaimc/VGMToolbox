@@ -81,7 +81,7 @@ namespace VGMToolbox.tools.stream
 
                 case "XMV":
                     XmvStream xmv = new XmvStream(path);
-                    xmv.DemultiplexStreams();
+                    xmv.DemultiplexStreams(demuxOptions);
                     break;
 
                 default:
