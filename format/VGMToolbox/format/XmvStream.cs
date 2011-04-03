@@ -6,7 +6,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.format
 {
-    class XmvStream
+    public class XmvStream
     {
         public static readonly byte[] XmvMagicBytes = new byte[] { 0x78, 0x6F, 0x62, 0x58 }; // xobX
 
@@ -77,7 +77,9 @@ namespace VGMToolbox.format
         {
             long fileSize;
             long currentOffset = 0;
+            long blockStart = 0;
             long packetSize;
+            long nextPacketSize = 0;
 
             long videoPacketSize;
             long[] audioStreamPacketSizes;
@@ -88,6 +90,8 @@ namespace VGMToolbox.format
                 
                 while (currentOffset < fileSize)
                 {
+                    blockStart = currentOffset;
+                    
                     if (currentOffset == 0)
                     {
                         // get main header
@@ -109,19 +113,19 @@ namespace VGMToolbox.format
 
                         for (uint i = 0; i < this.FileHeader.AudioStreamCount; i++)
                         {
+                            this.FileHeader.AudioHeaders[i] = new XmvAudioDataHeader();
                             this.FileHeader.AudioHeaders[i].WaveFormat = ParseFile.ParseSimpleOffset(fs, 0x24 + (i * 0xC), 2);
                             this.FileHeader.AudioHeaders[i].ChannelCount = ParseFile.ParseSimpleOffset(fs, 0x24 + (i * 0xC) + 2, 2);
                             this.FileHeader.AudioHeaders[i].SamplesPerSecond = ParseFile.ParseSimpleOffset(fs, 0x24 + (i * 0xC) + 4, 4);
                             this.FileHeader.AudioHeaders[i].BitsPerSample = ParseFile.ParseSimpleOffset(fs, 0x24 + (i * 0xC) + 8, 4);
                         }
 
-                        packetSize = (long)BitConverter.ToUInt32(this.FileHeader.InitialPacketSize, 0);
-                        currentOffset = 0x24 + (this.FileHeader.AudioStreamCount * 0xC) + 0xC;
+                        nextPacketSize = (long)BitConverter.ToUInt32(this.FileHeader.InitialPacketSize, 0);
+                        currentOffset = 0x24 + (this.FileHeader.AudioStreamCount * 0xC);
                     }
-                    else
-                    {
-                        packetSize = (long)BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, currentOffset, 4), 0);
-                    }
+
+                    packetSize = nextPacketSize;
+                    nextPacketSize = (long)BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, currentOffset, 4), 0);
 
                     videoPacketSize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, currentOffset + 4, 4), 0);
                     videoPacketSize &= 0x00FFFFFF;
@@ -130,14 +134,14 @@ namespace VGMToolbox.format
                     
                     for (uint i = 0; i < this.FileHeader.AudioStreamCount; i++)
                     {
-                        audioStreamPacketSizes[i] = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, currentOffset + 8 + (i * 4), 4), 0);
+                        audioStreamPacketSizes[i] = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, currentOffset + 0xC + (i * 4), 4), 0);
                     }
                     
                     // write streams
 
 
 
-                    currentOffset += packetSize;
+                    currentOffset = blockStart + packetSize;
                 } // (currentOffset < fileSize)
 
                 // interleave audio

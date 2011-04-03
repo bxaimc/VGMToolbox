@@ -13,15 +13,15 @@ namespace VGMToolbox.forms.stream
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = "MPEG Container Demultiplexer";
+            this.lblTitle.Text = "Video Demultiplexer";
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();            
             
             InitializeComponent();
 
-            this.tbOutput.Text = "Demultiplex streams from movies using an MPEG container format." + Environment.NewLine;
-            this.tbOutput.Text += "- Currently supported formats: DVD Video, MPEG1, MPEG2, PAM, PMF, PSS, SFD" + Environment.NewLine;
+            this.tbOutput.Text = "Demultiplex streams from movies." + Environment.NewLine;
+            this.tbOutput.Text += "- Currently supported formats: DVD Video, MPEG1, MPEG2, PAM, PMF, PSS, SFD, USM" + Environment.NewLine;
             this.tbOutput.Text += "- If the MPEG does not work for your file, be sure to try DVD Video, since it can handle specialized audio types." + Environment.NewLine;
             this.tbOutput.Text += "- MKVMerge can be used to add raw .264 data to a container file for playback." + Environment.NewLine;
 
@@ -39,6 +39,7 @@ namespace VGMToolbox.forms.stream
             this.comboFormat.Items.Add("PSS");
             this.comboFormat.Items.Add("SFD");
             this.comboFormat.Items.Add("USM");
+            this.comboFormat.Items.Add("XMV");
 
             this.comboFormat.SelectedItem = "DVD Video";
         }

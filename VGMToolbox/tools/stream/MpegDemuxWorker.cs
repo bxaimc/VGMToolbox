@@ -79,6 +79,11 @@ namespace VGMToolbox.tools.stream
                     cus.DemultiplexStreams(demuxOptions);
                     break;
 
+                case "XMV":
+                    XmvStream xmv = new XmvStream(path);
+                    xmv.DemultiplexStreams();
+                    break;
+
                 default:
                     throw new FormatException("Source format not defined.");
             }

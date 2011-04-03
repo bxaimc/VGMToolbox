@@ -1107,7 +1107,7 @@ namespace VGMToolbox
             // VARIOUS
             ///////////
             // MPEG Demuxer
-            TreeNode mpegDemuxNode = new TreeNode("MPEG Container Demultiplexer");
+            TreeNode mpegDemuxNode = new TreeNode("Video Demultiplexer");
 
             // Add MPEG Demuxer Form
             MpegDemuxForm mpegDemuxForm = new MpegDemuxForm(mpegDemuxNode);
