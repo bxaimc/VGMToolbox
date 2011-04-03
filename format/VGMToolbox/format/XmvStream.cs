@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -49,7 +50,7 @@ namespace VGMToolbox.format
         {
             byte[] VideoStreamLength { set; get; }
             byte[] FrameCount { set; get; }
-            XmvAudioStreamHeader[] AudioSteams; 
+            XmvAudioStreamHeader[] AudioStreams; 
         }
 
         public struct XmvVideoFrame
@@ -79,16 +80,20 @@ namespace VGMToolbox.format
             long currentOffset = 0;
             long blockStart = 0;
             long packetSize;
-            long nextPacketSize = 0;
+            long nextPacketSize = -1;
 
             long videoPacketSize;
             long[] audioStreamPacketSizes;
 
+            Dictionary<string, FileStream> streamOutputWriters = new Dictionary<string, FileStream>();
+            long audioStreamOffset;
+            string outputPath;
+
             using (FileStream fs = File.Open(this.FilePath, FileMode.Open, FileAccess.Read))
             {
                 fileSize = fs.Length;
-                
-                while (currentOffset < fileSize)
+
+                while ((nextPacketSize != 0) && (currentOffset < fileSize))
                 {
                     blockStart = currentOffset;
                     
@@ -120,26 +125,45 @@ namespace VGMToolbox.format
                             this.FileHeader.AudioHeaders[i].BitsPerSample = ParseFile.ParseSimpleOffset(fs, 0x24 + (i * 0xC) + 8, 4);
                         }
 
+                        // set next packet size
                         nextPacketSize = (long)BitConverter.ToUInt32(this.FileHeader.InitialPacketSize, 0);
                         currentOffset = 0x24 + (this.FileHeader.AudioStreamCount * 0xC);
                     }
 
+                    // set packet size of current packet
                     packetSize = nextPacketSize;
+                    
+                    // get size of next packet
                     nextPacketSize = (long)BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, currentOffset, 4), 0);
 
+                    // get size of video data
                     videoPacketSize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, currentOffset + 4, 4), 0);
-                    videoPacketSize &= 0x00FFFFFF;
+                    videoPacketSize &= 0x000FFFFF;
+                    videoPacketSize -= (this.FileHeader.AudioStreamCount * 4);
 
+                    // setup audio for writing
                     audioStreamPacketSizes = new long[this.FileHeader.AudioStreamCount];
-                    
+                    audioStreamOffset = currentOffset + 0xC + (this.FileHeader.AudioStreamCount * 4) + videoPacketSize;
+
                     for (uint i = 0; i < this.FileHeader.AudioStreamCount; i++)
                     {
                         audioStreamPacketSizes[i] = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, currentOffset + 0xC + (i * 4), 4), 0);
-                    }
-                    
-                    // write streams
 
+                        // write audio streams
+                        outputPath = Path.Combine(Path.GetDirectoryName(this.FilePath), String.Format("{0}_{1}.wav", Path.GetFileNameWithoutExtension(this.FilePath), i.ToString("X2")));
 
+                        // add output stream to Dictionary
+                        if (!streamOutputWriters.ContainsKey(outputPath))
+                        {
+                            streamOutputWriters.Add(outputPath, new FileStream(outputPath, FileMode.Create, FileAccess.ReadWrite));
+                        }
+
+                        // write this audio packet
+                        streamOutputWriters[outputPath].Write(ParseFile.ParseSimpleOffset(fs, audioStreamOffset, (int)audioStreamPacketSizes[i]), 0, (int)audioStreamPacketSizes[i]);
+
+                        // increase source offset to next packet
+                        audioStreamOffset += audioStreamPacketSizes[i];
+                    }                    
 
                     currentOffset = blockStart + packetSize;
                 } // (currentOffset < fileSize)
@@ -149,6 +173,16 @@ namespace VGMToolbox.format
                 // add audio header
 
                 // add video header
+
+                // close all writers
+                foreach (string k in streamOutputWriters.Keys)
+                {
+                    if (streamOutputWriters[k].CanRead)
+                    {
+                        streamOutputWriters[k].Close();
+                        streamOutputWriters[k].Dispose();
+                    }
+                }
             }
         }
 
