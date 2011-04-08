@@ -152,8 +152,7 @@ namespace VGMToolbox.format
                     //------------------
                     if (demuxStruct.ExtractVideo)
                     {
-                        this.FileHeader.OutputPath = Path.Combine(Path.GetDirectoryName(this.FilePath), String.Format("{0}.raw.wmv", Path.GetFileNameWithoutExtension(this.FilePath)));
-
+                        this.FileHeader.OutputPath = Path.Combine(Path.GetDirectoryName(this.FilePath), String.Format("{0}.xmv.raw", Path.GetFileNameWithoutExtension(this.FilePath)));
 
                         // add output stream to Dictionary
                         if (!streamOutputWriters.ContainsKey(this.FileHeader.OutputPath))
@@ -180,7 +179,7 @@ namespace VGMToolbox.format
                             audioStreamPacketSizes[i] = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, currentOffset + 0xC + (i * 4), 4), 0);
 
                             // write audio streams
-                            this.FileHeader.AudioHeaders[i].OutputPath = Path.Combine(Path.GetDirectoryName(this.FilePath), String.Format("{0}_{1}.wav", Path.GetFileNameWithoutExtension(this.FilePath), i.ToString("X2")));
+                           this.FileHeader.AudioHeaders[i].OutputPath = Path.Combine(Path.GetDirectoryName(this.FilePath), String.Format("{0}_{1}.raw", Path.GetFileNameWithoutExtension(this.FilePath), i.ToString("X2")));
 
                             // add output stream to Dictionary
                             if (!streamOutputWriters.ContainsKey(this.FileHeader.AudioHeaders[i].OutputPath))
@@ -199,7 +198,9 @@ namespace VGMToolbox.format
                     currentOffset = blockStart + packetSize;
                 } // (currentOffset < fileSize)
 
+                //-------------------
                 // close all writers
+                //-------------------
                 foreach (string k in streamOutputWriters.Keys)
                 {
                     if (streamOutputWriters[k].CanRead)
@@ -210,7 +211,7 @@ namespace VGMToolbox.format
                 }
 
                 // interleave audio
-                // needed at all, ONLY FOR MULTI-STREAM, SINGLE CHANNEL PER STREAM?  
+                // is this needed at all, ONLY FOR MULTI-STREAM, SINGLE CHANNEL PER STREAM?  
 
                 //------------------
                 // add audio header
@@ -219,20 +220,23 @@ namespace VGMToolbox.format
                 {
                     for (int i = 0; i < this.FileHeader.AudioStreamCount; i++)
                     {
-                        gcStruct = new GenhCreationStruct();
-                        gcStruct.Format = "0x01";
-                        gcStruct.HeaderSkip = "0";
-                        gcStruct.Interleave = "0x1";
-                        gcStruct.Channels = BitConverter.ToUInt16(this.FileHeader.AudioHeaders[i].ChannelCount, 0).ToString();
-                        gcStruct.Frequency = BitConverter.ToUInt16(this.FileHeader.AudioHeaders[i].SamplesPerSecond, 0).ToString();
-                        gcStruct.NoLoops = true;
-
-                        genhFile = GenhUtil.CreateGenhFile(this.FileHeader.AudioHeaders[i].OutputPath, gcStruct);
-
-                        // delete original file
-                        if (!String.IsNullOrEmpty(genhFile))
+                        if (BitConverter.ToUInt16(this.FileHeader.AudioHeaders[i].WaveFormat, 0) == 0x69)
                         {
-                            File.Delete(this.FileHeader.AudioHeaders[i].OutputPath);
+                            gcStruct = new GenhCreationStruct();
+                            gcStruct.Format = "0x01";
+                            gcStruct.HeaderSkip = "0";
+                            gcStruct.Interleave = "0x1";
+                            gcStruct.Channels = BitConverter.ToUInt16(this.FileHeader.AudioHeaders[i].ChannelCount, 0).ToString();
+                            gcStruct.Frequency = BitConverter.ToUInt16(this.FileHeader.AudioHeaders[i].SamplesPerSecond, 0).ToString();
+                            gcStruct.NoLoops = true;
+
+                            genhFile = GenhUtil.CreateGenhFile(this.FileHeader.AudioHeaders[i].OutputPath, gcStruct);
+
+                            // delete original file
+                            if (!String.IsNullOrEmpty(genhFile))
+                            {
+                                File.Delete(this.FileHeader.AudioHeaders[i].OutputPath);
+                            }
                         }
                     }
                 }
