@@ -162,6 +162,12 @@
     <Compile Include="forms\examine\CrcCalculatorForm.Designer.cs">
       <DependentUpon>CrcCalculatorForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\extraction\IsoExtractorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\extraction\IsoExtractorForm.Designer.cs">
+      <DependentUpon>IsoExtractorForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\examine\SearchForFileForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -652,6 +658,9 @@
     <Compile Include="tools\extract\ExtractCdxaWorker.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\extract\IsoExtractorWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\extract\ExtractMidiWorker.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1025,6 +1034,9 @@
     <EmbeddedResource Include="forms\extraction\ExtractSonyAdpcmForm.resx">
       <DependentUpon>ExtractSonyAdpcmForm.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\extraction\IsoExtractorForm.resx">
+      <DependentUpon>IsoExtractorForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\extraction\MidiExtractorForm.resx">
       <DependentUpon>MidiExtractorForm.cs</DependentUpon>

@@ -863,6 +863,17 @@ namespace VGMToolbox
             nodeTag.FormClass = extract_VfsExtractorForm.GetType().Name;
             ext_VfsExtractorNode.Tag = nodeTag;
 
+            // ISO Extractor
+            TreeNode ext_IsoExtractorNode = new TreeNode("ISO Extractor");
+
+            // Add Offset Finder Form
+            IsoExtractorForm extract_IsoExtractorForm = new IsoExtractorForm(ext_IsoExtractorNode);
+            this.splitContainer1.Panel2.Controls.Add(extract_IsoExtractorForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = extract_IsoExtractorForm.GetType().Name;
+            ext_IsoExtractorNode.Tag = nodeTag;
+
             // CD-XA Extractor
             TreeNode ext_ExtractCdxaNode =
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_ExtractCdxaNode"]);
@@ -971,6 +982,7 @@ namespace VGMToolbox
             ext_GenericNode.Nodes.Add(ext_SimpleCutterNode);
             ext_GenericNode.Nodes.Add(ext_OffsetFinderNode);
             ext_GenericNode.Nodes.Add(ext_VfsExtractorNode);
+            ext_GenericNode.Nodes.Add(ext_IsoExtractorNode);
             ext_GenericNode.Nodes.Add(ext_ExtractMidiNode);
                                
             ext_RootNode.Nodes.Add(ext_GenericNode);
