@@ -391,7 +391,7 @@ namespace VGMToolbox.format
 
 
                         // check for loop start
-                        if ((((currentByte & 0xB0) == 0xB0) || ((runningCommand & 0xB0) == 0xB0)) &&
+                        if ((((currentByte & 0xF0) == 0xB0) || ((runningCommand & 0xF0) == 0xB0)) &&
                              dataByte1 == 0x63 && dataByte2 == 0x14)
                         {                            
                             loopTimeStack.Push(0);
@@ -402,14 +402,14 @@ namespace VGMToolbox.format
                         }
 
                         // check for loop end
-                        if ((((currentByte & 0xB0) == 0xB0) || ((runningCommand & 0xB0) == 0xB0)) &&
+                        if ((((currentByte & 0xF0) == 0xB0) || ((runningCommand & 0xF0) == 0xB0)) &&
                              dataByte1 == 0x63 && dataByte2 == 0x1E)
                         {
                             loopEndFound = true;
                             loopsClosed++;
                         }
 
-                        if ((((currentByte & 0xB0) == 0xB0) || ((runningCommand & 0xB0) == 0xB0)) &&
+                        if ((((currentByte & 0xF0) == 0xB0) || ((runningCommand & 0xF0) == 0xB0)) &&
                             dataByte1 == 0x06)
                         {
                             loopTimeMultiplier = dataByte2;

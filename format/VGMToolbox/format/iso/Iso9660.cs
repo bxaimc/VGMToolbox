@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Globalization;
@@ -16,6 +17,7 @@ namespace VGMToolbox.format.iso
                                                                     0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x00 };
 
         public string FileName { set; get; }
+        public ArrayList DirectoryStructureArray { set; get; }
 
         //-------------
         // Constructor
@@ -38,6 +40,7 @@ namespace VGMToolbox.format.iso
             long pathTableOffset;
 
             Iso9660Volume volumeDescriptor;
+            DirectoryStructure rootDirectory;
 
             using (FileStream fs = File.OpenRead(this.FileName))
             {
@@ -48,10 +51,14 @@ namespace VGMToolbox.format.iso
 
                 // Load volume, add loop later to get all volumes
                 volumeDescriptor.Initialize(fs, currentOffset);
-                
-                // calculate offset to path table
+                volumeDescriptor.DirectoryRecordForRootDirectory.FileIdentifierString = Path.DirectorySeparatorChar.ToString();
+
+                // calculate offset to path table and root directory entry
                 pathTableOffset = volumeDescriptor.LocationOfOccurrenceOfTypeLPathTable * volumeDescriptor.LogicalBlockSize;
 
+                rootDirectory = new DirectoryStructure(fs, volumeDescriptor.DirectoryRecordForRootDirectory, volumeDescriptor.LogicalBlockSize, null);
+
+                this.DirectoryStructureArray.Add(rootDirectory);
 
             } // using (FileStream fs = File.OpenRead(this.FileName))
         }
@@ -79,6 +86,8 @@ namespace VGMToolbox.format.iso
 
             return dateValue;
         }
+
+        
     }
 
     public class Iso9660Volume
@@ -108,7 +117,8 @@ namespace VGMToolbox.format.iso
         public uint LocationOfOccurrenceOfTypeMPathTable { set; get; }
         public uint LocationOfOptionalOccurrenceOfTypeMPathTable { set; get; }
 
-        public byte[] DirectoryRecordForRootDirectory { set; get; }
+        public byte[] DirectoryRecordForRootDirectoryBytes { set; get; }
+        public Iso9660DirectoryRecord DirectoryRecordForRootDirectory { set; get; }
 
         public string VolumeSetIdentifier { set; get; }
         public string PublisherIdentifier { set; get; }
@@ -159,7 +169,8 @@ namespace VGMToolbox.format.iso
             this.LocationOfOccurrenceOfTypeMPathTable = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(isoStream, offset + 0x94, 0x04));
             this.LocationOfOptionalOccurrenceOfTypeMPathTable = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(isoStream, offset + 0x98, 0x04));
 
-            this.DirectoryRecordForRootDirectory = ParseFile.ParseSimpleOffset(isoStream, offset + 0x9C, 0x22);
+            this.DirectoryRecordForRootDirectoryBytes = ParseFile.ParseSimpleOffset(isoStream, offset + 0x9C, 0x22);
+            this.DirectoryRecordForRootDirectory = new Iso9660DirectoryRecord(this.DirectoryRecordForRootDirectoryBytes);
 
             this.VolumeSetIdentifier = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(isoStream, offset + 0xBE, 0x80)).Trim();
             this.PublisherIdentifier = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(isoStream, offset + 0x13E, 0x80)).Trim();
@@ -185,7 +196,7 @@ namespace VGMToolbox.format.iso
 
     }
 
-    public class Iso9660Directory
+    public class Iso9660DirectoryRecord
     {
         public byte LengthOfDirectoryRecord { set; get; }
         public byte ExtendedAttributeRecordLength { set; get; }
@@ -198,6 +209,9 @@ namespace VGMToolbox.format.iso
         public ushort VolumeSequenceNumber { set; get; }
         public byte LengthOfFileIdentifier { set; get; }
 
+        public byte[] FileIdentifier { set; get; }
+        public string FileIdentifierString { set; get; }
+        
         public byte[] PaddingField { set; get; }
         public byte[] SystemUse { set; get; }
 
@@ -209,7 +223,7 @@ namespace VGMToolbox.format.iso
         public bool FlagMultiExtent { set; get; }
 
 
-        public Iso9660Directory(byte[] directoryBytes)
+        public Iso9660DirectoryRecord(byte[] directoryBytes)
         {
             this.LengthOfDirectoryRecord = directoryBytes[0];
             this.ExtendedAttributeRecordLength = directoryBytes[1];
@@ -224,19 +238,34 @@ namespace VGMToolbox.format.iso
                                                      directoryBytes[0x17]);
 
             this.FileFlags = directoryBytes[0x19];
-            /*
-            this.FlagExistance = this.FileFlags[0];
-            this.FlagDirectory { set; get; }
-            this.FlagAssociatedFile { set; get; }
-            this.FlagRecord { set; get; }
-            this.FlagProtection { set; get; }
-            this.FlagMultiExtent { set; get; }
-            */
-
+            
+            this.FlagExistance = (this.FileFlags & 0x1) == 0x1? true: false;
+            this.FlagDirectory = (this.FileFlags & 0x2) == 0x2? true: false;
+            this.FlagAssociatedFile = (this.FileFlags & 0x4) == 0x4? true: false;
+            this.FlagRecord = (this.FileFlags & 0x08) == 0x08? true: false;
+            this.FlagProtection = (this.FileFlags & 0x10) == 0x10? true: false;
+            this.FlagMultiExtent = (this.FileFlags & 0x80) == 0x80? true : false;
+            
             this.FileUnitSize = directoryBytes[0x1A];            
             this.InterleaveGapSize = directoryBytes[0x1B];
             this.VolumeSequenceNumber = BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(directoryBytes, 0x1C, 2), 0);
             this.LengthOfFileIdentifier = directoryBytes[0x20];
+
+            this.FileIdentifier = ParseFile.ParseSimpleOffset(directoryBytes, 0x21, this.LengthOfFileIdentifier);
+
+            // parse identifier
+            if (this.LengthOfFileIdentifier > 1)
+            {
+                this.FileIdentifierString = ByteConversion.GetAsciiText(this.FileIdentifier);
+            }
+            else if (this.FileIdentifier[0] == 0)
+            {
+                this.FileIdentifierString = ".";
+            }
+            else if (this.FileIdentifier[0] == 1)
+            {
+                this.FileIdentifierString = "..";
+            }
 
             /*
             
@@ -244,5 +273,97 @@ namespace VGMToolbox.format.iso
             public byte[] SystemUse { set; get; }        
             */ 
         }
+    }
+
+    public class FileStructure
+    {
+        public string ParentDirectoryName { set; get; }
+        public string FileName { set; get; }
+        public long Offset { set; get; }
+        public long Size { set; get; }
+
+        public FileStructure(string parentDirectoryName, string fileName, long offset, long size)
+        { 
+            this.ParentDirectoryName = parentDirectoryName;
+            this.FileName = fileName;
+            this.Offset = offset;
+            this.Size = size;        
+        }
+    }
+    
+    public class DirectoryStructure
+    {
+        public Iso9660DirectoryRecord ParentDirectoryRecord { set; get; }
+        public string ParentDirectoryName { set; get; }
+        
+        public ArrayList SubDirectories { set; get; }
+        public ArrayList Files { set; get; }
+
+        public string DirectoryName { set; get; }
+
+        public DirectoryStructure(Stream isoStream, Iso9660DirectoryRecord directoryRecord, uint logicalBlockSize, string parentDirectory)
+        {
+            
+            this.SubDirectories = new ArrayList();
+            this.Files = new ArrayList();            
+
+            if (String.IsNullOrEmpty(parentDirectory))
+            {
+                this.ParentDirectoryName = String.Empty;
+                this.DirectoryName = directoryRecord.FileIdentifierString;
+            }
+            else
+            {
+                this.ParentDirectoryName = parentDirectory;
+                this.DirectoryName = directoryRecord.FileIdentifierString;
+            }
+
+            this.parseDirectoryRecord(isoStream, directoryRecord, logicalBlockSize, this.ParentDirectoryName + this.DirectoryName);            
+        }
+
+        private void parseDirectoryRecord(Stream isoStream, Iso9660DirectoryRecord directoryRecord, uint logicalBlockSize, string parentDirectory)
+        {
+            byte recordSize;
+            long currentOffset;
+            byte[] directoryRecordBytes;
+            Iso9660DirectoryRecord tempDirectoryRecord;
+            DirectoryStructure tempDirectory;
+            FileStructure tempFile;
+            long rootDirectoryOffset = directoryRecord.LocationOfExtent * logicalBlockSize;
+
+            currentOffset = rootDirectoryOffset;
+
+            while (currentOffset < (rootDirectoryOffset + directoryRecord.DataLength))
+            {
+                recordSize = ParseFile.ParseSimpleOffset(isoStream, currentOffset, 1)[0];
+                directoryRecordBytes = ParseFile.ParseSimpleOffset(isoStream, currentOffset, recordSize);
+                tempDirectoryRecord = new Iso9660DirectoryRecord(directoryRecordBytes);
+
+                if (!tempDirectoryRecord.FileIdentifierString.Equals(".") &&
+                    !tempDirectoryRecord.FileIdentifierString.Equals("..")) // skip "this" directory
+                {
+                    if (tempDirectoryRecord.FlagDirectory)
+                    {
+                        tempDirectory = new DirectoryStructure(isoStream, tempDirectoryRecord, logicalBlockSize, parentDirectory);
+                        this.SubDirectories.Add(tempDirectory);
+                    }
+                    else
+                    {
+                        tempFile = new FileStructure(parentDirectory, 
+                            tempDirectoryRecord.FileIdentifierString, 
+                            (tempDirectoryRecord.LocationOfExtent * logicalBlockSize), 
+                            tempDirectoryRecord.DataLength);
+                        this.Files.Add(tempFile);            
+                    }
+                }
+                else if (tempDirectoryRecord.FileIdentifierString.Equals(".."))
+                {
+                    this.ParentDirectoryRecord = tempDirectoryRecord;
+                }
+
+                currentOffset += recordSize;
+            }
+
+        }        
     }
 }
