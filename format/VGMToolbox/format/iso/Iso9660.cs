@@ -42,6 +42,8 @@ namespace VGMToolbox.format.iso
             Iso9660Volume volumeDescriptor;
             DirectoryStructure rootDirectory;
 
+            this.DirectoryStructureArray = new ArrayList();
+
             using (FileStream fs = File.OpenRead(this.FileName))
             {
                 fileLength = fs.Length;
@@ -51,13 +53,15 @@ namespace VGMToolbox.format.iso
 
                 // Load volume, add loop later to get all volumes
                 volumeDescriptor.Initialize(fs, currentOffset);
+                
+                // change name of top level folder
                 volumeDescriptor.DirectoryRecordForRootDirectory.FileIdentifierString = Path.DirectorySeparatorChar.ToString();
 
                 // calculate offset to path table and root directory entry
                 pathTableOffset = volumeDescriptor.LocationOfOccurrenceOfTypeLPathTable * volumeDescriptor.LogicalBlockSize;
 
+                // populate this volume's directory structure
                 rootDirectory = new DirectoryStructure(fs, volumeDescriptor.DirectoryRecordForRootDirectory, volumeDescriptor.LogicalBlockSize, null);
-
                 this.DirectoryStructureArray.Add(rootDirectory);
 
             } // using (FileStream fs = File.OpenRead(this.FileName))
@@ -87,7 +91,13 @@ namespace VGMToolbox.format.iso
             return dateValue;
         }
 
-        
+        public void ExtractAll(string destintionFolder)
+        {
+            foreach (DirectoryStructure ds in this.DirectoryStructureArray)
+            { 
+            
+            }
+        }
     }
 
     public class Iso9660Volume
@@ -289,6 +299,15 @@ namespace VGMToolbox.format.iso
             this.Offset = offset;
             this.Size = size;        
         }
+
+        public string Extract(Stream isoStream, string destinationFolder, long volumeStartOffset)
+        {
+            string destinationFile = Path.Combine(Path.Combine(destinationFolder, this.ParentDirectoryName), this.FileName);
+
+            ParseFile.ExtractChunkToFile(isoStream, this.Offset, this.Size, destinationFile);
+
+            return destinationFile;
+        }
     }
     
     public class DirectoryStructure
@@ -350,7 +369,7 @@ namespace VGMToolbox.format.iso
                     else
                     {
                         tempFile = new FileStructure(parentDirectory, 
-                            tempDirectoryRecord.FileIdentifierString, 
+                            tempDirectoryRecord.FileIdentifierString.Replace(";1", String.Empty), 
                             (tempDirectoryRecord.LocationOfExtent * logicalBlockSize), 
                             tempDirectoryRecord.DataLength);
                         this.Files.Add(tempFile);            
