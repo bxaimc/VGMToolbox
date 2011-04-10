@@ -15,6 +15,7 @@ namespace VGMToolbox.format.iso
         public static readonly byte[] STANDARD_IDENTIFIER = new byte[] { 0x43, 0x44, 0x30, 0x30, 0x31 };
         public static readonly byte[] EMPTY_DATETIME = new byte[] { 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 
                                                                     0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x00 };
+        public static readonly byte[] VOLUME_DESCRIPTOR_IDENTIFIER = new byte[] { 0x01, 0x43, 0x44, 0x30, 0x30, 0x31 };
 
         public string FileName { set; get; }
         public ArrayList DirectoryStructureArray { set; get; }
@@ -55,7 +56,7 @@ namespace VGMToolbox.format.iso
                 volumeDescriptor.Initialize(fs, currentOffset);
                 
                 // change name of top level folder
-                volumeDescriptor.DirectoryRecordForRootDirectory.FileIdentifierString = Path.DirectorySeparatorChar.ToString();
+                volumeDescriptor.DirectoryRecordForRootDirectory.FileIdentifierString = String.Empty;
 
                 // calculate offset to path table and root directory entry
                 pathTableOffset = volumeDescriptor.LocationOfOccurrenceOfTypeLPathTable * volumeDescriptor.LogicalBlockSize;
@@ -91,17 +92,19 @@ namespace VGMToolbox.format.iso
             return dateValue;
         }
 
-        public void ExtractAll(string destintionFolder)
+        public void ExtractAll(Stream isoStream, string destintionFolder, long volumeBaseOffset)
         {
             foreach (DirectoryStructure ds in this.DirectoryStructureArray)
             { 
-            
+                ds.Extract(isoStream, destintionFolder, volumeBaseOffset);
             }
         }
     }
 
     public class Iso9660Volume
     {
+        public long VolumeBaseOffset { set; get; }
+        
         public byte VolumeDescriptorType { set; get; }
         public byte[] StandardIdentifier { set; get; }
         public byte VolumeDescriptorVersion { set; get; }
@@ -304,7 +307,7 @@ namespace VGMToolbox.format.iso
         {
             string destinationFile = Path.Combine(Path.Combine(destinationFolder, this.ParentDirectoryName), this.FileName);
 
-            ParseFile.ExtractChunkToFile(isoStream, this.Offset, this.Size, destinationFile);
+            ParseFile.ExtractChunkToFile(isoStream, volumeStartOffset + this.Offset, this.Size, destinationFile);
 
             return destinationFile;
         }
@@ -338,6 +341,19 @@ namespace VGMToolbox.format.iso
             }
 
             this.parseDirectoryRecord(isoStream, directoryRecord, logicalBlockSize, this.ParentDirectoryName + this.DirectoryName);            
+        }
+
+        public void Extract(Stream isoStream, string destinationFolder, long volumeStartOffset)
+        {
+            foreach (FileStructure f in this.Files)
+            { 
+                f.Extract(isoStream, destinationFolder, volumeStartOffset);
+            }
+
+            foreach (DirectoryStructure d in this.SubDirectories)
+            {
+                d.Extract(isoStream, destinationFolder, volumeStartOffset);
+            }
         }
 
         private void parseDirectoryRecord(Stream isoStream, Iso9660DirectoryRecord directoryRecord, uint logicalBlockSize, string parentDirectory)
