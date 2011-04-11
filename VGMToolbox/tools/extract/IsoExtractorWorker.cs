@@ -24,12 +24,26 @@ namespace VGMToolbox.tools.extract
         {
             IsoExtractorStruct taskStruct = (IsoExtractorStruct)pTaskStruct;
 
-            Iso9660 iso9660 = new Iso9660(pPath);
-            iso9660.Initialize();
+            Iso9660Volume volume;
+            long volumeOffset;
+            string outputPath;
 
             using (FileStream fs = File.OpenRead(pPath))
             {
-                iso9660.ExtractAll(fs, Path.Combine(Path.GetDirectoryName(pPath), "ext"), 0);
+                volumeOffset = ParseFile.GetNextOffset(fs, 0, Iso9660.VOLUME_DESCRIPTOR_IDENTIFIER);
+
+                while (volumeOffset > -1)
+                {
+                    volume = new Iso9660Volume();
+                    volume.Initialize(fs, volumeOffset);
+
+                    outputPath = Path.Combine(Path.Combine(Path.GetDirectoryName(pPath),
+                        String.Format("VOLUME_{0}", volume.VolumeSequenceNumber.ToString("X4"))), volume.VolumeIdentifier);
+                    
+                    volume.ExtractAll(fs, outputPath);
+
+                    volumeOffset = ParseFile.GetNextOffset(fs, volume.VolumeBaseOffset + (volume.VolumeSpaceSize *  volume.LogicalBlockSize), Iso9660.VOLUME_DESCRIPTOR_IDENTIFIER);
+                }                                
             }
         }    
     }
