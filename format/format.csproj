@@ -79,6 +79,7 @@
     <Compile Include="VGMToolbox\format\iso\IDirectoryStructure.cs" />
     <Compile Include="VGMToolbox\format\iso\IFileStructure.cs" />
     <Compile Include="VGMToolbox\format\iso\Iso9660.cs" />
+    <Compile Include="VGMToolbox\format\iso\IVolume.cs" />
     <Compile Include="VGMToolbox\format\IXsfTagFormat.cs" />
     <Compile Include="VGMToolbox\format\Midi.cs" />
     <Compile Include="VGMToolbox\format\Mpeg1Stream.cs" />

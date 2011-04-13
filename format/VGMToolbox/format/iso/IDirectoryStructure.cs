@@ -5,7 +5,7 @@ using System.Text;
 
 namespace VGMToolbox.format.iso
 {
-    public interface IDirectoryStructure
+    public interface IDirectoryStructure : IComparable
     {
         string SourceFilePath { set; get; }
         string DirectoryName { set; get; }

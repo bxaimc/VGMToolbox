@@ -40,12 +40,50 @@ namespace VGMToolbox.format.iso
 
             return dateValue;
         }
+
+        public static IVolume[] GetVolumes(string isoPath)
+        {
+            ArrayList volumeList = new ArrayList();
+            Iso9660Volume volume;
+            long volumeOffset;
+            string outputPath;
+
+            using (FileStream fs = File.OpenRead(isoPath))
+            {
+                volumeOffset = ParseFile.GetNextOffset(fs, 0, Iso9660.VOLUME_DESCRIPTOR_IDENTIFIER);
+
+                while (volumeOffset > -1)
+                {
+                    volume = new Iso9660Volume();
+                    volume.Initialize(fs, volumeOffset);
+                    volumeList.Add(volume);
+
+                    //outputPath = Path.Combine(Path.Combine(Path.GetDirectoryName(pPath),
+                    //    String.Format("VOLUME_{0}", volume.VolumeSequenceNumber.ToString("X4"))), volume.VolumeIdentifier);
+
+                    //volume.ExtractAll(fs, outputPath);
+
+                    volumeOffset = ParseFile.GetNextOffset(fs, volume.VolumeBaseOffset + (volume.VolumeSpaceSize * volume.LogicalBlockSize), Iso9660.VOLUME_DESCRIPTOR_IDENTIFIER);
+                }
+            }
+
+            return (IVolume[])volumeList.ToArray(typeof(Iso9660Volume));
+        }
     }
 
-    public class Iso9660Volume
+    public class Iso9660Volume : IVolume
     {
         public long VolumeBaseOffset { set; get; }
         public ArrayList DirectoryStructureArray { set; get; }
+        public IDirectoryStructure[] Directories 
+        {
+            set { Directories = value; }
+            get 
+            {
+                DirectoryStructureArray.Sort();
+                return (IDirectoryStructure[])DirectoryStructureArray.ToArray(typeof(Iso9660DirectoryStructure)); 
+            }
+        }
 
         #region Standard Attributes
 
@@ -263,6 +301,18 @@ namespace VGMToolbox.format.iso
         public long Offset { set; get; }
         public long Size { set; get; }
 
+        public int CompareTo(object obj)
+        {
+            if (obj is Iso9660FileStructure)
+            {
+                Iso9660FileStructure o = (Iso9660FileStructure)obj;
+
+                return this.FileName.CompareTo(o.FileName);
+            }
+
+            throw new ArgumentException("object is not an Iso9660FileStructure");
+        }    
+
         public Iso9660FileStructure(string parentDirectoryName, string sourceFilePath, string fileName, long offset, long size)
         { 
             this.ParentDirectoryName = parentDirectoryName;
@@ -287,18 +337,38 @@ namespace VGMToolbox.format.iso
         public ArrayList SubDirectoryArray { set; get; }
         public IDirectoryStructure[] SubDirectories {
             set { this.SubDirectories = value; }
-            get { return (IDirectoryStructure[])SubDirectoryArray.ToArray(typeof(Iso9660DirectoryStructure)); }
+            get 
+            {
+                //SubDirectoryArray.Sort();
+                return (IDirectoryStructure[])SubDirectoryArray.ToArray(typeof(Iso9660DirectoryStructure)); 
+            }
         }
         
         public ArrayList FileArray { set; get; }
         public IFileStructure[] Files
         {
             set { this.Files = value; }
-            get { return (IFileStructure[])SubDirectoryArray.ToArray(typeof(Iso9660FileStructure)); }
+            get 
+            {
+                FileArray.Sort();
+                return (IFileStructure[])FileArray.ToArray(typeof(Iso9660FileStructure)); 
+            }
         }
 
         public string SourceFilePath { set; get; }
         public string DirectoryName { set; get; }
+
+        public int CompareTo(object obj)
+        {
+            if (obj is Iso9660DirectoryStructure)
+            {
+                Iso9660DirectoryStructure o = (Iso9660DirectoryStructure)obj;
+
+                return this.DirectoryName.CompareTo(o.DirectoryName);
+            }
+
+            throw new ArgumentException("object is not an Iso9660DirectoryStructure");
+        }    
 
         public Iso9660DirectoryStructure(FileStream isoStream, string sourceFilePath, long baseOffset, Iso9660DirectoryRecord directoryRecord, uint logicalBlockSize, string parentDirectory)
         {
