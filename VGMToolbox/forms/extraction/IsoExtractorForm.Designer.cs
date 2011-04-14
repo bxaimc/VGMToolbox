@@ -31,6 +31,10 @@
             this.IsoFolderTreeView = new System.Windows.Forms.TreeView();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.fileListView = new System.Windows.Forms.ListView();
+            this.columnName = new System.Windows.Forms.ColumnHeader();
+            this.columnOffset = new System.Windows.Forms.ColumnHeader();
+            this.columnSize = new System.Windows.Forms.ColumnHeader();
+            this.columnDate = new System.Windows.Forms.ColumnHeader();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -95,13 +99,39 @@
             // 
             // fileListView
             // 
+            this.fileListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnName,
+            this.columnOffset,
+            this.columnSize,
+            this.columnDate});
             this.fileListView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.fileListView.FullRowSelect = true;
             this.fileListView.Location = new System.Drawing.Point(0, 0);
             this.fileListView.Name = "fileListView";
             this.fileListView.Size = new System.Drawing.Size(439, 335);
             this.fileListView.TabIndex = 0;
             this.fileListView.UseCompatibleStateImageBehavior = false;
-            this.fileListView.View = System.Windows.Forms.View.List;
+            this.fileListView.View = System.Windows.Forms.View.Details;
+            // 
+            // columnName
+            // 
+            this.columnName.Text = "Filename";
+            this.columnName.Width = 150;
+            // 
+            // columnOffset
+            // 
+            this.columnOffset.Text = "Offset";
+            this.columnOffset.Width = 80;
+            // 
+            // columnSize
+            // 
+            this.columnSize.Text = "Size";
+            this.columnSize.Width = 80;
+            // 
+            // columnDate
+            // 
+            this.columnDate.Text = "Date";
+            this.columnDate.Width = 80;
             // 
             // IsoExtractorForm
             // 
@@ -138,5 +168,9 @@
         private System.Windows.Forms.TreeView IsoFolderTreeView;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.ListView fileListView;
+        private System.Windows.Forms.ColumnHeader columnName;
+        private System.Windows.Forms.ColumnHeader columnSize;
+        private System.Windows.Forms.ColumnHeader columnDate;
+        private System.Windows.Forms.ColumnHeader columnOffset;
     }
 }

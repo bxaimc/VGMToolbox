@@ -57,6 +57,7 @@ namespace VGMToolbox.forms.extraction
             IVolume[] volumes = Iso9660.GetVolumes(s[0]);
             try
             {
+                IsoFolderTreeView.Nodes.Clear();
                 LoadTreeWithVolumes(volumes);
             }
             catch (Exception ex)
@@ -71,10 +72,12 @@ namespace VGMToolbox.forms.extraction
         {
             TreeNode volumeNode;
             TreeNode directoryNode;
-            
+            string volumeName;
+
             foreach (IVolume v in volumes)
             {
-                volumeNode = new TreeNode(v.VolumeIdentifier);
+                volumeName = String.IsNullOrEmpty(v.VolumeIdentifier) ? "-" : v.VolumeIdentifier;
+                volumeNode = new TreeNode(volumeName);
 
                 foreach (IDirectoryStructure d in v.Directories)
                 {
@@ -122,6 +125,11 @@ namespace VGMToolbox.forms.extraction
 
         private void IsoFolderTreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            ListViewItem fileItem;
+            ListViewItem.ListViewSubItem offsetItem;
+            ListViewItem.ListViewSubItem sizeItem;
+            ListViewItem.ListViewSubItem dateItem;
+            
             if (this.IsoFolderTreeView.SelectedNode != null)
             {
                 IDirectoryStructure dirStructure = (IDirectoryStructure)this.IsoFolderTreeView.SelectedNode.Tag;
@@ -133,7 +141,16 @@ namespace VGMToolbox.forms.extraction
                 {
                     foreach (IFileStructure f in dirStructure.Files)
                     {
-                        this.fileListView.Items.Add(f.FileName);
+                        fileItem = new ListViewItem(f.FileName);
+                        offsetItem = new ListViewItem.ListViewSubItem(fileItem, f.Offset.ToString());
+                        sizeItem = new ListViewItem.ListViewSubItem(fileItem, f.Size.ToString());
+                        dateItem = new ListViewItem.ListViewSubItem(fileItem, f.FileDateTime.ToString());
+
+                        fileItem.SubItems.Add(offsetItem);
+                        fileItem.SubItems.Add(sizeItem);
+                        fileItem.SubItems.Add(dateItem);
+
+                        this.fileListView.Items.Add(fileItem);
                     }
                 }
             }

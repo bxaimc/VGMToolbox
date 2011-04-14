@@ -63,7 +63,7 @@ namespace VGMToolbox.format.iso
 
                     //volume.ExtractAll(fs, outputPath);
 
-                    volumeOffset = ParseFile.GetNextOffset(fs, volume.VolumeBaseOffset + (volume.VolumeSpaceSize * volume.LogicalBlockSize), Iso9660.VOLUME_DESCRIPTOR_IDENTIFIER);
+                    volumeOffset = ParseFile.GetNextOffset(fs, volume.VolumeBaseOffset + ((long)volume.VolumeSpaceSize * (long)volume.LogicalBlockSize), Iso9660.VOLUME_DESCRIPTOR_IDENTIFIER);
                 }
             }
 
@@ -300,6 +300,7 @@ namespace VGMToolbox.format.iso
         public string FileName { set; get; }
         public long Offset { set; get; }
         public long Size { set; get; }
+        public DateTime FileDateTime { set; get; }
 
         public int CompareTo(object obj)
         {
@@ -313,13 +314,14 @@ namespace VGMToolbox.format.iso
             throw new ArgumentException("object is not an Iso9660FileStructure");
         }    
 
-        public Iso9660FileStructure(string parentDirectoryName, string sourceFilePath, string fileName, long offset, long size)
+        public Iso9660FileStructure(string parentDirectoryName, string sourceFilePath, string fileName, long offset, long size, DateTime fileTime)
         { 
             this.ParentDirectoryName = parentDirectoryName;
             this.SourceFilePath = sourceFilePath;
             this.FileName = fileName;
             this.Offset = offset;
-            this.Size = size;        
+            this.Size = size;
+            this.FileDateTime = fileTime;
         }
 
         public void Extract(FileStream isoStream, string destinationFolder)
@@ -438,7 +440,8 @@ namespace VGMToolbox.format.iso
                             this.SourceFilePath,
                             tempDirectoryRecord.FileIdentifierString.Replace(";1", String.Empty),
                             baseOffset + (tempDirectoryRecord.LocationOfExtent * logicalBlockSize), 
-                            tempDirectoryRecord.DataLength);
+                            tempDirectoryRecord.DataLength,
+                            tempDirectoryRecord.RecordingDateAndTime);
                         this.FileArray.Add(tempFile);            
                     }
                 }

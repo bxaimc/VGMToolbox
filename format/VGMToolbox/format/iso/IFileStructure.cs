@@ -12,6 +12,7 @@ namespace VGMToolbox.format.iso
 
         long Offset { set; get; }
         long Size { set; get; }
+        DateTime FileDateTime { set; get; }
 
         void Extract(FileStream isoStream, string destinationFolder);
     }
