@@ -12,9 +12,20 @@ namespace VGMToolbox.tools.extract
 {
     class IsoExtractorWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
+        public enum IsoFormatType
+        {
+            Iso9660
+        };
+        
         public struct IsoExtractorStruct : IVgmtWorkerStruct
         {
             public string[] SourcePaths { set; get; }
+            public string DestinationFolder;
+
+            public IsoFormatType IsoFormat { set; get; }
+
+            public IFileStructure[] Files { set; get; }
+            public IDirectoryStructure[] Directories { set; get; }
         }
         
         public IsoExtractorWorker() :
@@ -24,26 +35,34 @@ namespace VGMToolbox.tools.extract
         {
             IsoExtractorStruct taskStruct = (IsoExtractorStruct)pTaskStruct;
 
-            Iso9660Volume volume;
-            long volumeOffset;
-            string outputPath;
-
             using (FileStream fs = File.OpenRead(pPath))
             {
-                volumeOffset = ParseFile.GetNextOffset(fs, 0, Iso9660.VOLUME_DESCRIPTOR_IDENTIFIER);
-
-                while (volumeOffset > -1)
+                foreach (IDirectoryStructure d in taskStruct.Directories)
                 {
-                    volume = new Iso9660Volume();
-                    volume.Initialize(fs, volumeOffset);
+                    if (!CancellationPending)
+                    {
+                        d.Extract(fs, taskStruct.DestinationFolder);
+                    }
+                    else
+                    {
+                        e.Cancel = false;
+                        break;
+                    }
+                }
 
-                    outputPath = Path.Combine(Path.Combine(Path.GetDirectoryName(pPath),
-                        String.Format("VOLUME_{0}", volume.VolumeSequenceNumber.ToString("X4"))), volume.VolumeIdentifier);
-                    
-                    volume.ExtractAll(fs, outputPath);
+                foreach (IFileStructure f in taskStruct.Files)
+                {
+                    if (!CancellationPending)
+                    {
+                        f.Extract(fs, taskStruct.DestinationFolder);
+                    }
+                    else
+                    {
+                        e.Cancel = false;
+                        break;
+                    }
+                }
 
-                    volumeOffset = ParseFile.GetNextOffset(fs, volume.VolumeBaseOffset + (volume.VolumeSpaceSize *  volume.LogicalBlockSize), Iso9660.VOLUME_DESCRIPTOR_IDENTIFIER);
-                }                                
             }
         }    
     }

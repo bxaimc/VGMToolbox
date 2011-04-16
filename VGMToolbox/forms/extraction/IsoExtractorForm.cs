@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
@@ -12,16 +14,26 @@ using VGMToolbox.tools.extract;
 
 namespace VGMToolbox.forms.extraction
 {
-    public partial class IsoExtractorForm : VgmtForm
+    public partial class IsoExtractorForm : AVgmtForm
     {
         protected TreeNode selectedNode;
-        
+        protected TreeNode oldNode;
+
+        protected ListViewItem selectedListViewItem;
+        protected ListViewItem oldListViewItem;
+
+        protected string sourceFile;
+        protected string destinationFolder;
+        protected bool isTreeSelected;
+
         public IsoExtractorForm(TreeNode pTreeNode)
             : base(pTreeNode) 
         {
             InitializeComponent();
 
             this.lblTitle.Text = "ISO Browser/Extractor";
+            this.btnDoTask.Hide();
+
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -59,14 +71,13 @@ namespace VGMToolbox.forms.extraction
             {
                 IsoFolderTreeView.Nodes.Clear();
                 LoadTreeWithVolumes(volumes);
+                this.sourceFile = s[0];
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-            }
-            // base.backgroundWorker_Execute(taskStruct);
+            }            
         }
-
 
         private void LoadTreeWithVolumes(IVolume[] volumes)
         {
@@ -142,9 +153,10 @@ namespace VGMToolbox.forms.extraction
                     foreach (IFileStructure f in dirStructure.Files)
                     {
                         fileItem = new ListViewItem(f.FileName);
-                        offsetItem = new ListViewItem.ListViewSubItem(fileItem, f.Offset.ToString());
+                        offsetItem = new ListViewItem.ListViewSubItem(fileItem, String.Format("0x{0}", f.Offset.ToString("X")));
                         sizeItem = new ListViewItem.ListViewSubItem(fileItem, f.Size.ToString());
                         dateItem = new ListViewItem.ListViewSubItem(fileItem, f.FileDateTime.ToString());
+                        fileItem.Tag = f;
 
                         fileItem.SubItems.Add(offsetItem);
                         fileItem.SubItems.Add(sizeItem);
@@ -156,5 +168,112 @@ namespace VGMToolbox.forms.extraction
             }
         }
 
+        private void IsoFolderTreeView_MouseUp(object sender, MouseEventArgs e)
+        {
+            isTreeSelected = true;
+            
+            if (e.Button == MouseButtons.Right)
+            {
+                // Point where the mouse is clicked.
+                Point p = new Point(e.X, e.Y);
+
+                TreeNode node = IsoFolderTreeView.GetNodeAt(p);
+                this.selectedNode = node;
+                this.oldNode = IsoFolderTreeView.SelectedNode;
+                IsoFolderTreeView.SelectedNode = node;
+
+                if (node != null && node.Tag != null)
+                {
+                    if ((node.Tag is IFileStructure) || 
+                        (node.Tag is IDirectoryStructure))
+                    {
+                        contextMenuStrip1.Show(IsoFolderTreeView, p);
+                    }
+                }
+            }
+        }
+
+        private void fileListView_MouseUp(object sender, MouseEventArgs e)
+        {
+            bool showList = true;
+            isTreeSelected = false;
+            
+            if (e.Button == MouseButtons.Right)
+            {
+                // Point where the mouse is clicked.
+                Point p = new Point(e.X, e.Y);
+
+                if (this.fileListView.SelectedItems.Count > 0)
+                {
+                    foreach (ListViewItem lvi in this.fileListView.SelectedItems)
+                    {
+                        if (lvi.Tag == null ||
+                            !(lvi.Tag is IFileStructure))
+                        {
+                            showList = false;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    showList = false;
+                }
+
+                if (showList)
+                {
+                    contextMenuStrip1.Show(this.fileListView, p);
+                }
+            }
+        }
+
+        private void extractToToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string destinationFolder = base.browseForFolder(sender, e);
+
+            this.extractFiles(destinationFolder);
+        }
+
+        private void extractToSubfolderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string destinationFolder =
+                Path.Combine(Path.GetDirectoryName(this.sourceFile), String.Format("{0}_isodump", Path.GetFileNameWithoutExtension(this.sourceFile)));
+
+            this.extractFiles(destinationFolder);
+        }
+
+        private void extractFiles(string destinationFolder)
+        {
+            ArrayList files = new ArrayList();
+            ArrayList directories = new ArrayList();
+
+            if (this.isTreeSelected &&
+                this.IsoFolderTreeView.SelectedNode.Tag != null &&
+                this.IsoFolderTreeView.SelectedNode.Tag is IDirectoryStructure)
+            {
+                directories.Add(this.IsoFolderTreeView.SelectedNode.Tag);
+            }
+            else if (!this.isTreeSelected)
+            {
+                foreach (ListViewItem lvi in this.fileListView.SelectedItems)
+                {
+                    if (lvi.Tag != null &&
+                        lvi.Tag is IFileStructure)
+                    {
+                        files.Add(lvi.Tag);
+                    }
+                }
+            }
+
+            IsoExtractorWorker.IsoExtractorStruct taskStruct = 
+                new IsoExtractorWorker.IsoExtractorStruct();
+            taskStruct.SourcePaths = new string[] { this.sourceFile };           
+            taskStruct.DestinationFolder = destinationFolder;
+            taskStruct.IsoFormat = IsoExtractorWorker.IsoFormatType.Iso9660;
+            taskStruct.Files = (IFileStructure[])files.ToArray(typeof(IFileStructure));
+            taskStruct.Directories = (IDirectoryStructure[])directories.ToArray(typeof(IDirectoryStructure));
+
+            base.backgroundWorker_Execute(taskStruct);
+        }
     }
 }
