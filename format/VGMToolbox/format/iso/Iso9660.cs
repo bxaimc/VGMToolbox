@@ -429,34 +429,43 @@ namespace VGMToolbox.format.iso
             while (currentOffset < (rootDirectoryOffset + directoryRecord.DataLength))
             {
                 recordSize = ParseFile.ParseSimpleOffset(isoStream, currentOffset, 1)[0];
-                directoryRecordBytes = ParseFile.ParseSimpleOffset(isoStream, currentOffset, recordSize);
-                tempDirectoryRecord = new Iso9660DirectoryRecord(directoryRecordBytes);
 
-                if (!tempDirectoryRecord.FileIdentifierString.Equals(".") &&
-                    !tempDirectoryRecord.FileIdentifierString.Equals("..")) // skip "this" directory
+                if (recordSize > 0)
                 {
-                    if (tempDirectoryRecord.FlagDirectory)
-                    {
-                        tempDirectory = new Iso9660DirectoryStructure(isoStream, isoStream.Name, baseOffset, tempDirectoryRecord, logicalBlockSize, parentDirectory);
-                        this.SubDirectoryArray.Add(tempDirectory);
-                    }
-                    else
-                    {
-                        tempFile = new Iso9660FileStructure(parentDirectory,
-                            this.SourceFilePath,
-                            tempDirectoryRecord.FileIdentifierString.Replace(";1", String.Empty),
-                            baseOffset + (tempDirectoryRecord.LocationOfExtent * logicalBlockSize), 
-                            tempDirectoryRecord.DataLength,
-                            tempDirectoryRecord.RecordingDateAndTime);
-                        this.FileArray.Add(tempFile);            
-                    }
-                }
-                else if (tempDirectoryRecord.FileIdentifierString.Equals(".."))
-                {
-                    this.ParentDirectoryRecord = tempDirectoryRecord;
-                }
+                    directoryRecordBytes = ParseFile.ParseSimpleOffset(isoStream, currentOffset, recordSize);
+                    tempDirectoryRecord = new Iso9660DirectoryRecord(directoryRecordBytes);
 
-                currentOffset += recordSize;
+                    if (!tempDirectoryRecord.FileIdentifierString.Equals(".") &&
+                        !tempDirectoryRecord.FileIdentifierString.Equals("..")) // skip "this" directory
+                    {
+                        if (tempDirectoryRecord.FlagDirectory)
+                        {
+                            tempDirectory = new Iso9660DirectoryStructure(isoStream, isoStream.Name, baseOffset, tempDirectoryRecord, logicalBlockSize, parentDirectory);
+                            this.SubDirectoryArray.Add(tempDirectory);
+                        }
+                        else
+                        {
+                            tempFile = new Iso9660FileStructure(parentDirectory,
+                                this.SourceFilePath,
+                                tempDirectoryRecord.FileIdentifierString.Replace(";1", String.Empty),
+                                baseOffset + (tempDirectoryRecord.LocationOfExtent * logicalBlockSize),
+                                tempDirectoryRecord.DataLength,
+                                tempDirectoryRecord.RecordingDateAndTime);
+                            this.FileArray.Add(tempFile);
+                        }
+                    }
+                    else if (tempDirectoryRecord.FileIdentifierString.Equals(".."))
+                    {
+                        this.ParentDirectoryRecord = tempDirectoryRecord;
+                    }
+
+                    currentOffset += recordSize;
+                }
+                else
+                {
+                    // move to start of next sector
+                    currentOffset = (currentOffset + logicalBlockSize - 1) / logicalBlockSize * logicalBlockSize;
+                }
             }
 
         }        
