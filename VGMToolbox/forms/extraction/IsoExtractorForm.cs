@@ -66,10 +66,12 @@ namespace VGMToolbox.forms.extraction
                 new IsoExtractorWorker.IsoExtractorStruct();
             taskStruct.SourcePaths = s;
 
-            IVolume[] volumes = Iso9660.GetVolumes(s[0]);
+            IVolume[] volumes = XDvdFs.GetVolumes(s[0]);
             try
             {
-                IsoFolderTreeView.Nodes.Clear();
+                this.IsoFolderTreeView.Nodes.Clear();
+                this.fileListView.Items.Clear();
+                
                 LoadTreeWithVolumes(volumes);
                 this.sourceFile = s[0];
             }

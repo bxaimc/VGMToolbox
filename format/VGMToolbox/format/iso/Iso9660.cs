@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using System.Globalization;
-using System.Text;
 
 using VGMToolbox.util;
 
@@ -46,7 +43,6 @@ namespace VGMToolbox.format.iso
             ArrayList volumeList = new ArrayList();
             Iso9660Volume volume;
             long volumeOffset;
-            string outputPath;
 
             using (FileStream fs = File.OpenRead(isoPath))
             {
@@ -57,11 +53,6 @@ namespace VGMToolbox.format.iso
                     volume = new Iso9660Volume();
                     volume.Initialize(fs, volumeOffset);
                     volumeList.Add(volume);
-
-                    //outputPath = Path.Combine(Path.Combine(Path.GetDirectoryName(pPath),
-                    //    String.Format("VOLUME_{0}", volume.VolumeSequenceNumber.ToString("X4"))), volume.VolumeIdentifier);
-
-                    //volume.ExtractAll(fs, outputPath);
 
                     volumeOffset = ParseFile.GetNextOffset(fs, volume.VolumeBaseOffset + ((long)volume.VolumeSpaceSize * (long)volume.LogicalBlockSize), Iso9660.VOLUME_DESCRIPTOR_IDENTIFIER);
                 }
@@ -341,7 +332,7 @@ namespace VGMToolbox.format.iso
             set { this.SubDirectories = value; }
             get 
             {
-                //SubDirectoryArray.Sort();
+                SubDirectoryArray.Sort();
                 return (IDirectoryStructure[])SubDirectoryArray.ToArray(typeof(Iso9660DirectoryStructure)); 
             }
         }
@@ -397,6 +388,14 @@ namespace VGMToolbox.format.iso
 
         public void Extract(FileStream isoStream, string destinationFolder)
         {
+            string fullDirectoryPath = Path.Combine(destinationFolder, Path.Combine(this.ParentDirectoryName, this.DirectoryName));
+            
+            // create directory
+            if (!Directory.Exists(fullDirectoryPath))
+            {
+                Directory.CreateDirectory(fullDirectoryPath);
+            }
+
             foreach (Iso9660FileStructure f in this.FileArray)
             { 
                 f.Extract(isoStream, destinationFolder);
