@@ -13,6 +13,7 @@ namespace VGMToolbox.format.iso
         public static readonly byte[] EMPTY_DATETIME = new byte[] { 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 
                                                                     0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x00 };
         public static readonly byte[] VOLUME_DESCRIPTOR_IDENTIFIER = new byte[] { 0x01, 0x43, 0x44, 0x30, 0x30, 0x31 };
+        public static string FORMAT_DESCRIPTION_STRING = "ISO 9660";
 
         public static DateTime GetIsoDateTime(byte[] isoDateArray)
         {
@@ -65,6 +66,7 @@ namespace VGMToolbox.format.iso
     public class Iso9660Volume : IVolume
     {
         public long VolumeBaseOffset { set; get; }
+        public string FormatDescription { set; get; }
         public ArrayList DirectoryStructureArray { set; get; }
         public IDirectoryStructure[] Directories 
         {
@@ -132,6 +134,7 @@ namespace VGMToolbox.format.iso
         public void Initialize(FileStream isoStream, long offset)
         {
             this.VolumeBaseOffset = offset - Iso9660.EMPTY_HEADER_SIZE;
+            this.FormatDescription = Iso9660.FORMAT_DESCRIPTION_STRING;
             this.DirectoryStructureArray = new ArrayList();
 
             this.VolumeDescriptorType = ParseFile.ParseSimpleOffset(isoStream, offset + 0x00, 1)[0];
@@ -141,7 +144,7 @@ namespace VGMToolbox.format.iso
             this.UnusedField1 = ParseFile.ParseSimpleOffset(isoStream, offset + 0x07, 1)[0];
             
             this.SystemIdentifier = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(isoStream, offset + 0x08, 0x20)).Trim();
-            this.VolumeIdentifier = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(isoStream, offset + 0x28, 0x20)).Trim();
+            this.VolumeIdentifier = ByteConversion.GetAsciiText(FileUtil.ReplaceNullByteWithSpace(ParseFile.ParseSimpleOffset(isoStream, offset + 0x28, 0x20))).Trim();
 
             this.UnusedField2 = ParseFile.ParseSimpleOffset(isoStream, offset + 0x48, 0x08);
 
@@ -235,52 +238,56 @@ namespace VGMToolbox.format.iso
         public Iso9660DirectoryRecord(byte[] directoryBytes)
         {
             this.LengthOfDirectoryRecord = directoryBytes[0];
-            this.ExtendedAttributeRecordLength = directoryBytes[1];
-            this.LocationOfExtent = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(directoryBytes, 2, 4), 0);
-            this.DataLength = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(directoryBytes, 0x0A, 4), 0);
 
-            this.RecordingDateAndTime = new DateTime(directoryBytes[0x12] + 1900,
-                                                     directoryBytes[0x13],
-                                                     directoryBytes[0x14],
-                                                     directoryBytes[0x15],
-                                                     directoryBytes[0x16],
-                                                     directoryBytes[0x17]);
-
-            this.FileFlags = directoryBytes[0x19];
-            
-            this.FlagExistance = (this.FileFlags & 0x1) == 0x1? true: false;
-            this.FlagDirectory = (this.FileFlags & 0x2) == 0x2? true: false;
-            this.FlagAssociatedFile = (this.FileFlags & 0x4) == 0x4? true: false;
-            this.FlagRecord = (this.FileFlags & 0x08) == 0x08? true: false;
-            this.FlagProtection = (this.FileFlags & 0x10) == 0x10? true: false;
-            this.FlagMultiExtent = (this.FileFlags & 0x80) == 0x80? true : false;
-            
-            this.FileUnitSize = directoryBytes[0x1A];            
-            this.InterleaveGapSize = directoryBytes[0x1B];
-            this.VolumeSequenceNumber = BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(directoryBytes, 0x1C, 2), 0);
-            this.LengthOfFileIdentifier = directoryBytes[0x20];
-
-            this.FileIdentifier = ParseFile.ParseSimpleOffset(directoryBytes, 0x21, this.LengthOfFileIdentifier);
-
-            // parse identifier
-            if (this.LengthOfFileIdentifier > 1)
+            if (this.LengthOfDirectoryRecord > 0)
             {
-                this.FileIdentifierString = ByteConversion.GetAsciiText(this.FileIdentifier);
-            }
-            else if (this.FileIdentifier[0] == 0)
-            {
-                this.FileIdentifierString = ".";
-            }
-            else if (this.FileIdentifier[0] == 1)
-            {
-                this.FileIdentifierString = "..";
-            }
+                this.ExtendedAttributeRecordLength = directoryBytes[1];
+                this.LocationOfExtent = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(directoryBytes, 2, 4), 0);
+                this.DataLength = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(directoryBytes, 0x0A, 4), 0);
 
-            /*
+                this.RecordingDateAndTime = new DateTime(directoryBytes[0x12] + 1900,
+                                                         directoryBytes[0x13],
+                                                         directoryBytes[0x14],
+                                                         directoryBytes[0x15],
+                                                         directoryBytes[0x16],
+                                                         directoryBytes[0x17]);
+
+                this.FileFlags = directoryBytes[0x19];
+
+                this.FlagExistance = (this.FileFlags & 0x1) == 0x1 ? true : false;
+                this.FlagDirectory = (this.FileFlags & 0x2) == 0x2 ? true : false;
+                this.FlagAssociatedFile = (this.FileFlags & 0x4) == 0x4 ? true : false;
+                this.FlagRecord = (this.FileFlags & 0x08) == 0x08 ? true : false;
+                this.FlagProtection = (this.FileFlags & 0x10) == 0x10 ? true : false;
+                this.FlagMultiExtent = (this.FileFlags & 0x80) == 0x80 ? true : false;
+
+                this.FileUnitSize = directoryBytes[0x1A];
+                this.InterleaveGapSize = directoryBytes[0x1B];
+                this.VolumeSequenceNumber = BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(directoryBytes, 0x1C, 2), 0);
+                this.LengthOfFileIdentifier = directoryBytes[0x20];
+
+                this.FileIdentifier = ParseFile.ParseSimpleOffset(directoryBytes, 0x21, this.LengthOfFileIdentifier);
+
+                // parse identifier
+                if (this.LengthOfFileIdentifier > 1)
+                {
+                    this.FileIdentifierString = ByteConversion.GetAsciiText(this.FileIdentifier);
+                }
+                else if (this.FileIdentifier[0] == 0)
+                {
+                    this.FileIdentifierString = ".";
+                }
+                else if (this.FileIdentifier[0] == 1)
+                {
+                    this.FileIdentifierString = "..";
+                }
+
+                /*
             
-            public byte[] PaddingField { set; get; }
-            public byte[] SystemUse { set; get; }        
-            */ 
+                public byte[] PaddingField { set; get; }
+                public byte[] SystemUse { set; get; }        
+                */
+            }
         }
     }
 

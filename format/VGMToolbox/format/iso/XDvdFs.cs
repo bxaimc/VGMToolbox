@@ -8,7 +8,7 @@ namespace VGMToolbox.format.iso
 {
     public class XDvdFs
     {
-        public static readonly byte[] MAGIC_BYTES = 
+        public static readonly byte[] STANDARD_IDENTIFIER = 
             new byte[] { 0x4D, 0x49, 0x43, 0x52, 0x4F, 0x53, 0x4F, 0x46, 
                          0x54, 0x2A, 0x58, 0x42, 0x4F, 0x58, 0x2A, 0x4D, 
                          0x45, 0x44, 0x49, 0x41 };
@@ -16,6 +16,8 @@ namespace VGMToolbox.format.iso
         public static uint SECTOR_SIZE = 0x800;
         public static uint BASE_OFFSET_CORRECTION = 0x10000;
         public static uint DWORD_SIZE = 4;
+
+        public static string FORMAT_DESCRIPTION_STRING = "XDVDFS";
 
         public static IVolume[] GetVolumes(string isoPath)
         {
@@ -25,7 +27,7 @@ namespace VGMToolbox.format.iso
 
             using (FileStream fs = File.OpenRead(isoPath))
             {
-                volumeOffset = ParseFile.GetNextOffset(fs, 0, XDvdFs.MAGIC_BYTES, true, 0x800, 0);
+                volumeOffset = ParseFile.GetNextOffset(fs, 0, XDvdFs.STANDARD_IDENTIFIER, true, 0x800, 0);
                 volume = new XDvdFsVolume();
                 volume.Initialize(fs, volumeOffset);
                 volumeList.Add(volume);
@@ -38,6 +40,7 @@ namespace VGMToolbox.format.iso
     public class XDvdFsVolume : IVolume
     {
         public string VolumeIdentifier { set; get; }
+        public string FormatDescription { set; get; }
         public long VolumeBaseOffset { set; get; }
         public ArrayList DirectoryStructureArray { set; get; }
         public IDirectoryStructure[] Directories
@@ -58,26 +61,30 @@ namespace VGMToolbox.format.iso
         {
             XDvdFsDirectoryStructure rootDir;
             long rootDirectoryOffset;
-            
+            byte[] DateTimeBytes;
+
             this.VolumeBaseOffset = offset - XDvdFs.BASE_OFFSET_CORRECTION;
+            this.FormatDescription = XDvdFs.FORMAT_DESCRIPTION_STRING;
             this.DirectoryStructureArray = new ArrayList();
 
             this.RootDirectorySector = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(isoStream, offset + 0x14, 0x4), 0);
             this.RootDirectorySize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(isoStream, offset + 0x18, 0x4), 0);
-            //this.ImageCreationTime 
+            
+            DateTimeBytes = ParseFile.ParseSimpleOffset(isoStream, offset + 0x1C, 0x8);
+            this.ImageCreationTime = DateTime.FromFileTime(BitConverter.ToInt64(DateTimeBytes, 0));
             
             // Build Tree from Root Directory
             rootDirectoryOffset = this.VolumeBaseOffset + (this.RootDirectorySector * XDvdFs.SECTOR_SIZE);
-            rootDir = new XDvdFsDirectoryStructure(isoStream, isoStream.Name, this.VolumeBaseOffset, rootDirectoryOffset, XDvdFs.SECTOR_SIZE, String.Empty, String.Empty);
+            rootDir = new XDvdFsDirectoryStructure(isoStream, isoStream.Name, this.ImageCreationTime, this.VolumeBaseOffset, rootDirectoryOffset, XDvdFs.SECTOR_SIZE, String.Empty, String.Empty);
             this.DirectoryStructureArray.Add(rootDir);
         }
 
         public void ExtractAll(FileStream isoStream, string destintionFolder)
         {
-            //foreach (Iso9660DirectoryStructure ds in this.DirectoryStructureArray)
-            //{
-            //    ds.Extract(isoStream, destintionFolder);
-            //}
+            foreach (XDvdFsDirectoryStructure ds in this.DirectoryStructureArray)
+            {
+                ds.Extract(isoStream, destintionFolder);
+            }
         }
     }
 
@@ -192,7 +199,7 @@ namespace VGMToolbox.format.iso
             throw new ArgumentException("object is not an XDvdFsDirectoryStructure");
         }
 
-        public XDvdFsDirectoryStructure(FileStream isoStream, string sourceFilePath, long baseOffset, long directoryOffset, uint logicalBlockSize, string directoryName, string parentDirectory)
+        public XDvdFsDirectoryStructure(FileStream isoStream, string sourceFilePath, DateTime creationDateTime, long baseOffset, long directoryOffset, uint logicalBlockSize, string directoryName, string parentDirectory)
         {
             string nextDirectory;
             this.SourceFilePath = SourceFilePath;
@@ -213,7 +220,7 @@ namespace VGMToolbox.format.iso
                 nextDirectory = this.ParentDirectoryName + Path.DirectorySeparatorChar + this.DirectoryName;
             }
 
-            this.parseDirectoryRecord(isoStream, baseOffset, directoryOffset, logicalBlockSize, nextDirectory);
+            this.parseDirectoryRecord(isoStream, creationDateTime, baseOffset, directoryOffset, logicalBlockSize, nextDirectory);
         }
 
         public void Extract(FileStream isoStream, string destinationFolder)
@@ -239,6 +246,7 @@ namespace VGMToolbox.format.iso
 
         private void parseDirectoryRecord(
             FileStream isoStream, 
+            DateTime creationDateTime,
             long baseOffset, 
             long recordOffset, 
             uint logicalBlockSize, 
@@ -261,7 +269,7 @@ namespace VGMToolbox.format.iso
                 tempDirectoryRecord.EntryFlags == 0x90)
             {
                 directoryOffset = baseOffset + (tempDirectoryRecord.StartingSector * XDvdFs.SECTOR_SIZE);
-                tempDirectory = new XDvdFsDirectoryStructure(isoStream, isoStream.Name, baseOffset, directoryOffset, logicalBlockSize, tempDirectoryRecord.EntryName, parentDirectory);
+                tempDirectory = new XDvdFsDirectoryStructure(isoStream, isoStream.Name, creationDateTime, baseOffset, directoryOffset, logicalBlockSize, tempDirectoryRecord.EntryName, parentDirectory);
                 this.SubDirectoryArray.Add(tempDirectory);
             }
             else
@@ -271,14 +279,14 @@ namespace VGMToolbox.format.iso
                     tempDirectoryRecord.EntryName,
                     baseOffset + (tempDirectoryRecord.StartingSector * logicalBlockSize),
                     tempDirectoryRecord.EntrySize,
-                    new DateTime());
+                    creationDateTime);
                 this.FileArray.Add(tempFile);
             }
 
             // Process Left SubTree
             if (tempDirectoryRecord.OffsetToLeftSubTree != 0)
             {
-                this.parseDirectoryRecord(isoStream,
+                this.parseDirectoryRecord(isoStream, creationDateTime,
                     baseOffset, this.DirectoryRecordOffset + tempDirectoryRecord.OffsetToLeftSubTree, 
                     logicalBlockSize, parentDirectory);
             }
@@ -286,7 +294,7 @@ namespace VGMToolbox.format.iso
             // Process Right SubTree
             if (tempDirectoryRecord.OffsetToRightSubTree != 0)
             {
-                this.parseDirectoryRecord(isoStream,
+                this.parseDirectoryRecord(isoStream, creationDateTime,
                     baseOffset, this.DirectoryRecordOffset + tempDirectoryRecord.OffsetToRightSubTree,
                     logicalBlockSize, parentDirectory);
             }        

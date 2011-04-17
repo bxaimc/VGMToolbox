@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using VGMToolbox.format.iso;
 using VGMToolbox.plugin;
 using VGMToolbox.tools.extract;
+using VGMToolbox.util;
 
 namespace VGMToolbox.forms.extraction
 {
@@ -33,7 +34,6 @@ namespace VGMToolbox.forms.extraction
 
             this.lblTitle.Text = "ISO Browser/Extractor";
             this.btnDoTask.Hide();
-
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -65,10 +65,11 @@ namespace VGMToolbox.forms.extraction
             IsoExtractorWorker.IsoExtractorStruct taskStruct = 
                 new IsoExtractorWorker.IsoExtractorStruct();
             taskStruct.SourcePaths = s;
-
-            IVolume[] volumes = XDvdFs.GetVolumes(s[0]);
+            
             try
             {
+                IVolume[] volumes = IsoExtractorWorker.GetVolumes(s[0]);
+                
                 this.IsoFolderTreeView.Nodes.Clear();
                 this.fileListView.Items.Clear();
                 
@@ -89,7 +90,8 @@ namespace VGMToolbox.forms.extraction
 
             foreach (IVolume v in volumes)
             {
-                volumeName = String.IsNullOrEmpty(v.VolumeIdentifier) ? "-" : v.VolumeIdentifier;
+                volumeName = String.IsNullOrEmpty(v.VolumeIdentifier) ? "NO_NAME" : v.VolumeIdentifier.Trim();
+                volumeName += String.Format(" ({0})", v.FormatDescription);
                 volumeNode = new TreeNode(volumeName);
 
                 foreach (IDirectoryStructure d in v.Directories)

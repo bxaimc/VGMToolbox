@@ -7,6 +7,7 @@ namespace VGMToolbox.format.iso
     public interface IVolume
     {
         long VolumeBaseOffset { set; get; }
+        string FormatDescription { set; get; }
         string VolumeIdentifier { set; get; }
         IDirectoryStructure[] Directories { set; get; }
 
