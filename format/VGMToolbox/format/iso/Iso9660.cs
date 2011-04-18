@@ -271,7 +271,9 @@ namespace VGMToolbox.format.iso
                 // parse identifier
                 if (this.LengthOfFileIdentifier > 1)
                 {
-                    this.FileIdentifierString = ByteConversion.GetAsciiText(this.FileIdentifier);
+                    this.FileIdentifierString = 
+                        ByteConversion.GetEncodedText(this.FileIdentifier, 
+                            ByteConversion.GetPredictedCodePageForTags(this.FileIdentifier));
                 }
                 else if (this.FileIdentifier[0] == 0)
                 {
@@ -467,7 +469,6 @@ namespace VGMToolbox.format.iso
                     currentOffset = (currentOffset + logicalBlockSize - 1) / logicalBlockSize * logicalBlockSize;
                 }
             }
-
         }        
     }
 }
