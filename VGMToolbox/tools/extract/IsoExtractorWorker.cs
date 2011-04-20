@@ -14,7 +14,10 @@ namespace VGMToolbox.tools.extract
     class IsoExtractorWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
         public static int MAX_ID_BYTES_LENGTH = 0x14;
-        
+        public static readonly byte[] SYNC_BYTES =
+            new byte[] { 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 
+                         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00 };
+
         public enum IsoFormatType
         {
             Iso9660,
@@ -79,12 +82,27 @@ namespace VGMToolbox.tools.extract
                 long currentOffset = 0;
                 long fileSize = fs.Length;
                 byte[] volumeIdBytes;
+                bool isRawFormat = false;
+                
+                //----------------------
+                // check for sync bytes
+                //----------------------
+                byte[] syncCheckBytes = ParseFile.ParseSimpleOffset(fs, 0, SYNC_BYTES.Length);
+
+                if (ParseFile.CompareSegment(syncCheckBytes, 0, SYNC_BYTES))
+                {
+                    isRawFormat = true;
+
+                    throw new FormatException("RAW Dumps not currently supported.");
+                }
 
                 while (currentOffset < fileSize)
                 {
                     volumeIdBytes = ParseFile.ParseSimpleOffset(fs, currentOffset, MAX_ID_BYTES_LENGTH);
 
+                    //----------
                     // ISO 9660
+                    //----------
                     if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, 0, Iso9660.VOLUME_DESCRIPTOR_IDENTIFIER.Length, Iso9660.VOLUME_DESCRIPTOR_IDENTIFIER))
                     {
                         Iso9660Volume isoVolume;
@@ -105,6 +123,10 @@ namespace VGMToolbox.tools.extract
                         }
 
                     }
+                    
+                    //-----------------------
+                    // XDVDFS (XBOX/XBOX360)
+                    //-----------------------
                     else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, 0, XDvdFs.STANDARD_IDENTIFIER.Length, XDvdFs.STANDARD_IDENTIFIER))
                     {
                         XDvdFsVolume isoVolume;
