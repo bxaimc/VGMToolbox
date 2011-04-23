@@ -19,7 +19,7 @@ namespace VGMToolbox.format.iso
 
         public static string FORMAT_DESCRIPTION_STRING = "XDVDFS";
 
-        public static IVolume[] GetVolumes(string isoPath)
+        public static IVolume[] GetVolumes(string isoPath, bool isRawDump)
         {
             ArrayList volumeList = new ArrayList();
             XDvdFsVolume volume;
@@ -29,7 +29,7 @@ namespace VGMToolbox.format.iso
             {
                 volumeOffset = ParseFile.GetNextOffset(fs, 0, XDvdFs.STANDARD_IDENTIFIER, true, 0x800, 0);
                 volume = new XDvdFsVolume();
-                volume.Initialize(fs, volumeOffset);
+                volume.Initialize(fs, volumeOffset, isRawDump);
                 volumeList.Add(volume);
             }
 
@@ -42,6 +42,7 @@ namespace VGMToolbox.format.iso
         public string VolumeIdentifier { set; get; }
         public string FormatDescription { set; get; }
         public long VolumeBaseOffset { set; get; }
+        public bool IsRawDump { set; get; }
         public ArrayList DirectoryStructureArray { set; get; }
         public IDirectoryStructure[] Directories
         {
@@ -57,7 +58,7 @@ namespace VGMToolbox.format.iso
         public uint RootDirectorySize { set; get; }
         public DateTime ImageCreationTime { set; get; }
 
-        public void Initialize(FileStream isoStream, long offset)
+        public void Initialize(FileStream isoStream, long offset, bool isRawDump)
         {
             XDvdFsDirectoryStructure rootDir;
             long rootDirectoryOffset;
@@ -65,6 +66,7 @@ namespace VGMToolbox.format.iso
 
             this.VolumeBaseOffset = offset - XDvdFs.BASE_OFFSET_CORRECTION;
             this.FormatDescription = XDvdFs.FORMAT_DESCRIPTION_STRING;
+            this.IsRawDump = isRawDump;
             this.DirectoryStructureArray = new ArrayList();
 
             this.RootDirectorySector = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(isoStream, offset + 0x14, 0x4), 0);

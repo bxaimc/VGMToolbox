@@ -8,7 +8,8 @@ namespace VGMToolbox.format.iso
 {
     public class Iso9660
     {
-        public const long EMPTY_HEADER_SIZE = 0x8000;        
+        public const long EMPTY_HEADER_SIZE = 0x8000;
+        public const long EMPTY_HEADER_SIZE_RAW = 0x9300;        
         public static readonly byte[] STANDARD_IDENTIFIER = new byte[] { 0x43, 0x44, 0x30, 0x30, 0x31 };
         public static readonly byte[] EMPTY_DATETIME = new byte[] { 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 
                                                                     0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x00 };
@@ -39,7 +40,7 @@ namespace VGMToolbox.format.iso
             return dateValue;
         }
 
-        public static IVolume[] GetVolumes(string isoPath)
+        public static IVolume[] GetVolumes(string isoPath, bool isRawDump)
         {
             ArrayList volumeList = new ArrayList();
             Iso9660Volume volume;
@@ -52,7 +53,7 @@ namespace VGMToolbox.format.iso
                 while (volumeOffset > -1)
                 {
                     volume = new Iso9660Volume();
-                    volume.Initialize(fs, volumeOffset);
+                    volume.Initialize(fs, volumeOffset, isRawDump);
                     volumeList.Add(volume);
 
                     volumeOffset = ParseFile.GetNextOffset(fs, volume.VolumeBaseOffset + ((long)volume.VolumeSpaceSize * (long)volume.LogicalBlockSize), Iso9660.VOLUME_DESCRIPTOR_IDENTIFIER);
@@ -68,6 +69,7 @@ namespace VGMToolbox.format.iso
         public long VolumeBaseOffset { set; get; }
         public string FormatDescription { set; get; }
         public ArrayList DirectoryStructureArray { set; get; }
+        public bool IsRawDump { set; get; }
         public IDirectoryStructure[] Directories 
         {
             set { Directories = value; }
@@ -131,60 +133,77 @@ namespace VGMToolbox.format.iso
 
         #endregion
 
-        public void Initialize(FileStream isoStream, long offset)
+        public void Initialize(FileStream isoStream, long offset, bool isRawDump)
         {
-            this.VolumeBaseOffset = offset - Iso9660.EMPTY_HEADER_SIZE;
+            byte[] sectorBytes;
+            byte[] sectorDataBytes;
+            
             this.FormatDescription = Iso9660.FORMAT_DESCRIPTION_STRING;
+            this.IsRawDump = isRawDump;
             this.DirectoryStructureArray = new ArrayList();
 
-            this.VolumeDescriptorType = ParseFile.ParseSimpleOffset(isoStream, offset + 0x00, 1)[0];
-            this.StandardIdentifier = ParseFile.ParseSimpleOffset(isoStream, offset + 0x01, 5);
-            this.VolumeDescriptorVersion = ParseFile.ParseSimpleOffset(isoStream, offset + 0x06, 1)[0];
+            this.VolumeBaseOffset =
+                this.IsRawDump ? (offset - Iso9660.EMPTY_HEADER_SIZE_RAW) : (offset - Iso9660.EMPTY_HEADER_SIZE);
 
-            this.UnusedField1 = ParseFile.ParseSimpleOffset(isoStream, offset + 0x07, 1)[0];
-            
-            this.SystemIdentifier = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(isoStream, offset + 0x08, 0x20)).Trim();
-            this.VolumeIdentifier = ByteConversion.GetAsciiText(FileUtil.ReplaceNullByteWithSpace(ParseFile.ParseSimpleOffset(isoStream, offset + 0x28, 0x20))).Trim();
+            // parse inital level sector
+            if (this.IsRawDump)
+            {
+                sectorBytes = ParseFile.ParseSimpleOffset(isoStream, offset, (int)CdRom.RAW_SECTOR_SIZE);
+                sectorDataBytes = CdRom.GetDataChunkFromSector(sectorBytes);
+            }
+            else
+            {
+                sectorDataBytes = ParseFile.ParseSimpleOffset(isoStream, offset, (int)CdRom.NON_RAW_SECTOR_SIZE);
+            }
 
-            this.UnusedField2 = ParseFile.ParseSimpleOffset(isoStream, offset + 0x48, 0x08);
+            this.VolumeDescriptorType = ParseFile.ParseSimpleOffset(sectorDataBytes, 0x00, 1)[0];
+            this.StandardIdentifier = ParseFile.ParseSimpleOffset(sectorDataBytes, 0x01, 5);
+            this.VolumeDescriptorVersion = ParseFile.ParseSimpleOffset(sectorDataBytes, 0x06, 1)[0];
 
-            this.VolumeSpaceSize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(isoStream, offset + 0x50, 0x04), 0);
+            this.UnusedField1 = ParseFile.ParseSimpleOffset(sectorDataBytes, 0x07, 1)[0];
 
-            this.UnusedField3 = ParseFile.ParseSimpleOffset(isoStream, offset + 0x58, 0x20);
+            this.SystemIdentifier = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(sectorDataBytes, 0x08, 0x20)).Trim();
+            this.VolumeIdentifier = ByteConversion.GetAsciiText(FileUtil.ReplaceNullByteWithSpace(ParseFile.ParseSimpleOffset(sectorDataBytes, 0x28, 0x20))).Trim();
 
-            this.VolumeSetSize = BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(isoStream, offset + 0x78, 0x02), 0);
-            this.VolumeSequenceNumber = BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(isoStream, offset + 0x7C, 0x02), 0);
-            this.LogicalBlockSize = BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(isoStream, offset + 0x80, 0x02), 0);
+            this.UnusedField2 = ParseFile.ParseSimpleOffset(sectorDataBytes, 0x48, 0x08);
 
-            this.PathTableSize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(isoStream, offset + 0x84, 0x04), 0);
-            this.LocationOfOccurrenceOfTypeLPathTable = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(isoStream, offset + 0x8C, 0x04), 0);
-            this.LocationOfOptionalOccurrenceOfTypeLPathTable = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(isoStream, offset + 0x90, 0x04), 0);
-            this.LocationOfOccurrenceOfTypeMPathTable = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(isoStream, offset + 0x94, 0x04));
-            this.LocationOfOptionalOccurrenceOfTypeMPathTable = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(isoStream, offset + 0x98, 0x04));
+            this.VolumeSpaceSize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(sectorDataBytes, 0x50, 0x04), 0);
 
-            this.DirectoryRecordForRootDirectoryBytes = ParseFile.ParseSimpleOffset(isoStream, offset + 0x9C, 0x22);
+            this.UnusedField3 = ParseFile.ParseSimpleOffset(sectorDataBytes, 0x58, 0x20);
+
+            this.VolumeSetSize = BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(sectorDataBytes, 0x78, 0x02), 0);
+            this.VolumeSequenceNumber = BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(sectorDataBytes, 0x7C, 0x02), 0);
+            this.LogicalBlockSize = BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(sectorDataBytes, 0x80, 0x02), 0);
+
+            this.PathTableSize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(sectorDataBytes, 0x84, 0x04), 0);
+            this.LocationOfOccurrenceOfTypeLPathTable = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(sectorDataBytes, 0x8C, 0x04), 0);
+            this.LocationOfOptionalOccurrenceOfTypeLPathTable = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(sectorDataBytes, 0x90, 0x04), 0);
+            this.LocationOfOccurrenceOfTypeMPathTable = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(sectorDataBytes, 0x94, 0x04));
+            this.LocationOfOptionalOccurrenceOfTypeMPathTable = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(sectorDataBytes, 0x98, 0x04));
+
+            this.DirectoryRecordForRootDirectoryBytes = ParseFile.ParseSimpleOffset(sectorDataBytes, 0x9C, 0x22);
             this.DirectoryRecordForRootDirectory = new Iso9660DirectoryRecord(this.DirectoryRecordForRootDirectoryBytes);
 
-            this.VolumeSetIdentifier = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(isoStream, offset + 0xBE, 0x80)).Trim();
-            this.PublisherIdentifier = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(isoStream, offset + 0x13E, 0x80)).Trim();
-            this.DataPreparerIdentifier = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(isoStream, offset + 0x1BE, 0x80)).Trim();
-            this.ApplicationIdentifier = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(isoStream, offset + 0x23E, 0x80)).Trim();
-            this.CopyrightFileIdentifier = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(isoStream, offset + 0x2BE, 0x25)).Trim();
-            this.AbstractFileIdentifier = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(isoStream, offset + 0x2E3, 0x25)).Trim();
-            this.BibliographicFileIdentifier = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(isoStream, offset + 0x308, 0x25)).Trim();
+            this.VolumeSetIdentifier = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(sectorDataBytes, 0xBE, 0x80)).Trim();
+            this.PublisherIdentifier = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(sectorDataBytes, 0x13E, 0x80)).Trim();
+            this.DataPreparerIdentifier = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(sectorDataBytes, 0x1BE, 0x80)).Trim();
+            this.ApplicationIdentifier = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(sectorDataBytes, 0x23E, 0x80)).Trim();
+            this.CopyrightFileIdentifier = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(sectorDataBytes, 0x2BE, 0x25)).Trim();
+            this.AbstractFileIdentifier = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(sectorDataBytes, 0x2E3, 0x25)).Trim();
+            this.BibliographicFileIdentifier = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(sectorDataBytes, 0x308, 0x25)).Trim();
 
-            this.VolumeCreationDateAndTime = Iso9660.GetIsoDateTime(ParseFile.ParseSimpleOffset(isoStream, offset + 0x32D, 0x11));
-            this.VolumeModificationDateAndTime = Iso9660.GetIsoDateTime(ParseFile.ParseSimpleOffset(isoStream, offset + 0x33E, 0x11));
-            this.VolumeExpirationDateAndTime = Iso9660.GetIsoDateTime(ParseFile.ParseSimpleOffset(isoStream, offset + 0x34F, 0x11));
-            this.VolumeEffectiveDateAndTime = Iso9660.GetIsoDateTime(ParseFile.ParseSimpleOffset(isoStream, offset + 0x360, 0x11));           
-            
-            this.FileStructureVersion = ParseFile.ParseSimpleOffset(isoStream, offset + 0x371, 1)[0];
+            this.VolumeCreationDateAndTime = Iso9660.GetIsoDateTime(ParseFile.ParseSimpleOffset(sectorDataBytes, 0x32D, 0x11));
+            this.VolumeModificationDateAndTime = Iso9660.GetIsoDateTime(ParseFile.ParseSimpleOffset(sectorDataBytes, 0x33E, 0x11));
+            this.VolumeExpirationDateAndTime = Iso9660.GetIsoDateTime(ParseFile.ParseSimpleOffset(sectorDataBytes, 0x34F, 0x11));
+            this.VolumeEffectiveDateAndTime = Iso9660.GetIsoDateTime(ParseFile.ParseSimpleOffset(sectorDataBytes, 0x360, 0x11));
 
-            this.Reserved1 = ParseFile.ParseSimpleOffset(isoStream, offset + 0x372, 1)[0];
+            this.FileStructureVersion = ParseFile.ParseSimpleOffset(sectorDataBytes, 0x371, 1)[0];
 
-            this.ApplicationUse = ParseFile.ParseSimpleOffset(isoStream, offset + 0x373, 0x200);
+            this.Reserved1 = ParseFile.ParseSimpleOffset(sectorDataBytes, 0x372, 1)[0];
 
-            this.Reserved2 = ParseFile.ParseSimpleOffset(isoStream, offset + 0x573, 0x28D);
+            this.ApplicationUse = ParseFile.ParseSimpleOffset(sectorDataBytes, 0x373, 0x200);
+
+            this.Reserved2 = ParseFile.ParseSimpleOffset(sectorDataBytes, 0x573, 0x28D);
 
             this.LoadDirectories(isoStream);
         }
@@ -420,10 +439,12 @@ namespace VGMToolbox.format.iso
         {
             byte recordSize;
             long currentOffset;
+            long bytesRead;
             byte[] directoryRecordBytes;
             Iso9660DirectoryRecord tempDirectoryRecord;
             Iso9660DirectoryStructure tempDirectory;
             Iso9660FileStructure tempFile;
+            
             long rootDirectoryOffset = baseOffset + directoryRecord.LocationOfExtent * logicalBlockSize;
 
             currentOffset = rootDirectoryOffset;

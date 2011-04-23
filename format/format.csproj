@@ -125,6 +125,7 @@
     <Compile Include="VGMToolbox\format\util\GenhUtil.cs" />
     <Compile Include="VGMToolbox\format\IExtractableFormat.cs" />
     <Compile Include="VGMToolbox\format\INezPlugPlaylistFormat.cs" />
+    <Compile Include="VGMToolbox\format\iso\CdRom.cs" />
     <Compile Include="VGMToolbox\format\util\NezPlugUtil.cs" />
     <Compile Include="VGMToolbox\format\util\NsfUtil.cs" />
     <Compile Include="VGMToolbox\format\util\SdatUtil.cs" />

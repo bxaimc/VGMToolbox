@@ -14,9 +14,6 @@ namespace VGMToolbox.tools.extract
     class IsoExtractorWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
         public static int MAX_ID_BYTES_LENGTH = 0x14;
-        public static readonly byte[] SYNC_BYTES =
-            new byte[] { 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 
-                         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00 };
 
         public enum IsoFormatType
         {
@@ -81,24 +78,43 @@ namespace VGMToolbox.tools.extract
             {
                 long currentOffset = 0;
                 long fileSize = fs.Length;
-                byte[] volumeIdBytes;
-                bool isRawFormat = false;
                 
+                byte[] sectorBytes;
+                byte[] sectorDataBytes;
+                byte[] volumeIdBytes;
+                
+                bool isRawFormat = false;
+                int sectorSize = 0x800;
+                CdSectorType mode;
+
                 //----------------------
                 // check for sync bytes
                 //----------------------
-                byte[] syncCheckBytes = ParseFile.ParseSimpleOffset(fs, 0, SYNC_BYTES.Length);
+                byte[] syncCheckBytes = ParseFile.ParseSimpleOffset(fs, 0, CdRom.SYNC_BYTES.Length);
 
-                if (ParseFile.CompareSegment(syncCheckBytes, 0, SYNC_BYTES))
+                if (ParseFile.CompareSegment(syncCheckBytes, 0, CdRom.SYNC_BYTES))
                 {
                     isRawFormat = true;
-
-                    throw new FormatException("RAW Dumps not currently supported.");
+                    sectorSize = 0x930;
                 }
 
                 while (currentOffset < fileSize)
                 {
-                    volumeIdBytes = ParseFile.ParseSimpleOffset(fs, currentOffset, MAX_ID_BYTES_LENGTH);
+                    // get sector
+                    sectorBytes = ParseFile.ParseSimpleOffset(fs, currentOffset, sectorSize);
+
+                    // get data bytes from sector
+                    if (isRawFormat)
+                    {
+                        sectorDataBytes = CdRom.GetDataChunkFromSector(sectorBytes);
+                    }
+                    else
+                    {
+                        sectorDataBytes = sectorBytes;
+                    }
+                    
+                    // get header bytes
+                    volumeIdBytes = ParseFile.ParseSimpleOffset(sectorDataBytes, 0, MAX_ID_BYTES_LENGTH);
 
                     //----------
                     // ISO 9660
@@ -107,7 +123,7 @@ namespace VGMToolbox.tools.extract
                     {
                         Iso9660Volume isoVolume;
                         isoVolume = new Iso9660Volume();
-                        isoVolume.Initialize(fs, currentOffset);
+                        isoVolume.Initialize(fs, currentOffset, isRawFormat);
                         volumeList.Add((IVolume)isoVolume);
 
                         if ((isoVolume.Directories.Length == 1) &&
@@ -115,11 +131,11 @@ namespace VGMToolbox.tools.extract
                             (isoVolume.Directories[0].Files.Length == 0))
                         {
                             // possible empty/dummy volume (XBOX)
-                            currentOffset += 0x800;
+                            currentOffset += sectorSize;
                         }
                         else
                         {
-                            currentOffset = isoVolume.VolumeBaseOffset + ((long)isoVolume.VolumeSpaceSize * (long)isoVolume.LogicalBlockSize);
+                            currentOffset = isoVolume.VolumeBaseOffset + ((long)isoVolume.VolumeSpaceSize * (long)sectorSize);
                         }
 
                     }
@@ -131,7 +147,7 @@ namespace VGMToolbox.tools.extract
                     {
                         XDvdFsVolume isoVolume;
                         isoVolume = new XDvdFsVolume();
-                        isoVolume.Initialize(fs, currentOffset);
+                        isoVolume.Initialize(fs, currentOffset, isRawFormat);
                         volumeList.Add((IVolume)isoVolume);
 
                         // XDVDFS should be the last volume
@@ -139,7 +155,7 @@ namespace VGMToolbox.tools.extract
                     }
                     else
                     {
-                        currentOffset += 0x800;
+                        currentOffset += sectorSize;
                     }
                 }
             }
