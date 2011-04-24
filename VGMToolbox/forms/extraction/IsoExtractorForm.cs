@@ -157,7 +157,7 @@ namespace VGMToolbox.forms.extraction
                     foreach (IFileStructure f in dirStructure.Files)
                     {
                         fileItem = new ListViewItem(f.FileName);
-                        offsetItem = new ListViewItem.ListViewSubItem(fileItem, String.Format("0x{0}", f.Offset.ToString("X")));
+                        offsetItem = new ListViewItem.ListViewSubItem(fileItem, String.Format("0x{0}", f.Lba.ToString("X")));
                         sizeItem = new ListViewItem.ListViewSubItem(fileItem, f.Size.ToString());
                         dateItem = new ListViewItem.ListViewSubItem(fileItem, f.FileDateTime.ToString());
                         fileItem.Tag = f;

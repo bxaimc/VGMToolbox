@@ -28,13 +28,13 @@ namespace VGMToolbox.format.iso
             else
             {
                 dateString = ByteConversion.GetAsciiText(isoDateArray);
-                dateValue = new DateTime(Int32.Parse(dateString.Substring(0, 4)),
-                                         Int16.Parse(dateString.Substring(4, 2).ToString()),
-                                         Int16.Parse(dateString.Substring(6, 2).ToString()),
-                                         Int16.Parse(dateString.Substring(8, 2).ToString()),
-                                         Int16.Parse(dateString.Substring(10, 2).ToString()),
-                                         Int16.Parse(dateString.Substring(12, 2).ToString()),
-                                         Int16.Parse(dateString.Substring(14, 2).ToString()));
+                dateValue = new DateTime(Int32.Parse(dateString.Substring(0, 4).Replace("0000", "2000")),
+                                         Int16.Parse(dateString.Substring(4, 2)),
+                                         Int16.Parse(dateString.Substring(6, 2)),
+                                         Int16.Parse(dateString.Substring(8, 2)),
+                                         Int16.Parse(dateString.Substring(10, 2)),
+                                         Int16.Parse(dateString.Substring(12, 2)),
+                                         Int16.Parse(dateString.Substring(14, 2)));
             }
 
             return dateValue;
@@ -70,6 +70,7 @@ namespace VGMToolbox.format.iso
         public string FormatDescription { set; get; }
         public ArrayList DirectoryStructureArray { set; get; }
         public bool IsRawDump { set; get; }
+        public int SectorSize { set; get; }
         public IDirectoryStructure[] Directories 
         {
             set { Directories = value; }
@@ -144,17 +145,13 @@ namespace VGMToolbox.format.iso
 
             this.VolumeBaseOffset =
                 this.IsRawDump ? (offset - Iso9660.EMPTY_HEADER_SIZE_RAW) : (offset - Iso9660.EMPTY_HEADER_SIZE);
+            this.SectorSize =
+                this.IsRawDump ? (int)CdRom.RAW_SECTOR_SIZE : (int)CdRom.NON_RAW_SECTOR_SIZE;
 
             // parse inital level sector
-            if (this.IsRawDump)
-            {
-                sectorBytes = ParseFile.ParseSimpleOffset(isoStream, offset, (int)CdRom.RAW_SECTOR_SIZE);
-                sectorDataBytes = CdRom.GetDataChunkFromSector(sectorBytes);
-            }
-            else
-            {
-                sectorDataBytes = ParseFile.ParseSimpleOffset(isoStream, offset, (int)CdRom.NON_RAW_SECTOR_SIZE);
-            }
+            sectorBytes = ParseFile.ParseSimpleOffset(isoStream, offset, this.SectorSize);
+            sectorDataBytes = CdRom.GetDataChunkFromSector(sectorBytes, this.IsRawDump);
+
 
             this.VolumeDescriptorType = ParseFile.ParseSimpleOffset(sectorDataBytes, 0x00, 1)[0];
             this.StandardIdentifier = ParseFile.ParseSimpleOffset(sectorDataBytes, 0x01, 5);
@@ -222,7 +219,10 @@ namespace VGMToolbox.format.iso
             this.DirectoryRecordForRootDirectory.FileIdentifierString = String.Empty;
 
             // populate this volume's directory structure
-            Iso9660DirectoryStructure rootDirectory = new Iso9660DirectoryStructure(isoStream, isoStream.Name, this.VolumeBaseOffset, this.DirectoryRecordForRootDirectory, this.LogicalBlockSize, null);
+            Iso9660DirectoryStructure rootDirectory = 
+                new Iso9660DirectoryStructure(isoStream, isoStream.Name, 
+                    this.VolumeBaseOffset, this.DirectoryRecordForRootDirectory, 
+                    this.LogicalBlockSize, this.IsRawDump, this.SectorSize, null);
             this.DirectoryStructureArray.Add(rootDirectory);
         }
     }
@@ -317,8 +317,11 @@ namespace VGMToolbox.format.iso
         public string ParentDirectoryName { set; get; }
         public string SourceFilePath { set; get; }
         public string FileName { set; get; }
-        public long Offset { set; get; }
+        public long VolumeBaseOffset { set; get; }
+        public long Lba { set; get; }
         public long Size { set; get; }
+        public bool IsRaw { set; get; }
+        public int NonRawSectorSize { set; get; }
         public DateTime FileDateTime { set; get; }
 
         public int CompareTo(object obj)
@@ -333,12 +336,15 @@ namespace VGMToolbox.format.iso
             throw new ArgumentException("object is not an Iso9660FileStructure");
         }    
 
-        public Iso9660FileStructure(string parentDirectoryName, string sourceFilePath, string fileName, long offset, long size, DateTime fileTime)
+        public Iso9660FileStructure(string parentDirectoryName, string sourceFilePath, string fileName, long volumeBaseOffset, uint lba, long size, bool isRaw, int nonRawSectorSize, DateTime fileTime)
         { 
             this.ParentDirectoryName = parentDirectoryName;
             this.SourceFilePath = sourceFilePath;
             this.FileName = fileName;
-            this.Offset = offset;
+            this.VolumeBaseOffset = volumeBaseOffset;
+            this.Lba = lba;
+            this.IsRaw = isRaw;
+            this.NonRawSectorSize = nonRawSectorSize;
             this.Size = size;
             this.FileDateTime = fileTime;
         }
@@ -346,7 +352,7 @@ namespace VGMToolbox.format.iso
         public void Extract(FileStream isoStream, string destinationFolder)
         {
             string destinationFile = Path.Combine(Path.Combine(destinationFolder, this.ParentDirectoryName), this.FileName);
-            ParseFile.ExtractChunkToFile(isoStream, this.Offset, this.Size, destinationFile);
+            CdRom.ExtractCdData(isoStream, destinationFile, this.VolumeBaseOffset, this.Lba, this.Size, this.IsRaw, this.NonRawSectorSize);
         }
     }
 
@@ -389,9 +395,12 @@ namespace VGMToolbox.format.iso
             }
 
             throw new ArgumentException("object is not an Iso9660DirectoryStructure");
-        }    
+        }
 
-        public Iso9660DirectoryStructure(FileStream isoStream, string sourceFilePath, long baseOffset, Iso9660DirectoryRecord directoryRecord, uint logicalBlockSize, string parentDirectory)
+        public Iso9660DirectoryStructure(FileStream isoStream, string sourceFilePath, 
+            long baseOffset, Iso9660DirectoryRecord directoryRecord, 
+            uint logicalBlockSize, bool isRaw, int nonRawSectorSize, 
+            string parentDirectory)
         {
             string nextDirectory;
             this.SourceFilePath = SourceFilePath;
@@ -411,7 +420,7 @@ namespace VGMToolbox.format.iso
                 nextDirectory = this.ParentDirectoryName + Path.DirectorySeparatorChar + this.DirectoryName;
             }
 
-            this.parseDirectoryRecord(isoStream, baseOffset, directoryRecord, logicalBlockSize, nextDirectory);            
+            this.parseDirectoryRecord(isoStream, baseOffset, directoryRecord, logicalBlockSize, isRaw, nonRawSectorSize, nextDirectory);            
         }
 
         public void Extract(FileStream isoStream, string destinationFolder)
@@ -435,27 +444,31 @@ namespace VGMToolbox.format.iso
             }
         }
 
-        private void parseDirectoryRecord(FileStream isoStream, long baseOffset, Iso9660DirectoryRecord directoryRecord, uint logicalBlockSize, string parentDirectory)
+        private void parseDirectoryRecord(FileStream isoStream, long baseOffset, 
+            Iso9660DirectoryRecord directoryRecord, uint logicalBlockSize, 
+            bool isRaw, int nonRawSectorSize, string parentDirectory)
         {
             byte recordSize;
-            long currentOffset;
-            long bytesRead;
+            int currentOffset;
+            uint bytesRead = 0;
+            uint currentLba = directoryRecord.LocationOfExtent;
             byte[] directoryRecordBytes;
             Iso9660DirectoryRecord tempDirectoryRecord;
             Iso9660DirectoryStructure tempDirectory;
             Iso9660FileStructure tempFile;
+
+            byte[] directorySector = CdRom.GetSectorByLba(isoStream, baseOffset, currentLba, isRaw, nonRawSectorSize);
+            directorySector = CdRom.GetDataChunkFromSector(directorySector, isRaw);
             
-            long rootDirectoryOffset = baseOffset + directoryRecord.LocationOfExtent * logicalBlockSize;
+            currentOffset = 0;
 
-            currentOffset = rootDirectoryOffset;
-
-            while (currentOffset < (rootDirectoryOffset + directoryRecord.DataLength))
+            while (bytesRead < directoryRecord.DataLength)
             {
-                recordSize = ParseFile.ParseSimpleOffset(isoStream, currentOffset, 1)[0];
+                recordSize = ParseFile.ParseSimpleOffset(directorySector, currentOffset, 1)[0];
 
                 if (recordSize > 0)
                 {
-                    directoryRecordBytes = ParseFile.ParseSimpleOffset(isoStream, currentOffset, recordSize);
+                    directoryRecordBytes = ParseFile.ParseSimpleOffset(directorySector, currentOffset, recordSize);
                     tempDirectoryRecord = new Iso9660DirectoryRecord(directoryRecordBytes);
 
                     if (!tempDirectoryRecord.FileIdentifierString.Equals(".") &&
@@ -463,7 +476,7 @@ namespace VGMToolbox.format.iso
                     {
                         if (tempDirectoryRecord.FlagDirectory)
                         {
-                            tempDirectory = new Iso9660DirectoryStructure(isoStream, isoStream.Name, baseOffset, tempDirectoryRecord, logicalBlockSize, parentDirectory);
+                            tempDirectory = new Iso9660DirectoryStructure(isoStream, isoStream.Name, baseOffset, tempDirectoryRecord, logicalBlockSize, isRaw, nonRawSectorSize, parentDirectory);
                             this.SubDirectoryArray.Add(tempDirectory);
                         }
                         else
@@ -471,8 +484,11 @@ namespace VGMToolbox.format.iso
                             tempFile = new Iso9660FileStructure(parentDirectory,
                                 this.SourceFilePath,
                                 tempDirectoryRecord.FileIdentifierString.Replace(";1", String.Empty),
-                                baseOffset + (tempDirectoryRecord.LocationOfExtent * logicalBlockSize),
+                                baseOffset,
+                                tempDirectoryRecord.LocationOfExtent,
                                 tempDirectoryRecord.DataLength,
+                                isRaw,
+                                nonRawSectorSize,
                                 tempDirectoryRecord.RecordingDateAndTime);
                             this.FileArray.Add(tempFile);
                         }
@@ -482,12 +498,20 @@ namespace VGMToolbox.format.iso
                         this.ParentDirectoryRecord = tempDirectoryRecord;
                     }
 
+                    bytesRead += recordSize;
                     currentOffset += recordSize;
+                }
+                else if ((directoryRecord.DataLength - bytesRead) > (logicalBlockSize - currentOffset))
+                {
+                    // move to start of next sector
+                    directorySector = CdRom.GetSectorByLba(isoStream, baseOffset, ++currentLba, isRaw, nonRawSectorSize);
+                    directorySector = CdRom.GetDataChunkFromSector(directorySector, isRaw);
+                    bytesRead += (uint)(logicalBlockSize - currentOffset);
+                    currentOffset = 0;                
                 }
                 else
                 {
-                    // move to start of next sector
-                    currentOffset = (currentOffset + logicalBlockSize - 1) / logicalBlockSize * logicalBlockSize;
+                    break;
                 }
             }
         }        

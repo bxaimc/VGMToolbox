@@ -96,7 +96,14 @@ namespace VGMToolbox.format.iso
         public string SourceFilePath { set; get; }
         public string FileName { set; get; }
         public long Offset { set; get; }
+
+        public long VolumeBaseOffset { set; get; }
+        public long Lba { set; get; }
         public long Size { set; get; }
+        public bool IsRaw { set; get; }
+        public int NonRawSectorSize { set; get; }
+
+        
         public DateTime FileDateTime { set; get; }
 
         public int CompareTo(object obj)

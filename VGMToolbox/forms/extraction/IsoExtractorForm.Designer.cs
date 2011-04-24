@@ -33,7 +33,7 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.fileListView = new System.Windows.Forms.ListView();
             this.columnName = new System.Windows.Forms.ColumnHeader();
-            this.columnOffset = new System.Windows.Forms.ColumnHeader();
+            this.columnLba = new System.Windows.Forms.ColumnHeader();
             this.columnSize = new System.Windows.Forms.ColumnHeader();
             this.columnDate = new System.Windows.Forms.ColumnHeader();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -50,38 +50,38 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 587);
-            this.pnlLabels.Size = new System.Drawing.Size(664, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 471);
+            this.pnlLabels.Size = new System.Drawing.Size(795, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(664, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(795, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 510);
-            this.tbOutput.Size = new System.Drawing.Size(664, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 394);
+            this.tbOutput.Size = new System.Drawing.Size(795, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 490);
-            this.pnlButtons.Size = new System.Drawing.Size(664, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 374);
+            this.pnlButtons.Size = new System.Drawing.Size(795, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(604, 0);
+            this.btnCancel.Location = new System.Drawing.Point(735, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(544, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(675, 0);
             // 
             // IsoFolderTreeView
             // 
             this.IsoFolderTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.IsoFolderTreeView.Location = new System.Drawing.Point(0, 0);
             this.IsoFolderTreeView.Name = "IsoFolderTreeView";
-            this.IsoFolderTreeView.Size = new System.Drawing.Size(221, 467);
+            this.IsoFolderTreeView.Size = new System.Drawing.Size(264, 351);
             this.IsoFolderTreeView.TabIndex = 5;
             this.IsoFolderTreeView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.IsoFolderTreeView_MouseUp);
             this.IsoFolderTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.IsoFolderTreeView_AfterSelect);
@@ -99,22 +99,22 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.fileListView);
-            this.splitContainer1.Size = new System.Drawing.Size(664, 467);
-            this.splitContainer1.SplitterDistance = 221;
+            this.splitContainer1.Size = new System.Drawing.Size(795, 351);
+            this.splitContainer1.SplitterDistance = 264;
             this.splitContainer1.TabIndex = 6;
             // 
             // fileListView
             // 
             this.fileListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnName,
-            this.columnOffset,
+            this.columnLba,
             this.columnSize,
             this.columnDate});
             this.fileListView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.fileListView.FullRowSelect = true;
             this.fileListView.Location = new System.Drawing.Point(0, 0);
             this.fileListView.Name = "fileListView";
-            this.fileListView.Size = new System.Drawing.Size(439, 467);
+            this.fileListView.Size = new System.Drawing.Size(527, 351);
             this.fileListView.TabIndex = 0;
             this.fileListView.UseCompatibleStateImageBehavior = false;
             this.fileListView.View = System.Windows.Forms.View.Details;
@@ -125,10 +125,10 @@
             this.columnName.Text = "Filename";
             this.columnName.Width = 150;
             // 
-            // columnOffset
+            // columnLba
             // 
-            this.columnOffset.Text = "Offset";
-            this.columnOffset.Width = 80;
+            this.columnLba.Text = "LBA";
+            this.columnLba.Width = 80;
             // 
             // columnSize
             // 
@@ -167,7 +167,7 @@
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(664, 628);
+            this.ClientSize = new System.Drawing.Size(795, 512);
             this.Controls.Add(this.splitContainer1);
             this.Name = "IsoExtractorForm";
             this.Text = "IsoExtractorForm";
@@ -201,7 +201,7 @@
         private System.Windows.Forms.ColumnHeader columnName;
         private System.Windows.Forms.ColumnHeader columnSize;
         private System.Windows.Forms.ColumnHeader columnDate;
-        private System.Windows.Forms.ColumnHeader columnOffset;
+        private System.Windows.Forms.ColumnHeader columnLba;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem extractToToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem extractToSubfolderToolStripMenuItem;

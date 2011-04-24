@@ -10,8 +10,12 @@ namespace VGMToolbox.format.iso
         string SourceFilePath { set; get; }
         string FileName { set; get; }
 
-        long Offset { set; get; }
+        long VolumeBaseOffset { set; get; }
+        long Lba { set; get; }
         long Size { set; get; }
+        bool IsRaw { set; get; }
+        int NonRawSectorSize { set; get; }
+
         DateTime FileDateTime { set; get; }
 
         void Extract(FileStream isoStream, string destinationFolder);

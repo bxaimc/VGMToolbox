@@ -104,14 +104,7 @@ namespace VGMToolbox.tools.extract
                     sectorBytes = ParseFile.ParseSimpleOffset(fs, currentOffset, sectorSize);
 
                     // get data bytes from sector
-                    if (isRawFormat)
-                    {
-                        sectorDataBytes = CdRom.GetDataChunkFromSector(sectorBytes);
-                    }
-                    else
-                    {
-                        sectorDataBytes = sectorBytes;
-                    }
+                    sectorDataBytes = CdRom.GetDataChunkFromSector(sectorBytes, isRawFormat);
                     
                     // get header bytes
                     volumeIdBytes = ParseFile.ParseSimpleOffset(sectorDataBytes, 0, MAX_ID_BYTES_LENGTH);
