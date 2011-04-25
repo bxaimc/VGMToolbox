@@ -501,7 +501,7 @@ namespace VGMToolbox.format.iso
                     bytesRead += recordSize;
                     currentOffset += recordSize;
                 }
-                else if ((directoryRecord.DataLength - bytesRead) > (logicalBlockSize - currentOffset))
+                else if ((directoryRecord.DataLength - bytesRead) > (directorySector.Length - currentOffset))
                 {
                     // move to start of next sector
                     directorySector = CdRom.GetSectorByLba(isoStream, baseOffset, ++currentLba, isRaw, nonRawSectorSize);
