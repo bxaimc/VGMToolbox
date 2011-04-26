@@ -13,12 +13,13 @@ namespace VGMToolbox.tools.extract
 {
     class IsoExtractorWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
-        public static int MAX_ID_BYTES_LENGTH = 0x14;
+        public static int MAX_ID_BYTES_LENGTH = 0x48;
 
         public enum IsoFormatType
         {
             Iso9660,
-            XDvdFs
+            XDvdFs,
+            Panasonic3do
         };
         
         public struct IsoExtractorStruct : IVgmtWorkerStruct
@@ -132,19 +133,57 @@ namespace VGMToolbox.tools.extract
                         }
 
                     }
+                    //-----------------
+                    // Green Book CD-I
+                    //-----------------
+                    else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, 0, GreenBookCdi.VOLUME_DESCRIPTOR_IDENTIFIER.Length, GreenBookCdi.VOLUME_DESCRIPTOR_IDENTIFIER))
+                    {
+                        //GreenBookCdi isoVolume;
+                        //isoVolume = new GreenBookCdi();
+                        //isoVolume.Initialize(fs, currentOffset, isRawFormat);
+                        //volumeList.Add((IVolume)isoVolume);
+
+                        //if ((isoVolume.Directories.Length == 1) &&
+                        //    (isoVolume.Directories[0].SubDirectories.Length == 0) &&
+                        //    (isoVolume.Directories[0].Files.Length == 0))
+                        //{
+                        //    // possible empty/dummy volume (XBOX)
+                        //    currentOffset += sectorSize;
+                        //}
+                        //else
+                        //{
+                        //    currentOffset = isoVolume.VolumeBaseOffset + ((long)isoVolume.VolumeSpaceSize * (long)sectorSize);
+                        //}
+
+                    }
                     
                     //-----------------------
                     // XDVDFS (XBOX/XBOX360)
                     //-----------------------
                     else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, 0, XDvdFs.STANDARD_IDENTIFIER.Length, XDvdFs.STANDARD_IDENTIFIER))
                     {
-                        XDvdFsVolume isoVolume;
-                        isoVolume = new XDvdFsVolume();
-                        isoVolume.Initialize(fs, currentOffset, isRawFormat);
-                        volumeList.Add((IVolume)isoVolume);
+                        if (isRawFormat)
+                        {
+                            throw new FormatException("Raw dumps not supported for XDVDFS (XBOX/XBOX360) format.");
+                        }
+                        else
+                        {
+                            XDvdFsVolume isoVolume;
+                            isoVolume = new XDvdFsVolume();
+                            isoVolume.Initialize(fs, currentOffset, isRawFormat);
+                            volumeList.Add((IVolume)isoVolume);
 
-                        // XDVDFS should be the last volume
-                        break;
+                            // XDVDFS should be the last volume
+                            break;                        
+                        }
+                    }
+
+                    //---------------
+                    // PANASONIC 3DO
+                    //---------------
+                    else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, 0, Panasonic3do.STANDARD_IDENTIFIER.Length, Panasonic3do.STANDARD_IDENTIFIER))
+                    {
+                    
                     }
                     else
                     {

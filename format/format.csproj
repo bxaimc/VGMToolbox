@@ -76,10 +76,12 @@
     <Compile Include="VGMToolbox\format\hoot\HootCsv.cs" />
     <Compile Include="VGMToolbox\format\hoot\HootGameList.cs" />
     <Compile Include="VGMToolbox\format\IGd3TagFormat.cs" />
+    <Compile Include="VGMToolbox\format\iso\GreenBookCdi.cs" />
     <Compile Include="VGMToolbox\format\iso\IDirectoryStructure.cs" />
     <Compile Include="VGMToolbox\format\iso\IFileStructure.cs" />
     <Compile Include="VGMToolbox\format\iso\Iso9660.cs" />
     <Compile Include="VGMToolbox\format\iso\IVolume.cs" />
+    <Compile Include="VGMToolbox\format\iso\Panasonic3do.cs" />
     <Compile Include="VGMToolbox\format\iso\XDvdFs.cs" />
     <Compile Include="VGMToolbox\format\IXsfTagFormat.cs" />
     <Compile Include="VGMToolbox\format\Midi.cs" />
