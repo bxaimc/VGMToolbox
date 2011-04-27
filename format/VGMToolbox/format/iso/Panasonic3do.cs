@@ -21,7 +21,7 @@ namespace VGMToolbox.format.iso
                          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
         public static uint SECTOR_SIZE = 0x800;
-        public static string FORMAT_DESCRIPTION_STRING = "3DO";        
+        public static string FORMAT_DESCRIPTION_STRING = "Opera FS";        
     }
 
     public class Panasonic3doVolume : IVolume

@@ -33,6 +33,14 @@ namespace VGMToolbox.forms.extraction
             InitializeComponent();
 
             this.lblTitle.Text = "ISO Browser/Extractor";
+            
+            this.tbOutput.Text = "Browse and Extract contents of disc images." + Environment.NewLine;
+            this.tbOutput.Text += "- Currently supported image types: .BIN, .IMG, .ISO, .MDF" + Environment.NewLine;
+            this.tbOutput.Text += "- Currently supported file systems: ISO 9660 (PSX/PS2), Opera FS (3DO), XDVDFS (XBOX/XBOX360)" + Environment.NewLine;
+
+            this.tbOutput.Text += Environment.NewLine + "- Not yet supported/tested: Opera FS (RAW), XDVDFS (RAW), Redbook Audio" + Environment.NewLine;
+            this.tbOutput.Text += "- RAW extraction of Mode 2 Form 2 (CD-XA) data not yet implemented." + Environment.NewLine;
+            
             this.btnDoTask.Hide();
         }
 
