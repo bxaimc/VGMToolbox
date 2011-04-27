@@ -15,7 +15,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.forms.extraction
 {
-    public partial class IsoExtractorForm : AVgmtForm
+    public partial class IsoExtractorForm : VgmtForm
     {
         protected TreeNode selectedNode;
         protected TreeNode oldNode;
@@ -287,5 +287,33 @@ namespace VGMToolbox.forms.extraction
 
             base.backgroundWorker_Execute(taskStruct);
         }
+
+        private void fileListView_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            // Set the ListViewItemSorter property to a new ListViewItemComparer 
+            // object. Setting this property immediately sorts the 
+            // ListView using the ListViewItemComparer object.
+            this.fileListView.ListViewItemSorter = new ListViewItemComparer(e.Column);
+
+        }
     }
+
+    // Implements the manual sorting of items by columns.
+    class ListViewItemComparer : IComparer
+    {
+        private int col;
+        public ListViewItemComparer()
+        {
+            col = 0;
+        }
+        public ListViewItemComparer(int column)
+        {
+            col = column;
+        }
+        public int Compare(object x, object y)
+        {
+            return String.Compare(((ListViewItem)x).SubItems[col].Text, ((ListViewItem)y).SubItems[col].Text);
+        }
+    }
+
 }
