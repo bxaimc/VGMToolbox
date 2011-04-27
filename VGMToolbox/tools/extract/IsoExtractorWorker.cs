@@ -183,7 +183,20 @@ namespace VGMToolbox.tools.extract
                     //---------------
                     else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, 0, Panasonic3do.STANDARD_IDENTIFIER.Length, Panasonic3do.STANDARD_IDENTIFIER))
                     {
-                    
+                        if (isRawFormat)
+                        {
+                            throw new FormatException("Raw dumps not supported for 3DO File System (Panasonic 3DO) format.");
+                        }
+                        else
+                        {
+                            Panasonic3doVolume isoVolume;
+                            isoVolume = new Panasonic3doVolume();
+                            isoVolume.Initialize(fs, currentOffset, isRawFormat);
+                            volumeList.Add((IVolume)isoVolume);
+
+                            // should be the last volume
+                            break;
+                        }                    
                     }
                     else
                     {

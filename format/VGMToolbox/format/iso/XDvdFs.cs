@@ -208,7 +208,10 @@ namespace VGMToolbox.format.iso
             throw new ArgumentException("object is not an XDvdFsDirectoryStructure");
         }
 
-        public XDvdFsDirectoryStructure(FileStream isoStream, string sourceFilePath, DateTime creationDateTime, long baseOffset, long directoryOffset, uint logicalBlockSize, string directoryName, string parentDirectory)
+        public XDvdFsDirectoryStructure(FileStream isoStream, 
+            string sourceFilePath, DateTime creationDateTime, 
+            long baseOffset, long directoryOffset, uint logicalBlockSize, 
+            string directoryName, string parentDirectory)
         {
             string nextDirectory;
             this.SourceFilePath = SourceFilePath;

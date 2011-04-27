@@ -37,7 +37,7 @@ namespace VGMToolbox.format.iso
                 get
                 {
                     DirectoryStructureArray.Sort();
-                    return (IDirectoryStructure[])DirectoryStructureArray.ToArray(typeof(XDvdFsDirectoryStructure));
+                    return (IDirectoryStructure[])DirectoryStructureArray.ToArray(typeof(Panasonic3doDirectoryStructure));
                 }
             }
 
@@ -49,6 +49,7 @@ namespace VGMToolbox.format.iso
             public void Initialize(FileStream isoStream, long offset, bool isRawDump)
             {                
                 byte[] rootSector;
+                Panasonic3doDirectoryStructure rootDirectory;
 
                 this.VolumeBaseOffset = offset;
                 this.FormatDescription = Panasonic3do.FORMAT_DESCRIPTION_STRING;
@@ -63,35 +64,33 @@ namespace VGMToolbox.format.iso
                 for (uint i = 0; i < this.RootDirectoryCount; i++)
                 { 
                     this.RootDirectoryLbas[i] = 
-                        ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(rootSector, 0x64 +  (i * 4), 4));
+                        ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(rootSector, (int)(0x64 + (i * 4)), 4));
                 }
 
-                
-                // Build Tree from Root Directory
-                rootDirectoryOffset = this.VolumeBaseOffset + (this.RootDirectorySector * XDvdFs.SECTOR_SIZE);
-                rootDir = new XDvdFsDirectoryStructure(isoStream, isoStream.Name, this.ImageCreationTime, this.VolumeBaseOffset, rootDirectoryOffset, XDvdFs.SECTOR_SIZE, String.Empty, String.Empty);
-                this.DirectoryStructureArray.Add(rootDir);
+                this.LoadDirectories(isoStream);       
             }
 
-            public void ExtractAll(FileStream isoStream, string destintionFolder)
+            public void ExtractAll(FileStream isoStream, string destinationFolder)
             {
-                foreach (XDvdFsDirectoryStructure ds in this.DirectoryStructureArray)
+                foreach (Panasonic3doDirectoryStructure ds in this.DirectoryStructureArray)
                 {
-                    ds.Extract(isoStream, destintionFolder);
+                    ds.Extract(isoStream, destinationFolder);
                 }
             }
 
             public void LoadDirectories(FileStream isoStream)
             {
-                // change name of top level folder
-                this.DirectoryRecordForRootDirectory.FileIdentifierString = String.Empty;
+                Panasonic3doDirectoryStructure rootDirectory;
+                
+                //for (uint i = 0; i < this.RootDirectoryCount; i++)
+                //{
+                    rootDirectory = new Panasonic3doDirectoryStructure(isoStream,
+                        isoStream.Name, new DateTime(), this.VolumeBaseOffset,
+                        this.RootDirectoryLbas[0], Panasonic3do.SECTOR_SIZE,
+                        String.Empty, String.Empty, this.IsRawDump, (int)Panasonic3do.SECTOR_SIZE);
 
-                // populate this volume's directory structure
-                Iso9660DirectoryStructure rootDirectory =
-                    new Iso9660DirectoryStructure(isoStream, isoStream.Name,
-                        this.VolumeBaseOffset, this.DirectoryRecordForRootDirectory,
-                        this.LogicalBlockSize, this.IsRawDump, this.SectorSize, null);
-                this.DirectoryStructureArray.Add(rootDirectory);
+                    this.DirectoryStructureArray.Add(rootDirectory);
+                //}                                
             }
         }
 
@@ -122,15 +121,17 @@ namespace VGMToolbox.format.iso
             throw new ArgumentException("object is not an Panasonic3doFileStructure");
         }
 
-        public Panasonic3doFileStructure(string parentDirectoryName, string sourceFilePath, string fileName, long lba, long size, DateTime fileTime)
-        {
+        public Panasonic3doFileStructure(string parentDirectoryName, string sourceFilePath, string fileName, long volumeBaseOffset, uint lba, long size, bool isRaw, int nonRawSectorSize, DateTime fileTime)
+        { 
             this.ParentDirectoryName = parentDirectoryName;
             this.SourceFilePath = sourceFilePath;
             this.FileName = fileName;
+            this.VolumeBaseOffset = volumeBaseOffset;
             this.Lba = lba;
+            this.IsRaw = isRaw;
+            this.NonRawSectorSize = nonRawSectorSize;
             this.Size = size;
             this.FileDateTime = fileTime;
-            this.NonRawSectorSize = (int)Panasonic3do.SECTOR_SIZE;
         }
 
         public void Extract(FileStream isoStream, string destinationFolder)
@@ -143,7 +144,7 @@ namespace VGMToolbox.format.iso
     public class Panasonic3doDirectoryStructure : IDirectoryStructure
     {
         // public Panasonic3doDirectoryRecord ParentDirectoryRecord { set; get; }
-        public long DirectoryRecordOffset { set; get; }
+        public long DirectoryRecordLba { set; get; }
         public string ParentDirectoryName { set; get; }
 
         public ArrayList SubDirectoryArray { set; get; }
@@ -183,36 +184,10 @@ namespace VGMToolbox.format.iso
             throw new ArgumentException("object is not an Panasonic3doDirectoryStructure");
         }
 
-        public Panasonic3doDirectoryStructure(FileStream isoStream, string sourceFilePath, 
-            long baseOffset, Iso9660DirectoryRecord directoryRecord, 
-            uint logicalBlockSize, bool isRaw, int nonRawSectorSize, 
-            string parentDirectory)
-        {
-            string nextDirectory;
-            this.SourceFilePath = SourceFilePath;
-            this.SubDirectoryArray = new ArrayList();
-            this.FileArray = new ArrayList();            
-
-            if (String.IsNullOrEmpty(parentDirectory))
-            {
-                this.ParentDirectoryName = String.Empty;
-                this.DirectoryName = directoryRecord.FileIdentifierString;
-                nextDirectory = this.DirectoryName;
-            }
-            else
-            {
-                this.ParentDirectoryName = parentDirectory;
-                this.DirectoryName = directoryRecord.FileIdentifierString;
-                nextDirectory = this.ParentDirectoryName + Path.DirectorySeparatorChar + this.DirectoryName;
-            }
-
-            this.parseDirectoryRecord(isoStream, baseOffset, directoryRecord, logicalBlockSize, isRaw, nonRawSectorSize, nextDirectory);            
-        }
-
         public void Extract(FileStream isoStream, string destinationFolder)
         {
             string fullDirectoryPath = Path.Combine(destinationFolder, Path.Combine(this.ParentDirectoryName, this.DirectoryName));
-            
+
             // create directory
             if (!Directory.Exists(fullDirectoryPath))
             {
@@ -220,7 +195,7 @@ namespace VGMToolbox.format.iso
             }
 
             foreach (Panasonic3doFileStructure f in this.FileArray)
-            { 
+            {
                 f.Extract(isoStream, destinationFolder);
             }
 
@@ -230,77 +205,116 @@ namespace VGMToolbox.format.iso
             }
         }
 
-        private void parseDirectoryRecord(FileStream isoStream, long baseOffset, 
-            long directoryLba, uint logicalBlockSize, 
-            bool isRaw, int nonRawSectorSize, string parentDirectory)
+        public Panasonic3doDirectoryStructure(FileStream isoStream, 
+            string sourceFilePath, DateTime creationDateTime, 
+            long baseOffset, long directoryLba, uint logicalBlockSize,
+            string directoryName, string parentDirectory, 
+            bool isRaw, int nonRawSectorSize)
         {
-            byte recordSize;
-            int currentOffset;
-            uint bytesRead = 0;
-            uint currentLba = directoryRecord.LocationOfExtent;
-            byte[] directoryRecordBytes;
-            Iso9660DirectoryRecord tempDirectoryRecord;
-            Iso9660DirectoryStructure tempDirectory;
-            Iso9660FileStructure tempFile;
+            string nextDirectory;
+            this.SourceFilePath = SourceFilePath;
+            this.SubDirectoryArray = new ArrayList();
+            this.FileArray = new ArrayList();
+            this.DirectoryRecordLba = directoryLba;
 
-            byte[] directorySector = CdRom.GetSectorByLba(isoStream, baseOffset, currentLba, isRaw, nonRawSectorSize);
-            directorySector = CdRom.GetDataChunkFromSector(directorySector, isRaw);
-            
-            currentOffset = 0;
-
-            while (bytesRead < directoryRecord.DataLength)
+            if (String.IsNullOrEmpty(parentDirectory))
             {
-                recordSize = ParseFile.ParseSimpleOffset(directorySector, currentOffset, 1)[0];
+                this.ParentDirectoryName = String.Empty;
+                this.DirectoryName = directoryName;
+                nextDirectory = this.DirectoryName;
+            }
+            else
+            {
+                this.ParentDirectoryName = parentDirectory;
+                this.DirectoryName = directoryName;
+                nextDirectory = this.ParentDirectoryName + Path.DirectorySeparatorChar + this.DirectoryName;
+            }
 
-                if (recordSize > 0)
+            this.parseDirectoryRecord(isoStream, creationDateTime, baseOffset, directoryLba, logicalBlockSize, nextDirectory, isRaw, nonRawSectorSize);
+        }
+
+        
+        private void parseDirectoryRecord(
+            FileStream isoStream,
+            DateTime creationDateTime,
+            long baseOffset,
+            long directoryLba,
+            uint logicalBlockSize,
+            string parentDirectory,
+            bool isRaw,
+            int nonRawSectorSize)
+        {
+            uint recordSize;
+            byte[] directorySector;
+            byte[] directoryRecordBytes;
+            uint directoryRecordLength;
+            uint bytesRead;
+            uint currentOffset;
+            long currentLba = directoryLba;
+
+            Panasonic3doDirectoryRecord tempDirectoryRecord;
+            Panasonic3doDirectoryStructure tempDirectory;
+            Panasonic3doFileStructure tempFile;
+
+            // get the first sector
+            directorySector = CdRom.GetSectorByLba(isoStream, baseOffset, currentLba, isRaw, nonRawSectorSize);
+            directorySector = CdRom.GetDataChunkFromSector(directorySector, isRaw);
+            directoryRecordLength = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(directorySector, 0xC, 4));
+
+            bytesRead = 0x14;
+            currentOffset = 0x14;
+
+            while (bytesRead < directoryRecordLength)
+            {
+                recordSize = 0x48 + (4 * ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(directorySector, (int)(currentOffset + 0x40), 4)));
+                directoryRecordBytes = ParseFile.ParseSimpleOffset(directorySector, (int)currentOffset, (int)recordSize);
+                tempDirectoryRecord = new Panasonic3doDirectoryRecord(directoryRecordBytes);
+
+                if (tempDirectoryRecord.DirectoryItemTypeBytes[3] == 0x07)
                 {
-                    directoryRecordBytes = ParseFile.ParseSimpleOffset(directorySector, currentOffset, recordSize);
-                    tempDirectoryRecord = new Iso9660DirectoryRecord(directoryRecordBytes);
+                    //for (uint i = 0; i < tempDirectoryRecord.SubDirectoryCount; i++)
+                    //{
+                        tempDirectory =
+                            new Panasonic3doDirectoryStructure(isoStream, isoStream.Name,
+                                creationDateTime, baseOffset, tempDirectoryRecord.SubDirectoryLbas[0],
+                                logicalBlockSize, tempDirectoryRecord.DirectoryItemName, 
+                                parentDirectory, isRaw, nonRawSectorSize);
+                        this.SubDirectoryArray.Add(tempDirectory);                    
+                    //}
+                    
 
-                    if (!tempDirectoryRecord.FileIdentifierString.Equals(".") &&
-                        !tempDirectoryRecord.FileIdentifierString.Equals("..")) // skip "this" directory
-                    {
-                        if (tempDirectoryRecord.FlagDirectory)
-                        {
-                            tempDirectory = new Iso9660DirectoryStructure(isoStream, isoStream.Name, baseOffset, tempDirectoryRecord, logicalBlockSize, isRaw, nonRawSectorSize, parentDirectory);
-                            this.SubDirectoryArray.Add(tempDirectory);
-                        }
-                        else
-                        {
-                            tempFile = new Iso9660FileStructure(parentDirectory,
-                                this.SourceFilePath,
-                                tempDirectoryRecord.FileIdentifierString.Replace(";1", String.Empty),
-                                baseOffset,
-                                tempDirectoryRecord.LocationOfExtent,
-                                tempDirectoryRecord.DataLength,
-                                isRaw,
-                                nonRawSectorSize,
-                                tempDirectoryRecord.RecordingDateAndTime);
-                            this.FileArray.Add(tempFile);
-                        }
-                    }
-                    else if (tempDirectoryRecord.FileIdentifierString.Equals(".."))
-                    {
-                        this.ParentDirectoryRecord = tempDirectoryRecord;
-                    }
-
-                    bytesRead += recordSize;
-                    currentOffset += recordSize;
-                }
-                else if ((directoryRecord.DataLength - bytesRead) > (directorySector.Length - currentOffset))
-                {
-                    // move to start of next sector
-                    directorySector = CdRom.GetSectorByLba(isoStream, baseOffset, ++currentLba, isRaw, nonRawSectorSize);
-                    directorySector = CdRom.GetDataChunkFromSector(directorySector, isRaw);
-                    bytesRead += (uint)(logicalBlockSize - currentOffset);
-                    currentOffset = 0;                
                 }
                 else
+                {                    
+                    tempFile = new Panasonic3doFileStructure(parentDirectory, 
+                        this.SourceFilePath, tempDirectoryRecord.DirectoryItemName, 
+                        baseOffset, tempDirectoryRecord.SubDirectoryLbas[0], 
+                        tempDirectoryRecord.DirectoryItemSize, isRaw, nonRawSectorSize,
+                        creationDateTime);
+                    
+                    this.FileArray.Add(tempFile);
+                }
+
+                if (tempDirectoryRecord.DirectoryItemTypeBytes[0] == 0xC0)
                 {
                     break;
                 }
+                else if (tempDirectoryRecord.DirectoryItemTypeBytes[0] == 0x40)
+                {
+                    directorySector = CdRom.GetSectorByLba(isoStream, baseOffset, ++currentLba, isRaw, nonRawSectorSize);
+                    directorySector = CdRom.GetDataChunkFromSector(directorySector, isRaw);
+                    directoryRecordLength = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(directorySector, 0xC, 4));
+
+                    bytesRead = 0x14;
+                    currentOffset = 0x14;
+                }
+                else
+                {
+                    bytesRead += recordSize;
+                    currentOffset += recordSize;
+                }
             }
-        }        
+        }
     }
 
     public class Panasonic3doDirectoryRecord
@@ -335,14 +349,14 @@ namespace VGMToolbox.format.iso
             this.Unknown3 = ParseFile.ParseSimpleOffset(directoryBytes, 0x1C, 4);
             this.DirectoryItemNameBytes = ParseFile.ParseSimpleOffset(directoryBytes, 0x20, 0x20);
             this.DirectoryItemName =
-                ByteConversion.GetEncodedText(this.DirectoryItemNameBytes, ByteConversion.GetPredictedCodePageForTags(this.DirectoryItemNameBytes));
+                ByteConversion.GetEncodedText(FileUtil.ReplaceNullByteWithSpace(this.DirectoryItemNameBytes), ByteConversion.GetPredictedCodePageForTags(this.DirectoryItemNameBytes)).Trim();
             this.SubDirectoryCount = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(directoryBytes, 0x40, 4)) + 1;
             this.SubDirectoryLbas = new uint[this.SubDirectoryCount];
 
-            for (uint i = 0; i < this.RootDirectoryCount; i++)
+            for (uint i = 0; i < this.SubDirectoryCount; i++)
             {
                 this.SubDirectoryLbas[i] =
-                    ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(directoryBytes, 0x44 + (i * 4), 4));
+                    ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(directoryBytes, (int)(0x44 + (i * 4)), 4));
             }            
         }
     }
