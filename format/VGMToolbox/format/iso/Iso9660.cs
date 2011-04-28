@@ -134,7 +134,7 @@ namespace VGMToolbox.format.iso
 
         #endregion
 
-        public void Initialize(FileStream isoStream, long offset, bool isRawDump)
+        public virtual void Initialize(FileStream isoStream, long offset, bool isRawDump)
         {
             byte[] sectorBytes;
             byte[] sectorDataBytes;

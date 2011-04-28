@@ -144,6 +144,7 @@
     <Compile Include="forms\compression\GzipCompressionForm.Designer.cs">
       <DependentUpon>GzipCompressionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\DllIcon.cs" />
     <Compile Include="forms\examine\EmbeddedTagsUpdateForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -258,6 +259,7 @@
     <Compile Include="forms\hoot\XmlBuilderForm.Designer.cs">
       <DependentUpon>XmlBuilderForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\ListViewColumnSorter.cs" />
     <Compile Include="forms\other\InterleaverForm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -138,23 +138,12 @@ namespace VGMToolbox.tools.extract
                     //-----------------
                     else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, 0, GreenBookCdi.VOLUME_DESCRIPTOR_IDENTIFIER.Length, GreenBookCdi.VOLUME_DESCRIPTOR_IDENTIFIER))
                     {
-                        //GreenBookCdi isoVolume;
-                        //isoVolume = new GreenBookCdi();
-                        //isoVolume.Initialize(fs, currentOffset, isRawFormat);
-                        //volumeList.Add((IVolume)isoVolume);
+                        GreenBookCdiVolume isoVolume;
+                        isoVolume = new GreenBookCdiVolume();
+                        isoVolume.Initialize(fs, currentOffset, isRawFormat);
+                        volumeList.Add((IVolume)isoVolume);
 
-                        //if ((isoVolume.Directories.Length == 1) &&
-                        //    (isoVolume.Directories[0].SubDirectories.Length == 0) &&
-                        //    (isoVolume.Directories[0].Files.Length == 0))
-                        //{
-                        //    // possible empty/dummy volume (XBOX)
-                        //    currentOffset += sectorSize;
-                        //}
-                        //else
-                        //{
-                        //    currentOffset = isoVolume.VolumeBaseOffset + ((long)isoVolume.VolumeSpaceSize * (long)sectorSize);
-                        //}
-
+                        break;
                     }
                     
                     //-----------------------
@@ -183,20 +172,13 @@ namespace VGMToolbox.tools.extract
                     //---------------
                     else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, 0, Panasonic3do.STANDARD_IDENTIFIER.Length, Panasonic3do.STANDARD_IDENTIFIER))
                     {
-                        if (isRawFormat)
-                        {
-                            throw new FormatException("Raw dumps not supported for 3DO File System (Panasonic 3DO) format.");
-                        }
-                        else
-                        {
-                            Panasonic3doVolume isoVolume;
-                            isoVolume = new Panasonic3doVolume();
-                            isoVolume.Initialize(fs, currentOffset, isRawFormat);
-                            volumeList.Add((IVolume)isoVolume);
+                        Panasonic3doVolume isoVolume;
+                        isoVolume = new Panasonic3doVolume();
+                        isoVolume.Initialize(fs, currentOffset, isRawFormat);
+                        volumeList.Add((IVolume)isoVolume);
 
-                            // should be the last volume
-                            break;
-                        }                    
+                        // should be the last volume
+                        break;                        
                     }
                     else
                     {

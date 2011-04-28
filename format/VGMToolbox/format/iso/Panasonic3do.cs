@@ -49,7 +49,6 @@ namespace VGMToolbox.format.iso
             public void Initialize(FileStream isoStream, long offset, bool isRawDump)
             {                
                 byte[] rootSector;
-                Panasonic3doDirectoryStructure rootDirectory;
 
                 this.VolumeBaseOffset = offset;
                 this.FormatDescription = Panasonic3do.FORMAT_DESCRIPTION_STRING;
@@ -57,6 +56,7 @@ namespace VGMToolbox.format.iso
                 this.DirectoryStructureArray = new ArrayList();
 
                 rootSector = CdRom.GetSectorByLba(isoStream, this.VolumeBaseOffset, 0, this.IsRawDump, (int)Panasonic3do.SECTOR_SIZE);
+                rootSector = CdRom.GetDataChunkFromSector(rootSector, this.IsRawDump);
 
                 this.RootDirectoryCount = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(rootSector, 0x60, 4)) + 1;
                 this.RootDirectoryLbas = new uint[this.RootDirectoryCount];

@@ -8,6 +8,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
+using VGMToolbox.forms;
 using VGMToolbox.format.iso;
 using VGMToolbox.plugin;
 using VGMToolbox.tools.extract;
@@ -15,7 +16,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.forms.extraction
 {
-    public partial class IsoExtractorForm : VgmtForm
+    public partial class IsoExtractorForm : AVgmtForm
     {
         protected TreeNode selectedNode;
         protected TreeNode oldNode;
@@ -27,10 +28,15 @@ namespace VGMToolbox.forms.extraction
         protected string destinationFolder;
         protected bool isTreeSelected;
 
+        private ListViewColumnSorter lvwColumnSorter;
+
         public IsoExtractorForm(TreeNode pTreeNode)
             : base(pTreeNode) 
         {
             InitializeComponent();
+
+            this.lvwColumnSorter = new ListViewColumnSorter();
+            this.fileListView.ListViewItemSorter = this.lvwColumnSorter;
 
             this.lblTitle.Text = "ISO Browser/Extractor";
             
@@ -38,10 +44,37 @@ namespace VGMToolbox.forms.extraction
             this.tbOutput.Text += "- Currently supported image types: .BIN, .IMG, .ISO, .MDF" + Environment.NewLine;
             this.tbOutput.Text += "- Currently supported file systems: ISO 9660 (PSX/PS2), Opera FS (3DO), XDVDFS (XBOX/XBOX360)" + Environment.NewLine;
 
-            this.tbOutput.Text += Environment.NewLine + "- Not yet supported/tested: Opera FS (RAW), XDVDFS (RAW), Redbook Audio" + Environment.NewLine;
+            this.tbOutput.Text += Environment.NewLine + "- Not yet supported/tested: XDVDFS (RAW), Redbook Audio" + Environment.NewLine;
             this.tbOutput.Text += "- RAW extraction of Mode 2 Form 2 (CD-XA) data not yet implemented." + Environment.NewLine;
             
             this.btnDoTask.Hide();
+
+            this.SetupImageList();
+        }
+
+        private void SetupImageList()
+        {
+            ImageList images = new ImageList();
+            string DLLPath = Path.Combine(Environment.SystemDirectory, "shell32.dll");
+
+            // CD
+            DllIcon cdIcon = new DllIcon(DLLPath, 11);
+            images.Images.Add("emptyCd", cdIcon);
+
+            // folder
+            DllIcon folderIcon = new DllIcon(DLLPath, 3);
+            images.Images.Add("normalFolder", folderIcon);
+
+            folderIcon = new DllIcon(DLLPath, 4);
+            images.Images.Add("openFolder", folderIcon);
+
+            // folder
+            DllIcon genericFileIcon = new DllIcon(DLLPath, 0);
+            images.Images.Add("genericFile", genericFileIcon);
+
+            IsoFolderTreeView.ImageList = images;
+            fileListView.SmallImageList = images;
+            fileListView.LargeImageList = images;
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -95,17 +128,19 @@ namespace VGMToolbox.forms.extraction
             TreeNode volumeNode;
             TreeNode directoryNode;
             string volumeName;
-
+                        
             foreach (IVolume v in volumes)
             {
                 volumeName = String.IsNullOrEmpty(v.VolumeIdentifier) ? "NO_NAME" : v.VolumeIdentifier.Trim();
                 volumeName += String.Format(" ({0})", v.FormatDescription);
                 volumeNode = new TreeNode(volumeName);
+                volumeNode.ImageKey = "emptyCd";
+                volumeNode.SelectedImageKey = "emptyCd";
 
                 foreach (IDirectoryStructure d in v.Directories)
                 {
                     directoryNode = GetDirectoryNode(d);
-                    directoryNode.Text = "..";
+                    directoryNode.Text = "\\";
                     volumeNode.Nodes.Add(directoryNode);
                 }
                 
@@ -121,6 +156,8 @@ namespace VGMToolbox.forms.extraction
 
             directoryNode = new TreeNode(directory.DirectoryName);
             directoryNode.Tag = directory;
+            directoryNode.ImageKey = "normalFolder";
+            directoryNode.SelectedImageKey = "openFolder";
 
             foreach (IDirectoryStructure d in directory.SubDirectories)
             {                
@@ -169,6 +206,7 @@ namespace VGMToolbox.forms.extraction
                         sizeItem = new ListViewItem.ListViewSubItem(fileItem, f.Size.ToString());
                         dateItem = new ListViewItem.ListViewSubItem(fileItem, f.FileDateTime.ToString());
                         fileItem.Tag = f;
+                        fileItem.ImageKey = "genericFile";
 
                         fileItem.SubItems.Add(offsetItem);
                         fileItem.SubItems.Add(sizeItem);
@@ -290,30 +328,28 @@ namespace VGMToolbox.forms.extraction
 
         private void fileListView_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            // Set the ListViewItemSorter property to a new ListViewItemComparer 
-            // object. Setting this property immediately sorts the 
-            // ListView using the ListViewItemComparer object.
-            this.fileListView.ListViewItemSorter = new ListViewItemComparer(e.Column);
+            // Determine if clicked column is already the column that is being sorted.
+            if (e.Column == lvwColumnSorter.SortColumn)
+            {
+                // Reverse the current sort direction for this column.
+                if (lvwColumnSorter.Order == System.Windows.Forms.SortOrder.Ascending)
+                {
+                    lvwColumnSorter.Order = System.Windows.Forms.SortOrder.Descending;
+                }
+                else
+                {
+                    lvwColumnSorter.Order = System.Windows.Forms.SortOrder.Ascending;
+                }
+            }
+            else
+            {
+                // Set the column number that is to be sorted; default to ascending.
+                lvwColumnSorter.SortColumn = e.Column;
+                lvwColumnSorter.Order = System.Windows.Forms.SortOrder.Ascending;
+            }
 
+            // Perform the sort with these new sort options.
+            this.fileListView.Sort();
         }
     }
-
-    // Implements the manual sorting of items by columns.
-    class ListViewItemComparer : IComparer
-    {
-        private int col;
-        public ListViewItemComparer()
-        {
-            col = 0;
-        }
-        public ListViewItemComparer(int column)
-        {
-            col = column;
-        }
-        public int Compare(object x, object y)
-        {
-            return String.Compare(((ListViewItem)x).SubItems[col].Text, ((ListViewItem)y).SubItems[col].Text);
-        }
-    }
-
 }
