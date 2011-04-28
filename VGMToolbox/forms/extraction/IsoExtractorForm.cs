@@ -1,23 +1,20 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
 
-using VGMToolbox.forms;
 using VGMToolbox.format.iso;
 using VGMToolbox.plugin;
 using VGMToolbox.tools.extract;
-using VGMToolbox.util;
 
 namespace VGMToolbox.forms.extraction
 {
     public partial class IsoExtractorForm : AVgmtForm
     {
+        private static readonly string ICON_PATH =
+            Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "Resources");
+        
         protected TreeNode selectedNode;
         protected TreeNode oldNode;
 
@@ -55,22 +52,16 @@ namespace VGMToolbox.forms.extraction
         private void SetupImageList()
         {
             ImageList images = new ImageList();
-            string DLLPath = Path.Combine(Environment.SystemDirectory, "shell32.dll");
 
             // CD
-            DllIcon cdIcon = new DllIcon(DLLPath, 11);
-            images.Images.Add("emptyCd", cdIcon);
+            images.Images.Add("emptyCd", (Image)new Bitmap(Path.Combine(ICON_PATH, "emptycd.ico")));
 
             // folder
-            DllIcon folderIcon = new DllIcon(DLLPath, 3);
-            images.Images.Add("normalFolder", folderIcon);
-
-            folderIcon = new DllIcon(DLLPath, 4);
-            images.Images.Add("openFolder", folderIcon);
+            images.Images.Add("normalFolder", (Image)new Bitmap(Path.Combine(ICON_PATH, "normalFolder.ico")));
+            images.Images.Add("openFolder", (Image)new Bitmap(Path.Combine(ICON_PATH, "openFolder.ico")));
 
             // folder
-            DllIcon genericFileIcon = new DllIcon(DLLPath, 0);
-            images.Images.Add("genericFile", genericFileIcon);
+            images.Images.Add("genericFile", (Image)new Bitmap(Path.Combine(ICON_PATH, "genericFile.ico")));
 
             IsoFolderTreeView.ImageList = images;
             fileListView.SmallImageList = images;

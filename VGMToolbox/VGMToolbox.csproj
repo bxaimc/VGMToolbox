@@ -1166,6 +1166,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\bolo2.gif" />
     <Content Include="Resources\Button-Refresh-16x16.png" />
+    <Content Include="Resources\emptyCd.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\genericFile.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\normalFolder.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\openFolder.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="rips\dir.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
