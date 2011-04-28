@@ -176,6 +176,7 @@ namespace VGMToolbox.forms.extraction
 
         private void IsoFolderTreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            ListViewItem directoryItem;
             ListViewItem fileItem;
             ListViewItem.ListViewSubItem offsetItem;
             ListViewItem.ListViewSubItem sizeItem;
@@ -190,10 +191,19 @@ namespace VGMToolbox.forms.extraction
                 if (dirStructure != null &&
                     dirStructure.Files != null)
                 {
+                    foreach (IDirectoryStructure d in dirStructure.SubDirectories)
+                    {
+                        directoryItem = new ListViewItem(d.DirectoryName);
+                        directoryItem.Tag = d;
+                        directoryItem.ImageKey = "normalFolder";
+
+                        this.fileListView.Items.Add(directoryItem);
+                    }
+                    
                     foreach (IFileStructure f in dirStructure.Files)
                     {
                         fileItem = new ListViewItem(f.FileName);
-                        offsetItem = new ListViewItem.ListViewSubItem(fileItem, String.Format("0x{0}", f.Lba.ToString("X")));
+                        offsetItem = new ListViewItem.ListViewSubItem(fileItem, String.Format("{0}", f.Lba.ToString()));
                         sizeItem = new ListViewItem.ListViewSubItem(fileItem, f.Size.ToString());
                         dateItem = new ListViewItem.ListViewSubItem(fileItem, f.FileDateTime.ToString());
                         fileItem.Tag = f;
@@ -248,8 +258,7 @@ namespace VGMToolbox.forms.extraction
                 {
                     foreach (ListViewItem lvi in this.fileListView.SelectedItems)
                     {
-                        if (lvi.Tag == null ||
-                            !(lvi.Tag is IFileStructure))
+                        if (lvi.Tag == null)
                         {
                             showList = false;
                             break;
@@ -298,11 +307,18 @@ namespace VGMToolbox.forms.extraction
             {
                 foreach (ListViewItem lvi in this.fileListView.SelectedItems)
                 {
-                    if (lvi.Tag != null &&
-                        lvi.Tag is IFileStructure)
+                    if (lvi.Tag != null)
                     {
-                        files.Add(lvi.Tag);
+                        if (lvi.Tag is IFileStructure)
+                        {
+                            files.Add(lvi.Tag);
+                        }
+                        else if (lvi.Tag is IDirectoryStructure)
+                        {
+                            directories.Add(lvi.Tag);
+                        }
                     }
+
                 }
             }
 
@@ -341,6 +357,42 @@ namespace VGMToolbox.forms.extraction
 
             // Perform the sort with these new sort options.
             this.fileListView.Sort();
+        }
+
+        private void openSelectedFolder()
+        {
+            if (this.fileListView.SelectedItems.Count == 1)
+            {
+                if (this.fileListView.SelectedItems[0].Tag is IDirectoryStructure)
+                {
+                    IDirectoryStructure clickedDirectory = (IDirectoryStructure)this.fileListView.SelectedItems[0].Tag;
+
+                    // find the item in the tree and select it
+                    foreach (TreeNode t in this.IsoFolderTreeView.SelectedNode.Nodes)
+                    {
+                        if (((IDirectoryStructure)t.Tag).Equals(clickedDirectory))
+                        {
+                            this.IsoFolderTreeView.SelectedNode = t;
+                            t.Expand();
+                        }
+                    }
+                }
+
+            }
+        
+        }
+
+        private void fileListView_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            this.openSelectedFolder();
+        }
+
+        private void fileListView_KeyUp(object sender, KeyEventArgs e)
+        {
+            if ((e.KeyCode == Keys.Enter) || (e.KeyCode == Keys.Return))
+            {
+                this.openSelectedFolder();
+            }
         }
     }
 }

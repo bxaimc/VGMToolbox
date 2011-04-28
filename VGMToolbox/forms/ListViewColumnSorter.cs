@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Text;
 using System.Windows.Forms;
+using VGMToolbox.format.iso;
 
 namespace VGMToolbox.forms
 {
@@ -28,15 +29,66 @@ namespace VGMToolbox.forms
         public int Compare(object x, object y)
         {
             int compareResult;
+            string columnName;
             ListViewItem listviewX, listviewY;
 
             // Cast the objects to be compared to ListViewItem objects
             listviewX = (ListViewItem)x;
             listviewY = (ListViewItem)y;
 
-            // Compare the two items
-            compareResult = ObjectCompare.Compare(listviewX.SubItems[ColumnToSort].Text, listviewY.SubItems[ColumnToSort].Text);
+            // get the name of the column
+            columnName = listviewX.ListView.Columns[ColumnToSort].Text;
 
+            // Compare the two items
+            if ((columnName.Equals("Size") || columnName.Equals("LBA")) && 
+                (listviewX.SubItems.Count > ColumnToSort))
+            {
+                compareResult = ObjectCompare.Compare(UInt64.Parse(listviewX.SubItems[ColumnToSort].Text), UInt64.Parse(listviewY.SubItems[ColumnToSort].Text));
+            }
+            else if (columnName.Equals("Date") &&
+                (listviewX.SubItems.Count > ColumnToSort))
+            {
+                compareResult = ObjectCompare.Compare(DateTime.Parse(listviewX.SubItems[ColumnToSort].Text), DateTime.Parse(listviewY.SubItems[ColumnToSort].Text));
+            }
+            else if (listviewX.SubItems.Count > ColumnToSort)
+            {
+                
+                if ((typeof(IDirectoryStructure).IsAssignableFrom(listviewX.Tag.GetType())) && 
+                    (typeof(IFileStructure).IsAssignableFrom(listviewY.Tag.GetType())))
+                {
+                    // Force Directories to the top
+                    if (OrderOfSort == SortOrder.Ascending)
+                    {
+                        compareResult = -1;
+                    }
+                    else
+                    {
+                        compareResult = 1;
+                    }
+                }
+                else if ((typeof(IFileStructure).IsAssignableFrom(listviewX.Tag.GetType())) &&
+                         (typeof(IDirectoryStructure).IsAssignableFrom(listviewY.Tag.GetType())))
+                {
+                    // Force Directories to the top
+                    if (OrderOfSort == SortOrder.Ascending)
+                    {
+                        compareResult = 1;
+                    }
+                    else
+                    {
+                        compareResult = -1;
+                    }
+                }
+                else
+                {
+                    compareResult = ObjectCompare.Compare(listviewX.SubItems[ColumnToSort].Text, listviewY.SubItems[ColumnToSort].Text);
+                }
+            }
+            else
+            {
+                compareResult = 0;
+            }
+            
             // Calculate correct return value based on object comparison
             if (OrderOfSort == SortOrder.Ascending)
             {
