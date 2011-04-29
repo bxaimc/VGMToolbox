@@ -213,7 +213,7 @@ namespace VGMToolbox.format.iso
             }
         }
 
-        public void LoadDirectories(FileStream isoStream)
+        public virtual void LoadDirectories(FileStream isoStream)
         {
             // change name of top level folder
             this.DirectoryRecordForRootDirectory.FileIdentifierString = String.Empty;
@@ -515,5 +515,63 @@ namespace VGMToolbox.format.iso
                 }
             }
         }        
+    }
+
+    public class Iso9660PathTable
+    {
+        public bool IsLittleEndian { set; get; }
+        public uint PathTableSize { set; get; }
+        public Iso9660PathTableRecord[] PathTableRecords { set; get; }
+        ArrayList PathTableRecordsList { set; get; }
+
+        public Iso9660PathTable(uint lba, uint pathTableSize, bool isLittleEndian)
+        { 
+            //uint pathTableSectorCount = pathTableSectorCount
+        }
+
+    }
+
+    public class Iso9660PathTableRecord
+    {
+        public byte LengthOfDirectoryIdentifier { set; get; }
+        public byte ExtendedAttributeRecordLength { set; get; }
+        public uint LocationOfExtent { set; get; }
+        public ushort DirectoryNumberOfParentDirectory { set; get; }
+        public byte[] DirectoryIdentifierBytes { set; get; }
+        public string DirectoryIdentifier { set; get; }
+        public byte PaddingByte { set; get; }
+
+        public Iso9660PathTableRecord(byte[] pathBytes, bool isLittleEndian)
+        {
+            this.LengthOfDirectoryIdentifier = ParseFile.ParseSimpleOffset(pathBytes, 0, 1)[0];
+            this.ExtendedAttributeRecordLength = ParseFile.ParseSimpleOffset(pathBytes, 1, 1)[0];
+            
+            if (isLittleEndian)
+            {
+                this.LocationOfExtent = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(pathBytes, 2, 4), 0);
+            }
+            else
+            {
+                this.LocationOfExtent = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(pathBytes, 2, 4));
+            }
+            if (isLittleEndian)
+            {
+                this.DirectoryNumberOfParentDirectory = BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(pathBytes, 6, 2), 0);
+            }
+            else
+            {
+                this.DirectoryNumberOfParentDirectory = ByteConversion.GetUInt16BigEndian(ParseFile.ParseSimpleOffset(pathBytes, 6, 2));            
+            }
+
+            this.DirectoryIdentifierBytes = ParseFile.ParseSimpleOffset(pathBytes, 8, this.LengthOfDirectoryIdentifier);
+            this.DirectoryIdentifier = 
+                ByteConversion.GetEncodedText(this.DirectoryIdentifierBytes, 
+                    ByteConversion.GetPredictedCodePageForTags(this.DirectoryIdentifierBytes));
+        
+            if (this.LengthOfDirectoryIdentifier % 2 == 1)
+            {
+                this.PaddingByte = ParseFile.ParseSimpleOffset(pathBytes, this.LengthOfDirectoryIdentifier + 8, 1)[0];
+            }
+        }
     }
 }
