@@ -272,44 +272,52 @@ namespace VGMToolbox.format.iso
 
             long directoryOffset;
 
-            // get the first record
-            recordSize = (byte)(0x0E + ParseFile.ParseSimpleOffset(isoStream, recordOffset + 0x0D, 1)[0]);
-            directoryRecordBytes = ParseFile.ParseSimpleOffset(isoStream, recordOffset, recordSize);
-            tempDirectoryRecord = new XDvdFsDirectoryRecord(directoryRecordBytes);
+            try
+            {
 
-            if (tempDirectoryRecord.EntryFlags == 0x10 ||
-                tempDirectoryRecord.EntryFlags == 0x90)
-            {
-                directoryOffset = baseOffset + (tempDirectoryRecord.StartingSector * XDvdFs.SECTOR_SIZE);
-                tempDirectory = new XDvdFsDirectoryStructure(isoStream, isoStream.Name, creationDateTime, baseOffset, directoryOffset, logicalBlockSize, tempDirectoryRecord.EntryName, parentDirectory);
-                this.SubDirectoryArray.Add(tempDirectory);
-            }
-            else
-            {
-                tempFile = new XDvdFsFileStructure(parentDirectory,
-                    this.SourceFilePath,
-                    tempDirectoryRecord.EntryName,
-                    baseOffset + (tempDirectoryRecord.StartingSector * logicalBlockSize),
-                    tempDirectoryRecord.EntrySize,
-                    creationDateTime);
-                this.FileArray.Add(tempFile);
-            }
+                // get the first record
+                recordSize = (byte)(0x0E + ParseFile.ParseSimpleOffset(isoStream, recordOffset + 0x0D, 1)[0]);
+                directoryRecordBytes = ParseFile.ParseSimpleOffset(isoStream, recordOffset, recordSize);
+                tempDirectoryRecord = new XDvdFsDirectoryRecord(directoryRecordBytes);
 
-            // Process Left SubTree
-            if (tempDirectoryRecord.OffsetToLeftSubTree != 0)
-            {
-                this.parseDirectoryRecord(isoStream, creationDateTime,
-                    baseOffset, this.DirectoryRecordOffset + tempDirectoryRecord.OffsetToLeftSubTree, 
-                    logicalBlockSize, parentDirectory);
-            }
+                if (tempDirectoryRecord.EntryFlags == 0x10 ||
+                    tempDirectoryRecord.EntryFlags == 0x90)
+                {
+                    directoryOffset = baseOffset + (tempDirectoryRecord.StartingSector * XDvdFs.SECTOR_SIZE);
+                    tempDirectory = new XDvdFsDirectoryStructure(isoStream, isoStream.Name, creationDateTime, baseOffset, directoryOffset, logicalBlockSize, tempDirectoryRecord.EntryName, parentDirectory);
+                    this.SubDirectoryArray.Add(tempDirectory);
+                }
+                else
+                {
+                    tempFile = new XDvdFsFileStructure(parentDirectory,
+                        this.SourceFilePath,
+                        tempDirectoryRecord.EntryName,
+                        baseOffset + (tempDirectoryRecord.StartingSector * logicalBlockSize),
+                        tempDirectoryRecord.EntrySize,
+                        creationDateTime);
+                    this.FileArray.Add(tempFile);
+                }
 
-            // Process Right SubTree
-            if (tempDirectoryRecord.OffsetToRightSubTree != 0)
+                // Process Left SubTree
+                if (tempDirectoryRecord.OffsetToLeftSubTree != 0)
+                {
+                    this.parseDirectoryRecord(isoStream, creationDateTime,
+                        baseOffset, this.DirectoryRecordOffset + tempDirectoryRecord.OffsetToLeftSubTree,
+                        logicalBlockSize, parentDirectory);
+                }
+
+                // Process Right SubTree
+                if (tempDirectoryRecord.OffsetToRightSubTree != 0)
+                {
+                    this.parseDirectoryRecord(isoStream, creationDateTime,
+                        baseOffset, this.DirectoryRecordOffset + tempDirectoryRecord.OffsetToRightSubTree,
+                        logicalBlockSize, parentDirectory);
+                }
+            }
+            catch (Exception ex)
             {
-                this.parseDirectoryRecord(isoStream, creationDateTime,
-                    baseOffset, this.DirectoryRecordOffset + tempDirectoryRecord.OffsetToRightSubTree,
-                    logicalBlockSize, parentDirectory);
-            }        
+                throw new FormatException(String.Format("Error processing XDVDFS directory record at 0x{0}", recordOffset.ToString("X8")), ex);
+            }
         }
     }
 }

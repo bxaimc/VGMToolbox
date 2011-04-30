@@ -171,12 +171,14 @@ namespace VGMToolbox.format.iso
             byte[] rootDirPathBytes = CdRom.GetSectorByLba(isoStream, this.VolumeBaseOffset, this.LocationOfOccurrenceOfTypeMPathTable, this.IsRawDump, this.LogicalBlockSize);
             rootDirPathBytes = CdRom.GetDataChunkFromSector(rootDirPathBytes, this.IsRawDump);
 
-            // manually build directory records
-            this.DirectoryRecordForRootDirectory.FlagDirectory = true;
-            this.DirectoryRecordForRootDirectory.DataLength = this.LogicalBlockSize;
-            this.DirectoryRecordForRootDirectory.LocationOfExtent = 
-                ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(rootDirPathBytes, 2, 4));
-
+            // grab the directory record
+            uint rootDirectoryOffset = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(rootDirPathBytes, 2, 4));
+            byte[] rootDirDirectorySector = CdRom.GetSectorByLba(isoStream, this.VolumeBaseOffset, rootDirectoryOffset, this.IsRawDump, this.LogicalBlockSize);
+            rootDirDirectorySector = CdRom.GetDataChunkFromSector(rootDirDirectorySector, this.IsRawDump);
+            
+            byte rootDirectoryRecordSize = rootDirDirectorySector[0];
+            byte[] rootDirectoryRecord = ParseFile.ParseSimpleOffset(rootDirDirectorySector, 0, rootDirectoryRecordSize);
+            this.DirectoryRecordForRootDirectory = new GreenBookCdiDirectoryRecord(rootDirectoryRecord);
 
             // populate this volume's directory structure
             GreenBookCdiDirectoryStructure rootDirectory =
