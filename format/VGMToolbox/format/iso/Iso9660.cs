@@ -474,6 +474,11 @@ namespace VGMToolbox.format.iso
                     if (!tempDirectoryRecord.FileIdentifierString.Equals(".") &&
                         !tempDirectoryRecord.FileIdentifierString.Equals("..")) // skip "this" directory
                     {
+                        if (tempDirectoryRecord.FlagMultiExtent)
+                        {
+                            int x = 1;
+                        }
+                        
                         if (tempDirectoryRecord.FlagDirectory)
                         {
                             tempDirectory = new Iso9660DirectoryStructure(isoStream, isoStream.Name, baseOffset, tempDirectoryRecord, logicalBlockSize, isRaw, nonRawSectorSize, parentDirectory);

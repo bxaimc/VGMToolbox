@@ -7,20 +7,88 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.format.iso
 {
-    public class GreenBookCdi : Iso9660
+    public class GreenBookCdi
     {
-        new public static readonly byte[] VOLUME_DESCRIPTOR_IDENTIFIER = new byte[] { 0x01, 0x43, 0x44, 0x2D, 0x49, 0x20 };
-        new public static string FORMAT_DESCRIPTION_STRING = "CDI";
+        public static readonly byte[] VOLUME_DESCRIPTOR_IDENTIFIER = new byte[] { 0x01, 0x43, 0x44, 0x2D, 0x49, 0x20 };
+        public static string FORMAT_DESCRIPTION_STRING = "CD-i";
     }
 
-    public class GreenBookCdiVolume : Iso9660Volume
+    public class GreenBookCdiVolume : IVolume
     {
-        public virtual void Initialize(FileStream isoStream, long offset, bool isRawDump)
+        public long VolumeBaseOffset { set; get; }
+        public string FormatDescription { set; get; }
+        public ArrayList DirectoryStructureArray { set; get; }
+        public bool IsRawDump { set; get; }
+        public int SectorSize { set; get; }
+        public IDirectoryStructure[] Directories
+        {
+            set { Directories = value; }
+            get
+            {
+                DirectoryStructureArray.Sort();
+                return (IDirectoryStructure[])DirectoryStructureArray.ToArray(typeof(GreenBookCdiDirectoryStructure));
+            }
+        }
+
+        #region Standard Attributes
+
+        public byte VolumeDescriptorType { set; get; }
+        public byte[] StandardIdentifier { set; get; }
+        public byte VolumeDescriptorVersion { set; get; }
+
+        public byte UnusedField1 { set; get; }
+
+        public string SystemIdentifier { set; get; }
+        public string VolumeIdentifier { set; get; }
+
+        public byte[] UnusedField2 { set; get; }
+
+        public uint VolumeSpaceSize { set; get; }
+
+        public byte[] UnusedField3 { set; get; }
+
+        public ushort VolumeSetSize { set; get; }
+        public ushort VolumeSequenceNumber { set; get; }
+        public ushort LogicalBlockSize { set; get; }
+
+        public uint PathTableSize { set; get; }
+        public uint LocationOfOccurrenceOfTypeLPathTable { set; get; }
+        public uint LocationOfOptionalOccurrenceOfTypeLPathTable { set; get; }
+        public uint LocationOfOccurrenceOfTypeMPathTable { set; get; }
+        public uint LocationOfOptionalOccurrenceOfTypeMPathTable { set; get; }
+
+        public byte[] DirectoryRecordForRootDirectoryBytes { set; get; }
+        public GreenBookCdiDirectoryRecord DirectoryRecordForRootDirectory { set; get; }
+
+        public string VolumeSetIdentifier { set; get; }
+        public string PublisherIdentifier { set; get; }
+        public string DataPreparerIdentifier { set; get; }
+        public string ApplicationIdentifier { set; get; }
+        public string CopyrightFileIdentifier { set; get; }
+        public string AbstractFileIdentifier { set; get; }
+        public string BibliographicFileIdentifier { set; get; }
+
+        public DateTime VolumeCreationDateAndTime { set; get; }
+        public DateTime VolumeModificationDateAndTime { set; get; }
+        public DateTime VolumeExpirationDateAndTime { set; get; }
+        public DateTime VolumeEffectiveDateAndTime { set; get; }
+
+        public byte FileStructureVersion { set; get; }
+
+        public byte Reserved1 { set; get; }
+
+        public byte[] ApplicationUse { set; get; }
+
+        public byte[] Reserved2 { set; get; }
+
+        #endregion
+        
+        public void Initialize(FileStream isoStream, long offset, bool isRawDump)
         {
             byte[] sectorBytes;
             byte[] sectorDataBytes;
 
-            this.FormatDescription = Iso9660.FORMAT_DESCRIPTION_STRING;
+            this.FormatDescription = GreenBookCdi.FORMAT_DESCRIPTION_STRING;
             this.IsRawDump = isRawDump;
             this.DirectoryStructureArray = new ArrayList();
 
@@ -60,7 +128,7 @@ namespace VGMToolbox.format.iso
             this.LocationOfOptionalOccurrenceOfTypeMPathTable = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(sectorDataBytes, 0x98, 0x04));
 
             this.DirectoryRecordForRootDirectoryBytes = ParseFile.ParseSimpleOffset(sectorDataBytes, 0x9C, 0x22);
-            this.DirectoryRecordForRootDirectory = new Iso9660DirectoryRecord(this.DirectoryRecordForRootDirectoryBytes);
+            this.DirectoryRecordForRootDirectory = new GreenBookCdiDirectoryRecord(this.DirectoryRecordForRootDirectoryBytes);
 
             this.VolumeSetIdentifier = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(sectorDataBytes, 0xBE, 0x80)).Trim();
             this.PublisherIdentifier = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(sectorDataBytes, 0x13E, 0x80)).Trim();
@@ -86,6 +154,14 @@ namespace VGMToolbox.format.iso
             this.LoadDirectories(isoStream);
         }
 
+        public void ExtractAll(FileStream isoStream, string destintionFolder)
+        {
+            foreach (GreenBookCdiDirectoryStructure ds in this.DirectoryStructureArray)
+            {
+                ds.Extract(isoStream, destintionFolder);
+            }
+        }
+
         public virtual void LoadDirectories(FileStream isoStream)
         {
             // change name of top level folder
@@ -103,11 +179,314 @@ namespace VGMToolbox.format.iso
 
 
             // populate this volume's directory structure
-            Iso9660DirectoryStructure rootDirectory =
-                new Iso9660DirectoryStructure(isoStream, isoStream.Name,
+            GreenBookCdiDirectoryStructure rootDirectory =
+                new GreenBookCdiDirectoryStructure(isoStream, isoStream.Name,
                     this.VolumeBaseOffset, this.DirectoryRecordForRootDirectory,
                     this.LogicalBlockSize, this.IsRawDump, this.SectorSize, null);
             this.DirectoryStructureArray.Add(rootDirectory);
+        }
+    }
+
+    public class GreenBookCdiDirectoryRecord
+    {
+        public byte LengthOfDirectoryRecord { set; get; }
+        public byte ExtendedAttributeRecordLength { set; get; }
+        public uint LocationOfExtent { set; get; }
+        public uint DataLength { set; get; }
+        public DateTime RecordingDateAndTime { set; get; }
+        public byte FileFlags { set; get; }
+        public byte FileUnitSize { set; get; }
+        public byte InterleaveGapSize { set; get; }
+        public ushort VolumeSequenceNumber { set; get; }
+        public byte LengthOfFileIdentifier { set; get; }
+
+        public byte[] FileIdentifier { set; get; }
+        public string FileIdentifierString { set; get; }
+
+        public byte[] PaddingField { set; get; }
+        public byte[] SystemUse { set; get; }
+
+        public bool FlagExistance { set; get; }
+        public bool FlagDirectory { set; get; }
+        public bool FlagAssociatedFile { set; get; }
+        public bool FlagRecord { set; get; }
+        public bool FlagProtection { set; get; }
+        public bool FlagMultiExtent { set; get; }
+
+
+        public GreenBookCdiDirectoryRecord(byte[] directoryBytes)
+        {
+            this.LengthOfDirectoryRecord = directoryBytes[0];
+
+            if (this.LengthOfDirectoryRecord > 0)
+            {
+                this.ExtendedAttributeRecordLength = directoryBytes[1];
+                this.LocationOfExtent = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(directoryBytes, 6, 4));
+                this.DataLength = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(directoryBytes, 0x0E, 4));
+
+                this.RecordingDateAndTime = new DateTime(directoryBytes[0x12] + 1900,
+                                                         directoryBytes[0x13],
+                                                         directoryBytes[0x14],
+                                                         directoryBytes[0x15],
+                                                         directoryBytes[0x16],
+                                                         directoryBytes[0x17]);
+
+                this.FileFlags = directoryBytes[this.LengthOfDirectoryRecord - 6];
+
+                if (this.FileFlags == 0x85)
+                {
+                    this.FlagDirectory = true;
+                }
+
+                /*
+                this.FlagExistance = (this.FileFlags & 0x1) == 0x1 ? true : false;
+                this.FlagDirectory = (this.FileFlags & 0x2) == 0x2 ? true : false;
+                this.FlagAssociatedFile = (this.FileFlags & 0x4) == 0x4 ? true : false;
+                this.FlagRecord = (this.FileFlags & 0x08) == 0x08 ? true : false;
+                this.FlagProtection = (this.FileFlags & 0x10) == 0x10 ? true : false;
+                this.FlagMultiExtent = (this.FileFlags & 0x80) == 0x80 ? false : true;
+                */
+                
+                this.FileUnitSize = directoryBytes[0x1A];
+                this.InterleaveGapSize = directoryBytes[0x1B];
+                this.VolumeSequenceNumber = BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(directoryBytes, 0x1E, 2), 0);
+                this.LengthOfFileIdentifier = directoryBytes[0x20];
+
+                this.FileIdentifier = ParseFile.ParseSimpleOffset(directoryBytes, 0x21, this.LengthOfFileIdentifier);
+
+                // parse identifier
+                if (this.LengthOfFileIdentifier > 1)
+                {
+                    this.FileIdentifierString =
+                        ByteConversion.GetEncodedText(this.FileIdentifier,
+                            ByteConversion.GetPredictedCodePageForTags(this.FileIdentifier));
+                }
+                else if (this.FileIdentifier[0] == 0)
+                {
+                    this.FileIdentifierString = ".";
+                }
+                else if (this.FileIdentifier[0] == 1)
+                {
+                    this.FileIdentifierString = "..";
+                }
+
+                /*
+            
+                public byte[] PaddingField { set; get; }
+                public byte[] SystemUse { set; get; }        
+                */
+            }
+        }
+    }
+
+    public class GreenBookCdiFileStructure : IFileStructure
+    {
+        public string ParentDirectoryName { set; get; }
+        public string SourceFilePath { set; get; }
+        public string FileName { set; get; }
+        public long VolumeBaseOffset { set; get; }
+        public long Lba { set; get; }
+        public long Size { set; get; }
+        public bool IsRaw { set; get; }
+        public int NonRawSectorSize { set; get; }
+        public DateTime FileDateTime { set; get; }
+
+        public int CompareTo(object obj)
+        {
+            if (obj is GreenBookCdiFileStructure)
+            {
+                GreenBookCdiFileStructure o = (GreenBookCdiFileStructure)obj;
+
+                return this.FileName.CompareTo(o.FileName);
+            }
+
+            throw new ArgumentException("object is not an GreenBookCdiFileStructure");
+        }
+
+        public GreenBookCdiFileStructure(string parentDirectoryName, string sourceFilePath, string fileName, long volumeBaseOffset, uint lba, long size, bool isRaw, int nonRawSectorSize, DateTime fileTime)
+        {
+            this.ParentDirectoryName = parentDirectoryName;
+            this.SourceFilePath = sourceFilePath;
+            this.FileName = fileName;
+            this.VolumeBaseOffset = volumeBaseOffset;
+            this.Lba = lba;
+            this.IsRaw = isRaw;
+            this.NonRawSectorSize = nonRawSectorSize;
+            this.Size = size;
+            this.FileDateTime = fileTime;
+        }
+
+        public void Extract(FileStream isoStream, string destinationFolder)
+        {
+            string destinationFile = Path.Combine(Path.Combine(destinationFolder, this.ParentDirectoryName), this.FileName);
+            CdRom.ExtractCdData(isoStream, destinationFile, this.VolumeBaseOffset, this.Lba, this.Size, this.IsRaw, this.NonRawSectorSize);
+        }
+    }
+
+    public class GreenBookCdiDirectoryStructure : IDirectoryStructure
+    {
+        public GreenBookCdiDirectoryRecord ParentDirectoryRecord { set; get; }
+        public string ParentDirectoryName { set; get; }
+
+        public ArrayList SubDirectoryArray { set; get; }
+        public IDirectoryStructure[] SubDirectories
+        {
+            set { this.SubDirectories = value; }
+            get
+            {
+                SubDirectoryArray.Sort();
+                return (IDirectoryStructure[])SubDirectoryArray.ToArray(typeof(GreenBookCdiDirectoryStructure));
+            }
+        }
+
+        public ArrayList FileArray { set; get; }
+        public IFileStructure[] Files
+        {
+            set { this.Files = value; }
+            get
+            {
+                FileArray.Sort();
+                return (IFileStructure[])FileArray.ToArray(typeof(GreenBookCdiFileStructure));
+            }
+        }
+
+        public string SourceFilePath { set; get; }
+        public string DirectoryName { set; get; }
+
+        public int CompareTo(object obj)
+        {
+            if (obj is GreenBookCdiDirectoryStructure)
+            {
+                GreenBookCdiDirectoryStructure o = (GreenBookCdiDirectoryStructure)obj;
+
+                return this.DirectoryName.CompareTo(o.DirectoryName);
+            }
+
+            throw new ArgumentException("object is not an GreenBookCdiDirectoryStructure");
+        }
+
+        public GreenBookCdiDirectoryStructure(FileStream isoStream, string sourceFilePath,
+            long baseOffset, GreenBookCdiDirectoryRecord directoryRecord,
+            uint logicalBlockSize, bool isRaw, int nonRawSectorSize,
+            string parentDirectory)
+        {
+            string nextDirectory;
+            this.SourceFilePath = SourceFilePath;
+            this.SubDirectoryArray = new ArrayList();
+            this.FileArray = new ArrayList();
+
+            if (String.IsNullOrEmpty(parentDirectory))
+            {
+                this.ParentDirectoryName = String.Empty;
+                this.DirectoryName = directoryRecord.FileIdentifierString;
+                nextDirectory = this.DirectoryName;
+            }
+            else
+            {
+                this.ParentDirectoryName = parentDirectory;
+                this.DirectoryName = directoryRecord.FileIdentifierString;
+                nextDirectory = this.ParentDirectoryName + Path.DirectorySeparatorChar + this.DirectoryName;
+            }
+
+            this.parseDirectoryRecord(isoStream, baseOffset, directoryRecord, logicalBlockSize, isRaw, nonRawSectorSize, nextDirectory);
+        }
+
+        public void Extract(FileStream isoStream, string destinationFolder)
+        {
+            string fullDirectoryPath = Path.Combine(destinationFolder, Path.Combine(this.ParentDirectoryName, this.DirectoryName));
+
+            // create directory
+            if (!Directory.Exists(fullDirectoryPath))
+            {
+                Directory.CreateDirectory(fullDirectoryPath);
+            }
+
+            foreach (GreenBookCdiFileStructure f in this.FileArray)
+            {
+                f.Extract(isoStream, destinationFolder);
+            }
+
+            foreach (GreenBookCdiDirectoryStructure d in this.SubDirectoryArray)
+            {
+                d.Extract(isoStream, destinationFolder);
+            }
+        }
+
+        private void parseDirectoryRecord(FileStream isoStream, long baseOffset,
+            GreenBookCdiDirectoryRecord directoryRecord, uint logicalBlockSize,
+            bool isRaw, int nonRawSectorSize, string parentDirectory)
+        {
+            byte recordSize;
+            int currentOffset;
+            uint bytesRead = 0;
+            uint currentLba = directoryRecord.LocationOfExtent;
+            byte[] directoryRecordBytes;
+            GreenBookCdiDirectoryRecord tempDirectoryRecord;
+            GreenBookCdiDirectoryStructure tempDirectory;
+            GreenBookCdiFileStructure tempFile;
+
+            byte[] directorySector = CdRom.GetSectorByLba(isoStream, baseOffset, currentLba, isRaw, nonRawSectorSize);
+            directorySector = CdRom.GetDataChunkFromSector(directorySector, isRaw);
+
+            currentOffset = 0;
+
+            while (bytesRead < directoryRecord.DataLength)
+            {
+                recordSize = ParseFile.ParseSimpleOffset(directorySector, currentOffset, 1)[0];
+
+                if (recordSize > 0)
+                {
+                    directoryRecordBytes = ParseFile.ParseSimpleOffset(directorySector, currentOffset, recordSize);
+                    tempDirectoryRecord = new GreenBookCdiDirectoryRecord(directoryRecordBytes);
+
+                    if (!tempDirectoryRecord.FileIdentifierString.Equals(".") &&
+                        !tempDirectoryRecord.FileIdentifierString.Equals("..")) // skip "this" directory
+                    {
+                        if (tempDirectoryRecord.FlagMultiExtent)
+                        {
+                            int x = 1;
+                        }
+
+                        if (tempDirectoryRecord.FlagDirectory)
+                        {
+                            tempDirectory = new GreenBookCdiDirectoryStructure(isoStream, isoStream.Name, baseOffset, tempDirectoryRecord, logicalBlockSize, isRaw, nonRawSectorSize, parentDirectory);
+                            this.SubDirectoryArray.Add(tempDirectory);
+                        }
+                        else
+                        {
+                            tempFile = new GreenBookCdiFileStructure(parentDirectory,
+                                this.SourceFilePath,
+                                tempDirectoryRecord.FileIdentifierString.Replace(";1", String.Empty),
+                                baseOffset,
+                                tempDirectoryRecord.LocationOfExtent,
+                                tempDirectoryRecord.DataLength,
+                                isRaw,
+                                nonRawSectorSize,
+                                tempDirectoryRecord.RecordingDateAndTime);
+                            this.FileArray.Add(tempFile);
+                        }
+                    }
+                    else if (tempDirectoryRecord.FileIdentifierString.Equals(".."))
+                    {
+                        this.ParentDirectoryRecord = tempDirectoryRecord;
+                    }
+
+                    bytesRead += recordSize;
+                    currentOffset += recordSize;
+                }
+                else if ((directoryRecord.DataLength - bytesRead) > (directorySector.Length - currentOffset))
+                {
+                    // move to start of next sector
+                    directorySector = CdRom.GetSectorByLba(isoStream, baseOffset, ++currentLba, isRaw, nonRawSectorSize);
+                    directorySector = CdRom.GetDataChunkFromSector(directorySector, isRaw);
+                    bytesRead += (uint)(logicalBlockSize - currentOffset);
+                    currentOffset = 0;
+                }
+                else
+                {
+                    break;
+                }
+            }
         }
     }
 }
