@@ -77,7 +77,7 @@ namespace VGMToolbox.format.iso
             
             // Build Tree from Root Directory
             rootDirectoryOffset = this.VolumeBaseOffset + (this.RootDirectorySector * XDvdFs.SECTOR_SIZE);
-            rootDir = new XDvdFsDirectoryStructure(isoStream, isoStream.Name, this.ImageCreationTime, this.VolumeBaseOffset, rootDirectoryOffset, XDvdFs.SECTOR_SIZE, String.Empty, String.Empty);
+            rootDir = new XDvdFsDirectoryStructure(isoStream, isoStream.Name, this.ImageCreationTime, this.VolumeBaseOffset, rootDirectoryOffset, XDvdFs.SECTOR_SIZE, String.Empty, String.Empty, isRawDump, (int)XDvdFs.SECTOR_SIZE);
             this.DirectoryStructureArray.Add(rootDir);
         }
 
@@ -118,7 +118,7 @@ namespace VGMToolbox.format.iso
             throw new ArgumentException("object is not an XDvdFsFileStructure");
         }
 
-        public XDvdFsFileStructure(string parentDirectoryName, string sourceFilePath, string fileName, long offset, long size, DateTime fileTime)
+        public XDvdFsFileStructure(string parentDirectoryName, string sourceFilePath, string fileName, long offset, long volumeBaseOffset, long lba, long size, DateTime fileTime, bool isRaw, int nonRawSectorSize)
         {
             this.ParentDirectoryName = parentDirectoryName;
             this.SourceFilePath = sourceFilePath;
@@ -126,6 +126,11 @@ namespace VGMToolbox.format.iso
             this.Offset = offset;
             this.Size = size;
             this.FileDateTime = fileTime;
+
+            this.VolumeBaseOffset = volumeBaseOffset;
+            this.Lba =lba;
+            this.IsRaw = isRaw;
+            this.NonRawSectorSize = nonRawSectorSize;
         }
 
         public void Extract(FileStream isoStream, string destinationFolder)
@@ -211,7 +216,7 @@ namespace VGMToolbox.format.iso
         public XDvdFsDirectoryStructure(FileStream isoStream, 
             string sourceFilePath, DateTime creationDateTime, 
             long baseOffset, long directoryOffset, uint logicalBlockSize, 
-            string directoryName, string parentDirectory)
+            string directoryName, string parentDirectory, bool isRaw, int nonRawSectorSize)
         {
             string nextDirectory;
             this.SourceFilePath = SourceFilePath;
@@ -232,7 +237,7 @@ namespace VGMToolbox.format.iso
                 nextDirectory = this.ParentDirectoryName + Path.DirectorySeparatorChar + this.DirectoryName;
             }
 
-            this.parseDirectoryRecord(isoStream, creationDateTime, baseOffset, directoryOffset, logicalBlockSize, nextDirectory);
+            this.parseDirectoryRecord(isoStream, creationDateTime, baseOffset, directoryOffset, logicalBlockSize, nextDirectory, isRaw, nonRawSectorSize);
         }
 
         public void Extract(FileStream isoStream, string destinationFolder)
@@ -262,7 +267,9 @@ namespace VGMToolbox.format.iso
             long baseOffset, 
             long recordOffset, 
             uint logicalBlockSize, 
-            string parentDirectory)
+            string parentDirectory,
+            bool isRaw,
+            int nonRawSectorSize)
         {
             byte recordSize;
             byte[] directoryRecordBytes;
@@ -276,25 +283,32 @@ namespace VGMToolbox.format.iso
             {
 
                 // get the first record
-                recordSize = (byte)(0x0E + ParseFile.ParseSimpleOffset(isoStream, recordOffset + 0x0D, 1)[0]);
+                recordSize = (byte)(0x0E + ParseFile.ParseSimpleOffset(isoStream, ((long)recordOffset + 0x0D), 1)[0]);
                 directoryRecordBytes = ParseFile.ParseSimpleOffset(isoStream, recordOffset, recordSize);
                 tempDirectoryRecord = new XDvdFsDirectoryRecord(directoryRecordBytes);
 
                 if (tempDirectoryRecord.EntryFlags == 0x10 ||
                     tempDirectoryRecord.EntryFlags == 0x90)
                 {
-                    directoryOffset = baseOffset + (tempDirectoryRecord.StartingSector * XDvdFs.SECTOR_SIZE);
-                    tempDirectory = new XDvdFsDirectoryStructure(isoStream, isoStream.Name, creationDateTime, baseOffset, directoryOffset, logicalBlockSize, tempDirectoryRecord.EntryName, parentDirectory);
-                    this.SubDirectoryArray.Add(tempDirectory);
+                    if (tempDirectoryRecord.EntrySize > 0)
+                    {
+                        directoryOffset = baseOffset + (long)((long)tempDirectoryRecord.StartingSector * (long)XDvdFs.SECTOR_SIZE);
+                        tempDirectory = new XDvdFsDirectoryStructure(isoStream, isoStream.Name, creationDateTime, baseOffset, directoryOffset, logicalBlockSize, tempDirectoryRecord.EntryName, parentDirectory, isRaw, nonRawSectorSize);
+                        this.SubDirectoryArray.Add(tempDirectory);
+                    }
                 }
                 else
                 {
                     tempFile = new XDvdFsFileStructure(parentDirectory,
                         this.SourceFilePath,
                         tempDirectoryRecord.EntryName,
-                        baseOffset + (tempDirectoryRecord.StartingSector * logicalBlockSize),
+                        baseOffset + (long)((long)tempDirectoryRecord.StartingSector * (long)logicalBlockSize),
+                        baseOffset,
+                        tempDirectoryRecord.StartingSector,
                         tempDirectoryRecord.EntrySize,
-                        creationDateTime);
+                        creationDateTime, 
+                        isRaw,
+                        nonRawSectorSize);
                     this.FileArray.Add(tempFile);
                 }
 
@@ -303,7 +317,7 @@ namespace VGMToolbox.format.iso
                 {
                     this.parseDirectoryRecord(isoStream, creationDateTime,
                         baseOffset, this.DirectoryRecordOffset + tempDirectoryRecord.OffsetToLeftSubTree,
-                        logicalBlockSize, parentDirectory);
+                        logicalBlockSize, parentDirectory, isRaw, nonRawSectorSize);
                 }
 
                 // Process Right SubTree
@@ -311,7 +325,7 @@ namespace VGMToolbox.format.iso
                 {
                     this.parseDirectoryRecord(isoStream, creationDateTime,
                         baseOffset, this.DirectoryRecordOffset + tempDirectoryRecord.OffsetToRightSubTree,
-                        logicalBlockSize, parentDirectory);
+                        logicalBlockSize, parentDirectory, isRaw, nonRawSectorSize);
                 }
             }
             catch (Exception ex)
