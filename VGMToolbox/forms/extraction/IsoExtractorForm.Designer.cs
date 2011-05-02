@@ -39,6 +39,8 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.extractToToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extractToSubfolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.extractRAWToToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.extractRAWToSubfolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -51,37 +53,37 @@
             // pnlLabels
             // 
             this.pnlLabels.Location = new System.Drawing.Point(0, 479);
-            this.pnlLabels.Size = new System.Drawing.Size(795, 19);
+            this.pnlLabels.Size = new System.Drawing.Size(794, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(795, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(794, 20);
             // 
             // tbOutput
             // 
             this.tbOutput.Location = new System.Drawing.Point(0, 402);
-            this.tbOutput.Size = new System.Drawing.Size(795, 77);
+            this.tbOutput.Size = new System.Drawing.Size(794, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
             this.pnlButtons.Location = new System.Drawing.Point(0, 382);
-            this.pnlButtons.Size = new System.Drawing.Size(795, 20);
+            this.pnlButtons.Size = new System.Drawing.Size(794, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(735, 0);
+            this.btnCancel.Location = new System.Drawing.Point(734, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(675, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(674, 0);
             // 
             // IsoFolderTreeView
             // 
             this.IsoFolderTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.IsoFolderTreeView.Location = new System.Drawing.Point(0, 0);
             this.IsoFolderTreeView.Name = "IsoFolderTreeView";
-            this.IsoFolderTreeView.Size = new System.Drawing.Size(263, 359);
+            this.IsoFolderTreeView.Size = new System.Drawing.Size(262, 359);
             this.IsoFolderTreeView.TabIndex = 5;
             this.IsoFolderTreeView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.IsoFolderTreeView_MouseUp);
             this.IsoFolderTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.IsoFolderTreeView_AfterSelect);
@@ -99,8 +101,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.fileListView);
-            this.splitContainer1.Size = new System.Drawing.Size(795, 359);
-            this.splitContainer1.SplitterDistance = 263;
+            this.splitContainer1.Size = new System.Drawing.Size(794, 359);
+            this.splitContainer1.SplitterDistance = 262;
             this.splitContainer1.TabIndex = 6;
             // 
             // fileListView
@@ -147,9 +149,11 @@
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.extractToToolStripMenuItem,
-            this.extractToSubfolderToolStripMenuItem});
+            this.extractToSubfolderToolStripMenuItem,
+            this.extractRAWToToolStripMenuItem,
+            this.extractRAWToSubfolderToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(172, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(199, 114);
             // 
             // extractToToolStripMenuItem
             // 
@@ -165,12 +169,26 @@
             this.extractToSubfolderToolStripMenuItem.Text = "Extract to Subfolder";
             this.extractToSubfolderToolStripMenuItem.Click += new System.EventHandler(this.extractToSubfolderToolStripMenuItem_Click);
             // 
+            // extractRAWToToolStripMenuItem
+            // 
+            this.extractRAWToToolStripMenuItem.Name = "extractRAWToToolStripMenuItem";
+            this.extractRAWToToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.extractRAWToToolStripMenuItem.Text = "Extract RAW to...";
+            this.extractRAWToToolStripMenuItem.Click += new System.EventHandler(this.extractRAWToToolStripMenuItem_Click);
+            // 
+            // extractRAWToSubfolderToolStripMenuItem
+            // 
+            this.extractRAWToSubfolderToolStripMenuItem.Name = "extractRAWToSubfolderToolStripMenuItem";
+            this.extractRAWToSubfolderToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.extractRAWToSubfolderToolStripMenuItem.Text = "Extract RAW to Subfolder";
+            this.extractRAWToSubfolderToolStripMenuItem.Click += new System.EventHandler(this.extractRAWToSubfolderToolStripMenuItem_Click);
+            // 
             // IsoExtractorForm
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(795, 520);
+            this.ClientSize = new System.Drawing.Size(794, 520);
             this.Controls.Add(this.splitContainer1);
             this.Name = "IsoExtractorForm";
             this.Text = "IsoExtractorForm";
@@ -208,5 +226,7 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem extractToToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem extractToSubfolderToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem extractRAWToToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem extractRAWToSubfolderToolStripMenuItem;
     }
 }

@@ -13,6 +13,6 @@ namespace VGMToolbox.format.iso
         IDirectoryStructure[] Directories { set; get; }
 
         void Initialize(FileStream isoStream, long offset, bool isRawDump);
-        void ExtractAll(FileStream isoStream, string destintionFolder);
+        void ExtractAll(FileStream isoStream, string destintionFolder, bool extractAsRaw);
     }
 }

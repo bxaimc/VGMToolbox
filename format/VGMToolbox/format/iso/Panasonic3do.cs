@@ -70,11 +70,11 @@ namespace VGMToolbox.format.iso
                 this.LoadDirectories(isoStream);       
             }
 
-            public void ExtractAll(FileStream isoStream, string destinationFolder)
+            public void ExtractAll(FileStream isoStream, string destinationFolder, bool extractAsRaw)
             {
                 foreach (Panasonic3doDirectoryStructure ds in this.DirectoryStructureArray)
                 {
-                    ds.Extract(isoStream, destinationFolder);
+                    ds.Extract(isoStream, destinationFolder, extractAsRaw);
                 }
             }
 
@@ -134,10 +134,10 @@ namespace VGMToolbox.format.iso
             this.FileDateTime = fileTime;
         }
 
-        public void Extract(FileStream isoStream, string destinationFolder)
+        public void Extract(FileStream isoStream, string destinationFolder, bool extractAsRaw)
         {
             string destinationFile = Path.Combine(Path.Combine(destinationFolder, this.ParentDirectoryName), this.FileName);
-            CdRom.ExtractCdData(isoStream, destinationFile, this.VolumeBaseOffset, this.Lba, this.Size, this.IsRaw, this.NonRawSectorSize);
+            CdRom.ExtractCdData(isoStream, destinationFile, this.VolumeBaseOffset, this.Lba, this.Size, this.IsRaw, this.NonRawSectorSize, extractAsRaw);
         }
     }
 
@@ -184,7 +184,7 @@ namespace VGMToolbox.format.iso
             throw new ArgumentException("object is not an Panasonic3doDirectoryStructure");
         }
 
-        public void Extract(FileStream isoStream, string destinationFolder)
+        public void Extract(FileStream isoStream, string destinationFolder, bool extractAsRaw)
         {
             string fullDirectoryPath = Path.Combine(destinationFolder, Path.Combine(this.ParentDirectoryName, this.DirectoryName));
 
@@ -196,12 +196,12 @@ namespace VGMToolbox.format.iso
 
             foreach (Panasonic3doFileStructure f in this.FileArray)
             {
-                f.Extract(isoStream, destinationFolder);
+                f.Extract(isoStream, destinationFolder, extractAsRaw);
             }
 
             foreach (Panasonic3doDirectoryStructure d in this.SubDirectoryArray)
             {
-                d.Extract(isoStream, destinationFolder);
+                d.Extract(isoStream, destinationFolder, extractAsRaw);
             }
         }
 

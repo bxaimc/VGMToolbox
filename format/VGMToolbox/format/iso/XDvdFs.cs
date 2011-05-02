@@ -81,11 +81,11 @@ namespace VGMToolbox.format.iso
             this.DirectoryStructureArray.Add(rootDir);
         }
 
-        public void ExtractAll(FileStream isoStream, string destintionFolder)
+        public void ExtractAll(FileStream isoStream, string destintionFolder, bool extractAsRaw)
         {
             foreach (XDvdFsDirectoryStructure ds in this.DirectoryStructureArray)
             {
-                ds.Extract(isoStream, destintionFolder);
+                ds.Extract(isoStream, destintionFolder, extractAsRaw);
             }
         }
     }
@@ -133,7 +133,7 @@ namespace VGMToolbox.format.iso
             this.NonRawSectorSize = nonRawSectorSize;
         }
 
-        public void Extract(FileStream isoStream, string destinationFolder)
+        public void Extract(FileStream isoStream, string destinationFolder, bool extractAsRaw)
         {
             string destinationFile = Path.Combine(Path.Combine(destinationFolder, this.ParentDirectoryName), this.FileName);
             ParseFile.ExtractChunkToFile(isoStream, this.Offset, this.Size, destinationFile);
@@ -240,7 +240,7 @@ namespace VGMToolbox.format.iso
             this.parseDirectoryRecord(isoStream, creationDateTime, baseOffset, directoryOffset, logicalBlockSize, nextDirectory, isRaw, nonRawSectorSize);
         }
 
-        public void Extract(FileStream isoStream, string destinationFolder)
+        public void Extract(FileStream isoStream, string destinationFolder, bool extractAsRaw)
         {
             string fullDirectoryPath = Path.Combine(destinationFolder, Path.Combine(this.ParentDirectoryName, this.DirectoryName));
 
@@ -252,12 +252,12 @@ namespace VGMToolbox.format.iso
 
             foreach (XDvdFsFileStructure f in this.FileArray)
             {
-                f.Extract(isoStream, destinationFolder);
+                f.Extract(isoStream, destinationFolder, extractAsRaw);
             }
 
             foreach (XDvdFsDirectoryStructure d in this.SubDirectoryArray)
             {
-                d.Extract(isoStream, destinationFolder);
+                d.Extract(isoStream, destinationFolder, extractAsRaw);
             }
         }
 

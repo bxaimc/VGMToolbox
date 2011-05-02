@@ -140,7 +140,8 @@ namespace VGMToolbox.format.iso
 
         public static void ExtractCdData(Stream cdStream, 
             string destinationPath, long volumeBaseOffset, 
-            long lba, long length, bool isRaw, long nonRawSectorSize)
+            long lba, long length, bool isRaw, long nonRawSectorSize, 
+            bool extractAsRaw)
         {
             long offset;
             int maxWriteSize;
@@ -172,7 +173,15 @@ namespace VGMToolbox.format.iso
                         mode = GetSectorType(sectorHeader);
 
                         maxWriteSize = CdRom.ModeDataSize[mode] < (length - bytesWritten) ? CdRom.ModeDataSize[mode] : (int)(length - bytesWritten);
-                        outStream.Write(sector, CdRom.ModeHeaderSize[mode], maxWriteSize);
+
+                        if (extractAsRaw)
+                        {
+                            outStream.Write(sector, 0, sector.Length);                        
+                        }
+                        else
+                        {
+                            outStream.Write(sector, CdRom.ModeHeaderSize[mode], maxWriteSize);
+                        }
 
                         bytesWritten += maxWriteSize;
                         lbaCounter++;

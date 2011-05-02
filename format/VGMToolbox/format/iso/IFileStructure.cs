@@ -18,6 +18,6 @@ namespace VGMToolbox.format.iso
 
         DateTime FileDateTime { set; get; }
 
-        void Extract(FileStream isoStream, string destinationFolder);
+        void Extract(FileStream isoStream, string destinationFolder, bool extractAsRaw);
     }
 }

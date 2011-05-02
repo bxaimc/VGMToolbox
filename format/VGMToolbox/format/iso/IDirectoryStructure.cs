@@ -13,6 +13,6 @@ namespace VGMToolbox.format.iso
         IDirectoryStructure[] SubDirectories { set; get; }
         IFileStructure[] Files { set; get; }
 
-        void Extract(FileStream isoStream, string destinationFolder);
+        void Extract(FileStream isoStream, string destinationFolder, bool extractAsRaw);
     }
 }

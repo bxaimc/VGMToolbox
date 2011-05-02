@@ -281,7 +281,7 @@ namespace VGMToolbox.forms.extraction
         {
             string destinationFolder = base.browseForFolder(sender, e);
 
-            this.extractFiles(destinationFolder);
+            this.extractFiles(destinationFolder, false);
         }
 
         private void extractToSubfolderToolStripMenuItem_Click(object sender, EventArgs e)
@@ -289,10 +289,10 @@ namespace VGMToolbox.forms.extraction
             string destinationFolder =
                 Path.Combine(Path.GetDirectoryName(this.sourceFile), String.Format("{0}_isodump", Path.GetFileNameWithoutExtension(this.sourceFile)));
 
-            this.extractFiles(destinationFolder);
+            this.extractFiles(destinationFolder, false);
         }
 
-        private void extractFiles(string destinationFolder)
+        private void extractFiles(string destinationFolder, bool extractAsRaw)
         {
             ArrayList files = new ArrayList();
             ArrayList directories = new ArrayList();
@@ -327,6 +327,7 @@ namespace VGMToolbox.forms.extraction
             taskStruct.SourcePaths = new string[] { this.sourceFile };           
             taskStruct.DestinationFolder = destinationFolder;
             taskStruct.IsoFormat = IsoExtractorWorker.IsoFormatType.Iso9660;
+            taskStruct.ExtractAsRaw = extractAsRaw;
             taskStruct.Files = (IFileStructure[])files.ToArray(typeof(IFileStructure));
             taskStruct.Directories = (IDirectoryStructure[])directories.ToArray(typeof(IDirectoryStructure));
 
@@ -393,6 +394,21 @@ namespace VGMToolbox.forms.extraction
             {
                 this.openSelectedFolder();
             }
+        }
+
+        private void extractRAWToSubfolderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string destinationFolder =
+                Path.Combine(Path.GetDirectoryName(this.sourceFile), String.Format("{0}_isodump", Path.GetFileNameWithoutExtension(this.sourceFile)));
+
+            this.extractFiles(destinationFolder, true);
+        }
+
+        private void extractRAWToToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string destinationFolder = base.browseForFolder(sender, e);
+
+            this.extractFiles(destinationFolder, true);
         }
     }
 }

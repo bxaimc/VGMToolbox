@@ -13,8 +13,34 @@ namespace VGMToolbox.format.iso
         public static readonly byte[] STANDARD_IDENTIFIER = new byte[] { 0x43, 0x44, 0x30, 0x30, 0x31 };
         public static readonly byte[] EMPTY_DATETIME = new byte[] { 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 
                                                                     0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x00 };
-        public static readonly byte[] VOLUME_DESCRIPTOR_IDENTIFIER = new byte[] { 0x01, 0x43, 0x44, 0x30, 0x30, 0x31 };
+        public static readonly byte[] VOLUME_DESCRIPTOR_IDENTIFIER = new byte[] { 0x01, 0x43, 0x44, 0x30, 0x30, 0x31 };        
         public static string FORMAT_DESCRIPTION_STRING = "ISO 9660";
+
+        // CD-XA STUFF
+        public static readonly byte[] CDXA_IDENTIFIER = new byte[] { 0x43, 0x44, 0x2D, 0x58, 0x41, 0x30, 0x30, 0x31 }; // CD-XA001
+        public const long CDXA_IDENTIFIER_OFFSET = 0x400;
+
+        public const ushort XA_PERM_RSYS = 0x0001;
+        public const ushort XA_PERM_XSYS = 0x0004;
+        public const ushort XA_PERM_RUSR = 0x0010;
+        public const ushort XA_PERM_XUSR = 0x0040;
+        public const ushort XA_PERM_RGRP = 0x0100;
+        public const ushort XA_PERM_XGRP = 0x0400;
+        public const ushort XA_PERM_ROTH = 0x1000;
+        public const ushort XA_PERM_XOTH = 0x4000;
+        public const ushort XA_ATTR_MODE2FORM1 = (1 << 11);
+        public const ushort XA_ATTR_MODE2FORM2 = (1 << 12);
+        public const ushort XA_ATTR_INTERLEAVED = (1 << 13);
+        public const ushort XA_ATTR_CDDA = (1 << 14);
+        public const ushort XA_ATTR_DIRECTORY = (1 << 15);
+
+        public const ushort XA_PERM_ALL_READ = (XA_PERM_RUSR | XA_PERM_RSYS | XA_PERM_RGRP);
+        public const ushort XA_PERM_ALL_EXEC = (XA_PERM_XUSR | XA_PERM_XSYS | XA_PERM_XGRP);
+        public const ushort XA_PERM_ALL_ALL = (XA_PERM_ALL_READ | XA_PERM_ALL_EXEC);
+
+        public const ushort XA_FORM1_DIR = (XA_ATTR_DIRECTORY | XA_ATTR_MODE2FORM1 | XA_PERM_ALL_ALL);
+        public const ushort XA_FORM1_FILE = (XA_ATTR_MODE2FORM1 | XA_PERM_ALL_ALL);
+        public const ushort XA_FORM2_FILE = (XA_ATTR_MODE2FORM2 | XA_PERM_ALL_ALL);
 
         public static DateTime GetIsoDateTime(byte[] isoDateArray)
         {
@@ -80,6 +106,8 @@ namespace VGMToolbox.format.iso
                 return (IDirectoryStructure[])DirectoryStructureArray.ToArray(typeof(Iso9660DirectoryStructure)); 
             }
         }
+
+        public bool ContainsXaData { set; get; }
 
         #region Standard Attributes
 
@@ -147,7 +175,7 @@ namespace VGMToolbox.format.iso
                 this.IsRawDump ? (offset - Iso9660.EMPTY_HEADER_SIZE_RAW) : (offset - Iso9660.EMPTY_HEADER_SIZE);
             this.SectorSize =
                 this.IsRawDump ? (int)CdRom.RAW_SECTOR_SIZE : (int)CdRom.NON_RAW_SECTOR_SIZE;
-
+            
             // parse inital level sector
             sectorBytes = ParseFile.ParseSimpleOffset(isoStream, offset, this.SectorSize);
             sectorDataBytes = CdRom.GetDataChunkFromSector(sectorBytes, this.IsRawDump);
@@ -202,14 +230,16 @@ namespace VGMToolbox.format.iso
 
             this.Reserved2 = ParseFile.ParseSimpleOffset(sectorDataBytes, 0x573, 0x28D);
 
+            this.ContainsXaData = ParseFile.CompareSegment(sectorDataBytes, Iso9660.CDXA_IDENTIFIER_OFFSET, Iso9660.CDXA_IDENTIFIER);
+
             this.LoadDirectories(isoStream);
         }
 
-        public void ExtractAll(FileStream isoStream, string destintionFolder)
+        public void ExtractAll(FileStream isoStream, string destintionFolder, bool extractAsRaw)
         {
             foreach (Iso9660DirectoryStructure ds in this.DirectoryStructureArray)
             {
-                ds.Extract(isoStream, destintionFolder);
+                ds.Extract(isoStream, destintionFolder, extractAsRaw);
             }
         }
 
@@ -261,6 +291,7 @@ namespace VGMToolbox.format.iso
             if (this.LengthOfDirectoryRecord > 0)
             {
                 this.ExtendedAttributeRecordLength = directoryBytes[1];
+
                 this.LocationOfExtent = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(directoryBytes, 2, 4), 0);
                 this.DataLength = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(directoryBytes, 0x0A, 4), 0);
 
@@ -303,9 +334,20 @@ namespace VGMToolbox.format.iso
                     this.FileIdentifierString = "..";
                 }
 
-                /*
-            
-                public byte[] PaddingField { set; get; }
+                if (this.LengthOfFileIdentifier % 2 == 0)
+                {
+                    this.PaddingField = ParseFile.ParseSimpleOffset(directoryBytes, 0x21 + this.LengthOfFileIdentifier, 1);
+                }
+                else
+                {
+                    this.PaddingField = new byte[0];
+                }
+
+                // CD-XA
+                // if (volumeContainsXaData)
+                // byte[] xaAttributes = ParseFile.ParseSimpleOffset(directoryBytes, 0x21 + this.LengthOfFileIdentifier + this.PaddingField.Length, 0xE); //verify cut size
+
+                /*           
                 public byte[] SystemUse { set; get; }        
                 */
             }
@@ -349,10 +391,10 @@ namespace VGMToolbox.format.iso
             this.FileDateTime = fileTime;
         }
 
-        public void Extract(FileStream isoStream, string destinationFolder)
+        public void Extract(FileStream isoStream, string destinationFolder, bool extractAsRaw)
         {
             string destinationFile = Path.Combine(Path.Combine(destinationFolder, this.ParentDirectoryName), this.FileName);
-            CdRom.ExtractCdData(isoStream, destinationFile, this.VolumeBaseOffset, this.Lba, this.Size, this.IsRaw, this.NonRawSectorSize);
+            CdRom.ExtractCdData(isoStream, destinationFile, this.VolumeBaseOffset, this.Lba, this.Size, this.IsRaw, this.NonRawSectorSize, extractAsRaw);
         }
     }
 
@@ -423,7 +465,7 @@ namespace VGMToolbox.format.iso
             this.parseDirectoryRecord(isoStream, baseOffset, directoryRecord, logicalBlockSize, isRaw, nonRawSectorSize, nextDirectory);            
         }
 
-        public void Extract(FileStream isoStream, string destinationFolder)
+        public void Extract(FileStream isoStream, string destinationFolder, bool extractAsRaw)
         {
             string fullDirectoryPath = Path.Combine(destinationFolder, Path.Combine(this.ParentDirectoryName, this.DirectoryName));
             
@@ -434,13 +476,13 @@ namespace VGMToolbox.format.iso
             }
 
             foreach (Iso9660FileStructure f in this.FileArray)
-            { 
-                f.Extract(isoStream, destinationFolder);
+            {
+                f.Extract(isoStream, destinationFolder, extractAsRaw);
             }
 
             foreach (Iso9660DirectoryStructure d in this.SubDirectoryArray)
             {
-                d.Extract(isoStream, destinationFolder);
+                d.Extract(isoStream, destinationFolder, extractAsRaw);
             }
         }
 
@@ -473,12 +515,7 @@ namespace VGMToolbox.format.iso
 
                     if (!tempDirectoryRecord.FileIdentifierString.Equals(".") &&
                         !tempDirectoryRecord.FileIdentifierString.Equals("..")) // skip "this" directory
-                    {
-                        if (tempDirectoryRecord.FlagMultiExtent)
-                        {
-                            int x = 1;
-                        }
-                        
+                    {                      
                         if (tempDirectoryRecord.FlagDirectory)
                         {
                             tempDirectory = new Iso9660DirectoryStructure(isoStream, isoStream.Name, baseOffset, tempDirectoryRecord, logicalBlockSize, isRaw, nonRawSectorSize, parentDirectory);

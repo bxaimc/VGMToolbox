@@ -28,6 +28,7 @@ namespace VGMToolbox.tools.extract
             public string DestinationFolder;
 
             public IsoFormatType IsoFormat { set; get; }
+            public bool ExtractAsRaw { set; get; }
 
             public IFileStructure[] Files { set; get; }
             public IDirectoryStructure[] Directories { set; get; }
@@ -46,7 +47,7 @@ namespace VGMToolbox.tools.extract
                 {
                     if (!CancellationPending)
                     {
-                        d.Extract(fs, taskStruct.DestinationFolder);
+                        d.Extract(fs, taskStruct.DestinationFolder, taskStruct.ExtractAsRaw);
                     }
                     else
                     {
@@ -59,7 +60,7 @@ namespace VGMToolbox.tools.extract
                 {
                     if (!CancellationPending)
                     {
-                        f.Extract(fs, taskStruct.DestinationFolder);
+                        f.Extract(fs, taskStruct.DestinationFolder, taskStruct.ExtractAsRaw);
                     }
                     else
                     {
