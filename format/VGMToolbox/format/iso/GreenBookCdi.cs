@@ -235,7 +235,7 @@ namespace VGMToolbox.format.iso
 
                 this.FileFlags = directoryBytes[this.LengthOfDirectoryRecord - 6];
 
-                if (this.FileFlags == 0x85)
+                if ((this.FileFlags & 0x80) == 0x80)
                 {
                     this.FlagDirectory = true;
                 }
