@@ -137,7 +137,7 @@ namespace VGMToolbox.format.iso
         public void Extract(FileStream isoStream, string destinationFolder, bool extractAsRaw)
         {
             string destinationFile = Path.Combine(Path.Combine(destinationFolder, this.ParentDirectoryName), this.FileName);
-            CdRom.ExtractCdData(isoStream, destinationFile, this.VolumeBaseOffset, this.Lba, this.Size, this.IsRaw, this.NonRawSectorSize, extractAsRaw);
+            CdRom.ExtractCdData(isoStream, destinationFile, this.VolumeBaseOffset, this.Lba, this.Size, this.IsRaw, this.NonRawSectorSize, CdSectorType.Unknown, extractAsRaw);
         }
     }
 

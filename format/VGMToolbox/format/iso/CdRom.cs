@@ -141,7 +141,7 @@ namespace VGMToolbox.format.iso
         public static void ExtractCdData(Stream cdStream, 
             string destinationPath, long volumeBaseOffset, 
             long lba, long length, bool isRaw, long nonRawSectorSize, 
-            bool extractAsRaw)
+            CdSectorType fileMode, bool extractAsRaw)
         {
             long offset;
             int maxWriteSize;
@@ -163,35 +163,80 @@ namespace VGMToolbox.format.iso
 
             if (isRaw)
             {
-                using (FileStream outStream = File.OpenWrite(destinationPath))
+                switch (fileMode)
                 {
-                    while (bytesWritten < length)
-                    {
+                    case CdSectorType.Audio:
+                    case CdSectorType.Mode2Form2:
                         offset = volumeBaseOffset + ((lba + lbaCounter) * CdRom.RAW_SECTOR_SIZE);
-                        sector = ParseFile.ParseSimpleOffset(cdStream, offset, (int)CdRom.RAW_SECTOR_SIZE);
-                        sectorHeader = ParseFile.ParseSimpleOffset(sector, 0, MAX_HEADER_SIZE);
-                        mode = GetSectorType(sectorHeader);
+                        ParseFile.ExtractChunkToFile(cdStream, offset, length, destinationPath);
+                        break;
+                    default:
+                        mode = fileMode;
 
-                        maxWriteSize = CdRom.ModeDataSize[mode] < (length - bytesWritten) ? CdRom.ModeDataSize[mode] : (int)(length - bytesWritten);
-
-                        if (extractAsRaw)
+                        using (FileStream outStream = File.OpenWrite(destinationPath))
                         {
-                            outStream.Write(sector, 0, sector.Length);                        
-                        }
-                        else
-                        {
-                            outStream.Write(sector, CdRom.ModeHeaderSize[mode], maxWriteSize);
-                        }
 
-                        bytesWritten += maxWriteSize;
-                        lbaCounter++;
-                    }
-                }
+                            while (bytesWritten < length)
+                            {
+                                offset = volumeBaseOffset + ((lba + lbaCounter) * CdRom.RAW_SECTOR_SIZE);
+                                sector = ParseFile.ParseSimpleOffset(cdStream, offset, (int)CdRom.RAW_SECTOR_SIZE);
+                                sectorHeader = ParseFile.ParseSimpleOffset(sector, 0, MAX_HEADER_SIZE);
+
+                                if (mode == CdSectorType.Unknown)
+                                {
+                                    mode = GetSectorType(sectorHeader);
+                                }
+
+                                maxWriteSize = CdRom.ModeDataSize[mode] < (length - bytesWritten) ? CdRom.ModeDataSize[mode] : (int)(length - bytesWritten);
+
+                                if (extractAsRaw)
+                                {
+                                    outStream.Write(sector, 0, sector.Length);
+                                }
+                                else
+                                {
+                                    outStream.Write(sector, CdRom.ModeHeaderSize[mode], maxWriteSize);
+                                }
+
+                                bytesWritten += maxWriteSize;
+                                lbaCounter++;
+                            }
+                        }
+                        break;
+                    };                
             }
             else
             { 
                 offset = volumeBaseOffset + (lba * nonRawSectorSize);
                 ParseFile.ExtractChunkToFile(cdStream, offset, length, destinationPath);
+            }
+        }
+
+        public static void ExtractRawSectors(Stream cdStream,
+            string destinationPath, long volumeBaseOffset,
+            long lba, long sectorCount)
+        {
+            long offset;
+            long lbaCounter = 0;
+            byte[] sector;
+
+            // create directory
+            string destinationFolder = Path.GetDirectoryName(destinationPath);
+
+            if (!Directory.Exists(destinationFolder))
+            {
+                Directory.CreateDirectory(destinationFolder);
+            }
+
+            using (FileStream outStream = File.OpenWrite(destinationPath))
+            {
+                while (lbaCounter < sectorCount)
+                {
+                    offset = volumeBaseOffset + ((lba + lbaCounter) * CdRom.RAW_SECTOR_SIZE);
+                    sector = ParseFile.ParseSimpleOffset(cdStream, offset, (int)CdRom.RAW_SECTOR_SIZE);
+                    outStream.Write(sector, 0, sector.Length);
+                    lbaCounter++;
+                }
             }
         }
 

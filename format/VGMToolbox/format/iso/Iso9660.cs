@@ -16,31 +16,8 @@ namespace VGMToolbox.format.iso
         public static readonly byte[] VOLUME_DESCRIPTOR_IDENTIFIER = new byte[] { 0x01, 0x43, 0x44, 0x30, 0x30, 0x31 };        
         public static string FORMAT_DESCRIPTION_STRING = "ISO 9660";
 
-        // CD-XA STUFF
         public static readonly byte[] CDXA_IDENTIFIER = new byte[] { 0x43, 0x44, 0x2D, 0x58, 0x41, 0x30, 0x30, 0x31 }; // CD-XA001
         public const long CDXA_IDENTIFIER_OFFSET = 0x400;
-
-        public const ushort XA_PERM_RSYS = 0x0001;
-        public const ushort XA_PERM_XSYS = 0x0004;
-        public const ushort XA_PERM_RUSR = 0x0010;
-        public const ushort XA_PERM_XUSR = 0x0040;
-        public const ushort XA_PERM_RGRP = 0x0100;
-        public const ushort XA_PERM_XGRP = 0x0400;
-        public const ushort XA_PERM_ROTH = 0x1000;
-        public const ushort XA_PERM_XOTH = 0x4000;
-        public const ushort XA_ATTR_MODE2FORM1 = (1 << 11);
-        public const ushort XA_ATTR_MODE2FORM2 = (1 << 12);
-        public const ushort XA_ATTR_INTERLEAVED = (1 << 13);
-        public const ushort XA_ATTR_CDDA = (1 << 14);
-        public const ushort XA_ATTR_DIRECTORY = (1 << 15);
-
-        public const ushort XA_PERM_ALL_READ = (XA_PERM_RUSR | XA_PERM_RSYS | XA_PERM_RGRP);
-        public const ushort XA_PERM_ALL_EXEC = (XA_PERM_XUSR | XA_PERM_XSYS | XA_PERM_XGRP);
-        public const ushort XA_PERM_ALL_ALL = (XA_PERM_ALL_READ | XA_PERM_ALL_EXEC);
-
-        public const ushort XA_FORM1_DIR = (XA_ATTR_DIRECTORY | XA_ATTR_MODE2FORM1 | XA_PERM_ALL_ALL);
-        public const ushort XA_FORM1_FILE = (XA_ATTR_MODE2FORM1 | XA_PERM_ALL_ALL);
-        public const ushort XA_FORM2_FILE = (XA_ATTR_MODE2FORM2 | XA_PERM_ALL_ALL);
 
         public static DateTime GetIsoDateTime(byte[] isoDateArray)
         {
@@ -94,9 +71,12 @@ namespace VGMToolbox.format.iso
     {
         public long VolumeBaseOffset { set; get; }
         public string FormatDescription { set; get; }
-        public ArrayList DirectoryStructureArray { set; get; }
+        
         public bool IsRawDump { set; get; }
+        public bool ContainsCdxaData { set; get; }
         public int SectorSize { set; get; }
+        
+        public ArrayList DirectoryStructureArray { set; get; }
         public IDirectoryStructure[] Directories 
         {
             set { Directories = value; }
@@ -106,8 +86,7 @@ namespace VGMToolbox.format.iso
                 return (IDirectoryStructure[])DirectoryStructureArray.ToArray(typeof(Iso9660DirectoryStructure)); 
             }
         }
-
-        public bool ContainsXaData { set; get; }
+        
 
         #region Standard Attributes
 
@@ -180,6 +159,8 @@ namespace VGMToolbox.format.iso
             sectorBytes = ParseFile.ParseSimpleOffset(isoStream, offset, this.SectorSize);
             sectorDataBytes = CdRom.GetDataChunkFromSector(sectorBytes, this.IsRawDump);
 
+            // check for CDXA marker
+            this.ContainsCdxaData = ParseFile.CompareSegmentUsingSourceOffset(sectorDataBytes, (int)Iso9660.CDXA_IDENTIFIER_OFFSET, Iso9660.CDXA_IDENTIFIER.Length, Iso9660.CDXA_IDENTIFIER);
 
             this.VolumeDescriptorType = ParseFile.ParseSimpleOffset(sectorDataBytes, 0x00, 1)[0];
             this.StandardIdentifier = ParseFile.ParseSimpleOffset(sectorDataBytes, 0x01, 5);
@@ -207,7 +188,7 @@ namespace VGMToolbox.format.iso
             this.LocationOfOptionalOccurrenceOfTypeMPathTable = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(sectorDataBytes, 0x98, 0x04));
 
             this.DirectoryRecordForRootDirectoryBytes = ParseFile.ParseSimpleOffset(sectorDataBytes, 0x9C, 0x22);
-            this.DirectoryRecordForRootDirectory = new Iso9660DirectoryRecord(this.DirectoryRecordForRootDirectoryBytes);
+            this.DirectoryRecordForRootDirectory = new Iso9660DirectoryRecord(this.DirectoryRecordForRootDirectoryBytes, this.ContainsCdxaData);
 
             this.VolumeSetIdentifier = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(sectorDataBytes, 0xBE, 0x80)).Trim();
             this.PublisherIdentifier = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(sectorDataBytes, 0x13E, 0x80)).Trim();
@@ -230,8 +211,6 @@ namespace VGMToolbox.format.iso
 
             this.Reserved2 = ParseFile.ParseSimpleOffset(sectorDataBytes, 0x573, 0x28D);
 
-            this.ContainsXaData = ParseFile.CompareSegment(sectorDataBytes, Iso9660.CDXA_IDENTIFIER_OFFSET, Iso9660.CDXA_IDENTIFIER);
-
             this.LoadDirectories(isoStream);
         }
 
@@ -245,20 +224,36 @@ namespace VGMToolbox.format.iso
 
         public virtual void LoadDirectories(FileStream isoStream)
         {
+            Iso9660DirectoryStructure.InitializeStruct dirInitStruct = new Iso9660DirectoryStructure.InitializeStruct();
+            
             // change name of top level folder
             this.DirectoryRecordForRootDirectory.FileIdentifierString = String.Empty;
 
             // populate this volume's directory structure
-            Iso9660DirectoryStructure rootDirectory = 
-                new Iso9660DirectoryStructure(isoStream, isoStream.Name, 
-                    this.VolumeBaseOffset, this.DirectoryRecordForRootDirectory, 
-                    this.LogicalBlockSize, this.IsRawDump, this.SectorSize, null);
+            dirInitStruct.IsoStream = isoStream;
+            dirInitStruct.SourceFilePath = isoStream.Name;
+            dirInitStruct.BaseOffset = this.VolumeBaseOffset;
+            dirInitStruct.DirectoryRecord = this.DirectoryRecordForRootDirectory;
+            dirInitStruct.LogicalBlockSize = this.LogicalBlockSize;
+            dirInitStruct.IsRaw = this.IsRawDump;
+            dirInitStruct.NonRawSectorSize = this.SectorSize;
+            dirInitStruct.VolumeContainsXaData = this.ContainsCdxaData;
+            dirInitStruct.ParentDirectory = null;
+
+            Iso9660DirectoryStructure rootDirectory = new Iso9660DirectoryStructure(dirInitStruct);
             this.DirectoryStructureArray.Add(rootDirectory);
         }
     }
 
     public class Iso9660DirectoryRecord
     {
+        public static readonly byte[] XA_SIGNATURE = new byte[] { 0x58, 0x41 };
+        public const ushort XA_ATTR_MODE2FORM1 = (1 << 11);
+        public const ushort XA_ATTR_MODE2FORM2 = (1 << 12);
+        public const ushort XA_ATTR_INTERLEAVED = (1 << 13);
+        public const ushort XA_ATTR_CDDA = (1 << 14);
+        public const ushort XA_ATTR_DIRECTORY = (1 << 15);
+
         public byte LengthOfDirectoryRecord { set; get; }
         public byte ExtendedAttributeRecordLength { set; get; }
         public uint LocationOfExtent { set; get; }
@@ -283,9 +278,13 @@ namespace VGMToolbox.format.iso
         public bool FlagProtection { set; get; }
         public bool FlagMultiExtent { set; get; }
 
+        public CdSectorType ItemMode { set; get; }
 
-        public Iso9660DirectoryRecord(byte[] directoryBytes)
+        public Iso9660DirectoryRecord(byte[] directoryBytes, bool volumeContainsXaData)
         {
+            byte[] xaAttributes;
+            ushort xaItemDetails;
+
             this.LengthOfDirectoryRecord = directoryBytes[0];
 
             if (this.LengthOfDirectoryRecord > 0)
@@ -343,10 +342,45 @@ namespace VGMToolbox.format.iso
                     this.PaddingField = new byte[0];
                 }
 
-                // CD-XA
-                // if (volumeContainsXaData)
-                // byte[] xaAttributes = ParseFile.ParseSimpleOffset(directoryBytes, 0x21 + this.LengthOfFileIdentifier + this.PaddingField.Length, 0xE); //verify cut size
+                this.ItemMode = CdSectorType.Unknown;
 
+                // CD-XA
+                if (volumeContainsXaData)
+                {
+                    if (this.LengthOfDirectoryRecord >=
+                        (0x21 + this.LengthOfFileIdentifier + this.PaddingField.Length + 0xE))
+                    {
+                        xaAttributes = ParseFile.ParseSimpleOffset(directoryBytes, 0x21 + this.LengthOfFileIdentifier + this.PaddingField.Length, 0xE); //verify cut size
+
+                        // verify this is an XA entry
+                        if (ParseFile.CompareSegmentUsingSourceOffset(xaAttributes, 6, XA_SIGNATURE.Length, XA_SIGNATURE))
+                        {
+                            xaItemDetails = ByteConversion.GetUInt16BigEndian(ParseFile.ParseSimpleOffset(xaAttributes, 4, 2));
+
+                            if ((xaItemDetails & XA_ATTR_MODE2FORM1) == XA_ATTR_MODE2FORM1)
+                            {
+                                this.ItemMode = CdSectorType.Mode2Form1;
+                            }
+                            else if ((xaItemDetails & XA_ATTR_MODE2FORM2) == XA_ATTR_MODE2FORM2)
+                            {
+                                this.ItemMode = CdSectorType.Mode2Form2;
+                                this.DataLength = (uint)(this.DataLength / (uint)CdRom.NON_RAW_SECTOR_SIZE) * (uint)CdRom.RAW_SECTOR_SIZE;
+                            }
+                            else if ((xaItemDetails & XA_ATTR_CDDA) == XA_ATTR_CDDA)
+                            {
+                                this.ItemMode = CdSectorType.Audio;
+                                this.DataLength = (uint)(this.DataLength / (uint)CdRom.NON_RAW_SECTOR_SIZE) * (uint)CdRom.RAW_SECTOR_SIZE;
+                            }
+                            else
+                            {
+                                this.ItemMode = CdSectorType.Unknown;
+                            }
+                        }
+
+
+                    }
+                }
+                
                 /*           
                 public byte[] SystemUse { set; get; }        
                 */
@@ -356,6 +390,20 @@ namespace VGMToolbox.format.iso
 
     public class Iso9660FileStructure : IFileStructure
     {
+        public struct InitializeStruct
+        {
+            public string ParentDirectoryName { set; get; }
+            public string SourceFilePath { set; get; }
+            public string FileName { set; get; }
+            public long VolumeBaseOffset { set; get; }
+            public uint Lba { set; get; }
+            public long Size { set; get; }
+            public bool IsRaw { set; get; }
+            public int NonRawSectorSize { set; get; }
+            public CdSectorType FileMode { set; get; }
+            public DateTime FileTime { set; get; }
+        }
+        
         public string ParentDirectoryName { set; get; }
         public string SourceFilePath { set; get; }
         public string FileName { set; get; }
@@ -364,6 +412,7 @@ namespace VGMToolbox.format.iso
         public long Size { set; get; }
         public bool IsRaw { set; get; }
         public int NonRawSectorSize { set; get; }
+        public CdSectorType FileMode { set; get; }
         public DateTime FileDateTime { set; get; }
 
         public int CompareTo(object obj)
@@ -378,28 +427,44 @@ namespace VGMToolbox.format.iso
             throw new ArgumentException("object is not an Iso9660FileStructure");
         }    
 
-        public Iso9660FileStructure(string parentDirectoryName, string sourceFilePath, string fileName, long volumeBaseOffset, uint lba, long size, bool isRaw, int nonRawSectorSize, DateTime fileTime)
-        { 
-            this.ParentDirectoryName = parentDirectoryName;
-            this.SourceFilePath = sourceFilePath;
-            this.FileName = fileName;
-            this.VolumeBaseOffset = volumeBaseOffset;
-            this.Lba = lba;
-            this.IsRaw = isRaw;
-            this.NonRawSectorSize = nonRawSectorSize;
-            this.Size = size;
-            this.FileDateTime = fileTime;
+        public Iso9660FileStructure(InitializeStruct initStruct)
+        {
+            this.ParentDirectoryName = initStruct.ParentDirectoryName;
+            this.SourceFilePath = initStruct.SourceFilePath;
+            this.FileName = initStruct.FileName;
+            this.VolumeBaseOffset = initStruct.VolumeBaseOffset;
+            this.Lba = initStruct.Lba;
+            this.IsRaw = initStruct.IsRaw;
+            this.NonRawSectorSize = initStruct.NonRawSectorSize;
+            this.Size = initStruct.Size;
+            this.FileMode = initStruct.FileMode;
+            this.FileDateTime = initStruct.FileTime;
         }
 
         public void Extract(FileStream isoStream, string destinationFolder, bool extractAsRaw)
         {
             string destinationFile = Path.Combine(Path.Combine(destinationFolder, this.ParentDirectoryName), this.FileName);
-            CdRom.ExtractCdData(isoStream, destinationFile, this.VolumeBaseOffset, this.Lba, this.Size, this.IsRaw, this.NonRawSectorSize, extractAsRaw);
+            CdRom.ExtractCdData(isoStream, destinationFile, 
+                this.VolumeBaseOffset, this.Lba, this.Size, 
+                this.IsRaw, this.NonRawSectorSize, this.FileMode, extractAsRaw);
         }
     }
 
     public class Iso9660DirectoryStructure : IDirectoryStructure
     {
+        public struct InitializeStruct
+        {
+            public FileStream IsoStream { set; get; }
+            public string SourceFilePath { set; get; }
+            public long BaseOffset { set; get; }
+            public Iso9660DirectoryRecord DirectoryRecord { set; get; }
+            public uint LogicalBlockSize { set; get; }
+            public bool IsRaw { set; get; }
+            public int NonRawSectorSize { set; get; }
+            public bool VolumeContainsXaData { set; get; }
+            public string ParentDirectory { set; get; }
+        }
+        
         public Iso9660DirectoryRecord ParentDirectoryRecord { set; get; }
         public string ParentDirectoryName { set; get; }
         
@@ -439,30 +504,31 @@ namespace VGMToolbox.format.iso
             throw new ArgumentException("object is not an Iso9660DirectoryStructure");
         }
 
-        public Iso9660DirectoryStructure(FileStream isoStream, string sourceFilePath, 
-            long baseOffset, Iso9660DirectoryRecord directoryRecord, 
-            uint logicalBlockSize, bool isRaw, int nonRawSectorSize, 
-            string parentDirectory)
+        public Iso9660DirectoryStructure(InitializeStruct initStruct)
         {
+            InitializeStruct dirInitStruct = new InitializeStruct();
             string nextDirectory;
-            this.SourceFilePath = SourceFilePath;
+            this.SourceFilePath = initStruct.SourceFilePath;
             this.SubDirectoryArray = new ArrayList();
-            this.FileArray = new ArrayList();            
+            this.FileArray = new ArrayList();
 
-            if (String.IsNullOrEmpty(parentDirectory))
+            if (String.IsNullOrEmpty(initStruct.ParentDirectory))
             {
                 this.ParentDirectoryName = String.Empty;
-                this.DirectoryName = directoryRecord.FileIdentifierString;
+                this.DirectoryName = initStruct.DirectoryRecord.FileIdentifierString;
                 nextDirectory = this.DirectoryName;
             }
             else
             {
-                this.ParentDirectoryName = parentDirectory;
-                this.DirectoryName = directoryRecord.FileIdentifierString;
+                this.ParentDirectoryName = initStruct.ParentDirectory;
+                this.DirectoryName = initStruct.DirectoryRecord.FileIdentifierString;
                 nextDirectory = this.ParentDirectoryName + Path.DirectorySeparatorChar + this.DirectoryName;
             }
 
-            this.parseDirectoryRecord(isoStream, baseOffset, directoryRecord, logicalBlockSize, isRaw, nonRawSectorSize, nextDirectory);            
+            dirInitStruct = initStruct;
+            dirInitStruct.ParentDirectory = nextDirectory;
+
+            this.parseDirectoryRecord(dirInitStruct);            
         }
 
         public void Extract(FileStream isoStream, string destinationFolder, bool extractAsRaw)
@@ -486,52 +552,59 @@ namespace VGMToolbox.format.iso
             }
         }
 
-        private void parseDirectoryRecord(FileStream isoStream, long baseOffset, 
-            Iso9660DirectoryRecord directoryRecord, uint logicalBlockSize, 
-            bool isRaw, int nonRawSectorSize, string parentDirectory)
+        private void parseDirectoryRecord(InitializeStruct dirInitStruct)
         {
             byte recordSize;
             int currentOffset;
             uint bytesRead = 0;
-            uint currentLba = directoryRecord.LocationOfExtent;
+            uint currentLba = dirInitStruct.DirectoryRecord.LocationOfExtent;
             byte[] directoryRecordBytes;
             Iso9660DirectoryRecord tempDirectoryRecord;
             Iso9660DirectoryStructure tempDirectory;
-            Iso9660FileStructure tempFile;
+            Iso9660DirectoryStructure.InitializeStruct newDirInitStruct;
 
-            byte[] directorySector = CdRom.GetSectorByLba(isoStream, baseOffset, currentLba, isRaw, nonRawSectorSize);
-            directorySector = CdRom.GetDataChunkFromSector(directorySector, isRaw);
+            Iso9660FileStructure tempFile;
+            Iso9660FileStructure.InitializeStruct fileInitStruct = new Iso9660FileStructure.InitializeStruct();
+
+            byte[] directorySector = CdRom.GetSectorByLba(dirInitStruct.IsoStream, dirInitStruct.BaseOffset, currentLba, dirInitStruct.IsRaw, dirInitStruct.NonRawSectorSize);
+            directorySector = CdRom.GetDataChunkFromSector(directorySector, dirInitStruct.IsRaw);
             
             currentOffset = 0;
 
-            while (bytesRead < directoryRecord.DataLength)
+            while (bytesRead < dirInitStruct.DirectoryRecord.DataLength)
             {
                 recordSize = ParseFile.ParseSimpleOffset(directorySector, currentOffset, 1)[0];
 
                 if (recordSize > 0)
                 {
                     directoryRecordBytes = ParseFile.ParseSimpleOffset(directorySector, currentOffset, recordSize);
-                    tempDirectoryRecord = new Iso9660DirectoryRecord(directoryRecordBytes);
+                    tempDirectoryRecord = new Iso9660DirectoryRecord(directoryRecordBytes, dirInitStruct.VolumeContainsXaData);
 
                     if (!tempDirectoryRecord.FileIdentifierString.Equals(".") &&
                         !tempDirectoryRecord.FileIdentifierString.Equals("..")) // skip "this" directory
                     {                      
                         if (tempDirectoryRecord.FlagDirectory)
                         {
-                            tempDirectory = new Iso9660DirectoryStructure(isoStream, isoStream.Name, baseOffset, tempDirectoryRecord, logicalBlockSize, isRaw, nonRawSectorSize, parentDirectory);
+                            newDirInitStruct = dirInitStruct;
+                            newDirInitStruct.DirectoryRecord = tempDirectoryRecord;
+
+                            tempDirectory = new Iso9660DirectoryStructure(newDirInitStruct);
                             this.SubDirectoryArray.Add(tempDirectory);
                         }
                         else
                         {
-                            tempFile = new Iso9660FileStructure(parentDirectory,
-                                this.SourceFilePath,
-                                tempDirectoryRecord.FileIdentifierString.Replace(";1", String.Empty),
-                                baseOffset,
-                                tempDirectoryRecord.LocationOfExtent,
-                                tempDirectoryRecord.DataLength,
-                                isRaw,
-                                nonRawSectorSize,
-                                tempDirectoryRecord.RecordingDateAndTime);
+                            fileInitStruct.ParentDirectoryName = dirInitStruct.ParentDirectory;
+                            fileInitStruct.SourceFilePath = this.SourceFilePath;
+                            fileInitStruct.FileName = tempDirectoryRecord.FileIdentifierString.Replace(";1", String.Empty);
+                            fileInitStruct.VolumeBaseOffset = dirInitStruct.BaseOffset;
+                            fileInitStruct.Lba = tempDirectoryRecord.LocationOfExtent;
+                            fileInitStruct.Size = tempDirectoryRecord.DataLength;
+                            fileInitStruct.IsRaw = dirInitStruct.IsRaw;
+                            fileInitStruct.NonRawSectorSize = dirInitStruct.NonRawSectorSize;
+                            fileInitStruct.FileMode = tempDirectoryRecord.ItemMode;
+                            fileInitStruct.FileTime = tempDirectoryRecord.RecordingDateAndTime;    
+                                
+                            tempFile = new Iso9660FileStructure(fileInitStruct);
                             this.FileArray.Add(tempFile);
                         }
                     }
@@ -543,12 +616,12 @@ namespace VGMToolbox.format.iso
                     bytesRead += recordSize;
                     currentOffset += recordSize;
                 }
-                else if ((directoryRecord.DataLength - bytesRead) > (directorySector.Length - currentOffset))
+                else if ((dirInitStruct.DirectoryRecord.DataLength - bytesRead) > (directorySector.Length - currentOffset))
                 {
                     // move to start of next sector
-                    directorySector = CdRom.GetSectorByLba(isoStream, baseOffset, ++currentLba, isRaw, nonRawSectorSize);
-                    directorySector = CdRom.GetDataChunkFromSector(directorySector, isRaw);
-                    bytesRead += (uint)(logicalBlockSize - currentOffset);
+                    directorySector = CdRom.GetSectorByLba(dirInitStruct.IsoStream, dirInitStruct.BaseOffset, ++currentLba, dirInitStruct.IsRaw, dirInitStruct.NonRawSectorSize);
+                    directorySector = CdRom.GetDataChunkFromSector(directorySector, dirInitStruct.IsRaw);
+                    bytesRead += (uint)(dirInitStruct.LogicalBlockSize - currentOffset);
                     currentOffset = 0;                
                 }
                 else

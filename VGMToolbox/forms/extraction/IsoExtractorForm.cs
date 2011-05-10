@@ -39,10 +39,9 @@ namespace VGMToolbox.forms.extraction
             
             this.tbOutput.Text = "Browse and Extract contents of disc images." + Environment.NewLine;
             this.tbOutput.Text += "- Currently supported image types: .BIN, .IMG, .ISO, .MDF" + Environment.NewLine;
-            this.tbOutput.Text += "- Currently supported file systems: Green Book (CD-i), ISO 9660 (PSX/PS2), Opera FS (3DO), XDVDFS (XBOX/XBOX360)" + Environment.NewLine;
+            this.tbOutput.Text += "- Currently supported file systems: Green Book (CD-i), ISO 9660 (PC/PSX/PS2), Opera FS (3DO), XDVDFS (XBOX/XBOX360)" + Environment.NewLine;
 
-            this.tbOutput.Text += "- Not yet supported/tested: XDVDFS (RAW), Redbook Audio, .CUE sheets (or similar)" + Environment.NewLine;
-            this.tbOutput.Text += "- RAW extraction of Mode 2 Form 2 (CD-XA) data not yet implemented." + Environment.NewLine;
+            this.tbOutput.Text += "- Not yet supported/tested: XDVDFS (RAW), .CUE sheets (or similar)" + Environment.NewLine;
             
             this.btnDoTask.Hide();
 
