@@ -104,6 +104,7 @@ namespace VGMToolbox.format.iso
         public long Lba { set; get; }
         public long Size { set; get; }
         public bool IsRaw { set; get; }
+        public CdSectorType FileMode { set; get; }
         public int NonRawSectorSize { set; get; }
 
 
@@ -131,13 +132,14 @@ namespace VGMToolbox.format.iso
             this.IsRaw = isRaw;
             this.NonRawSectorSize = nonRawSectorSize;
             this.Size = size;
+            this.FileMode = CdSectorType.Unknown;
             this.FileDateTime = fileTime;
         }
 
         public void Extract(FileStream isoStream, string destinationFolder, bool extractAsRaw)
         {
             string destinationFile = Path.Combine(Path.Combine(destinationFolder, this.ParentDirectoryName), this.FileName);
-            CdRom.ExtractCdData(isoStream, destinationFile, this.VolumeBaseOffset, this.Lba, this.Size, this.IsRaw, this.NonRawSectorSize, CdSectorType.Unknown, extractAsRaw);
+            CdRom.ExtractCdData(isoStream, destinationFile, this.VolumeBaseOffset, this.Lba, this.Size, this.IsRaw, this.NonRawSectorSize, this.FileMode, extractAsRaw);
         }
     }
 

@@ -291,6 +291,7 @@ namespace VGMToolbox.format.iso
         public long Size { set; get; }
         public bool IsRaw { set; get; }
         public int NonRawSectorSize { set; get; }
+        public CdSectorType FileMode { set; get; }
         public DateTime FileDateTime { set; get; }
 
         public int CompareTo(object obj)
@@ -315,6 +316,7 @@ namespace VGMToolbox.format.iso
             this.IsRaw = isRaw;
             this.NonRawSectorSize = nonRawSectorSize;
             this.Size = size;
+            this.FileMode = CdSectorType.Unknown;
             this.FileDateTime = fileTime;
         }
 
@@ -323,7 +325,7 @@ namespace VGMToolbox.format.iso
             string destinationFile = Path.Combine(Path.Combine(destinationFolder, this.ParentDirectoryName), this.FileName);
             CdRom.ExtractCdData(isoStream, destinationFile, 
                 this.VolumeBaseOffset, this.Lba, this.Size, 
-                this.IsRaw, this.NonRawSectorSize, CdSectorType.Unknown, extractAsRaw);
+                this.IsRaw, this.NonRawSectorSize, this.FileMode, extractAsRaw);
         }
     }
 

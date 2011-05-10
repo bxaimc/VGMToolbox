@@ -25,6 +25,8 @@ namespace VGMToolbox.forms.extraction
         protected string destinationFolder;
         protected bool isTreeSelected;
 
+        private Font listViewBoldFont;
+
         private ListViewColumnSorter lvwColumnSorter;
 
         public IsoExtractorForm(TreeNode pTreeNode)
@@ -34,13 +36,13 @@ namespace VGMToolbox.forms.extraction
 
             this.lvwColumnSorter = new ListViewColumnSorter();
             this.fileListView.ListViewItemSorter = this.lvwColumnSorter;
+            this.listViewBoldFont = new Font(this.fileListView.Font, FontStyle.Bold);
 
             this.lblTitle.Text = "ISO Browser/Extractor";
             
             this.tbOutput.Text = "Browse and Extract contents of disc images." + Environment.NewLine;
             this.tbOutput.Text += "- Currently supported image types: .BIN, .IMG, .ISO, .MDF" + Environment.NewLine;
             this.tbOutput.Text += "- Currently supported file systems: Green Book (CD-i), ISO 9660 (PC/PSX/PS2), Opera FS (3DO), XDVDFS (XBOX/XBOX360)" + Environment.NewLine;
-
             this.tbOutput.Text += "- Not yet supported/tested: XDVDFS (RAW), .CUE sheets (or similar)" + Environment.NewLine;
             
             this.btnDoTask.Hide();
@@ -205,8 +207,17 @@ namespace VGMToolbox.forms.extraction
                         offsetItem = new ListViewItem.ListViewSubItem(fileItem, String.Format("{0}", f.Lba.ToString()));
                         sizeItem = new ListViewItem.ListViewSubItem(fileItem, f.Size.ToString());
                         dateItem = new ListViewItem.ListViewSubItem(fileItem, f.FileDateTime.ToString());
+                        
                         fileItem.Tag = f;
                         fileItem.ImageKey = "genericFile";
+
+                        // make "interesting" files bold
+                        if ((f.FileMode == CdSectorType.Mode2Form2) || 
+                            (f.FileMode == CdSectorType.Audio))
+                        { 
+                            fileItem.Font = this.listViewBoldFont;
+                            // fileItem.ForeColor = Color.LightSeaGreen;
+                        }
 
                         fileItem.SubItems.Add(offsetItem);
                         fileItem.SubItems.Add(sizeItem);

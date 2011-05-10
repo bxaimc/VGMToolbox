@@ -14,6 +14,7 @@ namespace VGMToolbox.format.iso
         long Lba { set; get; }
         long Size { set; get; }
         bool IsRaw { set; get; }
+        CdSectorType FileMode { set; get; }
         int NonRawSectorSize { set; get; }
 
         DateTime FileDateTime { set; get; }

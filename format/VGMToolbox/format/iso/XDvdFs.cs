@@ -101,6 +101,7 @@ namespace VGMToolbox.format.iso
         public long Lba { set; get; }
         public long Size { set; get; }
         public bool IsRaw { set; get; }
+        public CdSectorType FileMode { set; get; }
         public int NonRawSectorSize { set; get; }
 
         
@@ -131,6 +132,7 @@ namespace VGMToolbox.format.iso
             this.Lba =lba;
             this.IsRaw = isRaw;
             this.NonRawSectorSize = nonRawSectorSize;
+            this.FileMode = CdSectorType.Unknown;
         }
 
         public void Extract(FileStream isoStream, string destinationFolder, bool extractAsRaw)
