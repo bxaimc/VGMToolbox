@@ -213,10 +213,11 @@ namespace VGMToolbox.forms.extraction
 
                         // make "interesting" files bold
                         if ((f.FileMode == CdSectorType.Mode2Form2) || 
-                            (f.FileMode == CdSectorType.Audio))
+                            (f.FileMode == CdSectorType.Audio) ||
+                            (f.FileMode == CdSectorType.XaInterleaved))
                         { 
-                            fileItem.Font = this.listViewBoldFont;
-                            // fileItem.ForeColor = Color.LightSeaGreen;
+                            //fileItem.Font = this.listViewBoldFont;
+                            fileItem.ForeColor = Color.DarkGreen;
                         }
 
                         fileItem.SubItems.Add(offsetItem);
@@ -291,7 +292,10 @@ namespace VGMToolbox.forms.extraction
         {
             string destinationFolder = base.browseForFolder(sender, e);
 
-            this.extractFiles(destinationFolder, false);
+            if (!String.IsNullOrEmpty(destinationFolder))
+            {
+                this.extractFiles(destinationFolder, false);
+            }
         }
 
         private void extractToSubfolderToolStripMenuItem_Click(object sender, EventArgs e)
@@ -418,7 +422,10 @@ namespace VGMToolbox.forms.extraction
         {
             string destinationFolder = base.browseForFolder(sender, e);
 
-            this.extractFiles(destinationFolder, true);
+            if (!String.IsNullOrEmpty(destinationFolder))
+            {
+                this.extractFiles(destinationFolder, true);
+            }
         }
     }
 }

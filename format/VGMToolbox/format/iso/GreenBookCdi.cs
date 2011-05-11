@@ -191,6 +191,11 @@ namespace VGMToolbox.format.iso
 
     public class GreenBookCdiDirectoryRecord
     {
+        public const ushort CDI_ATTR_MODE2FORM1 = (1 << 11);
+        public const ushort CDI_ATTR_MODE2FORM2 = (1 << 12);
+        public const ushort CDI_ATTR_CDDA = (1 << 14);
+        public const ushort CDI_ATTR_DIRECTORY = (1 << 15);
+        
         public byte LengthOfDirectoryRecord { set; get; }
         public byte ExtendedAttributeRecordLength { set; get; }
         public uint LocationOfExtent { set; get; }
@@ -215,6 +220,7 @@ namespace VGMToolbox.format.iso
         public bool FlagProtection { set; get; }
         public bool FlagMultiExtent { set; get; }
 
+        public CdSectorType ItemMode { set; get; }
 
         public GreenBookCdiDirectoryRecord(byte[] directoryBytes)
         {
@@ -234,11 +240,31 @@ namespace VGMToolbox.format.iso
                                                          directoryBytes[0x17]);
 
                 this.FileFlags = directoryBytes[this.LengthOfDirectoryRecord - 6];
+                ushort cdiItemDetails = ByteConversion.GetUInt16BigEndian(ParseFile.ParseSimpleOffset(directoryBytes, this.LengthOfDirectoryRecord - 6, 2));
 
-                if ((this.FileFlags & 0x80) == 0x80)
+                if ((cdiItemDetails & CDI_ATTR_DIRECTORY) == CDI_ATTR_DIRECTORY)
                 {
                     this.FlagDirectory = true;
                 }
+                //else if ((cdiItemDetails & CDI_ATTR_MODE2FORM1) == CDI_ATTR_MODE2FORM1)
+                //{
+                //    this.ItemMode = CdSectorType.Mode2Form1;
+                //}
+                //else if ((cdiItemDetails & CDI_ATTR_MODE2FORM2) == CDI_ATTR_MODE2FORM2)
+                //{
+                //    this.ItemMode = CdSectorType.Mode2Form2;
+                //    this.DataLength = (uint)(this.DataLength / (uint)CdRom.NON_RAW_SECTOR_SIZE) * (uint)CdRom.RAW_SECTOR_SIZE;
+                //}
+                //else if ((cdiItemDetails & CDI_ATTR_CDDA) == CDI_ATTR_CDDA)
+                //{
+                //    this.ItemMode = CdSectorType.Audio;
+                //    this.DataLength = (uint)(this.DataLength / (uint)CdRom.NON_RAW_SECTOR_SIZE) * (uint)CdRom.RAW_SECTOR_SIZE;
+                //}
+                //else
+                //{
+                //    this.ItemMode = CdSectorType.Unknown;
+                //}
+
 
                 /*
                 this.FlagExistance = (this.FileFlags & 0x1) == 0x1 ? true : false;

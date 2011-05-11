@@ -357,7 +357,12 @@ namespace VGMToolbox.format.iso
                         {
                             xaItemDetails = ByteConversion.GetUInt16BigEndian(ParseFile.ParseSimpleOffset(xaAttributes, 4, 2));
 
-                            if ((xaItemDetails & XA_ATTR_MODE2FORM1) == XA_ATTR_MODE2FORM1)
+                            if ((xaItemDetails & XA_ATTR_INTERLEAVED) == XA_ATTR_INTERLEAVED)
+                            {
+                                this.ItemMode = CdSectorType.XaInterleaved;
+                                this.DataLength = (uint)(this.DataLength / (uint)CdRom.NON_RAW_SECTOR_SIZE) * (uint)CdRom.RAW_SECTOR_SIZE;
+                            }
+                            else if ((xaItemDetails & XA_ATTR_MODE2FORM1) == XA_ATTR_MODE2FORM1)
                             {
                                 this.ItemMode = CdSectorType.Mode2Form1;
                             }
@@ -370,7 +375,7 @@ namespace VGMToolbox.format.iso
                             {
                                 this.ItemMode = CdSectorType.Audio;
                                 this.DataLength = (uint)(this.DataLength / (uint)CdRom.NON_RAW_SECTOR_SIZE) * (uint)CdRom.RAW_SECTOR_SIZE;
-                            }
+                            }                           
                             else
                             {
                                 this.ItemMode = CdSectorType.Unknown;

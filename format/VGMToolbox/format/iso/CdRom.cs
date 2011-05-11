@@ -14,6 +14,7 @@ namespace VGMToolbox.format.iso
         Mode2,
         Mode2Form1,
         Mode2Form2,
+        XaInterleaved,
         Unknown
     };
     
@@ -167,6 +168,7 @@ namespace VGMToolbox.format.iso
                 {
                     case CdSectorType.Audio:
                     case CdSectorType.Mode2Form2:
+                    case CdSectorType.XaInterleaved:
                         offset = volumeBaseOffset + ((lba + lbaCounter) * CdRom.RAW_SECTOR_SIZE);
                         ParseFile.ExtractChunkToFile(cdStream, offset, length, destinationPath);
                         break;
