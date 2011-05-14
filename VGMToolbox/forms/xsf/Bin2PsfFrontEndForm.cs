@@ -105,22 +105,19 @@ namespace VGMToolbox.forms.xsf
                 this.tbPsflibName.ReadOnly = false;
                 this.tbPsflibName.Enabled = true;
                 this.cbTryMixing.Checked = false;
-                this.cbTryMixing.Enabled = false;
-                
-                if (String.IsNullOrEmpty((string)this.genericDriver.SelectedItem))
-                {
-                    this.tbMySeqSize.Enabled = true;
-                    this.tbMySeqSize.ReadOnly = false;
-                }
+                this.cbTryMixing.Enabled = false;                
             }
             else
             {
                 tbPsflibName.ReadOnly = true;
                 this.cbTryMixing.Enabled = true;
                 tbPsflibName.Clear();
+            }
 
-                this.tbMySeqSize.ReadOnly = true;
-                this.tbMySeqSize.Enabled = false;
+            if (String.IsNullOrEmpty((string)this.genericDriver.SelectedItem))
+            {
+                this.tbMySeqSize.Enabled = true;
+                this.tbMySeqSize.ReadOnly = false;
             }
         }
 
@@ -145,7 +142,8 @@ namespace VGMToolbox.forms.xsf
         {
             this.genericDriver.Items.Add(String.Empty);
             this.genericDriver.Items.Add(Bin2PsfWorker.STUB_BUILDER);                        
-            this.genericDriver.Items.Add(Bin2PsfWorker.GENERIC_DRIVER_MGRASS);
+            //this.genericDriver.Items.Add(Bin2PsfWorker.GENERIC_DRIVER_MGRASS);
+            this.genericDriver.Items.Add(Bin2PsfWorker.GENERIC_DRIVER_MGRASS_300);
             this.genericDriver.Items.Add(Bin2PsfWorker.GENERIC_DRIVER_DAVIRONICA);
         }
         private void loadGenericDriverPreset()
@@ -161,6 +159,10 @@ namespace VGMToolbox.forms.xsf
                 case Bin2PsfWorker.GENERIC_DRIVER_MGRASS:
                     this.disablePresetFields();
                     this.loadMarkGrassGenericPresets();
+                    break;
+                case Bin2PsfWorker.GENERIC_DRIVER_MGRASS_300:
+                    this.disablePresetFields();
+                    this.loadMarkGrass300GenericPresets();
                     break;
                 case Bin2PsfWorker.GENERIC_DRIVER_DAVIRONICA:
                     this.disablePresetFields();
@@ -188,6 +190,21 @@ namespace VGMToolbox.forms.xsf
         private void loadMarkGrassGenericPresets()
         {            
             this.tbExePath.Text = Bin2PsfWorker.MGRASS_EXE_PATH;
+            this.tbPsflibName.Clear();
+
+            this.tbSeqOffset.Text = "0x800A0000";
+            this.tbMySeqSize.Text = "0x00040000";
+            this.tbVhOffset.Text = "0x800E0000";
+            this.tbVbOffset.Text = "0x80160000";
+            this.tbParamOffset.Text = "0";
+
+            this.tbExePath.Enabled = false;
+            this.tbExePath.ReadOnly = true;
+            this.btnExeBrowse.Enabled = false;
+        }
+        private void loadMarkGrass300GenericPresets()
+        {
+            this.tbExePath.Text = Bin2PsfWorker.MGRASS300_EXE_PATH;
             this.tbPsflibName.Clear();
 
             this.tbSeqOffset.Text = "0x800A0000";
@@ -250,6 +267,7 @@ namespace VGMToolbox.forms.xsf
 
             this.tbParamOffset.Enabled = true;
             this.tbParamOffset.ReadOnly = false;
+            this.tbParamOffset.Clear();
 
             this.tbSeqOffset.Enabled = true;
             this.tbSeqOffset.ReadOnly = false;
