@@ -116,36 +116,22 @@ namespace VGMToolbox.tools.extract
                     //----------
                     if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, 0, Iso9660.VOLUME_DESCRIPTOR_IDENTIFIER.Length, Iso9660.VOLUME_DESCRIPTOR_IDENTIFIER))
                     {
-                        //// Check for CD-XA marker
-                        //if ((isRawFormat) &&
-                        //    (ParseFile.CompareSegmentUsingSourceOffset(sectorDataBytes, (int)CdRomXa.CDXA_IDENTIFIER_OFFSET, CdRomXa.VOLUME_DESCRIPTOR_IDENTIFIER.Length, CdRomXa.VOLUME_DESCRIPTOR_IDENTIFIER)))
-                        //{
-                        //    CdRomXaVolume isoVolume;
-                        //    isoVolume = new CdRomXaVolume();
-                        //    isoVolume.Initialize(fs, currentOffset, isRawFormat);
-                        //    volumeList.Add((IVolume)isoVolume);
+                        Iso9660Volume isoVolume;
+                        isoVolume = new Iso9660Volume();
+                        isoVolume.Initialize(fs, currentOffset, isRawFormat);
+                        volumeList.Add((IVolume)isoVolume);
 
-                        //    currentOffset = isoVolume.VolumeBaseOffset + ((long)isoVolume.VolumeSpaceSize * (long)sectorSize);
-                        //}
-                        //else
-                        //{
-                            Iso9660Volume isoVolume;
-                            isoVolume = new Iso9660Volume();
-                            isoVolume.Initialize(fs, currentOffset, isRawFormat);
-                            volumeList.Add((IVolume)isoVolume);
-
-                            if ((isoVolume.Directories.Length == 1) &&
-                                (isoVolume.Directories[0].SubDirectories.Length == 0) &&
-                                (isoVolume.Directories[0].Files.Length == 0))
-                            {
-                                // possible empty/dummy volume (XBOX)
-                                currentOffset += sectorSize;
-                            }
-                            else
-                            {
-                                currentOffset = isoVolume.VolumeBaseOffset + ((long)isoVolume.VolumeSpaceSize * (long)sectorSize);
-                            }
-                        //}
+                        if ((isoVolume.Directories.Length == 1) &&
+                            (isoVolume.Directories[0].SubDirectories.Length == 0) &&
+                            (isoVolume.Directories[0].Files.Length == 0))
+                        {
+                            // possible empty/dummy volume (XBOX)
+                            currentOffset += sectorSize;
+                        }
+                        else
+                        {
+                            currentOffset = isoVolume.VolumeBaseOffset + ((long)isoVolume.VolumeSpaceSize * (long)sectorSize);
+                        }
                     }
                     //-----------------
                     // Green Book CD-I
@@ -193,6 +179,20 @@ namespace VGMToolbox.tools.extract
 
                         // should be the last volume
                         break;                        
+                    }
+                    
+                    //-------------------
+                    // NINTENDO GAMECUBE
+                    //-------------------
+                    else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, (int)NintendoGameCube.IDENTIFIER_OFFSET, NintendoGameCube.STANDARD_IDENTIFIER.Length, NintendoGameCube.STANDARD_IDENTIFIER))
+                    {
+                        NintendoGameCubeVolume isoVolume;
+                        isoVolume = new NintendoGameCubeVolume();
+                        isoVolume.Initialize(fs, currentOffset, isRawFormat);
+                        volumeList.Add((IVolume)isoVolume);
+
+                        // should be the last volume
+                        break;                                         
                     }
                     else
                     {

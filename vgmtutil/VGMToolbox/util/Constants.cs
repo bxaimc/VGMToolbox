@@ -443,6 +443,8 @@ namespace VGMToolbox.util
         public static readonly byte[] RiffWaveBytes = new byte[] { 0x57, 0x41, 0x56, 0x45 };
         public static readonly byte[] RiffFmtBytes = new byte[] { 0x66, 0x6D, 0x74, 0x20 };
 
+        public static readonly byte[] NullByteArray = new byte[] { 0x00 };
+
         // empty constructor
         private Constants() { }
     }
