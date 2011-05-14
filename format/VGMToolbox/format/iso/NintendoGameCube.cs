@@ -95,7 +95,7 @@ namespace VGMToolbox.format.iso
 
             rootDirectory = new NintendoGameCubeDirectoryStructure(isoStream,
                 isoStream.Name, rootDirectoryRecord, this.ImageCreationTime, this.VolumeBaseOffset,
-                this.RootDirectoryOffset, this.RootDirectoryOffset, this.NameTableOffset, "\\", String.Empty);
+                this.RootDirectoryOffset, this.RootDirectoryOffset, this.NameTableOffset, String.Empty, String.Empty);
 
             this.DirectoryStructureArray.Add(rootDirectory);
         }
