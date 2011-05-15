@@ -194,6 +194,21 @@ namespace VGMToolbox.tools.extract
                         // should be the last volume
                         break;                                         
                     }
+
+                    //--------------
+                    // NINTENDO WII
+                    //--------------
+                    else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, (int)NintendoWiiOpticalDisc.IDENTIFIER_OFFSET, NintendoWiiOpticalDisc.STANDARD_IDENTIFIER.Length, NintendoWiiOpticalDisc.STANDARD_IDENTIFIER))
+                    {
+                        NintendoWiiOpticalDiscVolume isoVolume;
+                        isoVolume = new NintendoWiiOpticalDiscVolume();
+                        isoVolume.Initialize(fs, currentOffset, isRawFormat);
+                        volumeList.Add((IVolume)isoVolume);
+
+                        // should be the last volume
+                        break;
+                    }
+
                     else
                     {
                         currentOffset += sectorSize;

@@ -82,6 +82,7 @@
     <Compile Include="VGMToolbox\format\iso\Iso9660.cs" />
     <Compile Include="VGMToolbox\format\iso\IVolume.cs" />
     <Compile Include="VGMToolbox\format\iso\NintendoGameCube.cs" />
+    <Compile Include="VGMToolbox\format\iso\NintendoWiiOpticalDisc.cs" />
     <Compile Include="VGMToolbox\format\iso\Panasonic3do.cs" />
     <Compile Include="VGMToolbox\format\iso\XDvdFs.cs" />
     <Compile Include="VGMToolbox\format\IXsfTagFormat.cs" />
@@ -177,6 +178,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="external\psf\sigfind2.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="external\wii\dir.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="lib\bass.dll">
