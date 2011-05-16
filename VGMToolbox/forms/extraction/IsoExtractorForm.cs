@@ -42,8 +42,9 @@ namespace VGMToolbox.forms.extraction
             
             this.tbOutput.Text = "Browse and Extract contents of disc images." + Environment.NewLine;
             this.tbOutput.Text += "- Currently supported image types: .BIN, .IMG, .ISO, .MDF" + Environment.NewLine;
-            this.tbOutput.Text += "- Currently supported file systems: Green Book (CD-i), ISO 9660 (PC/PSX/PS2), Opera FS (3DO), XDVDFS (XBOX/XBOX360)" + Environment.NewLine;
-            this.tbOutput.Text += "- Not yet supported/tested: XDVDFS (RAW), .CUE sheets (or similar)" + Environment.NewLine;
+            this.tbOutput.Text += "- Currently supported file systems: GameCube, Green Book (CD-i), ISO 9660 (PC/PSX/PS2), Opera FS (3DO), Wii Optical Disc, XDVDFS (XBOX/XBOX360)" + Environment.NewLine;
+            this.tbOutput.Text += String.Format("- WII images require 'ckey.bin' and/or 'kkey.bin' (for Korean discs) in the <{0}> directory.", NintendoWiiOpticalDisc.WII_EXTERNAL_FOLDER) + Environment.NewLine;
+            this.tbOutput.Text += "- Not yet supported/tested: .CUE sheets (or similar)" + Environment.NewLine;
             
             this.btnDoTask.Hide();
 

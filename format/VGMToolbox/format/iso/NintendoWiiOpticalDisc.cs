@@ -10,6 +10,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.format.iso
 {
+    // Thanks to WiiBrew's File System Wiki.
     public class NintendoWiiOpticalDisc
     {
         public struct WiiBlockStructure
@@ -771,6 +772,7 @@ namespace VGMToolbox.format.iso
         }
     }
 
+    // Taken from code found somewhere on the net, can't remember where
     public class AESEngine
     {
         // Decrypt a byte array into a byte array using a key and an IV 
