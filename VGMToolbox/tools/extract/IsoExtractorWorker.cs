@@ -13,7 +13,7 @@ namespace VGMToolbox.tools.extract
 {
     class IsoExtractorWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
-        public static int MAX_ID_BYTES_LENGTH = 0x48;
+        public static int MAX_ID_BYTES_LENGTH = 0x100;
 
         public enum IsoFormatType
         {
@@ -200,11 +200,25 @@ namespace VGMToolbox.tools.extract
                     //--------------
                     else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, (int)NintendoWiiOpticalDisc.IDENTIFIER_OFFSET, NintendoWiiOpticalDisc.STANDARD_IDENTIFIER.Length, NintendoWiiOpticalDisc.STANDARD_IDENTIFIER))
                     {
-                        NintendoWiiOpticalDiscVolume isoVolume;
-                        isoVolume = new NintendoWiiOpticalDiscVolume();
-                        isoVolume.Initialize(fs, currentOffset, isRawFormat);
-                        volumeList.Add((IVolume)isoVolume);
+                        if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, 0x60, 1, Constants.NullByteArray))
+                        {
+                            NintendoWiiOpticalDisc wiiDisc = new NintendoWiiOpticalDisc();
+                            wiiDisc.Initialize(fs, currentOffset, isRawFormat);
 
+                            foreach (NintendoWiiOpticalDiscVolume isoVolume in wiiDisc.Volumes)
+                            {
+                                volumeList.Add((IVolume)isoVolume);
+                            }
+
+                            break;
+                        }
+                        else // Decrypted WII ISO
+                        {
+                            NintendoGameCubeVolume isoVolume;
+                            isoVolume = new NintendoGameCubeVolume();
+                            isoVolume.Initialize(fs, currentOffset, isRawFormat);
+                            volumeList.Add((IVolume)isoVolume);                        
+                        }
                         // should be the last volume
                         break;
                     }

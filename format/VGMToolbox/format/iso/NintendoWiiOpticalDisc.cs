@@ -12,40 +12,12 @@ namespace VGMToolbox.format.iso
 {
     public class NintendoWiiOpticalDisc
     {
-        public static readonly byte[] STANDARD_IDENTIFIER = new byte[] { 0x5D, 0x1C, 0x9E, 0xA3 };
-        public const uint IDENTIFIER_OFFSET = 0x18;
-        public static string FORMAT_DESCRIPTION_STRING = "Wii Optical Disc";
-
-        private static readonly string PROGRAMS_FOLDER =
-            Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"));
-        public static readonly string WII_EXTERNAL_FOLDER = Path.Combine(PROGRAMS_FOLDER, "wii");
-        public static readonly string COMMON_KEY_PATH = Path.Combine(WII_EXTERNAL_FOLDER, "ckey.bin");
-        public static readonly string KOREAN_KEY_PATH = Path.Combine(WII_EXTERNAL_FOLDER, "kkey.bin");
-
-        public static byte[] GetKeyFromFile(string path)
+        public struct WiiBlockStructure
         {
-            byte[] keyArray = null;
-
-            if (!File.Exists(path))
-            {
-                throw new FileNotFoundException(String.Format("Key not found: {0}.{1}", path, Environment.NewLine));
-            }
-            else
-            {
-                keyArray = new byte[0x10];
-                
-                using (FileStream fs = File.OpenRead(path))
-                {
-                    fs.Read(keyArray, 0, 0x10);
-                }
-            }
-
-            return keyArray;
+            public long BlockNumber { set; get; }
+            public long BlockOffset { set; get; }                        
         }
-    }
 
-    public class NintendoWiiOpticalDiscVolume : IVolume
-    {
         public struct PartitionEntry
         {
             public long PartitionOffset { set; get; }
@@ -67,84 +39,105 @@ namespace VGMToolbox.format.iso
             public PartitionEntry[] PartitionEntries { set; get; }
         }
 
-        public string VolumeIdentifier { set; get; }
-        public string FormatDescription { set; get; }
+        public static readonly byte[] STANDARD_IDENTIFIER = new byte[] { 0x5D, 0x1C, 0x9E, 0xA3 };
+        public const uint IDENTIFIER_OFFSET = 0x18;
+        public static string FORMAT_DESCRIPTION_STRING = "Wii Encrypted";
+        public static string FORMAT_DESCRIPTION_STRING_DECRYPTED = "Wii Decrypted";
+
+        private static readonly string PROGRAMS_FOLDER =
+            Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "external"));
+        public static readonly string WII_EXTERNAL_FOLDER = Path.Combine(PROGRAMS_FOLDER, "wii");
+        public static readonly string COMMON_KEY_PATH = Path.Combine(WII_EXTERNAL_FOLDER, "ckey.bin");
+        public static readonly string KOREAN_KEY_PATH = Path.Combine(WII_EXTERNAL_FOLDER, "kkey.bin");
 
         public string WiiDiscId { set; get; }
         public string GameCode { set; get; }
         public string RegionCode { set; get; }
         public byte[] MakerCode { set; get; }
 
-        public long VolumeBaseOffset { set; get; }
+        public long DiscBaseOffset { set; get; }
         public bool IsRawDump { set; get; }
 
         public byte[] CommonKey { set; get; }
         public byte[] KoreanCommonKey { set; get; }
 
         public Partition[] Partitions { set; get; }
-
-        public ArrayList DirectoryStructureArray { set; get; }
-        public IDirectoryStructure[] Directories
-        {
-            set { Directories = value; }
-            get
+        public ArrayList VolumeArrayList { set; get; }
+        public NintendoWiiOpticalDiscVolume[] Volumes 
+        { 
+            get 
             {
-                DirectoryStructureArray.Sort();
-                return (IDirectoryStructure[])DirectoryStructureArray.ToArray(typeof(NintendoGameCubeDirectoryStructure));
+                return (NintendoWiiOpticalDiscVolume[])this.VolumeArrayList.ToArray(typeof(NintendoWiiOpticalDiscVolume));
             }
+        
         }
 
-        public long RootDirectoryOffset { set; get; }
-        public DateTime ImageCreationTime { set; get; }
+        public NintendoWiiEncryptedDiscReader DiscReader { set; get; }
 
-        public long NameTableOffset { set; get; }
+        public static byte[] GetKeyFromFile(string path)
+        {
+            byte[] keyArray = null;
+
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException(String.Format("Key not found: {0}.{1}", path, Environment.NewLine));
+            }
+            else
+            {
+                keyArray = new byte[0x10];
+                
+                using (FileStream fs = File.OpenRead(path))
+                {
+                    fs.Read(keyArray, 0, 0x10);
+                }
+            }
+
+            return keyArray;
+        }
+
+        public static WiiBlockStructure GetWiiBlockStructureForOffset(long offset)
+        {
+            WiiBlockStructure bs = new WiiBlockStructure();
+            
+            bs.BlockNumber = offset / 0x7C00;
+            bs.BlockOffset = offset % 0x7C00;
+
+            return bs;
+        }
 
         public void Initialize(FileStream isoStream, long offset, bool isRawDump)
         {
             byte[] volumeIdentifierBytes;
 
-            this.VolumeBaseOffset = offset;
-            this.FormatDescription = NintendoWiiOpticalDisc.FORMAT_DESCRIPTION_STRING;
+            this.DiscBaseOffset = offset;
+            this.DiscReader = new NintendoWiiEncryptedDiscReader();
 
-            this.WiiDiscId = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(isoStream, this.VolumeBaseOffset, 1));
-            this.GameCode = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(isoStream, this.VolumeBaseOffset + 1, 2));
-            this.RegionCode = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(isoStream, this.VolumeBaseOffset + 3, 1));
-            this.MakerCode = ParseFile.ParseSimpleOffset(isoStream, this.VolumeBaseOffset + 4, 2);
-            
+            this.WiiDiscId = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(isoStream, this.DiscBaseOffset, 1));
+            this.GameCode = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(isoStream, this.DiscBaseOffset + 1, 2));
+            this.RegionCode = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(isoStream, this.DiscBaseOffset + 3, 1));
+            this.MakerCode = ParseFile.ParseSimpleOffset(isoStream, this.DiscBaseOffset + 4, 2);
+
             this.IsRawDump = isRawDump;
-            this.DirectoryStructureArray = new ArrayList();
 
             // get identifier
-            volumeIdentifierBytes = ParseFile.ParseSimpleOffset(isoStream, this.VolumeBaseOffset + 0x20, 64);
+            volumeIdentifierBytes = ParseFile.ParseSimpleOffset(isoStream, this.DiscBaseOffset + 0x20, 64);
             volumeIdentifierBytes = FileUtil.ReplaceNullByteWithSpace(volumeIdentifierBytes);
-            this.VolumeIdentifier = ByteConversion.GetEncodedText(volumeIdentifierBytes, ByteConversion.GetPredictedCodePageForTags(volumeIdentifierBytes)).Trim(); ;
 
             // initialize partition info
             this.InitializePartitions(isoStream);
 
-            // add dummy time
-            this.ImageCreationTime = new DateTime();
+            // initialize volumes
+            this.VolumeArrayList = new ArrayList();
+            this.LoadVolumes(isoStream);
 
-            // get offset of file table
-            //this.RootDirectoryOffset = (long)ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(isoStream, this.VolumeBaseOffset + 0x424, 4));
-
-            //this.LoadDirectories(isoStream);
-        }
-
-        public void ExtractAll(FileStream isoStream, string destinationFolder, bool extractAsRaw)
-        {
-            foreach (NintendoGameCubeDirectoryStructure ds in this.DirectoryStructureArray)
-            {
-                ds.Extract(isoStream, destinationFolder, extractAsRaw);
-            }
         }
 
         public void InitializePartitions(FileStream isoStream)
         {
-            byte[] encryptedPartitionCluster;
-            byte[] decryptedClusterDataSection;
-            byte[] clusterIV;
-            byte[] encryptedClusterDataSection;
+            //byte[] encryptedPartitionCluster;
+            //byte[] decryptedClusterDataSection;
+            //byte[] clusterIV;
+            //byte[] encryptedClusterDataSection;
 
             this.CommonKey = null;
             this.KoreanCommonKey = null;
@@ -153,16 +146,16 @@ namespace VGMToolbox.format.iso
             for (int i = 0; i < 4; i++)
             {
                 this.Partitions[i] = new Partition();
-                this.Partitions[i].PartitionCount = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(isoStream, this.VolumeBaseOffset + 0x40000 + (i * 8), 4));
+                this.Partitions[i].PartitionCount = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(isoStream, this.DiscBaseOffset + 0x40000 + (i * 8), 4));
                 this.Partitions[i].PartitionEntries = new PartitionEntry[this.Partitions[i].PartitionCount];
 
-                this.Partitions[i].PartitionTableOffset = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(isoStream, this.VolumeBaseOffset + 0x40004 + (i * 8), 4));
+                this.Partitions[i].PartitionTableOffset = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(isoStream, this.DiscBaseOffset + 0x40004 + (i * 8), 4));
                 this.Partitions[i].PartitionTableOffset <<= 2;
 
                 if (this.Partitions[i].PartitionTableOffset > 0)
                 {
                     // set absolute offset of partition
-                    this.Partitions[i].PartitionTableOffset += this.VolumeBaseOffset;
+                    this.Partitions[i].PartitionTableOffset += this.DiscBaseOffset;
 
                     for (int j = 0; j < this.Partitions[i].PartitionCount; j++)
                     {
@@ -172,7 +165,7 @@ namespace VGMToolbox.format.iso
                         this.Partitions[i].PartitionEntries[j].PartitionOffset =
                             ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(isoStream, this.Partitions[i].PartitionTableOffset + (j * 8), 4));
                         this.Partitions[i].PartitionEntries[j].PartitionOffset <<= 2;
-                        this.Partitions[i].PartitionEntries[j].PartitionOffset += this.VolumeBaseOffset;
+                        this.Partitions[i].PartitionEntries[j].PartitionOffset += this.DiscBaseOffset;
 
                         // get partition type
                         this.Partitions[i].PartitionEntries[j].PartitionType =
@@ -181,7 +174,7 @@ namespace VGMToolbox.format.iso
                         // get relative offset partition's data section
                         this.Partitions[i].PartitionEntries[j].RelativeDataOffset = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(isoStream, this.Partitions[i].PartitionEntries[j].PartitionOffset + 0x02B8, 4));
                         this.Partitions[i].PartitionEntries[j].RelativeDataOffset <<= 2;
-                        this.Partitions[i].PartitionEntries[j].RelativeDataOffset += this.VolumeBaseOffset;
+                        this.Partitions[i].PartitionEntries[j].RelativeDataOffset += this.DiscBaseOffset;
 
                         // get the size of partition's data section
                         this.Partitions[i].PartitionEntries[j].DataSize = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(isoStream, this.Partitions[i].PartitionEntries[j].PartitionOffset + 0x02BC, 4));
@@ -233,51 +226,548 @@ namespace VGMToolbox.format.iso
                         } // switch (this.Partitions[i].PartitionEntries[j].CommonKeyIndex)
 
 
-                        string outFile = Path.Combine(Path.GetDirectoryName(isoStream.Name), String.Format("{0}-{1}.bin", i.ToString(), j.ToString()));                                                
-                        long currentOffset = 0;
+                        //string outFile = Path.Combine(Path.GetDirectoryName(isoStream.Name), String.Format("{0}-{1}.bin", i.ToString(), j.ToString()));                                                
+                        //long currentOffset = 0;
 
-                        using (FileStream outStream = File.OpenWrite(outFile))
-                        {
+                        //using (FileStream outStream = File.OpenWrite(outFile))
+                        //{
 
-                            while (currentOffset < this.Partitions[i].PartitionEntries[j].DataSize)
-                            {
-                                encryptedPartitionCluster = ParseFile.ParseSimpleOffset(isoStream,
-                                    this.Partitions[i].PartitionEntries[j].PartitionOffset + this.Partitions[i].PartitionEntries[j].RelativeDataOffset + currentOffset,
-                                    0x8000);
+                        //    while (currentOffset < this.Partitions[i].PartitionEntries[j].DataSize)
+                        //    {
+                        //        encryptedPartitionCluster = ParseFile.ParseSimpleOffset(isoStream,
+                        //            this.Partitions[i].PartitionEntries[j].PartitionOffset + this.Partitions[i].PartitionEntries[j].RelativeDataOffset + currentOffset,
+                        //            0x8000);
 
-                                clusterIV = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x03D0, 0x10);
-                                encryptedClusterDataSection = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x400, 0x7C00);
-                                decryptedClusterDataSection = AESEngine.Decrypt(encryptedClusterDataSection,
-                                                this.Partitions[i].PartitionEntries[j].DecryptedTitleKey, clusterIV,
-                                                CipherMode.CBC, PaddingMode.Zeros);
+                        //        clusterIV = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x03D0, 0x10);
+                        //        encryptedClusterDataSection = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x400, 0x7C00);
+                        //        decryptedClusterDataSection = AESEngine.Decrypt(encryptedClusterDataSection,
+                        //                        this.Partitions[i].PartitionEntries[j].DecryptedTitleKey, clusterIV,
+                        //                        CipherMode.CBC, PaddingMode.Zeros);
 
-                                outStream.Write(decryptedClusterDataSection, 0, decryptedClusterDataSection.Length);
-                                
-                                currentOffset += 0x8000;
-                            }
-                        }
+                        //        outStream.Write(decryptedClusterDataSection, 0, decryptedClusterDataSection.Length);
+
+                        //        currentOffset += 0x8000;
+                        //    }
+                        //}
 
                     } // for (int j = 0; j < this.Partitions[i].PartitionCount; j++)
                 } // if (this.Partitions[i].PartitionTableOffset > 0)
+            }
+        }
+
+        public void LoadVolumes(FileStream isoStream)
+        {
+            NintendoWiiOpticalDiscVolume newVolume;
+            
+            for (int i = 0; i < 4; i++)
+            {
+                if (this.Partitions[i].PartitionTableOffset > 0)
+                {
+                    for (int j = 0; j < this.Partitions[i].PartitionCount; j++)
+                    {
+                        newVolume = new NintendoWiiOpticalDiscVolume(
+                            this.Partitions[i].PartitionEntries[j].PartitionOffset,
+                            this.Partitions[i].PartitionEntries[j].RelativeDataOffset,
+                            this.Partitions[i].PartitionEntries[j].DecryptedTitleKey,
+                            this.DiscReader);
+
+                        newVolume.Initialize(isoStream, this.Partitions[i].PartitionEntries[j].PartitionOffset, this.IsRawDump);
+                        this.VolumeArrayList.Add(newVolume);
+                    }
+                }
             }        
+        }
+    }
+
+    public class NintendoWiiOpticalDiscVolume : IVolume
+    {
+        public string VolumeIdentifier { set; get; }
+        public string FormatDescription { set; get; }
+        
+        public long VolumeBaseOffset { set; get; }
+        public long DataOffset { set; get; }
+        public byte[] PartitionKey {set;get;}
+
+        public bool IsRawDump { set; get; }
+        public NintendoWiiEncryptedDiscReader DiscReader { set; get; }
+
+        public ArrayList DirectoryStructureArray { set; get; }
+        public IDirectoryStructure[] Directories
+        {
+            set { Directories = value; }
+            get
+            {
+                DirectoryStructureArray.Sort();
+                return (IDirectoryStructure[])DirectoryStructureArray.ToArray(typeof(NintendoWiiOpticalDiscDirectoryStructure));
+            }
+        }
+
+        public long RootDirectoryOffset { set; get; }
+        public DateTime ImageCreationTime { set; get; }
+
+        public long NameTableOffset { set; get; }
+
+        public NintendoWiiOpticalDiscVolume(long volumeBaseOffset, long dataOffset, 
+            byte[] partitionKey, NintendoWiiEncryptedDiscReader discReader)
+        { 
+            this.VolumeBaseOffset = volumeBaseOffset;
+            this.DataOffset = dataOffset;
+            this.PartitionKey = partitionKey;
+            this.DiscReader = discReader;
+            this.DiscReader.CurrentDecryptedBlockNumber = -1;
+            this.DiscReader.CurrentDecryptedBlock = null;
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (obj is NintendoWiiOpticalDiscVolume)
+            {
+                NintendoWiiOpticalDiscVolume o = (NintendoWiiOpticalDiscVolume)obj;
+
+                return this.VolumeIdentifier.CompareTo(o.VolumeIdentifier);
+            }
+
+            throw new ArgumentException("object is not an NintendoWiiOpticalDiscVolume");
+        }
+
+        public void Initialize(FileStream isoStream, long offset, bool isRawDump)
+        {
+            byte[] volumeIdentifierBytes;
+            byte[] imageDateBytes;
+            string imageDateString;
+
+            this.IsRawDump = isRawDump;
+            this.DirectoryStructureArray = new ArrayList();
+
+            this.FormatDescription = NintendoWiiOpticalDisc.FORMAT_DESCRIPTION_STRING;
+
+            // get identifier
+            volumeIdentifierBytes = DiscReader.GetBytes(isoStream, this.VolumeBaseOffset,
+                this.DataOffset, 0x20, 64, this.PartitionKey); 
+            volumeIdentifierBytes = FileUtil.ReplaceNullByteWithSpace(volumeIdentifierBytes);
+            this.VolumeIdentifier = ByteConversion.GetEncodedText(volumeIdentifierBytes, ByteConversion.GetPredictedCodePageForTags(volumeIdentifierBytes)).Trim(); ;
+
+            // get date 
+            imageDateBytes = DiscReader.GetBytes(isoStream, this.VolumeBaseOffset,
+                this.DataOffset, 0x2440, 0xA, this.PartitionKey); 
+            imageDateString = ByteConversion.GetAsciiText(imageDateBytes);
+
+            try
+            {
+                this.ImageCreationTime = new DateTime(int.Parse(imageDateString.Substring(0, 4)),
+                                                      int.Parse(imageDateString.Substring(5, 2)),
+                                                      int.Parse(imageDateString.Substring(8, 2)));
+            }
+            catch (Exception)
+            {
+                this.ImageCreationTime = new DateTime();
+            }
+
+            // get offset of file table
+            this.RootDirectoryOffset = (long)ByteConversion.GetUInt32BigEndian(DiscReader.GetBytes(isoStream, this.VolumeBaseOffset,
+                this.DataOffset, 0x424, 4, this.PartitionKey));
+            this.RootDirectoryOffset <<= 2;
+
+            this.LoadDirectories(isoStream);
+        }
+
+        public void ExtractAll(FileStream isoStream, string destinationFolder, bool extractAsRaw)
+        {
+            foreach (NintendoWiiOpticalDiscDirectoryStructure ds in this.DirectoryStructureArray)
+            {
+                ds.Extract(isoStream, destinationFolder, extractAsRaw);
+            }
         }
 
         public void LoadDirectories(FileStream isoStream)
         {
             byte[] rootDirectoryBytes;
-            NintendoGameCubeDirectoryRecord rootDirectoryRecord;
-            NintendoGameCubeDirectoryStructure rootDirectory;
+            NintendoWiiOpticalDiscDirectoryRecord rootDirectoryRecord;
+            NintendoWiiOpticalDiscDirectoryStructure rootDirectory;
 
             // Get name table offset
-            rootDirectoryBytes = ParseFile.ParseSimpleOffset(isoStream, this.RootDirectoryOffset, 0xC);
-            rootDirectoryRecord = new NintendoGameCubeDirectoryRecord(rootDirectoryBytes);
+            rootDirectoryBytes = DiscReader.GetBytes(isoStream, this.VolumeBaseOffset,
+                this.DataOffset, this.RootDirectoryOffset, 0xC, this.PartitionKey);
+            rootDirectoryRecord = new NintendoWiiOpticalDiscDirectoryRecord(rootDirectoryBytes);
             this.NameTableOffset = this.RootDirectoryOffset + ((long)rootDirectoryRecord.FileSize * 0xC);
 
-            rootDirectory = new NintendoGameCubeDirectoryStructure(isoStream,
-                isoStream.Name, rootDirectoryRecord, this.ImageCreationTime, this.VolumeBaseOffset,
-                this.RootDirectoryOffset, this.RootDirectoryOffset, this.NameTableOffset, String.Empty, String.Empty);
+            rootDirectory = new NintendoWiiOpticalDiscDirectoryStructure(isoStream,
+                isoStream.Name, rootDirectoryRecord, this.ImageCreationTime,
+                this.VolumeBaseOffset, this.DataOffset, this.RootDirectoryOffset,
+                this.RootDirectoryOffset, this.NameTableOffset,
+                String.Empty, String.Empty, this.DiscReader, this.PartitionKey);
 
             this.DirectoryStructureArray.Add(rootDirectory);
+        }
+    }
+
+    public class NintendoWiiOpticalDiscFileStructure : IFileStructure
+    {
+        public string ParentDirectoryName { set; get; }
+        public string SourceFilePath { set; get; }
+        public string FileName { set; get; }
+
+        public long VolumeBaseOffset { set; get; }
+        public long DataSectionOffset { set; get; }
+        public long Lba { set; get; }
+        public long Size { set; get; }
+        public bool IsRaw { set; get; }
+        public CdSectorType FileMode { set; get; }
+        public int NonRawSectorSize { set; get; }
+
+        public NintendoWiiEncryptedDiscReader DiscReader {set;get;}
+        public byte[] PartitionKey { set; get; }
+
+        public DateTime FileDateTime { set; get; }
+
+        public int CompareTo(object obj)
+        {
+            if (obj is NintendoWiiOpticalDiscFileStructure)
+            {
+                NintendoWiiOpticalDiscFileStructure o = (NintendoWiiOpticalDiscFileStructure)obj;
+
+                return this.FileName.CompareTo(o.FileName);
+            }
+
+            throw new ArgumentException("object is not an NintendoWiiOpticalDiscFileStructure");
+        }
+
+        public NintendoWiiOpticalDiscFileStructure(string parentDirectoryName, 
+            string sourceFilePath, string fileName, long volumeBaseOffset, 
+            long dataSectionOffset, long lba, long size, DateTime fileTime,
+            NintendoWiiEncryptedDiscReader discReader, byte[] partitionKey)
+        {
+            this.ParentDirectoryName = parentDirectoryName;
+            this.SourceFilePath = sourceFilePath;
+            this.FileName = fileName;
+            this.VolumeBaseOffset = volumeBaseOffset;
+            this.DataSectionOffset = dataSectionOffset;
+            this.Lba = lba;
+            this.IsRaw = false;
+            this.NonRawSectorSize = -1;
+            this.Size = size;
+            this.FileMode = CdSectorType.Unknown;
+            this.FileDateTime = fileTime;
+            this.DiscReader = discReader;
+            this.PartitionKey = partitionKey;
+        }
+
+        public virtual void Extract(FileStream isoStream, string destinationFolder, bool extractAsRaw)
+        {
+            string destinationFile = Path.Combine(Path.Combine(destinationFolder, this.ParentDirectoryName), this.FileName);
+            this.DiscReader.ExtractFile(isoStream, destinationFile, this.VolumeBaseOffset,
+                this.DataSectionOffset, this.Lba, this.Size, this.PartitionKey);
+        }
+    }
+
+    public class NintendoWiiOpticalDiscDirectoryStructure : IDirectoryStructure
+    {
+        public long DirectoryRecordOffset { set; get; }
+        public string ParentDirectoryName { set; get; }
+
+        public ArrayList SubDirectoryArray { set; get; }
+        public IDirectoryStructure[] SubDirectories
+        {
+            set { this.SubDirectories = value; }
+            get
+            {
+                SubDirectoryArray.Sort();
+                return (IDirectoryStructure[])SubDirectoryArray.ToArray(typeof(NintendoWiiOpticalDiscDirectoryStructure));
+            }
+        }
+
+        public ArrayList FileArray { set; get; }
+        public IFileStructure[] Files
+        {
+            set { this.Files = value; }
+            get
+            {
+                FileArray.Sort();
+                return (IFileStructure[])FileArray.ToArray(typeof(NintendoWiiOpticalDiscFileStructure));
+            }
+        }
+
+        public string SourceFilePath { set; get; }
+        public string DirectoryName { set; get; }
+
+        public int CompareTo(object obj)
+        {
+            if (obj is NintendoWiiOpticalDiscDirectoryStructure)
+            {
+                NintendoWiiOpticalDiscDirectoryStructure o = (NintendoWiiOpticalDiscDirectoryStructure)obj;
+
+                return this.DirectoryName.CompareTo(o.DirectoryName);
+            }
+
+            throw new ArgumentException("object is not an NintendoWiiOpticalDiscDirectoryStructure");
+        }
+
+        public void Extract(FileStream isoStream, string destinationFolder, bool extractAsRaw)
+        {
+            string fullDirectoryPath = Path.Combine(destinationFolder, Path.Combine(this.ParentDirectoryName, this.DirectoryName));
+
+            // create directory
+            if (!Directory.Exists(fullDirectoryPath))
+            {
+                Directory.CreateDirectory(fullDirectoryPath);
+            }
+
+            foreach (NintendoWiiOpticalDiscFileStructure f in this.FileArray)
+            {
+                f.Extract(isoStream, destinationFolder, extractAsRaw);
+            }
+
+            foreach (NintendoWiiOpticalDiscDirectoryStructure d in this.SubDirectoryArray)
+            {
+                d.Extract(isoStream, destinationFolder, extractAsRaw);
+            }
+        }
+
+        public NintendoWiiOpticalDiscDirectoryStructure(
+            FileStream isoStream,
+            string sourceFilePath,
+            NintendoWiiOpticalDiscDirectoryRecord directoryRecord,
+            DateTime creationDateTime,
+            long baseOffset,
+            long dataSectionOffset,
+            long rootDirectoryOffset,
+            long directoryOffset,
+            long nameTableOffset,
+            string directoryName,
+            string parentDirectory,
+            NintendoWiiEncryptedDiscReader discReader,
+            byte[] partitionKey)
+        {
+            string nextDirectory;
+            this.SourceFilePath = SourceFilePath;
+            this.SubDirectoryArray = new ArrayList();
+            this.FileArray = new ArrayList();
+            this.DirectoryRecordOffset = directoryOffset;
+
+            if (String.IsNullOrEmpty(parentDirectory))
+            {
+                this.ParentDirectoryName = String.Empty;
+                this.DirectoryName = directoryName;
+                nextDirectory = this.DirectoryName;
+            }
+            else
+            {
+                this.ParentDirectoryName = parentDirectory;
+                this.DirectoryName = directoryName;
+                nextDirectory = this.ParentDirectoryName + Path.DirectorySeparatorChar + this.DirectoryName;
+            }
+
+            this.parseDirectoryRecord(isoStream, directoryRecord, creationDateTime, baseOffset, dataSectionOffset, rootDirectoryOffset, directoryOffset, nameTableOffset, nextDirectory, discReader, partitionKey);
+        }
+
+
+        private void parseDirectoryRecord(
+            FileStream isoStream,
+            NintendoWiiOpticalDiscDirectoryRecord directoryRecord,
+            DateTime creationDateTime,
+            long baseOffset,
+            long dataSectionOffset,
+            long rootDirectoryOffset,
+            long directoryOffset,
+            long nameTableOffset,
+            string parentDirectory,
+            NintendoWiiEncryptedDiscReader discReader,
+            byte[] partitionKey)
+        {
+            long directoryRecordEndOffset;
+            long newDirectoryEndOffset;
+            long currentOffset = directoryOffset;
+
+            int itemNameSize;
+            byte[] itemNameBytes;
+            string itemName;
+
+            byte[] newDirectoryRecordBytes;
+            NintendoWiiOpticalDiscDirectoryRecord newDirectoryRecord;
+            NintendoWiiOpticalDiscDirectoryStructure newDirectory;
+            NintendoWiiOpticalDiscFileStructure newFile;
+
+            directoryRecordEndOffset = rootDirectoryOffset + (directoryRecord.FileSize * 0xC);
+            currentOffset += 0xC;
+
+            while (currentOffset < directoryRecordEndOffset)
+            {
+                newDirectoryRecordBytes = discReader.GetBytes(isoStream, baseOffset, dataSectionOffset,
+                    currentOffset, 0xC, partitionKey);
+                newDirectoryRecord = new NintendoWiiOpticalDiscDirectoryRecord(newDirectoryRecordBytes);
+
+                itemNameBytes = discReader.GetBytes(isoStream, baseOffset, dataSectionOffset,
+                    nameTableOffset + newDirectoryRecord.NameOffset, 512, partitionKey);
+                itemNameSize = ParseFile.GetSegmentLength(itemNameBytes, 0, Constants.NullByteArray);
+                itemNameBytes = discReader.GetBytes(isoStream, baseOffset, dataSectionOffset,
+                    nameTableOffset + newDirectoryRecord.NameOffset, itemNameSize, partitionKey);                
+                itemName = ByteConversion.GetEncodedText(itemNameBytes, ByteConversion.GetPredictedCodePageForTags(itemNameBytes));
+
+                if (!newDirectoryRecord.IsDirectory)
+                {
+                    newFile = new NintendoWiiOpticalDiscFileStructure(parentDirectory,
+                        this.SourceFilePath, itemName,
+                        baseOffset, dataSectionOffset, newDirectoryRecord.FileOffset,
+                        newDirectoryRecord.FileSize, creationDateTime, discReader,
+                        partitionKey);
+
+                    this.FileArray.Add(newFile);
+                    currentOffset += 0xC;
+                }
+                else
+                {
+                    newDirectory =
+                        new NintendoWiiOpticalDiscDirectoryStructure(isoStream,
+                            isoStream.Name, newDirectoryRecord,
+                            creationDateTime, baseOffset, dataSectionOffset, rootDirectoryOffset,
+                            currentOffset, nameTableOffset,
+                            itemName, parentDirectory, discReader, partitionKey);
+
+                    this.SubDirectoryArray.Add(newDirectory);
+
+                    newDirectoryEndOffset = rootDirectoryOffset + (newDirectoryRecord.FileSize * 0xC);
+                    currentOffset = newDirectoryEndOffset;
+                }
+            }
+        }
+    }
+
+    public class NintendoWiiOpticalDiscDirectoryRecord
+    {
+        public uint NameOffset { set; get; }
+        public long FileOffset { set; get; }
+        public uint FileSize { set; get; }
+        public bool IsDirectory { set; get; }
+
+        public NintendoWiiOpticalDiscDirectoryRecord(byte[] directoryBytes)
+        {
+            this.NameOffset = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(directoryBytes, 0, 4));
+
+            this.FileOffset = (long)ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(directoryBytes, 4, 4));
+            this.FileOffset <<= 2;
+
+            this.FileSize = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(directoryBytes, 8, 4));
+            this.IsDirectory = ((this.NameOffset & 0xFF000000) != 0);
+
+            this.NameOffset &= 0xFFFFFF;
+        }
+    }
+
+    public class NintendoWiiEncryptedDiscReader
+    {
+        public byte[] CurrentDecryptedBlock { set; get; }
+        public long CurrentDecryptedBlockNumber { set; get; }
+
+        public NintendoWiiEncryptedDiscReader()
+        {
+            this.CurrentDecryptedBlock = null;
+            this.CurrentDecryptedBlockNumber = -1;
+        }
+
+        public byte[] GetBytes(FileStream isoStream, long volumeOffset,
+                long dataOffset, long blockOffset, long size, byte[] partitionKey)
+        {
+            byte[] value = new byte[size];
+            byte[] encryptedPartitionCluster;
+            byte[] encryptedClusterDataSection;
+            byte[] decryptedClusterDataSection;
+            byte[] clusterIV;
+
+            long bufferLocation = 0;
+            long maxCopySize;
+            long copySize;
+
+            while (size > 0)
+            {
+                // get block offset info
+                NintendoWiiOpticalDisc.WiiBlockStructure blockStructure =
+                    NintendoWiiOpticalDisc.GetWiiBlockStructureForOffset(blockOffset);
+
+                // read current block
+                encryptedPartitionCluster = ParseFile.ParseSimpleOffset(isoStream,
+                    volumeOffset + dataOffset + (blockStructure.BlockNumber * 0x8000),
+                    0x8000);
+
+                if (this.CurrentDecryptedBlockNumber != blockStructure.BlockNumber)
+                {
+                    clusterIV = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x03D0, 0x10);
+                    encryptedClusterDataSection = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x400, 0x7C00);
+                    decryptedClusterDataSection = AESEngine.Decrypt(encryptedClusterDataSection,
+                                    partitionKey, clusterIV, CipherMode.CBC, PaddingMode.Zeros);
+
+                    this.CurrentDecryptedBlock = decryptedClusterDataSection;
+                    this.CurrentDecryptedBlockNumber = blockStructure.BlockNumber;
+                }
+
+                // copy the encrypted data
+                maxCopySize = 0x7C00 - blockStructure.BlockOffset;
+                copySize = (size > maxCopySize) ? maxCopySize : size;
+                Array.Copy(this.CurrentDecryptedBlock, blockStructure.BlockOffset,
+                    value, bufferLocation, copySize);
+
+                // update counters
+                size -= copySize;
+                bufferLocation += copySize;
+                blockOffset += copySize;
+            }
+
+            return value;
+        }
+
+        public void ExtractFile(FileStream isoStream, string destinationPath, long volumeOffset,
+            long dataOffset, long blockOffset, long size, byte[] partitionKey)
+        {
+            byte[] value = new byte[0x7C00];
+            byte[] encryptedPartitionCluster;
+            byte[] encryptedClusterDataSection;
+            byte[] decryptedClusterDataSection;
+            byte[] clusterIV;
+
+            long maxCopySize;
+            long copySize;
+
+            // create destination
+            string destintionDirectory = Path.GetDirectoryName(destinationPath);
+
+            if (!Directory.Exists(destintionDirectory))
+            {
+                Directory.CreateDirectory(destintionDirectory);
+            }
+
+            using (FileStream outStream = File.Open(destinationPath, FileMode.Create, FileAccess.Write))
+            {
+                while (size > 0)
+                {
+                    // get block offset info
+                    NintendoWiiOpticalDisc.WiiBlockStructure blockStructure =
+                        NintendoWiiOpticalDisc.GetWiiBlockStructureForOffset(blockOffset);
+
+                    // read current block
+                    encryptedPartitionCluster = ParseFile.ParseSimpleOffset(isoStream,
+                        volumeOffset + dataOffset + (blockStructure.BlockNumber * 0x8000),
+                        0x8000);
+
+                    if (this.CurrentDecryptedBlockNumber != blockStructure.BlockNumber)
+                    {
+                        clusterIV = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x03D0, 0x10);
+                        encryptedClusterDataSection = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x400, 0x7C00);
+                        decryptedClusterDataSection = AESEngine.Decrypt(encryptedClusterDataSection,
+                                        partitionKey, clusterIV, CipherMode.CBC, PaddingMode.Zeros);
+
+                        this.CurrentDecryptedBlock = decryptedClusterDataSection;
+                        this.CurrentDecryptedBlockNumber = blockStructure.BlockNumber;
+                    }
+
+                    // copy the encrypted data
+                    maxCopySize = 0x7C00 - blockStructure.BlockOffset;
+                    copySize = (size > maxCopySize) ? maxCopySize : size;
+                    outStream.Write(this.CurrentDecryptedBlock, (int)blockStructure.BlockOffset, (int)copySize);
+
+                    // update counters
+                    size -= copySize;
+                    blockOffset += copySize;
+                }
+            }
         }
     }
 
@@ -348,60 +838,6 @@ namespace VGMToolbox.format.iso
             }
 
             return decryptedData;
-        }
-
-        // Decrypt a file into another file using a password 
-        public static void Decrypt(string fileIn, string fileOut, string Password, CipherMode cipherMode, PaddingMode paddingMode)
-        {
-
-            // First we are going to open the file streams 
-
-            FileStream fsIn = new FileStream(fileIn,
-                        FileMode.Open, FileAccess.Read);
-            FileStream fsOut = new FileStream(fileOut,
-                        FileMode.OpenOrCreate, FileAccess.Write);
-
-            // Then we are going to derive a Key and an IV from
-            // the Password and create an algorithm 
-
-            PasswordDeriveBytes pdb = new PasswordDeriveBytes(Password,
-                new byte[] {0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 
-            0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76});
-            Rijndael alg = Rijndael.Create();
-
-            alg.Mode = cipherMode;
-            alg.Padding = paddingMode;
-            alg.Key = pdb.GetBytes(32);
-            alg.IV = pdb.GetBytes(16);
-
-            // Now create a crypto stream through which we are going
-            // to be pumping data. 
-            // Our fileOut is going to be receiving the Decrypted bytes. 
-
-            CryptoStream cs = new CryptoStream(fsOut, alg.CreateDecryptor(), CryptoStreamMode.Write);
-
-            // Now will will initialize a buffer and will be 
-            // processing the input file in chunks. 
-            // This is done to avoid reading the whole file (which can be
-            // huge) into memory. 
-
-            int bufferLen = 4096;
-            byte[] buffer = new byte[bufferLen];
-            int bytesRead;
-
-            do
-            {
-                // read a chunk of data from the input file 
-                bytesRead = fsIn.Read(buffer, 0, bufferLen);
-
-                // Decrypt it 
-                cs.Write(buffer, 0, bytesRead);
-
-            } while (bytesRead != 0);
-
-            // close everything 
-            cs.Close(); // this will also close the unrelying fsOut stream 
-            fsIn.Close();
         }
     }
 }

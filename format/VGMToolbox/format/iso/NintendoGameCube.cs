@@ -19,6 +19,8 @@ namespace VGMToolbox.format.iso
         public string FormatDescription { set; get; }
         public long VolumeBaseOffset { set; get; }
         public bool IsRawDump { set; get; }
+        public int OffsetBitShiftValue { set; get; }
+        
         public ArrayList DirectoryStructureArray { set; get; }
         public IDirectoryStructure[] Directories
         {
@@ -35,14 +37,27 @@ namespace VGMToolbox.format.iso
 
         public long NameTableOffset { set; get; }
 
+        public bool IsGameCubeDisc(FileStream isoStream)
+        {
+            bool ret = false;
+
+            byte[] SignatureBytes = ParseFile.ParseSimpleOffset(isoStream, this.VolumeBaseOffset + 0x18, 8);
+
+            if (ParseFile.CompareSegmentUsingSourceOffset(SignatureBytes, 4, NintendoGameCube.STANDARD_IDENTIFIER.Length, NintendoGameCube.STANDARD_IDENTIFIER))
+            {
+                ret = true;
+            }
+
+            return ret;
+        }
+
         public void Initialize(FileStream isoStream, long offset, bool isRawDump)
         {
             byte[] volumeIdentifierBytes;
             byte[] imageDateBytes;
             string imageDateString;
 
-            this.VolumeBaseOffset = offset;
-            this.FormatDescription = NintendoGameCube.FORMAT_DESCRIPTION_STRING;
+            this.VolumeBaseOffset = offset;            
             this.IsRawDump = isRawDump;
             this.DirectoryStructureArray = new ArrayList();
 
@@ -66,8 +81,21 @@ namespace VGMToolbox.format.iso
                 this.ImageCreationTime = new DateTime();
             }
 
+            // set bit shift for GC or WII
+            if (this.IsGameCubeDisc(isoStream))
+            {
+                this.OffsetBitShiftValue = 0;
+                this.FormatDescription = NintendoGameCube.FORMAT_DESCRIPTION_STRING;
+            }
+            else
+            {
+                this.OffsetBitShiftValue = 2;
+                this.FormatDescription = NintendoWiiOpticalDisc.FORMAT_DESCRIPTION_STRING_DECRYPTED;
+            }
+
             // get offset of file table
             this.RootDirectoryOffset = (long)ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(isoStream, this.VolumeBaseOffset + 0x424, 4));
+            this.RootDirectoryOffset <<= this.OffsetBitShiftValue;
 
             this.LoadDirectories(isoStream);
         }
@@ -88,12 +116,14 @@ namespace VGMToolbox.format.iso
 
             // Get name table offset
             rootDirectoryBytes = ParseFile.ParseSimpleOffset(isoStream, this.RootDirectoryOffset, 0xC);
-            rootDirectoryRecord = new NintendoGameCubeDirectoryRecord(rootDirectoryBytes);
+            rootDirectoryRecord = new NintendoGameCubeDirectoryRecord(rootDirectoryBytes, this.OffsetBitShiftValue);
             this.NameTableOffset = this.RootDirectoryOffset + ((long)rootDirectoryRecord.FileSize * 0xC);
 
             rootDirectory = new NintendoGameCubeDirectoryStructure(isoStream,
-                isoStream.Name, rootDirectoryRecord, this.ImageCreationTime, this.VolumeBaseOffset,
-                this.RootDirectoryOffset, this.RootDirectoryOffset, this.NameTableOffset, String.Empty, String.Empty);
+                isoStream.Name, rootDirectoryRecord, this.ImageCreationTime, 
+                this.VolumeBaseOffset, this.RootDirectoryOffset, 
+                this.RootDirectoryOffset, this.NameTableOffset, 
+                String.Empty, String.Empty, this.OffsetBitShiftValue);
 
             this.DirectoryStructureArray.Add(rootDirectory);
         }
@@ -127,7 +157,7 @@ namespace VGMToolbox.format.iso
             throw new ArgumentException("object is not an NintendoGameCubeFileStructure");
         }
 
-        public NintendoGameCubeFileStructure(string parentDirectoryName, string sourceFilePath, string fileName, long volumeBaseOffset, uint lba, long size, DateTime fileTime)
+        public NintendoGameCubeFileStructure(string parentDirectoryName, string sourceFilePath, string fileName, long volumeBaseOffset, long lba, long size, DateTime fileTime)
         {
             this.ParentDirectoryName = parentDirectoryName;
             this.SourceFilePath = sourceFilePath;
@@ -141,7 +171,7 @@ namespace VGMToolbox.format.iso
             this.FileDateTime = fileTime;
         }
 
-        public void Extract(FileStream isoStream, string destinationFolder, bool extractAsRaw)
+        public virtual void Extract(FileStream isoStream, string destinationFolder, bool extractAsRaw)
         {
             string destinationFile = Path.Combine(Path.Combine(destinationFolder, this.ParentDirectoryName), this.FileName);
             ParseFile.ExtractChunkToFile(isoStream, this.Lba, this.Size, destinationFile);
@@ -221,7 +251,8 @@ namespace VGMToolbox.format.iso
             long directoryOffset, 
             long nameTableOffset,
             string directoryName, 
-            string parentDirectory)
+            string parentDirectory,
+            int offsetBitShiftValue)
         {
             string nextDirectory;
             this.SourceFilePath = SourceFilePath;
@@ -242,7 +273,7 @@ namespace VGMToolbox.format.iso
                 nextDirectory = this.ParentDirectoryName + Path.DirectorySeparatorChar + this.DirectoryName;
             }
 
-            this.parseDirectoryRecord(isoStream, directoryRecord, creationDateTime, baseOffset, rootDirectoryOffset, directoryOffset, nameTableOffset, nextDirectory);
+            this.parseDirectoryRecord(isoStream, directoryRecord, creationDateTime, baseOffset, rootDirectoryOffset, directoryOffset, nameTableOffset, nextDirectory, offsetBitShiftValue);
         }
 
 
@@ -254,7 +285,8 @@ namespace VGMToolbox.format.iso
             long rootDirectoryOffset,
             long directoryOffset,
             long nameTableOffset,
-            string parentDirectory)
+            string parentDirectory, 
+            int offsetBitShiftValue)
         {
             long directoryRecordEndOffset;
             long newDirectoryEndOffset;
@@ -273,7 +305,7 @@ namespace VGMToolbox.format.iso
 
             while (currentOffset < directoryRecordEndOffset)
             {
-                newDirectoryRecord = new NintendoGameCubeDirectoryRecord(ParseFile.ParseSimpleOffset(isoStream, currentOffset, 0xC));
+                newDirectoryRecord = new NintendoGameCubeDirectoryRecord(ParseFile.ParseSimpleOffset(isoStream, currentOffset, 0xC), offsetBitShiftValue);
 
                 itemNameSize = ParseFile.GetSegmentLength(isoStream, (int)(nameTableOffset + newDirectoryRecord.NameOffset), Constants.NullByteArray);
                 itemNameBytes = ParseFile.ParseSimpleOffset(isoStream, nameTableOffset + newDirectoryRecord.NameOffset, itemNameSize);
@@ -296,7 +328,7 @@ namespace VGMToolbox.format.iso
                             isoStream.Name, newDirectoryRecord,
                             creationDateTime, baseOffset, rootDirectoryOffset,
                             currentOffset, nameTableOffset,
-                            itemName, parentDirectory);
+                            itemName, parentDirectory, offsetBitShiftValue);
                     
                     this.SubDirectoryArray.Add(newDirectory);
 
@@ -310,14 +342,17 @@ namespace VGMToolbox.format.iso
     public class NintendoGameCubeDirectoryRecord
     {
         public uint NameOffset { set; get; }
-        public uint FileOffset { set; get; }
+        public long FileOffset { set; get; }
         public uint FileSize { set; get; }
         public bool IsDirectory { set; get; }
               
-        public NintendoGameCubeDirectoryRecord(byte[] directoryBytes)
+        public NintendoGameCubeDirectoryRecord(byte[] directoryBytes, int OffsetBitShiftValue)
         {
             this.NameOffset = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(directoryBytes, 0, 4));            
-            this.FileOffset = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(directoryBytes, 4, 4));
+            
+            this.FileOffset = (long) ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(directoryBytes, 4, 4));
+            this.FileOffset <<= OffsetBitShiftValue;
+
             this.FileSize = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(directoryBytes, 8, 4));
             this.IsDirectory = ((this.NameOffset & 0xFF000000) != 0);
 

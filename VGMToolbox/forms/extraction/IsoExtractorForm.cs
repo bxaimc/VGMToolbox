@@ -182,16 +182,19 @@ namespace VGMToolbox.forms.extraction
             ListViewItem.ListViewSubItem offsetItem;
             ListViewItem.ListViewSubItem sizeItem;
             ListViewItem.ListViewSubItem dateItem;
-            
+
+            long fileCount = 0;
+
             if (this.IsoFolderTreeView.SelectedNode != null)
             {
                 IDirectoryStructure dirStructure = (IDirectoryStructure)this.IsoFolderTreeView.SelectedNode.Tag;
 
                 this.fileListView.Items.Clear();
+                this.fileListView.EndUpdate();
 
                 if (dirStructure != null &&
                     dirStructure.Files != null)
-                {
+                {                   
                     foreach (IDirectoryStructure d in dirStructure.SubDirectories)
                     {
                         directoryItem = new ListViewItem(d.DirectoryName);
@@ -224,9 +227,17 @@ namespace VGMToolbox.forms.extraction
                         fileItem.SubItems.Add(sizeItem);
                         fileItem.SubItems.Add(dateItem);
 
+                        // refresh page for huge sets
+                        if (fileCount % 100 == 0)
+                        {
+                            Application.DoEvents();
+                        }
+
                         this.fileListView.Items.Add(fileItem);
+
+                        fileCount++;                        
                     }
-                }
+                }                
             }
         }
 
@@ -284,7 +295,7 @@ namespace VGMToolbox.forms.extraction
                 if (showList)
                 {
                     contextMenuStrip1.Show(this.fileListView, p);
-                }
+               }
             }
         }
 
