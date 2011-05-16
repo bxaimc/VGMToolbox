@@ -83,6 +83,7 @@
     <Compile Include="VGMToolbox\format\iso\IVolume.cs" />
     <Compile Include="VGMToolbox\format\iso\NintendoGameCube.cs" />
     <Compile Include="VGMToolbox\format\iso\NintendoWiiOpticalDisc.cs" />
+    <Compile Include="VGMToolbox\format\iso\NullDcGdi.cs" />
     <Compile Include="VGMToolbox\format\iso\Panasonic3do.cs" />
     <Compile Include="VGMToolbox\format\iso\XDvdFs.cs" />
     <Compile Include="VGMToolbox\format\IXsfTagFormat.cs" />

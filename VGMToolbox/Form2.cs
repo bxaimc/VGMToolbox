@@ -1175,6 +1175,7 @@ namespace VGMToolbox
 
             return other_RootNode;
         }
+
         private void tvMenuTree_doClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             if (e.Node.Tag != null)
