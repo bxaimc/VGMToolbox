@@ -35,7 +35,10 @@ namespace VGMToolbox.tools.extract
         }
         
         public IsoExtractorWorker() :
-            base() { }
+            base() 
+        {
+            this.progressCounterIncrementer = 10;
+        }
 
         protected override void DoTaskForFile(string pPath, IVgmtWorkerStruct pTaskStruct, DoWorkEventArgs e)
         {
@@ -59,7 +62,7 @@ namespace VGMToolbox.tools.extract
                 foreach (IFileStructure f in taskStruct.Files)
                 {
                     if (!CancellationPending)
-                    {
+                    {                        
                         f.Extract(fs, taskStruct.DestinationFolder, taskStruct.ExtractAsRaw);
                     }
                     else

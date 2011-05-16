@@ -658,11 +658,13 @@ namespace VGMToolbox.format.iso
     {
         public byte[] CurrentDecryptedBlock { set; get; }
         public long CurrentDecryptedBlockNumber { set; get; }
+        public Rijndael Algorithm { set; get; }
 
         public NintendoWiiEncryptedDiscReader()
         {
             this.CurrentDecryptedBlock = null;
             this.CurrentDecryptedBlockNumber = -1;
+            this.Algorithm = Rijndael.Create();
         }
 
         public byte[] GetBytes(FileStream isoStream, long volumeOffset,
@@ -685,22 +687,26 @@ namespace VGMToolbox.format.iso
                     NintendoWiiOpticalDisc.GetWiiBlockStructureForOffset(blockOffset);
 
                 // read current block
-                encryptedPartitionCluster = ParseFile.ParseSimpleOffset(isoStream,
-                    volumeOffset + dataOffset + (blockStructure.BlockNumber * 0x8000),
-                    0x8000);
+                //encryptedPartitionCluster = ParseFile.ParseSimpleOffset(isoStream,
+                //    volumeOffset + dataOffset + (blockStructure.BlockNumber * 0x8000),
+                //    0x8000);
 
                 if (this.CurrentDecryptedBlockNumber != blockStructure.BlockNumber)
                 {
+                    encryptedPartitionCluster = ParseFile.ParseSimpleOffset(isoStream,
+                        volumeOffset + dataOffset + (blockStructure.BlockNumber * 0x8000),
+                        0x8000);
+
                     clusterIV = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x03D0, 0x10);
                     encryptedClusterDataSection = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x400, 0x7C00);
-                    decryptedClusterDataSection = AESEngine.Decrypt(encryptedClusterDataSection,
+                    decryptedClusterDataSection = AESEngine.Decrypt(this.Algorithm, encryptedClusterDataSection,
                                     partitionKey, clusterIV, CipherMode.CBC, PaddingMode.Zeros);
 
                     this.CurrentDecryptedBlock = decryptedClusterDataSection;
                     this.CurrentDecryptedBlockNumber = blockStructure.BlockNumber;
                 }
 
-                // copy the encrypted data
+                // copy the decrypted data
                 maxCopySize = 0x7C00 - blockStructure.BlockOffset;
                 copySize = (size > maxCopySize) ? maxCopySize : size;
                 Array.Copy(this.CurrentDecryptedBlock, blockStructure.BlockOffset,
@@ -744,15 +750,19 @@ namespace VGMToolbox.format.iso
                         NintendoWiiOpticalDisc.GetWiiBlockStructureForOffset(blockOffset);
 
                     // read current block
-                    encryptedPartitionCluster = ParseFile.ParseSimpleOffset(isoStream,
-                        volumeOffset + dataOffset + (blockStructure.BlockNumber * 0x8000),
-                        0x8000);
+                    //encryptedPartitionCluster = ParseFile.ParseSimpleOffset(isoStream,
+                    //    volumeOffset + dataOffset + (blockStructure.BlockNumber * 0x8000),
+                    //    0x8000);
 
                     if (this.CurrentDecryptedBlockNumber != blockStructure.BlockNumber)
                     {
+                        encryptedPartitionCluster = ParseFile.ParseSimpleOffset(isoStream,
+                            volumeOffset + dataOffset + (blockStructure.BlockNumber * 0x8000),
+                            0x8000);
+                        
                         clusterIV = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x03D0, 0x10);
                         encryptedClusterDataSection = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x400, 0x7C00);
-                        decryptedClusterDataSection = AESEngine.Decrypt(encryptedClusterDataSection,
+                        decryptedClusterDataSection = AESEngine.Decrypt(this.Algorithm, encryptedClusterDataSection,
                                         partitionKey, clusterIV, CipherMode.CBC, PaddingMode.Zeros);
 
                         this.CurrentDecryptedBlock = decryptedClusterDataSection;
@@ -793,6 +803,72 @@ namespace VGMToolbox.format.iso
                 //     TripleDES alg = TripleDES.Create(); 
 
                 Rijndael alg = Rijndael.Create();
+
+                // Now set the key and the IV. 
+                // We need the IV (Initialization Vector) because the algorithm
+                // is operating in its default 
+                // mode called CBC (Cipher Block Chaining). The IV is XORed with
+                // the first block (8 byte) 
+                // of the data after it is decrypted, and then each decrypted
+                // block is XORed with the previous 
+                // cipher block. This is done to make encryption more secure. 
+                // There is also a mode called ECB which does not need an IV,
+                // but it is much less secure. 
+
+                alg.KeySize = 128;
+                alg.Mode = cipherMode;
+                alg.Padding = paddingMode;
+                alg.Key = Key;
+                alg.IV = IV;
+
+                // Create a CryptoStream through which we are going to be
+                // pumping our data. 
+                // CryptoStreamMode.Write means that we are going to be
+                // writing data to the stream 
+                // and the output will be written in the MemoryStream
+                // we have provided. 
+
+                CryptoStream cs = new CryptoStream(ms,
+                    alg.CreateDecryptor(), CryptoStreamMode.Write);
+
+                // Write the data and make it do the decryption 
+                cs.Write(cipherData, 0, cipherData.Length);
+
+                // Close the crypto stream (or do FlushFinalBlock). 
+                // This will tell it that we have done our decryption
+                // and there is no more data coming in, 
+                // and it is now a good time to remove the padding
+                // and finalize the decryption process. 
+
+                cs.Close();
+
+                // Now get the decrypted data from the MemoryStream. 
+                // Some people make a mistake of using GetBuffer() here,
+                // which is not the right way. 
+
+                decryptedData = ms.ToArray();
+            }
+
+            return decryptedData;
+        }
+
+        public static byte[] Decrypt(Rijndael algorithm, byte[] cipherData, byte[] Key, byte[] IV, CipherMode cipherMode, PaddingMode paddingMode)
+        {
+            byte[] decryptedData = null;
+
+            // Create a MemoryStream that is going to accept the
+            // decrypted bytes 
+            using (MemoryStream ms = new MemoryStream())
+            {
+
+                // Create a symmetric algorithm. 
+                // We are going to use Rijndael because it is strong and
+                // available on all platforms. 
+                // You can use other algorithms, to do so substitute the next
+                // line with something like 
+                //     TripleDES alg = TripleDES.Create(); 
+
+                Rijndael alg = algorithm;
 
                 // Now set the key and the IV. 
                 // We need the IV (Initialization Vector) because the algorithm
