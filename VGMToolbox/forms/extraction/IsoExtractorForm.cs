@@ -180,6 +180,7 @@ namespace VGMToolbox.forms.extraction
         {
             ListViewItem directoryItem;
             ListViewItem fileItem;
+            ListViewItem.ListViewSubItem fileExtensionItem;
             ListViewItem.ListViewSubItem offsetItem;
             ListViewItem.ListViewSubItem sizeItem;
             ListViewItem.ListViewSubItem dateItem;
@@ -208,6 +209,7 @@ namespace VGMToolbox.forms.extraction
                     foreach (IFileStructure f in dirStructure.Files)
                     {
                         fileItem = new ListViewItem(f.FileName);
+                        fileExtensionItem = new ListViewItem.ListViewSubItem(fileItem, Path.GetExtension(f.FileName).Substring(1));
                         offsetItem = new ListViewItem.ListViewSubItem(fileItem, String.Format("{0}", f.Lba.ToString()));
                         sizeItem = new ListViewItem.ListViewSubItem(fileItem, f.Size.ToString());
                         dateItem = new ListViewItem.ListViewSubItem(fileItem, f.FileDateTime.ToString());
@@ -224,6 +226,7 @@ namespace VGMToolbox.forms.extraction
                             fileItem.ForeColor = Color.DarkGreen;
                         }
 
+                        fileItem.SubItems.Add(fileExtensionItem);
                         fileItem.SubItems.Add(offsetItem);
                         fileItem.SubItems.Add(sizeItem);
                         fileItem.SubItems.Add(dateItem);
