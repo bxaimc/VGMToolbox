@@ -23,6 +23,9 @@ namespace VGMToolbox.format.iso
         public static readonly byte[] SYNC_BYTES = new byte[] { 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 
                                                                 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00 };
 
+        public static readonly byte[] EMPTY_SYNC_BYTES = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+                                                                      0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+
         public const long RAW_SECTOR_SIZE = 2352;
         public const long NON_RAW_SECTOR_SIZE = 2048;
         public const int MAX_HEADER_SIZE = 0x18;

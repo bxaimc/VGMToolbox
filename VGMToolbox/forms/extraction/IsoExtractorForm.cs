@@ -186,6 +186,7 @@ namespace VGMToolbox.forms.extraction
             ListViewItem.ListViewSubItem dateItem;
 
             long fileCount = 0;
+            string fileExtensionString;
 
             if (this.IsoFolderTreeView.SelectedNode != null)
             {
@@ -209,7 +210,9 @@ namespace VGMToolbox.forms.extraction
                     foreach (IFileStructure f in dirStructure.Files)
                     {
                         fileItem = new ListViewItem(f.FileName);
-                        fileExtensionItem = new ListViewItem.ListViewSubItem(fileItem, Path.GetExtension(f.FileName).Substring(1));
+                        fileExtensionString = Path.GetExtension(f.FileName);
+                        fileExtensionString = fileExtensionString.Length > 0 ? fileExtensionString.Substring(1) : fileExtensionString;
+                        fileExtensionItem = new ListViewItem.ListViewSubItem(fileItem, fileExtensionString);
                         offsetItem = new ListViewItem.ListViewSubItem(fileItem, String.Format("{0}", f.Lba.ToString()));
                         sizeItem = new ListViewItem.ListViewSubItem(fileItem, f.Size.ToString());
                         dateItem = new ListViewItem.ListViewSubItem(fileItem, f.FileDateTime.ToString());

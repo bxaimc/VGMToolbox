@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.IO;
 using System.Text;
 
+using CueSharp;
+
 using VGMToolbox.format.iso;
 using VGMToolbox.plugin;
 using VGMToolbox.util;
@@ -80,7 +82,39 @@ namespace VGMToolbox.tools.extract
             ArrayList volumeList = new ArrayList();
 
             // check for .cue sheet style entries first
-            if (pPath.ToUpper().EndsWith(".GDI"))
+            if (pPath.ToUpper().EndsWith(".CUE"))
+            {
+                Track cueTrack;
+                string basePath = String.Empty;
+                string trackPath;
+
+                CueSheet cueSheet = new CueSheet(pPath);
+
+                for (int i = 0; i < cueSheet.Tracks.Length; i++)
+                {
+                    cueTrack = cueSheet.Tracks[i];
+                    basePath = String.IsNullOrEmpty(cueTrack.DataFile.Filename) ? basePath : cueTrack.DataFile.Filename;
+                    trackPath = Path.Combine(Path.GetDirectoryName(pPath), basePath);
+
+                    // Add Data Type Entries
+                    if (cueTrack.TrackDataType != DataType.AUDIO)
+                    {
+                        IVolume[] dataVolumes = GetDataVolumes(trackPath, 0);
+
+                        for (int j = 0; j < dataVolumes.Length; j++)
+                        {
+                            volumeList.Add(dataVolumes[j]);
+                        }
+                    }
+                    
+                    // Add Audio Entries
+                    else
+                    {
+                    
+                    }
+                }
+            }
+            else if (pPath.ToUpper().EndsWith(".GDI"))
             {
                 //------------------
                 // NULLDC GDI IMAGE
@@ -90,162 +124,176 @@ namespace VGMToolbox.tools.extract
             }
             else
             {
-                // read the file, scanning for identifying bytes
-                using (FileStream fs = File.OpenRead(pPath))
+                IVolume[] dataVolumes = GetDataVolumes(pPath, 0);
+
+                for (int i = 0; i < dataVolumes.Length; i++)
                 {
-                    long currentOffset = 0;
-                    long fileSize = fs.Length;
+                    volumeList.Add(dataVolumes[i]);
+                }
+            }
+            
+            return (IVolume[])volumeList.ToArray(typeof(IVolume));
+        }
 
-                    byte[] sectorBytes;
-                    byte[] sectorDataBytes;
-                    byte[] volumeIdBytes;
+        public static IVolume[] GetDataVolumes(string pPath, long startingOffset)
+        {
+            ArrayList volumeList = new ArrayList();
 
-                    bool isRawFormat = false;
-                    int sectorSize = 0x800;
-                    CdSectorType mode;
+            // read the file, scanning for identifying bytes
+            using (FileStream fs = File.OpenRead(pPath))
+            {
+                long currentOffset = startingOffset;
+                long fileSize = fs.Length;
 
-                    //----------------------
-                    // check for sync bytes
-                    //----------------------
-                    byte[] syncCheckBytes = ParseFile.ParseSimpleOffset(fs, 0, CdRom.SYNC_BYTES.Length);
+                byte[] sectorBytes;
+                byte[] sectorDataBytes;
+                byte[] volumeIdBytes;
 
-                    if (ParseFile.CompareSegment(syncCheckBytes, 0, CdRom.SYNC_BYTES))
+                bool isRawFormat = false;
+                int sectorSize = 0x800;
+                CdSectorType mode;
+
+                //----------------------
+                // check for sync bytes
+                //----------------------
+                byte[] syncCheckBytes = ParseFile.ParseSimpleOffset(fs, 0, CdRom.SYNC_BYTES.Length);
+
+                if (ParseFile.CompareSegment(syncCheckBytes, 0, CdRom.SYNC_BYTES))
+                {
+                    isRawFormat = true;
+                    sectorSize = 0x930;
+                }
+
+                while (currentOffset < fileSize)
+                {
+                    // get sector
+                    sectorBytes = ParseFile.ParseSimpleOffset(fs, currentOffset, sectorSize);
+
+                    // get data bytes from sector
+                    sectorDataBytes = CdRom.GetDataChunkFromSector(sectorBytes, isRawFormat);
+
+                    // get header bytes
+                    volumeIdBytes = ParseFile.ParseSimpleOffset(sectorDataBytes, 0, MAX_ID_BYTES_LENGTH);
+
+                    //----------
+                    // ISO 9660
+                    //----------
+                    if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, 0, Iso9660.VOLUME_DESCRIPTOR_IDENTIFIER.Length, Iso9660.VOLUME_DESCRIPTOR_IDENTIFIER))
                     {
-                        isRawFormat = true;
-                        sectorSize = 0x930;
+                        Iso9660Volume isoVolume;
+                        isoVolume = new Iso9660Volume();
+                        isoVolume.Initialize(fs, currentOffset, isRawFormat);
+                        volumeList.Add((IVolume)isoVolume);
+
+                        if ((isoVolume.Directories.Length == 1) &&
+                            (isoVolume.Directories[0].SubDirectories.Length == 0) &&
+                            (isoVolume.Directories[0].Files.Length == 0))
+                        {
+                            // possible empty/dummy volume (XBOX)
+                            currentOffset += sectorSize;
+                        }
+                        else
+                        {
+                            currentOffset = isoVolume.VolumeBaseOffset + ((long)isoVolume.VolumeSpaceSize * (long)sectorSize);
+                        }
+                    }
+                    //-----------------
+                    // Green Book CD-I
+                    //-----------------
+                    else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, 0, GreenBookCdi.VOLUME_DESCRIPTOR_IDENTIFIER.Length, GreenBookCdi.VOLUME_DESCRIPTOR_IDENTIFIER))
+                    {
+                        GreenBookCdiVolume isoVolume;
+                        isoVolume = new GreenBookCdiVolume();
+                        isoVolume.Initialize(fs, currentOffset, isRawFormat);
+                        volumeList.Add((IVolume)isoVolume);
+
+                        break;
                     }
 
-                    while (currentOffset < fileSize)
+                    //-----------------------
+                    // XDVDFS (XBOX/XBOX360)
+                    //-----------------------
+                    else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, 0, XDvdFs.STANDARD_IDENTIFIER.Length, XDvdFs.STANDARD_IDENTIFIER))
                     {
-                        // get sector
-                        sectorBytes = ParseFile.ParseSimpleOffset(fs, currentOffset, sectorSize);
-
-                        // get data bytes from sector
-                        sectorDataBytes = CdRom.GetDataChunkFromSector(sectorBytes, isRawFormat);
-
-                        // get header bytes
-                        volumeIdBytes = ParseFile.ParseSimpleOffset(sectorDataBytes, 0, MAX_ID_BYTES_LENGTH);
-
-                        //----------
-                        // ISO 9660
-                        //----------
-                        if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, 0, Iso9660.VOLUME_DESCRIPTOR_IDENTIFIER.Length, Iso9660.VOLUME_DESCRIPTOR_IDENTIFIER))
+                        if (isRawFormat)
                         {
-                            Iso9660Volume isoVolume;
-                            isoVolume = new Iso9660Volume();
-                            isoVolume.Initialize(fs, currentOffset, isRawFormat);
-                            volumeList.Add((IVolume)isoVolume);
-
-                            if ((isoVolume.Directories.Length == 1) &&
-                                (isoVolume.Directories[0].SubDirectories.Length == 0) &&
-                                (isoVolume.Directories[0].Files.Length == 0))
-                            {
-                                // possible empty/dummy volume (XBOX)
-                                currentOffset += sectorSize;
-                            }
-                            else
-                            {
-                                currentOffset = isoVolume.VolumeBaseOffset + ((long)isoVolume.VolumeSpaceSize * (long)sectorSize);
-                            }
+                            throw new FormatException("Raw dumps not supported for XDVDFS (XBOX/XBOX360) format.");
                         }
-                        //-----------------
-                        // Green Book CD-I
-                        //-----------------
-                        else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, 0, GreenBookCdi.VOLUME_DESCRIPTOR_IDENTIFIER.Length, GreenBookCdi.VOLUME_DESCRIPTOR_IDENTIFIER))
+                        else
                         {
-                            GreenBookCdiVolume isoVolume;
-                            isoVolume = new GreenBookCdiVolume();
+                            XDvdFsVolume isoVolume;
+                            isoVolume = new XDvdFsVolume();
                             isoVolume.Initialize(fs, currentOffset, isRawFormat);
                             volumeList.Add((IVolume)isoVolume);
 
+                            // XDVDFS should be the last volume
                             break;
                         }
+                    }
 
-                        //-----------------------
-                        // XDVDFS (XBOX/XBOX360)
-                        //-----------------------
-                        else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, 0, XDvdFs.STANDARD_IDENTIFIER.Length, XDvdFs.STANDARD_IDENTIFIER))
+                    //---------------
+                    // PANASONIC 3DO
+                    //---------------
+                    else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, 0, Panasonic3do.STANDARD_IDENTIFIER.Length, Panasonic3do.STANDARD_IDENTIFIER))
+                    {
+                        Panasonic3doVolume isoVolume;
+                        isoVolume = new Panasonic3doVolume();
+                        isoVolume.Initialize(fs, currentOffset, isRawFormat);
+                        volumeList.Add((IVolume)isoVolume);
+
+                        // should be the last volume
+                        break;
+                    }
+
+                    //-------------------
+                    // NINTENDO GAMECUBE
+                    //-------------------
+                    else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, (int)NintendoGameCube.IDENTIFIER_OFFSET, NintendoGameCube.STANDARD_IDENTIFIER.Length, NintendoGameCube.STANDARD_IDENTIFIER))
+                    {
+                        NintendoGameCubeVolume isoVolume;
+                        isoVolume = new NintendoGameCubeVolume();
+                        isoVolume.Initialize(fs, currentOffset, isRawFormat);
+                        volumeList.Add((IVolume)isoVolume);
+
+                        // should be the last volume
+                        break;
+                    }
+
+                    //--------------
+                    // NINTENDO WII
+                    //--------------
+                    else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, (int)NintendoWiiOpticalDisc.IDENTIFIER_OFFSET, NintendoWiiOpticalDisc.STANDARD_IDENTIFIER.Length, NintendoWiiOpticalDisc.STANDARD_IDENTIFIER))
+                    {
+                        if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, 0x60, 1, Constants.NullByteArray))
                         {
-                            if (isRawFormat)
+                            NintendoWiiOpticalDisc wiiDisc = new NintendoWiiOpticalDisc();
+                            wiiDisc.Initialize(fs, currentOffset, isRawFormat);
+
+                            foreach (NintendoWiiOpticalDiscVolume isoVolume in wiiDisc.Volumes)
                             {
-                                throw new FormatException("Raw dumps not supported for XDVDFS (XBOX/XBOX360) format.");
-                            }
-                            else
-                            {
-                                XDvdFsVolume isoVolume;
-                                isoVolume = new XDvdFsVolume();
-                                isoVolume.Initialize(fs, currentOffset, isRawFormat);
                                 volumeList.Add((IVolume)isoVolume);
-
-                                // XDVDFS should be the last volume
-                                break;
                             }
-                        }
 
-                        //---------------
-                        // PANASONIC 3DO
-                        //---------------
-                        else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, 0, Panasonic3do.STANDARD_IDENTIFIER.Length, Panasonic3do.STANDARD_IDENTIFIER))
-                        {
-                            Panasonic3doVolume isoVolume;
-                            isoVolume = new Panasonic3doVolume();
-                            isoVolume.Initialize(fs, currentOffset, isRawFormat);
-                            volumeList.Add((IVolume)isoVolume);
-
-                            // should be the last volume
                             break;
                         }
-
-                        //-------------------
-                        // NINTENDO GAMECUBE
-                        //-------------------
-                        else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, (int)NintendoGameCube.IDENTIFIER_OFFSET, NintendoGameCube.STANDARD_IDENTIFIER.Length, NintendoGameCube.STANDARD_IDENTIFIER))
+                        else // Decrypted WII ISO
                         {
                             NintendoGameCubeVolume isoVolume;
                             isoVolume = new NintendoGameCubeVolume();
                             isoVolume.Initialize(fs, currentOffset, isRawFormat);
                             volumeList.Add((IVolume)isoVolume);
-
-                            // should be the last volume
-                            break;
                         }
+                        // should be the last volume
+                        break;
+                    }
 
-                        //--------------
-                        // NINTENDO WII
-                        //--------------
-                        else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, (int)NintendoWiiOpticalDisc.IDENTIFIER_OFFSET, NintendoWiiOpticalDisc.STANDARD_IDENTIFIER.Length, NintendoWiiOpticalDisc.STANDARD_IDENTIFIER))
-                        {
-                            if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, 0x60, 1, Constants.NullByteArray))
-                            {
-                                NintendoWiiOpticalDisc wiiDisc = new NintendoWiiOpticalDisc();
-                                wiiDisc.Initialize(fs, currentOffset, isRawFormat);
-
-                                foreach (NintendoWiiOpticalDiscVolume isoVolume in wiiDisc.Volumes)
-                                {
-                                    volumeList.Add((IVolume)isoVolume);
-                                }
-
-                                break;
-                            }
-                            else // Decrypted WII ISO
-                            {
-                                NintendoGameCubeVolume isoVolume;
-                                isoVolume = new NintendoGameCubeVolume();
-                                isoVolume.Initialize(fs, currentOffset, isRawFormat);
-                                volumeList.Add((IVolume)isoVolume);
-                            }
-                            // should be the last volume
-                            break;
-                        }
-
-                        else
-                        {
-                            currentOffset += sectorSize;
-                        }
+                    else
+                    {
+                        currentOffset += sectorSize;
                     }
                 }
             }
-            
+
             return (IVolume[])volumeList.ToArray(typeof(IVolume));
         }
     }
