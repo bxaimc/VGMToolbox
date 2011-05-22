@@ -16,20 +16,12 @@ namespace VGMToolbox.tools.extract
     class IsoExtractorWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
         public static int MAX_ID_BYTES_LENGTH = 0x100;
-
-        public enum IsoFormatType
-        {
-            Iso9660,
-            XDvdFs,
-            Panasonic3do
-        };
         
         public struct IsoExtractorStruct : IVgmtWorkerStruct
         {
             public string[] SourcePaths { set; get; }
             public string DestinationFolder;
 
-            public IsoFormatType IsoFormat { set; get; }
             public bool ExtractAsRaw { set; get; }
 
             public IFileStructure[] Files { set; get; }
@@ -85,6 +77,8 @@ namespace VGMToolbox.tools.extract
             if (pPath.ToUpper().EndsWith(".CUE"))
             {
                 Track cueTrack;
+                CdAudio audioVolume;
+                UnsupportedDiscFormat emptyVolume;
                 string basePath = String.Empty;
                 string trackPath;
 
@@ -101,16 +95,30 @@ namespace VGMToolbox.tools.extract
                     {
                         IVolume[] dataVolumes = GetDataVolumes(trackPath, 0);
 
-                        for (int j = 0; j < dataVolumes.Length; j++)
+                        // if supported data format is found, add them
+                        if (dataVolumes.Length > 0)
                         {
-                            volumeList.Add(dataVolumes[j]);
+                            for (int j = 0; j < dataVolumes.Length; j++)
+                            {
+                                volumeList.Add(dataVolumes[j]);
+                            }
+                        }
+                        // add a "dummy" data volume placeholder
+                        else
+                        {
+                            emptyVolume = new UnsupportedDiscFormat();
+                            emptyVolume.Initialize(null, 0, false);
+                            volumeList.Add(emptyVolume);
                         }
                     }
                     
                     // Add Audio Entries
                     else
                     {
-                    
+                        audioVolume = new CdAudio();
+                        audioVolume.Initialize(null, 0, true);
+                        audioVolume.VolumeIdentifier = String.Format("Track {0}", cueTrack.TrackNumber.ToString("D2"));
+                        volumeList.Add(audioVolume);
                     }
                 }
             }

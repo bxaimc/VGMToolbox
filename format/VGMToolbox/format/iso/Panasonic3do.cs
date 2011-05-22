@@ -28,6 +28,7 @@ namespace VGMToolbox.format.iso
         {
             public string VolumeIdentifier { set; get; }
             public string FormatDescription { set; get; }
+            public VolumeDataType VolumeType { set; get; }
             public long VolumeBaseOffset { set; get; }
             public bool IsRawDump { set; get; }
             public ArrayList DirectoryStructureArray { set; get; }
@@ -52,6 +53,7 @@ namespace VGMToolbox.format.iso
 
                 this.VolumeBaseOffset = offset;
                 this.FormatDescription = Panasonic3do.FORMAT_DESCRIPTION_STRING;
+                this.VolumeType = VolumeDataType.Data;
                 this.IsRawDump = isRawDump;
                 this.DirectoryStructureArray = new ArrayList();
 

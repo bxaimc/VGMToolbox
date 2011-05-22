@@ -284,7 +284,8 @@ namespace VGMToolbox.format.iso
     {
         public string VolumeIdentifier { set; get; }
         public string FormatDescription { set; get; }
-        
+        public VolumeDataType VolumeType { set; get; }
+
         public long VolumeBaseOffset { set; get; }
         public long DataOffset { set; get; }
         public byte[] PartitionKey {set;get;}
@@ -341,6 +342,7 @@ namespace VGMToolbox.format.iso
             this.DirectoryStructureArray = new ArrayList();
 
             this.FormatDescription = NintendoWiiOpticalDisc.FORMAT_DESCRIPTION_STRING;
+            this.VolumeType = VolumeDataType.Data;
 
             // get identifier
             volumeIdentifierBytes = DiscReader.GetBytes(isoStream, this.VolumeBaseOffset,

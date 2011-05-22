@@ -17,7 +17,13 @@ namespace VGMToolbox.format.iso
         XaInterleaved,
         Unknown
     };
-    
+
+    public enum VolumeDataType
+    { 
+        Data, 
+        Audio
+    }
+
     public class CdRom
     {
         public static readonly byte[] SYNC_BYTES = new byte[] { 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 

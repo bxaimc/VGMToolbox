@@ -5,9 +5,10 @@ using System.Text;
 namespace VGMToolbox.format.iso
 {
     public interface IVolume
-    {
+    {        
         long VolumeBaseOffset { set; get; }
         string FormatDescription { set; get; }
+        VolumeDataType VolumeType { set; get; }
         string VolumeIdentifier { set; get; }
         bool IsRawDump { set; get; }
         IDirectoryStructure[] Directories { set; get; }

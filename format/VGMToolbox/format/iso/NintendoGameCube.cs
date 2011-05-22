@@ -17,6 +17,7 @@ namespace VGMToolbox.format.iso
     {
         public string VolumeIdentifier { set; get; }
         public string FormatDescription { set; get; }
+        public VolumeDataType VolumeType { set; get; }
         public long VolumeBaseOffset { set; get; }
         public bool IsRawDump { set; get; }
         public int OffsetBitShiftValue { set; get; }
@@ -59,6 +60,7 @@ namespace VGMToolbox.format.iso
 
             this.VolumeBaseOffset = offset;            
             this.IsRawDump = isRawDump;
+            this.VolumeType = VolumeDataType.Data;
             this.DirectoryStructureArray = new ArrayList();
 
             // get identifier

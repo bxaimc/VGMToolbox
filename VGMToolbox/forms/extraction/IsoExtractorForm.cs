@@ -57,6 +57,7 @@ namespace VGMToolbox.forms.extraction
 
             // CD
             images.Images.Add("emptyCd", (Image)new Bitmap(Path.Combine(ICON_PATH, "emptycd.ico")));
+            images.Images.Add("audioCd", (Image)new Bitmap(Path.Combine(ICON_PATH, "audioCd.ico")));
 
             // folder
             images.Images.Add("normalFolder", (Image)new Bitmap(Path.Combine(ICON_PATH, "normalFolder.ico")));
@@ -127,16 +128,28 @@ namespace VGMToolbox.forms.extraction
                 volumeName = String.IsNullOrEmpty(v.VolumeIdentifier) ? "NO_NAME" : v.VolumeIdentifier.Trim();
                 volumeName += String.Format(" ({0})", v.FormatDescription);
                 volumeNode = new TreeNode(volumeName);
-                volumeNode.ImageKey = "emptyCd";
-                volumeNode.SelectedImageKey = "emptyCd";
 
-                foreach (IDirectoryStructure d in v.Directories)
+                if (v.VolumeType == VolumeDataType.Audio)
                 {
-                    directoryNode = GetDirectoryNode(d);
-                    directoryNode.Text = "\\";
-                    volumeNode.Nodes.Add(directoryNode);
+                    volumeNode.ImageKey = "audioCd";
+                    volumeNode.SelectedImageKey = "audioCd";
                 }
-                
+                else
+                {
+                    volumeNode.ImageKey = "emptyCd";
+                    volumeNode.SelectedImageKey = "emptyCd";
+                }
+
+                if (v.Directories != null)
+                {
+                    foreach (IDirectoryStructure d in v.Directories)
+                    {
+                        directoryNode = GetDirectoryNode(d);
+                        directoryNode.Text = "\\";
+                        volumeNode.Nodes.Add(directoryNode);
+                    }
+                }
+
                 IsoFolderTreeView.Nodes.Add(volumeNode);
             }
         }
@@ -358,7 +371,6 @@ namespace VGMToolbox.forms.extraction
                 new IsoExtractorWorker.IsoExtractorStruct();
             taskStruct.SourcePaths = new string[] { this.sourceFile };           
             taskStruct.DestinationFolder = destinationFolder;
-            taskStruct.IsoFormat = IsoExtractorWorker.IsoFormatType.Iso9660;
             taskStruct.ExtractAsRaw = extractAsRaw;
             taskStruct.Files = (IFileStructure[])files.ToArray(typeof(IFileStructure));
             taskStruct.Directories = (IDirectoryStructure[])directories.ToArray(typeof(IDirectoryStructure));

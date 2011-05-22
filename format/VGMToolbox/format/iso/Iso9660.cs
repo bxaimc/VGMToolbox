@@ -83,7 +83,8 @@ namespace VGMToolbox.format.iso
     {
         public long VolumeBaseOffset { set; get; }
         public string FormatDescription { set; get; }
-        
+        public VolumeDataType VolumeType { set; get; }
+
         public bool IsRawDump { set; get; }
         public bool ContainsCdxaData { set; get; }
         public int SectorSize { set; get; }
@@ -159,6 +160,7 @@ namespace VGMToolbox.format.iso
             byte[] sectorDataBytes;
             
             this.FormatDescription = Iso9660.FORMAT_DESCRIPTION_STRING;
+            this.VolumeType = VolumeDataType.Data;
             this.IsRawDump = isRawDump;
             this.DirectoryStructureArray = new ArrayList();
 
