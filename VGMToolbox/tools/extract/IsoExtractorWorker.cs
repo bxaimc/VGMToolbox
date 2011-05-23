@@ -74,6 +74,7 @@ namespace VGMToolbox.tools.extract
             ArrayList volumeList = new ArrayList();
 
             // check for .cue sheet style entries first
+            #region .CUE Sheet
             if (pPath.ToUpper().EndsWith(".CUE"))
             {
                 Track cueTrack;
@@ -122,6 +123,8 @@ namespace VGMToolbox.tools.extract
                     }
                 }
             }
+            #endregion
+
             else if (pPath.ToUpper().EndsWith(".GDI"))
             {
                 //------------------
@@ -129,7 +132,13 @@ namespace VGMToolbox.tools.extract
                 //------------------
                 NullDcGdi dcDisc = new NullDcGdi(pPath);
 
+                foreach (IVolume v in dcDisc.Volumes)
+                {
+                    volumeList.Add(v);
+                }
             }
+
+            #region Data Volumes
             else
             {
                 IVolume[] dataVolumes = GetDataVolumes(pPath, 0);
@@ -139,7 +148,8 @@ namespace VGMToolbox.tools.extract
                     volumeList.Add(dataVolumes[i]);
                 }
             }
-            
+            #endregion
+
             return (IVolume[])volumeList.ToArray(typeof(IVolume));
         }
 
