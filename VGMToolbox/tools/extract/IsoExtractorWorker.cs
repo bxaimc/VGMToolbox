@@ -37,14 +37,21 @@ namespace VGMToolbox.tools.extract
         protected override void DoTaskForFile(string pPath, IVgmtWorkerStruct pTaskStruct, DoWorkEventArgs e)
         {
             IsoExtractorStruct taskStruct = (IsoExtractorStruct)pTaskStruct;
+            Dictionary<string, FileStream> streamCache = new Dictionary<string, FileStream>();
 
-            using (FileStream fs = File.OpenRead(pPath))
+            try
             {
                 foreach (IDirectoryStructure d in taskStruct.Directories)
                 {
                     if (!CancellationPending)
                     {
-                        d.Extract(fs, taskStruct.DestinationFolder, taskStruct.ExtractAsRaw);
+                        // open the stream and cache it
+                        if (!streamCache.ContainsKey(d.SourceFilePath))
+                        {
+                            streamCache[d.SourceFilePath] = File.OpenRead(d.SourceFilePath);
+                        }
+
+                        d.Extract(streamCache[d.SourceFilePath], taskStruct.DestinationFolder, taskStruct.ExtractAsRaw);
                     }
                     else
                     {
@@ -54,10 +61,16 @@ namespace VGMToolbox.tools.extract
                 }
 
                 foreach (IFileStructure f in taskStruct.Files)
-                {
+                {                    
                     if (!CancellationPending)
-                    {                        
-                        f.Extract(fs, taskStruct.DestinationFolder, taskStruct.ExtractAsRaw);
+                    {
+                        // open the stream and cache it
+                        if (!streamCache.ContainsKey(f.SourceFilePath))
+                        {
+                            streamCache[f.SourceFilePath] = File.OpenRead(f.SourceFilePath);
+                        }
+
+                        f.Extract(streamCache[f.SourceFilePath], taskStruct.DestinationFolder, taskStruct.ExtractAsRaw);
                     }
                     else
                     {
@@ -65,7 +78,22 @@ namespace VGMToolbox.tools.extract
                         break;
                     }
                 }
-
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(String.Format("Error extracting file: {0}", ex.Message));
+            }
+            finally
+            {
+                // close any open streams
+                foreach (string key in streamCache.Keys)
+                {
+                    if (streamCache[key].CanRead)
+                    {
+                        streamCache[key].Close();
+                        streamCache[key].Dispose();
+                    }
+                }
             }
         }
 

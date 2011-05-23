@@ -146,20 +146,20 @@ namespace VGMToolbox.format.iso
             return sectorBytes;
         }
 
-        public FileStream GetFileStreamForLba(uint sectorLba)
+        public string GetFilePathForLba(uint sectorLba)
         {
-            FileStream fileStream = null;
+            string fileName = null;
 
-            for (int i = (this.TrackCount - 1); i > 0; i--)
+            for (int i = (this.TrackCount - 1); i >= 0; i--)
             {
                 if (sectorLba >= this.TrackEntries[i].StartSector)
                 {
-                    fileStream = this.TrackEntries[i].TrackStream;
+                    fileName = this.TrackEntries[i].FilePath;
                     break;
                 }
             }
-            
-            return fileStream;
+
+            return fileName;
         }
         
         private void ParseGdiFile(string gdiPath)
@@ -428,11 +428,11 @@ namespace VGMToolbox.format.iso
         public void Extract(FileStream isoStream, string destinationFolder, bool extractAsRaw)
         {
             string destinationFile = Path.Combine(Path.Combine(destinationFolder, this.ParentDirectoryName), this.FileName);
-            /*
+            
             CdRom.ExtractCdData(isoStream, destinationFile,
                 this.VolumeBaseOffset, this.Lba, this.Size,
                 this.IsRaw, this.NonRawSectorSize, this.FileMode, extractAsRaw);
-            */ 
+            
         }
     }
 
@@ -583,7 +583,7 @@ namespace VGMToolbox.format.iso
                             else
                             {
                                 fileInitStruct.ParentDirectoryName = dirInitStruct.ParentDirectory;
-                                fileInitStruct.SourceFilePath = this.SourceFilePath;
+                                fileInitStruct.SourceFilePath = dirInitStruct.Gdi.GetFilePathForLba(tempDirectoryRecord.LocationOfExtent);
                                 fileInitStruct.FileName = tempDirectoryRecord.FileIdentifierString.Replace(";1", String.Empty);
                                 fileInitStruct.VolumeBaseOffset = dirInitStruct.BaseOffset;
                                 fileInitStruct.Lba = tempDirectoryRecord.LocationOfExtent;
