@@ -374,11 +374,11 @@ namespace VGMToolbox.format.iso
             this.LoadDirectories(isoStream);
         }
 
-        public void ExtractAll(FileStream isoStream, string destinationFolder, bool extractAsRaw)
+        public void ExtractAll(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
         {
             foreach (NintendoWiiOpticalDiscDirectoryStructure ds in this.DirectoryStructureArray)
             {
-                ds.Extract(isoStream, destinationFolder, extractAsRaw);
+                ds.Extract(ref streamCache, destinationFolder, extractAsRaw);
             }
         }
 
@@ -455,10 +455,16 @@ namespace VGMToolbox.format.iso
             this.PartitionKey = partitionKey;
         }
 
-        public virtual void Extract(FileStream isoStream, string destinationFolder, bool extractAsRaw)
+        public virtual void Extract(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
         {
             string destinationFile = Path.Combine(Path.Combine(destinationFolder, this.ParentDirectoryName), this.FileName);
-            this.DiscReader.ExtractFile(isoStream, destinationFile, this.VolumeBaseOffset,
+
+            if (!streamCache.ContainsKey(this.SourceFilePath))
+            {
+                streamCache[this.SourceFilePath] = File.OpenRead(this.SourceFilePath);
+            }
+
+            this.DiscReader.ExtractFile(streamCache[this.SourceFilePath], destinationFile, this.VolumeBaseOffset,
                 this.DataSectionOffset, this.Lba, this.Size, this.PartitionKey);
         }
     }
@@ -505,7 +511,7 @@ namespace VGMToolbox.format.iso
             throw new ArgumentException("object is not an NintendoWiiOpticalDiscDirectoryStructure");
         }
 
-        public void Extract(FileStream isoStream, string destinationFolder, bool extractAsRaw)
+        public void Extract(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
         {
             string fullDirectoryPath = Path.Combine(destinationFolder, Path.Combine(this.ParentDirectoryName, this.DirectoryName));
 
@@ -517,12 +523,12 @@ namespace VGMToolbox.format.iso
 
             foreach (NintendoWiiOpticalDiscFileStructure f in this.FileArray)
             {
-                f.Extract(isoStream, destinationFolder, extractAsRaw);
+                f.Extract(ref streamCache, destinationFolder, extractAsRaw);
             }
 
             foreach (NintendoWiiOpticalDiscDirectoryStructure d in this.SubDirectoryArray)
             {
-                d.Extract(isoStream, destinationFolder, extractAsRaw);
+                d.Extract(ref streamCache, destinationFolder, extractAsRaw);
             }
         }
 
@@ -542,7 +548,7 @@ namespace VGMToolbox.format.iso
             byte[] partitionKey)
         {
             string nextDirectory;
-            this.SourceFilePath = SourceFilePath;
+            this.SourceFilePath = sourceFilePath;
             this.SubDirectoryArray = new ArrayList();
             this.FileArray = new ArrayList();
             this.DirectoryRecordOffset = directoryOffset;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -14,6 +15,6 @@ namespace VGMToolbox.format.iso
         IDirectoryStructure[] Directories { set; get; }
 
         void Initialize(FileStream isoStream, long offset, bool isRawDump);
-        void ExtractAll(FileStream isoStream, string destintionFolder, bool extractAsRaw);
+        void ExtractAll(ref Dictionary<string, FileStream> streamCache, string destintionFolder, bool extractAsRaw);
     }
 }

@@ -51,7 +51,7 @@ namespace VGMToolbox.tools.extract
                             streamCache[d.SourceFilePath] = File.OpenRead(d.SourceFilePath);
                         }
 
-                        d.Extract(streamCache[d.SourceFilePath], taskStruct.DestinationFolder, taskStruct.ExtractAsRaw);
+                        d.Extract(ref streamCache, taskStruct.DestinationFolder, taskStruct.ExtractAsRaw);
                     }
                     else
                     {
@@ -70,7 +70,7 @@ namespace VGMToolbox.tools.extract
                             streamCache[f.SourceFilePath] = File.OpenRead(f.SourceFilePath);
                         }
 
-                        f.Extract(streamCache[f.SourceFilePath], taskStruct.DestinationFolder, taskStruct.ExtractAsRaw);
+                        f.Extract(ref streamCache, taskStruct.DestinationFolder, taskStruct.ExtractAsRaw);
                     }
                     else
                     {

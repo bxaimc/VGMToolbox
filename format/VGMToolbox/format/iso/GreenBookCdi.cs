@@ -156,11 +156,11 @@ namespace VGMToolbox.format.iso
             this.LoadDirectories(isoStream);
         }
 
-        public void ExtractAll(FileStream isoStream, string destintionFolder, bool extractAsRaw)
+        public void ExtractAll(ref Dictionary<string, FileStream> streamCache, string destintionFolder, bool extractAsRaw)
         {
             foreach (GreenBookCdiDirectoryStructure ds in this.DirectoryStructureArray)
             {
-                ds.Extract(isoStream, destintionFolder, extractAsRaw);
+                ds.Extract(ref streamCache, destintionFolder, extractAsRaw);
             }
         }
 
@@ -348,10 +348,16 @@ namespace VGMToolbox.format.iso
             this.FileDateTime = fileTime;
         }
 
-        public void Extract(FileStream isoStream, string destinationFolder, bool extractAsRaw)
+        public void Extract(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
         {
             string destinationFile = Path.Combine(Path.Combine(destinationFolder, this.ParentDirectoryName), this.FileName);
-            CdRom.ExtractCdData(isoStream, destinationFile, 
+
+            if (!streamCache.ContainsKey(this.SourceFilePath))
+            {
+                streamCache[this.SourceFilePath] = File.OpenRead(this.SourceFilePath);
+            }
+
+            CdRom.ExtractCdData(streamCache[this.SourceFilePath], destinationFile, 
                 this.VolumeBaseOffset, this.Lba, this.Size, 
                 this.IsRaw, this.NonRawSectorSize, this.FileMode, extractAsRaw);
         }
@@ -405,7 +411,7 @@ namespace VGMToolbox.format.iso
             string parentDirectory)
         {
             string nextDirectory;
-            this.SourceFilePath = SourceFilePath;
+            this.SourceFilePath = sourceFilePath;
             this.SubDirectoryArray = new ArrayList();
             this.FileArray = new ArrayList();
 
@@ -425,7 +431,7 @@ namespace VGMToolbox.format.iso
             this.parseDirectoryRecord(isoStream, baseOffset, directoryRecord, logicalBlockSize, isRaw, nonRawSectorSize, nextDirectory);
         }
 
-        public void Extract(FileStream isoStream, string destinationFolder, bool extractAsRaw)
+        public void Extract(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
         {
             string fullDirectoryPath = Path.Combine(destinationFolder, Path.Combine(this.ParentDirectoryName, this.DirectoryName));
 
@@ -437,12 +443,12 @@ namespace VGMToolbox.format.iso
 
             foreach (GreenBookCdiFileStructure f in this.FileArray)
             {
-                f.Extract(isoStream, destinationFolder, extractAsRaw);
+                f.Extract(ref streamCache, destinationFolder, extractAsRaw);
             }
 
             foreach (GreenBookCdiDirectoryStructure d in this.SubDirectoryArray)
             {
-                d.Extract(isoStream, destinationFolder, extractAsRaw);
+                d.Extract(ref streamCache, destinationFolder, extractAsRaw);
             }
         }
 

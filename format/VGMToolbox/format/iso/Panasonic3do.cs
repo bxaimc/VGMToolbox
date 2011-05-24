@@ -72,11 +72,11 @@ namespace VGMToolbox.format.iso
                 this.LoadDirectories(isoStream);       
             }
 
-            public void ExtractAll(FileStream isoStream, string destinationFolder, bool extractAsRaw)
+            public void ExtractAll(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
             {
                 foreach (Panasonic3doDirectoryStructure ds in this.DirectoryStructureArray)
                 {
-                    ds.Extract(isoStream, destinationFolder, extractAsRaw);
+                    ds.Extract(ref streamCache, destinationFolder, extractAsRaw);
                 }
             }
 
@@ -138,10 +138,16 @@ namespace VGMToolbox.format.iso
             this.FileDateTime = fileTime;
         }
 
-        public void Extract(FileStream isoStream, string destinationFolder, bool extractAsRaw)
+        public void Extract(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
         {
             string destinationFile = Path.Combine(Path.Combine(destinationFolder, this.ParentDirectoryName), this.FileName);
-            CdRom.ExtractCdData(isoStream, destinationFile, this.VolumeBaseOffset, this.Lba, this.Size, this.IsRaw, this.NonRawSectorSize, this.FileMode, extractAsRaw);
+
+            if (!streamCache.ContainsKey(this.SourceFilePath))
+            {
+                streamCache[this.SourceFilePath] = File.OpenRead(this.SourceFilePath);
+            }
+
+            CdRom.ExtractCdData(streamCache[this.SourceFilePath], destinationFile, this.VolumeBaseOffset, this.Lba, this.Size, this.IsRaw, this.NonRawSectorSize, this.FileMode, extractAsRaw);
         }
     }
 
@@ -188,7 +194,7 @@ namespace VGMToolbox.format.iso
             throw new ArgumentException("object is not an Panasonic3doDirectoryStructure");
         }
 
-        public void Extract(FileStream isoStream, string destinationFolder, bool extractAsRaw)
+        public void Extract(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
         {
             string fullDirectoryPath = Path.Combine(destinationFolder, Path.Combine(this.ParentDirectoryName, this.DirectoryName));
 
@@ -200,12 +206,12 @@ namespace VGMToolbox.format.iso
 
             foreach (Panasonic3doFileStructure f in this.FileArray)
             {
-                f.Extract(isoStream, destinationFolder, extractAsRaw);
+                f.Extract(ref streamCache, destinationFolder, extractAsRaw);
             }
 
             foreach (Panasonic3doDirectoryStructure d in this.SubDirectoryArray)
             {
-                d.Extract(isoStream, destinationFolder, extractAsRaw);
+                d.Extract(ref streamCache, destinationFolder, extractAsRaw);
             }
         }
 
@@ -216,7 +222,7 @@ namespace VGMToolbox.format.iso
             bool isRaw, int nonRawSectorSize)
         {
             string nextDirectory;
-            this.SourceFilePath = SourceFilePath;
+            this.SourceFilePath = sourceFilePath;
             this.SubDirectoryArray = new ArrayList();
             this.FileArray = new ArrayList();
             this.DirectoryRecordLba = directoryLba;

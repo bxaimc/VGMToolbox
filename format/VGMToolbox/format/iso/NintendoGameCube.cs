@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 
 using VGMToolbox.util;
@@ -102,11 +103,11 @@ namespace VGMToolbox.format.iso
             this.LoadDirectories(isoStream);
         }
 
-        public void ExtractAll(FileStream isoStream, string destinationFolder, bool extractAsRaw)
+        public void ExtractAll(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
         {
             foreach (NintendoGameCubeDirectoryStructure ds in this.DirectoryStructureArray)
             {
-                ds.Extract(isoStream, destinationFolder, extractAsRaw);
+                ds.Extract(ref streamCache, destinationFolder, extractAsRaw);
             }
         }
 
@@ -173,10 +174,16 @@ namespace VGMToolbox.format.iso
             this.FileDateTime = fileTime;
         }
 
-        public virtual void Extract(FileStream isoStream, string destinationFolder, bool extractAsRaw)
+        public virtual void Extract(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
         {
             string destinationFile = Path.Combine(Path.Combine(destinationFolder, this.ParentDirectoryName), this.FileName);
-            ParseFile.ExtractChunkToFile(isoStream, this.Lba, this.Size, destinationFile);
+
+            if (!streamCache.ContainsKey(this.SourceFilePath))
+            {
+                streamCache[this.SourceFilePath] = File.OpenRead(this.SourceFilePath);
+            }
+
+            ParseFile.ExtractChunkToFile(streamCache[this.SourceFilePath], this.Lba, this.Size, destinationFile);
         }
     }
 
@@ -222,7 +229,7 @@ namespace VGMToolbox.format.iso
             throw new ArgumentException("object is not an NintendoGameCubeDirectoryStructure");
         }
 
-        public void Extract(FileStream isoStream, string destinationFolder, bool extractAsRaw)
+        public void Extract(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
         {
             string fullDirectoryPath = Path.Combine(destinationFolder, Path.Combine(this.ParentDirectoryName, this.DirectoryName));
 
@@ -234,12 +241,12 @@ namespace VGMToolbox.format.iso
 
             foreach (NintendoGameCubeFileStructure f in this.FileArray)
             {
-                f.Extract(isoStream, destinationFolder, extractAsRaw);
+                f.Extract(ref streamCache, destinationFolder, extractAsRaw);
             }
 
             foreach (NintendoGameCubeDirectoryStructure d in this.SubDirectoryArray)
             {
-                d.Extract(isoStream, destinationFolder, extractAsRaw);
+                d.Extract(ref streamCache, destinationFolder, extractAsRaw);
             }
         }
 
@@ -257,7 +264,7 @@ namespace VGMToolbox.format.iso
             int offsetBitShiftValue)
         {
             string nextDirectory;
-            this.SourceFilePath = SourceFilePath;
+            this.SourceFilePath = sourceFilePath;
             this.SubDirectoryArray = new ArrayList();
             this.FileArray = new ArrayList();
             this.DirectoryRecordOffset = directoryOffset;
