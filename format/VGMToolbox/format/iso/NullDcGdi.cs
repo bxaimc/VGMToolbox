@@ -146,6 +146,81 @@ namespace VGMToolbox.format.iso
             return sectorBytes;
         }
 
+        public void ExtractGdRomData(Stream cdStream,
+            string destinationPath, long volumeBaseOffset,
+            long lba, long length, bool isRaw, long nonRawSectorSize,
+            CdSectorType fileMode, bool extractAsRaw)
+        {
+            long offset;
+            long adjustedLba;
+            int maxWriteSize;
+            long bytesWritten = 0;
+
+            CdSectorType mode;
+            long lbaCounter = 0;
+
+            byte[] sectorHeader;
+            byte[] sector;
+
+            // create directory
+            string destinationFolder = Path.GetDirectoryName(destinationPath);
+
+            if (!Directory.Exists(destinationFolder))
+            {
+                Directory.CreateDirectory(destinationFolder);
+            }
+
+            for (int i = (this.TrackCount - 1); i >= 0; i--)
+            {
+                if (lba >= this.TrackEntries[i].StartSector)
+                {
+                    if (isRaw)
+                    {
+                        mode = fileMode;
+
+                        using (FileStream outStream = File.OpenWrite(destinationPath))
+                        {
+                            adjustedLba = lba - this.TrackEntries[i].StartSector;
+                            
+                            while (bytesWritten < length)
+                            {
+
+                                offset = volumeBaseOffset + ((adjustedLba + lbaCounter) * this.TrackEntries[i].SectorSize);
+                                sector = ParseFile.ParseSimpleOffset(cdStream, offset, (int)CdRom.RAW_SECTOR_SIZE);
+                                sectorHeader = ParseFile.ParseSimpleOffset(sector, 0, CdRom.MAX_HEADER_SIZE);
+
+                                if (mode == CdSectorType.Unknown)
+                                {
+                                    mode = CdRom.GetSectorType(sectorHeader);
+                                }
+
+                                maxWriteSize = CdRom.ModeDataSize[mode] < (length - bytesWritten) ? CdRom.ModeDataSize[mode] : (int)(length - bytesWritten);
+
+                                if (extractAsRaw)
+                                {
+                                    outStream.Write(sector, 0, sector.Length);
+                                }
+                                else
+                                {
+                                    outStream.Write(sector, CdRom.ModeHeaderSize[mode], maxWriteSize);
+                                }
+
+                                bytesWritten += maxWriteSize;
+                                lbaCounter++;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        offset = ((lba - this.TrackEntries[i].StartSector) * this.TrackEntries[i].SectorSize) + this.TrackEntries[i].Offset;
+                        ParseFile.ExtractChunkToFile(cdStream, offset, length, destinationPath);
+                    }        
+
+                    break;
+                }
+            }            
+        }
+
         public string GetFilePathForLba(uint sectorLba)
         {
             string fileName = null;
@@ -376,6 +451,7 @@ namespace VGMToolbox.format.iso
     {
         public struct InitializeStruct
         {
+            public NullDcGdi Gdi { set; get; }
             public string ParentDirectoryName { set; get; }
             public string SourceFilePath { set; get; }
             public string FileName { set; get; }
@@ -388,6 +464,7 @@ namespace VGMToolbox.format.iso
             public DateTime FileTime { set; get; }
         }
 
+        public NullDcGdi Gdi { set; get; }
         public string ParentDirectoryName { set; get; }
         public string SourceFilePath { set; get; }
         public string FileName { set; get; }
@@ -413,6 +490,7 @@ namespace VGMToolbox.format.iso
 
         public NullDcGdiFileStructure(InitializeStruct initStruct)
         {
+            this.Gdi = initStruct.Gdi;
             this.ParentDirectoryName = initStruct.ParentDirectoryName;
             this.SourceFilePath = initStruct.SourceFilePath;
             this.FileName = initStruct.FileName;
@@ -434,7 +512,7 @@ namespace VGMToolbox.format.iso
                 streamCache[this.SourceFilePath] = File.OpenRead(this.SourceFilePath);
             }
 
-            CdRom.ExtractCdData(streamCache[this.SourceFilePath], destinationFile,
+            this.Gdi.ExtractGdRomData(streamCache[this.SourceFilePath], destinationFile,
                 this.VolumeBaseOffset, this.Lba, this.Size,
                 this.IsRaw, this.NonRawSectorSize, this.FileMode, extractAsRaw);
             
@@ -587,6 +665,7 @@ namespace VGMToolbox.format.iso
                             }
                             else
                             {
+                                fileInitStruct.Gdi = dirInitStruct.Gdi;
                                 fileInitStruct.ParentDirectoryName = dirInitStruct.ParentDirectory;
                                 fileInitStruct.SourceFilePath = dirInitStruct.Gdi.GetFilePathForLba(tempDirectoryRecord.LocationOfExtent);
                                 fileInitStruct.FileName = tempDirectoryRecord.FileIdentifierString.Replace(";1", String.Empty);
