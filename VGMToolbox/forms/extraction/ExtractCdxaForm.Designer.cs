@@ -46,31 +46,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 427);
-            this.pnlLabels.Size = new System.Drawing.Size(804, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 520);
+            this.pnlLabels.Size = new System.Drawing.Size(663, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(804, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(663, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 350);
-            this.tbOutput.Size = new System.Drawing.Size(804, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 443);
+            this.tbOutput.Size = new System.Drawing.Size(663, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 330);
-            this.pnlButtons.Size = new System.Drawing.Size(804, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 423);
+            this.pnlButtons.Size = new System.Drawing.Size(663, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(744, 0);
+            this.btnCancel.Location = new System.Drawing.Point(603, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(684, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(543, 0);
             // 
             // grpSource
             // 
@@ -78,7 +78,7 @@
             this.grpSource.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpSource.Location = new System.Drawing.Point(0, 23);
             this.grpSource.Name = "grpSource";
-            this.grpSource.Size = new System.Drawing.Size(804, 307);
+            this.grpSource.Size = new System.Drawing.Size(663, 400);
             this.grpSource.TabIndex = 5;
             this.grpSource.TabStop = false;
             this.grpSource.Text = "Source Files";
@@ -94,9 +94,9 @@
             this.grpOptions.Controls.Add(this.cbPatchByte0x11);
             this.grpOptions.Controls.Add(this.cbAddRiffHeader);
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.grpOptions.Location = new System.Drawing.Point(3, 140);
+            this.grpOptions.Location = new System.Drawing.Point(3, 233);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(798, 164);
+            this.grpOptions.Size = new System.Drawing.Size(657, 164);
             this.grpOptions.TabIndex = 6;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
@@ -129,21 +129,16 @@
             // 
             this.lblSilentBlocks.Location = new System.Drawing.Point(54, 19);
             this.lblSilentBlocks.Name = "lblSilentBlocks";
-            this.lblSilentBlocks.Size = new System.Drawing.Size(317, 46);
+            this.lblSilentBlocks.Size = new System.Drawing.Size(353, 46);
             this.lblSilentBlocks.TabIndex = 3;
             this.lblSilentBlocks.Text = "Number of Silent Frames to determine EOF (decrease this value if multiple tracks " +
-                "are extracted to a single file)";
+                "are extracted to a single file.  Set to \"0\" to ignore silent  blocks)";
             // 
             // silentFrameCounter
             // 
             this.silentFrameCounter.Location = new System.Drawing.Point(8, 19);
             this.silentFrameCounter.Maximum = new decimal(new int[] {
             20,
-            0,
-            0,
-            0});
-            this.silentFrameCounter.Minimum = new decimal(new int[] {
-            1,
             0,
             0,
             0});
@@ -184,7 +179,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(804, 468);
+            this.ClientSize = new System.Drawing.Size(663, 561);
             this.Controls.Add(this.grpSource);
             this.Name = "ExtractCdxaForm";
             this.Text = "ExtractCdxaForm";

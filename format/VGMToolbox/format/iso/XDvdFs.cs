@@ -14,9 +14,9 @@ namespace VGMToolbox.format.iso
                          0x54, 0x2A, 0x58, 0x42, 0x4F, 0x58, 0x2A, 0x4D, 
                          0x45, 0x44, 0x49, 0x41 };
 
-        public static uint SECTOR_SIZE = 0x800;
-        public static uint BASE_OFFSET_CORRECTION = 0x10000;
-        public static uint DWORD_SIZE = 4;
+        public static long SECTOR_SIZE = 0x800;
+        public static long BASE_OFFSET_CORRECTION = 0x10000;
+        public static long DWORD_SIZE = 4;
 
         public static string FORMAT_DESCRIPTION_STRING = "XDVDFS";
 
@@ -153,8 +153,8 @@ namespace VGMToolbox.format.iso
 
     public class XDvdFsDirectoryRecord
     {
-        public uint OffsetToLeftSubTree { set; get; }
-        public uint OffsetToRightSubTree { set; get; }
+        public long OffsetToLeftSubTree { set; get; }
+        public long OffsetToRightSubTree { set; get; }
         
         public uint StartingSector { set; get; }
         public uint EntrySize { set; get; }
@@ -167,8 +167,8 @@ namespace VGMToolbox.format.iso
 
         public XDvdFsDirectoryRecord(byte[] directoryBytes)
         {
-            this.OffsetToLeftSubTree = BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(directoryBytes, 0x00, 2), 0) * (uint)XDvdFs.DWORD_SIZE;
-            this.OffsetToRightSubTree = BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(directoryBytes, 0x02, 2), 0) * (uint)XDvdFs.DWORD_SIZE;
+            this.OffsetToLeftSubTree = (long)(BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(directoryBytes, 0x00, 2), 0) * XDvdFs.DWORD_SIZE);
+            this.OffsetToRightSubTree = (long)(BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(directoryBytes, 0x02, 2), 0) * XDvdFs.DWORD_SIZE);
 
             this.StartingSector = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(directoryBytes, 0x04, 4), 0);
             this.EntrySize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(directoryBytes, 0x08, 4), 0);
@@ -226,7 +226,7 @@ namespace VGMToolbox.format.iso
 
         public XDvdFsDirectoryStructure(FileStream isoStream, 
             string sourceFilePath, DateTime creationDateTime, 
-            long baseOffset, long directoryOffset, uint logicalBlockSize, 
+            long baseOffset, long directoryOffset, long logicalBlockSize, 
             string directoryName, string parentDirectory, bool isRaw, int nonRawSectorSize)
         {
             string nextDirectory;
@@ -277,7 +277,7 @@ namespace VGMToolbox.format.iso
             DateTime creationDateTime,
             long baseOffset, 
             long recordOffset, 
-            uint logicalBlockSize, 
+            long logicalBlockSize, 
             string parentDirectory,
             bool isRaw,
             int nonRawSectorSize)

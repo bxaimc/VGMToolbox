@@ -183,16 +183,10 @@ namespace VGMToolbox.format.util
                                 buffer = ParseFile.ParseSimpleOffset(fs, offset, Cdxa.XA_BLOCK_SIZE);
                                 
                                 // check if this is a "silent" block
-                                if (IsSilentBlock(buffer, pExtractXaStruct))
+                                if ((pExtractXaStruct.SilentFramesCount > 0) && IsSilentBlock(buffer, pExtractXaStruct))
                                 {
                                     if (doFileWrite)
                                     {
-                                        //if ((bwDictionary[trackKey].FileWriter.Length > Cdxa.XA_BLOCK_SIZE))
-                                        //{
-                                        //    // write the block
-                                        //    bwDictionary[trackKey].FileWriter.Write(buffer, 0, buffer.Length);
-                                        //}
-
                                         // close up this file, we're done.
                                         FixHeaderAndCloseWriter(bwDictionary[trackKey].FileWriter, pExtractXaStruct,
                                             bwDictionary[trackKey].NonSilentBlockDetected);
