@@ -36,6 +36,7 @@ namespace VGMToolbox.forms.extraction
                 ConfigurationSettings.AppSettings["Form_CdxaExtractor_CheckBoxPatchByte0x11"];
 
             this.silentFrameCounter.Value = Cdxa.NUM_SILENT_FRAMES_FOR_SILENT_BLOCK;
+            this.rbUseTrackEof.Checked = true;
         }
 
         private void tbSource_DragDrop(object sender, DragEventArgs e)
@@ -49,6 +50,9 @@ namespace VGMToolbox.forms.extraction
             extStruct.SilentFramesCount = (uint)this.silentFrameCounter.Value;
             extStruct.FilterAgainstBlockId = this.cbFilterById.Checked;
             extStruct.DoTwoPass = this.cbDoTwoPass.Checked;
+
+            extStruct.UseEndOfTrackMarkerForEof = this.rbUseTrackEof.Checked;
+            extStruct.UseSilentBlocksForEof = this.rbUseSilentBlockEof.Checked;
 
             base.backgroundWorker_Execute(extStruct);
         }
@@ -72,6 +76,28 @@ namespace VGMToolbox.forms.extraction
         protected override string getBeginMessage()
         {
             return ConfigurationSettings.AppSettings["Form_CdxaExtractor_MessageBegin"];
+        }
+
+        private void toggleEofOptions()
+        {
+            this.silentFrameCounter.Enabled = this.rbUseSilentBlockEof.Checked;
+            this.lblSilentBlocks.Enabled = this.rbUseSilentBlockEof.Checked;
+            this.cbDoTwoPass.Enabled = this.rbUseSilentBlockEof.Checked;
+
+            if (this.rbUseTrackEof.Checked)
+            {
+                this.cbDoTwoPass.Checked = false;
+            }
+        }
+
+        private void rbUseTrackEof_CheckedChanged(object sender, EventArgs e)
+        {
+            this.toggleEofOptions();
+        }
+
+        private void rbUseSilentBlockEof_CheckedChanged(object sender, EventArgs e)
+        {
+            this.toggleEofOptions();
         }
     }
 }

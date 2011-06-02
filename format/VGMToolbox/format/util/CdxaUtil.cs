@@ -44,6 +44,9 @@ namespace VGMToolbox.format.util
         }
 
         public bool DoTwoPass { set; get;}
+
+        public bool UseSilentBlocksForEof { set; get; }
+        public bool UseEndOfTrackMarkerForEof { set; get; }
     }
 
     public struct CdxaWriterStruct
@@ -64,9 +67,12 @@ namespace VGMToolbox.format.util
             List<UInt32> bwKeys;
 
             long offset;
-            byte[] trackId;
+            byte[] trackId;            
             byte[] buffer = new byte[Cdxa.XA_BLOCK_SIZE];
             UInt32 trackKey;
+            
+            byte[] tempTrackId;
+            UInt32 tempTrackKey;
 
             long previousOffset;
             long distanceBetweenBlocks;
@@ -111,8 +117,60 @@ namespace VGMToolbox.format.util
                         {
                             trackId = ParseFile.ParseSimpleOffset(fs, offset + Cdxa.XA_TRACK_OFFSET, Cdxa.XA_TRACK_SIZE);
                             trackKey = BitConverter.ToUInt32(trackId, 0);
+                                                        
+                            if (pExtractXaStruct.UseEndOfTrackMarkerForEof &&
+                                (
+                                  ((trackId[2] & Cdxa.XA_END_OF_TRACK_MARKER) == Cdxa.XA_END_OF_TRACK_MARKER) ||
+                                  ((trackId[2] & Cdxa.XA_END_OF_AUDIO_MARKER) == Cdxa.XA_END_OF_AUDIO_MARKER)
+                                ))
+                            { 
+                                // close the track
+                                tempTrackId = trackId;
+                                tempTrackId[2] = Cdxa.XA_CHUNK_ID_DIGITS;
+                                tempTrackKey = BitConverter.ToUInt32(tempTrackId, 0);
 
-                            if ((pExtractXaStruct.FilterAgainstBlockId) && (trackId[2] != Cdxa.XA_CHUNK_ID_DIGITS))
+                                if (bwDictionary.ContainsKey(tempTrackKey))
+                                {                                    
+                                    // close up this file, we're done.
+                                    if (doFileWrite)
+                                    {
+                                        // write the block
+                                        // set offset, doing this way because of boxing issues
+                                        workingStruct = bwDictionary[tempTrackKey];
+                                        workingStruct.CurrentChunkOffset = offset;
+                                        bwDictionary[tempTrackKey] = workingStruct;
+
+                                        // get the next block
+                                        buffer = ParseFile.ParseSimpleOffset(fs, offset, Cdxa.XA_BLOCK_SIZE);
+
+                                        // patch if needed
+                                        if (pExtractXaStruct.PatchByte0x11)
+                                        {
+                                            buffer[0x11] = 0x00;
+                                        }
+
+                                        // write the block
+                                        bwDictionary[tempTrackKey].FileWriter.Write(buffer, 0, buffer.Length);
+
+                                        // set flag that a non-silent block was found
+                                        if (!bwDictionary[tempTrackKey].NonSilentBlockDetected)
+                                        {
+                                            // doing this way because of boxing issues
+                                            workingStruct = bwDictionary[tempTrackKey];
+                                            workingStruct.NonSilentBlockDetected = true;
+                                            bwDictionary[tempTrackKey] = workingStruct;
+                                        }
+                                        
+                                        FixHeaderAndCloseWriter(bwDictionary[tempTrackKey].FileWriter, pExtractXaStruct,
+                                            bwDictionary[tempTrackKey].NonSilentBlockDetected);
+                                    }
+                                    
+                                    bwDictionary.Remove(tempTrackKey);
+                                }
+
+                                offset += Cdxa.XA_BLOCK_SIZE;
+                            }
+                            else if ((pExtractXaStruct.FilterAgainstBlockId) && (trackId[2] != Cdxa.XA_CHUNK_ID_DIGITS))
                             {
                                 offset = ParseFile.GetNextOffset(fs, offset + 1, Cdxa.XA_SIG);
                             }
@@ -183,7 +241,7 @@ namespace VGMToolbox.format.util
                                 buffer = ParseFile.ParseSimpleOffset(fs, offset, Cdxa.XA_BLOCK_SIZE);
                                 
                                 // check if this is a "silent" block
-                                if ((pExtractXaStruct.SilentFramesCount > 0) && IsSilentBlock(buffer, pExtractXaStruct))
+                                if ((pExtractXaStruct.UseSilentBlocksForEof) && IsSilentBlock(buffer, pExtractXaStruct))
                                 {
                                     if (doFileWrite)
                                     {

@@ -30,6 +30,8 @@
         {
             this.grpSource = new System.Windows.Forms.GroupBox();
             this.grpOptions = new System.Windows.Forms.GroupBox();
+            this.rbUseSilentBlockEof = new System.Windows.Forms.RadioButton();
+            this.rbUseTrackEof = new System.Windows.Forms.RadioButton();
             this.cbDoTwoPass = new System.Windows.Forms.CheckBox();
             this.cbFilterById = new System.Windows.Forms.CheckBox();
             this.lblSilentBlocks = new System.Windows.Forms.Label();
@@ -87,6 +89,8 @@
             // 
             // grpOptions
             // 
+            this.grpOptions.Controls.Add(this.rbUseSilentBlockEof);
+            this.grpOptions.Controls.Add(this.rbUseTrackEof);
             this.grpOptions.Controls.Add(this.cbDoTwoPass);
             this.grpOptions.Controls.Add(this.cbFilterById);
             this.grpOptions.Controls.Add(this.lblSilentBlocks);
@@ -94,17 +98,41 @@
             this.grpOptions.Controls.Add(this.cbPatchByte0x11);
             this.grpOptions.Controls.Add(this.cbAddRiffHeader);
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.grpOptions.Location = new System.Drawing.Point(3, 233);
+            this.grpOptions.Location = new System.Drawing.Point(3, 170);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(657, 164);
+            this.grpOptions.Size = new System.Drawing.Size(657, 227);
             this.grpOptions.TabIndex = 6;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
             // 
+            // rbUseSilentBlockEof
+            // 
+            this.rbUseSilentBlockEof.AutoSize = true;
+            this.rbUseSilentBlockEof.Location = new System.Drawing.Point(6, 43);
+            this.rbUseSilentBlockEof.Name = "rbUseSilentBlockEof";
+            this.rbUseSilentBlockEof.Size = new System.Drawing.Size(193, 17);
+            this.rbUseSilentBlockEof.TabIndex = 7;
+            this.rbUseSilentBlockEof.TabStop = true;
+            this.rbUseSilentBlockEof.Text = "Use Silent Blocks to determine EOF";
+            this.rbUseSilentBlockEof.UseVisualStyleBackColor = true;
+            this.rbUseSilentBlockEof.CheckedChanged += new System.EventHandler(this.rbUseSilentBlockEof_CheckedChanged);
+            // 
+            // rbUseTrackEof
+            // 
+            this.rbUseTrackEof.AutoSize = true;
+            this.rbUseTrackEof.Location = new System.Drawing.Point(6, 19);
+            this.rbUseTrackEof.Name = "rbUseTrackEof";
+            this.rbUseTrackEof.Size = new System.Drawing.Size(239, 17);
+            this.rbUseTrackEof.TabIndex = 6;
+            this.rbUseTrackEof.TabStop = true;
+            this.rbUseTrackEof.Text = "Use \"End of Track\" marker to determine EOF";
+            this.rbUseTrackEof.UseVisualStyleBackColor = true;
+            this.rbUseTrackEof.CheckedChanged += new System.EventHandler(this.rbUseTrackEof_CheckedChanged);
+            // 
             // cbDoTwoPass
             // 
             this.cbDoTwoPass.AutoSize = true;
-            this.cbDoTwoPass.Location = new System.Drawing.Point(8, 128);
+            this.cbDoTwoPass.Location = new System.Drawing.Point(25, 101);
             this.cbDoTwoPass.Name = "cbDoTwoPass";
             this.cbDoTwoPass.Size = new System.Drawing.Size(343, 30);
             this.cbDoTwoPass.TabIndex = 5;
@@ -118,7 +146,7 @@
             this.cbFilterById.AutoSize = true;
             this.cbFilterById.Checked = true;
             this.cbFilterById.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbFilterById.Location = new System.Drawing.Point(8, 59);
+            this.cbFilterById.Location = new System.Drawing.Point(6, 157);
             this.cbFilterById.Name = "cbFilterById";
             this.cbFilterById.Size = new System.Drawing.Size(266, 17);
             this.cbFilterById.TabIndex = 4;
@@ -127,18 +155,23 @@
             // 
             // lblSilentBlocks
             // 
-            this.lblSilentBlocks.Location = new System.Drawing.Point(54, 19);
+            this.lblSilentBlocks.Location = new System.Drawing.Point(71, 66);
             this.lblSilentBlocks.Name = "lblSilentBlocks";
             this.lblSilentBlocks.Size = new System.Drawing.Size(353, 46);
             this.lblSilentBlocks.TabIndex = 3;
             this.lblSilentBlocks.Text = "Number of Silent Frames to determine EOF (decrease this value if multiple tracks " +
-                "are extracted to a single file.  Set to \"0\" to ignore silent  blocks)";
+                "are extracted to a single file).";
             // 
             // silentFrameCounter
             // 
-            this.silentFrameCounter.Location = new System.Drawing.Point(8, 19);
+            this.silentFrameCounter.Location = new System.Drawing.Point(25, 66);
             this.silentFrameCounter.Maximum = new decimal(new int[] {
             20,
+            0,
+            0,
+            0});
+            this.silentFrameCounter.Minimum = new decimal(new int[] {
+            1,
             0,
             0,
             0});
@@ -156,7 +189,7 @@
             this.cbPatchByte0x11.AutoSize = true;
             this.cbPatchByte0x11.Checked = true;
             this.cbPatchByte0x11.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbPatchByte0x11.Location = new System.Drawing.Point(8, 105);
+            this.cbPatchByte0x11.Location = new System.Drawing.Point(6, 203);
             this.cbPatchByte0x11.Name = "cbPatchByte0x11";
             this.cbPatchByte0x11.Size = new System.Drawing.Size(330, 17);
             this.cbPatchByte0x11.TabIndex = 1;
@@ -168,7 +201,7 @@
             this.cbAddRiffHeader.AutoSize = true;
             this.cbAddRiffHeader.Checked = true;
             this.cbAddRiffHeader.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbAddRiffHeader.Location = new System.Drawing.Point(8, 82);
+            this.cbAddRiffHeader.Location = new System.Drawing.Point(6, 180);
             this.cbAddRiffHeader.Name = "cbAddRiffHeader";
             this.cbAddRiffHeader.Size = new System.Drawing.Size(261, 17);
             this.cbAddRiffHeader.TabIndex = 0;
@@ -213,5 +246,7 @@
         private System.Windows.Forms.NumericUpDown silentFrameCounter;
         private System.Windows.Forms.CheckBox cbFilterById;
         private System.Windows.Forms.CheckBox cbDoTwoPass;
+        private System.Windows.Forms.RadioButton rbUseSilentBlockEof;
+        private System.Windows.Forms.RadioButton rbUseTrackEof;
     }
 }

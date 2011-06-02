@@ -12,7 +12,7 @@ namespace VGMToolbox.util
             try
             {
                 results = JSUtil.Util.Eval(expression);
-                outputValue = Convert.ToString(Convert.ToUInt32(results), 10);
+                outputValue = Convert.ToString((long)Convert.ToUInt64(results), 10);
             }
             catch (Exception ex)
             {
