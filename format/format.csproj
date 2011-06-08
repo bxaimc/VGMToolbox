@@ -69,6 +69,7 @@
     <Compile Include="VGMToolbox\format\brsar\Brsar.cs" />
     <Compile Include="VGMToolbox\format\brsar\BrsarSymbSection.cs" />
     <Compile Include="VGMToolbox\format\Cdxa.cs" />
+    <Compile Include="VGMToolbox\format\MobiclipNdsStream.cs" />
     <Compile Include="VGMToolbox\format\CriUsmStream.cs" />
     <Compile Include="VGMToolbox\format\DvdVideoStream.cs" />
     <Compile Include="VGMToolbox\format\Genh.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="VGMToolbox\format\iso\XDvdFs.cs" />
     <Compile Include="VGMToolbox\format\IXsfTagFormat.cs" />
     <Compile Include="VGMToolbox\format\Midi.cs" />
+    <Compile Include="VGMToolbox\format\MobiclipWiiStream.cs" />
     <Compile Include="VGMToolbox\format\Mpeg1Stream.cs" />
     <Compile Include="VGMToolbox\format\Mpeg2Stream.cs" />
     <Compile Include="VGMToolbox\format\MpegStream.cs" />
@@ -106,6 +108,7 @@
     <Compile Include="VGMToolbox\format\SonyPmfStream.cs" />
     <Compile Include="VGMToolbox\format\SonyPssStream.cs" />
     <Compile Include="VGMToolbox\format\util\CdxaUtil.cs" />
+    <Compile Include="VGMToolbox\format\MobiclipStream.cs" />
     <Compile Include="VGMToolbox\format\util\CriUtil.cs" />
     <Compile Include="VGMToolbox\format\util\FormatUtil.cs" />
     <Compile Include="VGMToolbox\format\Gbr.cs" />

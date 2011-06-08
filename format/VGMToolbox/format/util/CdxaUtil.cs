@@ -170,7 +170,8 @@ namespace VGMToolbox.format.util
 
                                 offset += Cdxa.XA_BLOCK_SIZE;
                             }
-                            else if ((pExtractXaStruct.FilterAgainstBlockId) && (trackId[2] != Cdxa.XA_CHUNK_ID_DIGITS))
+                            else if ((pExtractXaStruct.FilterAgainstBlockId) && 
+                                     ((trackId[2] & 0x0F) != Cdxa.XA_AUDIO_MASK))
                             {
                                 offset = ParseFile.GetNextOffset(fs, offset + 1, Cdxa.XA_SIG);
                             }

@@ -38,6 +38,7 @@ namespace VGMToolbox.format
         public const string XA_FILE_EXTENSION = ".xa";
 
         public const int XA_CHUNK_ID_DIGITS = 0x64;
+        public const int XA_AUDIO_MASK = 0x04;
         // public const int XA_END_OF_TRACK_MARKER = 0xE4;
         public static readonly int XA_END_OF_TRACK_MARKER = 1 << 7;
         public static readonly int XA_END_OF_AUDIO_MARKER = 1 << 0;

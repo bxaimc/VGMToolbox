@@ -21,7 +21,7 @@ namespace VGMToolbox.forms.stream
             InitializeComponent();
 
             this.tbOutput.Text = "Demultiplex streams from movies." + Environment.NewLine;
-            this.tbOutput.Text += "- Currently supported formats: DVD Video, MPEG1, MPEG2, PAM, PMF, PSS, SFD, USM, XMV" + Environment.NewLine;
+            this.tbOutput.Text += "- Currently supported formats: DVD Video, MO (Wii Only), MPEG1, MPEG2, PAM, PMF, PSS, SFD, USM, XMV" + Environment.NewLine;
             this.tbOutput.Text += "- If the MPEG does not work for your file, be sure to try DVD Video, since it can handle specialized audio types." + Environment.NewLine;
             this.tbOutput.Text += "- MKVMerge can be used to add raw .264 data to a container file for playback." + Environment.NewLine;
             this.tbOutput.Text += "- Adding header to raw XMV video not currently supported." + Environment.NewLine;
@@ -32,17 +32,18 @@ namespace VGMToolbox.forms.stream
 
         private void initializeFormatList()
         {
-            this.comboFormat.Items.Clear();
-            this.comboFormat.Items.Add("DVD Video");
+            this.comboFormat.Items.Clear();                        
+            this.comboFormat.Items.Add("DVD Video (VOB)");
+            this.comboFormat.Items.Add("MO (Mobiclip)");
             this.comboFormat.Items.Add("MPEG");
-            this.comboFormat.Items.Add("PAM");
-            this.comboFormat.Items.Add("PMF");
-            this.comboFormat.Items.Add("PSS");
-            this.comboFormat.Items.Add("SFD");
-            this.comboFormat.Items.Add("USM");
-            this.comboFormat.Items.Add("XMV");
+            this.comboFormat.Items.Add("PAM (PlayStation Advanced Movie)");
+            this.comboFormat.Items.Add("PMF (PSP Movie Format)");
+            this.comboFormat.Items.Add("PSS (PlayStation Stream)");
+            this.comboFormat.Items.Add("SFD (CRI Sofdec Video)");
+            this.comboFormat.Items.Add("USM (CRI Movie 2)");
+            this.comboFormat.Items.Add("XMV (Xbox Media Video)");
 
-            this.comboFormat.SelectedItem = "DVD Video";
+            this.comboFormat.SelectedItem = "DVD Video (VOB)";
         }
 
         protected override IVgmtBackgroundWorker getBackgroundWorker()
@@ -91,10 +92,10 @@ namespace VGMToolbox.forms.stream
         private void comboFormat_SelectedIndexChanged(object sender, EventArgs e)
         {
             switch (this.comboFormat.SelectedItem.ToString())
-            { 
-                case "PAM":
-                case "PMF":
-                case "XMV":
+            {
+                case "PAM (PlayStation Advanced Movie)":
+                case "PMF (PSP Movie Format)":
+                case "XMV (Xbox Media Video)":
                     this.cbAddHeader.Enabled = true;
                     break;
                 default:

@@ -33,9 +33,27 @@ namespace VGMToolbox.tools.stream
 
             switch (demuxStruct.SourceFormat)
             {
-                case "DVD Video":
+                case "DVD Video (VOB)":
                     DvdVideoStream dvdStream = new DvdVideoStream(path);
                     dvdStream.DemultiplexStreams(demuxOptions);
+                    break;
+                case "MO (Mobiclip)":
+                    MobiclipStream.MovieType movieType = MobiclipStream.GetCriMovie2StreamType(path);                    
+
+                    switch (movieType)
+                    { 
+                        //case MobiclipStream.MovieType.NintendoDs:
+                        //    MobiclipNdsStream mobiclipNdsStream = new MobiclipNdsStream(path);
+                        //    mobiclipNdsStream.DemultiplexStreams(demuxOptions);
+                        //    break;
+                        case MobiclipStream.MovieType.Wii:
+                            MobiclipWiiStream mobiclipWiiStream = new MobiclipWiiStream(path);
+                            mobiclipWiiStream.DemultiplexStreams(demuxOptions);
+                            break;
+                        default:
+                            throw new FormatException(String.Format("Unsupported Mobiclip type, for file: {0}", Path.GetFileName(path)));
+                    }
+
                     break;
                 case "MPEG":
                     int mpegType = MpegStream.GetMpegStreamType(path);
@@ -54,32 +72,32 @@ namespace VGMToolbox.tools.stream
                             throw new FormatException(String.Format("Unsupported MPEG type, for file: {0}", Path.GetFileName(path)));
                     }
                     break;
-                case "PAM":
+                case "PAM (PlayStation Advanced Movie)":
                     SonyPamStream pamStream = new SonyPamStream(path);
                     pamStream.DemultiplexStreams(demuxOptions);
                     break;
-                
-                case "PMF":
+
+                case "PMF (PSP Movie Format)":
                     SonyPmfStream pmfStream = new SonyPmfStream(path);
                     pmfStream.DemultiplexStreams(demuxOptions);
                     break;
-                
-                case "PSS":
+
+                case "PSS (PlayStation Stream)":
                     SonyPssStream sps = new SonyPssStream(path);
                     sps.DemultiplexStreams(demuxOptions);
                     break;
 
-                case "SFD":
+                case "SFD (CRI Sofdec Video)":
                     SofdecStream ss = new SofdecStream(path);
                     ss.DemultiplexStreams(demuxOptions);
                     break;
 
-                case "USM":
+                case "USM (CRI Movie 2)":
                     CriUsmStream cus = new CriUsmStream(path);
                     cus.DemultiplexStreams(demuxOptions);
                     break;
 
-                case "XMV":
+                case "XMV (Xbox Media Video)":
                     XmvStream xmv = new XmvStream(path);
                     xmv.DemultiplexStreams(demuxOptions);
                     break;
