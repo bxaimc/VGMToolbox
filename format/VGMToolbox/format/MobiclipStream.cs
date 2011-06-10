@@ -15,7 +15,13 @@ namespace VGMToolbox.format
             Wii,
             Unknown
         }
-        
+
+        public struct ChunkStruct
+        {
+            public byte[] Chunk { set; get; }
+            public uint ChunkId { set; get; }
+        }
+
         public static readonly byte[] MagicBytes = new byte[] { 0x4D, 0x4F };
         public static readonly byte[] DataStartBytes = new byte[] { 0x48, 0x45, 0x00, 0x00 };
         
@@ -32,11 +38,12 @@ namespace VGMToolbox.format
 
         protected abstract long GetBlockSize(FileStream inStream, long currentOffset);
 
-        protected abstract byte[] GetVideoChunk(FileStream inStream, long currentOffset);
+        protected abstract ChunkStruct GetVideoChunk(FileStream inStream, long currentOffset);
 
-        protected abstract byte[] GetAudioChunk(FileStream inStream, long currentOffset, long blockSize, long videoChunkSize);
+        protected abstract ChunkStruct GetAudioChunk(FileStream inStream, long currentOffset, long blockSize, long videoChunkSize);
 
-        protected virtual void DoFinalTasks(Dictionary<uint, FileStream> streamWriters)
+        protected virtual void DoFinalTasks(Dictionary<uint, FileStream> streamWriters,
+            MpegStream.DemuxOptionsStruct demuxOptions)
         {
             foreach (uint key in streamWriters.Keys)
             {
@@ -49,14 +56,18 @@ namespace VGMToolbox.format
             }
         }
 
-        private void writeChunkToStream(byte[] chunk, uint chunkId, Dictionary<uint, FileStream> streamWriters)
+        private void writeChunkToStream(
+            byte[] chunk, 
+            uint chunkId, 
+            Dictionary<uint, FileStream> streamWriters,
+            string fileExtension)
         {
             string destinationFile;
             
             if (!streamWriters.ContainsKey(chunkId))
             {
-                destinationFile = Path.Combine(Path.GetDirectoryName(this.FilePath), 
-                    String.Format("{0}_{1}.bin", Path.GetFileNameWithoutExtension(this.FilePath), chunkId.ToString("X2")));
+                destinationFile = Path.Combine(Path.GetDirectoryName(this.FilePath),
+                    String.Format("{0}_{1}{2}", Path.GetFileNameWithoutExtension(this.FilePath), chunkId.ToString("X4"), fileExtension));
                 streamWriters[chunkId] = File.Open(destinationFile, FileMode.Create, FileAccess.ReadWrite);
             }
 
@@ -72,7 +83,8 @@ namespace VGMToolbox.format
             long blockSize;
 
             Dictionary<uint, FileStream> streamOutputWriters = new Dictionary<uint, FileStream>();
-            byte[] currentChunk;
+
+            ChunkStruct currentChunk = new ChunkStruct();
 
             try
             {
@@ -93,7 +105,7 @@ namespace VGMToolbox.format
 
                             if (demuxOptions.ExtractVideo)
                             {
-                                this.writeChunkToStream(currentChunk, 0, streamOutputWriters);
+                                this.writeChunkToStream(currentChunk.Chunk, currentChunk.ChunkId, streamOutputWriters, this.FileExtensionVideo);
                             }
                             // NDS -- currentBlockId = (uint)(BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(fs, currentOffset, 2), 0) & 0x00FF);
 
@@ -101,8 +113,8 @@ namespace VGMToolbox.format
                             // write audio block to stream
                             if (demuxOptions.ExtractAudio)
                             {
-                                currentChunk = this.GetAudioChunk(fs, currentOffset, blockSize, currentChunk.Length);
-                                this.writeChunkToStream(currentChunk, 1, streamOutputWriters);
+                                currentChunk = this.GetAudioChunk(fs, currentOffset, blockSize, currentChunk.Chunk.Length);
+                                this.writeChunkToStream(currentChunk.Chunk, currentChunk.ChunkId, streamOutputWriters, this.FileExtensionAudio);
                             }
 
                             // move offset
@@ -123,7 +135,7 @@ namespace VGMToolbox.format
             finally
             {
                 // clean up
-                this.DoFinalTasks(streamOutputWriters);
+                this.DoFinalTasks(streamOutputWriters, demuxOptions);
             }
         }
         

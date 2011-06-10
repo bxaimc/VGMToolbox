@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
+using VGMToolbox.format.util;
 using VGMToolbox.util;
 
 namespace VGMToolbox.format
@@ -13,6 +15,8 @@ namespace VGMToolbox.format
         public MobiclipWiiStream(string path)
         {
             this.FilePath = path;
+            this.FileExtensionAudio = ".raw";
+            this.FileExtensionVideo = ".bin";
         }
 
         protected override long GetBlockSize(FileStream inStream, long currentOffset)
@@ -31,18 +35,79 @@ namespace VGMToolbox.format
             return blockSize;
         }
 
-        protected override byte[] GetVideoChunk(FileStream inStream, long currentOffset)
+        protected override ChunkStruct GetVideoChunk(FileStream inStream, long currentOffset)
         {
+            ChunkStruct videoChunkStruct = new ChunkStruct();
+
             long chunkSize = (long)BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(inStream, currentOffset + 4, 4), 0);
             byte[] videoChunk = ParseFile.ParseSimpleOffset(inStream, currentOffset + 8, (int)chunkSize);
-            return videoChunk;        
+
+            videoChunkStruct.Chunk = videoChunk;
+            videoChunkStruct.ChunkId = 0xFFFF;
+            
+            return videoChunkStruct;        
         }
 
-        protected override byte[] GetAudioChunk(FileStream inStream, long currentOffset, long blockSize, long videoChunkSize)
+        protected override ChunkStruct GetAudioChunk(FileStream inStream, long currentOffset, long blockSize, long videoChunkSize)
         {
+            ChunkStruct audioChunkStruct = new ChunkStruct();
+            
             long absoluteOffset = currentOffset + 8 + videoChunkSize + 4;
             byte[] audioChunk = ParseFile.ParseSimpleOffset(inStream, absoluteOffset, (int)(blockSize - videoChunkSize - 8 - 4));
-            return audioChunk;
+
+
+            audioChunkStruct.Chunk = audioChunk;
+            audioChunkStruct.ChunkId = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(inStream, absoluteOffset - 4, 4), 0);
+
+
+            return audioChunkStruct;
+        }
+
+        protected override void DoFinalTasks(Dictionary<uint, FileStream> streamWriters,
+            MpegStream.DemuxOptionsStruct demuxOptions)
+        {
+            GenhCreationStruct gcStruct;
+            ushort frequency;
+            string sourceFile;
+            string genhFile;
+
+            foreach (uint key in streamWriters.Keys)
+            {
+                if (demuxOptions.AddHeader)
+                {
+                    if (streamWriters[key].Name.EndsWith(this.FileExtensionAudio))
+                    {
+                        // get frequency
+                        using (FileStream fs = File.OpenRead(this.FilePath))
+                        {
+                            frequency = BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(fs, 0xDE, 2), 0);
+                        }
+
+                        sourceFile = streamWriters[key].Name;
+
+                        streamWriters[key].Close();
+                        streamWriters[key].Dispose();
+
+                        gcStruct = new GenhCreationStruct();
+                        gcStruct.Format = "0x04";
+                        gcStruct.HeaderSkip = "0";
+                        gcStruct.Interleave = "0x2";
+                        gcStruct.Channels = "2";
+                        gcStruct.Frequency = frequency.ToString();
+                        gcStruct.NoLoops = true;
+
+                        genhFile = GenhUtil.CreateGenhFile(sourceFile, gcStruct);
+
+                        // delete original file
+                        if (!String.IsNullOrEmpty(genhFile))
+                        {
+                            File.Delete(sourceFile);
+                        }
+                    }
+                }
+            }
+
+            base.DoFinalTasks(streamWriters, demuxOptions);
         }
     }
 }

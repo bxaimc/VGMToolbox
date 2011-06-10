@@ -93,10 +93,12 @@ namespace VGMToolbox.forms.stream
         {
             switch (this.comboFormat.SelectedItem.ToString())
             {
+                case "MO (Mobiclip)":
                 case "PAM (PlayStation Advanced Movie)":
                 case "PMF (PSP Movie Format)":
-                case "XMV (Xbox Media Video)":
+                case "XMV (Xbox Media Video)":                
                     this.cbAddHeader.Enabled = true;
+                    this.cbAddHeader.Checked = true;
                     break;
                 default:
                     this.cbAddHeader.Checked = false;

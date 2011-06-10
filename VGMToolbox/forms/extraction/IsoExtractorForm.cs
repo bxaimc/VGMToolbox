@@ -457,5 +457,10 @@ namespace VGMToolbox.forms.extraction
                 this.extractFiles(destinationFolder, true);
             }
         }
+
+        private void fileListView_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            int x = 1;
+        }
     }
 }

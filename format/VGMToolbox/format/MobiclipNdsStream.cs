@@ -14,6 +14,8 @@ namespace VGMToolbox.format
         public MobiclipNdsStream(string path)
         {
             this.FilePath = path;
+            this.FileExtensionAudio = ".audio.bin";
+            this.FileExtensionVideo = ".video.bin";
         }
 
         protected override long GetBlockSize(FileStream inStream, long currentOffset)
@@ -24,8 +26,10 @@ namespace VGMToolbox.format
             return blockSize;
         }
 
-        protected override byte[] GetAudioChunk(FileStream inStream, long currentOffset, long blockSize, long videoChunkSize)
+        protected override ChunkStruct GetAudioChunk(FileStream inStream, long currentOffset, long blockSize, long videoChunkSize)
         {
+            ChunkStruct audioChunkStruct = new ChunkStruct();
+
             long chunkSize = (long)BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(inStream, currentOffset, 2), 0);
             chunkSize *= 4;
 
@@ -36,11 +40,16 @@ namespace VGMToolbox.format
 
             byte[] audioChunk = ParseFile.ParseSimpleOffset(inStream, currentOffset + 4, (int)chunkSize);
 
-            return audioChunk;        
+            audioChunkStruct.Chunk = audioChunk;
+            audioChunkStruct.ChunkId = (uint)BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(inStream, currentOffset, 2), 0);
+
+            return audioChunkStruct;        
         }
 
-        protected override byte[] GetVideoChunk(FileStream inStream, long currentOffset)
+        protected override ChunkStruct GetVideoChunk(FileStream inStream, long currentOffset)
         {
+            ChunkStruct videoChunkStruct = new ChunkStruct();
+            
             long blockSize = (long)(BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(inStream, currentOffset + 2, 2), 0) * 4);
             blockSize += 4;
             
@@ -53,7 +62,10 @@ namespace VGMToolbox.format
 
             byte[] videoChunk = ParseFile.ParseSimpleOffset(inStream, currentOffset + 4 + audioChunkSize, (int)(blockSize - audioChunkSize));
 
-            return videoChunk;
+            videoChunkStruct.Chunk = videoChunk;
+            videoChunkStruct.ChunkId = (uint)BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(inStream, currentOffset, 2), 0);
+
+            return videoChunkStruct;
         }
     
     }
