@@ -116,7 +116,7 @@ namespace VGMToolbox.format.util
                         while ((offset != -1) && ((offset + Cdxa.XA_BLOCK_SIZE) <= fs.Length))
                         {
                             trackId = ParseFile.ParseSimpleOffset(fs, offset + Cdxa.XA_TRACK_OFFSET, Cdxa.XA_TRACK_SIZE);
-                            trackKey = BitConverter.ToUInt32(trackId, 0);
+                            trackKey = GetTrackKey(trackId);
                                                         
                             if (pExtractXaStruct.UseEndOfTrackMarkerForEof &&
                                 (
@@ -127,7 +127,7 @@ namespace VGMToolbox.format.util
                                 // close the track
                                 tempTrackId = trackId;
                                 tempTrackId[2] = Cdxa.XA_CHUNK_ID_DIGITS;
-                                tempTrackKey = BitConverter.ToUInt32(tempTrackId, 0);
+                                tempTrackKey = GetTrackKey(tempTrackId);
 
                                 if (bwDictionary.ContainsKey(tempTrackKey))
                                 {                                    
@@ -395,6 +395,16 @@ namespace VGMToolbox.format.util
             }
 
             return distanceCeiling;
+        }
+
+        private static uint GetTrackKey(byte[] trackIdBytes)
+        {
+            uint ret;
+
+            ret = BitConverter.ToUInt32(trackIdBytes, 0);
+            ret &= 0xFF00FFFF;
+
+            return ret;
         }
     }
 }
