@@ -97,6 +97,7 @@
     <Compile Include="VGMToolbox\format\Mpeg2Stream.cs" />
     <Compile Include="VGMToolbox\format\MpegStream.cs" />
     <Compile Include="VGMToolbox\format\Nds.cs" />
+    <Compile Include="VGMToolbox\format\NintendoThpMovieStream.cs" />
     <Compile Include="VGMToolbox\format\Psf.cs" />
     <Compile Include="VGMToolbox\format\PsxSequence.cs" />
     <Compile Include="VGMToolbox\format\S98V3.cs" />

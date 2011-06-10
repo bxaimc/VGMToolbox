@@ -40,6 +40,7 @@ namespace VGMToolbox.forms.stream
             this.comboFormat.Items.Add("PMF (PSP Movie Format)");
             this.comboFormat.Items.Add("PSS (PlayStation Stream)");
             this.comboFormat.Items.Add("SFD (CRI Sofdec Video)");
+            this.comboFormat.Items.Add("THP");
             this.comboFormat.Items.Add("USM (CRI Movie 2)");
             this.comboFormat.Items.Add("XMV (Xbox Media Video)");
 

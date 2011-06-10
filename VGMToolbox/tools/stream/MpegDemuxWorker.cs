@@ -92,6 +92,10 @@ namespace VGMToolbox.tools.stream
                     ss.DemultiplexStreams(demuxOptions);
                     break;
 
+                case "THP":
+                    NintendoThpMovieStream thp = new NintendoThpMovieStream(path);
+                    thp.DemultiplexStreams(demuxOptions);
+                    break;
                 case "USM (CRI Movie 2)":
                     CriUsmStream cus = new CriUsmStream(path);
                     cus.DemultiplexStreams(demuxOptions);
