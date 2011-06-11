@@ -244,6 +244,9 @@ namespace VGMToolbox.format.iso
             string[] trackEntryLineArray;
             string[] splitDelimeters = new string[] { " " };
 
+            int openQuoteIndex;
+            int closeQuoteIndex;
+
             using (FileStream gdiStream = File.OpenRead(gdiPath))
             {
                 using (StreamReader gdiReader = new StreamReader(gdiStream))
@@ -258,6 +261,11 @@ namespace VGMToolbox.format.iso
                     for (int i = 0; i < this.TrackCount; i++)
                     {
                         trackEntryLine = gdiReader.ReadLine().Trim();
+                        
+                        // check for quotes for filename handling
+                        openQuoteIndex = trackEntryLine.IndexOf('\"', 0);
+                        closeQuoteIndex = trackEntryLine.IndexOf('\"', openQuoteIndex + 1);
+
                         trackEntryLineArray = trackEntryLine.Split(splitDelimeters, StringSplitOptions.RemoveEmptyEntries);
 
                         this.TrackEntries[i] = new TrackEntry();
@@ -275,8 +283,20 @@ namespace VGMToolbox.format.iso
                         }
 
                         this.TrackEntries[i].SectorSize = uint.Parse(trackEntryLineArray[3].Trim());
-                        this.TrackEntries[i].FilePath = Path.Combine(Path.GetDirectoryName(gdiPath), trackEntryLineArray[4].Trim());
-                        this.TrackEntries[i].Offset = long.Parse(trackEntryLineArray[5].Trim());
+
+                        if ((openQuoteIndex > 0) && (closeQuoteIndex > 0))
+                        {
+                            this.TrackEntries[i].FilePath =
+                                Path.Combine(Path.GetDirectoryName(gdiPath), trackEntryLine.Substring(openQuoteIndex + 1, closeQuoteIndex - openQuoteIndex - 1).Trim());
+
+                            this.TrackEntries[i].Offset = long.Parse(trackEntryLineArray[trackEntryLineArray.GetUpperBound(0)].Trim());                        
+                        }
+                        else
+                        {
+
+                            this.TrackEntries[i].FilePath = Path.Combine(Path.GetDirectoryName(gdiPath), trackEntryLineArray[4].Trim());
+                            this.TrackEntries[i].Offset = long.Parse(trackEntryLineArray[5].Trim());
+                        }
 
                         // verify file exists
                         if (!File.Exists(this.TrackEntries[i].FilePath))
