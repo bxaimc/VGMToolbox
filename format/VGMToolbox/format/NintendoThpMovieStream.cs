@@ -169,13 +169,35 @@ namespace VGMToolbox.format
             }
         }
 
+        private byte[] RemoveAudioInfoFromThpHeader(byte[] dirtyThpHeader)
+        {
+            byte[] fourEmptyBytes = new byte[] { 0x00, 0x00, 0x00, 0x00 };
+            
+            // clear max audio samples
+            Array.Copy(fourEmptyBytes, 0, dirtyThpHeader, 0xC, 4);
+
+            // reset components
+            Array.Copy(fourEmptyBytes, 0, dirtyThpHeader, this.ComponentDataOffset, 4);
+            dirtyThpHeader[this.ComponentDataOffset + 3] = 0x01;
+            dirtyThpHeader[this.ComponentDataOffset + 4] = 0x00;
+            dirtyThpHeader[this.ComponentDataOffset + 5] = 0xFF;
+            
+            // set data start 
+            // dirtyThpHeader[0x2B] = 0x50;
+
+            // 
+
+            return dirtyThpHeader;
+        }
+
         public void DemultiplexStreams(MpegStream.DemuxOptionsStruct demuxOptions)
         {
             long currentOffset = 0;
             uint frameCount = 1;
             uint nextFrameSize;
             byte[] currentFrame;
-            
+
+            byte[] videoChunkSizeBytes = null;
             uint videoChunkSize;
             byte[] audioChunkSizeBytes = null;
             uint audioChunkSize;
@@ -198,9 +220,13 @@ namespace VGMToolbox.format
             byte[] nextFrameSizeBytes;
 
             uint totalDataSize = 0;
-
+            byte[] totalDataSizeBytes;
             
             byte[] fourEmptyBytes = new byte[] { 0x00, 0x00, 0x00, 0x00 };
+
+            long videoFrameOffset = 0;
+            long audioFrameOffset = 0;
+            byte[] lastOffsetBytes;
 
             Dictionary<string, FileStream> streamWriters = new Dictionary<string, FileStream>();
 
@@ -243,7 +269,8 @@ namespace VGMToolbox.format
                                 nextFrameSizeAudio = 0;
                             }
 
-                            videoChunkSize = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(currentFrame, 8, 4));
+                            videoChunkSizeBytes = ParseFile.ParseSimpleOffset(currentFrame, 8, 4);
+                            videoChunkSize = ByteConversion.GetUInt32BigEndian(videoChunkSizeBytes);
 
                             if (this.ContainsAudio)
                             {
@@ -262,6 +289,10 @@ namespace VGMToolbox.format
                             ///////////////
                             if (demuxOptions.ExtractVideo)
                             {
+                                if (streamWriters.ContainsKey("video"))
+                                {
+                                    videoFrameOffset = streamWriters["video"].Length;
+                                }
 
                                 // attach THP header
                                 if (!isVideoHeaderWritten)
@@ -269,13 +300,13 @@ namespace VGMToolbox.format
                                     // get original header
                                     thpHeader = ParseFile.ParseSimpleOffset(fs, headerLocation, (int)(fs.Length - this.DataSize));
 
+                                    // clean out audio info
+                                    thpHeader = this.RemoveAudioInfoFromThpHeader(thpHeader);
+                                    
                                     // update first frame size in header
-                                    firstFrameSize = BitConverter.GetBytes((uint)(videoChunkSize + 0x10)); // add 0x10 for frame header
+                                    firstFrameSize = BitConverter.GetBytes((uint)(videoChunkSize + 0xC)); // add 0x10 for frame header
                                     Array.Reverse(firstFrameSize); // convert to Big Endian
                                     Array.Copy(firstFrameSize, 0, thpHeader, 0x18, 4);
-
-                                    // update audio size to empty
-                                    Array.Copy(fourEmptyBytes, 0, thpHeader, 0xC, 4);
 
                                     // write updated header
                                     this.writeChunkToStream(thpHeader, "video", streamWriters, this.FileExtensionVideo);
@@ -285,6 +316,18 @@ namespace VGMToolbox.format
                                 
                                 // add frame header
                                 
+                                // write next frame size
+                                nextFrameSizeBytes = BitConverter.GetBytes((uint)(nextFrameSizeVideo + 0xC));
+                                Array.Reverse(nextFrameSizeBytes);
+                                this.writeChunkToStream(nextFrameSizeBytes, "video", streamWriters, this.FileExtensionVideo);
+
+                                // write previous frame size
+                                previousFrameSizeBytes = BitConverter.GetBytes((uint)(previousFrameSizeVideo + 0xC));
+                                Array.Reverse(previousFrameSizeBytes);
+                                this.writeChunkToStream(nextFrameSizeBytes, "video", streamWriters, this.FileExtensionVideo);
+
+                                // write video size
+                                this.writeChunkToStream(videoChunkSizeBytes, "video", streamWriters, this.FileExtensionVideo);
 
                                 // write data
                                 videoChunk = ParseFile.ParseSimpleOffset(currentFrame, (int)dataStart, (int)videoChunkSize);
@@ -299,6 +342,11 @@ namespace VGMToolbox.format
                             ///////////////
                             if (demuxOptions.ExtractAudio && this.ContainsAudio)
                             {
+                                if (streamWriters.ContainsKey("audio"))
+                                {
+                                    audioFrameOffset = streamWriters["audio"].Position;
+                                }
+                                
                                 // attach THP header
                                 if (!isAudioHeaderWritten)
                                 { 
@@ -352,6 +400,36 @@ namespace VGMToolbox.format
                         }                        
                     
                         // fix headers as needed
+
+                        // data size
+                        foreach (string key in streamWriters.Keys)
+                        {
+                            totalDataSize = (uint)(streamWriters[key].Length - this.FirstFrameOffset);
+                            totalDataSizeBytes = BitConverter.GetBytes(totalDataSize);
+                            Array.Reverse(totalDataSizeBytes);
+
+                            streamWriters[key].Position = 0x1C;
+                            streamWriters[key].Write(totalDataSizeBytes, 0, 4);
+                        }
+
+                        // frame offsets
+                        if (streamWriters.ContainsKey("audio"))
+                        {
+                            lastOffsetBytes = BitConverter.GetBytes((uint)audioFrameOffset);
+                            Array.Reverse(lastOffsetBytes);
+
+                            streamWriters["audio"].Position = 0x2C;
+                            streamWriters["audio"].Write(lastOffsetBytes, 0, 4);
+                        }
+                        
+                        if (streamWriters.ContainsKey("video"))
+                        {
+                            lastOffsetBytes = BitConverter.GetBytes((uint)videoFrameOffset);
+                            Array.Reverse(lastOffsetBytes);
+
+                            streamWriters["video"].Position = 0x2C;
+                            streamWriters["video"].Write(lastOffsetBytes, 0, 4);                        
+                        }
 
                     }
                     else
