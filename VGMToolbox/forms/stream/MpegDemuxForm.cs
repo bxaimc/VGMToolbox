@@ -21,10 +21,10 @@ namespace VGMToolbox.forms.stream
             InitializeComponent();
 
             this.tbOutput.Text = "Demultiplex streams from movies." + Environment.NewLine;
-            this.tbOutput.Text += "- Currently supported formats: DVD Video, MO (Wii Only), MPEG1, MPEG2, PAM, PMF, PSS, SFD, USM, XMV" + Environment.NewLine;
+            this.tbOutput.Text += "- Currently supported formats: DVD Video, MO (Wii Only), MPEG1, MPEG2, PAM, PMF, PSS, SFD, THP, USM, XMV" + Environment.NewLine;
             this.tbOutput.Text += "- If the MPEG does not work for your file, be sure to try DVD Video, since it can handle specialized audio types." + Environment.NewLine;
             this.tbOutput.Text += "- MKVMerge can be used to add raw .264 data to a container file for playback." + Environment.NewLine;
-            this.tbOutput.Text += "- Adding header to raw XMV video not currently supported." + Environment.NewLine;
+            this.tbOutput.Text += "- The following video output formats are unknown and untestable: MO, XMV." + Environment.NewLine;
 
 
             this.initializeFormatList();
