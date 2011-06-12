@@ -171,6 +171,7 @@ namespace VGMToolbox.format
 
         private byte[] RemoveAudioInfoFromThpHeader(byte[] dirtyThpHeader)
         {
+            byte[] dataBytes;
             byte[] fourEmptyBytes = new byte[] { 0x00, 0x00, 0x00, 0x00 };
             
             // clear max audio samples
@@ -179,14 +180,83 @@ namespace VGMToolbox.format
             // reset components
             Array.Copy(fourEmptyBytes, 0, dirtyThpHeader, this.ComponentDataOffset, 4);
             dirtyThpHeader[this.ComponentDataOffset + 3] = 0x01;
-            dirtyThpHeader[this.ComponentDataOffset + 4] = 0x00;
+            dirtyThpHeader[this.ComponentDataOffset + 4] = 0x00; // set to video
             dirtyThpHeader[this.ComponentDataOffset + 5] = 0xFF;
-            
-            // set data start 
-            // dirtyThpHeader[0x2B] = 0x50;
 
-            // 
+            // add video details in case it was the second component
+            dataBytes = ByteConversion.GetBytesBigEndian(this.Width);
+            Array.Copy(dataBytes, 0, dirtyThpHeader, 0x44, 4);
 
+            dataBytes = ByteConversion.GetBytesBigEndian(this.Height);
+            Array.Copy(dataBytes, 0, dirtyThpHeader, 0x48, 4);
+
+            if (this.Version == ThpVersion.Version11)
+            {
+                dataBytes = ByteConversion.GetBytesBigEndian(this.Unknown);
+                Array.Copy(dataBytes, 0, dirtyThpHeader, 0x4C, 4);            
+            }
+
+            // remove audio component details
+            if (this.ContainsAudio)
+            {
+                if (this.Version == ThpVersion.Version10)
+                {
+                    for (int i = 0x4C; i < this.FirstFrameOffset; i++)
+                    {
+                        dirtyThpHeader[i] = 0;
+                    }
+                }
+                else // version 1.1
+                {
+                    for (int i = 0x50; i < this.FirstFrameOffset; i++)
+                    {
+                        dirtyThpHeader[i] = 0;
+                    }                
+                }
+            }
+
+            return dirtyThpHeader;
+        }
+
+        private byte[] RemoveVideoInfoFromThpHeader(byte[] dirtyThpHeader)
+        {
+            byte[] dataBytes;
+            byte[] fourEmptyBytes = new byte[] { 0x00, 0x00, 0x00, 0x00 };
+
+            // reset components
+            Array.Copy(fourEmptyBytes, 0, dirtyThpHeader, this.ComponentDataOffset, 4);
+            dirtyThpHeader[this.ComponentDataOffset + 3] = 0x01;
+            dirtyThpHeader[this.ComponentDataOffset + 4] = 0x01; // set to audio
+            dirtyThpHeader[this.ComponentDataOffset + 5] = 0xFF;
+
+            // add audio details in case it was the second component
+            dataBytes = ByteConversion.GetBytesBigEndian(this.NumberOfChannels);
+            Array.Copy(dataBytes, 0, dirtyThpHeader, 0x44, 4);
+
+            dataBytes = ByteConversion.GetBytesBigEndian(this.Frequency);
+            Array.Copy(dataBytes, 0, dirtyThpHeader, 0x48, 4);
+
+            dataBytes = ByteConversion.GetBytesBigEndian(this.NumberOfSamples);
+            Array.Copy(dataBytes, 0, dirtyThpHeader, 0x4C, 4);
+
+            if (this.Version == ThpVersion.Version11)
+            {
+                dataBytes = ByteConversion.GetBytesBigEndian(this.NumberOfAudioBlocksPerFrame);
+                Array.Copy(dataBytes, 0, dirtyThpHeader, 0x50, 4);
+
+                for (int i = 0x54; i < this.FirstFrameOffset; i++)
+                {
+                    dirtyThpHeader[i] = 0;
+                }
+            }
+            else
+            {
+                for (int i = 0x50; i < this.FirstFrameOffset; i++)
+                {
+                    dirtyThpHeader[i] = 0;
+                }            
+            }
+                       
             return dirtyThpHeader;
         }
 
@@ -304,8 +374,7 @@ namespace VGMToolbox.format
                                     thpHeader = this.RemoveAudioInfoFromThpHeader(thpHeader);
                                     
                                     // update first frame size in header
-                                    firstFrameSize = BitConverter.GetBytes((uint)(videoChunkSize + 0xC)); // add 0x10 for frame header
-                                    Array.Reverse(firstFrameSize); // convert to Big Endian
+                                    firstFrameSize = ByteConversion.GetBytesBigEndian((uint)(videoChunkSize + 0xC));
                                     Array.Copy(firstFrameSize, 0, thpHeader, 0x18, 4);
 
                                     // write updated header
@@ -317,13 +386,11 @@ namespace VGMToolbox.format
                                 // add frame header
                                 
                                 // write next frame size
-                                nextFrameSizeBytes = BitConverter.GetBytes((uint)(nextFrameSizeVideo + 0xC));
-                                Array.Reverse(nextFrameSizeBytes);
+                                nextFrameSizeBytes = ByteConversion.GetBytesBigEndian((uint)(nextFrameSizeVideo + 0xC));
                                 this.writeChunkToStream(nextFrameSizeBytes, "video", streamWriters, this.FileExtensionVideo);
 
                                 // write previous frame size
-                                previousFrameSizeBytes = BitConverter.GetBytes((uint)(previousFrameSizeVideo + 0xC));
-                                Array.Reverse(previousFrameSizeBytes);
+                                previousFrameSizeBytes = ByteConversion.GetBytesBigEndian((uint)(previousFrameSizeVideo + 0xC));
                                 this.writeChunkToStream(nextFrameSizeBytes, "video", streamWriters, this.FileExtensionVideo);
 
                                 // write video size
@@ -352,16 +419,17 @@ namespace VGMToolbox.format
                                 { 
                                     // get original header
                                     thpHeader = ParseFile.ParseSimpleOffset(fs, headerLocation, (int)(fs.Length - this.DataSize));
-                                    
+
+                                    // clean out video info
+                                    thpHeader = this.RemoveVideoInfoFromThpHeader(thpHeader);
+
                                     // update first frame size in header
-                                    firstFrameSize = BitConverter.GetBytes((uint)(audioChunkSize + 0x10)); // add 0x10 for frame header
-                                    Array.Reverse(firstFrameSize); // convert to Big Endian
+                                    firstFrameSize = ByteConversion.GetBytesBigEndian((uint)(audioChunkSize + 0x10));
                                     Array.Copy(firstFrameSize, 0, thpHeader, 0x18, 4);
 
                                     // write updated header
                                     this.writeChunkToStream(thpHeader, "audio", streamWriters, this.FileExtensionAudio);
                                     isAudioHeaderWritten = true;
-
                                 }
                                 
                                 // add blocks
@@ -370,13 +438,11 @@ namespace VGMToolbox.format
                                     // write frame header
 
                                     // write next frame size
-                                    nextFrameSizeBytes = BitConverter.GetBytes((uint)(nextFrameSizeAudio + 0x10));
-                                    Array.Reverse(nextFrameSizeBytes);
+                                    nextFrameSizeBytes = ByteConversion.GetBytesBigEndian((uint)(nextFrameSizeAudio + 0x10));
                                     this.writeChunkToStream(nextFrameSizeBytes, "audio", streamWriters, this.FileExtensionAudio);
                                     
                                     // write previous frame size
-                                    previousFrameSizeBytes = BitConverter.GetBytes((uint)(previousFrameSizeAudio + 0x10));
-                                    Array.Reverse(previousFrameSizeBytes);
+                                    previousFrameSizeBytes = ByteConversion.GetBytesBigEndian((uint)(previousFrameSizeAudio + 0x10));
                                     this.writeChunkToStream(nextFrameSizeBytes, "audio", streamWriters, this.FileExtensionAudio);
                                     
                                     // write video size (zero)
@@ -405,8 +471,7 @@ namespace VGMToolbox.format
                         foreach (string key in streamWriters.Keys)
                         {
                             totalDataSize = (uint)(streamWriters[key].Length - this.FirstFrameOffset);
-                            totalDataSizeBytes = BitConverter.GetBytes(totalDataSize);
-                            Array.Reverse(totalDataSizeBytes);
+                            totalDataSizeBytes = ByteConversion.GetBytesBigEndian(totalDataSize);
 
                             streamWriters[key].Position = 0x1C;
                             streamWriters[key].Write(totalDataSizeBytes, 0, 4);
@@ -415,8 +480,7 @@ namespace VGMToolbox.format
                         // frame offsets
                         if (streamWriters.ContainsKey("audio"))
                         {
-                            lastOffsetBytes = BitConverter.GetBytes((uint)audioFrameOffset);
-                            Array.Reverse(lastOffsetBytes);
+                            lastOffsetBytes = ByteConversion.GetBytesBigEndian((uint)audioFrameOffset);
 
                             streamWriters["audio"].Position = 0x2C;
                             streamWriters["audio"].Write(lastOffsetBytes, 0, 4);
@@ -424,8 +488,7 @@ namespace VGMToolbox.format
                         
                         if (streamWriters.ContainsKey("video"))
                         {
-                            lastOffsetBytes = BitConverter.GetBytes((uint)videoFrameOffset);
-                            Array.Reverse(lastOffsetBytes);
+                            lastOffsetBytes = ByteConversion.GetBytesBigEndian((uint)videoFrameOffset);
 
                             streamWriters["video"].Position = 0x2C;
                             streamWriters["video"].Write(lastOffsetBytes, 0, 4);                        

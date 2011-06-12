@@ -185,5 +185,12 @@ namespace VGMToolbox.util
 
             return bytes;
         }
+
+        public static byte[] GetBytesBigEndian(uint value)
+        {
+            byte[] ret = BitConverter.GetBytes(value);
+            Array.Reverse(ret);
+            return ret;
+        }
     }
 }
