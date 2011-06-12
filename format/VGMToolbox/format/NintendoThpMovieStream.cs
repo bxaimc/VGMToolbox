@@ -431,7 +431,12 @@ namespace VGMToolbox.format
                                     this.writeChunkToStream(thpHeader, "audio", streamWriters, this.FileExtensionAudio);
                                     isAudioHeaderWritten = true;
                                 }
-                                
+
+                                //if (this.NumberOfAudioBlocksPerFrame > 1)
+                                //{
+                                //    int x = 1;
+                                //}
+
                                 // add blocks
                                 for (int i = 0; i < this.NumberOfAudioBlocksPerFrame; i++)
                                 {
