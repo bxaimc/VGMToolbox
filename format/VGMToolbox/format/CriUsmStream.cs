@@ -11,6 +11,7 @@ namespace VGMToolbox.format
         public const string DefaultAudioExtension = ".adx";
         public const string DefaultVideoExtension = ".m2v";
 
+        protected static readonly byte[] ALP_BYTES = new byte[] { 0x40, 0x41, 0x4C, 0x50 };
         protected static readonly byte[] CRID_BYTES = new byte[] { 0x43, 0x52, 0x49, 0x44 };
         protected static readonly byte[] SFV_BYTES = new byte[] { 0x40, 0x53, 0x46, 0x56 };
         protected static readonly byte[] SFA_BYTES = new byte[] { 0x40, 0x53, 0x46, 0x41 };
@@ -44,6 +45,7 @@ namespace VGMToolbox.format
             this.FileExtensionVideo = DefaultVideoExtension;
 
             base.BlockIdDictionary.Clear();
+            base.BlockIdDictionary[BitConverter.ToUInt32(ALP_BYTES, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 4); // @ALP
             base.BlockIdDictionary[BitConverter.ToUInt32(CRID_BYTES, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 4); // CRID
             base.BlockIdDictionary[BitConverter.ToUInt32(SFV_BYTES, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 4); // @SFV
             base.BlockIdDictionary[BitConverter.ToUInt32(SFA_BYTES, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 4); // @SFA

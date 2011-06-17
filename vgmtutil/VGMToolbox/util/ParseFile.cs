@@ -1236,10 +1236,10 @@ namespace VGMToolbox.util
                 if ((nameOffset > 0) && (nameLength > 0))
                 {
                     byte[] nameBytes = ParseSimpleOffset(vfsStream, nameOffset, (int)nameLength);                    
-                    nameBytes = FileUtil.ReplaceNullByteWithSpace(nameBytes);
+                    //nameBytes = FileUtil.ReplaceNullByteWithSpace(nameBytes);
                     int codePage = ByteConversion.GetPredictedCodePageForTags(nameBytes);
                     newFileName = ByteConversion.GetEncodedText(nameBytes, codePage).Trim();
-                    //newFileName = TrimFileNameToNullBytes(newFileName);
+                    newFileName = TrimFileNameToNullBytes(newFileName);
                 }
             }
             

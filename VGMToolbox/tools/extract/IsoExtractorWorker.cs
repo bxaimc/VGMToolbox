@@ -280,7 +280,8 @@ namespace VGMToolbox.tools.extract
                     //---------------
                     // PANASONIC 3DO
                     //---------------
-                    else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, 0, Panasonic3do.STANDARD_IDENTIFIER.Length, Panasonic3do.STANDARD_IDENTIFIER))
+                    else if ((ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, 0, Panasonic3do.STANDARD_IDENTIFIER.Length, Panasonic3do.STANDARD_IDENTIFIER)) ||
+                             (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, 0, Panasonic3do.STANDARD_IDENTIFIER2.Length, Panasonic3do.STANDARD_IDENTIFIER2)))
                     {
                         Panasonic3doVolume isoVolume;
                         isoVolume = new Panasonic3doVolume();
