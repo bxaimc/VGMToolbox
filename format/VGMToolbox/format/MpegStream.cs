@@ -302,7 +302,10 @@ namespace VGMToolbox.format
                                                 audioFileExtension = this.GetAudioFileExtension(fs, currentOffset);
                                                 outputFileName += audioFileExtension;
 
-                                                this.StreamIdFileType.Add(streamId, audioFileExtension);
+                                                if (!this.StreamIdFileType.ContainsKey(streamId))
+                                                {
+                                                    this.StreamIdFileType.Add(streamId, audioFileExtension);
+                                                }
                                             }
                                             else
                                             {
