@@ -58,7 +58,7 @@ namespace VGMToolbox.format
 
             audioChunkStruct.Chunk = audioChunk;
             audioChunkStruct.ChunkId = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(inStream, absoluteOffset - 4, 4), 0);
-
+            audioChunkStruct.ChunkId = 0;
 
             return audioChunkStruct;
         }
