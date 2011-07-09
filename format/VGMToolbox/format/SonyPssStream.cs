@@ -12,7 +12,7 @@ namespace VGMToolbox.format
         public SonyPssStream(string path)
             : base(path)
         {
-            this.UsesSameIdForMultipleAudioTracks = false;
+            this.UsesSameIdForMultipleAudioTracks = true;
             base.BlockIdDictionary[BitConverter.ToUInt32(Mpeg2Stream.PacketStartBytes, 0)] = new BlockSizeStruct(PacketSizeType.Static, 0xE); // Pack Header
             base.BlockIdDictionary[BitConverter.ToUInt32(new byte[] { 0x00, 0x00, 0x01, 0xBD }, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 2); // Audio Stream, two bytes following equal length (Big Endian)
             base.BlockIdDictionary[BitConverter.ToUInt32(new byte[] { 0x00, 0x00, 0x01, 0xBF }, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 2); // Audio Stream, two bytes following equal length (Big Endian)
@@ -21,6 +21,14 @@ namespace VGMToolbox.format
         protected override int GetAudioPacketHeaderSize(Stream readStream, long currentOffset)
         {            
             return 0x11;
+        }
+
+        protected override byte GetStreamId(Stream readStream, long currentOffset)
+        {
+            byte streamId;
+            streamId = ParseFile.ParseSimpleOffset(readStream, currentOffset + 0x14, 1)[0];
+
+            return streamId;
         }
 
         protected override bool IsThisAnAudioBlock(byte[] blockToCheck)
@@ -36,7 +44,20 @@ namespace VGMToolbox.format
 
         protected override string GetAudioFileExtension(Stream readStream, long currentOffset)
         {
-            return DefaultAudioExtension;
+            string fileExtension;
+            byte streamId = this.GetStreamId(readStream, currentOffset);
+
+            if ((streamId & 0xF0) == 0xA0)
+            {
+                fileExtension = DefaultAudioExtension;                
+            }
+            else
+            {
+                fileExtension = ".bin";
+            }
+
+
+            return fileExtension;
         }
     }
 }

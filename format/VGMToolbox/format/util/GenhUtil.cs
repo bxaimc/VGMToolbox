@@ -377,7 +377,7 @@ namespace VGMToolbox.format.util
                     break;
 
                 case 0x05: // "0x05 - PCM RAW (8-Bit)"
-                case 0x0D: // "0x05 - PCM RAW (8-Bit unsigned)"
+                case 0x0D: // "0x0D - PCM RAW (8-Bit unsigned)"
                     sampleCount = (byteValue / channels);
                     break;
 
@@ -392,6 +392,7 @@ namespace VGMToolbox.format.util
                 case 0x07: // "0x07 - Interleaved DVI 4-Bit IMA ADPCM"
                 case 0x09: // "0x09 - 4-bit IMA ADPCM"
                 case 0x0A: // "0x0A - Yamaha AICA 4-bit ADPCM"    
+                case 0x11: // "0x11 - Apple Quicktime 4-bit IMA ADPCM"    
                     sampleCount = (byteValue / channels * 2);
                     break;
 
