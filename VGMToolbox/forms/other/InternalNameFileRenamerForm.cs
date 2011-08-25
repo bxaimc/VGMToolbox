@@ -112,7 +112,7 @@ namespace VGMToolbox.forms.other
             if (this.rbTerminatorBytes.Checked)
             {
                 isValid &= AVgmtForm.checkTextBox(this.tbTerminatorBytes.Text, this.rbTerminatorBytes.Text);
-                AVgmtForm.checkIfTextIsParsableAsLong(this.tbTerminatorBytes.Text, this.rbTerminatorBytes.Text);            
+                AVgmtForm.checkIfTextIsParsableAsLong("0x" + this.tbTerminatorBytes.Text, this.rbTerminatorBytes.Text);            
             }
 
             return isValid;
