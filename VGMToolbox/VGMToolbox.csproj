@@ -163,6 +163,12 @@
     <Compile Include="forms\examine\CrcCalculatorForm.Designer.cs">
       <DependentUpon>CrcCalculatorForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\extraction\ExtractOggForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\extraction\ExtractOggForm.Designer.cs">
+      <DependentUpon>ExtractOggForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\extraction\IsoExtractorForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -660,6 +666,9 @@
     <Compile Include="tools\extract\ExtractCdxaWorker.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\extract\ExtractOggWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\extract\IsoExtractorWorker.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1032,6 +1041,9 @@
     <EmbeddedResource Include="forms\extraction\ExtractCdxaForm.resx">
       <DependentUpon>ExtractCdxaForm.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\extraction\ExtractOggForm.resx">
+      <DependentUpon>ExtractOggForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\extraction\ExtractSonyAdpcmForm.resx">
       <DependentUpon>ExtractSonyAdpcmForm.cs</DependentUpon>

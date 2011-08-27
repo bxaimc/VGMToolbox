@@ -889,7 +889,7 @@ namespace VGMToolbox
             // MIDI Extractor
             TreeNode ext_ExtractMidiNode = new TreeNode(ConfigurationSettings.AppSettings["MenuTree_ExtractMidiNode"]);
 
-            // Add Cdxa Extractor Form
+            // Add Midi Extractor Form
             MidiExtractorForm extract_MidiExtractorForm = new MidiExtractorForm(ext_ExtractMidiNode);
             this.splitContainer1.Panel2.Controls.Add(extract_MidiExtractorForm);
 
@@ -978,6 +978,20 @@ namespace VGMToolbox
             nodeTag.FormClass = extAdxForm.GetType().Name;
             ext_ExtractAdxNode.Tag = nodeTag;
 
+            ///////////////////
+            // OGG Extractor
+            ///////////////////
+            TreeNode ext_ExtractOggNode = new TreeNode("Xiph.Org OGG Extractor");
+
+            // Add Extractor Form
+            ExtractOggForm extract_ExtractOggForm = new ExtractOggForm(ext_ExtractOggNode);
+            this.splitContainer1.Panel2.Controls.Add(extract_ExtractOggForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = extract_ExtractOggForm.GetType().Name;
+            ext_ExtractOggNode.Tag = nodeTag;
+
+
             ext_GenericNode.Nodes.Add(ext_ByteRemoverNode);
             ext_GenericNode.Nodes.Add(ext_SimpleCutterNode);
             ext_GenericNode.Nodes.Add(ext_OffsetFinderNode);
@@ -993,7 +1007,8 @@ namespace VGMToolbox
 
             ext_StreamsNode.Nodes.Add(ext_ExtractAdxNode);
             ext_StreamsNode.Nodes.Add(ext_ExtractCdxaNode);
-            ext_StreamsNode.Nodes.Add(ext_SonyAdpcmNode);
+            ext_StreamsNode.Nodes.Add(ext_ExtractOggNode);
+            //ext_StreamsNode.Nodes.Add(ext_SonyAdpcmNode);
             ext_RootNode.Nodes.Add(ext_StreamsNode);
 
             // ext_RootNode.Nodes.Add(ext_PcNode);

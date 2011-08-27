@@ -45,7 +45,7 @@ namespace VGMToolbox.tools.extract
             uint fileSize;
 
             int fileCount = 0;
-            string outputPath = Path.Combine(Path.GetDirectoryName(pPath), "_sony_adpcm_ext");
+            string outputPath = Path.Combine(Path.GetDirectoryName(pPath), "_cri_adx_ext");
             string outputFileName;
             string outputFilePath;
             

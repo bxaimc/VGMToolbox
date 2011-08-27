@@ -144,6 +144,7 @@
     <Compile Include="VGMToolbox\format\util\XsfUtil.cs" />
     <Compile Include="VGMToolbox\format\Vgm.cs" />
     <Compile Include="VGMToolbox\format\Wsr.cs" />
+    <Compile Include="VGMToolbox\format\XiphOrgOggContainer.cs" />
     <Compile Include="VGMToolbox\format\XmvStream.cs" />
     <Compile Include="VGMToolbox\format\Xsf.cs" />
   </ItemGroup>
