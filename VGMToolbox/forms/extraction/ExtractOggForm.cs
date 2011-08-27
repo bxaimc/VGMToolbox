@@ -58,6 +58,7 @@ namespace VGMToolbox.forms.extraction
 
             ExtractOggWorker.ExtractOggStruct bwStruct = new ExtractOggWorker.ExtractOggStruct();
             bwStruct.SourcePaths = s;
+            bwStruct.StopParsingOnFormatError = cbStopParsingOnError.Checked;
 
             base.backgroundWorker_Execute(bwStruct);
         }
@@ -68,6 +69,7 @@ namespace VGMToolbox.forms.extraction
 
             ExtractOggWorker.ExtractOggStruct bwStruct = new ExtractOggWorker.ExtractOggStruct();
             bwStruct.SourcePaths = s;
+            bwStruct.StopParsingOnFormatError = cbStopParsingOnError.Checked;
 
             base.backgroundWorker_Execute(bwStruct);
         }

@@ -159,6 +159,8 @@ namespace VGMToolbox.forms.extraction
                     }
                 }
 
+                ofStruct.OutputLogFile = this.cbOutputLogFile.Checked;
+
                 base.backgroundWorker_Execute(ofStruct);
             }
         }
@@ -296,6 +298,10 @@ namespace VGMToolbox.forms.extraction
             
             if (cbDoCut.Checked)
             {
+                this.cbOutputLogFile.Enabled = true;
+                this.cbOutputLogFile.Checked = false;
+                this.cbOutputLogFile.Show();
+
                 tbSearchStringOffset.ReadOnly = false;
                 tbOutputExtension.ReadOnly = false;
 
@@ -360,6 +366,10 @@ namespace VGMToolbox.forms.extraction
             }
             else
             {
+                this.cbOutputLogFile.Enabled = false;
+                this.cbOutputLogFile.Checked = false;
+                this.cbOutputLogFile.Hide();
+                
                 tbSearchStringOffset.ReadOnly = true;
                 tbOutputExtension.ReadOnly = true;
 

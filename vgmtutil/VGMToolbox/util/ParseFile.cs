@@ -993,8 +993,6 @@ namespace VGMToolbox.util
                             {
                                 ParseFile.ExtractChunkToFile(fs, cutStart, cutSize, Path.Combine(outputFolder, outputFile), outputLog, outputBatchFile);
 
-                                // ParseFile.ExtractChunkToFile(fs, cutStart, cutSize, Path.Combine(outputFolder, outputFile), false, false);
-
                                 ret.AppendFormat(
                                     CultureInfo.CurrentCulture,
                                     "  Extracted [{3}] begining at 0x{0}, for string found at: 0x{1}, with size 0x{2}",

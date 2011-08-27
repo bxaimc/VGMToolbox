@@ -37,6 +37,8 @@ namespace VGMToolbox.tools.extract
 
             public string extraCutSizeBytes;
 
+            public bool OutputLogFile { set; get; }
+
             private string[] sourcePaths;
             public string[] SourcePaths
             {
@@ -134,7 +136,7 @@ namespace VGMToolbox.tools.extract
             VGMToolbox.util.FindOffsetStruct findOffsetStruct = offsetFinderStruct.ToFindOffsetStruct();
 
             string output;
-            ParseFile.FindOffsetAndCutFile(pPath, findOffsetStruct, out output, true, true);
+            ParseFile.FindOffsetAndCutFile(pPath, findOffsetStruct, out output, offsetFinderStruct.OutputLogFile, offsetFinderStruct.OutputLogFile);
 
             this.outputBuffer.Append(output);
 
