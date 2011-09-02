@@ -1008,7 +1008,7 @@ namespace VGMToolbox
             ext_StreamsNode.Nodes.Add(ext_ExtractAdxNode);
             ext_StreamsNode.Nodes.Add(ext_ExtractCdxaNode);
             ext_StreamsNode.Nodes.Add(ext_ExtractOggNode);
-            //ext_StreamsNode.Nodes.Add(ext_SonyAdpcmNode);
+            ext_StreamsNode.Nodes.Add(ext_SonyAdpcmNode);
             ext_RootNode.Nodes.Add(ext_StreamsNode);
 
             // ext_RootNode.Nodes.Add(ext_PcNode);

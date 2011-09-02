@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Windows.Forms;
 using VGMToolbox.plugin;
 using VGMToolbox.tools.extract;
+using VGMToolbox.util;
 
 namespace VGMToolbox.forms.extraction
 {
@@ -49,12 +50,37 @@ namespace VGMToolbox.forms.extraction
 
         private void grpSourceFiles_DragDrop(object sender, DragEventArgs e)
         {
-            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+            if (this.validateEnteredData())
+            {
+                string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-            ExtractSonyAdpcmWorker.ExtractSonyAdpcmStruct bwStruct = new ExtractSonyAdpcmWorker.ExtractSonyAdpcmStruct();
-            bwStruct.SourcePaths = s;
+                ExtractSonyAdpcmWorker.ExtractSonyAdpcmStruct bwStruct = new ExtractSonyAdpcmWorker.ExtractSonyAdpcmStruct();
+                bwStruct.SourcePaths = s;
+                bwStruct.OutputBatchFiles = this.cbOutputBatchScripts.Checked;
 
-            base.backgroundWorker_Execute(bwStruct);
+                if (!String.IsNullOrEmpty(this.tbStartOffset.Text))
+                {
+                    bwStruct.StartOffset = ByteConversion.GetLongValueFromString(this.tbStartOffset.Text);
+                }
+                else
+                {
+                    bwStruct.StartOffset = 0;
+                }
+
+                base.backgroundWorker_Execute(bwStruct);
+            }
+        }
+
+        private bool validateEnteredData()
+        {
+            bool ret = true;
+
+            if (!String.IsNullOrEmpty(this.tbStartOffset.Text))
+            {
+                ret &= AVgmtForm.checkIfTextIsParsableAsLong(this.tbStartOffset.Text, this.label1.Text);
+            }
+
+            return ret;
         }
     }
 }

@@ -206,6 +206,39 @@ namespace VGMToolbox.format
             return ret;
         }
 
+        public static bool IsSonyAdpcmRow(Stream inputStream, long offset, ref Dictionary<long, bool> rowCheckHash)
+        {
+            bool ret = true;
+
+            if (rowCheckHash.ContainsKey(offset))
+            {
+                ret = rowCheckHash[offset];
+            }
+            else
+            {
+                byte[] potentialAdpcm = new byte[SONY_ADPCM_ROW_SIZE];
+                int bytesRead;
+
+                inputStream.Position = offset;
+                bytesRead = inputStream.Read(potentialAdpcm, 0, SONY_ADPCM_ROW_SIZE);
+
+                if ((bytesRead != SONY_ADPCM_ROW_SIZE) ||
+                    (potentialAdpcm[1] > 7) ||
+                    (potentialAdpcm[0] > 0x4C) ||
+                    ((potentialAdpcm[0] == 0) && (potentialAdpcm[1] != 2) && (GetCountOfZeroBytes(potentialAdpcm) > 14)) ||
+                    (ParseFile.CompareSegment(potentialAdpcm, 0, VB_START_BYTES))
+                   )
+                {
+                    ret = false;
+                }
+
+                // update hash table
+                rowCheckHash[offset] = ret;
+            }
+            
+            return ret;
+        }
+
         public static int GetCountOfZeroBytes(byte[] values)
         {
             int zeroCount = 0;

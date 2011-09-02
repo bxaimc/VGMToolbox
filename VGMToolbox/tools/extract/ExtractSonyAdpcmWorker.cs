@@ -16,6 +16,8 @@ namespace VGMToolbox.tools.extract
         public struct ExtractSonyAdpcmStruct : IVgmtWorkerStruct
         {
             public string[] SourcePaths { set; get; }
+            public bool OutputBatchFiles { set; get; }
+            public long StartOffset { set; get; }
         }
 
         public ExtractSonyAdpcmWorker() :
@@ -25,7 +27,7 @@ namespace VGMToolbox.tools.extract
         {
             ExtractSonyAdpcmStruct extractSonyAdpcmStruct = (ExtractSonyAdpcmStruct)pExtractSonyAdpcmStruct;
 
-            long offset = 0;
+            long offset = extractSonyAdpcmStruct.StartOffset;
             ArrayList adpcmList = new ArrayList();
             Psf.ProbableItemStruct adpcmDataItem = new Psf.ProbableItemStruct();
 
@@ -35,6 +37,7 @@ namespace VGMToolbox.tools.extract
             string outputFilePath;
 
             bool previousRowIsZeroes = false;
+            Dictionary<long, bool> rowCheckHash = new Dictionary<long, bool>();
 
             FileInfo fi = new FileInfo(pPath);            
 
@@ -44,19 +47,19 @@ namespace VGMToolbox.tools.extract
                 { 
                     if (!CancellationPending)
                     {
-                        if (ExtractSonyAdpcmWorker.IsPotentialAdpcm(fs, offset, Psf.MIN_ADPCM_ROW_SIZE, false, ref previousRowIsZeroes))
+                        if (ExtractSonyAdpcmWorker.IsPotentialAdpcm(fs, offset, Psf.MIN_ADPCM_ROW_SIZE, false, ref previousRowIsZeroes, ref rowCheckHash))
                         {
                             // create probable adpcm item
                             adpcmDataItem.Init();
-                            
+
                             // set starting offset
                             adpcmDataItem.offset = offset;
-                        
+
                             // move to next row
                             offset += Psf.SONY_ADPCM_ROW_SIZE;
 
                             // loop until end
-                            while (Psf.IsSonyAdpcmRow(fs, offset))
+                            while (Psf.IsSonyAdpcmRow(fs, offset, ref rowCheckHash))
                             {
                                 offset += Psf.SONY_ADPCM_ROW_SIZE;
                             }
@@ -64,8 +67,10 @@ namespace VGMToolbox.tools.extract
                             adpcmDataItem.length = (uint)(offset - adpcmDataItem.offset);
                             adpcmList.Add(adpcmDataItem);
                         }
-
-                        offset += 1;
+                        else
+                        {
+                            offset += 1;
+                        }
                     }
                     else
                     {
@@ -78,13 +83,11 @@ namespace VGMToolbox.tools.extract
                 // extract files
                 foreach (Psf.ProbableItemStruct p in adpcmList)
                 {
-                    if (p.length > 0xC3500)
-                    {
-                        outputFileName = String.Format("{0}_{1}.bin", Path.GetFileNameWithoutExtension(pPath), fileCount.ToString("X8"));
-                        outputFilePath = Path.Combine(outputPath, outputFileName);
+                    outputFileName = String.Format("{0}_{1}.bin", Path.GetFileNameWithoutExtension(pPath), fileCount.ToString("X8"));
+                    outputFilePath = Path.Combine(outputPath, outputFileName);
 
-                        ParseFile.ExtractChunkToFile(fs, p.offset, (int)p.length, outputFilePath, true, true);
-                    }
+                    ParseFile.ExtractChunkToFile(fs, p.offset, (int)p.length, outputFilePath, 
+                        extractSonyAdpcmStruct.OutputBatchFiles, extractSonyAdpcmStruct.OutputBatchFiles);
 
                     fileCount++;
                 }
@@ -92,7 +95,8 @@ namespace VGMToolbox.tools.extract
         }
 
         public static bool IsPotentialAdpcm(Stream searchStream, long offset, 
-            int rowsToCheck, bool doAdditionalChecks, ref bool previousRowIsZeroes)
+            int rowsToCheck, bool doAdditionalChecks, ref bool previousRowIsZeroes,
+            ref Dictionary<long, bool> rowCheckHash)
         {
             bool ret = true;
             byte[] checkBytes = new byte[0x10 * rowsToCheck];
@@ -121,8 +125,20 @@ namespace VGMToolbox.tools.extract
                 {
                     previousRowIsZeroes = false;
 
-                    if ((bytesRead < ((i * 0x10) + 0x10)) ||
-                             (!IsSonyAdpcmRow(checkBytes, doAdditionalChecks, i)))
+                    if (bytesRead >= ((i * 0x10) + 0x10))
+                    {
+                        if (!rowCheckHash.ContainsKey(offset + (i * 0x10)))
+                        {
+                            rowCheckHash[offset + (i * 0x10)] = IsSonyAdpcmRow(checkBytes, doAdditionalChecks, i);
+                        }
+                        
+                        if (rowCheckHash[offset + (i * 0x10)] == false)
+                        {
+                            ret = false;
+                            break;
+                        }
+                    }
+                    else
                     {
                         ret = false;
                         break;
