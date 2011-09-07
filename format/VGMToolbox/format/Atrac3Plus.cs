@@ -185,5 +185,10 @@ namespace VGMToolbox.format
 
             return headerBytes;
         }
+
+        //public static byte[] GetRiffHeaderFromMsfHeader(byte[] msfHeader)
+        //{ 
+        
+        //}
     }
 }
