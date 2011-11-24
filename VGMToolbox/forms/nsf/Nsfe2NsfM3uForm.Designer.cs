@@ -40,30 +40,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 373);
-            this.pnlLabels.Size = new System.Drawing.Size(779, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 424);
+            this.pnlLabels.Size = new System.Drawing.Size(928, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(779, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(928, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 296);
-            this.tbOutput.Size = new System.Drawing.Size(779, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 347);
+            this.tbOutput.Size = new System.Drawing.Size(928, 77);
+            this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 276);
-            this.pnlButtons.Size = new System.Drawing.Size(779, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 327);
+            this.pnlButtons.Size = new System.Drawing.Size(928, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(719, 0);
+            this.btnCancel.Location = new System.Drawing.Point(868, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(659, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(808, 0);
             // 
             // grpSourceFiles
             // 
@@ -71,7 +72,7 @@
             this.grpSourceFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpSourceFiles.Location = new System.Drawing.Point(0, 23);
             this.grpSourceFiles.Name = "grpSourceFiles";
-            this.grpSourceFiles.Size = new System.Drawing.Size(779, 253);
+            this.grpSourceFiles.Size = new System.Drawing.Size(928, 304);
             this.grpSourceFiles.TabIndex = 5;
             this.grpSourceFiles.TabStop = false;
             this.grpSourceFiles.Text = "Files";
@@ -82,9 +83,9 @@
             // 
             this.grpOptions.Controls.Add(this.cbNSFE_OneM3uPerTrack);
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.grpOptions.Location = new System.Drawing.Point(3, 209);
+            this.grpOptions.Location = new System.Drawing.Point(3, 260);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(773, 41);
+            this.grpOptions.Size = new System.Drawing.Size(922, 41);
             this.grpOptions.TabIndex = 7;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
@@ -99,13 +100,13 @@
             this.cbNSFE_OneM3uPerTrack.Text = "Output additional .m3u per track";
             this.cbNSFE_OneM3uPerTrack.UseVisualStyleBackColor = true;
             // 
-            // Nsf_Nsfe2NsfM3uForm
+            // Nsfe2NsfM3uForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(779, 414);
+            this.ClientSize = new System.Drawing.Size(928, 465);
             this.Controls.Add(this.grpSourceFiles);
-            this.Name = "Nsf_Nsfe2NsfM3uForm";
+            this.Name = "Nsfe2NsfM3uForm";
             this.Text = "Nsf_Nsfe2NsfM3uForm";
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
