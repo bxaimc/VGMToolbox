@@ -1082,8 +1082,14 @@ namespace VGMToolbox.format
                     {
                         bw.BaseStream.Position = pDestinationOffset;
                         bw.Write(Vgm.ASCII_SIGNATURE_GD3);
+                        totalLength += (uint)Vgm.ASCII_SIGNATURE_GD3.Length;
+                        
                         bw.Write(Vgm.VERSION_GD3_0100);
+                        totalLength += (uint)Vgm.VERSION_GD3_0100.Length;
+                        
                         bw.Write(BitConverter.GetBytes((UInt32)ms.Length));
+                        totalLength += sizeof(UInt32);
+                        
                         bw.Write(ms.ToArray());
                     }
                 }
