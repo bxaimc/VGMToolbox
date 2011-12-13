@@ -11,6 +11,7 @@ namespace VGMToolbox.tools.gbs
         public struct GbsM3uWorkerStruct : IVgmtWorkerStruct
         {
             public bool onePlaylistPerFile;
+            public bool UseKnurekFormatParsing { set; get; }
 
             private string[] sourcePaths;
             public string[] SourcePaths
@@ -29,6 +30,7 @@ namespace VGMToolbox.tools.gbs
                       
             M3uBuilderStruct gbsM3uBuilderStruct = new M3uBuilderStruct();
             gbsM3uBuilderStruct.OnePlaylistPerFile = gbsM3uWorkerStruct.onePlaylistPerFile;
+            gbsM3uBuilderStruct.UseKnurekFormatParsing = gbsM3uWorkerStruct.UseKnurekFormatParsing;
             gbsM3uBuilderStruct.Path = pPath;
             NezPlugUtil.BuildPlaylistForFile(gbsM3uBuilderStruct);
         }                       

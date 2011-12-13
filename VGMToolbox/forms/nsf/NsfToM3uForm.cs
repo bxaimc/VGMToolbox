@@ -60,6 +60,7 @@ namespace VGMToolbox.forms.nsf
 
             GbsM3uBuilderWorker.GbsM3uWorkerStruct gbStruct = new GbsM3uBuilderWorker.GbsM3uWorkerStruct();
             gbStruct.SourcePaths = s;
+            gbStruct.UseKnurekFormatParsing = this.cbUseKnurekFormat.Checked;
             gbStruct.onePlaylistPerFile = cbOneM3uPerTrack.Checked;
 
             base.backgroundWorker_Execute(gbStruct);

@@ -30,6 +30,7 @@
         {
             this.grpSource = new System.Windows.Forms.GroupBox();
             this.grpOptions = new System.Windows.Forms.GroupBox();
+            this.cbKnurekFormat = new System.Windows.Forms.CheckBox();
             this.cbGBS_OneM3uPerTrack = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
@@ -40,31 +41,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 507);
-            this.pnlLabels.Size = new System.Drawing.Size(786, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 525);
+            this.pnlLabels.Size = new System.Drawing.Size(851, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(786, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(851, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 430);
-            this.tbOutput.Size = new System.Drawing.Size(786, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 448);
+            this.tbOutput.Size = new System.Drawing.Size(851, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 410);
-            this.pnlButtons.Size = new System.Drawing.Size(786, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 428);
+            this.pnlButtons.Size = new System.Drawing.Size(851, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(726, 0);
+            this.btnCancel.Location = new System.Drawing.Point(791, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(666, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(731, 0);
             // 
             // grpSource
             // 
@@ -72,7 +73,7 @@
             this.grpSource.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpSource.Location = new System.Drawing.Point(0, 23);
             this.grpSource.Name = "grpSource";
-            this.grpSource.Size = new System.Drawing.Size(786, 387);
+            this.grpSource.Size = new System.Drawing.Size(851, 405);
             this.grpSource.TabIndex = 5;
             this.grpSource.TabStop = false;
             this.grpSource.Text = "Source";
@@ -81,14 +82,25 @@
             // 
             // grpOptions
             // 
+            this.grpOptions.Controls.Add(this.cbKnurekFormat);
             this.grpOptions.Controls.Add(this.cbGBS_OneM3uPerTrack);
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.grpOptions.Location = new System.Drawing.Point(3, 341);
+            this.grpOptions.Location = new System.Drawing.Point(3, 334);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(780, 43);
+            this.grpOptions.Size = new System.Drawing.Size(845, 68);
             this.grpOptions.TabIndex = 8;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
+            // 
+            // cbKnurekFormat
+            // 
+            this.cbKnurekFormat.AutoSize = true;
+            this.cbKnurekFormat.Location = new System.Drawing.Point(6, 42);
+            this.cbKnurekFormat.Name = "cbKnurekFormat";
+            this.cbKnurekFormat.Size = new System.Drawing.Size(280, 17);
+            this.cbKnurekFormat.TabIndex = 1;
+            this.cbKnurekFormat.Text = "Custom Knurek Parsing (you probably don\'t need this).";
+            this.cbKnurekFormat.UseVisualStyleBackColor = true;
             // 
             // cbGBS_OneM3uPerTrack
             // 
@@ -104,7 +116,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(786, 548);
+            this.ClientSize = new System.Drawing.Size(851, 566);
             this.Controls.Add(this.grpSource);
             this.Name = "Gbs_GbsToM3uForm";
             this.Text = "Gbs_GbsToM3uForm";
@@ -132,5 +144,6 @@
         private System.Windows.Forms.GroupBox grpSource;
         private System.Windows.Forms.GroupBox grpOptions;
         private System.Windows.Forms.CheckBox cbGBS_OneM3uPerTrack;
+        private System.Windows.Forms.CheckBox cbKnurekFormat;
     }
 }

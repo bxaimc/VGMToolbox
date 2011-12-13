@@ -24,6 +24,7 @@ namespace VGMToolbox.format.util
     {
         public string Path {set; get;}
         public bool OnePlaylistPerFile { set; get; }
+        public bool UseKnurekFormatParsing { set; get; }
     }
 
     public class NezPlugUtil
@@ -190,15 +191,28 @@ namespace VGMToolbox.format.util
 
                         for (int i = vgmData.StartingSong[0] - 1; i < vgmData.TotalSongs[0]; i++)
                         {
-                            trackItem = BuildPlaylistTrackItem(i, vgmData, pM3uBuilderStruct.Path);
+                            if (pM3uBuilderStruct.UseKnurekFormatParsing)
+                            {
+                                trackItem = BuildKnurekFormatPlaylistTrackItem(i, vgmData, pM3uBuilderStruct.Path);
+                            }
+                            else
+                            {
+                                trackItem = BuildPlaylistTrackItem(i, vgmData, pM3uBuilderStruct.Path);
+                            }
+                            
                             sw.WriteLine(trackItem);
 
                             if (pM3uBuilderStruct.OnePlaylistPerFile)
                             {
                                 BuildSingleFilePlaylist(pM3uBuilderStruct.Path, vgmData, trackItem, i);
                             }
+                            else if (pM3uBuilderStruct.UseKnurekFormatParsing)
+                            {
+                                BuildSingleFileKnurekFormatPlaylist(pM3uBuilderStruct.Path, vgmData, trackItem, i);
+                            }
                         }
-                    }
+                    } // using (StreamWriter sw...)
+                
                 }
             }
         }
@@ -244,6 +258,88 @@ namespace VGMToolbox.format.util
             singleSW.WriteLine("#");
             singleSW.WriteLine("#######################################################");
             singleSW.WriteLine();
+            singleSW.WriteLine(pTrackData);
+
+            singleSW.Close();
+            singleSW.Dispose();
+        }
+
+        public static string BuildKnurekFormatPlaylistTrackItem(int index, INezPlugPlaylistFormat vgmData, string pPath)
+        {
+            System.Text.Encoding enc = System.Text.Encoding.ASCII;
+
+            short dummy;
+            int dateIndex = -1;
+
+            string fileName = Path.GetFileNameWithoutExtension(vgmData.FilePath);
+            string[] splitFileName = fileName.Split(new char[] { '(' }, StringSplitOptions.RemoveEmptyEntries);
+            
+            // track title
+            string trackTitle = "Track " + (index + 1).ToString().PadLeft(2, '0');
+            
+            // composer
+            string composer = enc.GetString(FileUtil.ReplaceNullByteWithSpace(vgmData.SongArtist)).Trim();
+            composer = composer.Replace("<?>", "Unknown");
+
+            // game name
+            string gameName = splitFileName[0].Trim();
+
+            // year
+            string year = String.Empty;
+
+            // check for system identifiers (GBC), (FDS), etc...
+            if ((splitFileName.Length > 1) && Int16.TryParse(splitFileName[1].Substring(0, 2), out dummy))
+            {
+                dateIndex = 1;
+            }
+            else if ((splitFileName.Length > 2) && Int16.TryParse(splitFileName[2].Substring(0, 2), out dummy))
+            {
+                dateIndex = 2;            
+            }
+
+            year = splitFileName[dateIndex].Replace(")", String.Empty).Substring(0, 4);
+
+            // developer
+            string developer;
+            developer = splitFileName[(dateIndex + 1)].Replace(")", String.Empty).Trim();
+
+            // publisher
+            string publisher = String.Empty;
+
+            if (splitFileName.GetUpperBound(0) > (dateIndex + 1))
+            {
+                publisher = splitFileName[splitFileName.GetUpperBound(0)].Replace(")", String.Empty).Trim();
+            }
+
+            string title = trackTitle + " - " + composer + " - " + gameName + " - (c)" + year + " " + developer;
+            title = String.IsNullOrEmpty(publisher) ? title : (title + ", " + publisher);
+            title = title.Trim();
+
+            string entry = NezPlugUtil.BuildPlaylistEntry(vgmData.GetNezPlugPlaylistFormat(),
+                Path.GetFileName(pPath),
+                (index).ToString(),
+                title,
+                String.Empty,
+                String.Empty,
+                String.Empty,
+                String.Empty);
+            return entry;
+        }
+        
+        public static void BuildSingleFileKnurekFormatPlaylist(string pPath, INezPlugPlaylistFormat vgmData, string pTrackData, int pIndex)
+        {
+            System.Text.Encoding enc = System.Text.Encoding.ASCII;
+            string outputFileName = (pIndex + 1).ToString().PadLeft(2, '0') + " " + CreatePlaylistTitle(pIndex + 1) + ".m3u";
+
+            foreach (char c in Path.GetInvalidFileNameChars())
+            {
+                outputFileName = outputFileName.Replace(c, '_');
+            }
+
+            string outputPath = Path.GetDirectoryName(pPath);
+            outputPath = Path.Combine(outputPath, outputFileName);
+
+            StreamWriter singleSW = File.CreateText(outputPath);
             singleSW.WriteLine(pTrackData);
 
             singleSW.Close();
