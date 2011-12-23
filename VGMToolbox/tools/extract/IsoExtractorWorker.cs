@@ -233,7 +233,10 @@ namespace VGMToolbox.tools.extract
 
                         if ((isoVolume.Directories.Length == 1) &&
                             (isoVolume.Directories[0].SubDirectories.Length == 0) &&
-                            (isoVolume.Directories[0].Files.Length == 0))
+                            ((isoVolume.Directories[0].Files.Length == 0) || 
+                             ((isoVolume.Directories[0].Files.Length == 1) && (isoVolume.Directories[0].Files[0].FileName.Equals(XDvdFs.XGD3_WARNING_FILE_NAME)))
+                            )
+                           )
                         {
                             // possible empty/dummy volume (XBOX)
                             currentOffset += sectorSize;

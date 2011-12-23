@@ -19,6 +19,7 @@ namespace VGMToolbox.format.iso
         public static long DWORD_SIZE = 4;
 
         public static string FORMAT_DESCRIPTION_STRING = "XDVDFS";
+        public static string XGD3_WARNING_FILE_NAME = "README.TXT";
 
         public static IVolume[] GetVolumes(string isoPath, bool isRawDump)
         {
