@@ -116,31 +116,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 455);
-            this.pnlLabels.Size = new System.Drawing.Size(882, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 525);
+            this.pnlLabels.Size = new System.Drawing.Size(851, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(882, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(851, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 378);
-            this.tbOutput.Size = new System.Drawing.Size(882, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 448);
+            this.tbOutput.Size = new System.Drawing.Size(851, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 358);
-            this.pnlButtons.Size = new System.Drawing.Size(882, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 428);
+            this.pnlButtons.Size = new System.Drawing.Size(851, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(822, 0);
+            this.btnCancel.Location = new System.Drawing.Point(791, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(762, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(731, 0);
             // 
             // grpPresets
             // 
@@ -151,7 +151,7 @@
             this.grpPresets.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpPresets.Location = new System.Drawing.Point(0, 23);
             this.grpPresets.Name = "grpPresets";
-            this.grpPresets.Size = new System.Drawing.Size(882, 40);
+            this.grpPresets.Size = new System.Drawing.Size(851, 40);
             this.grpPresets.TabIndex = 5;
             this.grpPresets.TabStop = false;
             this.grpPresets.Text = "Presets";
@@ -203,7 +203,7 @@
             this.grpOutputOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpOutputOptions.Location = new System.Drawing.Point(0, 63);
             this.grpOutputOptions.Name = "grpOutputOptions";
-            this.grpOutputOptions.Size = new System.Drawing.Size(882, 70);
+            this.grpOutputOptions.Size = new System.Drawing.Size(851, 70);
             this.grpOutputOptions.TabIndex = 6;
             this.grpOutputOptions.TabStop = false;
             this.grpOutputOptions.Text = "Output Options";
@@ -257,7 +257,7 @@
             this.pnlOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlOptions.Location = new System.Drawing.Point(0, 133);
             this.pnlOptions.Name = "pnlOptions";
-            this.pnlOptions.Size = new System.Drawing.Size(882, 225);
+            this.pnlOptions.Size = new System.Drawing.Size(851, 295);
             this.pnlOptions.TabIndex = 7;
             // 
             // groupOtherOptions
@@ -267,7 +267,7 @@
             this.groupOtherOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupOtherOptions.Location = new System.Drawing.Point(0, 813);
             this.groupOtherOptions.Name = "groupOtherOptions";
-            this.groupOtherOptions.Size = new System.Drawing.Size(865, 64);
+            this.groupOtherOptions.Size = new System.Drawing.Size(834, 64);
             this.groupOtherOptions.TabIndex = 2;
             this.groupOtherOptions.TabStop = false;
             this.groupOtherOptions.Text = "Other Options";
@@ -299,7 +299,7 @@
             this.grpToWavOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpToWavOptions.Location = new System.Drawing.Point(0, 750);
             this.grpToWavOptions.Name = "grpToWavOptions";
-            this.grpToWavOptions.Size = new System.Drawing.Size(865, 63);
+            this.grpToWavOptions.Size = new System.Drawing.Size(834, 63);
             this.grpToWavOptions.TabIndex = 3;
             this.grpToWavOptions.TabStop = false;
             this.grpToWavOptions.Text = "4. WAV Conversion Options";
@@ -334,7 +334,7 @@
             this.grpPosFileMaker.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpPosFileMaker.Location = new System.Drawing.Point(0, 525);
             this.grpPosFileMaker.Name = "grpPosFileMaker";
-            this.grpPosFileMaker.Size = new System.Drawing.Size(865, 225);
+            this.grpPosFileMaker.Size = new System.Drawing.Size(834, 225);
             this.grpPosFileMaker.TabIndex = 4;
             this.grpPosFileMaker.TabStop = false;
             this.grpPosFileMaker.Text = "3. POS File Maker";
@@ -348,27 +348,27 @@
             this.grpPosEndOffset.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpPosEndOffset.Location = new System.Drawing.Point(3, 127);
             this.grpPosEndOffset.Name = "grpPosEndOffset";
-            this.grpPosEndOffset.Size = new System.Drawing.Size(859, 94);
+            this.grpPosEndOffset.Size = new System.Drawing.Size(828, 94);
             this.grpPosEndOffset.TabIndex = 2;
             this.grpPosEndOffset.TabStop = false;
-            this.grpPosEndOffset.Text = "Loop End Value";
+            this.grpPosEndOffset.Text = "Loop Length Value";
             // 
             // rbLoopEndOffset
             // 
             this.rbLoopEndOffset.AutoSize = true;
             this.rbLoopEndOffset.Location = new System.Drawing.Point(6, 44);
             this.rbLoopEndOffset.Name = "rbLoopEndOffset";
-            this.rbLoopEndOffset.Size = new System.Drawing.Size(111, 17);
+            this.rbLoopEndOffset.Size = new System.Drawing.Size(125, 17);
             this.rbLoopEndOffset.TabIndex = 7;
             this.rbLoopEndOffset.TabStop = true;
-            this.rbLoopEndOffset.Text = "Loop End Value is";
+            this.rbLoopEndOffset.Text = "Loop Length Value is";
             this.rbLoopEndOffset.UseVisualStyleBackColor = true;
             this.rbLoopEndOffset.CheckedChanged += new System.EventHandler(this.rbLoopEndOffset_CheckedChanged);
             // 
             // loopEndValueOffsetDescription
             // 
             this.loopEndValueOffsetDescription.CalculationValue = "";
-            this.loopEndValueOffsetDescription.Location = new System.Drawing.Point(118, 40);
+            this.loopEndValueOffsetDescription.Location = new System.Drawing.Point(129, 40);
             this.loopEndValueOffsetDescription.Name = "loopEndValueOffsetDescription";
             this.loopEndValueOffsetDescription.OffsetByteOrder = "Little Endian";
             this.loopEndValueOffsetDescription.OffsetSize = "4";
@@ -378,7 +378,7 @@
             // 
             // tbLoopEndStatic
             // 
-            this.tbLoopEndStatic.Location = new System.Drawing.Point(169, 18);
+            this.tbLoopEndStatic.Location = new System.Drawing.Point(180, 18);
             this.tbLoopEndStatic.Name = "tbLoopEndStatic";
             this.tbLoopEndStatic.Size = new System.Drawing.Size(70, 20);
             this.tbLoopEndStatic.TabIndex = 5;
@@ -388,10 +388,10 @@
             this.rbLoopEndStatic.AutoSize = true;
             this.rbLoopEndStatic.Location = new System.Drawing.Point(6, 19);
             this.rbLoopEndStatic.Name = "rbLoopEndStatic";
-            this.rbLoopEndStatic.Size = new System.Drawing.Size(101, 17);
+            this.rbLoopEndStatic.Size = new System.Drawing.Size(115, 17);
             this.rbLoopEndStatic.TabIndex = 4;
             this.rbLoopEndStatic.TabStop = true;
-            this.rbLoopEndStatic.Text = "Loop End Value";
+            this.rbLoopEndStatic.Text = "Loop Length Value";
             this.rbLoopEndStatic.UseVisualStyleBackColor = true;
             this.rbLoopEndStatic.CheckedChanged += new System.EventHandler(this.rbLoopEndStatic_CheckedChanged);
             // 
@@ -404,7 +404,7 @@
             this.grpPosStartOffset.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpPosStartOffset.Location = new System.Drawing.Point(3, 33);
             this.grpPosStartOffset.Name = "grpPosStartOffset";
-            this.grpPosStartOffset.Size = new System.Drawing.Size(859, 94);
+            this.grpPosStartOffset.Size = new System.Drawing.Size(828, 94);
             this.grpPosStartOffset.TabIndex = 1;
             this.grpPosStartOffset.TabStop = false;
             this.grpPosStartOffset.Text = "Loop Start Value";
@@ -457,7 +457,7 @@
             this.cbMakePosFile.Dock = System.Windows.Forms.DockStyle.Top;
             this.cbMakePosFile.Location = new System.Drawing.Point(3, 16);
             this.cbMakePosFile.Name = "cbMakePosFile";
-            this.cbMakePosFile.Size = new System.Drawing.Size(859, 17);
+            this.cbMakePosFile.Size = new System.Drawing.Size(828, 17);
             this.cbMakePosFile.TabIndex = 0;
             this.cbMakePosFile.Text = "Make POS File";
             this.cbMakePosFile.UseVisualStyleBackColor = true;
@@ -471,7 +471,7 @@
             this.grpRiffHeaderOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpRiffHeaderOptions.Location = new System.Drawing.Point(0, 310);
             this.grpRiffHeaderOptions.Name = "grpRiffHeaderOptions";
-            this.grpRiffHeaderOptions.Size = new System.Drawing.Size(865, 215);
+            this.grpRiffHeaderOptions.Size = new System.Drawing.Size(834, 215);
             this.grpRiffHeaderOptions.TabIndex = 1;
             this.grpRiffHeaderOptions.TabStop = false;
             this.grpRiffHeaderOptions.Text = "2. RIFF Header Options";
@@ -486,7 +486,7 @@
             this.grpFrequency.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.grpFrequency.Location = new System.Drawing.Point(3, 35);
             this.grpFrequency.Name = "grpFrequency";
-            this.grpFrequency.Size = new System.Drawing.Size(859, 90);
+            this.grpFrequency.Size = new System.Drawing.Size(828, 90);
             this.grpFrequency.TabIndex = 10;
             this.grpFrequency.TabStop = false;
             this.grpFrequency.Text = "Frequency";
@@ -555,7 +555,7 @@
             this.grpChannels.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.grpChannels.Location = new System.Drawing.Point(3, 125);
             this.grpChannels.Name = "grpChannels";
-            this.grpChannels.Size = new System.Drawing.Size(859, 87);
+            this.grpChannels.Size = new System.Drawing.Size(828, 87);
             this.grpChannels.TabIndex = 9;
             this.grpChannels.TabStop = false;
             this.grpChannels.Text = "Channels";
@@ -640,7 +640,7 @@
             this.grpXmaParseOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpXmaParseOptions.Location = new System.Drawing.Point(0, 0);
             this.grpXmaParseOptions.Name = "grpXmaParseOptions";
-            this.grpXmaParseOptions.Size = new System.Drawing.Size(865, 310);
+            this.grpXmaParseOptions.Size = new System.Drawing.Size(834, 310);
             this.grpXmaParseOptions.TabIndex = 0;
             this.grpXmaParseOptions.TabStop = false;
             this.grpXmaParseOptions.Text = "1. xma_parse Options";
@@ -655,7 +655,7 @@
             this.grpStartOffset.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.grpStartOffset.Location = new System.Drawing.Point(3, 61);
             this.grpStartOffset.Name = "grpStartOffset";
-            this.grpStartOffset.Size = new System.Drawing.Size(859, 86);
+            this.grpStartOffset.Size = new System.Drawing.Size(828, 86);
             this.grpStartOffset.TabIndex = 13;
             this.grpStartOffset.TabStop = false;
             this.grpStartOffset.Text = "Start Offset";
@@ -722,7 +722,7 @@
             this.grpBlockSize.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.grpBlockSize.Location = new System.Drawing.Point(3, 147);
             this.grpBlockSize.Name = "grpBlockSize";
-            this.grpBlockSize.Size = new System.Drawing.Size(859, 69);
+            this.grpBlockSize.Size = new System.Drawing.Size(828, 69);
             this.grpBlockSize.TabIndex = 12;
             this.grpBlockSize.TabStop = false;
             this.grpBlockSize.Text = "Block Size";
@@ -778,7 +778,7 @@
             this.grpXmaParseDataSize.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.grpXmaParseDataSize.Location = new System.Drawing.Point(3, 216);
             this.grpXmaParseDataSize.Name = "grpXmaParseDataSize";
-            this.grpXmaParseDataSize.Size = new System.Drawing.Size(859, 91);
+            this.grpXmaParseDataSize.Size = new System.Drawing.Size(828, 91);
             this.grpXmaParseDataSize.TabIndex = 11;
             this.grpXmaParseDataSize.TabStop = false;
             this.grpXmaParseDataSize.Text = "Data Size";
@@ -891,7 +891,7 @@
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(882, 496);
+            this.ClientSize = new System.Drawing.Size(851, 566);
             this.Controls.Add(this.pnlOptions);
             this.Controls.Add(this.grpOutputOptions);
             this.Controls.Add(this.grpPresets);

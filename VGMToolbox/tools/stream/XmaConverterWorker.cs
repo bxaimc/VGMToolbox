@@ -133,6 +133,7 @@ namespace VGMToolbox.tools.stream
             byte[] riffHeaderBytes;
 
             uint loopStart;
+            uint loopLength;
             uint loopEnd;
             byte[] posBytes;
 
@@ -280,35 +281,40 @@ namespace VGMToolbox.tools.stream
                         }
                     }
 
-                    // loop end
+                    // loop length
                     if (taskStruct.PosLoopEndIsStatic)
                     {
-                        loopEnd = (uint)ByteConversion.GetLongValueFromString(taskStruct.PosLoopEndStaticValue);
+                        loopLength = (uint)ByteConversion.GetLongValueFromString(taskStruct.PosLoopEndStaticValue);
                     }
                     else
                     {
                         using (FileStream fs = File.OpenRead(workingSourceFile))
                         {
-                            loopEnd = (uint)ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, taskStruct.PosLoopEndOffsetInfo, true);
+                            loopLength = (uint)ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, taskStruct.PosLoopEndOffsetInfo, true);
 
                             if (!String.IsNullOrEmpty(taskStruct.PosLoopEndOffsetInfo.CalculationString))
                             {
                                 string calculationString =
-                                    taskStruct.PosLoopEndOffsetInfo.CalculationString.Replace(CalculatingOffsetDescription.OFFSET_VARIABLE_STRING, loopEnd.ToString());
+                                    taskStruct.PosLoopEndOffsetInfo.CalculationString.Replace(CalculatingOffsetDescription.OFFSET_VARIABLE_STRING, loopLength.ToString());
 
-                                loopEnd = (uint)ByteConversion.GetLongValueFromString(MathUtil.Evaluate(calculationString));
+                                loopLength = (uint)ByteConversion.GetLongValueFromString(MathUtil.Evaluate(calculationString));
                             }
                         }
                     }
 
-                    // build .pos array and write to file
-                    posBytes = new byte[8];
-                    Array.Copy(BitConverter.GetBytes(loopStart), 0, posBytes, 0, 4);
-                    Array.Copy(BitConverter.GetBytes(loopEnd), 0, posBytes, 4, 4);
-
-                    using (FileStream fs = File.Open(Path.ChangeExtension(workingSourceFile, ".pos"), FileMode.Create, FileAccess.Write))
+                    if (loopLength > 0)
                     {
-                        fs.Write(posBytes, 0, posBytes.Length);
+                        loopEnd = loopStart + loopLength;
+
+                        // build .pos array and write to file
+                        posBytes = new byte[8];
+                        Array.Copy(BitConverter.GetBytes(loopStart), 0, posBytes, 0, 4);
+                        Array.Copy(BitConverter.GetBytes(loopEnd), 0, posBytes, 4, 4);
+
+                        using (FileStream fs = File.Open(Path.ChangeExtension(workingSourceFile, ".pos"), FileMode.Create, FileAccess.Write))
+                        {
+                            fs.Write(posBytes, 0, posBytes.Length);
+                        }
                     }
                 }
                 #endregion
