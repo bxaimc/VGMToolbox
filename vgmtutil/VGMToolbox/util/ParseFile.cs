@@ -1069,9 +1069,15 @@ namespace VGMToolbox.util
                 while (!(((fileCountValue > 0) && (currentFileCount >= fileCountValue)) ||
                         ((headerSizeValue > 0) && (currentOffset >= headerSizeValue))))
                 {
-
-                    fileItem = GetNextVfsRecord(headerFs, vfsInformation, currentOffset, currentFileCount, sourcePath, outputFolderPath);
-
+                    try
+                    {
+                        fileItem = GetNextVfsRecord(headerFs, vfsInformation, currentOffset, currentFileCount, sourcePath, outputFolderPath);
+                    }
+                    catch(Exception exp)
+                    {
+                        //throw new Exception("foo", exp);
+                    }
+                    
                     fileItems.Add(fileItem);
 
                     currentFileCount++;
@@ -1196,6 +1202,7 @@ namespace VGMToolbox.util
                 else if (vfsInformation.UseAbsoluteFileNameOffset)
                 {
                     nameOffset = GetVaryingByteValueAtRelativeOffset(vfsStream, vfsInformation.AbsoluteFileNameOffsetDescription, currentStreamOffset);
+                    //nameOffset += 0x138390;
                 }
                 else if (vfsInformation.UseRelativeFileNameOffset)
                 {
@@ -1323,6 +1330,63 @@ namespace VGMToolbox.util
             newValueLength = ByteConversion.GetLongValueFromString(offsetInfo.OffsetSize);
 
             return GetVaryingByteValueAtOffset(inStream, newValueOffset, newValueLength, offsetInfo.OffsetByteOrder.Equals(Constants.LittleEndianByteOrder));
+        }
+
+        public static long GetRiffCalculatedVaryingByteValueAtAbsoluteOffset(Stream inStream, RiffCalculatingOffsetDescription offsetInfo, bool allowNegativeOffset)
+        {
+            long newValueOffset;
+            long newValueLength;
+
+            long riffChunkOffset;
+            long riffChunkSize;
+            byte[] riffChunkBytes = Encoding.ASCII.GetBytes(offsetInfo.RiffChunkString);
+
+            long newValue;
+
+            // get location of RIFF chunk
+            riffChunkOffset = ParseFile.GetNextOffset(inStream, 0, riffChunkBytes);
+
+            if (riffChunkOffset < 0)
+            {
+                throw new IndexOutOfRangeException("Cannot find RIFF chunk: " + offsetInfo.RiffChunkString);
+            }
+            else
+            {
+                riffChunkSize = (long)BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(inStream, riffChunkOffset + 4, 4), 0);
+                riffChunkSize += 8;
+
+                newValueOffset = ByteConversion.GetLongValueFromString(offsetInfo.OffsetValue);
+                newValueLength = ByteConversion.GetLongValueFromString(offsetInfo.OffsetSize);
+
+                switch (offsetInfo.RelativeLocationToRiffChunkString)
+                { 
+                    case RiffCalculatingOffsetDescription.START_OF_STRING:
+                        newValueOffset += riffChunkOffset;
+                        break;
+                    case RiffCalculatingOffsetDescription.END_OF_STRING:
+                        newValueOffset += riffChunkOffset + riffChunkSize;
+                        break;
+                    default:
+                        throw new InvalidDataException("Unknown relative location string for RIFF: " + offsetInfo.RelativeLocationToRiffChunkString);
+                        break;
+                }
+
+                // get the value
+                newValue = GetVaryingByteValueAtOffset(inStream, newValueOffset, newValueLength, offsetInfo.OffsetByteOrder.Equals(Constants.LittleEndianByteOrder), allowNegativeOffset);
+
+                // apply calculcation
+                if (!String.IsNullOrEmpty(offsetInfo.CalculationString))
+                {
+                    string calculationString =
+                        offsetInfo.CalculationString.Replace(RiffCalculatingOffsetDescription.OFFSET_VARIABLE_STRING, newValue.ToString());
+
+                    newValue = ByteConversion.GetLongValueFromString(MathUtil.Evaluate(calculationString));
+                }
+
+                // return value
+                return newValue;
+            }
+            
         }
 
         public static long GetVaryingByteValueAtOffset(Stream inStream, long valueOffset, long valueLength,

@@ -19,7 +19,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{8A96D568-CB21-4E64-8FD2-849A8E2B2D4F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -89,6 +89,12 @@
     </Compile>
     <Compile Include="controls\CalculatingOffsetDescriptionControl.Designer.cs">
       <DependentUpon>CalculatingOffsetDescriptionControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="controls\RiffCalculatingOffsetDescriptionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="controls\RiffCalculatingOffsetDescriptionControl.Designer.cs">
+      <DependentUpon>RiffCalculatingOffsetDescriptionControl.cs</DependentUpon>
     </Compile>
     <Compile Include="controls\SortableFileListControl.cs">
       <SubType>UserControl</SubType>
@@ -301,6 +307,12 @@
     </Compile>
     <Compile Include="controls\OffsetDescriptionControl.Designer.cs">
       <DependentUpon>OffsetDescriptionControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="forms\stream\PosFileCreatorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\stream\PosFileCreatorForm.Designer.cs">
+      <DependentUpon>PosFileCreatorForm.cs</DependentUpon>
     </Compile>
     <Compile Include="forms\stream\MpegDemuxForm.cs">
       <SubType>Form</SubType>
@@ -733,6 +745,9 @@
     <Compile Include="tools\stream\MpegDemuxWorker.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\stream\PosFileCreatorWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\stream\XmaConverter.cs" />
     <Compile Include="tools\stream\XmaConverterStatic.cs" />
     <Compile Include="tools\stream\XmaConverterWorker.cs">
@@ -1006,6 +1021,10 @@
       <DependentUpon>CalculatingOffsetDescriptionControl.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="controls\RiffCalculatingOffsetDescriptionControl.resx">
+      <DependentUpon>RiffCalculatingOffsetDescriptionControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="controls\SortableFileListControl.resx">
       <DependentUpon>SortableFileListControl.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -1097,6 +1116,9 @@
     <EmbeddedResource Include="controls\OffsetDescriptionControl.resx">
       <DependentUpon>OffsetDescriptionControl.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\stream\PosFileCreatorForm.resx">
+      <DependentUpon>PosFileCreatorForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\stream\MpegDemuxForm.resx">
       <DependentUpon>MpegDemuxForm.cs</DependentUpon>

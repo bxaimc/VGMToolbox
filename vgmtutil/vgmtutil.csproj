@@ -78,6 +78,7 @@
     <Compile Include="VGMToolbox\util\CompressionUtil.cs" />
     <Compile Include="VGMToolbox\util\Constants.cs" />
     <Compile Include="VGMToolbox\util\ByteConversion.cs" />
+    <Compile Include="VGMToolbox\util\RiffCalculatingOffsetDescription.cs" />
     <Compile Include="VGMToolbox\util\FileUtil.cs" />
     <Compile Include="VGMToolbox\util\IDeepCopy.cs" />
     <Compile Include="VGMToolbox\util\MathUtil.cs" />

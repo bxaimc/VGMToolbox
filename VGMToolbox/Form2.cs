@@ -1144,6 +1144,19 @@ namespace VGMToolbox
             nodeTag.FormClass = mpegDemuxForm.GetType().Name;
             mpegDemuxNode.Tag = nodeTag;
 
+
+            // POS File Maker
+            TreeNode posFileMakerNode = new TreeNode(".POS File Maker");
+
+            // Add POS Maker Form
+            PosFileCreatorForm posFileCreatorForm = new PosFileCreatorForm(posFileMakerNode);
+            this.splitContainer1.Panel2.Controls.Add(posFileCreatorForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = posFileCreatorForm.GetType().Name;
+            posFileMakerNode.Tag = nodeTag;
+
+            stream_RootNode.Nodes.Add(posFileMakerNode);
             stream_RootNode.Nodes.Add(mpegDemuxNode);
 
             xma_RootNode.Nodes.Add(xmaConverterNode);
