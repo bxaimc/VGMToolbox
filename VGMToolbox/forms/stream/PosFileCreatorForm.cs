@@ -23,8 +23,10 @@ namespace VGMToolbox.forms.stream
 
             this.tbOutputFileMask.Text = "$B.$E.WAV";
 
-            this.rbLoopShiftStatic.Checked = true;
-            this.tbLoopShiftStatic.Text = "0";
+            this.rbLoopEnd.Checked = true;
+
+            this.rbLoopShiftWavCompare.Checked = true;
+            this.cbLoopShiftPredictShift.Checked = true;
         }
 
 
@@ -89,6 +91,9 @@ namespace VGMToolbox.forms.stream
             taskStruct.PredictLoopShiftForBatch = this.cbLoopShiftPredictShift.Checked;
             taskStruct.LoopStartStaticValue = this.tbLoopShiftStatic.Text;
 
+            // Other Options
+            taskStruct.CreateM3u = this.cbOptionsCreateM3u.Checked;
+
             // Execute Worker
             base.backgroundWorker_Execute(taskStruct);
         }
@@ -97,6 +102,36 @@ namespace VGMToolbox.forms.stream
         {
             base.doDragEnter(sender, e);
         }
+
+        // radio buttons
+        private void doLoopShiftRadios()
+        {
+            if (this.rbLoopShiftStatic.Checked)
+            {
+                this.tbLoopShiftStatic.Enabled = true;
+                this.tbLoopShiftStatic.ReadOnly = false;
+
+                this.cbLoopShiftPredictShift.Enabled = false;
+                this.cbLoopShiftPredictShift.Checked = false;
+            }
+            else if (this.rbLoopShiftWavCompare.Checked)
+            {
+                this.tbLoopShiftStatic.Enabled = false;
+                this.tbLoopShiftStatic.ReadOnly = true;
+
+                this.cbLoopShiftPredictShift.Enabled = true;            
+            }
+        }        
+        private void rbLoopShiftStatic_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doLoopShiftRadios();
+        }
+        private void rbLoopShiftWavCompare_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doLoopShiftRadios();
+        }
+
+
 
         //------------
         // Validation

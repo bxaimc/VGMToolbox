@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -17,7 +18,9 @@ namespace VGMToolbox.tools.stream
 
         public const string FILEMASK_BASE_NAME = "$B";
         public const string FILEMASK_EXTENSION = "$E";
-        
+
+        public const string POS_FILE_EXTENSION = ".pos";
+
         public struct PosFileCreatorStruct : IVgmtWorkerStruct
         {
             public string[] SourcePaths { set; get; }
@@ -51,6 +54,9 @@ namespace VGMToolbox.tools.stream
             public bool PredictLoopShiftForBatch { set; get; }
             public string StaticLoopShiftValue { set; get; }
 
+            // Other
+            public bool CreateM3u { set; get; }
+
         }
 
         public struct WorkingItemStruct
@@ -60,7 +66,17 @@ namespace VGMToolbox.tools.stream
 
             public long LoopShift { set; get; }
             public long WavSamples { set; get; }
-            public long SampleDifference { set; get; }            
+            public long SampleDifference { set; get; }
+
+            public void Initialize()
+            {
+                this.LoopStart = DEFAULT_LOOP_VALUE;
+                this.LoopEnd = DEFAULT_LOOP_VALUE;
+
+                this.LoopShift = DEFAULT_LOOP_VALUE;
+                this.WavSamples = DEFAULT_LOOP_VALUE;
+                this.SampleDifference = DEFAULT_LOOP_VALUE;
+            }
         }
 
 
@@ -76,9 +92,6 @@ namespace VGMToolbox.tools.stream
             PosFileCreatorStruct posStruct = (PosFileCreatorStruct) pPosFileCreatorStruct;
 
             WorkingItemStruct currentItem = new WorkingItemStruct();
-            currentItem.LoopShift = DEFAULT_LOOP_VALUE;
-            currentItem.WavSamples = DEFAULT_LOOP_VALUE;
-            currentItem.SampleDifference = DEFAULT_LOOP_VALUE;
 
             long loopStartValue = DEFAULT_LOOP_VALUE;
             long loopEndValue = DEFAULT_LOOP_VALUE;
@@ -92,73 +105,86 @@ namespace VGMToolbox.tools.stream
             #region LOOP POINTS
             using (FileStream fs = File.OpenRead(pPath))
             {
-                //----------------
-                // Get Loop Start
-                //----------------
-                if (posStruct.DoLoopStartStatic)
-                {
-                    loopStartValue = ByteConversion.GetLongValueFromString(posStruct.LoopStartStaticValue);
-                }
-                else if (posStruct.DoLoopStartOffset)
-                {
-                    loopStartValue = ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, posStruct.LoopStartCalculatingOffset, true);
-                }
-                else if (posStruct.DoLoopStartRiffOffset)
-                {
-                    loopStartValue = ParseFile.GetRiffCalculatedVaryingByteValueAtAbsoluteOffset(fs, posStruct.LoopStartRiffCalculatingOffset, true);
-                }
-
-                if (loopStartValue != DEFAULT_LOOP_VALUE)
+                currentItem.Initialize();
+                
+                try
                 {
                     //----------------
-                    // Get Loop End
+                    // Get Loop Start
                     //----------------
-                    if (posStruct.DoLoopEndStatic)
+                    if (posStruct.DoLoopStartStatic)
                     {
-                        loopEndValue = ByteConversion.GetLongValueFromString(posStruct.LoopEndStaticValue);
+                        loopStartValue = ByteConversion.GetLongValueFromString(posStruct.LoopStartStaticValue);
                     }
-                    else if (posStruct.DoLoopEndOffset)
+                    else if (posStruct.DoLoopStartOffset)
                     {
-                        loopEndValue = ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, posStruct.LoopEndCalculatingOffset, true);
+                        loopStartValue = ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, posStruct.LoopStartCalculatingOffset, true);
                     }
-                    else if (posStruct.DoLoopEndRiffOffset)
+                    else if (posStruct.DoLoopStartRiffOffset)
                     {
-                        loopEndValue = ParseFile.GetRiffCalculatedVaryingByteValueAtAbsoluteOffset(fs, posStruct.LoopEndRiffCalculatingOffset, true);
+                        loopStartValue = ParseFile.GetRiffCalculatedVaryingByteValueAtAbsoluteOffset(fs, posStruct.LoopStartRiffCalculatingOffset, true);
                     }
 
-                    if (loopEndValue != DEFAULT_LOOP_VALUE)
+                    if (loopStartValue != DEFAULT_LOOP_VALUE)
                     {
-                        // Calculate Loop End if Needed
-                        if (posStruct.LoopEndIsLoopLength)
+                        //----------------
+                        // Get Loop End
+                        //----------------
+                        if (posStruct.DoLoopEndStatic)
                         {
-                            loopEndValue += loopStartValue;
+                            loopEndValue = ByteConversion.GetLongValueFromString(posStruct.LoopEndStaticValue);
+                        }
+                        else if (posStruct.DoLoopEndOffset)
+                        {
+                            loopEndValue = ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, posStruct.LoopEndCalculatingOffset, true);
+                        }
+                        else if (posStruct.DoLoopEndRiffOffset)
+                        {
+                            loopEndValue = ParseFile.GetRiffCalculatedVaryingByteValueAtAbsoluteOffset(fs, posStruct.LoopEndRiffCalculatingOffset, true);
                         }
 
-                        // update working item
-                        currentItem.LoopStart = loopStartValue;
-                        currentItem.LoopEnd = loopEndValue;
+                        if (loopEndValue != DEFAULT_LOOP_VALUE)
+                        {
+                            // Calculate Loop End if Needed
+                            if (posStruct.LoopEndIsLoopLength)
+                            {
+                                loopEndValue += loopStartValue;
+                            }
+
+                            // update working item
+                            currentItem.LoopStart = loopStartValue;
+                            currentItem.LoopEnd = loopEndValue;
+                        }
+                        else
+                        {
+                            throw new IndexOutOfRangeException(String.Format("Loop End Value not Found: {0}", pPath));
+                        }
+
                     }
                     else
                     {
-                        throw new IndexOutOfRangeException(String.Format("Loop End Value not Found: {0}", pPath));
+                        throw new IndexOutOfRangeException(String.Format("Loop Start Value not Found: {0}", pPath));
                     }
-                
                 }
-                else
-                {
-                    throw new IndexOutOfRangeException(String.Format("Loop Start Value not Found: {0}", pPath));
+                catch (Exception ex)
+                {                                        
+                    this.progressStruct.Clear();
+                    this.progressStruct.GenericMessage = String.Format("Cannot find loop points for <{0}>: {1}{2}", Path.GetFileName(pPath), ex.Message, Environment.NewLine);
+                    ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);  
                 }
             }
             #endregion
 
             #region LOOP SHIFT
-            if ((loopStartValue != DEFAULT_LOOP_VALUE) && (loopEndValue != DEFAULT_LOOP_VALUE))
+
+            // get list of matching WAV files
+            outputFileList = Directory.GetFiles(Path.GetDirectoryName(pPath), outputFileMask, SearchOption.TopDirectoryOnly);
+            
+            // loop over list and add each item to the dictionary
+            foreach (string outputFile in outputFileList)
             {
-                // get list of matching WAV files
-                outputFileList = Directory.GetFiles(Path.GetDirectoryName(pPath), outputFileMask, SearchOption.TopDirectoryOnly);
-                
-                // loop over list and add each item to the dictionary
-                foreach (string outputFile in outputFileList)
+                // only shift valid values
+                if ((loopStartValue != DEFAULT_LOOP_VALUE) && (loopEndValue != DEFAULT_LOOP_VALUE))
                 {
                     // Static Loop Shift
                     if (posStruct.DoStaticLoopShift)
@@ -170,25 +196,120 @@ namespace VGMToolbox.tools.stream
                     {
                         // get samplecount for this file
                         currentItem.WavSamples = GetSampleCountForRiffHeaderedFile(outputFile);
-                        currentItem.SampleDifference = currentItem.LoopEnd - currentItem.WavSamples;
+                        currentItem.SampleDifference = currentItem.WavSamples - currentItem.LoopEnd;
 
                         // update shift
                         currentItem.LoopShift = currentItem.SampleDifference;
                     }
-
-                    this.WorkingList.Add(outputFile, currentItem);
                 }
                 
-                
-                
-                
-                               
-
-
-            }
+                this.WorkingList.Add(outputFile, currentItem);
+            }            
             
             #endregion
 
+        }
+
+        protected override void  DoFinalTask(IVgmtWorkerStruct pTaskStruct)
+        {
+            PosFileCreatorStruct posStruct = (PosFileCreatorStruct)pTaskStruct;
+
+            long predictedShift = DEFAULT_LOOP_VALUE;
+            long loopShift = DEFAULT_LOOP_VALUE;
+
+            ArrayList keyList = new ArrayList();
+            
+            StringBuilder m3uString = new StringBuilder();
+            string m3uPath;
+            string posFileName;
+
+            StringBuilder outputMessage = new StringBuilder();
+
+
+            // predict shift
+
+            // sort keys
+            foreach (string s in this.WorkingList.Keys)
+            {
+                keyList.Add(s);
+            }
+
+            keyList.Sort();
+
+            // loop over keys
+            foreach (string s in keyList)
+            {
+                // output info
+                outputMessage.Length = 0;
+                outputMessage.AppendFormat("[{0}]{1}", Path.GetFileName(s), Environment.NewLine);
+                
+                // create m3u and output pos file
+                if ((this.WorkingList[s].LoopStart != DEFAULT_LOOP_VALUE) &&
+                    (this.WorkingList[s].LoopEnd != DEFAULT_LOOP_VALUE))
+                {
+                    // output info
+                    outputMessage.AppendFormat("  Loop Start: 0x{0}{1}", this.WorkingList[s].LoopStart.ToString("X8"), Environment.NewLine);
+                    outputMessage.AppendFormat("  Loop End: 0x{0}{1}", this.WorkingList[s].LoopEnd.ToString("X8"), Environment.NewLine);
+                    
+                    posFileName = Path.ChangeExtension(s, POS_FILE_EXTENSION);
+                    m3uString.AppendFormat("{0}{1}", Path.GetFileName(posFileName), Environment.NewLine);
+
+                    // set loop shift
+                    if (posStruct.PredictLoopShiftForBatch)
+                    {
+                        loopShift = predictedShift;
+
+                        // output info
+                        outputMessage.AppendFormat("  Loop Shift (predicted): {0}{1}", loopShift.ToString("D"), Environment.NewLine);
+                    }
+                    else
+                    {
+                        loopShift = this.WorkingList[s].LoopShift;
+
+                        //output info
+                        outputMessage.AppendFormat("  Loop Shift: {0}{1}", loopShift.ToString("D"), Environment.NewLine);
+                    }
+
+                    // write pos file
+                    using (FileStream posStream = File.Open(posFileName, FileMode.Create, FileAccess.Write))
+                    {
+                        byte[] loopPointBytes = new byte[4];
+
+                        loopPointBytes = BitConverter.GetBytes((uint)(this.WorkingList[s].LoopStart + loopShift));
+                        posStream.Write(loopPointBytes, 0, 4);
+
+                        loopPointBytes = BitConverter.GetBytes((uint)(this.WorkingList[s].LoopEnd + loopShift));
+                        posStream.Write(loopPointBytes, 0, 4);
+
+                        // output info
+                        outputMessage.AppendFormat("  POS File Written: {0}{1}", Path.GetFileName(posFileName), Environment.NewLine);
+                    }
+
+                }
+                else
+                {
+                    m3uString.AppendFormat("{0}{1}", Path.GetFileName(s), Environment.NewLine);
+
+                    // output info
+                    outputMessage.AppendFormat("  Looping info not found.{0}", Environment.NewLine);
+                }
+
+                // Output Message
+                this.progressStruct.Clear();
+                this.progressStruct.GenericMessage = outputMessage.ToString();
+                ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);  
+            }
+            
+            // output m3u
+            if (posStruct.CreateM3u)
+            {
+                m3uPath = Path.Combine(Path.GetDirectoryName(posStruct.SourcePaths[0]), "!BGM.m3u");
+                
+                using (StreamWriter m3uWriter = new StreamWriter(File.Open(m3uPath, FileMode.Create, FileAccess.Write)))
+                {
+                    m3uWriter.Write(m3uString.ToString());
+                }
+            }
         }
 
         public static long GetSampleCountForRiffHeaderedFile(string path)

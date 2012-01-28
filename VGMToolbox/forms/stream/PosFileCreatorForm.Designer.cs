@@ -31,21 +31,17 @@
             this.grpPresets = new System.Windows.Forms.GroupBox();
             this.grpLoopStart = new System.Windows.Forms.GroupBox();
             this.rbLoopStartRiffOffset = new System.Windows.Forms.RadioButton();
-            this.LoopStartCalculatingOffsetDescriptionControl = new VGMToolbox.controls.CalculatingOffsetDescriptionControl();
             this.rbLoopStartOffset = new System.Windows.Forms.RadioButton();
             this.tbLoopStartStatic = new System.Windows.Forms.TextBox();
             this.rbLoopStartStatic = new System.Windows.Forms.RadioButton();
-            this.LoopStartRiffCalculatingOffsetDescriptionControl = new VGMToolbox.controls.RiffCalculatingOffsetDescriptionControl();
             this.grpLoopEnd = new System.Windows.Forms.GroupBox();
             this.grpLoopEndLoopLength = new System.Windows.Forms.GroupBox();
             this.rbLoopLength = new System.Windows.Forms.RadioButton();
             this.rbLoopEnd = new System.Windows.Forms.RadioButton();
             this.rbLoopEndRiffOffset = new System.Windows.Forms.RadioButton();
-            this.LoopEndCalculatingOffsetDescriptionControl = new VGMToolbox.controls.CalculatingOffsetDescriptionControl();
             this.rbLoopEndOffset = new System.Windows.Forms.RadioButton();
             this.tbLoopEndStatic = new System.Windows.Forms.TextBox();
             this.rbLoopEndStatic = new System.Windows.Forms.RadioButton();
-            this.LoopEndRiffCalculatingOffsetDescriptionControl = new VGMToolbox.controls.RiffCalculatingOffsetDescriptionControl();
             this.panel1 = new System.Windows.Forms.Panel();
             this.grpOptions = new System.Windows.Forms.GroupBox();
             this.cbOptionsCreateM3u = new System.Windows.Forms.CheckBox();
@@ -55,9 +51,13 @@
             this.tbLoopShiftStatic = new System.Windows.Forms.TextBox();
             this.rbLoopShiftStatic = new System.Windows.Forms.RadioButton();
             this.grpOutput = new System.Windows.Forms.GroupBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.tbOutputFileMask = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.tbOutputFileMask = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.LoopEndCalculatingOffsetDescriptionControl = new VGMToolbox.controls.CalculatingOffsetDescriptionControl();
+            this.LoopEndRiffCalculatingOffsetDescriptionControl = new VGMToolbox.controls.RiffCalculatingOffsetDescriptionControl();
+            this.LoopStartCalculatingOffsetDescriptionControl = new VGMToolbox.controls.CalculatingOffsetDescriptionControl();
+            this.LoopStartRiffCalculatingOffsetDescriptionControl = new VGMToolbox.controls.RiffCalculatingOffsetDescriptionControl();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -72,7 +72,7 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 661);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 525);
             this.pnlLabels.Size = new System.Drawing.Size(851, 19);
             // 
             // pnlTitle
@@ -81,13 +81,13 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 584);
+            this.tbOutput.Location = new System.Drawing.Point(0, 448);
             this.tbOutput.Size = new System.Drawing.Size(851, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 564);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 428);
             this.pnlButtons.Size = new System.Drawing.Size(851, 20);
             // 
             // btnCancel
@@ -135,17 +135,6 @@
             this.rbLoopStartRiffOffset.Text = "Loop Start is at";
             this.rbLoopStartRiffOffset.UseVisualStyleBackColor = true;
             // 
-            // LoopStartCalculatingOffsetDescriptionControl
-            // 
-            this.LoopStartCalculatingOffsetDescriptionControl.CalculationValue = "";
-            this.LoopStartCalculatingOffsetDescriptionControl.Location = new System.Drawing.Point(86, 38);
-            this.LoopStartCalculatingOffsetDescriptionControl.Name = "LoopStartCalculatingOffsetDescriptionControl";
-            this.LoopStartCalculatingOffsetDescriptionControl.OffsetByteOrder = "Little Endian";
-            this.LoopStartCalculatingOffsetDescriptionControl.OffsetSize = "4";
-            this.LoopStartCalculatingOffsetDescriptionControl.OffsetValue = "";
-            this.LoopStartCalculatingOffsetDescriptionControl.Size = new System.Drawing.Size(422, 52);
-            this.LoopStartCalculatingOffsetDescriptionControl.TabIndex = 10;
-            // 
             // rbLoopStartOffset
             // 
             this.rbLoopStartOffset.AutoSize = true;
@@ -174,17 +163,6 @@
             this.rbLoopStartStatic.TabStop = true;
             this.rbLoopStartStatic.Text = "Loop Start is a Static Value";
             this.rbLoopStartStatic.UseVisualStyleBackColor = true;
-            // 
-            // LoopStartRiffCalculatingOffsetDescriptionControl
-            // 
-            this.LoopStartRiffCalculatingOffsetDescriptionControl.CalculationValue = "";
-            this.LoopStartRiffCalculatingOffsetDescriptionControl.Location = new System.Drawing.Point(102, 92);
-            this.LoopStartRiffCalculatingOffsetDescriptionControl.Name = "LoopStartRiffCalculatingOffsetDescriptionControl";
-            this.LoopStartRiffCalculatingOffsetDescriptionControl.OffsetByteOrder = "Little Endian";
-            this.LoopStartRiffCalculatingOffsetDescriptionControl.OffsetSize = "4";
-            this.LoopStartRiffCalculatingOffsetDescriptionControl.OffsetValue = "";
-            this.LoopStartRiffCalculatingOffsetDescriptionControl.Size = new System.Drawing.Size(400, 81);
-            this.LoopStartRiffCalculatingOffsetDescriptionControl.TabIndex = 6;
             // 
             // grpLoopEnd
             // 
@@ -248,17 +226,6 @@
             this.rbLoopEndRiffOffset.Text = "Loop End is at";
             this.rbLoopEndRiffOffset.UseVisualStyleBackColor = true;
             // 
-            // LoopEndCalculatingOffsetDescriptionControl
-            // 
-            this.LoopEndCalculatingOffsetDescriptionControl.CalculationValue = "";
-            this.LoopEndCalculatingOffsetDescriptionControl.Location = new System.Drawing.Point(84, 78);
-            this.LoopEndCalculatingOffsetDescriptionControl.Name = "LoopEndCalculatingOffsetDescriptionControl";
-            this.LoopEndCalculatingOffsetDescriptionControl.OffsetByteOrder = "Little Endian";
-            this.LoopEndCalculatingOffsetDescriptionControl.OffsetSize = "4";
-            this.LoopEndCalculatingOffsetDescriptionControl.OffsetValue = "";
-            this.LoopEndCalculatingOffsetDescriptionControl.Size = new System.Drawing.Size(422, 52);
-            this.LoopEndCalculatingOffsetDescriptionControl.TabIndex = 10;
-            // 
             // rbLoopEndOffset
             // 
             this.rbLoopEndOffset.AutoSize = true;
@@ -288,17 +255,6 @@
             this.rbLoopEndStatic.Text = "Loop End is a Static Value";
             this.rbLoopEndStatic.UseVisualStyleBackColor = true;
             // 
-            // LoopEndRiffCalculatingOffsetDescriptionControl
-            // 
-            this.LoopEndRiffCalculatingOffsetDescriptionControl.CalculationValue = "";
-            this.LoopEndRiffCalculatingOffsetDescriptionControl.Location = new System.Drawing.Point(99, 132);
-            this.LoopEndRiffCalculatingOffsetDescriptionControl.Name = "LoopEndRiffCalculatingOffsetDescriptionControl";
-            this.LoopEndRiffCalculatingOffsetDescriptionControl.OffsetByteOrder = "Little Endian";
-            this.LoopEndRiffCalculatingOffsetDescriptionControl.OffsetSize = "4";
-            this.LoopEndRiffCalculatingOffsetDescriptionControl.OffsetValue = "";
-            this.LoopEndRiffCalculatingOffsetDescriptionControl.Size = new System.Drawing.Size(400, 81);
-            this.LoopEndRiffCalculatingOffsetDescriptionControl.TabIndex = 6;
-            // 
             // panel1
             // 
             this.panel1.AutoScroll = true;
@@ -311,14 +267,14 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 23);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(851, 541);
+            this.panel1.Size = new System.Drawing.Size(851, 405);
             this.panel1.TabIndex = 9;
             // 
             // grpOptions
             // 
             this.grpOptions.Controls.Add(this.cbOptionsCreateM3u);
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpOptions.Location = new System.Drawing.Point(0, 586);
+            this.grpOptions.Location = new System.Drawing.Point(0, 580);
             this.grpOptions.Name = "grpOptions";
             this.grpOptions.Size = new System.Drawing.Size(834, 93);
             this.grpOptions.TabIndex = 10;
@@ -344,7 +300,7 @@
             this.grpLoopShift.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpLoopShift.Location = new System.Drawing.Point(0, 518);
             this.grpLoopShift.Name = "grpLoopShift";
-            this.grpLoopShift.Size = new System.Drawing.Size(834, 68);
+            this.grpLoopShift.Size = new System.Drawing.Size(834, 62);
             this.grpLoopShift.TabIndex = 9;
             this.grpLoopShift.TabStop = false;
             this.grpLoopShift.Text = "Loop Shift";
@@ -352,7 +308,7 @@
             // cbLoopShiftPredictShift
             // 
             this.cbLoopShiftPredictShift.AutoSize = true;
-            this.cbLoopShiftPredictShift.Location = new System.Drawing.Point(145, 42);
+            this.cbLoopShiftPredictShift.Location = new System.Drawing.Point(232, 42);
             this.cbLoopShiftPredictShift.Name = "cbLoopShiftPredictShift";
             this.cbLoopShiftPredictShift.Size = new System.Drawing.Size(129, 17);
             this.cbLoopShiftPredictShift.TabIndex = 5;
@@ -362,13 +318,14 @@
             // rbLoopShiftWavCompare
             // 
             this.rbLoopShiftWavCompare.AutoSize = true;
-            this.rbLoopShiftWavCompare.Location = new System.Drawing.Point(145, 19);
+            this.rbLoopShiftWavCompare.Location = new System.Drawing.Point(6, 42);
             this.rbLoopShiftWavCompare.Name = "rbLoopShiftWavCompare";
             this.rbLoopShiftWavCompare.Size = new System.Drawing.Size(220, 17);
             this.rbLoopShiftWavCompare.TabIndex = 2;
             this.rbLoopShiftWavCompare.TabStop = true;
             this.rbLoopShiftWavCompare.Text = "Compare Loop End to total WAV samples";
             this.rbLoopShiftWavCompare.UseVisualStyleBackColor = true;
+            this.rbLoopShiftWavCompare.CheckedChanged += new System.EventHandler(this.rbLoopShiftWavCompare_CheckedChanged);
             // 
             // tbLoopShiftStatic
             // 
@@ -387,6 +344,7 @@
             this.rbLoopShiftStatic.TabStop = true;
             this.rbLoopShiftStatic.Text = "Loop Shift";
             this.rbLoopShiftStatic.UseVisualStyleBackColor = true;
+            this.rbLoopShiftStatic.CheckedChanged += new System.EventHandler(this.rbLoopShiftStatic_CheckedChanged);
             // 
             // grpOutput
             // 
@@ -401,22 +359,6 @@
             this.grpOutput.TabStop = false;
             this.grpOutput.Text = "Output Options";
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 16);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(87, 13);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "Output File Mask";
-            // 
-            // tbOutputFileMask
-            // 
-            this.tbOutputFileMask.Location = new System.Drawing.Point(96, 13);
-            this.tbOutputFileMask.Name = "tbOutputFileMask";
-            this.tbOutputFileMask.Size = new System.Drawing.Size(169, 20);
-            this.tbOutputFileMask.TabIndex = 1;
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -426,12 +368,72 @@
             this.label3.TabIndex = 5;
             this.label3.Text = "File Mask ($B: Base, $E: Extension, *: Wildcard)";
             // 
+            // tbOutputFileMask
+            // 
+            this.tbOutputFileMask.Location = new System.Drawing.Point(96, 13);
+            this.tbOutputFileMask.Name = "tbOutputFileMask";
+            this.tbOutputFileMask.Size = new System.Drawing.Size(169, 20);
+            this.tbOutputFileMask.TabIndex = 1;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(3, 16);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(87, 13);
+            this.label2.TabIndex = 0;
+            this.label2.Text = "Output File Mask";
+            // 
+            // LoopEndCalculatingOffsetDescriptionControl
+            // 
+            this.LoopEndCalculatingOffsetDescriptionControl.CalculationValue = "";
+            this.LoopEndCalculatingOffsetDescriptionControl.Location = new System.Drawing.Point(84, 78);
+            this.LoopEndCalculatingOffsetDescriptionControl.Name = "LoopEndCalculatingOffsetDescriptionControl";
+            this.LoopEndCalculatingOffsetDescriptionControl.OffsetByteOrder = "Little Endian";
+            this.LoopEndCalculatingOffsetDescriptionControl.OffsetSize = "4";
+            this.LoopEndCalculatingOffsetDescriptionControl.OffsetValue = "";
+            this.LoopEndCalculatingOffsetDescriptionControl.Size = new System.Drawing.Size(422, 52);
+            this.LoopEndCalculatingOffsetDescriptionControl.TabIndex = 10;
+            // 
+            // LoopEndRiffCalculatingOffsetDescriptionControl
+            // 
+            this.LoopEndRiffCalculatingOffsetDescriptionControl.CalculationValue = "";
+            this.LoopEndRiffCalculatingOffsetDescriptionControl.Location = new System.Drawing.Point(99, 132);
+            this.LoopEndRiffCalculatingOffsetDescriptionControl.Name = "LoopEndRiffCalculatingOffsetDescriptionControl";
+            this.LoopEndRiffCalculatingOffsetDescriptionControl.OffsetByteOrder = "Little Endian";
+            this.LoopEndRiffCalculatingOffsetDescriptionControl.OffsetSize = "4";
+            this.LoopEndRiffCalculatingOffsetDescriptionControl.OffsetValue = "";
+            this.LoopEndRiffCalculatingOffsetDescriptionControl.Size = new System.Drawing.Size(400, 81);
+            this.LoopEndRiffCalculatingOffsetDescriptionControl.TabIndex = 6;
+            // 
+            // LoopStartCalculatingOffsetDescriptionControl
+            // 
+            this.LoopStartCalculatingOffsetDescriptionControl.CalculationValue = "";
+            this.LoopStartCalculatingOffsetDescriptionControl.Location = new System.Drawing.Point(86, 38);
+            this.LoopStartCalculatingOffsetDescriptionControl.Name = "LoopStartCalculatingOffsetDescriptionControl";
+            this.LoopStartCalculatingOffsetDescriptionControl.OffsetByteOrder = "Little Endian";
+            this.LoopStartCalculatingOffsetDescriptionControl.OffsetSize = "4";
+            this.LoopStartCalculatingOffsetDescriptionControl.OffsetValue = "";
+            this.LoopStartCalculatingOffsetDescriptionControl.Size = new System.Drawing.Size(422, 52);
+            this.LoopStartCalculatingOffsetDescriptionControl.TabIndex = 10;
+            // 
+            // LoopStartRiffCalculatingOffsetDescriptionControl
+            // 
+            this.LoopStartRiffCalculatingOffsetDescriptionControl.CalculationValue = "";
+            this.LoopStartRiffCalculatingOffsetDescriptionControl.Location = new System.Drawing.Point(102, 92);
+            this.LoopStartRiffCalculatingOffsetDescriptionControl.Name = "LoopStartRiffCalculatingOffsetDescriptionControl";
+            this.LoopStartRiffCalculatingOffsetDescriptionControl.OffsetByteOrder = "Little Endian";
+            this.LoopStartRiffCalculatingOffsetDescriptionControl.OffsetSize = "4";
+            this.LoopStartRiffCalculatingOffsetDescriptionControl.OffsetValue = "";
+            this.LoopStartRiffCalculatingOffsetDescriptionControl.Size = new System.Drawing.Size(400, 81);
+            this.LoopStartRiffCalculatingOffsetDescriptionControl.TabIndex = 6;
+            // 
             // PosFileCreatorForm
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(851, 702);
+            this.ClientSize = new System.Drawing.Size(851, 566);
             this.Controls.Add(this.panel1);
             this.Name = "PosFileCreatorForm";
             this.Text = "Atrac3PosFileCreatorForm";
