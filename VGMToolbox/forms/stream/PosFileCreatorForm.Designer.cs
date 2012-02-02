@@ -117,7 +117,7 @@
             this.grpLoopStart.Controls.Add(this.rbLoopStartStatic);
             this.grpLoopStart.Controls.Add(this.LoopStartRiffCalculatingOffsetDescriptionControl);
             this.grpLoopStart.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpLoopStart.Location = new System.Drawing.Point(0, 122);
+            this.grpLoopStart.Location = new System.Drawing.Point(0, 94);
             this.grpLoopStart.Name = "grpLoopStart";
             this.grpLoopStart.Size = new System.Drawing.Size(834, 182);
             this.grpLoopStart.TabIndex = 7;
@@ -134,6 +134,7 @@
             this.rbLoopStartRiffOffset.TabStop = true;
             this.rbLoopStartRiffOffset.Text = "Loop Start is at";
             this.rbLoopStartRiffOffset.UseVisualStyleBackColor = true;
+            this.rbLoopStartRiffOffset.CheckedChanged += new System.EventHandler(this.rbLoopStartRiffOffset_CheckedChanged);
             // 
             // rbLoopStartOffset
             // 
@@ -145,6 +146,7 @@
             this.rbLoopStartOffset.TabStop = true;
             this.rbLoopStartOffset.Text = "Loop Start is";
             this.rbLoopStartOffset.UseVisualStyleBackColor = true;
+            this.rbLoopStartOffset.CheckedChanged += new System.EventHandler(this.rbLoopStartOffset_CheckedChanged);
             // 
             // tbLoopStartStatic
             // 
@@ -163,6 +165,7 @@
             this.rbLoopStartStatic.TabStop = true;
             this.rbLoopStartStatic.Text = "Loop Start is a Static Value";
             this.rbLoopStartStatic.UseVisualStyleBackColor = true;
+            this.rbLoopStartStatic.CheckedChanged += new System.EventHandler(this.rbLoopStartStatic_CheckedChanged);
             // 
             // grpLoopEnd
             // 
@@ -174,7 +177,7 @@
             this.grpLoopEnd.Controls.Add(this.rbLoopEndStatic);
             this.grpLoopEnd.Controls.Add(this.LoopEndRiffCalculatingOffsetDescriptionControl);
             this.grpLoopEnd.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpLoopEnd.Location = new System.Drawing.Point(0, 304);
+            this.grpLoopEnd.Location = new System.Drawing.Point(0, 276);
             this.grpLoopEnd.Name = "grpLoopEnd";
             this.grpLoopEnd.Size = new System.Drawing.Size(834, 214);
             this.grpLoopEnd.TabIndex = 8;
@@ -225,6 +228,7 @@
             this.rbLoopEndRiffOffset.TabStop = true;
             this.rbLoopEndRiffOffset.Text = "Loop End is at";
             this.rbLoopEndRiffOffset.UseVisualStyleBackColor = true;
+            this.rbLoopEndRiffOffset.CheckedChanged += new System.EventHandler(this.rbLoopEndRiffOffset_CheckedChanged);
             // 
             // rbLoopEndOffset
             // 
@@ -236,6 +240,7 @@
             this.rbLoopEndOffset.TabStop = true;
             this.rbLoopEndOffset.Text = "Loop End is";
             this.rbLoopEndOffset.UseVisualStyleBackColor = true;
+            this.rbLoopEndOffset.CheckedChanged += new System.EventHandler(this.rbLoopEndOffset_CheckedChanged);
             // 
             // tbLoopEndStatic
             // 
@@ -254,6 +259,7 @@
             this.rbLoopEndStatic.TabStop = true;
             this.rbLoopEndStatic.Text = "Loop End is a Static Value";
             this.rbLoopEndStatic.UseVisualStyleBackColor = true;
+            this.rbLoopEndStatic.CheckedChanged += new System.EventHandler(this.rbLoopEndStatic_CheckedChanged);
             // 
             // panel1
             // 
@@ -274,7 +280,7 @@
             // 
             this.grpOptions.Controls.Add(this.cbOptionsCreateM3u);
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpOptions.Location = new System.Drawing.Point(0, 580);
+            this.grpOptions.Location = new System.Drawing.Point(0, 552);
             this.grpOptions.Name = "grpOptions";
             this.grpOptions.Size = new System.Drawing.Size(834, 93);
             this.grpOptions.TabIndex = 10;
@@ -298,7 +304,7 @@
             this.grpLoopShift.Controls.Add(this.tbLoopShiftStatic);
             this.grpLoopShift.Controls.Add(this.rbLoopShiftStatic);
             this.grpLoopShift.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpLoopShift.Location = new System.Drawing.Point(0, 518);
+            this.grpLoopShift.Location = new System.Drawing.Point(0, 490);
             this.grpLoopShift.Name = "grpLoopShift";
             this.grpLoopShift.Size = new System.Drawing.Size(834, 62);
             this.grpLoopShift.TabIndex = 9;
@@ -354,7 +360,7 @@
             this.grpOutput.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpOutput.Location = new System.Drawing.Point(0, 51);
             this.grpOutput.Name = "grpOutput";
-            this.grpOutput.Size = new System.Drawing.Size(834, 71);
+            this.grpOutput.Size = new System.Drawing.Size(834, 43);
             this.grpOutput.TabIndex = 11;
             this.grpOutput.TabStop = false;
             this.grpOutput.Text = "Output Options";

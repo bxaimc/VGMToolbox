@@ -23,10 +23,18 @@ namespace VGMToolbox.forms.stream
 
             this.tbOutputFileMask.Text = "$B.$E.WAV";
 
+            this.rbLoopStartRiffOffset.Checked = true;
+
             this.rbLoopEnd.Checked = true;
+            this.rbLoopEndRiffOffset.Checked = true;
 
             this.rbLoopShiftWavCompare.Checked = true;
             this.cbLoopShiftPredictShift.Checked = true;
+
+            // init functions
+            this.doLoopStartRadios();
+            this.doLoopEndRadios();
+            this.doLoopShiftRadios();
         }
 
 
@@ -89,7 +97,7 @@ namespace VGMToolbox.forms.stream
             taskStruct.DoStaticLoopShift = this.rbLoopShiftStatic.Checked;
             taskStruct.DoLoopShiftWavCompare = this.rbLoopShiftWavCompare.Checked;
             taskStruct.PredictLoopShiftForBatch = this.cbLoopShiftPredictShift.Checked;
-            taskStruct.LoopStartStaticValue = this.tbLoopShiftStatic.Text;
+            taskStruct.StaticLoopShiftValue = this.tbLoopShiftStatic.Text;
 
             // Other Options
             taskStruct.CreateM3u = this.cbOptionsCreateM3u.Checked;
@@ -106,20 +114,14 @@ namespace VGMToolbox.forms.stream
         // radio buttons
         private void doLoopShiftRadios()
         {
-            if (this.rbLoopShiftStatic.Checked)
-            {
-                this.tbLoopShiftStatic.Enabled = true;
-                this.tbLoopShiftStatic.ReadOnly = false;
+            this.tbLoopShiftStatic.Enabled = this.rbLoopShiftStatic.Checked;
+            this.tbLoopShiftStatic.ReadOnly = !this.rbLoopShiftStatic.Checked;
 
-                this.cbLoopShiftPredictShift.Enabled = false;
+            this.cbLoopShiftPredictShift.Enabled = this.rbLoopShiftWavCompare.Checked;
+            
+            if (!this.rbLoopShiftWavCompare.Checked)
+            {
                 this.cbLoopShiftPredictShift.Checked = false;
-            }
-            else if (this.rbLoopShiftWavCompare.Checked)
-            {
-                this.tbLoopShiftStatic.Enabled = false;
-                this.tbLoopShiftStatic.ReadOnly = true;
-
-                this.cbLoopShiftPredictShift.Enabled = true;            
             }
         }        
         private void rbLoopShiftStatic_CheckedChanged(object sender, EventArgs e)
@@ -129,6 +131,48 @@ namespace VGMToolbox.forms.stream
         private void rbLoopShiftWavCompare_CheckedChanged(object sender, EventArgs e)
         {
             this.doLoopShiftRadios();
+        }
+
+        private void doLoopStartRadios()
+        {
+            this.tbLoopStartStatic.Enabled = this.rbLoopStartStatic.Checked;
+            this.tbLoopStartStatic.ReadOnly = !this.rbLoopStartStatic.Checked;
+
+            this.LoopStartCalculatingOffsetDescriptionControl.Enabled = this.rbLoopStartOffset.Checked;
+            this.LoopStartRiffCalculatingOffsetDescriptionControl.Enabled = this.rbLoopStartRiffOffset.Checked;                       
+        }
+        private void rbLoopStartStatic_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doLoopStartRadios();
+        }
+        private void rbLoopStartOffset_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doLoopStartRadios();
+        }
+        private void rbLoopStartRiffOffset_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doLoopStartRadios();
+        }
+
+        private void doLoopEndRadios()
+        {
+            this.tbLoopEndStatic.Enabled = this.rbLoopEndStatic.Checked;
+            this.tbLoopEndStatic.ReadOnly = !this.rbLoopEndStatic.Checked;
+
+            this.LoopEndCalculatingOffsetDescriptionControl.Enabled = this.rbLoopEndOffset.Checked;
+            this.LoopEndRiffCalculatingOffsetDescriptionControl.Enabled = this.rbLoopEndRiffOffset.Checked;                               
+        }
+        private void rbLoopEndStatic_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doLoopEndRadios();
+        }
+        private void rbLoopEndOffset_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doLoopEndRadios();
+        }
+        private void rbLoopEndRiffOffset_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doLoopEndRadios();
         }
 
 

@@ -215,6 +215,9 @@ namespace VGMToolbox.tools.stream
             PosFileCreatorStruct posStruct = (PosFileCreatorStruct)pTaskStruct;
 
             long predictedShift = DEFAULT_LOOP_VALUE;
+            long predictedShiftCount = -1;
+
+            Dictionary<long, long> shiftCount = new Dictionary<long, long>();
             long loopShift = DEFAULT_LOOP_VALUE;
 
             ArrayList keyList = new ArrayList();
@@ -227,13 +230,36 @@ namespace VGMToolbox.tools.stream
 
 
             // predict shift
-
-            // sort keys
             foreach (string s in this.WorkingList.Keys)
             {
+                // increment count for this shift value
+                if (WorkingList[s].LoopShift != DEFAULT_LOOP_VALUE)
+                {
+                    if (shiftCount.ContainsKey(WorkingList[s].LoopShift))
+                    {
+                        shiftCount[WorkingList[s].LoopShift]++;
+                    }
+                    else
+                    {
+                        shiftCount.Add(WorkingList[s].LoopShift, 1);
+                    }
+                }
+
+                // add to key list for use later
                 keyList.Add(s);
             }
 
+            // determine highest valued shift
+            foreach (long l in shiftCount.Keys)
+            {
+                if (shiftCount[l] > predictedShiftCount)
+                {
+                    predictedShift = l;
+                    predictedShiftCount = shiftCount[l];
+                }
+            }
+
+            // sort keys
             keyList.Sort();
 
             // loop over keys
@@ -260,7 +286,14 @@ namespace VGMToolbox.tools.stream
                         loopShift = predictedShift;
 
                         // output info
-                        outputMessage.AppendFormat("  Loop Shift (predicted): {0}{1}", loopShift.ToString("D"), Environment.NewLine);
+                        if (predictedShift == this.WorkingList[s].LoopShift)
+                        {
+                            outputMessage.AppendFormat("  Loop Shift (predicted): {0}{1}", loopShift.ToString("D"), Environment.NewLine);
+                        }
+                        else
+                        {
+                            outputMessage.AppendFormat("  * Loop Shift (predicted): {0} (Calculated: {1}){2}", loopShift.ToString("D"), this.WorkingList[s].LoopShift.ToString("D"), Environment.NewLine);
+                        }
                     }
                     else
                     {

@@ -43,7 +43,7 @@ namespace VGMToolbox.controls
                 this.label3.Enabled = value;
 
                 this.cbRiffRelativeLocation.Enabled = value;
-                this.cbRiffChunkList.Enabled = false;
+                this.cbRiffChunkList.Enabled = value;
             }
         }
 
