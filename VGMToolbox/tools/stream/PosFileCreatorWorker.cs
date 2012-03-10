@@ -215,7 +215,7 @@ namespace VGMToolbox.tools.stream
             PosFileCreatorStruct posStruct = (PosFileCreatorStruct)pTaskStruct;
 
             long predictedShift = DEFAULT_LOOP_VALUE;
-            long predictedShiftCount = -1;
+            long predictedShiftCount = 1;
 
             Dictionary<long, long> shiftCount = new Dictionary<long, long>();
             long loopShift = DEFAULT_LOOP_VALUE;

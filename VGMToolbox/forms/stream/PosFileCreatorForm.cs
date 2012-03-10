@@ -21,6 +21,8 @@ namespace VGMToolbox.forms.stream
 
             InitializeComponent();
 
+            this.btnDoTask.Hide();
+
             this.tbOutputFileMask.Text = "$B.$E.WAV";
 
             this.rbLoopStartRiffOffset.Checked = true;
