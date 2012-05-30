@@ -119,7 +119,7 @@ namespace VGMToolbox.format
                         this.FileHeader.VideoHeight = ParseFile.ParseSimpleOffset(fs, 0x18, 4);
 
                         // get audio subheaders
-                        this.FileHeader.AudioStreamCount = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, 0x20, 4), 0);
+                        this.FileHeader.AudioStreamCount = (UInt32)BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(fs, 0x20, 2), 0);
                         this.FileHeader.AudioHeaders = new XmvAudioDataHeader[this.FileHeader.AudioStreamCount];
 
                         for (uint i = 0; i < this.FileHeader.AudioStreamCount; i++)
