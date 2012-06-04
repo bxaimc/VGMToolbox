@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -569,6 +570,48 @@ namespace VGMToolbox.util
             }
 
             return destinationFile;
+        }
+
+        public static string[] SplitFile(string sourceFile, long startingOffset, ulong chunkSizeInBytes, string outputFolder)
+        {
+            string[] outputFileList;
+            string outputFileName;
+            ArrayList outputFiles = new ArrayList();
+
+            long fileLength;
+            ulong currentOffset;
+
+            int chunkCount;
+
+            using (FileStream sourceStream = File.OpenRead(sourceFile))
+            {
+                // get file length
+                fileLength = sourceStream.Length;
+
+                // init counters
+                chunkCount = 1;
+                currentOffset = (ulong)startingOffset;
+
+                while (currentOffset < (ulong)fileLength)
+                {
+                    // construct output file name
+                    outputFileName = Path.Combine(outputFolder,
+                                                  String.Format("{0}.{1}",
+                                                                Path.GetFileName(sourceFile),
+                                                                chunkCount.ToString("D3")));
+
+                    ParseFile.ExtractChunkToFile64(sourceStream, currentOffset, chunkSizeInBytes,
+                        outputFileName, true, true);
+
+
+                    outputFiles.Add(outputFileName);
+                    currentOffset += chunkSizeInBytes;
+                    chunkCount++;
+                }
+            }
+
+            outputFileList = (string[])outputFiles.ToArray(typeof(string));
+            return outputFileList;
         }
     }
 }

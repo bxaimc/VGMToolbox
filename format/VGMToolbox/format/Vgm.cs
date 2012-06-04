@@ -30,12 +30,14 @@ namespace VGMToolbox.format
         private static readonly byte[] VERSION_0101 = new byte[] { 0x01, 0x01, 0x00, 0x00 };
         private static readonly byte[] VERSION_0110 = new byte[] { 0x10, 0x01, 0x00, 0x00 };
         private static readonly byte[] VERSION_0150 = new byte[] { 0x50, 0x01, 0x00, 0x00 };
+        private static readonly byte[] VERSION_0151 = new byte[] { 0x51, 0x01, 0x00, 0x00 };
 
-        private static readonly int INT_VERSION_UNKNOWN = -1;
-        private static readonly int INT_VERSION_0100 = 100;
-        private static readonly int INT_VERSION_0101 = 101;
-        private static readonly int INT_VERSION_0110 = 110;
-        private static readonly int INT_VERSION_0150 = 150;
+        private const int INT_VERSION_UNKNOWN = -1;
+        private const int INT_VERSION_0100 = 100;
+        private const int INT_VERSION_0101 = 101;
+        private const int INT_VERSION_0110 = 110;
+        private const int INT_VERSION_0150 = 150;
+        private const int INT_VERSION_0151 = 151;
 
         private static readonly byte[] VERSION_GD3_0100 = new byte[] { 0x00, 0x01, 0x00, 0x00 };
 
@@ -141,8 +143,85 @@ namespace VGMToolbox.format
         private const int RESERVED2_LENGTH = 0x08;
 
         private byte[] vgmDataOffset;
-
+        
         public byte[] VgmDataOffset { get { return this.vgmDataOffset; } }
+
+        // Version 1.51 or greater
+        private const int SN76489_FLAGS_OFFSET = 0x2B;
+        private const int SN76489_FLAGS_LENGTH = 0x01;
+
+        private const int SPCM_CLOCK_OFFSET = 0x38;
+        private const int SPCM_CLOCK_LENGTH = 0x04;
+
+        private const int SPCM_INTERFACE_OFFSET = 0x3C;
+        private const int SPCM_INTERFACE_LENGTH = 0x04;
+
+        private const int RF5C68_CLOCK_OFFSET = 0x40;
+        private const int RF5C68_CLOCK_LENGTH = 0x04;
+
+        private const int YM2203_CLOCK_OFFSET = 0x44;
+        private const int YM2203_CLOCK_LENGTH = 0x04;
+
+        private const int YM2608_CLOCK_OFFSET = 0x48;
+        private const int YM2608_CLOCK_LENGTH = 0x04;
+
+        private const int YM2610_CLOCK_OFFSET = 0x4C;
+        private const int YM2610_CLOCK_LENGTH = 0x04;
+        
+        private const int YM3812_CLOCK_OFFSET = 0x50;
+        private const int YM3812_CLOCK_LENGTH = 0x04;
+
+        private const int YM3526_CLOCK_OFFSET = 0x54;
+        private const int YM3526_CLOCK_LENGTH = 0x04;
+
+        private const int Y8950_CLOCK_OFFSET = 0x58;
+        private const int Y8950_CLOCK_LENGTH = 0x04;
+
+        private const int YMF262_CLOCK_OFFSET = 0x5C;
+        private const int YMF262_CLOCK_LENGTH = 0x04;
+
+        private const int YMF278B_CLOCK_OFFSET = 0x60;
+        private const int YMF278B_CLOCK_LENGTH = 0x04;
+
+        private const int YMF271_CLOCK_OFFSET = 0x64;
+        private const int YMF271_CLOCK_LENGTH = 0x04;
+
+        private const int YMZ280B_CLOCK_OFFSET = 0x68;
+        private const int YMZ280B_CLOCK_LENGTH = 0x04;
+
+
+
+        private const int LOOP_MODIFIER_OFFSET = 0x7F;
+        private const int LOOP_MODIFIER_LENGTH = 0x01;
+
+
+        private byte[] sn76489Flags;
+        private byte[] spcmClock;
+        private byte[] spcmInterface;
+
+        public byte[] Sn76489Flags { get { return this.sn76489Flags; } }
+        public byte[] SpcmClock { get { return this.spcmClock; } }
+        public byte[] SpcmInterface { get { return this.SpcmInterface; } }
+        
+        public byte[] Rf5c68Clock { set; get; }
+        public byte[] Ym2203Clock { set; get; }
+        public byte[] Ym2608Clock { set; get; }
+        public byte[] Ym2610Clock { set; get; }
+
+        public byte[] Ym3812Clock { set; get; }
+        public byte[] Ym3526Clock { set; get; }
+        public byte[] Y8950Clock { set; get; }
+        public byte[] Ymf262Clock { set; get; }
+
+        public byte[] Ymf278BClock { set; get; }
+        public byte[] Ymf271Clock { set; get; }
+        public byte[] Ymz280BClock { set; get; }
+
+
+
+
+        public byte[] LoopModifier { set; get; }
+
 
         // GD3 TAG
         private const int GD3_SIGNATURE_OFFSET = 0x00;
@@ -213,10 +292,15 @@ namespace VGMToolbox.format
             }
         }
         */
-
+        
         protected byte[] getRate(byte[] pBytes)
         {
             return ParseFile.ParseSimpleOffset(pBytes, RATE_OFFSET, RATE_LENGTH);
+        }
+
+        protected byte[] getRf5c68Clock(byte[] pBytes)
+        {
+            return ParseFile.ParseSimpleOffset(pBytes, RF5C68_CLOCK_OFFSET, RF5C68_CLOCK_LENGTH);
         }
 
         protected byte[] getSignatureTag(byte[] pBytes)
@@ -237,6 +321,21 @@ namespace VGMToolbox.format
         protected byte[] getSn76489Srw(byte[] pBytes)
         {
             return ParseFile.ParseSimpleOffset(pBytes, SN76489_SRW_OFFSET, SN76489_SRW_LENGTH);
+        }
+
+        protected byte[] getSn76489Flags(byte[] pBytes)
+        {
+            return ParseFile.ParseSimpleOffset(pBytes, SN76489_FLAGS_OFFSET, SN76489_FLAGS_LENGTH);
+        }
+
+        protected byte[] getSpcmClock(byte[] pBytes)
+        {
+            return ParseFile.ParseSimpleOffset(pBytes, SPCM_CLOCK_OFFSET, SPCM_CLOCK_LENGTH);
+        }
+
+        protected byte[] getSpcmInterface(byte[] pBytes)
+        {
+            return ParseFile.ParseSimpleOffset(pBytes, SPCM_INTERFACE_OFFSET, SPCM_INTERFACE_LENGTH);
         }
 
         protected byte[] getTotalNumOfSamples(byte[] pBytes)
@@ -273,6 +372,11 @@ namespace VGMToolbox.format
         protected byte[] getYm2612Clock(byte[] pBytes)
         {
             return ParseFile.ParseSimpleOffset(pBytes, YM2612_CLOCK_OFFSET, YM2612_CLOCK_LENGTH);
+        }
+
+        protected byte[] getYm3812Clock(byte[] pBytes)
+        {
+            return ParseFile.ParseSimpleOffset(pBytes, YM3812_CLOCK_OFFSET, YM3812_CLOCK_LENGTH);
         }
 
         /*
@@ -340,6 +444,11 @@ namespace VGMToolbox.format
             return ParseFile.ParseSimpleOffset(pStream, RATE_OFFSET, RATE_LENGTH);
         }
 
+        protected byte[] getRf5c68Clock(Stream pStream)
+        {
+            return ParseFile.ParseSimpleOffset(pStream, RF5C68_CLOCK_OFFSET, RF5C68_CLOCK_LENGTH);
+        }
+
         protected byte[] getSignatureTag(Stream pStream)
         {
             return ParseFile.ParseSimpleOffset(pStream, SIG_OFFSET, SIG_LENGTH);
@@ -358,6 +467,21 @@ namespace VGMToolbox.format
         protected byte[] getSn76489Srw(Stream pStream)
         {
             return ParseFile.ParseSimpleOffset(pStream, SN76489_SRW_OFFSET, SN76489_SRW_LENGTH);
+        }
+
+        protected byte[] getSn76489Flags(Stream pStream)
+        {
+            return ParseFile.ParseSimpleOffset(pStream, SN76489_FLAGS_OFFSET, SN76489_FLAGS_LENGTH);
+        }
+
+        protected byte[] getSpcmClock(Stream pStream)
+        {
+            return ParseFile.ParseSimpleOffset(pStream, SPCM_CLOCK_OFFSET, SPCM_CLOCK_LENGTH);
+        }
+
+        protected byte[] getSpcmInterface(Stream pStream)
+        {
+            return ParseFile.ParseSimpleOffset(pStream, SPCM_INTERFACE_OFFSET, SPCM_INTERFACE_LENGTH);
         }
 
         protected byte[] getTotalNumOfSamples(Stream pStream)
@@ -396,6 +520,15 @@ namespace VGMToolbox.format
             return ParseFile.ParseSimpleOffset(pStream, YM2612_CLOCK_OFFSET, YM2612_CLOCK_LENGTH);
         }
 
+        protected byte[] getYm3812Clock(Stream pStream)
+        {
+            return ParseFile.ParseSimpleOffset(pStream, YM3812_CLOCK_OFFSET, YM3812_CLOCK_LENGTH);
+        }
+
+        #endregion
+
+        #region METHODS
+        
         private int getIntVersion()
         {
             int ret = INT_VERSION_UNKNOWN;
@@ -416,13 +549,37 @@ namespace VGMToolbox.format
             {
                 ret = INT_VERSION_0150;
             }
+            else if (ParseFile.CompareSegment(this.version, 0, VERSION_0151))
+            {
+                ret = INT_VERSION_0151;
+            }
 
             return ret;
         }
 
-        #endregion
+        private uint getHeaderSize()
+        {
+            uint headerSize;
+            int intVersion = this.getIntVersion();
 
-        #region METHODS
+            switch (intVersion)
+            { 
+                case INT_VERSION_0100:
+                case INT_VERSION_0101:
+                case INT_VERSION_0110:
+                case INT_VERSION_0150:
+                    headerSize = 0x40;
+                    break;
+                case INT_VERSION_0151:
+                    headerSize = 0x80;
+                    break;
+                default:
+                    throw new FormatException("Unsupported VGM format version.");
+                    break;
+            }
+
+            return headerSize;
+        }
 
         public byte[] GetAsciiSignature()
         {
@@ -518,6 +675,35 @@ namespace VGMToolbox.format
                         {
                             // Version 1.50 or greater
                             this.vgmDataOffset = this.getVgmDataOffset(pStream);
+
+                            if (intVersion >= INT_VERSION_0151)
+                            { 
+                                // Version 1.51 or greater
+                                this.sn76489Flags = this.getSn76489Flags(pStream);
+
+                                this.spcmClock = this.getSpcmClock(pStream);
+                                this.spcmInterface = this.getSpcmInterface(pStream);
+                                this.Rf5c68Clock = this.getRf5c68Clock(pStream);
+                                // will refactor old stuff later
+                                this.Ym2203Clock = ParseFile.ParseSimpleOffset(pStream, YM2203_CLOCK_OFFSET, YM2203_CLOCK_LENGTH);
+                                this.Ym2608Clock = ParseFile.ParseSimpleOffset(pStream, YM2608_CLOCK_OFFSET, YM2608_CLOCK_LENGTH);
+                                this.Ym2610Clock = ParseFile.ParseSimpleOffset(pStream, YM2610_CLOCK_OFFSET, YM2610_CLOCK_LENGTH);
+                                
+                                this.Ym3812Clock = this.getYm3812Clock(pStream);
+                                this.Ym3526Clock = ParseFile.ParseSimpleOffset(pStream, YM3526_CLOCK_OFFSET, YM3526_CLOCK_LENGTH);
+                                this.Y8950Clock = ParseFile.ParseSimpleOffset(pStream, Y8950_CLOCK_OFFSET, Y8950_CLOCK_LENGTH);
+                                this.Ymf262Clock = ParseFile.ParseSimpleOffset(pStream, YMF262_CLOCK_OFFSET, YMF262_CLOCK_LENGTH);
+
+                                this.Ymf278BClock = ParseFile.ParseSimpleOffset(pStream, YMF278B_CLOCK_OFFSET, YMF278B_CLOCK_LENGTH);
+                                this.Ymf271Clock = ParseFile.ParseSimpleOffset(pStream, YMF271_CLOCK_OFFSET, YMF271_CLOCK_LENGTH);
+                                this.Ymz280BClock = ParseFile.ParseSimpleOffset(pStream, YMZ280B_CLOCK_OFFSET, YMZ280B_CLOCK_LENGTH);
+
+
+
+
+                                this.LoopModifier = ParseFile.ParseSimpleOffset(pStream, LOOP_MODIFIER_OFFSET, LOOP_MODIFIER_LENGTH);
+
+                            }
                         }
                     }
                 }
@@ -919,9 +1105,10 @@ namespace VGMToolbox.format
         private UInt32 writeHeaderSection(string pOutputPath)
         {
             byte[] empty32BitVal = new byte[] { 0x00, 0x00, 0x00, 0x00 };
-            UInt32 headerSize = 0x40;
+            UInt32 headerSize = this.getHeaderSize();
             int numberOfZeroesToWrite;
             long finalPosition;
+            uint relativeDataStart;
 
             using (FileStream outFs = File.Open(pOutputPath, FileMode.Create, FileAccess.Write))
             {
@@ -964,7 +1151,16 @@ namespace VGMToolbox.format
                         {
                             bw.Write(this.sn76489Feedback);
                             bw.Write(this.sn76489Srw);
-                            bw.Write(new byte[] { 0x00 });  // Reserved - 0x2B
+
+                            if (this.getIntVersion() < INT_VERSION_0151)
+                            {
+                                bw.Write(new byte[] { 0x00 });  // Reserved - 0x2B
+                            }
+                            else
+                            {
+                                bw.Write(this.sn76489Flags);      // added in v1.51
+                            }
+                            
                             bw.Write(this.ym2612Clock);
                             bw.Write(this.ym2151Clock);
                         }
@@ -978,7 +1174,40 @@ namespace VGMToolbox.format
                         }
                         else
                         {
-                            bw.Write(new byte[] { 0x0c, 0x00, 0x00, 0x00 }); // Data Start Address
+                            relativeDataStart = (uint)((long)headerSize - outFs.Position);
+                            bw.Write(relativeDataStart); // Data Start Address
+                            
+                            /////////
+                            // v1.51
+                            /////////
+                            if (this.getIntVersion() >= INT_VERSION_0151)
+                            {
+                                bw.Write(this.spcmClock);
+                                bw.Write(this.spcmInterface);
+                                
+                                bw.Write(this.Rf5c68Clock);  // offset 0x40
+                                bw.Write(this.Ym2203Clock);
+                                bw.Write(this.Ym2608Clock);
+                                bw.Write(this.Ym2610Clock);
+
+                                bw.Write(this.Ym3812Clock); // offset 0x50
+                                bw.Write(this.Ym3526Clock);
+                                bw.Write(this.Y8950Clock);
+                                bw.Write(this.Ymf262Clock);
+
+                                bw.Write(this.Ymf278BClock); // offset 0x60
+                                bw.Write(this.Ymf271Clock);
+                                bw.Write(this.Ymz280BClock);
+
+                                // reserved at 0x6C
+                                bw.Write(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00 });
+
+                                bw.Write(this.LoopModifier); // offset 0x7F
+                            }
+
+                            // fill in remainder of header
                             numberOfZeroesToWrite = (int)((long)headerSize - outFs.Position);
                         }
                     }
