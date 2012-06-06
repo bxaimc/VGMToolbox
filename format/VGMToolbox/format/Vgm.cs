@@ -31,6 +31,8 @@ namespace VGMToolbox.format
         private static readonly byte[] VERSION_0110 = new byte[] { 0x10, 0x01, 0x00, 0x00 };
         private static readonly byte[] VERSION_0150 = new byte[] { 0x50, 0x01, 0x00, 0x00 };
         private static readonly byte[] VERSION_0151 = new byte[] { 0x51, 0x01, 0x00, 0x00 };
+        private static readonly byte[] VERSION_0160 = new byte[] { 0x60, 0x01, 0x00, 0x00 };
+        private static readonly byte[] VERSION_0161 = new byte[] { 0x61, 0x01, 0x00, 0x00 };
 
         private const int INT_VERSION_UNKNOWN = -1;
         private const int INT_VERSION_0100 = 100;
@@ -38,6 +40,8 @@ namespace VGMToolbox.format
         private const int INT_VERSION_0110 = 110;
         private const int INT_VERSION_0150 = 150;
         private const int INT_VERSION_0151 = 151;
+        private const int INT_VERSION_0160 = 160;
+        private const int INT_VERSION_0161 = 161;
 
         private static readonly byte[] VERSION_GD3_0100 = new byte[] { 0x00, 0x01, 0x00, 0x00 };
 
@@ -100,6 +104,9 @@ namespace VGMToolbox.format
         public byte[] LoopNumOfSamples { get { return this.loopNumOfSamples; } }
         public byte[] VgmData { get { return this.vgmData; } }
 
+        // All
+        public uint FullHeaderSize { set; get; }
+        public byte[] FullHeader { set; get; }
 
         // Version 1.01 or greater
         private const int RATE_OFFSET = 0x24;
@@ -189,11 +196,29 @@ namespace VGMToolbox.format
         private const int YMZ280B_CLOCK_OFFSET = 0x68;
         private const int YMZ280B_CLOCK_LENGTH = 0x04;
 
+        private const int RF5C164_CLOCK_OFFSET = 0x6C;
+        private const int RF5C164_CLOCK_LENGTH = 0x04;
 
+        private const int PWM_CLOCK_OFFSET = 0x70;
+        private const int PWM_CLOCK_LENGTH = 0x04;
+
+        private const int AY8910_CLOCK_OFFSET = 0x74;
+        private const int AY8910_CLOCK_LENGTH = 0x04;
+
+        private const int AY8910_CHIP_TYPE_OFFSET = 0x78;
+        private const int AY8910_CHIP_TYPE_LENGTH = 0x01;
+
+        private const int AY8910_FLAGS_OFFSET = 0x79;
+        private const int AY8910_FLAGS_LENGTH = 0x01;
+
+        private const int AY8910_YM2203_FLAGS_OFFSET = 0x7A;
+        private const int AY8910_YM2203_FLAGS_LENGTH = 0x01;
+
+        private const int AY8910_YM2610_FLAGS_OFFSET = 0x7B;
+        private const int AY8910_YM2610_FLAGS_LENGTH = 0x01;
 
         private const int LOOP_MODIFIER_OFFSET = 0x7F;
         private const int LOOP_MODIFIER_LENGTH = 0x01;
-
 
         private byte[] sn76489Flags;
         private byte[] spcmClock;
@@ -217,8 +242,15 @@ namespace VGMToolbox.format
         public byte[] Ymf271Clock { set; get; }
         public byte[] Ymz280BClock { set; get; }
 
+        public byte[] Rf5C164Clock { set; get; }
+        public byte[] PwmClock { set; get; }
+        public byte[] Ay8910Clock { set; get; }
+        public byte[] Ay8910ChipType { set; get; }
+        public byte[] Ay8910Flags { set; get; }
+        public byte[] Ay8910Ym2203Flags { set; get; }
+        public byte[] Ay8910Ym2610Flags { set; get; }
 
-
+        // v1.60 vals not added
 
         public byte[] LoopModifier { set; get; }
 
@@ -553,6 +585,14 @@ namespace VGMToolbox.format
             {
                 ret = INT_VERSION_0151;
             }
+            else if (ParseFile.CompareSegment(this.version, 0, VERSION_0160))
+            {
+                ret = INT_VERSION_0160;
+            }
+            else if (ParseFile.CompareSegment(this.version, 0, VERSION_0161))
+            {
+                ret = INT_VERSION_0161;
+            }
 
             return ret;
         }
@@ -571,7 +611,13 @@ namespace VGMToolbox.format
                     headerSize = 0x40;
                     break;
                 case INT_VERSION_0151:
-                    headerSize = 0x80;
+                case INT_VERSION_0160:
+                    headerSize = Math.Min(0x80, 
+                        ((uint)VGM_DATA_OFFSET_OFFSET + BitConverter.ToUInt32(this.vgmDataOffset, 0)));
+                    break;
+                case INT_VERSION_0161:
+                    headerSize = Math.Min(0xC0,
+                        ((uint)VGM_DATA_OFFSET_OFFSET + BitConverter.ToUInt32(this.vgmDataOffset, 0)));
                     break;
                 default:
                     throw new FormatException("Unsupported VGM format version.");
@@ -654,9 +700,8 @@ namespace VGMToolbox.format
                 this.loopNumOfSamples = this.getLoopNumOfSamples(pStream);
                 // vgmData; get only during checksum to save memory
 
-                // Get version to determine if other tags are present
+                // Get version to determine if other tags could be present
                 intVersion = this.getIntVersion();
-
 
                 if (intVersion >= INT_VERSION_0101)
                 {
@@ -697,9 +742,14 @@ namespace VGMToolbox.format
                                 this.Ymf278BClock = ParseFile.ParseSimpleOffset(pStream, YMF278B_CLOCK_OFFSET, YMF278B_CLOCK_LENGTH);
                                 this.Ymf271Clock = ParseFile.ParseSimpleOffset(pStream, YMF271_CLOCK_OFFSET, YMF271_CLOCK_LENGTH);
                                 this.Ymz280BClock = ParseFile.ParseSimpleOffset(pStream, YMZ280B_CLOCK_OFFSET, YMZ280B_CLOCK_LENGTH);
-
-
-
+                                this.Rf5C164Clock = ParseFile.ParseSimpleOffset(pStream, RF5C164_CLOCK_OFFSET, RF5C164_CLOCK_LENGTH);
+        
+                                this.PwmClock = ParseFile.ParseSimpleOffset(pStream, PWM_CLOCK_OFFSET, PWM_CLOCK_LENGTH);
+                                this.Ay8910Clock = ParseFile.ParseSimpleOffset(pStream, AY8910_CLOCK_OFFSET, AY8910_CLOCK_LENGTH);
+                                this.Ay8910ChipType = ParseFile.ParseSimpleOffset(pStream, AY8910_CHIP_TYPE_OFFSET, AY8910_CHIP_TYPE_LENGTH);
+                                this.Ay8910Flags = ParseFile.ParseSimpleOffset(pStream, AY8910_FLAGS_OFFSET, AY8910_FLAGS_LENGTH);
+                                this.Ay8910Ym2203Flags = ParseFile.ParseSimpleOffset(pStream, AY8910_YM2203_FLAGS_OFFSET, AY8910_YM2203_FLAGS_LENGTH);
+                                this.Ay8910Ym2610Flags = ParseFile.ParseSimpleOffset(pStream, AY8910_YM2610_FLAGS_OFFSET, AY8910_YM2610_FLAGS_LENGTH);
 
                                 this.LoopModifier = ParseFile.ParseSimpleOffset(pStream, LOOP_MODIFIER_OFFSET, LOOP_MODIFIER_LENGTH);
 
@@ -713,6 +763,10 @@ namespace VGMToolbox.format
                     this.vgmDataOffset = BitConverter.GetBytes(VGM_DATA_OFFSET_PRE150);
                 }
                
+                // get full header
+                this.FullHeaderSize = this.getHeaderSize();
+                this.FullHeader = ParseFile.ParseSimpleOffset(pStream, 0, (int)this.FullHeaderSize);
+
                 this.getAbsoluteOffsets(intVersion);
                 this.initializeTagHash(pStream);
 
@@ -1052,7 +1106,8 @@ namespace VGMToolbox.format
                     String.Format("{0}_RETAG_{1}.vgm", Path.GetFileNameWithoutExtension(this.filePath), new Random().Next().ToString()));
 
                 // rebuild file
-                this.outputToVersion150File(retaggingFilePath);
+                //this.outputToVersion150File(retaggingFilePath);
+                this.rebuildFile(retaggingFilePath);
 
                 // recompress if original was gzipped
                 if (FormatUtil.IsGzipFile(this.filePath))
@@ -1074,6 +1129,31 @@ namespace VGMToolbox.format
             {
                 throw new Exception(String.Format("Error updating tags for <{0}>", this.filePath), _ex);
             }
+        }
+
+        private void rebuildFile(string pOutputPath)
+        {
+            UInt32 headerLength;
+            UInt32 dataLength;
+            long gd3Offset;
+            UInt32 gd3Length = 0;
+            UInt32 eofOffset = 0;
+
+
+            // Write Incomplete Header
+            headerLength = this.writeRawHeaderSection(pOutputPath);
+
+            // Write Data
+            dataLength = this.writeDataSection(pOutputPath, headerLength);
+
+            // Write GD3
+            gd3Offset = (long)(headerLength + dataLength);
+            gd3Length = this.writeGd3Section(pOutputPath, gd3Offset);
+
+            // Update Header
+            eofOffset = (headerLength + dataLength + gd3Length) - Vgm.EOF_OFFSET_OFFSET;
+            gd3Offset -= Vgm.GD3_OFFSET_OFFSET;
+            this.updateHeader(pOutputPath, eofOffset, (UInt32)gd3Offset);        
         }
 
         private void outputToVersion150File(string pOutputPath)
@@ -1099,7 +1179,18 @@ namespace VGMToolbox.format
             eofOffset = (headerLength + dataLength + gd3Length) - Vgm.EOF_OFFSET_OFFSET;
             gd3Offset -= Vgm.GD3_OFFSET_OFFSET;
             this.updateHeader(pOutputPath, eofOffset, (UInt32)gd3Offset);
+        }
 
+        private UInt32 writeRawHeaderSection(string pOutputPath)
+        {
+            UInt32 headerSize = this.getHeaderSize();
+                
+            using (FileStream outFs = File.Open(pOutputPath, FileMode.Create, FileAccess.Write))
+            {
+                outFs.Write(this.FullHeader, 0, this.FullHeader.Length);
+            }
+
+            return headerSize;
         }
 
         private UInt32 writeHeaderSection(string pOutputPath)
@@ -1198,11 +1289,17 @@ namespace VGMToolbox.format
                                 bw.Write(this.Ymf278BClock); // offset 0x60
                                 bw.Write(this.Ymf271Clock);
                                 bw.Write(this.Ymz280BClock);
+                                bw.Write(this.Rf5C164Clock);
+                                        
+                                bw.Write(PwmClock); // offset 0x70
+                                bw.Write(Ay8910Clock);
+                                bw.Write(Ay8910ChipType);
+                                bw.Write(Ay8910Flags);
+                                bw.Write(Ay8910Ym2203Flags);
+                                bw.Write(Ay8910Ym2610Flags);
 
-                                // reserved at 0x6C
-                                bw.Write(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-                                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-                                    0x00, 0x00, 0x00, 0x00 });
+                                // reserved at 0x7C
+                                bw.Write(new byte[] { 0x00, 0x00, 0x00 });
 
                                 bw.Write(this.LoopModifier); // offset 0x7F
                             }

@@ -120,7 +120,8 @@ namespace VGMToolbox.forms.examine
             }
             catch (Exception _ex)
             {
-                MessageBox.Show(_ex.Message, "Error Updating Tags");
+                MessageBox.Show(String.Format("{0}: {1}- {2}", _ex.Message, Environment.NewLine, 
+                    _ex.GetBaseException().Message), "Error Updating Tags");
             }
         }
     }
