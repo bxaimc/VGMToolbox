@@ -71,30 +71,32 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 523);
-            this.pnlLabels.Size = new System.Drawing.Size(832, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 495);
+            this.pnlLabels.Size = new System.Drawing.Size(1003, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(832, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(1003, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 446);
-            this.tbOutput.Size = new System.Drawing.Size(832, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 418);
+            this.tbOutput.Size = new System.Drawing.Size(1003, 77);
+            this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 426);
-            this.pnlButtons.Size = new System.Drawing.Size(832, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 398);
+            this.pnlButtons.Size = new System.Drawing.Size(1003, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(772, 0);
+            this.btnCancel.Location = new System.Drawing.Point(943, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(712, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(883, 0);
+            this.btnDoTask.TabIndex = 15;
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpTrackTags
@@ -124,7 +126,7 @@
             this.tbTitleJp.Location = new System.Drawing.Point(64, 39);
             this.tbTitleJp.Name = "tbTitleJp";
             this.tbTitleJp.Size = new System.Drawing.Size(214, 20);
-            this.tbTitleJp.TabIndex = 15;
+            this.tbTitleJp.TabIndex = 13;
             // 
             // lblTrackTitleEn
             // 
@@ -140,7 +142,7 @@
             this.tbTitleEn.Location = new System.Drawing.Point(64, 13);
             this.tbTitleEn.Name = "tbTitleEn";
             this.tbTitleEn.Size = new System.Drawing.Size(214, 20);
-            this.tbTitleEn.TabIndex = 13;
+            this.tbTitleEn.TabIndex = 12;
             // 
             // grpSetTags
             // 
@@ -173,7 +175,7 @@
             this.cbSystemJp.Location = new System.Drawing.Point(75, 100);
             this.cbSystemJp.Name = "cbSystemJp";
             this.cbSystemJp.Size = new System.Drawing.Size(202, 21);
-            this.cbSystemJp.TabIndex = 29;
+            this.cbSystemJp.TabIndex = 6;
             // 
             // cbSystemEn
             // 
@@ -181,7 +183,7 @@
             this.cbSystemEn.Location = new System.Drawing.Point(75, 74);
             this.cbSystemEn.Name = "cbSystemEn";
             this.cbSystemEn.Size = new System.Drawing.Size(202, 21);
-            this.cbSystemEn.TabIndex = 32;
+            this.cbSystemEn.TabIndex = 5;
             // 
             // lblGameDate
             // 
@@ -197,14 +199,14 @@
             this.tbGameDate.Location = new System.Drawing.Point(63, 178);
             this.tbGameDate.Name = "tbGameDate";
             this.tbGameDate.Size = new System.Drawing.Size(67, 20);
-            this.tbGameDate.TabIndex = 22;
+            this.tbGameDate.TabIndex = 9;
             // 
             // tbRipper
             // 
             this.tbRipper.Location = new System.Drawing.Point(180, 178);
             this.tbRipper.Name = "tbRipper";
             this.tbRipper.Size = new System.Drawing.Size(97, 20);
-            this.tbRipper.TabIndex = 21;
+            this.tbRipper.TabIndex = 10;
             // 
             // lblRipper
             // 
@@ -229,7 +231,7 @@
             this.tbArtistJp.Location = new System.Drawing.Point(63, 152);
             this.tbArtistJp.Name = "tbArtistJp";
             this.tbArtistJp.Size = new System.Drawing.Size(214, 20);
-            this.tbArtistJp.TabIndex = 19;
+            this.tbArtistJp.TabIndex = 8;
             // 
             // lblSystemJp
             // 
@@ -254,7 +256,7 @@
             this.tbGameJp.Location = new System.Drawing.Point(63, 45);
             this.tbGameJp.Name = "tbGameJp";
             this.tbGameJp.Size = new System.Drawing.Size(214, 20);
-            this.tbGameJp.TabIndex = 15;
+            this.tbGameJp.TabIndex = 4;
             // 
             // lblSystemEn
             // 
@@ -279,7 +281,7 @@
             this.tbArtistEn.Location = new System.Drawing.Point(63, 126);
             this.tbArtistEn.Name = "tbArtistEn";
             this.tbArtistEn.Size = new System.Drawing.Size(214, 20);
-            this.tbArtistEn.TabIndex = 3;
+            this.tbArtistEn.TabIndex = 7;
             // 
             // lblGameEn
             // 
@@ -295,7 +297,7 @@
             this.tbGameEn.Location = new System.Drawing.Point(63, 19);
             this.tbGameEn.Name = "tbGameEn";
             this.tbGameEn.Size = new System.Drawing.Size(214, 20);
-            this.tbGameEn.TabIndex = 1;
+            this.tbGameEn.TabIndex = 3;
             // 
             // grpSourceFiles
             // 
@@ -314,7 +316,7 @@
             this.tbSourceDirectory.Location = new System.Drawing.Point(6, 16);
             this.tbSourceDirectory.Name = "tbSourceDirectory";
             this.tbSourceDirectory.Size = new System.Drawing.Size(183, 20);
-            this.tbSourceDirectory.TabIndex = 6;
+            this.tbSourceDirectory.TabIndex = 1;
             this.tbSourceDirectory.TextChanged += new System.EventHandler(this.tbSourceDirectory_TextChanged);
             // 
             // lbFiles
@@ -334,7 +336,7 @@
             this.btnBrowseDirectory.Location = new System.Drawing.Point(195, 16);
             this.btnBrowseDirectory.Name = "btnBrowseDirectory";
             this.btnBrowseDirectory.Size = new System.Drawing.Size(26, 20);
-            this.btnBrowseDirectory.TabIndex = 9;
+            this.btnBrowseDirectory.TabIndex = 2;
             this.btnBrowseDirectory.Text = "...";
             this.btnBrowseDirectory.UseVisualStyleBackColor = true;
             this.btnBrowseDirectory.Click += new System.EventHandler(this.btnBrowseDirectory_Click);
@@ -357,19 +359,19 @@
             this.tbComments.Name = "tbComments";
             this.tbComments.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.tbComments.Size = new System.Drawing.Size(272, 49);
-            this.tbComments.TabIndex = 19;
+            this.tbComments.TabIndex = 14;
             // 
             // contextMenuRefresh
             // 
             this.contextMenuRefresh.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmRefresh});
             this.contextMenuRefresh.Name = "contextMenuRefresh";
-            this.contextMenuRefresh.Size = new System.Drawing.Size(162, 26);
+            this.contextMenuRefresh.Size = new System.Drawing.Size(151, 26);
             // 
             // tsmRefresh
             // 
             this.tsmRefresh.Name = "tsmRefresh";
-            this.tsmRefresh.Size = new System.Drawing.Size(161, 22);
+            this.tsmRefresh.Size = new System.Drawing.Size(150, 22);
             this.tsmRefresh.Text = "Refresh File List";
             this.tsmRefresh.Click += new System.EventHandler(this.tsmRefresh_Click);
             // 
@@ -377,7 +379,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(832, 564);
+            this.ClientSize = new System.Drawing.Size(1003, 536);
             this.Controls.Add(this.grpComments);
             this.Controls.Add(this.grpTrackTags);
             this.Controls.Add(this.grpSetTags);

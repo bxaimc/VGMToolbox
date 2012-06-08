@@ -33,6 +33,7 @@ namespace VGMToolbox.format
         private static readonly byte[] VERSION_0151 = new byte[] { 0x51, 0x01, 0x00, 0x00 };
         private static readonly byte[] VERSION_0160 = new byte[] { 0x60, 0x01, 0x00, 0x00 };
         private static readonly byte[] VERSION_0161 = new byte[] { 0x61, 0x01, 0x00, 0x00 };
+        private static readonly byte[] VERSION_0170 = new byte[] { 0x70, 0x01, 0x00, 0x00 };
 
         private const int INT_VERSION_UNKNOWN = -1;
         private const int INT_VERSION_0100 = 100;
@@ -42,6 +43,7 @@ namespace VGMToolbox.format
         private const int INT_VERSION_0151 = 151;
         private const int INT_VERSION_0160 = 160;
         private const int INT_VERSION_0161 = 161;
+        private const int INT_VERSION_0170 = 170;
 
         private static readonly byte[] VERSION_GD3_0100 = new byte[] { 0x00, 0x01, 0x00, 0x00 };
 
@@ -593,6 +595,10 @@ namespace VGMToolbox.format
             {
                 ret = INT_VERSION_0161;
             }
+            else if (ParseFile.CompareSegment(this.version, 0, VERSION_0170))
+            {
+                ret = INT_VERSION_0170;
+            }
 
             return ret;
         }
@@ -600,7 +606,10 @@ namespace VGMToolbox.format
         private uint getHeaderSize()
         {
             uint headerSize;
+            uint vgmDataOffset;
             int intVersion = this.getIntVersion();
+
+            vgmDataOffset = BitConverter.ToUInt32(this.vgmDataOffset, 0);
 
             switch (intVersion)
             { 
@@ -612,15 +621,22 @@ namespace VGMToolbox.format
                     break;
                 case INT_VERSION_0151:
                 case INT_VERSION_0160:
-                    headerSize = Math.Min(0x80, 
-                        ((uint)VGM_DATA_OFFSET_OFFSET + BitConverter.ToUInt32(this.vgmDataOffset, 0)));
+                    headerSize = Math.Min(0x80,
+                        ((uint)VGM_DATA_OFFSET_OFFSET + vgmDataOffset));
                     break;
                 case INT_VERSION_0161:
                     headerSize = Math.Min(0xC0,
-                        ((uint)VGM_DATA_OFFSET_OFFSET + BitConverter.ToUInt32(this.vgmDataOffset, 0)));
+                        ((uint)VGM_DATA_OFFSET_OFFSET + vgmDataOffset));
                     break;
                 default:
-                    throw new FormatException("Unsupported VGM format version.");
+                    if (vgmDataOffset > 0)
+                    {
+                        headerSize = (uint)VGM_DATA_OFFSET_OFFSET + vgmDataOffset;
+                    }
+                    else
+                    {
+                        throw new FormatException("Unsupported VGM format version.");
+                    }
                     break;
             }
 

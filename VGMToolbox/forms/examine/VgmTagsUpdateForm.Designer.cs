@@ -65,7 +65,7 @@
             this.btnUpdate.Location = new System.Drawing.Point(121, 346);
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.Size = new System.Drawing.Size(75, 23);
-            this.btnUpdate.TabIndex = 8;
+            this.btnUpdate.TabIndex = 12;
             this.btnUpdate.Text = "Update";
             this.btnUpdate.UseVisualStyleBackColor = true;
             this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
@@ -75,7 +75,7 @@
             this.btnCancel.Location = new System.Drawing.Point(202, 346);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 7;
+            this.btnCancel.TabIndex = 13;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -99,7 +99,7 @@
             this.tbComments.Name = "tbComments";
             this.tbComments.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.tbComments.Size = new System.Drawing.Size(272, 49);
-            this.tbComments.TabIndex = 19;
+            this.tbComments.TabIndex = 11;
             // 
             // grpTrackTags
             // 
@@ -129,7 +129,7 @@
             this.tbTitleJp.Location = new System.Drawing.Point(64, 39);
             this.tbTitleJp.Name = "tbTitleJp";
             this.tbTitleJp.Size = new System.Drawing.Size(214, 20);
-            this.tbTitleJp.TabIndex = 15;
+            this.tbTitleJp.TabIndex = 10;
             // 
             // lblTrackTitleEn
             // 
@@ -145,7 +145,7 @@
             this.tbTitleEn.Location = new System.Drawing.Point(64, 13);
             this.tbTitleEn.Name = "tbTitleEn";
             this.tbTitleEn.Size = new System.Drawing.Size(214, 20);
-            this.tbTitleEn.TabIndex = 13;
+            this.tbTitleEn.TabIndex = 9;
             // 
             // grpSetTags
             // 
@@ -179,7 +179,7 @@
             this.cbSystemJp.Location = new System.Drawing.Point(75, 100);
             this.cbSystemJp.Name = "cbSystemJp";
             this.cbSystemJp.Size = new System.Drawing.Size(202, 21);
-            this.cbSystemJp.TabIndex = 29;
+            this.cbSystemJp.TabIndex = 4;
             // 
             // cbSystemEn
             // 
@@ -187,7 +187,7 @@
             this.cbSystemEn.Location = new System.Drawing.Point(75, 74);
             this.cbSystemEn.Name = "cbSystemEn";
             this.cbSystemEn.Size = new System.Drawing.Size(202, 21);
-            this.cbSystemEn.TabIndex = 32;
+            this.cbSystemEn.TabIndex = 3;
             // 
             // lblGameDate
             // 
@@ -203,14 +203,14 @@
             this.tbGameDate.Location = new System.Drawing.Point(63, 178);
             this.tbGameDate.Name = "tbGameDate";
             this.tbGameDate.Size = new System.Drawing.Size(67, 20);
-            this.tbGameDate.TabIndex = 22;
+            this.tbGameDate.TabIndex = 7;
             // 
             // tbRipper
             // 
             this.tbRipper.Location = new System.Drawing.Point(180, 178);
             this.tbRipper.Name = "tbRipper";
             this.tbRipper.Size = new System.Drawing.Size(97, 20);
-            this.tbRipper.TabIndex = 21;
+            this.tbRipper.TabIndex = 8;
             // 
             // lblRipper
             // 
@@ -235,7 +235,7 @@
             this.tbArtistJp.Location = new System.Drawing.Point(63, 152);
             this.tbArtistJp.Name = "tbArtistJp";
             this.tbArtistJp.Size = new System.Drawing.Size(214, 20);
-            this.tbArtistJp.TabIndex = 19;
+            this.tbArtistJp.TabIndex = 6;
             // 
             // lblSystemJp
             // 
@@ -260,7 +260,7 @@
             this.tbGameJp.Location = new System.Drawing.Point(63, 45);
             this.tbGameJp.Name = "tbGameJp";
             this.tbGameJp.Size = new System.Drawing.Size(214, 20);
-            this.tbGameJp.TabIndex = 15;
+            this.tbGameJp.TabIndex = 2;
             // 
             // lblSystemEn
             // 
@@ -285,7 +285,7 @@
             this.tbArtistEn.Location = new System.Drawing.Point(63, 126);
             this.tbArtistEn.Name = "tbArtistEn";
             this.tbArtistEn.Size = new System.Drawing.Size(214, 20);
-            this.tbArtistEn.TabIndex = 3;
+            this.tbArtistEn.TabIndex = 5;
             // 
             // lblGameEn
             // 
