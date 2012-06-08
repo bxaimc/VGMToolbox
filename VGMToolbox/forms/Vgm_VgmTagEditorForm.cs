@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
 
 using VGMToolbox.dbutil;
@@ -82,23 +79,12 @@ namespace VGMToolbox.forms
         private void tbSourceDirectory_TextChanged(object sender, EventArgs e)
         {
             this.lbFiles.Items.Clear();
-            Type formatType;
 
             if (Directory.Exists(this.tbSourceDirectory.Text))
             {
                 foreach (string f in Directory.GetFiles(this.tbSourceDirectory.Text))
                 {
-                    formatType = null;
-
-                    using (FileStream fs = File.OpenRead(f))
-                    {
-                        formatType = FormatUtil.getObjectType(fs);
-                        if ((formatType != null) &&
-                            typeof(IGd3TagFormat).IsAssignableFrom(formatType))
-                        {
-                            this.lbFiles.Items.Add(Path.GetFileName(f));
-                        }
-                    }
+                    this.addFileToListBox(f);
                 }
             }
             else
@@ -144,10 +130,12 @@ namespace VGMToolbox.forms
         private void loadSelectedTrack()
         {
             string selectedFilePath;
+            ListBoxFileInfoObject listBoxFile;
 
             if (lbFiles.SelectedIndices.Count == 1)
             {
-                selectedFilePath = Path.Combine(this.tbSourceDirectory.Text, this.lbFiles.Items[this.lbFiles.SelectedIndex].ToString());
+                listBoxFile = (ListBoxFileInfoObject)(this.lbFiles.Items[this.lbFiles.SelectedIndex]);
+                selectedFilePath = listBoxFile.FilePath;
 
                 using (FileStream fs =
                     File.Open(selectedFilePath, FileMode.Open, FileAccess.Read))
@@ -193,13 +181,16 @@ namespace VGMToolbox.forms
 
         private void btnDoTask_Click(object sender, EventArgs e)
         {
+            ListBoxFileInfoObject listBoxFile;
             int j = 0;
             VgmTagUpdaterWorker.VgmTagUpdaterStruct vtUpdateStruct = new VgmTagUpdaterWorker.VgmTagUpdaterStruct();
 
             vtUpdateStruct.SourcePaths = new string[this.lbFiles.SelectedIndices.Count];
+            
             foreach (int i in this.lbFiles.SelectedIndices)
             {
-                vtUpdateStruct.SourcePaths[j++] = Path.Combine(this.tbSourceDirectory.Text, this.lbFiles.Items[i].ToString());
+                listBoxFile = (ListBoxFileInfoObject)this.lbFiles.Items[i];
+                vtUpdateStruct.SourcePaths[j++] = listBoxFile.FilePath;
             }
 
             vtUpdateStruct.IsBatchMode = this.isBatchMode;
@@ -252,5 +243,47 @@ namespace VGMToolbox.forms
         {
             this.tbSourceDirectory_TextChanged(sender, e);
         }
+        private void clearFileListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.lbFiles.Items.Clear();
+        }
+
+        private void Vgm_VgmTagEditorForm_DragEnter(object sender, DragEventArgs e)
+        {
+            base.doDragEnter(sender, e);
+        }
+
+        private void Vgm_VgmTagEditorForm_DragDrop(object sender, DragEventArgs e)
+        {            
+            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            if (s.Length > 0)
+            {
+                tbSourceDirectory.Clear();
+                
+                foreach (string filePath in s)
+                {
+                    this.addFileToListBox(filePath);
+                }
+            }
+        }
+
+        private void addFileToListBox(string f)
+        {
+            Type formatType = null;
+            ListBoxFileInfoObject listFileObject;
+            
+            using (FileStream fs = File.OpenRead(f))
+            {
+                formatType = FormatUtil.getObjectType(fs);
+                
+                if ((formatType != null) &&
+                    typeof(IGd3TagFormat).IsAssignableFrom(formatType))
+                {
+                    listFileObject = new ListBoxFileInfoObject(f);
+                    this.lbFiles.Items.Add(listFileObject);
+                }
+            }        
+        }        
     }
 }

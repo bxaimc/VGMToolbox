@@ -59,6 +59,7 @@
             this.tbComments = new System.Windows.Forms.TextBox();
             this.contextMenuRefresh = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmRefresh = new System.Windows.Forms.ToolStripMenuItem();
+            this.clearFileListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -364,9 +365,10 @@
             // contextMenuRefresh
             // 
             this.contextMenuRefresh.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmRefresh});
+            this.tsmRefresh,
+            this.clearFileListToolStripMenuItem});
             this.contextMenuRefresh.Name = "contextMenuRefresh";
-            this.contextMenuRefresh.Size = new System.Drawing.Size(151, 26);
+            this.contextMenuRefresh.Size = new System.Drawing.Size(153, 70);
             // 
             // tsmRefresh
             // 
@@ -375,8 +377,16 @@
             this.tsmRefresh.Text = "Refresh File List";
             this.tsmRefresh.Click += new System.EventHandler(this.tsmRefresh_Click);
             // 
+            // clearFileListToolStripMenuItem
+            // 
+            this.clearFileListToolStripMenuItem.Name = "clearFileListToolStripMenuItem";
+            this.clearFileListToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.clearFileListToolStripMenuItem.Text = "Clear File List";
+            this.clearFileListToolStripMenuItem.Click += new System.EventHandler(this.clearFileListToolStripMenuItem_Click);
+            // 
             // Vgm_VgmTagEditorForm
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1003, 536);
@@ -386,6 +396,8 @@
             this.Controls.Add(this.grpSourceFiles);
             this.Name = "Vgm_VgmTagEditorForm";
             this.Text = "Vgm_VgmTagEditorForm";
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Vgm_VgmTagEditorForm_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Vgm_VgmTagEditorForm_DragEnter);
             this.Controls.SetChildIndex(this.pnlLabels, 0);
             this.Controls.SetChildIndex(this.tbOutput, 0);
             this.Controls.SetChildIndex(this.pnlTitle, 0);
@@ -446,5 +458,6 @@
         private System.Windows.Forms.ToolStripMenuItem tsmRefresh;
         private System.Windows.Forms.ComboBox cbSystemEn;
         private System.Windows.Forms.ComboBox cbSystemJp;
+        private System.Windows.Forms.ToolStripMenuItem clearFileListToolStripMenuItem;
     }
 }
