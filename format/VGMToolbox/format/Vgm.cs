@@ -1169,7 +1169,7 @@ namespace VGMToolbox.format
             // Update Header
             eofOffset = (headerLength + dataLength + gd3Length) - Vgm.EOF_OFFSET_OFFSET;
             gd3Offset -= Vgm.GD3_OFFSET_OFFSET;
-            this.updateHeader(pOutputPath, eofOffset, (UInt32)gd3Offset);        
+            this.updateHeader(pOutputPath, eofOffset, (UInt32)gd3Offset, headerLength);        
         }
 
         private void outputToVersion150File(string pOutputPath)
@@ -1194,7 +1194,7 @@ namespace VGMToolbox.format
             // Update Header
             eofOffset = (headerLength + dataLength + gd3Length) - Vgm.EOF_OFFSET_OFFSET;
             gd3Offset -= Vgm.GD3_OFFSET_OFFSET;
-            this.updateHeader(pOutputPath, eofOffset, (UInt32)gd3Offset);
+            this.updateHeader(pOutputPath, eofOffset, (UInt32)gd3Offset, headerLength);
         }
 
         private UInt32 writeRawHeaderSection(string pOutputPath)
@@ -1439,7 +1439,7 @@ namespace VGMToolbox.format
             return totalLength;
         }
 
-        private void updateHeader(string pOutputPath, UInt32 pEofOffset, UInt32 pGd3Offset)
+        private void updateHeader(string pOutputPath, UInt32 pEofOffset, UInt32 pGd3Offset, uint headerSize)
         { 
             using (FileStream fs = File.Open(pOutputPath, FileMode.Open, FileAccess.Write))
             {
@@ -1450,6 +1450,12 @@ namespace VGMToolbox.format
 
                     bw.BaseStream.Position = Vgm.GD3_OFFSET_OFFSET;
                     bw.Write(BitConverter.GetBytes(pGd3Offset));
+
+                    if (this.getIntVersion() >= INT_VERSION_0150)
+                    {
+                        bw.BaseStream.Position = Vgm.VGM_DATA_OFFSET_OFFSET;
+                        bw.Write((uint)(headerSize - Vgm.VGM_DATA_OFFSET_OFFSET));
+                    }
                 }
             }
         }
