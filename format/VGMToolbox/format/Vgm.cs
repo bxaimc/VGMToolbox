@@ -1095,10 +1095,10 @@ namespace VGMToolbox.format
 
         private void SetSimpleTag(string pKey, string pNewValue)
         {
-            if (!String.IsNullOrEmpty(pNewValue) && !String.IsNullOrEmpty(pNewValue.Trim()))
-            {
+            //if (!String.IsNullOrEmpty(pNewValue) && !String.IsNullOrEmpty(pNewValue.Trim()))
+            //{
                 this.tagHash[pKey] = pNewValue.Trim();
-            }            
+            //}            
         }
         public void SetTitleTagEn(string pNewValue) { SetSimpleTag("Track Name (E)", pNewValue); }
         public void SetTitleTagJp(string pNewValue) { SetSimpleTag("Track Name (J)", pNewValue); }

@@ -60,6 +60,17 @@
             this.contextMenuRefresh = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmRefresh = new System.Windows.Forms.ToolStripMenuItem();
             this.clearFileListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cbGameEnglish = new System.Windows.Forms.CheckBox();
+            this.cbGameJp = new System.Windows.Forms.CheckBox();
+            this.checkboxSystemEn = new System.Windows.Forms.CheckBox();
+            this.checkboxSystemJp = new System.Windows.Forms.CheckBox();
+            this.cbArtistEn = new System.Windows.Forms.CheckBox();
+            this.cbArtistJp = new System.Windows.Forms.CheckBox();
+            this.cbReleaseDate = new System.Windows.Forms.CheckBox();
+            this.cbRipper = new System.Windows.Forms.CheckBox();
+            this.cbTitleEn = new System.Windows.Forms.CheckBox();
+            this.cbTitleJp = new System.Windows.Forms.CheckBox();
+            this.cbComments = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -72,7 +83,7 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 495);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 537);
             this.pnlLabels.Size = new System.Drawing.Size(1003, 19);
             // 
             // pnlTitle
@@ -81,13 +92,13 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 418);
+            this.tbOutput.Location = new System.Drawing.Point(0, 460);
             this.tbOutput.Size = new System.Drawing.Size(1003, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 398);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 440);
             this.pnlButtons.Size = new System.Drawing.Size(1003, 20);
             // 
             // btnCancel
@@ -102,13 +113,15 @@
             // 
             // grpTrackTags
             // 
+            this.grpTrackTags.Controls.Add(this.cbTitleJp);
+            this.grpTrackTags.Controls.Add(this.cbTitleEn);
             this.grpTrackTags.Controls.Add(this.lblTrackTitleJp);
             this.grpTrackTags.Controls.Add(this.tbTitleJp);
             this.grpTrackTags.Controls.Add(this.lblTrackTitleEn);
             this.grpTrackTags.Controls.Add(this.tbTitleEn);
             this.grpTrackTags.Location = new System.Drawing.Point(238, 237);
             this.grpTrackTags.Name = "grpTrackTags";
-            this.grpTrackTags.Size = new System.Drawing.Size(287, 68);
+            this.grpTrackTags.Size = new System.Drawing.Size(310, 68);
             this.grpTrackTags.TabIndex = 26;
             this.grpTrackTags.TabStop = false;
             this.grpTrackTags.Text = "Track Tags";
@@ -116,7 +129,7 @@
             // lblTrackTitleJp
             // 
             this.lblTrackTitleJp.AutoSize = true;
-            this.lblTrackTitleJp.Location = new System.Drawing.Point(6, 42);
+            this.lblTrackTitleJp.Location = new System.Drawing.Point(25, 45);
             this.lblTrackTitleJp.Name = "lblTrackTitleJp";
             this.lblTrackTitleJp.Size = new System.Drawing.Size(47, 13);
             this.lblTrackTitleJp.TabIndex = 14;
@@ -124,7 +137,7 @@
             // 
             // tbTitleJp
             // 
-            this.tbTitleJp.Location = new System.Drawing.Point(64, 39);
+            this.tbTitleJp.Location = new System.Drawing.Point(83, 42);
             this.tbTitleJp.Name = "tbTitleJp";
             this.tbTitleJp.Size = new System.Drawing.Size(214, 20);
             this.tbTitleJp.TabIndex = 13;
@@ -132,7 +145,7 @@
             // lblTrackTitleEn
             // 
             this.lblTrackTitleEn.AutoSize = true;
-            this.lblTrackTitleEn.Location = new System.Drawing.Point(6, 16);
+            this.lblTrackTitleEn.Location = new System.Drawing.Point(25, 19);
             this.lblTrackTitleEn.Name = "lblTrackTitleEn";
             this.lblTrackTitleEn.Size = new System.Drawing.Size(49, 13);
             this.lblTrackTitleEn.TabIndex = 12;
@@ -140,13 +153,21 @@
             // 
             // tbTitleEn
             // 
-            this.tbTitleEn.Location = new System.Drawing.Point(64, 13);
+            this.tbTitleEn.Location = new System.Drawing.Point(83, 16);
             this.tbTitleEn.Name = "tbTitleEn";
             this.tbTitleEn.Size = new System.Drawing.Size(214, 20);
             this.tbTitleEn.TabIndex = 12;
             // 
             // grpSetTags
             // 
+            this.grpSetTags.Controls.Add(this.cbRipper);
+            this.grpSetTags.Controls.Add(this.cbReleaseDate);
+            this.grpSetTags.Controls.Add(this.cbArtistJp);
+            this.grpSetTags.Controls.Add(this.cbArtistEn);
+            this.grpSetTags.Controls.Add(this.checkboxSystemJp);
+            this.grpSetTags.Controls.Add(this.checkboxSystemEn);
+            this.grpSetTags.Controls.Add(this.cbGameJp);
+            this.grpSetTags.Controls.Add(this.cbGameEnglish);
             this.grpSetTags.Controls.Add(this.cbSystemJp);
             this.grpSetTags.Controls.Add(this.cbSystemEn);
             this.grpSetTags.Controls.Add(this.lblGameDate);
@@ -165,7 +186,7 @@
             this.grpSetTags.Controls.Add(this.tbGameEn);
             this.grpSetTags.Location = new System.Drawing.Point(238, 29);
             this.grpSetTags.Name = "grpSetTags";
-            this.grpSetTags.Size = new System.Drawing.Size(286, 202);
+            this.grpSetTags.Size = new System.Drawing.Size(310, 202);
             this.grpSetTags.TabIndex = 25;
             this.grpSetTags.TabStop = false;
             this.grpSetTags.Text = "Game Tags";
@@ -173,23 +194,23 @@
             // cbSystemJp
             // 
             this.cbSystemJp.FormattingEnabled = true;
-            this.cbSystemJp.Location = new System.Drawing.Point(75, 100);
+            this.cbSystemJp.Location = new System.Drawing.Point(94, 100);
             this.cbSystemJp.Name = "cbSystemJp";
-            this.cbSystemJp.Size = new System.Drawing.Size(202, 21);
+            this.cbSystemJp.Size = new System.Drawing.Size(210, 21);
             this.cbSystemJp.TabIndex = 6;
             // 
             // cbSystemEn
             // 
             this.cbSystemEn.FormattingEnabled = true;
-            this.cbSystemEn.Location = new System.Drawing.Point(75, 74);
+            this.cbSystemEn.Location = new System.Drawing.Point(94, 74);
             this.cbSystemEn.Name = "cbSystemEn";
-            this.cbSystemEn.Size = new System.Drawing.Size(202, 21);
+            this.cbSystemEn.Size = new System.Drawing.Size(210, 21);
             this.cbSystemEn.TabIndex = 5;
             // 
             // lblGameDate
             // 
             this.lblGameDate.AutoSize = true;
-            this.lblGameDate.Location = new System.Drawing.Point(6, 181);
+            this.lblGameDate.Location = new System.Drawing.Point(25, 181);
             this.lblGameDate.Name = "lblGameDate";
             this.lblGameDate.Size = new System.Drawing.Size(51, 13);
             this.lblGameDate.TabIndex = 23;
@@ -197,22 +218,22 @@
             // 
             // tbGameDate
             // 
-            this.tbGameDate.Location = new System.Drawing.Point(63, 178);
+            this.tbGameDate.Location = new System.Drawing.Point(82, 178);
             this.tbGameDate.Name = "tbGameDate";
             this.tbGameDate.Size = new System.Drawing.Size(67, 20);
             this.tbGameDate.TabIndex = 9;
             // 
             // tbRipper
             // 
-            this.tbRipper.Location = new System.Drawing.Point(180, 178);
+            this.tbRipper.Location = new System.Drawing.Point(215, 178);
             this.tbRipper.Name = "tbRipper";
-            this.tbRipper.Size = new System.Drawing.Size(97, 20);
+            this.tbRipper.Size = new System.Drawing.Size(89, 20);
             this.tbRipper.TabIndex = 10;
             // 
             // lblRipper
             // 
             this.lblRipper.AutoSize = true;
-            this.lblRipper.Location = new System.Drawing.Point(136, 181);
+            this.lblRipper.Location = new System.Drawing.Point(171, 181);
             this.lblRipper.Name = "lblRipper";
             this.lblRipper.Size = new System.Drawing.Size(38, 13);
             this.lblRipper.TabIndex = 20;
@@ -221,7 +242,7 @@
             // lblArtistJp
             // 
             this.lblArtistJp.AutoSize = true;
-            this.lblArtistJp.Location = new System.Drawing.Point(6, 155);
+            this.lblArtistJp.Location = new System.Drawing.Point(25, 155);
             this.lblArtistJp.Name = "lblArtistJp";
             this.lblArtistJp.Size = new System.Drawing.Size(50, 13);
             this.lblArtistJp.TabIndex = 18;
@@ -229,15 +250,15 @@
             // 
             // tbArtistJp
             // 
-            this.tbArtistJp.Location = new System.Drawing.Point(63, 152);
+            this.tbArtistJp.Location = new System.Drawing.Point(82, 152);
             this.tbArtistJp.Name = "tbArtistJp";
-            this.tbArtistJp.Size = new System.Drawing.Size(214, 20);
+            this.tbArtistJp.Size = new System.Drawing.Size(222, 20);
             this.tbArtistJp.TabIndex = 8;
             // 
             // lblSystemJp
             // 
             this.lblSystemJp.AutoSize = true;
-            this.lblSystemJp.Location = new System.Drawing.Point(6, 103);
+            this.lblSystemJp.Location = new System.Drawing.Point(25, 103);
             this.lblSystemJp.Name = "lblSystemJp";
             this.lblSystemJp.Size = new System.Drawing.Size(61, 13);
             this.lblSystemJp.TabIndex = 16;
@@ -246,7 +267,7 @@
             // lblGameJp
             // 
             this.lblGameJp.AutoSize = true;
-            this.lblGameJp.Location = new System.Drawing.Point(6, 48);
+            this.lblGameJp.Location = new System.Drawing.Point(25, 48);
             this.lblGameJp.Name = "lblGameJp";
             this.lblGameJp.Size = new System.Drawing.Size(55, 13);
             this.lblGameJp.TabIndex = 14;
@@ -254,15 +275,15 @@
             // 
             // tbGameJp
             // 
-            this.tbGameJp.Location = new System.Drawing.Point(63, 45);
+            this.tbGameJp.Location = new System.Drawing.Point(82, 45);
             this.tbGameJp.Name = "tbGameJp";
-            this.tbGameJp.Size = new System.Drawing.Size(214, 20);
+            this.tbGameJp.Size = new System.Drawing.Size(222, 20);
             this.tbGameJp.TabIndex = 4;
             // 
             // lblSystemEn
             // 
             this.lblSystemEn.AutoSize = true;
-            this.lblSystemEn.Location = new System.Drawing.Point(6, 77);
+            this.lblSystemEn.Location = new System.Drawing.Point(25, 77);
             this.lblSystemEn.Name = "lblSystemEn";
             this.lblSystemEn.Size = new System.Drawing.Size(63, 13);
             this.lblSystemEn.TabIndex = 12;
@@ -271,7 +292,7 @@
             // lblArtistEn
             // 
             this.lblArtistEn.AutoSize = true;
-            this.lblArtistEn.Location = new System.Drawing.Point(6, 129);
+            this.lblArtistEn.Location = new System.Drawing.Point(25, 129);
             this.lblArtistEn.Name = "lblArtistEn";
             this.lblArtistEn.Size = new System.Drawing.Size(52, 13);
             this.lblArtistEn.TabIndex = 2;
@@ -279,15 +300,15 @@
             // 
             // tbArtistEn
             // 
-            this.tbArtistEn.Location = new System.Drawing.Point(63, 126);
+            this.tbArtistEn.Location = new System.Drawing.Point(82, 126);
             this.tbArtistEn.Name = "tbArtistEn";
-            this.tbArtistEn.Size = new System.Drawing.Size(214, 20);
+            this.tbArtistEn.Size = new System.Drawing.Size(222, 20);
             this.tbArtistEn.TabIndex = 7;
             // 
             // lblGameEn
             // 
             this.lblGameEn.AutoSize = true;
-            this.lblGameEn.Location = new System.Drawing.Point(6, 22);
+            this.lblGameEn.Location = new System.Drawing.Point(25, 22);
             this.lblGameEn.Name = "lblGameEn";
             this.lblGameEn.Size = new System.Drawing.Size(57, 13);
             this.lblGameEn.TabIndex = 0;
@@ -295,9 +316,9 @@
             // 
             // tbGameEn
             // 
-            this.tbGameEn.Location = new System.Drawing.Point(63, 19);
+            this.tbGameEn.Location = new System.Drawing.Point(82, 19);
             this.tbGameEn.Name = "tbGameEn";
-            this.tbGameEn.Size = new System.Drawing.Size(214, 20);
+            this.tbGameEn.Size = new System.Drawing.Size(222, 20);
             this.tbGameEn.TabIndex = 3;
             // 
             // grpSourceFiles
@@ -344,10 +365,11 @@
             // 
             // grpComments
             // 
+            this.grpComments.Controls.Add(this.cbComments);
             this.grpComments.Controls.Add(this.tbComments);
             this.grpComments.Location = new System.Drawing.Point(238, 311);
             this.grpComments.Name = "grpComments";
-            this.grpComments.Size = new System.Drawing.Size(287, 70);
+            this.grpComments.Size = new System.Drawing.Size(310, 70);
             this.grpComments.TabIndex = 28;
             this.grpComments.TabStop = false;
             this.grpComments.Text = "Comments";
@@ -355,7 +377,7 @@
             // tbComments
             // 
             this.tbComments.AcceptsReturn = true;
-            this.tbComments.Location = new System.Drawing.Point(6, 15);
+            this.tbComments.Location = new System.Drawing.Point(25, 15);
             this.tbComments.Multiline = true;
             this.tbComments.Name = "tbComments";
             this.tbComments.ScrollBars = System.Windows.Forms.ScrollBars.Both;
@@ -368,7 +390,7 @@
             this.tsmRefresh,
             this.clearFileListToolStripMenuItem});
             this.contextMenuRefresh.Name = "contextMenuRefresh";
-            this.contextMenuRefresh.Size = new System.Drawing.Size(153, 70);
+            this.contextMenuRefresh.Size = new System.Drawing.Size(151, 48);
             // 
             // tsmRefresh
             // 
@@ -380,16 +402,115 @@
             // clearFileListToolStripMenuItem
             // 
             this.clearFileListToolStripMenuItem.Name = "clearFileListToolStripMenuItem";
-            this.clearFileListToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.clearFileListToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.clearFileListToolStripMenuItem.Text = "Clear File List";
             this.clearFileListToolStripMenuItem.Click += new System.EventHandler(this.clearFileListToolStripMenuItem_Click);
+            // 
+            // cbGameEnglish
+            // 
+            this.cbGameEnglish.AutoSize = true;
+            this.cbGameEnglish.Location = new System.Drawing.Point(6, 22);
+            this.cbGameEnglish.Name = "cbGameEnglish";
+            this.cbGameEnglish.Size = new System.Drawing.Size(15, 14);
+            this.cbGameEnglish.TabIndex = 24;
+            this.cbGameEnglish.UseVisualStyleBackColor = true;
+            // 
+            // cbGameJp
+            // 
+            this.cbGameJp.AutoSize = true;
+            this.cbGameJp.Location = new System.Drawing.Point(6, 48);
+            this.cbGameJp.Name = "cbGameJp";
+            this.cbGameJp.Size = new System.Drawing.Size(15, 14);
+            this.cbGameJp.TabIndex = 25;
+            this.cbGameJp.UseVisualStyleBackColor = true;
+            // 
+            // checkboxSystemEn
+            // 
+            this.checkboxSystemEn.AutoSize = true;
+            this.checkboxSystemEn.Location = new System.Drawing.Point(6, 77);
+            this.checkboxSystemEn.Name = "checkboxSystemEn";
+            this.checkboxSystemEn.Size = new System.Drawing.Size(15, 14);
+            this.checkboxSystemEn.TabIndex = 26;
+            this.checkboxSystemEn.UseVisualStyleBackColor = true;
+            // 
+            // checkboxSystemJp
+            // 
+            this.checkboxSystemJp.AutoSize = true;
+            this.checkboxSystemJp.Location = new System.Drawing.Point(6, 103);
+            this.checkboxSystemJp.Name = "checkboxSystemJp";
+            this.checkboxSystemJp.Size = new System.Drawing.Size(15, 14);
+            this.checkboxSystemJp.TabIndex = 27;
+            this.checkboxSystemJp.UseVisualStyleBackColor = true;
+            // 
+            // cbArtistEn
+            // 
+            this.cbArtistEn.AutoSize = true;
+            this.cbArtistEn.Location = new System.Drawing.Point(6, 129);
+            this.cbArtistEn.Name = "cbArtistEn";
+            this.cbArtistEn.Size = new System.Drawing.Size(15, 14);
+            this.cbArtistEn.TabIndex = 28;
+            this.cbArtistEn.UseVisualStyleBackColor = true;
+            // 
+            // cbArtistJp
+            // 
+            this.cbArtistJp.AutoSize = true;
+            this.cbArtistJp.Location = new System.Drawing.Point(6, 155);
+            this.cbArtistJp.Name = "cbArtistJp";
+            this.cbArtistJp.Size = new System.Drawing.Size(15, 14);
+            this.cbArtistJp.TabIndex = 29;
+            this.cbArtistJp.UseVisualStyleBackColor = true;
+            // 
+            // cbReleaseDate
+            // 
+            this.cbReleaseDate.AutoSize = true;
+            this.cbReleaseDate.Location = new System.Drawing.Point(6, 181);
+            this.cbReleaseDate.Name = "cbReleaseDate";
+            this.cbReleaseDate.Size = new System.Drawing.Size(15, 14);
+            this.cbReleaseDate.TabIndex = 30;
+            this.cbReleaseDate.UseVisualStyleBackColor = true;
+            // 
+            // cbRipper
+            // 
+            this.cbRipper.AutoSize = true;
+            this.cbRipper.Location = new System.Drawing.Point(155, 181);
+            this.cbRipper.Name = "cbRipper";
+            this.cbRipper.Size = new System.Drawing.Size(15, 14);
+            this.cbRipper.TabIndex = 31;
+            this.cbRipper.UseVisualStyleBackColor = true;
+            // 
+            // cbTitleEn
+            // 
+            this.cbTitleEn.AutoSize = true;
+            this.cbTitleEn.Location = new System.Drawing.Point(6, 19);
+            this.cbTitleEn.Name = "cbTitleEn";
+            this.cbTitleEn.Size = new System.Drawing.Size(15, 14);
+            this.cbTitleEn.TabIndex = 15;
+            this.cbTitleEn.UseVisualStyleBackColor = true;
+            // 
+            // cbTitleJp
+            // 
+            this.cbTitleJp.AutoSize = true;
+            this.cbTitleJp.Location = new System.Drawing.Point(6, 45);
+            this.cbTitleJp.Name = "cbTitleJp";
+            this.cbTitleJp.Size = new System.Drawing.Size(15, 14);
+            this.cbTitleJp.TabIndex = 16;
+            this.cbTitleJp.UseVisualStyleBackColor = true;
+            // 
+            // cbComments
+            // 
+            this.cbComments.AutoSize = true;
+            this.cbComments.Location = new System.Drawing.Point(6, 30);
+            this.cbComments.Name = "cbComments";
+            this.cbComments.Size = new System.Drawing.Size(15, 14);
+            this.cbComments.TabIndex = 15;
+            this.cbComments.UseVisualStyleBackColor = true;
             // 
             // Vgm_VgmTagEditorForm
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1003, 536);
+            this.ClientSize = new System.Drawing.Size(1003, 578);
             this.Controls.Add(this.grpComments);
             this.Controls.Add(this.grpTrackTags);
             this.Controls.Add(this.grpSetTags);
@@ -459,5 +580,16 @@
         private System.Windows.Forms.ComboBox cbSystemEn;
         private System.Windows.Forms.ComboBox cbSystemJp;
         private System.Windows.Forms.ToolStripMenuItem clearFileListToolStripMenuItem;
+        private System.Windows.Forms.CheckBox checkboxSystemEn;
+        private System.Windows.Forms.CheckBox cbGameJp;
+        private System.Windows.Forms.CheckBox cbGameEnglish;
+        private System.Windows.Forms.CheckBox checkboxSystemJp;
+        private System.Windows.Forms.CheckBox cbRipper;
+        private System.Windows.Forms.CheckBox cbReleaseDate;
+        private System.Windows.Forms.CheckBox cbArtistJp;
+        private System.Windows.Forms.CheckBox cbArtistEn;
+        private System.Windows.Forms.CheckBox cbTitleJp;
+        private System.Windows.Forms.CheckBox cbTitleEn;
+        private System.Windows.Forms.CheckBox cbComments;
     }
 }

@@ -98,12 +98,14 @@ namespace VGMToolbox.forms
             if (lbFiles.SelectedIndices.Count > 1)
             {
                 this.isBatchMode = true;
-                this.disableTrackItems();
+                // this.disableTrackItems();
+                this.uncheckTrackLabels();
             }
             else
             {
                 this.isBatchMode = false;
-                this.enableTrackItems();
+                // this.enableTrackItems();
+                this.checkAllLabels();
                 this.loadSelectedTrack();
             }
         }
@@ -207,6 +209,18 @@ namespace VGMToolbox.forms
             vtUpdateStruct.RipperTag = this.tbRipper.Text;
             vtUpdateStruct.CommentTag = this.tbComments.Text;
 
+            vtUpdateStruct.DoTitleTagEn = this.cbTitleEn.Checked;
+            vtUpdateStruct.DoTitleTagJp = this.cbTitleJp.Checked;
+            vtUpdateStruct.DoGameTagEn = this.cbGameEnglish.Checked;
+            vtUpdateStruct.DoGameTagJp = this.cbGameJp.Checked;
+            vtUpdateStruct.DoSystemTagEn = this.checkboxSystemEn.Checked;
+            vtUpdateStruct.DoSystemTagJp = this.checkboxSystemJp.Checked;
+            vtUpdateStruct.DoArtistTagEn = this.cbArtistEn.Checked;
+            vtUpdateStruct.DoArtistTagJp = this.cbArtistJp.Checked;
+            vtUpdateStruct.DoDateTag = this.cbReleaseDate.Checked;
+            vtUpdateStruct.DoRipperTag = this.cbRipper.Checked;
+            vtUpdateStruct.DoCommentTag = this.cbComments.Checked;
+
             base.backgroundWorker_Execute(vtUpdateStruct);
         }
 
@@ -284,6 +298,28 @@ namespace VGMToolbox.forms
                     this.lbFiles.Items.Add(listFileObject);
                 }
             }        
-        }        
+        }
+
+        private void checkAllLabels()
+        {
+            foreach (Control c in this.Controls)
+            {
+                foreach (Control cc in c.Controls)
+                {
+                    if (cc.GetType().Equals(typeof(CheckBox)))
+                    {
+                        CheckBox temp = (CheckBox)cc;
+                        temp.Checked = true;
+                    }
+                }
+            }
+
+        }
+
+        private void uncheckTrackLabels()
+        {
+            this.cbTitleEn.Checked = false;
+            this.cbTitleJp.Checked = false;
+        }
     }
 }

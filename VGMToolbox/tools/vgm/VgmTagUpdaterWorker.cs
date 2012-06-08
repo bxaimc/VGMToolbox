@@ -28,6 +28,18 @@ namespace VGMToolbox.tools.vgm
             public string RipperTag;
             public string CommentTag;
 
+            public bool DoTitleTagEn;
+            public bool DoTitleTagJp;
+            public bool DoGameTagEn;
+            public bool DoGameTagJp;
+            public bool DoSystemTagEn;
+            public bool DoSystemTagJp;
+            public bool DoArtistTagEn;
+            public bool DoArtistTagJp;
+            public bool DoDateTag;
+            public bool DoRipperTag;
+            public bool DoCommentTag;
+
             private string[] sourcePaths;
             public string[] SourcePaths
             {
@@ -58,19 +70,58 @@ namespace VGMToolbox.tools.vgm
 
             if (vgmData != null)
             {
-                vgmData.SetGameTagEn(vgmTagUpdaterStruct.GameTagEn);
-                vgmData.SetGameTagJp(vgmTagUpdaterStruct.GameTagJp);
-                vgmData.SetSystemTagEn(vgmTagUpdaterStruct.SystemTagEn);
-                vgmData.SetSystemTagJp(vgmTagUpdaterStruct.SystemTagJp);
-                vgmData.SetArtistTagEn(vgmTagUpdaterStruct.ArtistTagEn);
-                vgmData.SetArtistTagJp(vgmTagUpdaterStruct.ArtistTagJp);
-                vgmData.SetDateTag(vgmTagUpdaterStruct.DateTag);
-                vgmData.SetRipperTag(vgmTagUpdaterStruct.RipperTag);
-                vgmData.SetCommentTag(vgmTagUpdaterStruct.CommentTag);
+                if (vgmTagUpdaterStruct.DoGameTagEn)
+                {
+                    vgmData.SetGameTagEn(vgmTagUpdaterStruct.GameTagEn);
+                }
 
-                if (!vgmTagUpdaterStruct.IsBatchMode)
+                if (vgmTagUpdaterStruct.DoGameTagJp)
+                {
+                    vgmData.SetGameTagJp(vgmTagUpdaterStruct.GameTagJp);
+                }
+
+                if (vgmTagUpdaterStruct.DoSystemTagEn)
+                {
+                    vgmData.SetSystemTagEn(vgmTagUpdaterStruct.SystemTagEn);
+                }
+
+                if (vgmTagUpdaterStruct.DoSystemTagJp)
+                {
+                    vgmData.SetSystemTagJp(vgmTagUpdaterStruct.SystemTagJp);
+                }
+
+                if (vgmTagUpdaterStruct.DoArtistTagEn)
+                {
+                    vgmData.SetArtistTagEn(vgmTagUpdaterStruct.ArtistTagEn);
+                }
+
+                if (vgmTagUpdaterStruct.DoArtistTagJp)
+                {
+                    vgmData.SetArtistTagJp(vgmTagUpdaterStruct.ArtistTagJp);
+                }
+
+                if (vgmTagUpdaterStruct.DoDateTag)
+                {
+                    vgmData.SetDateTag(vgmTagUpdaterStruct.DateTag);
+                }
+
+                if (vgmTagUpdaterStruct.DoRipperTag)
+                {
+                    vgmData.SetRipperTag(vgmTagUpdaterStruct.RipperTag);
+                }
+
+                if (vgmTagUpdaterStruct.DoCommentTag)
+                {
+                    vgmData.SetCommentTag(vgmTagUpdaterStruct.CommentTag);
+                }
+
+                if (vgmTagUpdaterStruct.DoTitleTagEn)
                 {
                     vgmData.SetTitleTagEn(vgmTagUpdaterStruct.TitleTagEn);
+                }
+
+                if (vgmTagUpdaterStruct.DoTitleTagJp)
+                {
                     vgmData.SetTitleTagJp(vgmTagUpdaterStruct.TitleTagJp);
                 }
 
