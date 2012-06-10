@@ -30,11 +30,21 @@
         {
             this.components = new System.ComponentModel.Container();
             this.grpTrackTags = new System.Windows.Forms.GroupBox();
+            this.cbTitleJp = new System.Windows.Forms.CheckBox();
+            this.cbTitleEn = new System.Windows.Forms.CheckBox();
             this.lblTrackTitleJp = new System.Windows.Forms.Label();
             this.tbTitleJp = new System.Windows.Forms.TextBox();
             this.lblTrackTitleEn = new System.Windows.Forms.Label();
             this.tbTitleEn = new System.Windows.Forms.TextBox();
             this.grpSetTags = new System.Windows.Forms.GroupBox();
+            this.cbRipper = new System.Windows.Forms.CheckBox();
+            this.cbReleaseDate = new System.Windows.Forms.CheckBox();
+            this.cbArtistJp = new System.Windows.Forms.CheckBox();
+            this.cbArtistEn = new System.Windows.Forms.CheckBox();
+            this.checkboxSystemJp = new System.Windows.Forms.CheckBox();
+            this.checkboxSystemEn = new System.Windows.Forms.CheckBox();
+            this.cbGameJp = new System.Windows.Forms.CheckBox();
+            this.cbGameEnglish = new System.Windows.Forms.CheckBox();
             this.cbSystemJp = new System.Windows.Forms.ComboBox();
             this.cbSystemEn = new System.Windows.Forms.ComboBox();
             this.lblGameDate = new System.Windows.Forms.Label();
@@ -56,21 +66,11 @@
             this.lbFiles = new System.Windows.Forms.ListBox();
             this.btnBrowseDirectory = new System.Windows.Forms.Button();
             this.grpComments = new System.Windows.Forms.GroupBox();
+            this.cbComments = new System.Windows.Forms.CheckBox();
             this.tbComments = new System.Windows.Forms.TextBox();
             this.contextMenuRefresh = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmRefresh = new System.Windows.Forms.ToolStripMenuItem();
             this.clearFileListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.cbGameEnglish = new System.Windows.Forms.CheckBox();
-            this.cbGameJp = new System.Windows.Forms.CheckBox();
-            this.checkboxSystemEn = new System.Windows.Forms.CheckBox();
-            this.checkboxSystemJp = new System.Windows.Forms.CheckBox();
-            this.cbArtistEn = new System.Windows.Forms.CheckBox();
-            this.cbArtistJp = new System.Windows.Forms.CheckBox();
-            this.cbReleaseDate = new System.Windows.Forms.CheckBox();
-            this.cbRipper = new System.Windows.Forms.CheckBox();
-            this.cbTitleEn = new System.Windows.Forms.CheckBox();
-            this.cbTitleJp = new System.Windows.Forms.CheckBox();
-            this.cbComments = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -125,6 +125,26 @@
             this.grpTrackTags.TabIndex = 26;
             this.grpTrackTags.TabStop = false;
             this.grpTrackTags.Text = "Track Tags";
+            // 
+            // cbTitleJp
+            // 
+            this.cbTitleJp.AutoSize = true;
+            this.cbTitleJp.Location = new System.Drawing.Point(6, 45);
+            this.cbTitleJp.Name = "cbTitleJp";
+            this.cbTitleJp.Size = new System.Drawing.Size(15, 14);
+            this.cbTitleJp.TabIndex = 16;
+            this.cbTitleJp.UseVisualStyleBackColor = true;
+            this.cbTitleJp.CheckedChanged += new System.EventHandler(this.doChecksChange_CheckedChanged);
+            // 
+            // cbTitleEn
+            // 
+            this.cbTitleEn.AutoSize = true;
+            this.cbTitleEn.Location = new System.Drawing.Point(6, 19);
+            this.cbTitleEn.Name = "cbTitleEn";
+            this.cbTitleEn.Size = new System.Drawing.Size(15, 14);
+            this.cbTitleEn.TabIndex = 15;
+            this.cbTitleEn.UseVisualStyleBackColor = true;
+            this.cbTitleEn.CheckedChanged += new System.EventHandler(this.doChecksChange_CheckedChanged);
             // 
             // lblTrackTitleJp
             // 
@@ -190,6 +210,86 @@
             this.grpSetTags.TabIndex = 25;
             this.grpSetTags.TabStop = false;
             this.grpSetTags.Text = "Game Tags";
+            // 
+            // cbRipper
+            // 
+            this.cbRipper.AutoSize = true;
+            this.cbRipper.Location = new System.Drawing.Point(155, 181);
+            this.cbRipper.Name = "cbRipper";
+            this.cbRipper.Size = new System.Drawing.Size(15, 14);
+            this.cbRipper.TabIndex = 31;
+            this.cbRipper.UseVisualStyleBackColor = true;
+            this.cbRipper.CheckedChanged += new System.EventHandler(this.doChecksChange_CheckedChanged);
+            // 
+            // cbReleaseDate
+            // 
+            this.cbReleaseDate.AutoSize = true;
+            this.cbReleaseDate.Location = new System.Drawing.Point(6, 181);
+            this.cbReleaseDate.Name = "cbReleaseDate";
+            this.cbReleaseDate.Size = new System.Drawing.Size(15, 14);
+            this.cbReleaseDate.TabIndex = 30;
+            this.cbReleaseDate.UseVisualStyleBackColor = true;
+            this.cbReleaseDate.CheckedChanged += new System.EventHandler(this.doChecksChange_CheckedChanged);
+            // 
+            // cbArtistJp
+            // 
+            this.cbArtistJp.AutoSize = true;
+            this.cbArtistJp.Location = new System.Drawing.Point(6, 155);
+            this.cbArtistJp.Name = "cbArtistJp";
+            this.cbArtistJp.Size = new System.Drawing.Size(15, 14);
+            this.cbArtistJp.TabIndex = 29;
+            this.cbArtistJp.UseVisualStyleBackColor = true;
+            this.cbArtistJp.CheckedChanged += new System.EventHandler(this.doChecksChange_CheckedChanged);
+            // 
+            // cbArtistEn
+            // 
+            this.cbArtistEn.AutoSize = true;
+            this.cbArtistEn.Location = new System.Drawing.Point(6, 129);
+            this.cbArtistEn.Name = "cbArtistEn";
+            this.cbArtistEn.Size = new System.Drawing.Size(15, 14);
+            this.cbArtistEn.TabIndex = 28;
+            this.cbArtistEn.UseVisualStyleBackColor = true;
+            this.cbArtistEn.CheckedChanged += new System.EventHandler(this.doChecksChange_CheckedChanged);
+            // 
+            // checkboxSystemJp
+            // 
+            this.checkboxSystemJp.AutoSize = true;
+            this.checkboxSystemJp.Location = new System.Drawing.Point(6, 103);
+            this.checkboxSystemJp.Name = "checkboxSystemJp";
+            this.checkboxSystemJp.Size = new System.Drawing.Size(15, 14);
+            this.checkboxSystemJp.TabIndex = 27;
+            this.checkboxSystemJp.UseVisualStyleBackColor = true;
+            this.checkboxSystemJp.CheckedChanged += new System.EventHandler(this.doChecksChange_CheckedChanged);
+            // 
+            // checkboxSystemEn
+            // 
+            this.checkboxSystemEn.AutoSize = true;
+            this.checkboxSystemEn.Location = new System.Drawing.Point(6, 77);
+            this.checkboxSystemEn.Name = "checkboxSystemEn";
+            this.checkboxSystemEn.Size = new System.Drawing.Size(15, 14);
+            this.checkboxSystemEn.TabIndex = 26;
+            this.checkboxSystemEn.UseVisualStyleBackColor = true;
+            this.checkboxSystemEn.CheckedChanged += new System.EventHandler(this.doChecksChange_CheckedChanged);
+            // 
+            // cbGameJp
+            // 
+            this.cbGameJp.AutoSize = true;
+            this.cbGameJp.Location = new System.Drawing.Point(6, 48);
+            this.cbGameJp.Name = "cbGameJp";
+            this.cbGameJp.Size = new System.Drawing.Size(15, 14);
+            this.cbGameJp.TabIndex = 25;
+            this.cbGameJp.UseVisualStyleBackColor = true;
+            this.cbGameJp.CheckedChanged += new System.EventHandler(this.doChecksChange_CheckedChanged);
+            // 
+            // cbGameEnglish
+            // 
+            this.cbGameEnglish.AutoSize = true;
+            this.cbGameEnglish.Location = new System.Drawing.Point(6, 22);
+            this.cbGameEnglish.Name = "cbGameEnglish";
+            this.cbGameEnglish.Size = new System.Drawing.Size(15, 14);
+            this.cbGameEnglish.TabIndex = 24;
+            this.cbGameEnglish.UseVisualStyleBackColor = true;
+            this.cbGameEnglish.CheckedChanged += new System.EventHandler(this.doChecksChange_CheckedChanged);
             // 
             // cbSystemJp
             // 
@@ -374,6 +474,16 @@
             this.grpComments.TabStop = false;
             this.grpComments.Text = "Comments";
             // 
+            // cbComments
+            // 
+            this.cbComments.AutoSize = true;
+            this.cbComments.Location = new System.Drawing.Point(6, 30);
+            this.cbComments.Name = "cbComments";
+            this.cbComments.Size = new System.Drawing.Size(15, 14);
+            this.cbComments.TabIndex = 15;
+            this.cbComments.UseVisualStyleBackColor = true;
+            this.cbComments.CheckedChanged += new System.EventHandler(this.doChecksChange_CheckedChanged);
+            // 
             // tbComments
             // 
             this.tbComments.AcceptsReturn = true;
@@ -405,105 +515,6 @@
             this.clearFileListToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.clearFileListToolStripMenuItem.Text = "Clear File List";
             this.clearFileListToolStripMenuItem.Click += new System.EventHandler(this.clearFileListToolStripMenuItem_Click);
-            // 
-            // cbGameEnglish
-            // 
-            this.cbGameEnglish.AutoSize = true;
-            this.cbGameEnglish.Location = new System.Drawing.Point(6, 22);
-            this.cbGameEnglish.Name = "cbGameEnglish";
-            this.cbGameEnglish.Size = new System.Drawing.Size(15, 14);
-            this.cbGameEnglish.TabIndex = 24;
-            this.cbGameEnglish.UseVisualStyleBackColor = true;
-            // 
-            // cbGameJp
-            // 
-            this.cbGameJp.AutoSize = true;
-            this.cbGameJp.Location = new System.Drawing.Point(6, 48);
-            this.cbGameJp.Name = "cbGameJp";
-            this.cbGameJp.Size = new System.Drawing.Size(15, 14);
-            this.cbGameJp.TabIndex = 25;
-            this.cbGameJp.UseVisualStyleBackColor = true;
-            // 
-            // checkboxSystemEn
-            // 
-            this.checkboxSystemEn.AutoSize = true;
-            this.checkboxSystemEn.Location = new System.Drawing.Point(6, 77);
-            this.checkboxSystemEn.Name = "checkboxSystemEn";
-            this.checkboxSystemEn.Size = new System.Drawing.Size(15, 14);
-            this.checkboxSystemEn.TabIndex = 26;
-            this.checkboxSystemEn.UseVisualStyleBackColor = true;
-            // 
-            // checkboxSystemJp
-            // 
-            this.checkboxSystemJp.AutoSize = true;
-            this.checkboxSystemJp.Location = new System.Drawing.Point(6, 103);
-            this.checkboxSystemJp.Name = "checkboxSystemJp";
-            this.checkboxSystemJp.Size = new System.Drawing.Size(15, 14);
-            this.checkboxSystemJp.TabIndex = 27;
-            this.checkboxSystemJp.UseVisualStyleBackColor = true;
-            // 
-            // cbArtistEn
-            // 
-            this.cbArtistEn.AutoSize = true;
-            this.cbArtistEn.Location = new System.Drawing.Point(6, 129);
-            this.cbArtistEn.Name = "cbArtistEn";
-            this.cbArtistEn.Size = new System.Drawing.Size(15, 14);
-            this.cbArtistEn.TabIndex = 28;
-            this.cbArtistEn.UseVisualStyleBackColor = true;
-            // 
-            // cbArtistJp
-            // 
-            this.cbArtistJp.AutoSize = true;
-            this.cbArtistJp.Location = new System.Drawing.Point(6, 155);
-            this.cbArtistJp.Name = "cbArtistJp";
-            this.cbArtistJp.Size = new System.Drawing.Size(15, 14);
-            this.cbArtistJp.TabIndex = 29;
-            this.cbArtistJp.UseVisualStyleBackColor = true;
-            // 
-            // cbReleaseDate
-            // 
-            this.cbReleaseDate.AutoSize = true;
-            this.cbReleaseDate.Location = new System.Drawing.Point(6, 181);
-            this.cbReleaseDate.Name = "cbReleaseDate";
-            this.cbReleaseDate.Size = new System.Drawing.Size(15, 14);
-            this.cbReleaseDate.TabIndex = 30;
-            this.cbReleaseDate.UseVisualStyleBackColor = true;
-            // 
-            // cbRipper
-            // 
-            this.cbRipper.AutoSize = true;
-            this.cbRipper.Location = new System.Drawing.Point(155, 181);
-            this.cbRipper.Name = "cbRipper";
-            this.cbRipper.Size = new System.Drawing.Size(15, 14);
-            this.cbRipper.TabIndex = 31;
-            this.cbRipper.UseVisualStyleBackColor = true;
-            // 
-            // cbTitleEn
-            // 
-            this.cbTitleEn.AutoSize = true;
-            this.cbTitleEn.Location = new System.Drawing.Point(6, 19);
-            this.cbTitleEn.Name = "cbTitleEn";
-            this.cbTitleEn.Size = new System.Drawing.Size(15, 14);
-            this.cbTitleEn.TabIndex = 15;
-            this.cbTitleEn.UseVisualStyleBackColor = true;
-            // 
-            // cbTitleJp
-            // 
-            this.cbTitleJp.AutoSize = true;
-            this.cbTitleJp.Location = new System.Drawing.Point(6, 45);
-            this.cbTitleJp.Name = "cbTitleJp";
-            this.cbTitleJp.Size = new System.Drawing.Size(15, 14);
-            this.cbTitleJp.TabIndex = 16;
-            this.cbTitleJp.UseVisualStyleBackColor = true;
-            // 
-            // cbComments
-            // 
-            this.cbComments.AutoSize = true;
-            this.cbComments.Location = new System.Drawing.Point(6, 30);
-            this.cbComments.Name = "cbComments";
-            this.cbComments.Size = new System.Drawing.Size(15, 14);
-            this.cbComments.TabIndex = 15;
-            this.cbComments.UseVisualStyleBackColor = true;
             // 
             // Vgm_VgmTagEditorForm
             // 

@@ -48,6 +48,7 @@ namespace VGMToolbox.forms
             this.grpComments.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_GrpComments"];
 
             this.loadSystems();
+            this.setReadonlyFields();
         }
 
 
@@ -320,6 +321,31 @@ namespace VGMToolbox.forms
         {
             this.cbTitleEn.Checked = false;
             this.cbTitleJp.Checked = false;
+        }
+
+        private void setReadonlyFields()
+        {
+            this.tbGameEn.Enabled = this.cbGameEnglish.Checked;
+            this.tbGameJp.Enabled = this.cbGameJp.Checked;
+            
+            this.cbSystemEn.Enabled = this.checkboxSystemEn.Checked;
+            this.cbSystemJp.Enabled = this.checkboxSystemJp.Checked;
+            
+            this.tbArtistEn.Enabled = this.cbArtistEn.Checked;
+            this.tbArtistJp.Enabled = this.cbArtistJp.Checked;
+
+            this.tbGameDate.Enabled = this.cbReleaseDate.Checked;
+            this.tbRipper.Enabled = this.cbRipper.Checked;
+
+            this.tbTitleEn.Enabled = this.cbTitleEn.Checked;
+            this.tbTitleJp.Enabled = this.cbTitleJp.Checked;
+
+            this.tbComments.Enabled = this.cbComments.Checked;
+        }
+
+        private void doChecksChange_CheckedChanged(object sender, EventArgs e)
+        {
+            this.setReadonlyFields();
         }
     }
 }
