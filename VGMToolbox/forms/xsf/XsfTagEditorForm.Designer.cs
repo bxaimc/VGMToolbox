@@ -65,6 +65,7 @@
             this.refreshFileListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cbAddToBatchFile = new System.Windows.Forms.CheckBox();
             this.cbRemoveBrackets = new System.Windows.Forms.CheckBox();
+            this.clearFileListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -77,31 +78,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 507);
-            this.pnlLabels.Size = new System.Drawing.Size(786, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 537);
+            this.pnlLabels.Size = new System.Drawing.Size(1003, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(786, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(1003, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 430);
-            this.tbOutput.Size = new System.Drawing.Size(786, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 460);
+            this.tbOutput.Size = new System.Drawing.Size(1003, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 410);
-            this.pnlButtons.Size = new System.Drawing.Size(786, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 440);
+            this.pnlButtons.Size = new System.Drawing.Size(1003, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(726, 0);
+            this.btnCancel.Location = new System.Drawing.Point(943, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(666, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(883, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpSourceFiles
@@ -126,6 +127,7 @@
             // 
             // lbFiles
             // 
+            this.lbFiles.AllowDrop = true;
             this.lbFiles.FormattingEnabled = true;
             this.lbFiles.HorizontalScrollbar = true;
             this.lbFiles.Location = new System.Drawing.Point(6, 43);
@@ -135,6 +137,8 @@
             this.lbFiles.TabIndex = 5;
             this.lbFiles.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lbFiles_MouseUp);
             this.lbFiles.SelectedIndexChanged += new System.EventHandler(this.lbFiles_SelectedIndexChanged);
+            this.lbFiles.DragDrop += new System.Windows.Forms.DragEventHandler(this.lbFiles_DragDrop);
+            this.lbFiles.DragEnter += new System.Windows.Forms.DragEventHandler(this.lbFiles_DragEnter);
             // 
             // btnBrowseDirectory
             // 
@@ -406,9 +410,10 @@
             // contextMenuRefresh
             // 
             this.contextMenuRefresh.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.refreshFileListToolStripMenuItem});
+            this.refreshFileListToolStripMenuItem,
+            this.clearFileListToolStripMenuItem});
             this.contextMenuRefresh.Name = "contextMenuStrip1";
-            this.contextMenuRefresh.Size = new System.Drawing.Size(151, 26);
+            this.contextMenuRefresh.Size = new System.Drawing.Size(153, 70);
             // 
             // refreshFileListToolStripMenuItem
             // 
@@ -438,11 +443,18 @@
             this.cbRemoveBrackets.Text = "Remove Information in Brackets from Title";
             this.cbRemoveBrackets.UseVisualStyleBackColor = true;
             // 
+            // clearFileListToolStripMenuItem
+            // 
+            this.clearFileListToolStripMenuItem.Name = "clearFileListToolStripMenuItem";
+            this.clearFileListToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.clearFileListToolStripMenuItem.Text = "Clear File List";
+            this.clearFileListToolStripMenuItem.Click += new System.EventHandler(this.clearFileListToolStripMenuItem_Click);
+            // 
             // XsfTagEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(786, 548);
+            this.ClientSize = new System.Drawing.Size(1003, 578);
             this.Controls.Add(this.cbRemoveBrackets);
             this.Controls.Add(this.cbAddToBatchFile);
             this.Controls.Add(this.cbGenerateTitleFromFilename);
@@ -523,5 +535,6 @@
         private System.Windows.Forms.ToolStripMenuItem refreshFileListToolStripMenuItem;
         private System.Windows.Forms.CheckBox cbAddToBatchFile;
         private System.Windows.Forms.CheckBox cbRemoveBrackets;
+        private System.Windows.Forms.ToolStripMenuItem clearFileListToolStripMenuItem;
     }
 }

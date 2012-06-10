@@ -61,23 +61,12 @@ namespace VGMToolbox.forms.xsf
         private void tbSourceDirectory_TextChanged(object sender, EventArgs e)
         {
             this.lbFiles.Items.Clear();
-            Type formatType;
 
             if (Directory.Exists(this.tbSourceDirectory.Text))
             {
                 foreach (string f in Directory.GetFiles(this.tbSourceDirectory.Text))
                 {
-                    formatType = null;
-                    
-                    using (FileStream fs = File.OpenRead(f))
-                    {
-                        formatType = FormatUtil.getObjectType(fs);
-                        if ((formatType != null) &&
-                            typeof(IXsfTagFormat).IsAssignableFrom(formatType))
-                        {
-                            this.lbFiles.Items.Add(Path.GetFileName(f));
-                        }
-                    }                   
+                    this.addFileToListBox(f);                   
                 }
             }
             else
@@ -104,10 +93,12 @@ namespace VGMToolbox.forms.xsf
         private void loadSelectedTrack()
         {
             string selectedFilePath;
-            
+            ListBoxFileInfoObject listBoxFile;
+
             if (lbFiles.SelectedIndices.Count == 1)
             {
-                selectedFilePath = Path.Combine(this.tbSourceDirectory.Text, this.lbFiles.Items[this.lbFiles.SelectedIndex].ToString());
+                listBoxFile = (ListBoxFileInfoObject)(this.lbFiles.Items[this.lbFiles.SelectedIndex]);
+                selectedFilePath = listBoxFile.FilePath;
 
                 using (FileStream fs =
                     File.Open(selectedFilePath, FileMode.Open, FileAccess.Read))
@@ -189,13 +180,15 @@ namespace VGMToolbox.forms.xsf
 
         private void btnDoTask_Click(object sender, EventArgs e)
         {
+            ListBoxFileInfoObject listBoxFile;
             int j = 0;
             XsfTagUpdaterWorker.XsfTagUpdaterStruct xtUpdateStruct = new XsfTagUpdaterWorker.XsfTagUpdaterStruct();
                         
             xtUpdateStruct.SourcePaths = new string[this.lbFiles.SelectedIndices.Count];            
             foreach (int i in this.lbFiles.SelectedIndices)
             {
-                xtUpdateStruct.SourcePaths[j++] = Path.Combine(this.tbSourceDirectory.Text, this.lbFiles.Items[i].ToString());
+                listBoxFile = (ListBoxFileInfoObject)this.lbFiles.Items[i];
+                xtUpdateStruct.SourcePaths[j++] = listBoxFile.FilePath;
             }
 
             xtUpdateStruct.RemoveEmptyTags = cbDeleteEmpty.Checked;
@@ -277,6 +270,49 @@ namespace VGMToolbox.forms.xsf
                 // show menu
                 contextMenuRefresh.Show(lbFiles, p);
             }
+        }
+
+        private void lbFiles_DragEnter(object sender, DragEventArgs e)
+        {
+            base.doDragEnter(sender, e);
+        }
+
+        private void addFileToListBox(string f)
+        {
+            Type formatType = null;
+            ListBoxFileInfoObject listFileObject;
+
+            using (FileStream fs = File.OpenRead(f))
+            {
+                formatType = FormatUtil.getObjectType(fs);
+
+                if ((formatType != null) &&
+                    typeof(IXsfTagFormat).IsAssignableFrom(formatType))
+                {
+                    listFileObject = new ListBoxFileInfoObject(f);
+                    this.lbFiles.Items.Add(listFileObject);
+                }
+            }
+        }
+
+        private void lbFiles_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            if (s.Length > 0)
+            {
+                tbSourceDirectory.Clear();
+
+                foreach (string filePath in s)
+                {
+                    this.addFileToListBox(filePath);
+                }
+            }
+        }
+
+        private void clearFileListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.lbFiles.Items.Clear();
         }
     }
 }
