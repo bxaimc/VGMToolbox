@@ -74,6 +74,8 @@ namespace VGMToolbox.forms
             this.doFrequencyCheckbox();
 
             this.selectedLabel = NO_LABEL_SELECTED;
+
+            this.lbFiles.Items.Add("<File Box>");
         }
 
         #region INITIALIZE FUNCTIONS
@@ -276,6 +278,7 @@ namespace VGMToolbox.forms
 
         private GenhCreatorStruct getGenhParameters()
         {
+            ListBoxFileInfoObject listBoxFile;
             GenhCreatorStruct genhStruct = new GenhCreatorStruct();
             DataRowView drv = (DataRowView)this.comboFormat.SelectedItem;
             
@@ -314,7 +317,8 @@ namespace VGMToolbox.forms
             int j = 0;
             foreach (int i in this.lbFiles.SelectedIndices)
             {
-                genhStruct.SourcePaths[j++] = Path.Combine(this.tbSourceDirectory.Text, this.lbFiles.Items[i].ToString());
+                listBoxFile = (ListBoxFileInfoObject)this.lbFiles.Items[i];
+                genhStruct.SourcePaths[j++] = listBoxFile.FilePath;
             }
 
             return genhStruct;
@@ -488,8 +492,6 @@ namespace VGMToolbox.forms
 
         private void reloadFiles()
         {            
-            string fileName;
-
             this.lbFiles.Items.Clear();
 
             if (Directory.Exists(this.tbSourceDirectory.Text))
@@ -498,34 +500,8 @@ namespace VGMToolbox.forms
                 Array.Sort(fileList);
 
                 foreach (string f in fileList)
-                {                    
-                    if (rbCreate.Checked)
-                    {
-                        if (!f.ToUpper().EndsWith("GENH") &&
-                            !f.ToUpper().EndsWith("EXE"))
-                        {
-                            if (!String.IsNullOrEmpty(this.tbFilenameFilter.Text))
-                            {
-                                fileName = Path.GetFileName(f);
-                                
-                                if (fileName.ToUpper().Contains(this.tbFilenameFilter.Text.ToUpper()))
-                                {
-                                    this.lbFiles.Items.Add(Path.GetFileName(f));
-                                }
-                            }
-                            else
-                            {
-                                this.lbFiles.Items.Add(Path.GetFileName(f));
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (f.ToUpper().EndsWith("GENH"))
-                        {
-                            this.lbFiles.Items.Add(Path.GetFileName(f));
-                        }
-                    }
+                {
+                    this.addFileToListBox(f);
                 }
             }
             else
@@ -816,6 +792,76 @@ namespace VGMToolbox.forms
         private void cbUseFrequencyOffset_CheckedChanged(object sender, EventArgs e)
         {
             this.doFrequencyCheckbox();
+        }
+
+        private void clearFileListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.lbFiles.Items.Clear();
+        }
+
+        private void addFileToListBox(string f)
+        {
+            ListBoxFileInfoObject listFileObject;
+            string fileName;
+
+            if (rbCreate.Checked)
+            {
+                if (!f.ToUpper().EndsWith("GENH") &&
+                    !f.ToUpper().EndsWith("EXE"))
+                {
+                    if (!String.IsNullOrEmpty(this.tbFilenameFilter.Text))
+                    {
+                        fileName = Path.GetFileName(f);
+
+                        if (fileName.ToUpper().Contains(this.tbFilenameFilter.Text.ToUpper()))
+                        {
+                            using (FileStream fs = File.OpenRead(f))
+                            {
+                                listFileObject = new ListBoxFileInfoObject(f);
+                                this.lbFiles.Items.Add(listFileObject);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        using (FileStream fs = File.OpenRead(f))
+                        {
+                            listFileObject = new ListBoxFileInfoObject(f);
+                            this.lbFiles.Items.Add(listFileObject);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (f.ToUpper().EndsWith("GENH"))
+                {
+                    using (FileStream fs = File.OpenRead(f))
+                    {
+                        listFileObject = new ListBoxFileInfoObject(f);
+                        this.lbFiles.Items.Add(listFileObject);
+                    }
+                }
+            }
+        }
+
+        private void lbFiles_DragEnter(object sender, DragEventArgs e)
+        {
+            base.doDragEnter(sender, e);
+        }
+        private void lbFiles_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);            
+
+            if (s.Length > 0)
+            {
+                this.tbSourceDirectory.Clear();
+
+                foreach (string filePath in s)
+                {
+                    this.addFileToListBox(filePath);
+                }
+            }
         }
     }
 }
