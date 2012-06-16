@@ -79,7 +79,7 @@ namespace VGMToolbox.controls
             this.cbRiffRelativeLocation.Items.Add(RiffCalculatingOffsetDescription.START_OF_STRING);
             this.cbRiffRelativeLocation.Items.Add(RiffCalculatingOffsetDescription.END_OF_STRING);
 
-            this.cbRiffRelativeLocation.SelectedItem = "start of";
+            this.cbRiffRelativeLocation.SelectedItem = RiffCalculatingOffsetDescription.START_OF_STRING;
         }
 
         private void initializeRiffChunkComboBox()

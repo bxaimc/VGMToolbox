@@ -33,6 +33,8 @@ namespace VGMToolbox.forms.stream
             this.rbLoopShiftWavCompare.Checked = true;
             this.cbLoopShiftPredictShift.Checked = true;
 
+            this.cbOptionsCreateM3u.Checked = true;
+
             // init functions
             this.doLoopStartRadios();
             this.doLoopEndRadios();
@@ -78,10 +80,12 @@ namespace VGMToolbox.forms.stream
             taskStruct.DoLoopStartStatic = this.rbLoopStartStatic.Checked;
             taskStruct.DoLoopStartOffset = this.rbLoopStartOffset.Checked;
             taskStruct.DoLoopStartRiffOffset = this.rbLoopStartRiffOffset.Checked;
+            taskStruct.DoLoopStartByteStringOffset = this.rbLoopStartByteStringOffset.Checked;
 
             taskStruct.LoopStartStaticValue = this.tbLoopStartStatic.Text;
             taskStruct.LoopStartCalculatingOffset = this.LoopStartCalculatingOffsetDescriptionControl.GetOffsetValues();
             taskStruct.LoopStartRiffCalculatingOffset = this.LoopStartRiffCalculatingOffsetDescriptionControl.GetOffsetValues();
+            taskStruct.LoopStartByteSearchCalculatingOffset = this.LoopStartByteSearchCalculatingOffsetDescriptionControl.GetOffsetValues();
 
             // Loop End
             taskStruct.LoopEndIsLoopEnd = this.rbLoopEnd.Checked;
@@ -90,10 +94,12 @@ namespace VGMToolbox.forms.stream
             taskStruct.DoLoopEndStatic = this.rbLoopEndStatic.Checked;
             taskStruct.DoLoopEndOffset = this.rbLoopEndOffset.Checked;
             taskStruct.DoLoopEndRiffOffset = this.rbLoopEndRiffOffset.Checked;
+            taskStruct.DoLoopEndByteStringOffset = this.rbLoopEndByteStringOffset.Checked;
 
             taskStruct.LoopEndStaticValue = this.tbLoopEndStatic.Text;
             taskStruct.LoopEndCalculatingOffset = this.LoopEndCalculatingOffsetDescriptionControl.GetOffsetValues();
             taskStruct.LoopEndRiffCalculatingOffset = this.LoopEndRiffCalculatingOffsetDescriptionControl.GetOffsetValues();
+            taskStruct.LoopEndByteSearchCalculatingOffset = this.LoopEndByteSearchCalculatingOffsetDescriptionControl.GetOffsetValues();
 
             // Loop Shift
             taskStruct.DoStaticLoopShift = this.rbLoopShiftStatic.Checked;
@@ -141,7 +147,8 @@ namespace VGMToolbox.forms.stream
             this.tbLoopStartStatic.ReadOnly = !this.rbLoopStartStatic.Checked;
 
             this.LoopStartCalculatingOffsetDescriptionControl.Enabled = this.rbLoopStartOffset.Checked;
-            this.LoopStartRiffCalculatingOffsetDescriptionControl.Enabled = this.rbLoopStartRiffOffset.Checked;                       
+            this.LoopStartRiffCalculatingOffsetDescriptionControl.Enabled = this.rbLoopStartRiffOffset.Checked;
+            this.LoopStartByteSearchCalculatingOffsetDescriptionControl.Enabled = this.rbLoopStartByteStringOffset.Checked;   
         }
         private void rbLoopStartStatic_CheckedChanged(object sender, EventArgs e)
         {
@@ -155,6 +162,10 @@ namespace VGMToolbox.forms.stream
         {
             this.doLoopStartRadios();
         }
+        private void rbLoopStartByteStringOffset_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doLoopStartRadios();
+        }
 
         private void doLoopEndRadios()
         {
@@ -162,7 +173,8 @@ namespace VGMToolbox.forms.stream
             this.tbLoopEndStatic.ReadOnly = !this.rbLoopEndStatic.Checked;
 
             this.LoopEndCalculatingOffsetDescriptionControl.Enabled = this.rbLoopEndOffset.Checked;
-            this.LoopEndRiffCalculatingOffsetDescriptionControl.Enabled = this.rbLoopEndRiffOffset.Checked;                               
+            this.LoopEndRiffCalculatingOffsetDescriptionControl.Enabled = this.rbLoopEndRiffOffset.Checked;
+            this.LoopEndByteSearchCalculatingOffsetDescriptionControl.Enabled = this.rbLoopEndByteStringOffset.Checked;   
         }
         private void rbLoopEndStatic_CheckedChanged(object sender, EventArgs e)
         {
@@ -176,6 +188,12 @@ namespace VGMToolbox.forms.stream
         {
             this.doLoopEndRadios();
         }
+        private void rbLoopEndByteStringOffset_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doLoopEndRadios();
+        }
+
+        
 
 
 

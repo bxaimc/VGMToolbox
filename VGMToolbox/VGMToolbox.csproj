@@ -84,6 +84,12 @@
     <Compile Include="auditing\RebuilderWorker.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="controls\ByteSearchCalculatingOffsetDescriptionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="controls\ByteSearchCalculatingOffsetDescriptionControl.Designer.cs">
+      <DependentUpon>ByteSearchCalculatingOffsetDescriptionControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="controls\CalculatingOffsetDescriptionControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1018,6 +1024,9 @@
     <Content Include="readme.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="controls\ByteSearchCalculatingOffsetDescriptionControl.resx">
+      <DependentUpon>ByteSearchCalculatingOffsetDescriptionControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="controls\CalculatingOffsetDescriptionControl.resx">
       <DependentUpon>CalculatingOffsetDescriptionControl.cs</DependentUpon>
       <SubType>Designer</SubType>

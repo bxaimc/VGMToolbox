@@ -31,10 +31,12 @@ namespace VGMToolbox.tools.stream
             public bool DoLoopStartStatic { set; get; }
             public bool DoLoopStartOffset { set; get; }
             public bool DoLoopStartRiffOffset { set; get; }
+            public bool DoLoopStartByteStringOffset { set; get; }
 
             public string LoopStartStaticValue { set; get; }
             public CalculatingOffsetDescription LoopStartCalculatingOffset { set; get; }
             public RiffCalculatingOffsetDescription LoopStartRiffCalculatingOffset { set; get; }
+            public ByteSearchCalculatingOffsetDescription LoopStartByteSearchCalculatingOffset { set; get; }
 
             // Loop End
             public bool LoopEndIsLoopEnd { set; get; }
@@ -43,10 +45,12 @@ namespace VGMToolbox.tools.stream
             public bool DoLoopEndStatic { set; get; }
             public bool DoLoopEndOffset { set; get; }
             public bool DoLoopEndRiffOffset { set; get; }
+            public bool DoLoopEndByteStringOffset { set; get; }
 
             public string LoopEndStaticValue { set; get; }
             public CalculatingOffsetDescription LoopEndCalculatingOffset { set; get; }
             public RiffCalculatingOffsetDescription LoopEndRiffCalculatingOffset { set; get; }
+            public ByteSearchCalculatingOffsetDescription LoopEndByteSearchCalculatingOffset { set; get; }
 
             // Loop Shift
             public bool DoStaticLoopShift { set; get; }
@@ -118,11 +122,15 @@ namespace VGMToolbox.tools.stream
                     }
                     else if (posStruct.DoLoopStartOffset)
                     {
-                        loopStartValue = ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, posStruct.LoopStartCalculatingOffset, true);
+                        loopStartValue = ParseFile.GetCalculatedVaryingByteValueAtAbsoluteOffset(fs, posStruct.LoopStartCalculatingOffset, true);
                     }
                     else if (posStruct.DoLoopStartRiffOffset)
                     {
                         loopStartValue = ParseFile.GetRiffCalculatedVaryingByteValueAtAbsoluteOffset(fs, posStruct.LoopStartRiffCalculatingOffset, true);
+                    }
+                    else if (posStruct.DoLoopStartByteStringOffset)
+                    {
+                        loopStartValue = ParseFile.GetByteSearchCalculatedVaryingByteValueAtAbsoluteOffset(fs, posStruct.LoopStartByteSearchCalculatingOffset, true);
                     }
 
                     if (loopStartValue != DEFAULT_LOOP_VALUE)
@@ -136,11 +144,15 @@ namespace VGMToolbox.tools.stream
                         }
                         else if (posStruct.DoLoopEndOffset)
                         {
-                            loopEndValue = ParseFile.GetVaryingByteValueAtAbsoluteOffset(fs, posStruct.LoopEndCalculatingOffset, true);
+                            loopEndValue = ParseFile.GetCalculatedVaryingByteValueAtAbsoluteOffset(fs, posStruct.LoopEndCalculatingOffset, true);
                         }
                         else if (posStruct.DoLoopEndRiffOffset)
                         {
                             loopEndValue = ParseFile.GetRiffCalculatedVaryingByteValueAtAbsoluteOffset(fs, posStruct.LoopEndRiffCalculatingOffset, true);
+                        }
+                        else if (posStruct.DoLoopEndByteStringOffset)
+                        {
+                            loopEndValue = ParseFile.GetByteSearchCalculatedVaryingByteValueAtAbsoluteOffset(fs, posStruct.LoopEndByteSearchCalculatingOffset, true);
                         }
 
                         if (loopEndValue != DEFAULT_LOOP_VALUE)
