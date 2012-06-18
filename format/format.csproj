@@ -100,6 +100,7 @@
     <Compile Include="VGMToolbox\format\NintendoThpMovieStream.cs" />
     <Compile Include="VGMToolbox\format\Psf.cs" />
     <Compile Include="VGMToolbox\format\PsxSequence.cs" />
+    <Compile Include="VGMToolbox\format\RacjinDsiStream.cs" />
     <Compile Include="VGMToolbox\format\S98V3.cs" />
     <Compile Include="VGMToolbox\format\sdat\Swar.cs" />
     <Compile Include="VGMToolbox\format\sdat\Swav.cs" />

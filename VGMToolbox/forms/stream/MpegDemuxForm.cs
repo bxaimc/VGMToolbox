@@ -34,6 +34,7 @@ namespace VGMToolbox.forms.stream
         {
             this.comboFormat.Items.Clear();                        
             this.comboFormat.Items.Add("DVD Video (VOB)");
+            this.comboFormat.Items.Add("DSI (PS2 Racjin Video)");
             this.comboFormat.Items.Add("MO (Mobiclip)");
             this.comboFormat.Items.Add("MPEG");
             this.comboFormat.Items.Add("PAM (PlayStation Advanced Movie)");

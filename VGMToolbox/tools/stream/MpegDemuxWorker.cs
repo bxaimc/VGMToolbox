@@ -37,6 +37,10 @@ namespace VGMToolbox.tools.stream
                     DvdVideoStream dvdStream = new DvdVideoStream(path);
                     dvdStream.DemultiplexStreams(demuxOptions);
                     break;
+                case "DSI (PS2 Racjin Video)":
+                    RacjinDsiStream dsiStream = new RacjinDsiStream(path);
+                    dsiStream.DemultiplexStreams(demuxOptions);
+                    break;
                 case "MO (Mobiclip)":
                     MobiclipStream.MovieType movieType = MobiclipStream.GetCriMovie2StreamType(path);                    
 
