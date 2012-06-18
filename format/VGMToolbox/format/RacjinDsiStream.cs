@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
+using VGMToolbox.format.util;
 using VGMToolbox.util;
 
 namespace VGMToolbox.format
@@ -93,8 +94,41 @@ namespace VGMToolbox.format
         protected virtual void DoFinalTasks(Dictionary<uint, FileStream> streamWriters,
             MpegStream.DemuxOptionsStruct demuxOptions)
         {
+            GenhCreationStruct gcStruct;
+            string sourceFile;
+            string genhFile;
+
             foreach (uint key in streamWriters.Keys)
             {
+                // create GENH since MIB support is spotty       
+                if (demuxOptions.AddHeader)
+                {
+                    if (streamWriters[key].Name.EndsWith(this.FileExtensionAudio))
+                    {                        
+                        sourceFile = streamWriters[key].Name;
+
+                        streamWriters[key].Close();
+                        streamWriters[key].Dispose();
+
+                        gcStruct = new GenhCreationStruct();
+                        gcStruct.Format = "0x00";
+                        gcStruct.HeaderSkip = "0";
+                        gcStruct.Interleave = "0x100";
+                        gcStruct.Channels = "2";
+                        gcStruct.Frequency = "44100";
+                        gcStruct.NoLoops = true;
+
+                        genhFile = GenhUtil.CreateGenhFile(sourceFile, gcStruct);
+
+                        // delete original file
+                        if (!String.IsNullOrEmpty(genhFile))
+                        {
+                            File.Delete(sourceFile);
+                        }
+                    }
+                }
+                                
+                // close streams if open
                 if (streamWriters[key] != null &&
                     streamWriters[key].CanRead)
                 {

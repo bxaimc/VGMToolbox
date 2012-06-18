@@ -34,7 +34,7 @@ namespace VGMToolbox.forms.stream
         {
             this.comboFormat.Items.Clear();                        
             this.comboFormat.Items.Add("DVD Video (VOB)");
-            this.comboFormat.Items.Add("DSI (PS2 Racjin Video)");
+            this.comboFormat.Items.Add("DSI (Racjin/Racdym PS2 Video)");
             this.comboFormat.Items.Add("MO (Mobiclip)");
             this.comboFormat.Items.Add("MPEG");
             this.comboFormat.Items.Add("PAM (PlayStation Advanced Movie)");
@@ -95,6 +95,7 @@ namespace VGMToolbox.forms.stream
         {
             switch (this.comboFormat.SelectedItem.ToString())
             {
+                case "DSI (Racjin/Racdym PS2 Video)":
                 case "MO (Mobiclip)":
                 case "PAM (PlayStation Advanced Movie)":
                 case "PMF (PSP Movie Format)":

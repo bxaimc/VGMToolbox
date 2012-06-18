@@ -37,7 +37,7 @@ namespace VGMToolbox.tools.stream
                     DvdVideoStream dvdStream = new DvdVideoStream(path);
                     dvdStream.DemultiplexStreams(demuxOptions);
                     break;
-                case "DSI (PS2 Racjin Video)":
+                case "DSI (Racjin/Racdym PS2 Video)":
                     RacjinDsiStream dsiStream = new RacjinDsiStream(path);
                     dsiStream.DemultiplexStreams(demuxOptions);
                     break;
