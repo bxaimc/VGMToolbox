@@ -173,7 +173,7 @@ namespace VGMToolbox.format
                                         this.writeChunkToStream(sc.ChunkData, sc.StreamChunkId, streamOutputWriters, RacjinDsiStream.DefaultFileExtensionVideo);
                                     }
                                 }
-                                else if (demuxOptions.ExtractAudio && this.isAudioBlock(sc.StreamChunkType))
+                                else if (this.isAudioBlock(sc.StreamChunkType))
                                 {
                                     if (demuxOptions.ExtractAudio)
                                     {

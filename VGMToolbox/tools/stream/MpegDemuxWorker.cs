@@ -33,13 +33,17 @@ namespace VGMToolbox.tools.stream
 
             switch (demuxStruct.SourceFormat)
             {
-                case "DVD Video (VOB)":
-                    DvdVideoStream dvdStream = new DvdVideoStream(path);
-                    dvdStream.DemultiplexStreams(demuxOptions);
+                case "BIK (Bink Video Container)":
+                    BinkStream binkStream = new BinkStream(path);
+                    binkStream.DemultiplexStreams(demuxOptions);
                     break;
                 case "DSI (Racjin/Racdym PS2 Video)":
                     RacjinDsiStream dsiStream = new RacjinDsiStream(path);
                     dsiStream.DemultiplexStreams(demuxOptions);
+                    break;
+                case "DVD Video (VOB)":
+                    DvdVideoStream dvdStream = new DvdVideoStream(path);
+                    dvdStream.DemultiplexStreams(demuxOptions);
                     break;
                 case "MO (Mobiclip)":
                     MobiclipStream.MovieType movieType = MobiclipStream.GetCriMovie2StreamType(path);                    
