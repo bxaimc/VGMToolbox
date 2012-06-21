@@ -9,13 +9,13 @@ namespace VGMToolbox.format
 {
     public class BinkStream
     {
-        const string DefaultFileExtensionAudio = ".bink.audio";
-        const string DefaultFileExtensionVideo = ".bink.video";
+        const string DefaultFileExtensionAudio = ".bink.audio.bik";
+        const string DefaultFileExtensionVideo = ".bink.video.bik";
 
         public uint FrameCount { set; get; }
         public uint AudioTrackCount { set; get; }
         public uint[] AudioTrackIds { set; get; }
-        public uint[] FrameOffsetList { set; get; }
+        public FrameOffsetStruct[] FrameOffsetList { set; get; }
         public byte[] FullHeader { set; get; }
 
         public uint[][] NewFrameOffsetsAudio { set; get; }
@@ -24,6 +24,12 @@ namespace VGMToolbox.format
         public string FilePath { get; set; }
         public string FileExtensionAudio { get; set; }
         public string FileExtensionVideo { get; set; }
+
+        public struct FrameOffsetStruct
+        {
+            public uint FrameOffset { get; set; }
+            public bool IsKeyFrame { get; set; }
+        }
 
         public BinkStream(string filePath)
         {
@@ -60,19 +66,25 @@ namespace VGMToolbox.format
 
             for (uint i = 0; i < this.AudioTrackCount; i++)
             {
-                this.AudioTrackIds[i] = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(inStream, offsetToHeader + 0x2C + (i * 0xC) + 8, 4), 0);
+                this.AudioTrackIds[i] = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(inStream, offsetToHeader + 0x2C + (this.AudioTrackCount * 8) + (i * 4), 4), 0);
             }
 
             // get frame offsets
-            this.FrameOffsetList = new uint[this.FrameCount];
+            this.FrameOffsetList = new FrameOffsetStruct[this.FrameCount];
             
             for (uint i = 0; i < this.FrameCount; i++)
             {
-                this.FrameOffsetList[i] = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(inStream, offsetToHeader + 0x2C + (this.AudioTrackCount * 0xC) + (i * 4), 4), 0);
+                this.FrameOffsetList[i].FrameOffset = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(inStream, offsetToHeader + 0x2C + (this.AudioTrackCount * 0xC) + (i * 4), 4), 0);
+
+                if ((this.FrameOffsetList[i].FrameOffset & 1) == 1)
+                {
+                    this.FrameOffsetList[i].IsKeyFrame = true;
+                    this.FrameOffsetList[i].FrameOffset &= 0xFFFFFFFE; // mask off bit 0
+                }
             }
 
             // get full header
-            this.FullHeader = ParseFile.ParseSimpleOffset(inStream, 0, (int)(offsetToHeader + 0x2C + (this.AudioTrackCount * 0xC) + (this.FrameCount * 4) + 4));
+            this.FullHeader = ParseFile.ParseSimpleOffset(inStream, offsetToHeader, (int)(offsetToHeader + 0x2C + (this.AudioTrackCount * 0xC) + (this.FrameCount * 4) + 4));
 
         }
 
@@ -83,6 +95,9 @@ namespace VGMToolbox.format
             string headeredFile;
 
             byte[] headerBytes;
+            byte[] frameOffsetBytes;
+
+            uint fileLength;
 
             foreach (uint key in streamWriters.Keys)
             {
@@ -98,7 +113,51 @@ namespace VGMToolbox.format
                     }
                     if (streamWriters[key].Name.EndsWith(this.FileExtensionVideo))
                     {
+                        //////////////////////////
+                        // update original header
+                        //////////////////////////
+                        headerBytes = this.FullHeader;
+                        
+                        // resize header since audio info will be removied
+                        Array.Resize(ref headerBytes, (int)(0x2C + ((this.FrameCount + 1) * 4)));
+                        
+                        // set file size
+                        fileLength = (uint)(streamWriters[key].Length + headerBytes.Length - 8);
+                        Array.Copy(BitConverter.GetBytes(fileLength), 0, headerBytes, 0xC, 4);
 
+                        // set audio track count to zero
+                        headerBytes[0x28] = 0;
+
+                        // insert frame offsets
+                        for (uint i = 0; i < this.FrameCount; i++)
+                        {
+                            if (this.FrameOffsetList[i].IsKeyFrame)
+                            {
+                                // add key frame bit
+                                frameOffsetBytes = BitConverter.GetBytes(this.NewFrameOffsetsVideo[i] | 1);
+                            }
+                            else
+                            {
+                                frameOffsetBytes = BitConverter.GetBytes(this.NewFrameOffsetsVideo[i]); 
+                            }
+                            
+                            Array.Copy(frameOffsetBytes, 0, headerBytes, (0x2C + (i * 4)), 4);
+                        }
+
+                        // Add last frame offset (EOF)
+                        fileLength = (uint)(streamWriters[key].Length + headerBytes.Length);
+                        Array.Copy(BitConverter.GetBytes(fileLength), 0, headerBytes, (0x2C + (this.FrameCount * 4)), 4);
+
+                        // append to file
+                        sourceFile = streamWriters[key].Name;
+                        headeredFile = sourceFile + ".headered";
+
+                        streamWriters[key].Close();
+                        streamWriters[key].Dispose();
+                        
+                        FileUtil.AddHeaderToFile(headerBytes, streamWriters[key].Name, headeredFile);
+                        File.Delete(streamWriters[key].Name);
+                        File.Move(headeredFile, streamWriters[key].Name);
                     }
                 }
 
@@ -140,12 +199,15 @@ namespace VGMToolbox.format
                     
                     // setup new offsets and first frame
                     this.NewFrameOffsetsVideo = new uint[this.FrameCount];
-                    this.NewFrameOffsetsVideo[0] = this.FrameOffsetList[0] - (this.AudioTrackCount * 0xC); // subtract audio frame header info
+                    this.NewFrameOffsetsVideo[0] = this.FrameOffsetList[0].FrameOffset - (this.AudioTrackCount * 0xC); // subtract audio frame header info
+
+                    // setup audio frames
+                    this.NewFrameOffsetsAudio = new uint[this.AudioTrackCount][];
 
                     for (uint i = 0; i < this.AudioTrackCount; i++)
                     {
                         this.NewFrameOffsetsAudio[i] = new uint[this.FrameCount];
-                        this.NewFrameOffsetsAudio[i][0] = this.FrameOffsetList[0] - ((this.AudioTrackCount - 1) * 0xC); // only need one audio header area
+                        this.NewFrameOffsetsAudio[i][0] = this.FrameOffsetList[0].FrameOffset - ((this.AudioTrackCount - 1) * 0xC); // only need one audio header area
                     }
 
                     //////////////////////
@@ -160,19 +222,22 @@ namespace VGMToolbox.format
                         //////////////////
                         for (uint audioTrackId = 0; audioTrackId < this.AudioTrackCount; audioTrackId++)
                         {
-                            audioPacketSize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, this.FrameOffsetList[frameId] + currentPacketOffset, 4) , 0);
+                            audioPacketSize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, this.FrameOffsetList[frameId].FrameOffset + currentPacketOffset, 4) , 0);
                             audioPacketSize += 4;
 
                             if (demuxOptions.ExtractAudio)
                             {
-                                audioPacket = ParseFile.ParseSimpleOffset(fs, this.FrameOffsetList[frameId] + currentPacketOffset, (int)audioPacketSize);
+                                audioPacket = ParseFile.ParseSimpleOffset(fs, this.FrameOffsetList[frameId].FrameOffset + currentPacketOffset, (int)audioPacketSize);
                                 this.writeChunkToStream(audioPacket, this.AudioTrackIds[audioTrackId], streamOutputWriters, this.FileExtensionAudio);
                             }
 
                             currentPacketOffset += audioPacketSize; // goto next packet                        
 
                             // update audio frame id
-                            this.NewFrameOffsetsAudio[audioTrackId][frameId + 1] = this.NewFrameOffsetsAudio[audioTrackId][frameId] + audioPacketSize;
+                            if ((frameId + 1) < this.FrameCount)
+                            {
+                                this.NewFrameOffsetsAudio[audioTrackId][frameId + 1] = this.NewFrameOffsetsAudio[audioTrackId][frameId] + audioPacketSize;
+                            }
                         }
 
                         /////////////////
@@ -184,20 +249,23 @@ namespace VGMToolbox.format
                         }
                         else
                         {
-                            packetEndOffset = this.FrameOffsetList[frameId + 1];
+                            packetEndOffset = this.FrameOffsetList[frameId + 1].FrameOffset;
                         }
 
-                        videoPacketSize = (uint)(packetEndOffset - (this.FrameOffsetList[frameId] + currentPacketOffset));
+                        videoPacketSize = (uint)(packetEndOffset - (this.FrameOffsetList[frameId].FrameOffset + currentPacketOffset));
                         
                         if (demuxOptions.ExtractVideo)
                         {
                             // parse video packet
-                            videoPacket = ParseFile.ParseSimpleOffset(fs, this.FrameOffsetList[frameId] + currentPacketOffset, (int)videoPacketSize);
-                            this.writeChunkToStream(videoPacket, 0, streamOutputWriters, this.FileExtensionVideo);
+                            videoPacket = ParseFile.ParseSimpleOffset(fs, this.FrameOffsetList[frameId].FrameOffset + currentPacketOffset, (int)videoPacketSize);
+                            this.writeChunkToStream(videoPacket, uint.MaxValue, streamOutputWriters, this.FileExtensionVideo);
                         }                    
                     
                         // update video frame offset
-                        this.NewFrameOffsetsVideo[frameId + 1] = this.NewFrameOffsetsVideo[frameId] + (uint)videoPacketSize;
+                        if ((frameId + 1) < this.NewFrameOffsetsVideo.Length)
+                        {
+                            this.NewFrameOffsetsVideo[frameId + 1] = this.NewFrameOffsetsVideo[frameId] + (uint)videoPacketSize;
+                        }
                     
                     } // for (uint frameId = 0; frameId < this.FrameCount; frameId++)
 
