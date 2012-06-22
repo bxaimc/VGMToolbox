@@ -9,8 +9,9 @@ namespace VGMToolbox.format
 {
     public class BinkStream
     {
-        const string DefaultFileExtensionAudio = ".bink.audio.bik";
-        const string DefaultFileExtensionVideo = ".bink.video.bik";
+        const string DefaultFileExtensionAudioMulti = ".audio.multi.bik";
+        const string DefaultFileExtensionAudioSplit = ".audio.split.bik";
+        const string DefaultFileExtensionVideo = ".video.bik";
 
         public uint FrameCount { set; get; }
         public uint AudioTrackCount { set; get; }
@@ -34,7 +35,7 @@ namespace VGMToolbox.format
         public BinkStream(string filePath)
         {
             this.FilePath = filePath;
-            this.FileExtensionAudio = BinkStream.DefaultFileExtensionAudio;
+            this.FileExtensionAudio = BinkStream.DefaultFileExtensionAudioMulti;
             this.FileExtensionVideo = BinkStream.DefaultFileExtensionVideo;
         }
 
@@ -103,15 +104,49 @@ namespace VGMToolbox.format
             {
                 if (demuxOptions.AddHeader)
                 {
-                    if (streamWriters[key].Name.EndsWith(this.FileExtensionAudio))
+                    if (streamWriters[key].Name.EndsWith(BinkStream.DefaultFileExtensionAudioMulti))
                     {
-                        // write header
-                        
-                        // replace offsets
+                        //////////////////////////
+                        // update original header
+                        //////////////////////////
+                        headerBytes = this.FullHeader;
+
+                        // set file size
+                        fileLength = (uint)(streamWriters[key].Length + headerBytes.Length - 8);
+                        Array.Copy(BitConverter.GetBytes(fileLength), 0, headerBytes, 0xC, 4);
+
+                        // insert frame offsets
+                        for (uint i = 0; i < this.FrameCount; i++)
+                        {
+                            if (this.FrameOffsetList[i].IsKeyFrame)
+                            {
+                                // add key frame bit
+                                frameOffsetBytes = BitConverter.GetBytes(this.NewFrameOffsetsAudio[0][i] | 1);
+                            }
+                            else
+                            {
+                                frameOffsetBytes = BitConverter.GetBytes(this.NewFrameOffsetsAudio[0][i]);
+                            }
+
+                            Array.Copy(frameOffsetBytes, 0, headerBytes, (0x2C + (this.AudioTrackCount * 0xC) + (i * 4)), 4);
+                        }
+
+                        // Add last frame offset (EOF)
+                        fileLength = (uint)(streamWriters[key].Length + headerBytes.Length);
+                        Array.Copy(BitConverter.GetBytes(fileLength), 0, headerBytes, (0x2C + (this.AudioTrackCount * 0xC) + (this.FrameCount * 4)), 4);
 
                         // append to file
+                        sourceFile = streamWriters[key].Name;
+                        headeredFile = sourceFile + ".headered";
+
+                        streamWriters[key].Close();
+                        streamWriters[key].Dispose();
+
+                        FileUtil.AddHeaderToFile(headerBytes, streamWriters[key].Name, headeredFile);
+                        File.Delete(streamWriters[key].Name);
+                        File.Move(headeredFile, streamWriters[key].Name);
                     }
-                    if (streamWriters[key].Name.EndsWith(this.FileExtensionVideo))
+                    if (streamWriters[key].Name.EndsWith(BinkStream.DefaultFileExtensionVideo))
                     {
                         //////////////////////////
                         // update original header
@@ -187,6 +222,16 @@ namespace VGMToolbox.format
             
             Dictionary<uint, FileStream> streamOutputWriters = new Dictionary<uint, FileStream>();
 
+            // set audio extension based on flags
+            if (demuxOptions.SplitAudioStreams)
+            {
+                this.FileExtensionAudio = BinkStream.DefaultFileExtensionAudioSplit;
+            }
+            else
+            {
+                this.FileExtensionAudio = BinkStream.DefaultFileExtensionAudioMulti;
+            }
+
             try
             {
                 using (FileStream fs = File.OpenRead(this.FilePath))
@@ -204,10 +249,18 @@ namespace VGMToolbox.format
                     // setup audio frames
                     this.NewFrameOffsetsAudio = new uint[this.AudioTrackCount][];
 
-                    for (uint i = 0; i < this.AudioTrackCount; i++)
+                    if (demuxOptions.SplitAudioStreams)
                     {
-                        this.NewFrameOffsetsAudio[i] = new uint[this.FrameCount];
-                        this.NewFrameOffsetsAudio[i][0] = this.FrameOffsetList[0].FrameOffset - ((this.AudioTrackCount - 1) * 0xC); // only need one audio header area
+                        for (uint i = 0; i < this.AudioTrackCount; i++)
+                        {
+                            this.NewFrameOffsetsAudio[i] = new uint[this.FrameCount];
+                            this.NewFrameOffsetsAudio[i][0] = this.FrameOffsetList[0].FrameOffset - ((this.AudioTrackCount - 1) * 0xC); // only need one audio header area
+                        }
+                    }
+                    else
+                    {
+                        this.NewFrameOffsetsAudio[0] = new uint[this.FrameCount];
+                        this.NewFrameOffsetsAudio[0][0] = this.FrameOffsetList[0].FrameOffset; // all header info stays
                     }
 
                     //////////////////////
@@ -218,26 +271,51 @@ namespace VGMToolbox.format
                         currentPacketOffset = 0;
                         
                         //////////////////
-                        // extract audio  
+                        // extract audio  - separate tracks
                         //////////////////
+                        //for (uint audioTrackId = 0; audioTrackId < this.AudioTrackCount; audioTrackId++)
+                        //{
+                        //    audioPacketSize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, this.FrameOffsetList[frameId].FrameOffset + currentPacketOffset, 4) , 0);
+                        //    audioPacketSize += 4;
+
+                        //    if (demuxOptions.ExtractAudio)
+                        //    {
+                        //        audioPacket = ParseFile.ParseSimpleOffset(fs, this.FrameOffsetList[frameId].FrameOffset + currentPacketOffset, (int)audioPacketSize);
+
+                        //        //@TODO  - Figure out header stuff
+                        //        this.writeChunkToStream(audioPacket, this.AudioTrackIds[audioTrackId], streamOutputWriters, this.FileExtensionAudio);
+                        //    }
+
+                        //    currentPacketOffset += audioPacketSize; // goto next packet                        
+
+                        //    // update audio frame id
+                        //    if ((frameId + 1) < this.FrameCount)
+                        //    {
+                        //        this.NewFrameOffsetsAudio[audioTrackId][frameId + 1] = this.NewFrameOffsetsAudio[audioTrackId][frameId] + audioPacketSize;
+                        //    }
+                        //}
+                        
+                        ////////////////////////////////////
+                        // extract audio  - combine tracks
+                        ////////////////////////////////////
                         for (uint audioTrackId = 0; audioTrackId < this.AudioTrackCount; audioTrackId++)
                         {
-                            audioPacketSize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, this.FrameOffsetList[frameId].FrameOffset + currentPacketOffset, 4) , 0);
+                            audioPacketSize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, this.FrameOffsetList[frameId].FrameOffset + currentPacketOffset, 4), 0);
                             audioPacketSize += 4;
 
                             if (demuxOptions.ExtractAudio)
                             {
                                 audioPacket = ParseFile.ParseSimpleOffset(fs, this.FrameOffsetList[frameId].FrameOffset + currentPacketOffset, (int)audioPacketSize);
-                                this.writeChunkToStream(audioPacket, this.AudioTrackIds[audioTrackId], streamOutputWriters, this.FileExtensionAudio);
+                                this.writeChunkToStream(audioPacket, 0, streamOutputWriters, this.FileExtensionAudio);
                             }
 
                             currentPacketOffset += audioPacketSize; // goto next packet                        
+                        }
 
-                            // update audio frame id
-                            if ((frameId + 1) < this.FrameCount)
-                            {
-                                this.NewFrameOffsetsAudio[audioTrackId][frameId + 1] = this.NewFrameOffsetsAudio[audioTrackId][frameId] + audioPacketSize;
-                            }
+                        // update audio frame id
+                        if ((frameId + 1) < this.FrameCount)
+                        {
+                            this.NewFrameOffsetsAudio[0][frameId + 1] = this.NewFrameOffsetsAudio[0][frameId] + (uint)currentPacketOffset;
                         }
 
                         /////////////////
@@ -258,7 +336,7 @@ namespace VGMToolbox.format
                         {
                             // parse video packet
                             videoPacket = ParseFile.ParseSimpleOffset(fs, this.FrameOffsetList[frameId].FrameOffset + currentPacketOffset, (int)videoPacketSize);
-                            this.writeChunkToStream(videoPacket, uint.MaxValue, streamOutputWriters, this.FileExtensionVideo);
+                            this.writeChunkToStream(videoPacket, 0xFFFF, streamOutputWriters, this.FileExtensionVideo);
                         }                    
                     
                         // update video frame offset

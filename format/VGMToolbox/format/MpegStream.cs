@@ -47,6 +47,7 @@ namespace VGMToolbox.format
             public bool AddHeader { set; get; }
             public bool ExtractVideo { set; get; }
             public bool ExtractAudio { set; get; }
+            public bool SplitAudioStreams { set; get; }
         }
 
         #region Dictionary Initialization
