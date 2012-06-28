@@ -13,6 +13,7 @@ namespace VGMToolbox.tools.stream
         {
             public string SourceFormat { set; get; }
             public bool AddHeader { set; get; }
+            public bool SplitAudioTracks { set; get; }
             public bool ExtractAudio { set; get; }
             public bool ExtractVideo { set; get; }
             
@@ -28,6 +29,7 @@ namespace VGMToolbox.tools.stream
             MpegStream.DemuxOptionsStruct demuxOptions = new MpegStream.DemuxOptionsStruct();
 
             demuxOptions.AddHeader = demuxStruct.AddHeader;
+            demuxOptions.SplitAudioStreams = demuxStruct.SplitAudioTracks;
             demuxOptions.ExtractAudio = demuxStruct.ExtractAudio;
             demuxOptions.ExtractVideo = demuxStruct.ExtractVideo;
 

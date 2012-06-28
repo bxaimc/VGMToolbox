@@ -21,8 +21,9 @@ namespace VGMToolbox.forms.stream
             InitializeComponent();
 
             this.tbOutput.Text = "Demultiplex streams from movies." + Environment.NewLine;
-            this.tbOutput.Text += "- Currently supported formats: DSI (PS2), DVD Video, MO (Wii Only), MPEG1, MPEG2, PAM, PMF, PSS, SFD, THP, USM, XMV" + Environment.NewLine;
+            this.tbOutput.Text += "- Currently supported formats: BIK, DSI (PS2), DVD Video, MO (Wii Only), MPEG1, MPEG2, PAM, PMF, PSS, SFD, THP, USM, XMV" + Environment.NewLine;
             this.tbOutput.Text += "- If the MPEG does not work for your file, be sure to try DVD Video, since it can handle specialized audio types." + Environment.NewLine;
+            this.tbOutput.Text += "- Bink Audio files do not always playback correctly with RAD Video Tools (binkplay.exe), but will convert to WAV correctly using RAD Video Tools 'Convert a file' (binkconv.exe)." + Environment.NewLine;
             this.tbOutput.Text += "- MKVMerge can be used to add raw .264 data to a container file for playback." + Environment.NewLine;
             this.tbOutput.Text += "- The following video output formats are unknown and untestable: MO, XMV." + Environment.NewLine;
 
@@ -84,6 +85,7 @@ namespace VGMToolbox.forms.stream
             
             // options
             taskStruct.AddHeader = this.cbAddHeader.Checked;
+            taskStruct.SplitAudioTracks = this.cbSplitAudioTracks.Checked;
             taskStruct.ExtractAudio = (this.rbExtractAudioAndVideo.Checked || 
                                        this.rbExtractAudioOnly.Checked);
             taskStruct.ExtractVideo = (this.rbExtractAudioAndVideo.Checked ||
@@ -97,15 +99,24 @@ namespace VGMToolbox.forms.stream
             switch (this.comboFormat.SelectedItem.ToString())
             {
                 case "BIK (Bink Video Container)":
+                    this.cbSplitAudioTracks.Enabled = true;
+                    this.cbSplitAudioTracks.Checked = false;
+                    this.cbAddHeader.Enabled = true;
+                    this.cbAddHeader.Checked = true;
+                    break;
                 case "DSI (Racjin/Racdym PS2 Video)":
                 case "MO (Mobiclip)":
                 case "PAM (PlayStation Advanced Movie)":
                 case "PMF (PSP Movie Format)":
-                case "XMV (Xbox Media Video)":                
+                case "XMV (Xbox Media Video)":
+                    this.cbSplitAudioTracks.Enabled = false;
+                    this.cbSplitAudioTracks.Checked = false;
                     this.cbAddHeader.Enabled = true;
                     this.cbAddHeader.Checked = true;
                     break;
                 default:
+                    this.cbSplitAudioTracks.Enabled = false;
+                    this.cbSplitAudioTracks.Checked = false;
                     this.cbAddHeader.Checked = false;
                     this.cbAddHeader.Enabled = false;
                     break;

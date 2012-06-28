@@ -36,6 +36,7 @@
             this.cbAddHeader = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.comboFormat = new System.Windows.Forms.ComboBox();
+            this.cbSplitAudioTracks = new System.Windows.Forms.CheckBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -45,31 +46,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 519);
-            this.pnlLabels.Size = new System.Drawing.Size(844, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 495);
+            this.pnlLabels.Size = new System.Drawing.Size(1003, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(844, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(1003, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 442);
-            this.tbOutput.Size = new System.Drawing.Size(844, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 418);
+            this.tbOutput.Size = new System.Drawing.Size(1003, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 422);
-            this.pnlButtons.Size = new System.Drawing.Size(844, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 398);
+            this.pnlButtons.Size = new System.Drawing.Size(1003, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(784, 0);
+            this.btnCancel.Location = new System.Drawing.Point(943, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(724, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(883, 0);
             // 
             // grpSourceFiles
             // 
@@ -77,13 +78,14 @@
             this.grpSourceFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpSourceFiles.Location = new System.Drawing.Point(0, 23);
             this.grpSourceFiles.Name = "grpSourceFiles";
-            this.grpSourceFiles.Size = new System.Drawing.Size(844, 399);
+            this.grpSourceFiles.Size = new System.Drawing.Size(1003, 375);
             this.grpSourceFiles.TabIndex = 5;
             this.grpSourceFiles.TabStop = false;
             this.grpSourceFiles.Text = "Drop Files Here";
             // 
             // grpOptions
             // 
+            this.grpOptions.Controls.Add(this.cbSplitAudioTracks);
             this.grpOptions.Controls.Add(this.rbExtractVideoOnly);
             this.grpOptions.Controls.Add(this.rbExtractAudioOnly);
             this.grpOptions.Controls.Add(this.rbExtractAudioAndVideo);
@@ -91,9 +93,9 @@
             this.grpOptions.Controls.Add(this.label1);
             this.grpOptions.Controls.Add(this.comboFormat);
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.grpOptions.Location = new System.Drawing.Point(3, 311);
+            this.grpOptions.Location = new System.Drawing.Point(3, 287);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(838, 85);
+            this.grpOptions.Size = new System.Drawing.Size(997, 85);
             this.grpOptions.TabIndex = 0;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
@@ -158,12 +160,22 @@
             this.comboFormat.TabIndex = 0;
             this.comboFormat.SelectedIndexChanged += new System.EventHandler(this.comboFormat_SelectedIndexChanged);
             // 
+            // cbSplitAudioTracks
+            // 
+            this.cbSplitAudioTracks.AutoSize = true;
+            this.cbSplitAudioTracks.Location = new System.Drawing.Point(9, 62);
+            this.cbSplitAudioTracks.Name = "cbSplitAudioTracks";
+            this.cbSplitAudioTracks.Size = new System.Drawing.Size(112, 17);
+            this.cbSplitAudioTracks.TabIndex = 6;
+            this.cbSplitAudioTracks.Text = "Split Audio Tracks";
+            this.cbSplitAudioTracks.UseVisualStyleBackColor = true;
+            // 
             // MpegDemuxForm
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(844, 560);
+            this.ClientSize = new System.Drawing.Size(1003, 536);
             this.Controls.Add(this.grpSourceFiles);
             this.Name = "MpegDemuxForm";
             this.Text = "MpegDemuxForm";
@@ -198,5 +210,6 @@
         private System.Windows.Forms.RadioButton rbExtractVideoOnly;
         private System.Windows.Forms.RadioButton rbExtractAudioOnly;
         private System.Windows.Forms.RadioButton rbExtractAudioAndVideo;
+        private System.Windows.Forms.CheckBox cbSplitAudioTracks;
     }
 }
