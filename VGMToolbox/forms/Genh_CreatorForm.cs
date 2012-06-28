@@ -644,9 +644,12 @@ namespace VGMToolbox.forms
 
         private void loadGenhFileForEditing()
         {
+            ListBoxFileInfoObject listBoxFile;
+
             if (lbFiles.SelectedIndices.Count == 1)
             {
-                string editPath = Path.Combine(this.tbSourceDirectory.Text, this.lbFiles.SelectedItem.ToString());
+                listBoxFile = (ListBoxFileInfoObject)this.lbFiles.SelectedItem;
+                string editPath = listBoxFile.FilePath;
 
                 if (GenhUtil.IsGenhFile(editPath))
                 {

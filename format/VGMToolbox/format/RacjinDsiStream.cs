@@ -63,7 +63,7 @@ namespace VGMToolbox.format
         // best guesses being used here due to limited samples
         private bool isAudioBlock(byte[] chunkTypeBytes)
         {
-            return ((chunkTypeBytes[1] >= 0xE0) && (chunkTypeBytes[1] <= 0xEF));
+            return ((chunkTypeBytes[1] >= 0xD0) && (chunkTypeBytes[1] <= 0xEF));
         }
 
         // best guesses being used here due to limited samples
@@ -115,7 +115,7 @@ namespace VGMToolbox.format
                         gcStruct.HeaderSkip = "0";
                         gcStruct.Interleave = "0x100";
                         gcStruct.Channels = "2";
-                        gcStruct.Frequency = "44100";
+                        gcStruct.Frequency = "48000";
                         gcStruct.NoLoops = true;
 
                         genhFile = GenhUtil.CreateGenhFile(sourceFile, gcStruct);
