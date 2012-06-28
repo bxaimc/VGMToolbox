@@ -229,7 +229,9 @@ namespace VGMToolbox.format
                         headerBytes[0x28] = 1;
                         Array.Copy(this.FullHeader, 0x2C + (audioTrackIndex * 4), headerBytes, 0x2C, 4);
                         Array.Copy(this.FullHeader, 0x2C + (this.AudioTrackCount * 4) + (audioTrackIndex * 4), headerBytes, 0x30, 4);
-                        Array.Copy(this.FullHeader, 0x2C + (this.AudioTrackCount * 8) + (audioTrackIndex * 4), headerBytes, 0x34, 4); 
+                        
+                        // only one audio track, audio track id must equal zero
+                        Array.Copy(BitConverter.GetBytes((uint)0), 0, headerBytes, 0x34, 4);
 
                         // set file size
                         fileLength = (uint)(streamWriters[key].Length + headerBytes.Length - 8);
