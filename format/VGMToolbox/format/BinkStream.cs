@@ -134,6 +134,7 @@ namespace VGMToolbox.format
                         {
                             // set previous offset
                             previousFrameOffset = frameOffset;
+                            frameOffset = this.NewFrameOffsetsAudio[0][i];
 
                             if (this.FrameOffsetList[i].IsKeyFrame)
                             {
@@ -149,8 +150,6 @@ namespace VGMToolbox.format
                             Array.Copy(frameOffsetBytes, 0, headerBytes, (0x2C + (this.AudioTrackCount * 0xC) + (i * 4)), 4);
 
                             // calculate max frame size
-                            frameOffset = BitConverter.ToUInt32(frameOffsetBytes, 0);
-
                             if ((frameOffset - previousFrameOffset) > maxFrameSize)
                             {
                                 maxFrameSize = frameOffset - previousFrameOffset;
@@ -208,7 +207,8 @@ namespace VGMToolbox.format
                         {
                             // set previous offset
                             previousFrameOffset = frameOffset;
-                            
+                            frameOffset = this.NewFrameOffsetsVideo[i];
+
                             if (this.FrameOffsetList[i].IsKeyFrame)
                             {
                                 // add key frame bit
@@ -223,8 +223,6 @@ namespace VGMToolbox.format
                             Array.Copy(frameOffsetBytes, 0, headerBytes, (0x2C + (i * 4)), 4);
 
                             // calculate max frame size
-                            frameOffset = BitConverter.ToUInt32(frameOffsetBytes, 0);
-
                             if ((frameOffset - previousFrameOffset) > maxFrameSize)
                             {
                                 maxFrameSize = frameOffset - previousFrameOffset;
@@ -363,7 +361,7 @@ namespace VGMToolbox.format
                             audioPacketSize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, this.FrameOffsetList[frameId].FrameOffset + currentPacketOffset, 4), 0);
                             audioPacketSize += 4;
 
-                            if (demuxOptions.ExtractAudio)
+                            if ((demuxOptions.ExtractAudio))
                             {
                                 audioPacket = ParseFile.ParseSimpleOffset(fs, this.FrameOffsetList[frameId].FrameOffset + currentPacketOffset, (int)audioPacketSize);
                                 this.writeChunkToStream(audioPacket, 0, streamOutputWriters, this.FileExtensionAudio);
