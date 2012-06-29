@@ -131,7 +131,10 @@ namespace VGMToolbox.format
             uint maxFrameSize;
             uint fileLength;
 
-            int audioTrackIndex;            
+            int audioTrackIndex;
+            
+            uint frameStartLocation;
+            byte[] dummyValues = new byte[4];
 
             foreach (uint key in streamWriters.Keys)
             {
@@ -150,13 +153,54 @@ namespace VGMToolbox.format
                             headerBytes = new byte[this.FullHeader.Length];
                             Array.Copy(this.FullHeader, headerBytes, this.FullHeader.Length);
 
+                            // set frame start location
+                            frameStartLocation = 0x2C + (this.AudioTrackCount * 0xC);
+
                             // set file size
                             fileLength = (uint)(streamWriters[key].Length + headerBytes.Length - 8);
-                            Array.Copy(BitConverter.GetBytes(fileLength), 0, headerBytes, 4, 4);
 
                             // set video size to minimum
                             Array.Copy(BitConverter.GetBytes((uint)1), 0, headerBytes, 0x14, 4);
                             Array.Copy(BitConverter.GetBytes((uint)1), 0, headerBytes, 0x18, 4);
+
+                            // update values for playback hacks, adding space for dummy audio info
+                            //if (demuxOptions.AddPlaybackHacks)
+                            //{
+                            //    Array.Resize(ref headerBytes, this.FullHeader.Length + 0xC);
+                            //    frameStartLocation += 0xC;
+                            //    fileLength += 0xC;
+                            //}
+                            
+                            // insert file length                            
+                            Array.Copy(BitConverter.GetBytes(fileLength), 0, headerBytes, 4, 4);
+
+                            // insert dummy header values
+                            //if (demuxOptions.AddPlaybackHacks)
+                            //{
+                            //    // insert audio info for this track
+                            //    headerBytes[0x28] = (byte)(headerBytes[0x28] + 1); // add an audio track
+                                
+                            //    // copy existing data (unknown, channel count)
+                            //    Array.Copy(this.FullHeader, 0x2C, headerBytes, 0x2C, (this.AudioTrackCount * 4));
+
+                            //    // insert dummy values (unknown, channel count)
+                            //    Array.Copy(this.FullHeader, 0x2C, dummyValues, 0, 4); // copy from first stream
+                            //    Array.Copy(dummyValues, 0, headerBytes, 0x2C + (this.AudioTrackCount * 4), 4);
+
+                            //    // copy existing data (sample rate, flags)
+                            //    Array.Copy(this.FullHeader, 0x2C + (this.AudioTrackCount * 4), headerBytes, 0x2C + (this.AudioTrackCount * 4) + 4, (this.AudioTrackCount * 4));
+
+                            //    // insert dummy values (sample rate, flags)
+                            //    Array.Copy(this.FullHeader, 0x2C + (this.AudioTrackCount * 4), dummyValues, 0, 4); // copy from first stream
+                            //    Array.Copy(dummyValues, 0, headerBytes, 0x2C + (this.AudioTrackCount * 8) + 4, 4);
+
+                            //    // copy existing values (stream id)
+                            //    Array.Copy(this.FullHeader, 0x2C + (this.AudioTrackCount * 8), headerBytes, 0x2C + (this.AudioTrackCount * 8) + 8, (this.AudioTrackCount * 4));
+
+                            //    // insert dummy values (stream id)
+                            //    Array.Copy(BitConverter.GetBytes((uint)0x7FFF), 0, dummyValues, 0, 4); // copy from first stream
+                            //    Array.Copy(dummyValues, 0, headerBytes, 0x2C + (this.AudioTrackCount * 0xC) + 8, 4);
+                            //}
 
                             // insert frame offsets
                             previousFrameOffset = 0;
@@ -169,18 +213,29 @@ namespace VGMToolbox.format
                                 previousFrameOffset = frameOffset;
                                 frameOffset = this.NewFrameOffsetsAudio[0][i];
 
+                                // add 0xC for dummy header and +4 bytes for dummy stream
+                                //if (demuxOptions.AddPlaybackHacks)
+                                //{
+                                //    frameOffset += 0xC; // dummy stream header
+                                    
+                                //    if (i > 0)
+                                //    {
+                                //        frameOffset += 4; // empty stream data
+                                //    }
+                                //}
+
                                 if (this.FrameOffsetList[i].IsKeyFrame)
                                 {
                                     // add key frame bit
-                                    frameOffsetBytes = BitConverter.GetBytes(this.NewFrameOffsetsAudio[0][i] | 1);
+                                    frameOffsetBytes = BitConverter.GetBytes(frameOffset | 1);
                                 }
                                 else
                                 {
-                                    frameOffsetBytes = BitConverter.GetBytes(this.NewFrameOffsetsAudio[0][i]);
+                                    frameOffsetBytes = BitConverter.GetBytes(frameOffset);
                                 }
 
                                 // insert offset
-                                Array.Copy(frameOffsetBytes, 0, headerBytes, (0x2C + (this.AudioTrackCount * 0xC) + (i * 4)), 4);
+                                Array.Copy(frameOffsetBytes, 0, headerBytes, (frameStartLocation + (i * 4)), 4);
 
                                 // calculate max frame size
                                 if ((frameOffset - previousFrameOffset) > maxFrameSize)
@@ -192,7 +247,7 @@ namespace VGMToolbox.format
 
                             // Add last frame offset (EOF)
                             fileLength = (uint)(streamWriters[key].Length + headerBytes.Length);
-                            Array.Copy(BitConverter.GetBytes(fileLength), 0, headerBytes, (0x2C + (this.AudioTrackCount * 0xC) + (this.FrameCount * 4)), 4);
+                            Array.Copy(BitConverter.GetBytes(fileLength), 0, headerBytes, (frameStartLocation + (this.FrameCount * 4)), 4);
 
                             // insert max frame size
                             if ((fileLength - frameOffset) > maxFrameSize)
@@ -412,6 +467,7 @@ namespace VGMToolbox.format
 
             uint audioPacketSize;
             byte[] audioPacket;
+            byte[] emptyAudioPacket = new byte[] { 0x00, 0x00, 0x00, 0x00 };
 
             uint videoPacketSize;
             byte[] videoPacket;
@@ -484,8 +540,6 @@ namespace VGMToolbox.format
                                 if (demuxOptions.ExtractAudio)
                                 {
                                     audioPacket = ParseFile.ParseSimpleOffset(fs, this.FrameOffsetList[frameId].FrameOffset + currentPacketOffset, (int)audioPacketSize);
-
-                                    //@TODO  - Figure out header stuff
                                     this.writeChunkToStream(audioPacket, this.AudioTrackIds[audioTrackId], streamOutputWriters, this.FileExtensionAudio);
                                 }
 
@@ -522,6 +576,12 @@ namespace VGMToolbox.format
                             {
                                 this.NewFrameOffsetsAudio[0][frameId + 1] = this.NewFrameOffsetsAudio[0][frameId] + (uint)currentPacketOffset;
                             }
+
+                            // add empty track for binkplay (WIP)
+                            //if ((this.AudioTrackCount > 0) && (demuxOptions.AddPlaybackHacks))
+                            //{
+                            //    this.writeChunkToStream(emptyAudioPacket, 0, streamOutputWriters, this.FileExtensionAudio);
+                            //}
                         }
 
                         /////////////////

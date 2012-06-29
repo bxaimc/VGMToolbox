@@ -12,11 +12,14 @@ namespace VGMToolbox.tools.stream
         public struct MpegDemuxStruct : IVgmtWorkerStruct
         {
             public string SourceFormat { set; get; }
-            public bool AddHeader { set; get; }
-            public bool SplitAudioTracks { set; get; }
+            
             public bool ExtractAudio { set; get; }
             public bool ExtractVideo { set; get; }
-            
+
+            public bool AddHeader { set; get; }
+            public bool SplitAudioTracks { set; get; }
+            public bool AddPlaybackHacks { set; get; }
+
             public string[] SourcePaths { set; get; }
         }
 
@@ -28,10 +31,12 @@ namespace VGMToolbox.tools.stream
             MpegDemuxStruct demuxStruct = (MpegDemuxStruct)pMpegDemuxStruct;
             MpegStream.DemuxOptionsStruct demuxOptions = new MpegStream.DemuxOptionsStruct();
 
-            demuxOptions.AddHeader = demuxStruct.AddHeader;
-            demuxOptions.SplitAudioStreams = demuxStruct.SplitAudioTracks;
             demuxOptions.ExtractAudio = demuxStruct.ExtractAudio;
             demuxOptions.ExtractVideo = demuxStruct.ExtractVideo;
+
+            demuxOptions.AddHeader = demuxStruct.AddHeader;
+            demuxOptions.SplitAudioStreams = demuxStruct.SplitAudioTracks;
+            demuxOptions.AddPlaybackHacks = demuxStruct.AddPlaybackHacks;
 
             switch (demuxStruct.SourceFormat)
             {

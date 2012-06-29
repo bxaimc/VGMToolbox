@@ -43,11 +43,13 @@ namespace VGMToolbox.format
         }
 
         public struct DemuxOptionsStruct
-        {
-            public bool AddHeader { set; get; }
+        {            
             public bool ExtractVideo { set; get; }
             public bool ExtractAudio { set; get; }
+
+            public bool AddHeader { set; get; }
             public bool SplitAudioStreams { set; get; }
+            public bool AddPlaybackHacks { set; get; }
         }
 
         #region Dictionary Initialization
