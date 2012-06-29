@@ -135,247 +135,271 @@ namespace VGMToolbox.format
 
             foreach (uint key in streamWriters.Keys)
             {
-                if (demuxOptions.AddHeader)
+                try
                 {
-                    //////////////////////
-                    // Multi-Track Audio
-                    //////////////////////
-                    if (streamWriters[key].Name.EndsWith(BinkStream.DefaultFileExtensionAudioMulti))
+                    if (demuxOptions.AddHeader)
                     {
-                        //////////////////////////
-                        // update original header
-                        //////////////////////////
-                        headerBytes = new byte[this.FullHeader.Length];
-                        Array.Copy(this.FullHeader, headerBytes, this.FullHeader.Length);
-
-                        // set file size
-                        fileLength = (uint)(streamWriters[key].Length + headerBytes.Length - 8);
-                        Array.Copy(BitConverter.GetBytes(fileLength), 0, headerBytes, 4, 4);
-
-                        // insert frame offsets
-                        previousFrameOffset = 0;
-                        frameOffset = 0;
-                        maxFrameSize = 0;
-
-                        for (uint i = 0; i < this.FrameCount; i++)
+                        //////////////////////
+                        // Multi-Track Audio
+                        //////////////////////
+                        if (streamWriters[key].Name.EndsWith(BinkStream.DefaultFileExtensionAudioMulti))
                         {
-                            // set previous offset
-                            previousFrameOffset = frameOffset;
-                            frameOffset = this.NewFrameOffsetsAudio[0][i];
+                            //////////////////////////
+                            // update original header
+                            //////////////////////////
+                            headerBytes = new byte[this.FullHeader.Length];
+                            Array.Copy(this.FullHeader, headerBytes, this.FullHeader.Length);
 
-                            if (this.FrameOffsetList[i].IsKeyFrame)
+                            // set file size
+                            fileLength = (uint)(streamWriters[key].Length + headerBytes.Length - 8);
+                            Array.Copy(BitConverter.GetBytes(fileLength), 0, headerBytes, 4, 4);
+
+                            // set video size to minimum
+                            Array.Copy(BitConverter.GetBytes((uint)1), 0, headerBytes, 0x14, 4);
+                            Array.Copy(BitConverter.GetBytes((uint)1), 0, headerBytes, 0x18, 4);
+
+                            // insert frame offsets
+                            previousFrameOffset = 0;
+                            frameOffset = 0;
+                            maxFrameSize = 0;
+
+                            for (uint i = 0; i < this.FrameCount; i++)
                             {
-                                // add key frame bit
-                                frameOffsetBytes = BitConverter.GetBytes(this.NewFrameOffsetsAudio[0][i] | 1);
+                                // set previous offset
+                                previousFrameOffset = frameOffset;
+                                frameOffset = this.NewFrameOffsetsAudio[0][i];
+
+                                if (this.FrameOffsetList[i].IsKeyFrame)
+                                {
+                                    // add key frame bit
+                                    frameOffsetBytes = BitConverter.GetBytes(this.NewFrameOffsetsAudio[0][i] | 1);
+                                }
+                                else
+                                {
+                                    frameOffsetBytes = BitConverter.GetBytes(this.NewFrameOffsetsAudio[0][i]);
+                                }
+
+                                // insert offset
+                                Array.Copy(frameOffsetBytes, 0, headerBytes, (0x2C + (this.AudioTrackCount * 0xC) + (i * 4)), 4);
+
+                                // calculate max frame size
+                                if ((frameOffset - previousFrameOffset) > maxFrameSize)
+                                {
+                                    maxFrameSize = frameOffset - previousFrameOffset;
+                                }
+
                             }
-                            else
+
+                            // Add last frame offset (EOF)
+                            fileLength = (uint)(streamWriters[key].Length + headerBytes.Length);
+                            Array.Copy(BitConverter.GetBytes(fileLength), 0, headerBytes, (0x2C + (this.AudioTrackCount * 0xC) + (this.FrameCount * 4)), 4);
+
+                            // insert max frame size
+                            if ((fileLength - frameOffset) > maxFrameSize)
                             {
-                                frameOffsetBytes = BitConverter.GetBytes(this.NewFrameOffsetsAudio[0][i]);
+                                maxFrameSize = fileLength - frameOffset;
                             }
 
-                            // insert offset
-                            Array.Copy(frameOffsetBytes, 0, headerBytes, (0x2C + (this.AudioTrackCount * 0xC) + (i * 4)), 4);
+                            Array.Copy(BitConverter.GetBytes(maxFrameSize), 0, headerBytes, 0xC, 4);
 
-                            // calculate max frame size
-                            if ((frameOffset - previousFrameOffset) > maxFrameSize)
-                            {
-                                maxFrameSize = frameOffset - previousFrameOffset;
-                            }
+                            // append to file
+                            sourceFile = streamWriters[key].Name;
+                            headeredFile = sourceFile + ".headered";
 
-                        }                        
+                            streamWriters[key].Close();
+                            streamWriters[key].Dispose();
 
-                        // Add last frame offset (EOF)
-                        fileLength = (uint)(streamWriters[key].Length + headerBytes.Length);
-                        Array.Copy(BitConverter.GetBytes(fileLength), 0, headerBytes, (0x2C + (this.AudioTrackCount * 0xC) + (this.FrameCount * 4)), 4);
-
-                        // insert max frame size
-                        if ((fileLength - frameOffset) > maxFrameSize)
-                        {
-                            maxFrameSize = fileLength - frameOffset;
+                            FileUtil.AddHeaderToFile(headerBytes, streamWriters[key].Name, headeredFile);
+                            File.Delete(streamWriters[key].Name);
+                            File.Move(headeredFile, streamWriters[key].Name);
                         }
 
-                        Array.Copy(BitConverter.GetBytes(maxFrameSize), 0, headerBytes, 0xC, 4);
-
-                        // append to file
-                        sourceFile = streamWriters[key].Name;
-                        headeredFile = sourceFile + ".headered";
-
-                        streamWriters[key].Close();
-                        streamWriters[key].Dispose();
-
-                        FileUtil.AddHeaderToFile(headerBytes, streamWriters[key].Name, headeredFile);
-                        File.Delete(streamWriters[key].Name);
-                        File.Move(headeredFile, streamWriters[key].Name);
-                    }
-                    
-                    //////////////////////
-                    // Split Track Audio
-                    //////////////////////
-                    else if (streamWriters[key].Name.EndsWith(BinkStream.DefaultFileExtensionAudioSplit))
-                    {
-                        //////////////////////////
-                        // update original header
-                        //////////////////////////
-                        headerBytes = new byte[this.FullHeader.Length];
-                        Array.Copy(this.FullHeader, headerBytes, this.FullHeader.Length);
-
-                        // get track info
-                        audioTrackIndex = this.getIndexForSplitAudioTrackFileName(streamWriters[key].Name);
-
-                        // resize header since all audio info except this track will be removied
-                        Array.Resize(ref headerBytes, (int)(0x2C + 0xC + ((this.FrameCount + 1) * 4)));
-
-                        // insert audio info for this track
-                        headerBytes[0x28] = 1;
-                        Array.Copy(this.FullHeader, 0x2C + (audioTrackIndex * 4), headerBytes, 0x2C, 4);
-                        Array.Copy(this.FullHeader, 0x2C + (this.AudioTrackCount * 4) + (audioTrackIndex * 4), headerBytes, 0x30, 4);
-                        
-                        // only one audio track, audio track id must equal zero
-                        Array.Copy(BitConverter.GetBytes((uint)0), 0, headerBytes, 0x34, 4);
-
-                        // set file size
-                        fileLength = (uint)(streamWriters[key].Length + headerBytes.Length - 8);
-                        Array.Copy(BitConverter.GetBytes(fileLength), 0, headerBytes, 4, 4);
-
-                        // insert frame offsets
-                        previousFrameOffset = 0;
-                        frameOffset = 0;
-                        maxFrameSize = 0;
-
-                        for (uint i = 0; i < this.FrameCount; i++)
+                        //////////////////////
+                        // Split Track Audio
+                        //////////////////////
+                        else if (streamWriters[key].Name.EndsWith(BinkStream.DefaultFileExtensionAudioSplit))
                         {
-                            // set previous offset
-                            previousFrameOffset = frameOffset;
-                            frameOffset = this.NewFrameOffsetsAudio[audioTrackIndex][i];
+                            //////////////////////////
+                            // update original header
+                            //////////////////////////
+                            headerBytes = new byte[this.FullHeader.Length];
+                            Array.Copy(this.FullHeader, headerBytes, this.FullHeader.Length);
 
-                            if (this.FrameOffsetList[i].IsKeyFrame)
+                            // set video size to minimum
+                            Array.Copy(BitConverter.GetBytes((uint)1), 0, headerBytes, 0x14, 4);
+                            Array.Copy(BitConverter.GetBytes((uint)1), 0, headerBytes, 0x18, 4);
+
+                            // get track info
+                            audioTrackIndex = this.getIndexForSplitAudioTrackFileName(streamWriters[key].Name);
+
+                            // resize header since all audio info except this track will be removied
+                            Array.Resize(ref headerBytes, (int)(0x2C + 0xC + ((this.FrameCount + 1) * 4)));
+
+                            // insert audio info for this track
+                            headerBytes[0x28] = 1;
+                            Array.Copy(this.FullHeader, 0x2C + (audioTrackIndex * 4), headerBytes, 0x2C, 4);
+                            Array.Copy(this.FullHeader, 0x2C + (this.AudioTrackCount * 4) + (audioTrackIndex * 4), headerBytes, 0x30, 4);
+
+                            // only one audio track, audio track id must equal zero
+                            Array.Copy(BitConverter.GetBytes((uint)0), 0, headerBytes, 0x34, 4);
+
+                            // set file size
+                            fileLength = (uint)(streamWriters[key].Length + headerBytes.Length - 8);
+                            Array.Copy(BitConverter.GetBytes(fileLength), 0, headerBytes, 4, 4);
+
+                            // insert frame offsets
+                            previousFrameOffset = 0;
+                            frameOffset = 0;
+                            maxFrameSize = 0;
+
+                            for (uint i = 0; i < this.FrameCount; i++)
                             {
-                                // add key frame bit
-                                frameOffsetBytes = BitConverter.GetBytes(this.NewFrameOffsetsAudio[audioTrackIndex][i] | 1);
+                                // set previous offset
+                                previousFrameOffset = frameOffset;
+                                frameOffset = this.NewFrameOffsetsAudio[audioTrackIndex][i];
+
+                                if (this.FrameOffsetList[i].IsKeyFrame)
+                                {
+                                    // add key frame bit
+                                    frameOffsetBytes = BitConverter.GetBytes(this.NewFrameOffsetsAudio[audioTrackIndex][i] | 1);
+                                }
+                                else
+                                {
+                                    frameOffsetBytes = BitConverter.GetBytes(this.NewFrameOffsetsAudio[audioTrackIndex][i]);
+                                }
+
+                                // insert offset
+                                Array.Copy(frameOffsetBytes, 0, headerBytes, (0x2C + 0xC + (i * 4)), 4);
+
+                                // calculate max frame size
+                                if ((frameOffset - previousFrameOffset) > maxFrameSize)
+                                {
+                                    maxFrameSize = frameOffset - previousFrameOffset;
+                                }
+
                             }
-                            else
+
+                            // Add last frame offset (EOF)
+                            fileLength = (uint)(streamWriters[key].Length + headerBytes.Length);
+                            Array.Copy(BitConverter.GetBytes(fileLength), 0, headerBytes, (0x2C + 0xC + (this.FrameCount * 4)), 4);
+
+                            // insert max frame size
+                            if ((fileLength - frameOffset) > maxFrameSize)
                             {
-                                frameOffsetBytes = BitConverter.GetBytes(this.NewFrameOffsetsAudio[audioTrackIndex][i]);
+                                maxFrameSize = fileLength - frameOffset;
                             }
 
-                            // insert offset
-                            Array.Copy(frameOffsetBytes, 0, headerBytes, (0x2C + 0xC + (i * 4)), 4);
+                            Array.Copy(BitConverter.GetBytes(maxFrameSize), 0, headerBytes, 0xC, 4);
 
-                            // calculate max frame size
-                            if ((frameOffset - previousFrameOffset) > maxFrameSize)
-                            {
-                                maxFrameSize = frameOffset - previousFrameOffset;
-                            }
+                            // append to file
+                            sourceFile = streamWriters[key].Name;
+                            headeredFile = sourceFile + ".headered";
 
+                            streamWriters[key].Close();
+                            streamWriters[key].Dispose();
+
+                            FileUtil.AddHeaderToFile(headerBytes, streamWriters[key].Name, headeredFile);
+                            File.Delete(streamWriters[key].Name);
+                            File.Move(headeredFile, streamWriters[key].Name);
                         }
 
-                        // Add last frame offset (EOF)
-                        fileLength = (uint)(streamWriters[key].Length + headerBytes.Length);
-                        Array.Copy(BitConverter.GetBytes(fileLength), 0, headerBytes, (0x2C + 0xC + (this.FrameCount * 4)), 4);
-
-                        // insert max frame size
-                        if ((fileLength - frameOffset) > maxFrameSize)
+                        //////////////////////
+                        // Video
+                        //////////////////////
+                        else if (streamWriters[key].Name.EndsWith(BinkStream.DefaultFileExtensionVideo))
                         {
-                            maxFrameSize = fileLength - frameOffset;
-                        }
+                            //////////////////////////
+                            // update original header
+                            //////////////////////////
+                            headerBytes = new byte[this.FullHeader.Length];
+                            Array.Copy(this.FullHeader, headerBytes, this.FullHeader.Length);
 
-                        Array.Copy(BitConverter.GetBytes(maxFrameSize), 0, headerBytes, 0xC, 4);
+                            // resize header since audio info will be removied
+                            Array.Resize(ref headerBytes, (int)(0x2C + ((this.FrameCount + 1) * 4)));
 
-                        // append to file
-                        sourceFile = streamWriters[key].Name;
-                        headeredFile = sourceFile + ".headered";
+                            // set file size
+                            fileLength = (uint)(streamWriters[key].Length + headerBytes.Length - 8);
+                            Array.Copy(BitConverter.GetBytes(fileLength), 0, headerBytes, 4, 4);
 
-                        streamWriters[key].Close();
-                        streamWriters[key].Dispose();
+                            // set audio track count to zero
+                            headerBytes[0x28] = 0;
 
-                        FileUtil.AddHeaderToFile(headerBytes, streamWriters[key].Name, headeredFile);
-                        File.Delete(streamWriters[key].Name);
-                        File.Move(headeredFile, streamWriters[key].Name);
-                    }
-                    
-                    //////////////////////
-                    // Video
-                    //////////////////////
-                    else if (streamWriters[key].Name.EndsWith(BinkStream.DefaultFileExtensionVideo))
-                    {
-                        //////////////////////////
-                        // update original header
-                        //////////////////////////
-                        headerBytes = new byte[this.FullHeader.Length];
-                        Array.Copy(this.FullHeader, headerBytes, this.FullHeader.Length);
-                        
-                        // resize header since audio info will be removied
-                        Array.Resize(ref headerBytes, (int)(0x2C + ((this.FrameCount + 1) * 4)));
-                        
-                        // set file size
-                        fileLength = (uint)(streamWriters[key].Length + headerBytes.Length - 8);
-                        Array.Copy(BitConverter.GetBytes(fileLength), 0, headerBytes, 4, 4);
+                            // insert frame offsets
+                            previousFrameOffset = 0;
+                            frameOffset = 0;
+                            maxFrameSize = 0;
 
-                        // set audio track count to zero
-                        headerBytes[0x28] = 0;
-
-                        // insert frame offsets
-                        previousFrameOffset = 0;
-                        frameOffset = 0;
-                        maxFrameSize = 0;
-                        
-                        for (uint i = 0; i < this.FrameCount; i++)
-                        {
-                            // set previous offset
-                            previousFrameOffset = frameOffset;
-                            frameOffset = this.NewFrameOffsetsVideo[i];
-
-                            if (this.FrameOffsetList[i].IsKeyFrame)
+                            for (uint i = 0; i < this.FrameCount; i++)
                             {
-                                // add key frame bit
-                                frameOffsetBytes = BitConverter.GetBytes(this.NewFrameOffsetsVideo[i] | 1);
-                            }
-                            else
-                            {
-                                frameOffsetBytes = BitConverter.GetBytes(this.NewFrameOffsetsVideo[i]); 
+                                // set previous offset
+                                previousFrameOffset = frameOffset;
+                                frameOffset = this.NewFrameOffsetsVideo[i];
+
+                                if (this.FrameOffsetList[i].IsKeyFrame)
+                                {
+                                    // add key frame bit
+                                    frameOffsetBytes = BitConverter.GetBytes(this.NewFrameOffsetsVideo[i] | 1);
+                                }
+                                else
+                                {
+                                    frameOffsetBytes = BitConverter.GetBytes(this.NewFrameOffsetsVideo[i]);
+                                }
+
+                                // insert frame offset
+                                Array.Copy(frameOffsetBytes, 0, headerBytes, (0x2C + (i * 4)), 4);
+
+                                // calculate max frame size
+                                if ((frameOffset - previousFrameOffset) > maxFrameSize)
+                                {
+                                    maxFrameSize = frameOffset - previousFrameOffset;
+                                }
                             }
 
-                            // insert frame offset
-                            Array.Copy(frameOffsetBytes, 0, headerBytes, (0x2C + (i * 4)), 4);
+                            // Add last frame offset (EOF)
+                            fileLength = (uint)(streamWriters[key].Length + headerBytes.Length);
+                            Array.Copy(BitConverter.GetBytes(fileLength), 0, headerBytes, (0x2C + (this.FrameCount * 4)), 4);
 
-                            // calculate max frame size
-                            if ((frameOffset - previousFrameOffset) > maxFrameSize)
+                            // insert max frame size
+                            if ((fileLength - frameOffset) > maxFrameSize)
                             {
-                                maxFrameSize = frameOffset - previousFrameOffset;
+                                maxFrameSize = fileLength - frameOffset;
                             }
+
+                            Array.Copy(BitConverter.GetBytes(maxFrameSize), 0, headerBytes, 0xC, 4);
+
+                            // append to file
+                            sourceFile = streamWriters[key].Name;
+                            headeredFile = sourceFile + ".headered";
+
+                            streamWriters[key].Close();
+                            streamWriters[key].Dispose();
+
+                            FileUtil.AddHeaderToFile(headerBytes, streamWriters[key].Name, headeredFile);
+                            File.Delete(streamWriters[key].Name);
+                            File.Move(headeredFile, streamWriters[key].Name);
                         }
-
-                        // Add last frame offset (EOF)
-                        fileLength = (uint)(streamWriters[key].Length + headerBytes.Length);
-                        Array.Copy(BitConverter.GetBytes(fileLength), 0, headerBytes, (0x2C + (this.FrameCount * 4)), 4);
-
-                        // insert max frame size
-                        if ((fileLength - frameOffset) > maxFrameSize)
-                        {
-                            maxFrameSize = fileLength - frameOffset;
-                        }
-
-                        Array.Copy(BitConverter.GetBytes(maxFrameSize), 0, headerBytes, 0xC, 4);
-
-                        // append to file
-                        sourceFile = streamWriters[key].Name;
-                        headeredFile = sourceFile + ".headered";
-
-                        streamWriters[key].Close();
-                        streamWriters[key].Dispose();
-                        
-                        FileUtil.AddHeaderToFile(headerBytes, streamWriters[key].Name, headeredFile);
-                        File.Delete(streamWriters[key].Name);
-                        File.Move(headeredFile, streamWriters[key].Name);
                     }
                 }
-
-                // close streams if open
-                if (streamWriters[key] != null &&
-                    streamWriters[key].CanRead)
+                catch (Exception ex)
                 {
-                    streamWriters[key].Close();
-                    streamWriters[key].Dispose();
+                    if (streamWriters[key] != null)
+                    {
+                        throw new Exception(String.Format("Exception building header for file: {0}{1}{2}", streamWriters[key].Name, ex.Message, Environment.NewLine));
+                    }
+                    else
+                    {
+                        throw new Exception(String.Format("Exception building header for file: {0}{1}{2}", "UNKNOWN", ex.Message, Environment.NewLine));
+                    }
+                }
+                finally
+                {
+                    // close streams if open
+                    if (streamWriters[key] != null &&
+                        streamWriters[key].CanRead)
+                    {
+                        streamWriters[key].Close();
+                        streamWriters[key].Dispose();
+                    }
                 }
             }
         }
