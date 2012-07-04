@@ -70,6 +70,7 @@
     <Compile Include="VGMToolbox\format\brsar\Brsar.cs" />
     <Compile Include="VGMToolbox\format\brsar\BrsarSymbSection.cs" />
     <Compile Include="VGMToolbox\format\Cdxa.cs" />
+    <Compile Include="VGMToolbox\format\MicrosoftAsfContainer.cs" />
     <Compile Include="VGMToolbox\format\MobiclipNdsStream.cs" />
     <Compile Include="VGMToolbox\format\CriUsmStream.cs" />
     <Compile Include="VGMToolbox\format\DvdVideoStream.cs" />
