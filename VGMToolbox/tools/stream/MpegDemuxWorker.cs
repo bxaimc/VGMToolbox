@@ -40,6 +40,11 @@ namespace VGMToolbox.tools.stream
 
             switch (demuxStruct.SourceFormat)
             {
+                case "ASF (MS Advanced Systems Format)":
+                case "WMV (MS Advanced Systems Format)":
+                    MicrosoftAsfContainer asfStream = new MicrosoftAsfContainer(path);
+                    asfStream.DemultiplexStreams(demuxOptions);
+                    break;
                 case "BIK (Bink Video Container)":
                     BinkStream binkStream = new BinkStream(path);
                     binkStream.DemultiplexStreams(demuxOptions);

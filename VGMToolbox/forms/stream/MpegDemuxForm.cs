@@ -34,6 +34,7 @@ namespace VGMToolbox.forms.stream
         private void initializeFormatList()
         {
             this.comboFormat.Items.Clear();
+            this.comboFormat.Items.Add("ASF (MS Advanced Systems Format)");
             this.comboFormat.Items.Add("BIK (Bink Video Container)");
             this.comboFormat.Items.Add("DSI (Racjin/Racdym PS2 Video)");
             this.comboFormat.Items.Add("DVD Video (VOB)");            
@@ -45,9 +46,10 @@ namespace VGMToolbox.forms.stream
             this.comboFormat.Items.Add("SFD (CRI Sofdec Video)");
             this.comboFormat.Items.Add("THP");
             this.comboFormat.Items.Add("USM (CRI Movie 2)");
+            this.comboFormat.Items.Add("WMV (MS Advanced Systems Format)");
             this.comboFormat.Items.Add("XMV (Xbox Media Video)");
 
-            this.comboFormat.SelectedItem = "BIK (Bink Video Container)";
+            this.comboFormat.SelectedItem = "ASF (MS Advanced Systems Format)";
         }
 
         protected override IVgmtBackgroundWorker getBackgroundWorker()
@@ -104,10 +106,12 @@ namespace VGMToolbox.forms.stream
                     this.cbAddHeader.Enabled = true;
                     this.cbAddHeader.Checked = true;
                     break;
+                case "ASF (MS Advanced Systems Format)":
                 case "DSI (Racjin/Racdym PS2 Video)":
                 case "MO (Mobiclip)":
                 case "PAM (PlayStation Advanced Movie)":
                 case "PMF (PSP Movie Format)":
+                case "WMV (MS Advanced Systems Format)":
                 case "XMV (Xbox Media Video)":
                     this.cbSplitAudioTracks.Enabled = false;
                     this.cbSplitAudioTracks.Checked = false;
