@@ -269,7 +269,6 @@ namespace VGMToolbox.format
 
                 codecList.CodecEntries[i].CodecInformationLength = BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(inStream, (currentOffset + 6 + (2 * codecList.CodecEntries[i].CodecNameLength) + (2 * codecList.CodecEntries[i].CodecDescriptionLength)), 2), 0);
                 codecList.CodecEntries[i].CodecInformationBytes = ParseFile.ParseSimpleOffset(inStream, (currentOffset + 8 + (2 * codecList.CodecEntries[i].CodecNameLength) + (2 * codecList.CodecEntries[i].CodecDescriptionLength)), (int)codecList.CodecEntries[i].CodecInformationLength);
-                // codecList.CodecEntries[i].CodecInformation = Encoding.Unicode.GetString(codecList.CodecEntries[i].CodecInformationBytes);
 
                 codecList.CodecEntries[i].ObjectSize = (8 + (ulong)(2 * codecList.CodecEntries[i].CodecNameLength) +
                                                             (ulong)(2 * codecList.CodecEntries[i].CodecDescriptionLength) +
