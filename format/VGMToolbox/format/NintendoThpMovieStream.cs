@@ -34,7 +34,7 @@ namespace VGMToolbox.format
 
         public uint DataSize { set; get; }
         public uint ComponentDataOffset { set; get; }
-        public uint OffsetsDataOffset { set; get; }
+        public byte[] ComponentTypes { set; get; }
 
         public uint FirstFrameOffset { set; get; }
         public uint LastFrameOffset { set; get; }
@@ -110,7 +110,7 @@ namespace VGMToolbox.format
 
                 this.DataSize = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(thpStream, currentOffset + 0x1C, 4));
                 this.ComponentDataOffset = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(thpStream, currentOffset + 0x20, 4));
-                this.OffsetsDataOffset = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(thpStream, currentOffset + 0x24, 4));
+                this.ComponentTypes = ParseFile.ParseSimpleOffset(thpStream, currentOffset + 0x24, 16);
 
                 this.FirstFrameOffset = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(thpStream, currentOffset + 0x28, 4));
                 this.LastFrameOffset = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(thpStream, currentOffset + 0x2C, 4));
