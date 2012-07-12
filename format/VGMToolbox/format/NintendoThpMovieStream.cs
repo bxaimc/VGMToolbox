@@ -74,7 +74,7 @@ namespace VGMToolbox.format
             if (!streamWriters.ContainsKey(chunkId))
             {
                 destinationFile = Path.Combine(Path.GetDirectoryName(this.FilePath),
-                    String.Format("{0}{1}", Path.GetFileNameWithoutExtension(this.FilePath), fileExtension));
+                    String.Format("{0}.{1}{2}", Path.GetFileNameWithoutExtension(this.FilePath), chunkId, fileExtension));
                 streamWriters[chunkId] = File.Open(destinationFile, FileMode.Create, FileAccess.ReadWrite);
             }
 
@@ -275,7 +275,8 @@ namespace VGMToolbox.format
             byte[] videoChunk;
             byte[] audioChunk;
 
-            bool isAudioHeaderWritten = false;
+            // bool isAudioHeaderWritten = false;
+            Dictionary<string, bool> isAudioHeaderWritten = new Dictionary<string, bool>();
             bool isVideoHeaderWritten = false;
             byte[] thpHeader;
             byte[] firstFrameSize;
@@ -297,6 +298,9 @@ namespace VGMToolbox.format
             long videoFrameOffset = 0;
             long audioFrameOffset = 0;
             byte[] lastOffsetBytes;
+            
+            string audioStreamHashKey;
+            byte[] bigEndianOne = new byte[] { 0x00, 0x00, 0x00, 0x01 };
 
             Dictionary<string, FileStream> streamWriters = new Dictionary<string, FileStream>();
 
@@ -354,6 +358,7 @@ namespace VGMToolbox.format
                                 dataStart = 0xC;
                             }
 
+                            #region WRITE VIDEO
                             ///////////////
                             // write video
                             ///////////////
@@ -403,35 +408,14 @@ namespace VGMToolbox.format
                                 // save previous bytes for next frame
                                 previousFrameSizeVideo = videoChunkSize;
                             }
+                            #endregion
 
+                            #region WRITE AUDIO
                             ///////////////
                             // write audio
                             ///////////////
                             if (demuxOptions.ExtractAudio && this.ContainsAudio)
                             {
-                                if (streamWriters.ContainsKey("audio"))
-                                {
-                                    audioFrameOffset = streamWriters["audio"].Position;
-                                }
-                                
-                                // attach THP header
-                                if (!isAudioHeaderWritten)
-                                { 
-                                    // get original header
-                                    thpHeader = ParseFile.ParseSimpleOffset(fs, headerLocation, (int)(fs.Length - this.DataSize));
-
-                                    // clean out video info
-                                    thpHeader = this.RemoveVideoInfoFromThpHeader(thpHeader);
-
-                                    // update first frame size in header
-                                    firstFrameSize = ByteConversion.GetBytesBigEndian((uint)(audioChunkSize + 0x10));
-                                    Array.Copy(firstFrameSize, 0, thpHeader, 0x18, 4);
-
-                                    // write updated header
-                                    this.writeChunkToStream(thpHeader, "audio", streamWriters, this.FileExtensionAudio);
-                                    isAudioHeaderWritten = true;
-                                }
-
                                 //if (this.NumberOfAudioBlocksPerFrame > 1)
                                 //{
                                 //    int x = 1;
@@ -440,30 +424,63 @@ namespace VGMToolbox.format
                                 // add blocks
                                 for (int i = 0; i < this.NumberOfAudioBlocksPerFrame; i++)
                                 {
+                                    audioStreamHashKey = String.Format("track_{0}", i.ToString("D2"));
+                             
+                                    // write file header
+                                    if (streamWriters.ContainsKey(audioStreamHashKey))
+                                    {
+                                        audioFrameOffset = streamWriters[audioStreamHashKey].Position;
+                                    }
+
+                                    // attach THP header
+                                    if (!isAudioHeaderWritten.ContainsKey(audioStreamHashKey) || 
+                                        isAudioHeaderWritten[audioStreamHashKey] == false)
+                                    {
+                                        // get original header
+                                        thpHeader = ParseFile.ParseSimpleOffset(fs, headerLocation, (int)(fs.Length - this.DataSize));
+
+                                        // clean out video info
+                                        thpHeader = this.RemoveVideoInfoFromThpHeader(thpHeader);
+
+                                        // update first frame size in header
+                                        firstFrameSize = ByteConversion.GetBytesBigEndian((uint)(audioChunkSize + 0x10));
+                                        Array.Copy(firstFrameSize, 0, thpHeader, 0x18, 4);
+
+                                        // set NumberOfAudioBlocksPerFrame to 1
+                                        Array.Copy(bigEndianOne, 0, thpHeader, 0x50, 4);
+
+                                        // write updated header
+                                        this.writeChunkToStream(thpHeader, audioStreamHashKey, streamWriters, this.FileExtensionAudio);
+                                        isAudioHeaderWritten.Add(audioStreamHashKey, true);
+                                    }
+                                    
+                                    //////////////////////
                                     // write frame header
+                                    //////////////////////
 
                                     // write next frame size
                                     nextFrameSizeBytes = ByteConversion.GetBytesBigEndian((uint)(nextFrameSizeAudio + 0x10));
-                                    this.writeChunkToStream(nextFrameSizeBytes, "audio", streamWriters, this.FileExtensionAudio);
+                                    this.writeChunkToStream(nextFrameSizeBytes, audioStreamHashKey, streamWriters, this.FileExtensionAudio);
                                     
                                     // write previous frame size
                                     previousFrameSizeBytes = ByteConversion.GetBytesBigEndian((uint)(previousFrameSizeAudio + 0x10));
-                                    this.writeChunkToStream(nextFrameSizeBytes, "audio", streamWriters, this.FileExtensionAudio);
+                                    this.writeChunkToStream(nextFrameSizeBytes, audioStreamHashKey, streamWriters, this.FileExtensionAudio);
                                     
                                     // write video size (zero)
-                                    this.writeChunkToStream(fourEmptyBytes, "audio", streamWriters, this.FileExtensionAudio);
+                                    this.writeChunkToStream(fourEmptyBytes, audioStreamHashKey, streamWriters, this.FileExtensionAudio);
                                     
                                     // write audio size for this frame
-                                    this.writeChunkToStream(audioChunkSizeBytes, "audio", streamWriters, this.FileExtensionAudio);
+                                    this.writeChunkToStream(audioChunkSizeBytes, audioStreamHashKey, streamWriters, this.FileExtensionAudio);
                                     
                                     // write chunk
                                     audioChunk = ParseFile.ParseSimpleOffset(currentFrame, (int)(dataStart + videoChunkSize + (i * audioChunkSize)), (int)audioChunkSize);
-                                    this.writeChunkToStream(audioChunk, "audio", streamWriters, this.FileExtensionAudio);
+                                    this.writeChunkToStream(audioChunk, audioStreamHashKey, streamWriters, this.FileExtensionAudio);
 
                                     // set previous frame size for next frame
                                     previousFrameSizeAudio = audioChunkSize;
                                 }
                             }
+                            #endregion
 
                             // increment offset and frame counter
                             currentOffset += currentFrame.Length;
@@ -483,14 +500,19 @@ namespace VGMToolbox.format
                         }
 
                         // frame offsets
-                        if (streamWriters.ContainsKey("audio"))
+                        for (int i = 0; i < this.NumberOfAudioBlocksPerFrame; i++)
                         {
-                            lastOffsetBytes = ByteConversion.GetBytesBigEndian((uint)audioFrameOffset);
+                            audioStreamHashKey = String.Format("audio_{0}", i.ToString("DD"));
+                            
+                            if (streamWriters.ContainsKey(audioStreamHashKey))
+                            {
+                                lastOffsetBytes = ByteConversion.GetBytesBigEndian((uint)audioFrameOffset);
 
-                            streamWriters["audio"].Position = 0x2C;
-                            streamWriters["audio"].Write(lastOffsetBytes, 0, 4);
+                                streamWriters[audioStreamHashKey].Position = 0x2C;
+                                streamWriters[audioStreamHashKey].Write(lastOffsetBytes, 0, 4);
+                            }
                         }
-                        
+
                         if (streamWriters.ContainsKey("video"))
                         {
                             lastOffsetBytes = ByteConversion.GetBytesBigEndian((uint)videoFrameOffset);
