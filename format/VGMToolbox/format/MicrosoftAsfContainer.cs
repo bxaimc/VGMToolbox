@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -59,7 +60,7 @@ namespace VGMToolbox.format
             public byte Reserved2 { set; get; }
 
             public AsfFilePropertiesObject FileProperties { set; get; }
-            public AsfStreamPropertiesObject StreamProperties { set; get; }
+            public AsfStreamPropertiesObject[] StreamProperties { set; get; }
             public AsfHeaderExtensionObject HeaderExtension { set; get; }
             public AsfCodecListObject CodecList { set; get; }
 
@@ -221,7 +222,7 @@ namespace VGMToolbox.format
 
             streamProperties.ObjectGuid = new Guid(ParseFile.ParseSimpleOffset(inStream, currentOffset, 0x10));
             streamProperties.ObjectSize = BitConverter.ToUInt64(ParseFile.ParseSimpleOffset(inStream, (currentOffset + 0x10), 8), 0);
-            streamProperties.StreamType = new Guid(ParseFile.ParseSimpleOffset(inStream, currentOffset + 0x10, 0x10));
+            streamProperties.StreamType = new Guid(ParseFile.ParseSimpleOffset(inStream, currentOffset + 0x18, 0x10));
             streamProperties.StreamId = (byte)(ParseFile.ParseSimpleOffset(inStream, currentOffset + 0x48, 1)[0] & 0x7E);
 
             streamProperties.RawBlock = ParseFile.ParseSimpleOffset(inStream, currentOffset, (int)streamProperties.ObjectSize);
@@ -286,6 +287,9 @@ namespace VGMToolbox.format
             ulong checkObjectSize;
             ulong endOfHeaderBlockOffset;
 
+            AsfStreamPropertiesObject tempStreamPropertiesObject;
+            ArrayList tempStreamPropertiesArray = new ArrayList();
+
             AsfHeaderObject tempHeader = new AsfHeaderObject();
 
             tempHeader.ObjectGuid = new Guid(ParseFile.ParseSimpleOffset(inStream, currentOffset, 0x10));
@@ -309,8 +313,9 @@ namespace VGMToolbox.format
                     tempHeader.FileProperties = this.parseAsfFilePropertiesObject(inStream, currentOffset);
                 }
                 else if (checkGuid.Equals(MicrosoftAsfContainer.ASF_Stream_Properties_Object))
-                { 
-                    tempHeader.StreamProperties = this.parseAsfStreamPropertiesObject(inStream, currentOffset);        
+                {
+                    tempStreamPropertiesObject = this.parseAsfStreamPropertiesObject(inStream, currentOffset);
+                    tempStreamPropertiesArray.Add(tempStreamPropertiesObject);
                 }
                 else if (checkGuid.Equals(MicrosoftAsfContainer.ASF_Header_Extension_Object))
                 { 
@@ -330,10 +335,22 @@ namespace VGMToolbox.format
                     throw new IndexOutOfRangeException(String.Format("Error parsing header, object ending at 0x{0} exceeds header size.{1}", currentOffset.ToString("X"), Environment.NewLine));
                 }
             }
-            
-            // public AsfCodecListObject CodecList { set; get; }
 
+            tempHeader.StreamProperties = (AsfStreamPropertiesObject[])tempStreamPropertiesArray.ToArray(typeof(AsfStreamPropertiesObject));
             this.Header = tempHeader;
+        }
+
+        private void parseDataObject(Stream inStream, long currentOffset)
+        {             
+            AsfDataObject dataObject = new AsfDataObject();
+
+            dataObject.ObjectGuid = new Guid(ParseFile.ParseSimpleOffset(inStream, currentOffset, 0x10));
+            dataObject.ObjectSize = BitConverter.ToUInt64(ParseFile.ParseSimpleOffset(inStream, (currentOffset + 0x10), 8), 0);
+            dataObject.FileGuid = new Guid(ParseFile.ParseSimpleOffset(inStream, currentOffset + 0x18, 0x10));
+            dataObject.TotalDataPackets = BitConverter.ToUInt64(ParseFile.ParseSimpleOffset(inStream, currentOffset + 0x28, 8), 0);
+            dataObject.Reserved = BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(inStream, currentOffset + 0x30, 2), 0);
+
+            dataObject.RawBlock = ParseFile.ParseSimpleOffset(inStream, currentOffset, (int)dataObject.ObjectSize);
         }
 
         public virtual void DemultiplexStreams(MpegStream.DemuxOptionsStruct demuxOptions)
@@ -372,6 +389,7 @@ namespace VGMToolbox.format
                             else if (checkGuid.Equals(MicrosoftAsfContainer.ASF_Data_Object))
                             {
                                 // write data to file
+                                this.parseDataObject(fs, currentOffset);
                             }
 
                             // increment counter
