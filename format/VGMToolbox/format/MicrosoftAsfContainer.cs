@@ -84,6 +84,8 @@ namespace VGMToolbox.format
             public ulong FileSize { set; get; }
 
             public ulong DataPacketsCount { set; get; }
+            public uint MinimumPacketSize { set; get; }
+            public uint MaximumPacketSize { set; get; }
 
             public byte[] RawBlock { set; get; }
         }
@@ -179,7 +181,7 @@ namespace VGMToolbox.format
 
             public byte PayloadFlags { set; get; }
             public LengthType PayloadLengthType { set; get; }
-            public byte NumberOfPayloads { set; get; }
+            public ushort NumberOfPayloads { set; get; }
 
             public uint PacketOverheadLength { set; get; }
             public byte[] RawBlock { set; get; }
@@ -191,9 +193,11 @@ namespace VGMToolbox.format
             public byte KeyFrame { set; get; }
             public uint MediaObjectNumber { set; get; }
             public uint OffsetIntoMediaObject { set; get; }
+            
             public uint ReplicatedDataLength { set; get; }
-
             public byte[] ReplicatedData { set; get; }
+
+            public uint PayloadDataLength { set; get; }
             public byte[] PayloadData { set; get; }
 
             public uint PayloadSize { set; get; }
@@ -241,6 +245,10 @@ namespace VGMToolbox.format
             fileProperties.FileId = new Guid(ParseFile.ParseSimpleOffset(inStream, currentOffset + 0x18, 0x10));
             fileProperties.FileSize = BitConverter.ToUInt64(ParseFile.ParseSimpleOffset(inStream, (currentOffset + 0x28), 8), 0);
             fileProperties.DataPacketsCount = BitConverter.ToUInt64(ParseFile.ParseSimpleOffset(inStream, (currentOffset + 0x38), 8), 0);
+
+            fileProperties.MinimumPacketSize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(inStream, (currentOffset + 0x5C), 4), 0);
+            fileProperties.MaximumPacketSize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(inStream, (currentOffset + 0x60), 4), 0);
+            
             fileProperties.RawBlock = ParseFile.ParseSimpleOffset(inStream, currentOffset, (int)fileProperties.ObjectSize);
 
             return fileProperties;
@@ -385,20 +393,26 @@ namespace VGMToolbox.format
 
         private long parseDataPacket(Stream inStream, long currentOffset, MpegStream.DemuxOptionsStruct demuxOptions)
         {
-            long packetSize = -1;
+            long packetSize = 0;
             AsfDataPacketPayloadParsingObject dataPacketPayloadParsingObject;
             AsfDataPacketPayloadObject dataPacketPayloadObject;
 
             // get payload parsing info
             dataPacketPayloadParsingObject = this.parseAsfDataPacketPayloadParsingObject(inStream, currentOffset);
             currentOffset += dataPacketPayloadParsingObject.PacketOverheadLength;
+            packetSize += dataPacketPayloadParsingObject.PacketOverheadLength;
 
             // parse payload(s)
             for (int i = 0; i < dataPacketPayloadParsingObject.NumberOfPayloads; i++)
             {
-                dataPacketPayloadObject = this.parseAsfDataPacketPayloadObject(inStream, currentOffset, demuxOptions);
+                dataPacketPayloadObject = this.parseAsfDataPacketPayloadObject(inStream, currentOffset, dataPacketPayloadParsingObject, demuxOptions);
                 currentOffset += dataPacketPayloadObject.PayloadSize;
+                packetSize += dataPacketPayloadObject.PayloadSize;
             }
+
+            // skip padding
+            currentOffset += dataPacketPayloadParsingObject.PaddingLength;
+            packetSize += dataPacketPayloadParsingObject.PaddingLength;
 
             return packetSize;
         }
@@ -408,7 +422,7 @@ namespace VGMToolbox.format
             AsfDataPacketPayloadParsingObject dataPacketPayloadParsingObject = new AsfDataPacketPayloadParsingObject();
             uint ErrCorrectBlockLength;
             uint bytesRead = 0;
-            uint ValueOffset = 0;
+            uint valueOffset = 0;
 
             // parse error correction info
             dataPacketPayloadParsingObject.ErrorCorrectionData = ParseFile.ParseSimpleOffset(inStream, currentOffset, 1)[0];
@@ -426,7 +440,7 @@ namespace VGMToolbox.format
             dataPacketPayloadParsingObject.MultiplePayloadsPresent = (dataPacketPayloadParsingObject.LengthTypeFlags & 1) == 1;                        
             dataPacketPayloadParsingObject.SequenceType = (LengthType)((dataPacketPayloadParsingObject.LengthTypeFlags & 0x6) >> 1);
             dataPacketPayloadParsingObject.PaddingLengthType = (LengthType)((dataPacketPayloadParsingObject.LengthTypeFlags & 0x18) >> 3);
-            dataPacketPayloadParsingObject.PacketLengthType = (LengthType)((dataPacketPayloadParsingObject.LengthTypeFlags & 0x060) >> 5);
+            dataPacketPayloadParsingObject.PacketLengthType = (LengthType)((dataPacketPayloadParsingObject.LengthTypeFlags & 0x60) >> 5);
 
             if ((dataPacketPayloadParsingObject.LengthTypeFlags & 0x80) == 0x80)
             {
@@ -441,38 +455,30 @@ namespace VGMToolbox.format
             dataPacketPayloadParsingObject.StreamNumberLengthType = (LengthType)((dataPacketPayloadParsingObject.PropertyFlags & 0xC0) >> 6);
 
             // get values
-            ValueOffset = 2;
+            valueOffset = 2;
 
-            dataPacketPayloadParsingObject.PacketLength = GetLengthTypeValue(inStream, currentOffset + ErrCorrectBlockLength + ValueOffset, dataPacketPayloadParsingObject.PacketLengthType, ref bytesRead);
-            ValueOffset += bytesRead;
+            dataPacketPayloadParsingObject.PacketLength = GetLengthTypeValue(inStream, currentOffset + ErrCorrectBlockLength + valueOffset, dataPacketPayloadParsingObject.PacketLengthType, ref bytesRead);
+            valueOffset += bytesRead;
             
-            dataPacketPayloadParsingObject.Sequence = GetLengthTypeValue(inStream, currentOffset + ErrCorrectBlockLength + ValueOffset, dataPacketPayloadParsingObject.SequenceType, ref bytesRead);
-            ValueOffset += bytesRead;
+            dataPacketPayloadParsingObject.Sequence = GetLengthTypeValue(inStream, currentOffset + ErrCorrectBlockLength + valueOffset, dataPacketPayloadParsingObject.SequenceType, ref bytesRead);
+            valueOffset += bytesRead;
 
-            dataPacketPayloadParsingObject.PaddingLength = GetLengthTypeValue(inStream, currentOffset + ErrCorrectBlockLength + ValueOffset, dataPacketPayloadParsingObject.PaddingLengthType, ref bytesRead);
-            ValueOffset += bytesRead;
+            dataPacketPayloadParsingObject.PaddingLength = GetLengthTypeValue(inStream, currentOffset + ErrCorrectBlockLength + valueOffset, dataPacketPayloadParsingObject.PaddingLengthType, ref bytesRead);
+            valueOffset += bytesRead;
             
             // get send time and dureation (not used right now, but why not?)
-            dataPacketPayloadParsingObject.SendTime = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(inStream, currentOffset + ErrCorrectBlockLength + ValueOffset, 4), 0);
-            ValueOffset += sizeof(uint);
+            dataPacketPayloadParsingObject.SendTime = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(inStream, currentOffset + ErrCorrectBlockLength + valueOffset, 4), 0);
+            valueOffset += sizeof(uint);
 
-            dataPacketPayloadParsingObject.Duration = BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(inStream, currentOffset + ErrCorrectBlockLength + ValueOffset, 2), 0);
-            ValueOffset += sizeof(ushort);
+            dataPacketPayloadParsingObject.Duration = BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(inStream, currentOffset + ErrCorrectBlockLength + valueOffset, 2), 0);
+            valueOffset += sizeof(ushort);
 
             if (dataPacketPayloadParsingObject.MultiplePayloadsPresent)
             {
-                dataPacketPayloadParsingObject.PayloadFlags = ParseFile.ParseSimpleOffset(inStream, currentOffset + ErrCorrectBlockLength + ValueOffset, 1)[0];
+                dataPacketPayloadParsingObject.PayloadFlags = ParseFile.ParseSimpleOffset(inStream, currentOffset + ErrCorrectBlockLength + valueOffset, 1)[0];
                 dataPacketPayloadParsingObject.PayloadLengthType = (LengthType)((dataPacketPayloadParsingObject.PayloadFlags & 0xC0) >> 6);
-
-                if (dataPacketPayloadParsingObject.PayloadLengthType != LengthType.Byte)
-                {
-                    throw new FormatException(String.Format("Error processing data packet at offset 0x{0}, Payload Length Type does not equal BYTE.", currentOffset.ToString("X8")));
-                }
-                else
-                {
-                    dataPacketPayloadParsingObject.NumberOfPayloads = (byte)(dataPacketPayloadParsingObject.PayloadFlags & 0x03);
-                    ValueOffset += sizeof(byte);
-                }
+                dataPacketPayloadParsingObject.NumberOfPayloads = (byte)(dataPacketPayloadParsingObject.PayloadFlags & 0x3F);
+                valueOffset += sizeof(byte);                
             }
             else
             { 
@@ -481,15 +487,59 @@ namespace VGMToolbox.format
             }
 
             // calculate packet overhead and get raw header
-            dataPacketPayloadParsingObject.PacketOverheadLength = ErrCorrectBlockLength + ValueOffset;
+            dataPacketPayloadParsingObject.PacketOverheadLength = ErrCorrectBlockLength + valueOffset;
             dataPacketPayloadParsingObject.RawBlock = ParseFile.ParseSimpleOffset(inStream, currentOffset, (int)dataPacketPayloadParsingObject.PacketOverheadLength);
 
             return dataPacketPayloadParsingObject;
         }
 
-        private AsfDataPacketPayloadObject parseAsfDataPacketPayloadObject(Stream inStream, long currentOffset, MpegStream.DemuxOptionsStruct demuxOptions)
+        private AsfDataPacketPayloadObject parseAsfDataPacketPayloadObject(Stream inStream, long currentOffset, AsfDataPacketPayloadParsingObject payloadParsingObject, MpegStream.DemuxOptionsStruct demuxOptions)
         {
             AsfDataPacketPayloadObject packetPayloadObject = new AsfDataPacketPayloadObject();
+            uint bytesRead = 0;
+            uint valueOffset = 0;
+            uint packetLength;
+
+            packetPayloadObject.StreamNumber = ParseFile.ParseSimpleOffset(inStream, currentOffset, 1)[0];            
+            packetPayloadObject.KeyFrame = (byte)((packetPayloadObject.StreamNumber & 0x80) >> 7);
+            packetPayloadObject.StreamNumber = (byte)(packetPayloadObject.StreamNumber & 0x7F);
+            valueOffset += 1;
+
+            packetPayloadObject.MediaObjectNumber = this.GetLengthTypeValue(inStream, currentOffset + valueOffset, payloadParsingObject.MediaObjectNumberLengthType, ref bytesRead);
+            valueOffset += bytesRead;
+
+            packetPayloadObject.OffsetIntoMediaObject = this.GetLengthTypeValue(inStream, currentOffset + valueOffset, payloadParsingObject.OffsetIntoMediaObjectLengthType, ref bytesRead);
+            valueOffset += bytesRead;
+
+            packetPayloadObject.ReplicatedDataLength = this.GetLengthTypeValue(inStream, currentOffset + valueOffset, payloadParsingObject.ReplicatedDataLengthType, ref bytesRead);
+            valueOffset += bytesRead;
+
+            if (packetPayloadObject.ReplicatedDataLength == 1)
+            {
+                throw new FormatException(String.Format("Error processing data packet payload at offset 0x{0}, compressed payloads are not supported.", currentOffset.ToString("X8")));
+            }
+
+            // get replicated data
+            packetPayloadObject.ReplicatedData = ParseFile.ParseSimpleOffset(inStream, currentOffset + valueOffset, (int)packetPayloadObject.ReplicatedDataLength);
+            valueOffset += packetPayloadObject.ReplicatedDataLength;
+
+            if (payloadParsingObject.MultiplePayloadsPresent)
+            {
+                packetPayloadObject.PayloadDataLength = this.GetLengthTypeValue(inStream, currentOffset + valueOffset, payloadParsingObject.PayloadLengthType, ref bytesRead);
+                valueOffset += bytesRead;
+            }
+            else
+            {
+                packetLength = payloadParsingObject.PacketLengthType == LengthType.NotExist ? this.Header.FileProperties.MinimumPacketSize : payloadParsingObject.PacketLength;
+                packetPayloadObject.PayloadDataLength = packetLength - payloadParsingObject.PacketOverheadLength - valueOffset - payloadParsingObject.PaddingLength;
+            }
+
+            packetPayloadObject.PayloadData = ParseFile.ParseSimpleOffset(inStream, currentOffset + valueOffset, (int)packetPayloadObject.PayloadDataLength);
+            valueOffset += packetPayloadObject.PayloadDataLength;
+
+            // set payload size and get raw block
+            packetPayloadObject.PayloadSize = valueOffset;
+            // packetPayloadObject.RawBlock = ParseFile.ParseSimpleOffset(inStream, currentOffset, (int)packetPayloadObject.PayloadSize);
 
             return packetPayloadObject;
         }
@@ -563,16 +613,23 @@ namespace VGMToolbox.format
                                 for (ulong i = 0; i < this.DataObject.TotalDataPackets; i++)
                                 {
                                     // parse packet
-                                    packetSize = this.parseDataPacket(fs, packetOffset, demuxOptions);
+                                    try
+                                    {
+                                        packetSize = this.parseDataPacket(fs, packetOffset, demuxOptions);
 
-                                    // move to next packet
-                                    if (packetSize < 0)
-                                    {
-                                        throw new Exception(String.Format("Error parsing data packet at offset 0x{0}.", packetOffset.ToString("X8")));
+                                        // move to next packet
+                                        if (packetSize < 0)
+                                        {
+                                            throw new Exception(String.Format("Error parsing data packet at offset 0x{0}.", packetOffset.ToString("X8")));
+                                        }
+                                        else
+                                        {
+                                            packetOffset += packetSize;
+                                        }
                                     }
-                                    else
+                                    catch (Exception ex)
                                     {
-                                        packetOffset += packetSize;
+                                        throw new Exception(String.Format("Error parsing data packet at offset 0x{0}: {1}.{2}", packetOffset.ToString("X8"), ex.Message, Environment.NewLine));
                                     }
                                 }
                             }
