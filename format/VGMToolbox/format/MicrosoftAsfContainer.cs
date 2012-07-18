@@ -10,8 +10,8 @@ namespace VGMToolbox.format
 {
     public class MicrosoftAsfContainer
     {
-        const string DefaultFileExtensionAudio = ".wma";
-        const string DefaultFileExtensionVideo = ".wmv";
+        const string DefaultFileExtensionAudio = ".wma.raw";
+        const string DefaultFileExtensionVideo = ".wmv.raw";
         
         public static readonly byte[] ASF_HEADER_BYTES = new byte[] { 0x30, 0x26, 0xB2, 0x75, 
                                                                       0x8E, 0x66, 0xCF, 0x11, 
@@ -46,6 +46,15 @@ namespace VGMToolbox.format
                                                                             0xA6, 0xD9, 0x00, 0xAA, 
                                                                             0x00, 0x62, 0xCE, 0x6C });
 
+        public static readonly Guid ASF_Audio_Media = new Guid(new byte[] { 0x40, 0x9E, 0x69, 0xF8,
+                                                                            0x4D, 0x5B, 0xCF, 0x11,
+                                                                            0xA8, 0xFD, 0x00, 0x80,
+                                                                            0x5F, 0x5C, 0x44, 0x2B});
+
+        public static readonly Guid ASF_Video_Media = new Guid(new byte[] { 0xC0, 0xEF, 0x19, 0xBC,
+                                                                            0x4D, 0x5B, 0xCF, 0x11,                                      
+                                                                            0xA8, 0xFD, 0x00, 0x80,
+                                                                            0x5F, 0x5C, 0x44, 0x2B});
 
         public const ushort CodecTypeAudio = 1;
         public const ushort CodecTypeVideo = 2;
@@ -209,6 +218,7 @@ namespace VGMToolbox.format
             this.FilePath = filePath;
             this.FileExtensionAudio = MicrosoftAsfContainer.DefaultFileExtensionAudio;
             this.FileExtensionVideo = MicrosoftAsfContainer.DefaultFileExtensionVideo;
+            this.streamWriterDictionary = new Dictionary<uint, FileStream>();
         }
 
         public string FilePath { get; set; }
@@ -218,22 +228,23 @@ namespace VGMToolbox.format
         public AsfHeaderObject Header { set; get; }
         public AsfDataObject DataObject { set; get; }
 
+        private Dictionary<uint, FileStream> streamWriterDictionary;
+
         private void writeChunkToStream(
             byte[] chunk,
             uint chunkId,
-            Dictionary<uint, FileStream> streamWriters,
             string fileExtension)
         {
             string destinationFile;
 
-            if (!streamWriters.ContainsKey(chunkId))
+            if (!this.streamWriterDictionary.ContainsKey(chunkId))
             {
                 destinationFile = Path.Combine(Path.GetDirectoryName(this.FilePath),
-                    String.Format("{0}_{1}{2}", Path.GetFileNameWithoutExtension(this.FilePath), chunkId.ToString("X4"), fileExtension));
-                streamWriters[chunkId] = File.Open(destinationFile, FileMode.Create, FileAccess.ReadWrite);
+                    String.Format("{0}.stream_{1}{2}", Path.GetFileNameWithoutExtension(this.FilePath), chunkId.ToString("D3"), fileExtension));
+                this.streamWriterDictionary[chunkId] = File.Open(destinationFile, FileMode.Create, FileAccess.ReadWrite);
             }
 
-            streamWriters[chunkId].Write(chunk, 0, chunk.Length);
+            this.streamWriterDictionary[chunkId].Write(chunk, 0, chunk.Length);
         }
 
         private AsfFilePropertiesObject parseAsfFilePropertiesObject(Stream inStream, long currentOffset)
@@ -261,7 +272,7 @@ namespace VGMToolbox.format
             streamProperties.ObjectGuid = new Guid(ParseFile.ParseSimpleOffset(inStream, currentOffset, 0x10));
             streamProperties.ObjectSize = BitConverter.ToUInt64(ParseFile.ParseSimpleOffset(inStream, (currentOffset + 0x10), 8), 0);
             streamProperties.StreamType = new Guid(ParseFile.ParseSimpleOffset(inStream, currentOffset + 0x18, 0x10));
-            streamProperties.StreamId = (byte)(ParseFile.ParseSimpleOffset(inStream, currentOffset + 0x48, 1)[0] & 0x7E);
+            streamProperties.StreamId = (byte)(ParseFile.ParseSimpleOffset(inStream, currentOffset + 0x48, 1)[0] & 0x7F);
 
             streamProperties.RawBlock = ParseFile.ParseSimpleOffset(inStream, currentOffset, (int)streamProperties.ObjectSize);
 
@@ -541,6 +552,19 @@ namespace VGMToolbox.format
             packetPayloadObject.PayloadSize = valueOffset;
             // packetPayloadObject.RawBlock = ParseFile.ParseSimpleOffset(inStream, currentOffset, (int)packetPayloadObject.PayloadSize);
 
+            // write raw data to stream            
+            if ((demuxOptions.ExtractAudio) && this.IsAudioStream(packetPayloadObject.StreamNumber))
+            {
+                this.writeChunkToStream(packetPayloadObject.PayloadData, (uint)packetPayloadObject.StreamNumber, this.FileExtensionAudio);
+            }
+
+
+
+            if ((demuxOptions.ExtractVideo) && this.IsVideoStream(packetPayloadObject.StreamNumber))
+            {
+                this.writeChunkToStream(packetPayloadObject.PayloadData, (uint)packetPayloadObject.StreamNumber, this.FileExtensionVideo);
+            }
+
             return packetPayloadObject;
         }
 
@@ -565,6 +589,80 @@ namespace VGMToolbox.format
             };
 
             return lengthTypeValue;
+        }
+
+        private bool IsAudioStream(byte streamNumber)
+        {
+            bool isAudio = false;
+
+            foreach (AsfStreamPropertiesObject so in this.Header.StreamProperties)
+            {
+                if (so.StreamId == streamNumber)
+                { 
+                    if (so.StreamType.Equals(MicrosoftAsfContainer.ASF_Audio_Media))
+                    {
+                        isAudio = true;
+                    }
+
+                    break;
+                }
+            }
+
+            return isAudio;
+        }
+
+        private bool IsVideoStream(byte streamNumber)
+        {
+            bool isVideo = false;
+
+            foreach (AsfStreamPropertiesObject so in this.Header.StreamProperties)
+            {
+                if (so.StreamId == streamNumber)
+                {
+                    if (so.StreamType.Equals(MicrosoftAsfContainer.ASF_Video_Media))
+                    {
+                        isVideo = true;
+                    }
+
+                    break;
+                }
+            }
+
+            return isVideo;
+        }
+
+        protected virtual void DoFinalTasks(MpegStream.DemuxOptionsStruct demuxOptions)
+        {
+
+
+            foreach (uint key in this.streamWriterDictionary.Keys)
+            {
+                try
+                {
+
+                }
+                catch (Exception ex)
+                {
+                    if (this.streamWriterDictionary[key] != null)
+                    {
+                        throw new Exception(String.Format("Exception building header for file: {0}{1}{2}", this.streamWriterDictionary[key].Name, ex.Message, Environment.NewLine));
+                    }
+                    else
+                    {
+                        throw new Exception(String.Format("Exception building header for file: {0}{1}{2}", "UNKNOWN", ex.Message, Environment.NewLine));
+                    }
+                }
+                finally
+                {
+                    // close streams if open
+                    if (this.streamWriterDictionary[key] != null &&
+                        this.streamWriterDictionary[key].CanRead)
+                    {
+                        this.streamWriterDictionary[key].Close();
+                        this.streamWriterDictionary[key].Dispose();
+                    }
+                }
+            }
         }
 
         public virtual void DemultiplexStreams(MpegStream.DemuxOptionsStruct demuxOptions)
@@ -653,7 +751,7 @@ namespace VGMToolbox.format
             finally
             {
                 // clean up
-                // this.DoFinalTasks(streamOutputWriters, demuxOptions);
+                this.DoFinalTasks(demuxOptions);
             }
         }
     }
