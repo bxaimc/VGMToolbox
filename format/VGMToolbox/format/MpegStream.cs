@@ -16,6 +16,7 @@ namespace VGMToolbox.format
         {
             this.FilePath = path;            
             this.UsesSameIdForMultipleAudioTracks = false;
+            this.BlockSizeIsLittleEndian = false;
         }
 
         public enum PacketSizeType
@@ -132,6 +133,8 @@ namespace VGMToolbox.format
         protected Dictionary<byte, string> StreamIdFileType = new Dictionary<byte, string>();
 
         public bool UsesSameIdForMultipleAudioTracks { set; get; } // for PMF/PAM/DVD, who use 000001BD for all audio tracks
+
+        public bool BlockSizeIsLittleEndian { set; get; }
 
         protected virtual byte[] GetPacketStartBytes() { return MpegStream.PacketStartBytes; }
 
@@ -250,7 +253,11 @@ namespace VGMToolbox.format
 
                                     // Get the block size
                                     blockSizeArray = ParseFile.ParseSimpleOffset(fs, currentOffset + currentBlockId.Length, blockStruct.Size);
-                                    Array.Reverse(blockSizeArray);
+
+                                    if (!this.BlockSizeIsLittleEndian)
+                                    {
+                                        Array.Reverse(blockSizeArray);
+                                    }
 
                                     switch (blockStruct.Size)
                                     {

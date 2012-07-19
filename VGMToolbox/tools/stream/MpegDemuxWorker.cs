@@ -57,6 +57,10 @@ namespace VGMToolbox.tools.stream
                     DvdVideoStream dvdStream = new DvdVideoStream(path);
                     dvdStream.DemultiplexStreams(demuxOptions);
                     break;
+                case "Electronic Arts VP6 (VP6)":
+                    ElectronicArtsVp6Stream vp6Stream = new ElectronicArtsVp6Stream(path);
+                    vp6Stream.DemultiplexStreams(demuxOptions);
+                    break;
                 case "MO (Mobiclip)":
                     MobiclipStream.MovieType movieType = MobiclipStream.GetCriMovie2StreamType(path);                    
 

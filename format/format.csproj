@@ -114,6 +114,7 @@
     <Compile Include="VGMToolbox\format\util\CdxaUtil.cs" />
     <Compile Include="VGMToolbox\format\MobiclipStream.cs" />
     <Compile Include="VGMToolbox\format\util\CriUtil.cs" />
+    <Compile Include="VGMToolbox\format\ElectronicArtsVp6Stream.cs" />
     <Compile Include="VGMToolbox\format\util\FormatUtil.cs" />
     <Compile Include="VGMToolbox\format\Gbr.cs" />
     <Compile Include="VGMToolbox\format\Gbs.cs" />
