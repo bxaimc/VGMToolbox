@@ -7,9 +7,9 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.format
 {
-    public class ElectronicArtsVp6Stream : MpegStream
+    public class ElectronicArtsVp6Stream 
     {
-        public const string DefaultAudioExtension = ".sns";
+        public const string DefaultAudioExtension = ".sng";
         public const string DefaultVideoExtension = ".vp6";
 
         protected static readonly byte[] MVHD_BYTES = new byte[] { 0x4D, 0x56, 0x68, 0x64 };
@@ -30,66 +30,129 @@ namespace VGMToolbox.format
         protected static readonly byte[] SEEN_BYTES = new byte[] { 0x53, 0x45, 0x45, 0x4E };
         protected static readonly byte[] SHxx_BYTES = new byte[] { 0x53, 0x48 };
 
+        public string FilePath { get; set; }
+        public string FileExtensionAudio { get; set; }
+        public string FileExtensionVideo { get; set; }
 
         public ElectronicArtsVp6Stream(string path)
-            : base(path)
         {
-            this.UsesSameIdForMultipleAudioTracks = false;
-            this.BlockSizeIsLittleEndian = true;
+            this.FilePath = path;
             this.FileExtensionAudio = DefaultAudioExtension;
             this.FileExtensionVideo = DefaultVideoExtension;
-
-            base.BlockIdDictionary.Clear();
-            
-            // video blocks
-            base.BlockIdDictionary[BitConverter.ToUInt32(MVHD_BYTES, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 4); 
-            base.BlockIdDictionary[BitConverter.ToUInt32(MV0F_BYTES, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 4); 
-            base.BlockIdDictionary[BitConverter.ToUInt32(MV0K_BYTES, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 4); 
-            
-            // audio blocks            
-            base.BlockIdDictionary[BitConverter.ToUInt32(SCHl_BYTES, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 4); 
-            base.BlockIdDictionary[BitConverter.ToUInt32(SCCl_BYTES, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 4); 
-            base.BlockIdDictionary[BitConverter.ToUInt32(SCDl_BYTES, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 4); 
-            base.BlockIdDictionary[BitConverter.ToUInt32(SCLl_BYTES, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 4); 
-            base.BlockIdDictionary[BitConverter.ToUInt32(SCEl_BYTES, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 4); 
-
-            base.BlockIdDictionary[BitConverter.ToUInt32(SHEN_BYTES, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 4); 
-            base.BlockIdDictionary[BitConverter.ToUInt32(SCEN_BYTES, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 4); 
-            base.BlockIdDictionary[BitConverter.ToUInt32(SDEN_BYTES, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 4); 
-            base.BlockIdDictionary[BitConverter.ToUInt32(SEEN_BYTES, 0)] = new BlockSizeStruct(PacketSizeType.SizeBytes, 4); 
         }
 
-        protected override byte[] GetPacketStartBytes() { return ElectronicArtsVp6Stream.MVHD_BYTES; }
-
-        protected override int GetAudioPacketHeaderSize(Stream readStream, long currentOffset)
-        {
-            return 0;
-        }
-        protected override int GetVideoPacketHeaderSize(Stream readStream, long currentOffset)
-        {
-            return 0;
-        }
-
-        protected override bool IsThisAnAudioBlock(byte[] blockToCheck)
+        protected bool IsThisAnAudioBlock(byte[] blockToCheck)
         {
             return (ParseFile.CompareSegment(blockToCheck, 0, ElectronicArtsVp6Stream.SCxx_BYTES) ||
-                    ParseFile.CompareSegment(blockToCheck, 0, ElectronicArtsVp6Stream.SHxx_BYTES));
+                    ParseFile.CompareSegment(blockToCheck, 0, ElectronicArtsVp6Stream.SHEN_BYTES) ||
+                    ParseFile.CompareSegment(blockToCheck, 0, ElectronicArtsVp6Stream.SCEN_BYTES) ||
+                    ParseFile.CompareSegment(blockToCheck, 0, ElectronicArtsVp6Stream.SDEN_BYTES) ||
+                    ParseFile.CompareSegment(blockToCheck, 0, ElectronicArtsVp6Stream.SEEN_BYTES));
         }
-        protected override bool IsThisAVideoBlock(byte[] blockToCheck)
+        protected bool IsThisAVideoBlock(byte[] blockToCheck)
         {
             // not sure if specific blocks will be needed
             return ParseFile.CompareSegment(blockToCheck, 0, ElectronicArtsVp6Stream.MVxx_BYTES);
         }
 
-        protected override void DoFinalTasks(FileStream sourceFileStream, Dictionary<uint, FileStream> outputFiles, bool addHeader)
+        protected void DoFinalTasks(Dictionary<string, FileStream> outputFiles)
         {
-            foreach (uint streamId in outputFiles.Keys)
+            foreach (string streamId in outputFiles.Keys)
             {
                 outputFiles[streamId].Close();
                 outputFiles[streamId].Dispose();
             }
         }
 
+        private void writeChunkToStream(
+            byte[] chunk,
+            string chunkId,
+            Dictionary<string, FileStream> streamWriters,
+            string fileExtension)
+        {
+            string destinationFile;
+
+            if (!streamWriters.ContainsKey(chunkId))
+            {
+                destinationFile = Path.Combine(Path.GetDirectoryName(this.FilePath),
+                    String.Format("{0}.{1}{2}", Path.GetFileNameWithoutExtension(this.FilePath), chunkId, fileExtension));
+                streamWriters[chunkId] = File.Open(destinationFile, FileMode.Create, FileAccess.ReadWrite);
+            }
+
+            streamWriters[chunkId].Write(chunk, 0, chunk.Length);
+        }
+
+        public virtual void DemultiplexStreams(MpegStream.DemuxOptionsStruct demuxOptions)
+        {
+            long currentOffset = 0;
+            long fileSize;
+
+            byte[] chunkId;
+            byte[] fullChunk;
+            uint chunkSize = 0;
+
+            Dictionary<string, FileStream> streamWriters = new Dictionary<string, FileStream>();
+
+            try
+            {
+                using (FileStream fs = File.OpenRead(this.FilePath))
+                {
+                    fileSize = fs.Length;
+
+                    // find header
+                    currentOffset = ParseFile.GetNextOffset(fs, 0, ElectronicArtsVp6Stream.MVHD_BYTES);
+
+                    if (currentOffset >= 0)
+                    {
+                        // process file
+                        while (currentOffset < fileSize)
+                        {
+                            // get chunk
+                            chunkId = ParseFile.ParseSimpleOffset(fs, currentOffset, 4);
+
+                            // get chunk size
+                            chunkSize = (uint)BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, currentOffset + 4, 4), 0);
+
+                            // audio chunk
+                            if (demuxOptions.ExtractAudio && this.IsThisAnAudioBlock(chunkId))
+                            {
+                                fullChunk = ParseFile.ParseSimpleOffset(fs, currentOffset, (int)chunkSize);
+                                this.writeChunkToStream(fullChunk, "audio", streamWriters, this.FileExtensionAudio);
+                            }
+
+                            // video chunk
+                            if (demuxOptions.ExtractVideo && this.IsThisAVideoBlock(chunkId))
+                            {
+                                fullChunk = ParseFile.ParseSimpleOffset(fs, currentOffset, (int)chunkSize);
+                                this.writeChunkToStream(fullChunk, "video", streamWriters, this.FileExtensionVideo);
+                            }
+
+                            // unknown chunk
+                            if (!this.IsThisAnAudioBlock(chunkId) && !this.IsThisAVideoBlock(chunkId))
+                            {
+                                fullChunk = ParseFile.ParseSimpleOffset(fs, currentOffset, (int)chunkSize);
+                                this.writeChunkToStream(fullChunk, "unknown", streamWriters, ".bin");
+                            }
+
+                            // move to next chunk
+                            currentOffset += (long)chunkSize;
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception(String.Format("Cannot find MVHD header.{0}", Environment.NewLine));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                this.DoFinalTasks(streamWriters);
+            }
+        }
     }
 
 }
