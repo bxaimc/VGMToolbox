@@ -5,6 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 
+using VGMToolbox.format.util;
 using VGMToolbox.plugin;
 using VGMToolbox.util;
 
@@ -196,7 +197,7 @@ namespace VGMToolbox.tools.stream
                     // frequency
                     if (taskStruct.GetFrequencyFromRiffHeader)
                     {
-                        riffFrequency = (uint)getFrequencyFromRiffHeader(workingSourceFile);
+                        riffFrequency = (uint)RiffUtil.GetFrequencyFromRiffHeader(workingSourceFile);
                     }
                     else if (taskStruct.GetFrequencyFromOffset)
                     {
@@ -213,7 +214,7 @@ namespace VGMToolbox.tools.stream
                     // channels
                     if (taskStruct.GetChannelsFromRiffHeader)
                     {
-                        riffChannelCount = this.getChannelsFromRiffHeader(workingSourceFile);
+                        riffChannelCount = RiffUtil.GetChannelsFromRiffHeader(workingSourceFile);
                     }
                     else if (taskStruct.GetChannelsFromOffset)
                     {
@@ -495,7 +496,7 @@ namespace VGMToolbox.tools.stream
                 // offset
                 if (taskStruct.StartOffsetAfterRiffHeader)
                 {
-                    uint riffHeaderSize = this.getRiffHeaderSize(workingFile);
+                    uint riffHeaderSize = RiffUtil.GetRiffHeaderSize(workingFile);
                     parameters.AppendFormat(" -o {0}", riffHeaderSize.ToString("X"));
                 }
                 else if ((taskStruct.XmaParseStartOffsetIsStatic) && (!String.IsNullOrEmpty(taskStruct.XmaParseStartOffset)))
@@ -524,7 +525,7 @@ namespace VGMToolbox.tools.stream
                 // data size
                 if (taskStruct.GetDataSizeFromRiffHeader)
                 {
-                    uint riffDataSize = this.getDataSizeFromRiffHeader(workingFile);
+                    uint riffDataSize = RiffUtil.GetDataSizeFromRiffHeader(workingFile);
                     parameters.AppendFormat(" -d {0}", riffDataSize.ToString("X"));
                 }
                 else if ((taskStruct.XmaParseDataSizeIsStatic) && (!String.IsNullOrEmpty(taskStruct.XmaParseDataSize)))
@@ -700,170 +701,6 @@ namespace VGMToolbox.tools.stream
             Array.Copy(BitConverter.GetBytes(fileSize), 0, riffHeader, 0x38, 4);
 
             return riffHeader;
-        }
-
-        private uint getRiffHeaderSize(string riffHeaderedFile)
-        { 
-            uint headerSize = 0;
-
-            using (FileStream fs = File.OpenRead(riffHeaderedFile))
-            {
-                long riffHeaderLocation = ParseFile.GetNextOffset(fs, 0, Constants.RiffHeaderBytes);
-
-                if (riffHeaderLocation > -1)
-                {
-                    long waveChunkLocation = ParseFile.GetNextOffset(fs,
-                        riffHeaderLocation + Constants.RiffHeaderBytes.Length, Constants.RiffWaveBytes);
-
-                    if (waveChunkLocation > -1)
-                    {
-                        long dataChunkLocation = ParseFile.GetNextOffset(fs,
-                            waveChunkLocation + Constants.RiffWaveBytes.Length, Constants.RiffDataBytes);
-
-                        if (dataChunkLocation > -1)
-                        {
-                            headerSize = (uint)(dataChunkLocation + Constants.RiffDataBytes.Length + 4);
-                        }
-                        else
-                        {
-                            throw new FormatException("RIFF header data chunk not found.");
-                        }
-                    }
-                    else
-                    {
-                        throw new FormatException("RIFF header WAVE chunk not found.");
-                    }                                                                                
-                }
-                else
-                {
-                    throw new FormatException("RIFF header not found.");
-                }
-            }
-
-            return headerSize;
-        }
-
-        private uint getDataSizeFromRiffHeader(string riffHeaderedFile)
-        {
-            uint dataSize = 0;
-
-            using (FileStream fs = File.OpenRead(riffHeaderedFile))
-            {
-                long riffHeaderLocation = ParseFile.GetNextOffset(fs, 0, Constants.RiffHeaderBytes);
-
-                if (riffHeaderLocation > -1)
-                {
-                    long waveChunkLocation = ParseFile.GetNextOffset(fs,
-                        riffHeaderLocation + Constants.RiffHeaderBytes.Length, Constants.RiffWaveBytes);
-
-                    if (waveChunkLocation > -1)
-                    {
-                        long dataChunkLocation = ParseFile.GetNextOffset(fs,
-                            waveChunkLocation + Constants.RiffWaveBytes.Length, Constants.RiffDataBytes);
-
-                        if (dataChunkLocation > -1)
-                        {
-                            dataSize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, dataChunkLocation + 4, 4), 0);
-                        }
-                        else
-                        {
-                            throw new FormatException("RIFF header data chunk not found.");
-                        }
-                    }
-                    else
-                    {
-                        throw new FormatException("RIFF header WAVE chunk not found.");
-                    }
-                }
-                else
-                {
-                    throw new FormatException("RIFF header not found.");
-                }
-            }
-
-            return dataSize;
-        }
-
-        private uint getFrequencyFromRiffHeader(string riffHeaderedFile)
-        {
-            uint frequency = 0;
-
-            using (FileStream fs = File.OpenRead(riffHeaderedFile))
-            {
-                long riffHeaderLocation = ParseFile.GetNextOffset(fs, 0, Constants.RiffHeaderBytes);
-
-                if (riffHeaderLocation > -1)
-                {
-                    long waveChunkLocation = ParseFile.GetNextOffset(fs,
-                        riffHeaderLocation + Constants.RiffHeaderBytes.Length, Constants.RiffWaveBytes);
-
-                    if (waveChunkLocation > -1)
-                    {
-                        long fmtChunkLocation = ParseFile.GetNextOffset(fs,
-                            waveChunkLocation + Constants.RiffWaveBytes.Length, Constants.RiffFmtBytes);
-
-                        if (fmtChunkLocation > -1)
-                        {
-                            frequency = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, fmtChunkLocation + 0xC, 4), 0);
-                        }
-                        else
-                        {
-                            throw new FormatException("RIFF header data chunk not found.");
-                        }
-                    }
-                    else
-                    {
-                        throw new FormatException("RIFF header WAVE chunk not found.");
-                    }
-                }
-                else
-                {
-                    throw new FormatException("RIFF header not found.");
-                }
-            }
-
-            return frequency;
-        }
-
-        private ushort getChannelsFromRiffHeader(string riffHeaderedFile)
-        {
-            ushort channels = 0;
-
-            using (FileStream fs = File.OpenRead(riffHeaderedFile))
-            {
-                long riffHeaderLocation = ParseFile.GetNextOffset(fs, 0, Constants.RiffHeaderBytes);
-
-                if (riffHeaderLocation > -1)
-                {
-                    long waveChunkLocation = ParseFile.GetNextOffset(fs,
-                        riffHeaderLocation + Constants.RiffHeaderBytes.Length, Constants.RiffWaveBytes);
-
-                    if (waveChunkLocation > -1)
-                    {
-                        long fmtChunkLocation = ParseFile.GetNextOffset(fs,
-                            waveChunkLocation + Constants.RiffWaveBytes.Length, Constants.RiffFmtBytes);
-
-                        if (fmtChunkLocation > -1)
-                        {
-                            channels = BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(fs, fmtChunkLocation + 0xA, 2), 0);
-                        }
-                        else
-                        {
-                            throw new FormatException("RIFF header data chunk not found.");
-                        }
-                    }
-                    else
-                    {
-                        throw new FormatException("RIFF header WAVE chunk not found.");
-                    }
-                }
-                else
-                {
-                    throw new FormatException("RIFF header not found.");
-                }
-            }
-
-            return channels;
         }
     }
 }

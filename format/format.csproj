@@ -70,6 +70,7 @@
     <Compile Include="VGMToolbox\format\brsar\Brsar.cs" />
     <Compile Include="VGMToolbox\format\brsar\BrsarSymbSection.cs" />
     <Compile Include="VGMToolbox\format\Cdxa.cs" />
+    <Compile Include="VGMToolbox\format\CriCpkArchive.cs" />
     <Compile Include="VGMToolbox\format\MicrosoftAsfContainer.cs" />
     <Compile Include="VGMToolbox\format\MobiclipNdsStream.cs" />
     <Compile Include="VGMToolbox\format\CriUsmStream.cs" />
@@ -144,6 +145,7 @@
     <Compile Include="VGMToolbox\format\iso\CdRom.cs" />
     <Compile Include="VGMToolbox\format\util\NezPlugUtil.cs" />
     <Compile Include="VGMToolbox\format\util\NsfUtil.cs" />
+    <Compile Include="VGMToolbox\format\util\RiffUtil.cs" />
     <Compile Include="VGMToolbox\format\util\SdatUtil.cs" />
     <Compile Include="VGMToolbox\format\util\XsfUtil.cs" />
     <Compile Include="VGMToolbox\format\Vgm.cs" />

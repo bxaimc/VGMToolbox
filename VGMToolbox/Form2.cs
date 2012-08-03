@@ -1130,6 +1130,17 @@ namespace VGMToolbox
             nodeTag.FormClass = xmaConverterForm.GetType().Name;
             xmaConverterNode.Tag = nodeTag;
 
+            // XMAsh Mash
+            TreeNode xmashMashNode = new TreeNode("XMAsh Mash");
+
+            // Add XMA Convertor Form
+            XmashMashForm xmashMashForm = new XmashMashForm(xmashMashNode);
+            this.splitContainer1.Panel2.Controls.Add(xmashMashForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = xmashMashForm.GetType().Name;
+            xmashMashNode.Tag = nodeTag;
+
             ///////////
             // VARIOUS
             ///////////
@@ -1160,6 +1171,7 @@ namespace VGMToolbox
             stream_RootNode.Nodes.Add(mpegDemuxNode);
 
             xma_RootNode.Nodes.Add(xmaConverterNode);
+            xma_RootNode.Nodes.Add(xmashMashNode);
             stream_RootNode.Nodes.Add(xma_RootNode);
 
             return stream_RootNode;
