@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -131,14 +132,15 @@ namespace VGMToolbox.tools.stream
                     this.ShowOutput(pPath, consoleError, true);
                 }
 
-                if (consoleOutput.Contains(XMASH_ERROR_TEXT))
-                {
-                    this.ShowOutput(pPath, consoleOutput, true);
-                }
-
                 if (taskStruct.IgnoreXmashFailure)
                 {
                     errorFound = false;
+                    workingFiles = new string[1] { workingSourceFile };
+                }
+
+                if (consoleOutput.Contains(XMASH_ERROR_TEXT))
+                {
+                    this.ShowOutput(pPath, consoleOutput, errorFound);
                 }
             }
             #endregion
@@ -237,6 +239,7 @@ namespace VGMToolbox.tools.stream
         {
             string workingFolder = getWorkingFolderPath(processingFilePath, taskStruct);
             string[] xmashXmaFiles;
+            string[] dllFiles;
 
             // delete working copy of source file
             if (File.Exists(workingFile))
@@ -268,12 +271,19 @@ namespace VGMToolbox.tools.stream
                 File.Delete(toWavWorkingPath);
             }
 
-            // delete sox.exe
+            // delete sox.exe, etc...
             string soxWorkingPath = Path.Combine(workingFolder, Path.GetFileName(SOX_FULL_PATH));
 
             if (File.Exists(soxWorkingPath))
             {
                 File.Delete(soxWorkingPath);
+            }
+
+            dllFiles = Directory.GetFiles(workingFolder, "*.dll", SearchOption.TopDirectoryOnly);
+
+            foreach (string dllFile in dllFiles)
+            {
+                File.Delete(dllFile);
             }
         }
 
@@ -322,11 +332,8 @@ namespace VGMToolbox.tools.stream
             xmashProcess.Close();
             xmashProcess.Dispose();
 
-            // delete working file to prevent showing up in output list
-            File.Delete(workingFile);
-
             // get list of output xma files
-            xmashOutputFilePaths = Directory.GetFiles(workingFolder, String.Format("*{0}", XMASH_OUTPUT_EXTENSION), SearchOption.TopDirectoryOnly);
+            xmashOutputFilePaths = Directory.GetFiles(workingFolder, String.Format("{0}_*{1}", Path.GetFileName(workingFile), XMASH_OUTPUT_EXTENSION), SearchOption.TopDirectoryOnly);
 
             return xmashOutputFilePaths;
         }
@@ -340,7 +347,10 @@ namespace VGMToolbox.tools.stream
             out string consoleError)
         {
             string toWavWorkingPath;
+            ArrayList toWavOutputFiles = new ArrayList();
             string[] toWavOutputFilePaths;
+            string testFileName;
+
             Process toWavProcess;
             StringBuilder parameters = new StringBuilder();
 
@@ -378,10 +388,50 @@ namespace VGMToolbox.tools.stream
                 toWavProcess.WaitForExit();
                 toWavProcess.Close();
                 toWavProcess.Dispose();
+
+                // update output file list
+                testFileName = Path.ChangeExtension(workingFile, TOWAV_OUTPUT_EXTENSION);
+
+                if (File.Exists(testFileName))
+                {
+                    // one file in, one file out
+                    toWavOutputFiles.Add(testFileName);
+                }
+                else if (taskStruct.IgnoreXmashFailure)
+                { 
+                    // multichannel in, mutliple files out (but not parsable by XMASH)                
+                    testFileName = Path.Combine(Path.GetDirectoryName(workingFile),
+                        String.Format("{0} Fl Fr{1}", Path.GetFileNameWithoutExtension(workingFile), TOWAV_OUTPUT_EXTENSION));
+
+                    if (File.Exists(testFileName))
+                    {
+                        // one file in, one file out
+                        toWavOutputFiles.Add(testFileName);
+                    }
+
+                    testFileName = Path.Combine(Path.GetDirectoryName(workingFile),
+                        String.Format("{0} C LFE{1}", Path.GetFileNameWithoutExtension(workingFile), TOWAV_OUTPUT_EXTENSION));
+
+                    if (File.Exists(testFileName))
+                    {
+                        // one file in, one file out
+                        toWavOutputFiles.Add(testFileName);
+                    }
+
+                    testFileName = Path.Combine(Path.GetDirectoryName(workingFile),
+                        String.Format("{0} Sl Sr{1}", Path.GetFileNameWithoutExtension(workingFile), TOWAV_OUTPUT_EXTENSION));
+
+                    if (File.Exists(testFileName))
+                    {
+                        // one file in, one file out
+                        toWavOutputFiles.Add(testFileName);
+                    }
+
+                }
             }
 
             // build output path
-            toWavOutputFilePaths = Directory.GetFiles(workingFolder, String.Format("*{0}", TOWAV_OUTPUT_EXTENSION), SearchOption.TopDirectoryOnly);
+            toWavOutputFilePaths = (string[])toWavOutputFiles.ToArray(typeof(string));
 
             return toWavOutputFilePaths;
         }
