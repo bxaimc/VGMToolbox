@@ -94,8 +94,9 @@ namespace VGMToolbox.format.util
                 string loopStartFound;
                 string loopEndFound;
 
-                if (GetPsAdpcmLoop(pSourcePath, pGenhCreationStruct, out loopStartFound,
-                    out loopEndFound))
+                if (((pGenhCreationStruct.Format.Equals("0")) || (pGenhCreationStruct.Format.Equals("14"))) &&
+                    (GetPsAdpcmLoop(pSourcePath, pGenhCreationStruct, out loopStartFound,
+                        out loopEndFound)))
                 {
                     pGenhCreationStruct.LoopStart = loopStartFound;
                     pGenhCreationStruct.LoopEnd = loopEndFound;
@@ -613,12 +614,18 @@ namespace VGMToolbox.format.util
 
             if (formatValue == 12)
             {
-                /*
-                    public string CoefRightChannel;
-                    public string CoefLeftChannel;
-                    public bool CapcomHack;
+                gcStruct.CapcomHack = (genhItem.CapcomHackFlag[0] == 1);
 
-                */
+                if (gcStruct.CapcomHack)
+                {
+                    gcStruct.CoefRightChannel = "0x" + (BitConverter.ToUInt32(genhItem.RightCoef, 0) - Genh.GENH_HEADER_SIZE - 0x10).ToString("X4");
+                    gcStruct.CoefLeftChannel = "0x" + (BitConverter.ToUInt32(genhItem.LeftCoef, 0) - Genh.GENH_HEADER_SIZE - 0x10).ToString("X4");
+                }
+                else
+                {
+                    gcStruct.CoefRightChannel = "0x" + (BitConverter.ToUInt32(genhItem.RightCoef, 0) - Genh.GENH_HEADER_SIZE).ToString("X4");
+                    gcStruct.CoefLeftChannel = "0x" + (BitConverter.ToUInt32(genhItem.LeftCoef, 0) - Genh.GENH_HEADER_SIZE).ToString("X4");                
+                }
             }
             
             return gcStruct;

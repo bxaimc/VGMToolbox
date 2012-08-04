@@ -164,6 +164,7 @@ namespace VGMToolbox.forms
             else
             {
                 this.cbFindLoop.Enabled = false;
+                this.cbFindLoop.Checked = false;
             }
 
             if (Convert.ToUInt16(drv.Row.ItemArray[0]) == 12)
@@ -661,6 +662,9 @@ namespace VGMToolbox.forms
                         // Set initial values
                         GenhCreationStruct gcStruct = GenhUtil.GetGenhCreationStruct(itemToEdit);
                         this.setGenhParameters(gcStruct);
+
+                        // set loop radio button
+                        this.cbManualEntry.Checked = true;
                     }
                 }
             }
