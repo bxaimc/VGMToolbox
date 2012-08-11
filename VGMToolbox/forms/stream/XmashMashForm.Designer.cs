@@ -39,7 +39,7 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 287);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 405);
             this.pnlLabels.Size = new System.Drawing.Size(843, 19);
             // 
             // pnlTitle
@@ -48,13 +48,13 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 210);
+            this.tbOutput.Location = new System.Drawing.Point(0, 328);
             this.tbOutput.Size = new System.Drawing.Size(843, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 190);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 308);
             this.pnlButtons.Size = new System.Drawing.Size(843, 20);
             // 
             // btnCancel
@@ -70,9 +70,9 @@
             this.grpOptions.Controls.Add(this.chkIgnoreXmashFailure);
             this.grpOptions.Controls.Add(this.chkInterleaveMultiChannelOutput);
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.grpOptions.Location = new System.Drawing.Point(0, 109);
+            this.grpOptions.Location = new System.Drawing.Point(0, 242);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(843, 81);
+            this.grpOptions.Size = new System.Drawing.Size(843, 66);
             this.grpOptions.TabIndex = 5;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
@@ -80,7 +80,7 @@
             // chkIgnoreXmashFailure
             // 
             this.chkIgnoreXmashFailure.AutoSize = true;
-            this.chkIgnoreXmashFailure.Location = new System.Drawing.Point(6, 19);
+            this.chkIgnoreXmashFailure.Location = new System.Drawing.Point(6, 42);
             this.chkIgnoreXmashFailure.Name = "chkIgnoreXmashFailure";
             this.chkIgnoreXmashFailure.Size = new System.Drawing.Size(303, 17);
             this.chkIgnoreXmashFailure.TabIndex = 1;
@@ -92,7 +92,7 @@
             this.chkInterleaveMultiChannelOutput.AutoSize = true;
             this.chkInterleaveMultiChannelOutput.Checked = true;
             this.chkInterleaveMultiChannelOutput.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkInterleaveMultiChannelOutput.Location = new System.Drawing.Point(6, 58);
+            this.chkInterleaveMultiChannelOutput.Location = new System.Drawing.Point(6, 19);
             this.chkInterleaveMultiChannelOutput.Name = "chkInterleaveMultiChannelOutput";
             this.chkInterleaveMultiChannelOutput.Size = new System.Drawing.Size(268, 17);
             this.chkInterleaveMultiChannelOutput.TabIndex = 0;
@@ -104,7 +104,7 @@
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(843, 328);
+            this.ClientSize = new System.Drawing.Size(843, 446);
             this.Controls.Add(this.grpOptions);
             this.Name = "XmashMashForm";
             this.Text = "XmashMashForm";

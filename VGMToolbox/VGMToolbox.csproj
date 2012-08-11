@@ -888,6 +888,9 @@
     <Content Include="external\psf2\mkpsf2.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="external\sox\dir.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="external\ssf\seqext.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

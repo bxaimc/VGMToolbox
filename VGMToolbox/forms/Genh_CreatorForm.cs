@@ -664,7 +664,15 @@ namespace VGMToolbox.forms
                         this.setGenhParameters(gcStruct);
 
                         // set loop radio button
-                        this.cbManualEntry.Checked = true;
+                        if ((String.IsNullOrEmpty(gcStruct.LoopStart)) ||
+                            (gcStruct.LoopStart.Equals(Genh.EMPTY_SAMPLE_COUNT)))
+                        {
+                            this.cbNoLoops.Checked = true;
+                        }
+                        else
+                        {
+                            this.cbManualEntry.Checked = true;
+                        }
                     }
                 }
             }

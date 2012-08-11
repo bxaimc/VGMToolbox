@@ -30,27 +30,12 @@ namespace VGMToolbox.tools.stream
             TOWAV_PATH);
 
         // sox
-        public const string SOX_PATH = "external\\xma\\sox.exe";
-        public static readonly string SOX_FULL_PATH =
+        public const string SOX_PATH = "external\\sox";
+        public static readonly string SOX_FOLDER = 
             Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
             SOX_PATH);
-
-        public const string SOX_LIBGOMP_PATH = "external\\xma\\libgomp-1.dll";
-        public static readonly string SOX_LIBGOMP_FULL_PATH =
-            Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-            SOX_LIBGOMP_PATH);
-
-        public const string SOX_PTHREAD_PATH = "external\\xma\\pthreadgc2.dll";
-        public static readonly string SOX_PTHREAD_FULL_PATH =
-            Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-            SOX_PTHREAD_PATH);
-
-        public const string SOX_ZLIB_PATH = "external\\xma\\zlib1.dll";
-        public static readonly string SOX_ZLIB_FULL_PATH =
-            Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-            SOX_ZLIB_PATH);
-
-
+        public static readonly string SOX_FULL_PATH =
+            Path.Combine(SOX_FOLDER, "sox.exe");
 
         private const string WORKING_FOLDER_NAME = "_vgmt_xmash_mash";
         private const string XMASH_OUTPUT_EXTENSION = ".xma";
@@ -59,6 +44,13 @@ namespace VGMToolbox.tools.stream
         private const string XMASH_ERROR_TEXT = "failure.";
 
         #endregion
+
+        private ArrayList executableFilesInWorkingFolder { set; get; }
+
+        public XmashMashWorker()
+        {
+            this.executableFilesInWorkingFolder = new ArrayList();
+        }
 
         public struct XmaMashMashStruct : IVgmtWorkerStruct
         {
@@ -204,6 +196,18 @@ namespace VGMToolbox.tools.stream
 
         }
 
+        protected override void  DoFinalTask(IVgmtWorkerStruct pTaskStruct)
+        {
+            string[] executablesToDelete;
+
+            executablesToDelete = (string[])this.executableFilesInWorkingFolder.ToArray(typeof(string));
+
+            foreach (string exe in executablesToDelete)
+            {
+                File.Delete(exe);
+            }
+        }
+
         //--------------------------
         // Working Folder functions
         //--------------------------
@@ -255,36 +259,36 @@ namespace VGMToolbox.tools.stream
                 File.Delete(xmaFile);
             }
 
-            // delete xmash.exe
-            string xmashWorkingPath = Path.Combine(workingFolder, Path.GetFileName(XMASH_FULL_PATH));
+            //// delete xmash.exe
+            //string xmashWorkingPath = Path.Combine(workingFolder, Path.GetFileName(XMASH_FULL_PATH));
 
-            if (File.Exists(xmashWorkingPath))
-            {
-                File.Delete(xmashWorkingPath);
-            }
+            //if (File.Exists(xmashWorkingPath))
+            //{
+            //    File.Delete(xmashWorkingPath);
+            //}
 
             // delete towav.exe
-            string toWavWorkingPath = Path.Combine(workingFolder, Path.GetFileName(TOWAV_FULL_PATH));
+            //string toWavWorkingPath = Path.Combine(workingFolder, Path.GetFileName(TOWAV_FULL_PATH));
 
-            if (File.Exists(toWavWorkingPath))
-            {
-                File.Delete(toWavWorkingPath);
-            }
+            //if (File.Exists(toWavWorkingPath))
+            //{
+            //    File.Delete(toWavWorkingPath);
+            //}
 
             // delete sox.exe, etc...
-            string soxWorkingPath = Path.Combine(workingFolder, Path.GetFileName(SOX_FULL_PATH));
+            //string soxWorkingPath = Path.Combine(workingFolder, Path.GetFileName(SOX_FULL_PATH));
 
-            if (File.Exists(soxWorkingPath))
-            {
-                File.Delete(soxWorkingPath);
-            }
+            //if (File.Exists(soxWorkingPath))
+            //{
+            //    File.Delete(soxWorkingPath);
+            //}
 
-            dllFiles = Directory.GetFiles(workingFolder, "*.dll", SearchOption.TopDirectoryOnly);
+            //dllFiles = Directory.GetFiles(workingFolder, "*.dll", SearchOption.TopDirectoryOnly);
 
-            foreach (string dllFile in dllFiles)
-            {
-                File.Delete(dllFile);
-            }
+            //foreach (string dllFile in dllFiles)
+            //{
+            //    File.Delete(dllFile);
+            //}
         }
 
         //---------------
@@ -308,6 +312,7 @@ namespace VGMToolbox.tools.stream
             if (!File.Exists(xmashWorkingPath))
             {
                 File.Copy(XMASH_FULL_PATH, xmashWorkingPath, false);
+                this.executableFilesInWorkingFolder.Add(xmashWorkingPath);
             }
 
             // build parameters
@@ -363,6 +368,7 @@ namespace VGMToolbox.tools.stream
             if (!File.Exists(toWavWorkingPath))
             {
                 File.Copy(TOWAV_FULL_PATH, toWavWorkingPath, true);
+                this.executableFilesInWorkingFolder.Add(toWavWorkingPath);
             }
 
             foreach (string workingFile in workingFiles)
@@ -446,34 +452,30 @@ namespace VGMToolbox.tools.stream
         {
             string soxWorkingPath;
             string mergedOutputFileName;
+            string[] soxFiles;
             Process soxProcess;
             StringBuilder parameters = new StringBuilder();
 
             consoleOutput = String.Empty;
             consoleError = String.Empty;
 
-            // copy libgomp to working folder
-            soxWorkingPath = Path.Combine(workingFolder, Path.GetFileName(SOX_LIBGOMP_FULL_PATH));
+            // loop through required support files
+            soxFiles = Directory.GetFiles(SOX_FOLDER);
 
-            if (!File.Exists(soxWorkingPath))
+            foreach (string sFile in soxFiles)
             {
-                File.Copy(SOX_LIBGOMP_FULL_PATH, soxWorkingPath, true);
-            }
+                if (!sFile.Equals(SOX_FULL_PATH))
+                {
+                    // build path to working folder
+                    soxWorkingPath = Path.Combine(workingFolder, Path.GetFileName(sFile));
 
-            // copy pthread to working folder
-            soxWorkingPath = Path.Combine(workingFolder, Path.GetFileName(SOX_PTHREAD_FULL_PATH));
-
-            if (!File.Exists(soxWorkingPath))
-            {
-                File.Copy(SOX_PTHREAD_FULL_PATH, soxWorkingPath, true);
-            }
-
-            // copy zlib to working folder
-            soxWorkingPath = Path.Combine(workingFolder, Path.GetFileName(SOX_ZLIB_FULL_PATH));
-
-            if (!File.Exists(soxWorkingPath))
-            {
-                File.Copy(SOX_ZLIB_FULL_PATH, soxWorkingPath, true);
+                    // copy to working folder
+                    if (!File.Exists(soxWorkingPath))
+                    {
+                        File.Copy(sFile, soxWorkingPath, false);
+                        this.executableFilesInWorkingFolder.Add(soxWorkingPath);
+                    }                
+                }
             }
 
             // copy sox to working folder
@@ -482,6 +484,7 @@ namespace VGMToolbox.tools.stream
             if (!File.Exists(soxWorkingPath))
             {
                 File.Copy(SOX_FULL_PATH, soxWorkingPath, true);
+                this.executableFilesInWorkingFolder.Add(soxWorkingPath);
             }
 
             // build parameters

@@ -96,31 +96,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 592);
-            this.pnlLabels.Size = new System.Drawing.Size(1003, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 460);
+            this.pnlLabels.Size = new System.Drawing.Size(843, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(1003, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(843, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 515);
-            this.tbOutput.Size = new System.Drawing.Size(1003, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 383);
+            this.tbOutput.Size = new System.Drawing.Size(843, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 495);
-            this.pnlButtons.Size = new System.Drawing.Size(1003, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 363);
+            this.pnlButtons.Size = new System.Drawing.Size(843, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(943, 0);
+            this.btnCancel.Location = new System.Drawing.Point(783, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(883, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(723, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpFormat
@@ -129,7 +129,7 @@
             this.grpFormat.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFormat.Location = new System.Drawing.Point(0, 0);
             this.grpFormat.Name = "grpFormat";
-            this.grpFormat.Size = new System.Drawing.Size(980, 41);
+            this.grpFormat.Size = new System.Drawing.Size(820, 41);
             this.grpFormat.TabIndex = 7;
             this.grpFormat.TabStop = false;
             this.grpFormat.Text = "Format";
@@ -233,7 +233,7 @@
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpOptions.Location = new System.Drawing.Point(0, 178);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(1003, 317);
+            this.grpOptions.Size = new System.Drawing.Size(843, 185);
             this.grpOptions.TabIndex = 12;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
@@ -249,7 +249,7 @@
             this.pnlOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlOptions.Location = new System.Drawing.Point(3, 16);
             this.pnlOptions.Name = "pnlOptions";
-            this.pnlOptions.Size = new System.Drawing.Size(997, 298);
+            this.pnlOptions.Size = new System.Drawing.Size(837, 166);
             this.pnlOptions.TabIndex = 0;
             // 
             // grpCoefOptions
@@ -262,7 +262,7 @@
             this.grpCoefOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpCoefOptions.Location = new System.Drawing.Point(0, 281);
             this.grpCoefOptions.Name = "grpCoefOptions";
-            this.grpCoefOptions.Size = new System.Drawing.Size(980, 67);
+            this.grpCoefOptions.Size = new System.Drawing.Size(820, 67);
             this.grpCoefOptions.TabIndex = 37;
             this.grpCoefOptions.TabStop = false;
             this.grpCoefOptions.Text = "Coefficients";
@@ -272,13 +272,13 @@
             this.lblRightCoef.AutoSize = true;
             this.lblRightCoef.Location = new System.Drawing.Point(6, 22);
             this.lblRightCoef.Name = "lblRightCoef";
-            this.lblRightCoef.Size = new System.Drawing.Size(102, 13);
+            this.lblRightCoef.Size = new System.Drawing.Size(133, 13);
             this.lblRightCoef.TabIndex = 15;
-            this.lblRightCoef.Text = "Coef: Right Channel";
+            this.lblRightCoef.Text = "Coef Offset: Right Channel";
             // 
             // tbLeftCoef
             // 
-            this.tbLeftCoef.Location = new System.Drawing.Point(114, 45);
+            this.tbLeftCoef.Location = new System.Drawing.Point(145, 45);
             this.tbLeftCoef.Name = "tbLeftCoef";
             this.tbLeftCoef.Size = new System.Drawing.Size(100, 20);
             this.tbLeftCoef.TabIndex = 16;
@@ -288,14 +288,14 @@
             this.lblLeftCoef.AutoSize = true;
             this.lblLeftCoef.Location = new System.Drawing.Point(6, 48);
             this.lblLeftCoef.Name = "lblLeftCoef";
-            this.lblLeftCoef.Size = new System.Drawing.Size(95, 13);
+            this.lblLeftCoef.Size = new System.Drawing.Size(126, 13);
             this.lblLeftCoef.TabIndex = 17;
-            this.lblLeftCoef.Text = "Coef: Left Channel";
+            this.lblLeftCoef.Text = "Coef Offset: Left Channel";
             // 
             // cbCapcomHack
             // 
             this.cbCapcomHack.AutoSize = true;
-            this.cbCapcomHack.Location = new System.Drawing.Point(221, 47);
+            this.cbCapcomHack.Location = new System.Drawing.Point(251, 47);
             this.cbCapcomHack.Name = "cbCapcomHack";
             this.cbCapcomHack.Size = new System.Drawing.Size(94, 17);
             this.cbCapcomHack.TabIndex = 18;
@@ -304,7 +304,7 @@
             // 
             // tbRightCoef
             // 
-            this.tbRightCoef.Location = new System.Drawing.Point(114, 19);
+            this.tbRightCoef.Location = new System.Drawing.Point(145, 19);
             this.tbRightCoef.Name = "tbRightCoef";
             this.tbRightCoef.Size = new System.Drawing.Size(100, 20);
             this.tbRightCoef.TabIndex = 14;
@@ -328,7 +328,7 @@
             this.grpLoopOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpLoopOptions.Location = new System.Drawing.Point(0, 152);
             this.grpLoopOptions.Name = "grpLoopOptions";
-            this.grpLoopOptions.Size = new System.Drawing.Size(980, 129);
+            this.grpLoopOptions.Size = new System.Drawing.Size(820, 129);
             this.grpLoopOptions.TabIndex = 36;
             this.grpLoopOptions.TabStop = false;
             this.grpLoopOptions.Text = "Looping";
@@ -490,7 +490,7 @@
             this.grpGeneralOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpGeneralOptions.Location = new System.Drawing.Point(0, 41);
             this.grpGeneralOptions.Name = "grpGeneralOptions";
-            this.grpGeneralOptions.Size = new System.Drawing.Size(980, 111);
+            this.grpGeneralOptions.Size = new System.Drawing.Size(820, 111);
             this.grpGeneralOptions.TabIndex = 35;
             this.grpGeneralOptions.TabStop = false;
             this.grpGeneralOptions.Text = "General";
@@ -604,7 +604,7 @@
             this.grpFunction.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFunction.Location = new System.Drawing.Point(0, 23);
             this.grpFunction.Name = "grpFunction";
-            this.grpFunction.Size = new System.Drawing.Size(1003, 155);
+            this.grpFunction.Size = new System.Drawing.Size(843, 155);
             this.grpFunction.TabIndex = 13;
             this.grpFunction.TabStop = false;
             this.grpFunction.Text = "Functions";
@@ -665,7 +665,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1003, 633);
+            this.ClientSize = new System.Drawing.Size(843, 501);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpFunction);
             this.Name = "Genh_CreatorForm";

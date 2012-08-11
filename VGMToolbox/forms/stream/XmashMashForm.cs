@@ -21,14 +21,15 @@ namespace VGMToolbox.forms.stream
             InitializeComponent();
 
             // set title
-            this.lblTitle.Text = "XMAsh Mash";
+            this.lblTitle.Text = "XMAshMash";
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
 
             this.tbOutput.Text = String.Format("- Convert XMA to WAV using XMAsh and other tools.{0}", Environment.NewLine);
-            this.tbOutput.Text += String.Format("* Note: This tool requires 'xmash.exe' (XMAsh v0.6 or greater) by hcs and 'ToWav.exe' by Xplorer.{0}", Environment.NewLine);
-            this.tbOutput.Text += String.Format("  Please download both files and place in the following directory: <{0}>{1}", Path.GetDirectoryName(XmaConverterWorker.TOWAV_FULL_PATH), Environment.NewLine);
+            this.tbOutput.Text += String.Format("* Note: This tool requires 'xmash.exe' (XMAsh v0.6 or greater) by hcs, 'ToWav.exe' by Xplorer, and SoX by cbagwell and robs.{0}", Environment.NewLine);
+            this.tbOutput.Text += String.Format("  Please download XMAsh and ToWAV files and place 'xmash.exe' and 'ToWav.exe' in the following directory: <{0}>{1}", Path.GetDirectoryName(XmashMashWorker.XMASH_FULL_PATH), Environment.NewLine);
+            this.tbOutput.Text += String.Format("  Please download all SoX files and place 'sox.exe' and all required .dls in the following directory: <{0}>{1}", XmashMashWorker.SOX_FOLDER, Environment.NewLine);
         }
 
 

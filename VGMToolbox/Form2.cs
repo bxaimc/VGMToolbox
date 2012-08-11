@@ -1131,7 +1131,7 @@ namespace VGMToolbox
             xmaConverterNode.Tag = nodeTag;
 
             // XMAsh Mash
-            TreeNode xmashMashNode = new TreeNode("XMAsh Mash");
+            TreeNode xmashMashNode = new TreeNode("XMAshMash");
 
             // Add XMA Convertor Form
             XmashMashForm xmashMashForm = new XmashMashForm(xmashMashNode);
