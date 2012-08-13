@@ -61,6 +61,10 @@ namespace VGMToolbox.tools.stream
                     ElectronicArtsVp6Stream vp6Stream = new ElectronicArtsVp6Stream(path);
                     vp6Stream.DemultiplexStreams(demuxOptions);
                     break;
+                case "H4M (Hudson GameCube Video)":
+                    HudsonHvqm4VideoStream hvqmStream = new HudsonHvqm4VideoStream(path);
+                    hvqmStream.DemultiplexStreams(demuxOptions);
+                    break;
                 case "MO (Mobiclip)":
                     MobiclipStream.MovieType movieType = MobiclipStream.GetCriMovie2StreamType(path);                    
 

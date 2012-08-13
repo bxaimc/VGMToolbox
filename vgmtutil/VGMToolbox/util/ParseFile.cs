@@ -671,7 +671,7 @@ namespace VGMToolbox.util
             // check if file exists and change name as needed
             if (File.Exists(fullFilePath))
             {
-                int fileCount = Directory.GetFiles(fullOutputDirectory, (Path.GetFileName(fullFilePath) + "*"), SearchOption.TopDirectoryOnly).Length;
+                int fileCount = Directory.GetFiles(fullOutputDirectory, (Path.GetFileNameWithoutExtension(fullFilePath) + "*" + Path.GetExtension(fullFilePath)), SearchOption.TopDirectoryOnly).Length;
                 fullFilePath = Path.Combine(fullOutputDirectory, String.Format("{0}_{1}{2}", Path.GetFileNameWithoutExtension(fullFilePath), fileCount.ToString("X3"), Path.GetExtension(fullFilePath)));
             }
 
@@ -1693,6 +1693,37 @@ namespace VGMToolbox.util
             path = path.Substring(0, nameLength);
 
             return path;
+        }
+
+        public static uint ReadUintLE(Stream inStream, long offset)
+        {
+            return BitConverter.ToUInt32(ParseSimpleOffset(inStream, offset, 4), 0);
+        }
+
+        public static uint ReadUintBE(Stream inStream, long offset)
+        {
+            byte[] val = ParseSimpleOffset(inStream, offset, 4);
+            Array.Reverse(val);
+            
+            return BitConverter.ToUInt32(val, 0);
+        }
+
+        public static ushort ReadUshortLE(Stream inStream, long offset)
+        {
+            return BitConverter.ToUInt16(ParseSimpleOffset(inStream, offset, 2), 0);
+        }
+
+        public static ushort ReadUshortBE(Stream inStream, long offset)
+        {
+            byte[] val = ParseSimpleOffset(inStream, offset, 2);
+            Array.Reverse(val);
+            
+            return BitConverter.ToUInt16(val, 0);
+        }
+
+        public static byte ReadByte(Stream inStream, long offset)
+        {
+            return (byte)ParseSimpleOffset(inStream, offset, 1)[0];
         }
     }
 }
