@@ -133,7 +133,7 @@ namespace VGMToolbox.tools.stream
                         loopStartValue = ParseFile.GetByteSearchCalculatedVaryingByteValueAtAbsoluteOffset(fs, posStruct.LoopStartByteSearchCalculatingOffset, true);
                     }
 
-                    if (loopStartValue != DEFAULT_LOOP_VALUE)
+                    if ((loopStartValue != DEFAULT_LOOP_VALUE) && ((int)loopStartValue >= 0))
                     {
                         //----------------
                         // Get Loop End
@@ -155,27 +155,34 @@ namespace VGMToolbox.tools.stream
                             loopEndValue = ParseFile.GetByteSearchCalculatedVaryingByteValueAtAbsoluteOffset(fs, posStruct.LoopEndByteSearchCalculatingOffset, true);
                         }
 
-                        if (loopEndValue != DEFAULT_LOOP_VALUE)
-                        {
+                        if ((loopEndValue != DEFAULT_LOOP_VALUE) && (loopEndValue >= 0))
+                        {                                                        
                             // Calculate Loop End if Needed
                             if (posStruct.LoopEndIsLoopLength)
                             {
                                 loopEndValue += loopStartValue;
                             }
 
-                            // update working item
-                            currentItem.LoopStart = loopStartValue;
-                            currentItem.LoopEnd = loopEndValue;
+                            if (loopStartValue < loopEndValue)
+                            {
+                                // update working item
+                                currentItem.LoopStart = loopStartValue;
+                                currentItem.LoopEnd = loopEndValue;
+                            }
+                            else
+                            {
+                                throw new Exception(String.Format("Loop Start Value greater than or equal Loop End Value: {0}", pPath));
+                            }
                         }
                         else
                         {
-                            throw new IndexOutOfRangeException(String.Format("Loop End Value not Found: {0}", pPath));
+                            throw new IndexOutOfRangeException(String.Format("Loop End Value not Found or Loop End is Less than 0: {0}", pPath));
                         }
 
                     }
                     else
                     {
-                        throw new IndexOutOfRangeException(String.Format("Loop Start Value not Found: {0}", pPath));
+                        throw new IndexOutOfRangeException(String.Format("Loop Start Value not Found or Loop Start is Less than 0: {0}", pPath));
                     }
                 }
                 catch (Exception ex)
