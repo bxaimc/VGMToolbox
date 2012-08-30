@@ -1305,7 +1305,8 @@ namespace VGMToolbox.util
                 else if (vfsInformation.UseAbsoluteFileNameOffset)
                 {
                     nameOffset = GetVaryingByteValueAtRelativeOffset(vfsStream, vfsInformation.AbsoluteFileNameOffsetDescription, currentStreamOffset);
-                    //nameOffset += 0x138390;
+                    //nameOffset += ReadUintBE(vfsStream, 0xC);
+
                 }
                 else if (vfsInformation.UseRelativeFileNameOffset)
                 {

@@ -245,6 +245,15 @@ namespace VGMToolbox.format
             fHeader.FrameSize = ParseFile.ReadUintBE(inStream, currentOffset + 4);
         }
 
+        protected void DoFinalTasks(Dictionary<string, FileStream> outputFiles)
+        {
+            foreach (string streamId in outputFiles.Keys)
+            {
+                outputFiles[streamId].Close();
+                outputFiles[streamId].Dispose();
+            }
+        }
+
         public virtual void DemultiplexStreams(MpegStream.DemuxOptionsStruct demuxOptions)
         {
             long currentOffset = -1;
@@ -256,6 +265,7 @@ namespace VGMToolbox.format
             uint audioFramesProcessed = 0;
             uint videoFramesProcessed = 0;
             uint bytesProcessed = 0;
+            uint expectedBytesProcessed = 0;
 
             BlockHeader blockHeader = new BlockHeader();
             FrameHeader frameHeader = new FrameHeader();
@@ -264,6 +274,9 @@ namespace VGMToolbox.format
             bool isFirstAudioFrame = true;
 
             byte[] fullChunk;
+            
+            uint audioChunkSize;
+            uint audioChunkSamples;
 
             long blockStart;
             long frameStart;
@@ -305,12 +318,20 @@ namespace VGMToolbox.format
 
                         // process file
                         while ((currentOffset < fileSize) && 
-                               (blocksProcessed <= this.Blocks)) 
+                               (blocksProcessed < this.Blocks)) 
                         {
+                            // reset flags
+                            isFirstVideoFrame = true;
+                            isFirstAudioFrame = true;
+
+                            audioFramesProcessed = 0;
+                            videoFramesProcessed = 0;
+
                             //--------------
                             // parse block
                             //--------------
                             blockStart = currentOffset;
+                            blocksProcessed++;
 
                             // parse block header
                             this.ParseBlockHeader(fs, currentOffset, ref blockHeader);
@@ -342,7 +363,22 @@ namespace VGMToolbox.format
                                 // audio chunk
                                 if (demuxOptions.ExtractAudio && frameHeader.IsAudioFrame(isFirstAudioFrame))
                                 {
+                                    audioChunkSamples = ParseFile.ReadUintBE(fs, currentOffset);
+                                    audioChunkSize = (audioChunkSamples * this.AudioChannels) / 2;
+
+                                    // get full frame for now
                                     fullChunk = ParseFile.ParseSimpleOffset(fs, currentOffset, (int)frameHeader.FrameSize);
+                                    
+                                    // different frames have different IMA info
+                                    //if (isFirstAudioFrame)
+                                    //{
+                                    //    fullChunk = ParseFile.ParseSimpleOffset(fs, currentOffset + 6, (int)audioChunkSize);
+                                    //}
+                                    //else
+                                    //{
+                                    //    fullChunk = ParseFile.ParseSimpleOffset(fs, currentOffset + 4, (int)audioChunkSize);
+                                    //}
+                                    
                                     this.writeChunkToStream(fullChunk, "audio", streamWriters, this.FileExtensionAudio);
 
                                     isFirstAudioFrame = false;
@@ -373,6 +409,26 @@ namespace VGMToolbox.format
                                 currentOffset += frameHeader.FrameSize;
                             
                             } // while (bytesProcessed < blockHeader.BlockSize)
+
+                            // verify proper number of bytes processed
+                            if (blocksProcessed < this.Blocks)
+                            {
+                                bytesProcessed = bytesProcessed + (uint)(blockHeader.GetSize() + 4);
+                                expectedBytesProcessed = ParseFile.ReadUintBE(fs, currentOffset);
+
+                                if (expectedBytesProcessed != bytesProcessed)
+                                {
+                                    throw new Exception(String.Format(
+                                        "Bytes processed 0x{0}does not match expected bytes processed {1} for block starting at 0x{2}.",
+                                        bytesProcessed.ToString("X8"),
+                                        expectedBytesProcessed.ToString("X8"),
+                                        blockStart.ToString("X8")));
+                                }
+                                else
+                                {
+                                    currentOffset += 4;
+                                }
+                            }
                         }
                     }
                     else
@@ -387,7 +443,7 @@ namespace VGMToolbox.format
             }
             finally
             {
-                // this.DoFinalTasks(streamWriters);
+                this.DoFinalTasks(streamWriters);
             }
         }
     }
