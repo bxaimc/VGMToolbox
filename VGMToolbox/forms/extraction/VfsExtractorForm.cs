@@ -615,9 +615,12 @@ namespace VGMToolbox.forms.extraction
 
         private void btnDoTask_Click(object sender, EventArgs e)
         {
-            
-            string[] dataFiles = new string[] {Path.GetFullPath(this.tbDataFilePath.Text)};
-            this.extractFiles(dataFiles, true);
+
+            if (!String.IsNullOrEmpty(this.tbDataFilePath.Text))
+            {
+                string[] dataFiles = new string[] { Path.GetFullPath(this.tbDataFilePath.Text) };
+                this.extractFiles(dataFiles, true);
+            }
         }
 
         private VfsExtractorSettings getPresetFromFile(string filePath)

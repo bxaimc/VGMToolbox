@@ -7,6 +7,7 @@ using System.Text;
 
 using CueSharp;
 
+using VGMToolbox.format;
 using VGMToolbox.format.iso;
 using VGMToolbox.plugin;
 using VGMToolbox.util;
@@ -334,6 +335,20 @@ namespace VGMToolbox.tools.extract
                             isoVolume.Initialize(fs, currentOffset, isRawFormat);
                             volumeList.Add((IVolume)isoVolume);
                         }
+                        // should be the last volume
+                        break;
+                    }
+                    
+                    //------------------------
+                    // MS STFS Package (XBLA) 
+                    //------------------------
+                    else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, (int)MicrosoftSecureTransactedFileSystem.IDENTIFIER_OFFSET, MicrosoftSecureTransactedFileSystem.STANDARD_IDENTIFIER.Length, MicrosoftSecureTransactedFileSystem.STANDARD_IDENTIFIER))
+                    {
+                        MicrosoftSecureTransactedFileSystemVolume isoVolume;
+                        isoVolume = new MicrosoftSecureTransactedFileSystemVolume();
+                        isoVolume.Initialize(fs, currentOffset, isRawFormat);
+                        volumeList.Add((IVolume)isoVolume);
+
                         // should be the last volume
                         break;
                     }

@@ -1726,5 +1726,32 @@ namespace VGMToolbox.util
         {
             return (byte)ParseSimpleOffset(inStream, offset, 1)[0];
         }
+
+        public static int ReadInt32LE(Stream inStream, long offset)
+        {
+            return BitConverter.ToInt32(ParseSimpleOffset(inStream, offset, 4), 0);
+        }
+
+        public static int ReadInt32BE(Stream inStream, long offset)
+        {
+            byte[] val = ParseSimpleOffset(inStream, offset, 4);
+            Array.Reverse(val);
+
+            return BitConverter.ToInt32(val, 0);
+        }
+
+        public static short ReadInt16LE(Stream inStream, long offset)
+        {
+            return BitConverter.ToInt16(ParseSimpleOffset(inStream, offset, 2), 0);
+        }
+
+        public static short ReadInt16BE(Stream inStream, long offset)
+        {
+            byte[] val = ParseSimpleOffset(inStream, offset, 2);
+            Array.Reverse(val);
+
+            return BitConverter.ToInt16(val, 0);
+        }
+
     }
 }
