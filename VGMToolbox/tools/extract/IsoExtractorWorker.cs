@@ -342,10 +342,10 @@ namespace VGMToolbox.tools.extract
                     //------------------------
                     // MS STFS Package (XBLA) 
                     //------------------------
-                    else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, (int)MicrosoftSecureTransactedFileSystem.IDENTIFIER_OFFSET, MicrosoftSecureTransactedFileSystem.STANDARD_IDENTIFIER.Length, MicrosoftSecureTransactedFileSystem.STANDARD_IDENTIFIER))
+                    else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, (int)MicrosoftSTFS.IDENTIFIER_OFFSET, MicrosoftSTFS.STANDARD_IDENTIFIER.Length, MicrosoftSTFS.STANDARD_IDENTIFIER))
                     {
-                        MicrosoftSecureTransactedFileSystemVolume isoVolume;
-                        isoVolume = new MicrosoftSecureTransactedFileSystemVolume();
+                        MicrosoftSTFSVolume isoVolume;
+                        isoVolume = new MicrosoftSTFSVolume();
                         isoVolume.Initialize(fs, currentOffset, isRawFormat);
                         volumeList.Add((IVolume)isoVolume);
 

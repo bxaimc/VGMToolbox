@@ -1753,5 +1753,55 @@ namespace VGMToolbox.util
             return BitConverter.ToInt16(val, 0);
         }
 
+        public static int ReadInt24LE(Stream inStream, long offset)
+        {
+            byte[] val = ParseSimpleOffset(inStream, offset, 4);
+            val[3] = 0;
+
+            return BitConverter.ToInt32(val, 0);
+        }
+
+        public static int ReadInt24BE(Stream inStream, long offset)
+        {
+            byte[] val = ParseSimpleOffset(inStream, offset, 4);
+            val[3] = 0;
+            Array.Reverse(val);
+
+            return BitConverter.ToInt32(val, 0);
+        }
+
+        public static string ReadAsciiString(Stream inStream, long offset)
+        { 
+            long streamLength = inStream.Length;
+            int stringLength = 0;
+            
+            int dummy;
+            byte[] stringBytes;
+            string ret = String.Empty;
+
+            // move pointer
+            inStream.Position = offset;
+
+            // read until NULL
+            for (long i = offset; i <= streamLength; i++)
+            {
+                dummy = inStream.ReadByte();
+
+                if (dummy > 0)
+                {
+                    stringLength++;
+                }
+                else if (dummy <= 0)
+                {
+                    break;
+                }
+            }
+
+            // parse string
+            stringBytes = ParseSimpleOffset(inStream, offset, stringLength);
+            ret = ByteConversion.GetAsciiText(stringBytes);
+
+            return ret;
+        }
     }
 }
