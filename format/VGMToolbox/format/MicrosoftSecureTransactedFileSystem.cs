@@ -17,6 +17,8 @@ namespace VGMToolbox.format
 
         public const int FIRST_BLOCK_OFFSET = 0xC000;
         public const int HASH_TABLE_INTERVAL = 0xAA;
+
+        public const int ROOT_DIRECTORY_PATH_INDICATOR = -1;
     }
 
     public class MicrosoftSTFSVolume : IVolume
@@ -43,7 +45,9 @@ namespace VGMToolbox.format
                 get { return (Flags & 64) == 64; }
             }
         }
-        
+
+        public string SourceFileName { set; get; }
+
         public long VolumeBaseOffset { set; get; }
         public string FormatDescription { set; get; }
         public VolumeDataType VolumeType { set; get; }
@@ -70,13 +74,15 @@ namespace VGMToolbox.format
             get
             {
                 DirectoryStructureArray.Sort();
-                return (IDirectoryStructure[])DirectoryStructureArray.ToArray(typeof(NintendoGameCubeDirectoryStructure));
+                return (IDirectoryStructure[])DirectoryStructureArray.ToArray(typeof(MicrosoftSTFSDirectoryStructure));
             }        
         }
 
         public void Initialize(FileStream isoStream, long offset, bool isRawDump)
         {
             byte[] volumeIdentifierBytes;
+
+            this.SourceFileName = isoStream.Name;
 
             this.VolumeBaseOffset = offset;
             this.IsRawDump = isRawDump;
@@ -94,8 +100,12 @@ namespace VGMToolbox.format
             
             // not sure about endianess, always zero in my samples so far
             this.FileTableBlockNumber = ParseFile.ReadInt24LE(isoStream, this.VolumeBaseOffset + 0x37E);
-            
+       
+            // parse file table
             this.ParseFileTable(isoStream);                            
+
+            // build directory tree
+            this.BuildDirectoryTree();
         }
        
         public void ExtractAll(ref Dictionary<string, FileStream> streamCache, string destintionFolder, bool extractAsRaw)
@@ -146,6 +156,84 @@ namespace VGMToolbox.format
             }
         }
 
+        public void BuildDirectoryTree()
+        {
+            Dictionary<int, MicrosoftSTFSDirectoryStructure> directoryList = new Dictionary<int, MicrosoftSTFSDirectoryStructure>();            
+
+            FileTableEntry fileTableEntry = new FileTableEntry();
+            MicrosoftSTFSDirectoryStructure parentDirectoryStructure;
+            MicrosoftSTFSDirectoryStructure directoryStructure;
+            MicrosoftSTFSFileStructure fileStructure;
+
+            ArrayList keyListArray = new ArrayList();
+            int[] keyList;
+
+            //------------------
+            // add root folder
+            //------------------
+            directoryStructure = new MicrosoftSTFSDirectoryStructure(this.SourceFileName, String.Empty, String.Empty, MicrosoftSTFS.ROOT_DIRECTORY_PATH_INDICATOR - 1);
+            directoryList.Add(MicrosoftSTFS.ROOT_DIRECTORY_PATH_INDICATOR, directoryStructure);
+
+            //----------------------
+            // build directory list
+            //----------------------
+            for (int i = 0; i < FileTableEntries.Length; i++)
+            {
+                fileTableEntry = FileTableEntries[i];
+
+                if (fileTableEntry.IsDirectory)
+                {
+                    // create directory
+                    directoryStructure =
+                        new MicrosoftSTFSDirectoryStructure(this.SourceFileName,
+                            fileTableEntry.FileName, directoryList[fileTableEntry.PathIndicator].DirectoryName, 
+                            fileTableEntry.PathIndicator);
+
+                    // add to list
+                    directoryList.Add(i, directoryStructure);
+                }
+                else
+                { 
+                    // create file structure
+                    fileStructure = new MicrosoftSTFSFileStructure(directoryList[fileTableEntry.PathIndicator].DirectoryName,
+                        this.SourceFileName, fileTableEntry.FileName, this.VolumeBaseOffset,
+                        fileTableEntry.StartingBlockForFileLE,
+                        fileTableEntry.FileSize, new DateTime());
+
+                    // add to directory
+                    directoryList[fileTableEntry.PathIndicator].FileArray.Add(fileStructure);
+                }
+            } // for (int i = 0; i < FileTableEntries.Length; i++)
+
+            //-----------------------
+            // assemble directories
+            //-----------------------
+
+            // build reversed keyList (be easier with Linq)
+            foreach (int key in directoryList.Keys)
+            {
+                keyListArray.Add(key);
+            }
+
+            keyListArray.Sort();
+            keyList = (int[])keyListArray.ToArray(typeof(int));            
+
+            // loop through dirs backwards
+            for (int i = keyList.GetUpperBound(0); i > 0; i--)
+            {
+                // add to sub directory of parent
+                directoryStructure = directoryList[keyList[i]];
+                parentDirectoryStructure = directoryList[directoryStructure.ParentDirectoryId];
+                parentDirectoryStructure.SubDirectoryArray.Add(directoryStructure);
+
+                // remove from directoryList
+                directoryList.Remove(keyList[i]);
+            }
+            
+            // Add root element to Volumes directory list
+            this.DirectoryStructureArray.Add(directoryList[MicrosoftSTFS.ROOT_DIRECTORY_PATH_INDICATOR]);
+        }
+
         public long GetOffsetForBlockNumber(int blockNumber)
         {
             long offset = -1;
@@ -162,6 +250,68 @@ namespace VGMToolbox.format
 
             return offset;
         }
+    }
+
+    public class MicrosoftSTFSDirectoryStructure : IDirectoryStructure
+    {
+        public string SourceFilePath { set; get; }
+        public string DirectoryName { set; get; }
+        public string ParentDirectoryName { set; get; }
+
+        public ArrayList SubDirectoryArray { set; get; }
+        public IDirectoryStructure[] SubDirectories
+        {
+            set { SubDirectories = value; }
+            get
+            {
+                SubDirectoryArray.Sort();
+                return (IDirectoryStructure[])SubDirectoryArray.ToArray(typeof(MicrosoftSTFSDirectoryStructure));
+            }
+        }
+        
+        public ArrayList FileArray { set; get; }
+        public IFileStructure[] Files
+        {
+            set { Files = value; }
+            get 
+            {
+                FileArray.Sort();
+                return (IFileStructure[])FileArray.ToArray(typeof(MicrosoftSTFSFileStructure));
+            }
+        }
+
+        public int ParentDirectoryId { set; get; }
+
+        public int CompareTo(object obj)
+        {
+            if (obj is MicrosoftSTFSDirectoryStructure)
+            {
+                MicrosoftSTFSDirectoryStructure o = (MicrosoftSTFSDirectoryStructure)obj;
+
+                return this.DirectoryName.CompareTo(o.DirectoryName);
+            }
+
+            throw new ArgumentException("object is not a MicrosoftSTFSDirectoryStructure");
+        }
+
+        public void Extract(ref Dictionary<string, FileStream> streamCache, 
+            string destinationFolder, bool extractAsRaw)
+        { 
+        
+        }
+
+        public MicrosoftSTFSDirectoryStructure(string sourceFilePath, string directoryName,
+            string parentDirectoryName, int parentDirectoryId)
+        {
+            this.SourceFilePath = sourceFilePath;
+            this.SubDirectoryArray = new ArrayList();
+            this.FileArray = new ArrayList();
+
+            this.ParentDirectoryName = parentDirectoryName;
+            this.DirectoryName = directoryName;
+            this.ParentDirectoryId = parentDirectoryId;
+        }
+
     }
 
     public class MicrosoftSTFSFileStructure : IFileStructure
