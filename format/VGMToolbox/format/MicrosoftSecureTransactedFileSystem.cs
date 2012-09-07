@@ -122,8 +122,8 @@ namespace VGMToolbox.format
             long fileSize = isoStream.Length;
 
             // get offset for blocks
-            fileTableMinOffset = this.GetOffsetForBlockNumber(this.FileTableBlockNumber);
-            fileTableMaxOffset = this.GetOffsetForBlockNumber(this.FileTableBlockNumber + this.FileTableBlockCount);
+            fileTableMinOffset = GetOffsetForBlockNumber(this.FileTableBlockNumber);
+            fileTableMaxOffset = GetOffsetForBlockNumber(this.FileTableBlockNumber + this.FileTableBlockCount);
             
             // check offsets
             if ((fileTableMinOffset >= MicrosoftSTFS.FIRST_BLOCK_OFFSET) &&
@@ -164,6 +164,8 @@ namespace VGMToolbox.format
             MicrosoftSTFSDirectoryStructure parentDirectoryStructure;
             MicrosoftSTFSDirectoryStructure directoryStructure;
             MicrosoftSTFSFileStructure fileStructure;
+            
+            String parentDirectoryName = String.Empty;
 
             ArrayList keyListArray = new ArrayList();
             int[] keyList;
@@ -171,7 +173,7 @@ namespace VGMToolbox.format
             //------------------
             // add root folder
             //------------------
-            directoryStructure = new MicrosoftSTFSDirectoryStructure(this.SourceFileName, String.Empty, String.Empty, MicrosoftSTFS.ROOT_DIRECTORY_PATH_INDICATOR - 1);
+            directoryStructure = new MicrosoftSTFSDirectoryStructure(this.SourceFileName, String.Empty, String.Empty, MicrosoftSTFS.ROOT_DIRECTORY_PATH_INDICATOR);
             directoryList.Add(MicrosoftSTFS.ROOT_DIRECTORY_PATH_INDICATOR, directoryStructure);
 
             //----------------------
@@ -181,13 +183,16 @@ namespace VGMToolbox.format
             {
                 fileTableEntry = FileTableEntries[i];
 
+                // build parent directory name
+                parentDirectoryName = Path.Combine(directoryList[fileTableEntry.PathIndicator].ParentDirectoryName,
+                    directoryList[fileTableEntry.PathIndicator].DirectoryName);
+                
                 if (fileTableEntry.IsDirectory)
                 {
-                    // create directory
+                    // create directory                    
                     directoryStructure =
                         new MicrosoftSTFSDirectoryStructure(this.SourceFileName,
-                            fileTableEntry.FileName, directoryList[fileTableEntry.PathIndicator].DirectoryName, 
-                            fileTableEntry.PathIndicator);
+                            fileTableEntry.FileName, parentDirectoryName, fileTableEntry.PathIndicator);
 
                     // add to list
                     directoryList.Add(i, directoryStructure);
@@ -195,10 +200,12 @@ namespace VGMToolbox.format
                 else
                 { 
                     // create file structure
-                    fileStructure = new MicrosoftSTFSFileStructure(directoryList[fileTableEntry.PathIndicator].DirectoryName,
-                        this.SourceFileName, fileTableEntry.FileName, this.VolumeBaseOffset,
+                    fileStructure = new MicrosoftSTFSFileStructure(
+                        parentDirectoryName,this.SourceFileName, 
+                        fileTableEntry.FileName, this.VolumeBaseOffset,
                         fileTableEntry.StartingBlockForFileLE,
-                        fileTableEntry.FileSize, new DateTime());
+                        fileTableEntry.FileSize, new DateTime(), 
+                        fileTableEntry.StoredInConsecutiveBlocks);
 
                     // add to directory
                     directoryList[fileTableEntry.PathIndicator].FileArray.Add(fileStructure);
@@ -209,7 +216,7 @@ namespace VGMToolbox.format
             // assemble directories
             //-----------------------
 
-            // build reversed keyList (be easier with Linq)
+            // build reversed keyList
             foreach (int key in directoryList.Keys)
             {
                 keyListArray.Add(key);
@@ -234,7 +241,7 @@ namespace VGMToolbox.format
             this.DirectoryStructureArray.Add(directoryList[MicrosoftSTFS.ROOT_DIRECTORY_PATH_INDICATOR]);
         }
 
-        public long GetOffsetForBlockNumber(int blockNumber)
+        public static long GetOffsetForBlockNumber(int blockNumber)
         {
             long offset = -1;
 
@@ -296,8 +303,24 @@ namespace VGMToolbox.format
 
         public void Extract(ref Dictionary<string, FileStream> streamCache, 
             string destinationFolder, bool extractAsRaw)
-        { 
-        
+        {
+            string fullDirectoryPath = Path.Combine(destinationFolder, Path.Combine(this.ParentDirectoryName, this.DirectoryName));
+
+            // create directory
+            if (!Directory.Exists(fullDirectoryPath))
+            {
+                Directory.CreateDirectory(fullDirectoryPath);
+            }
+
+            foreach (MicrosoftSTFSFileStructure f in this.FileArray)
+            {
+                f.Extract(ref streamCache, destinationFolder, extractAsRaw);
+            }
+
+            foreach (GreenBookCdiDirectoryStructure d in this.SubDirectoryArray)
+            {
+                d.Extract(ref streamCache, destinationFolder, extractAsRaw);
+            }        
         }
 
         public MicrosoftSTFSDirectoryStructure(string sourceFilePath, string directoryName,
@@ -329,6 +352,8 @@ namespace VGMToolbox.format
 
         public DateTime FileDateTime { set; get; }
 
+        public Boolean StoredInConsecutiveBlocks { set; get; }
+
         public int CompareTo(object obj)
         {
             if (obj is MicrosoftSTFSFileStructure)
@@ -342,8 +367,8 @@ namespace VGMToolbox.format
         }
 
         public MicrosoftSTFSFileStructure(string parentDirectoryName, 
-            string sourceFilePath, string fileName, long volumeBaseOffset, long lba, 
-            long size, DateTime fileTime)
+            string sourceFilePath, string fileName, long volumeBaseOffset, long lba,
+            long size, DateTime fileTime, Boolean storedInConsecutiveBlocks)
         {
             this.ParentDirectoryName = parentDirectoryName;
             this.SourceFilePath = sourceFilePath;
@@ -355,6 +380,7 @@ namespace VGMToolbox.format
             this.Size = size;
             this.FileMode = CdSectorType.Unknown;
             this.FileDateTime = fileTime;
+            this.StoredInConsecutiveBlocks = storedInConsecutiveBlocks;
         }
 
         public virtual void Extract(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
@@ -366,7 +392,19 @@ namespace VGMToolbox.format
                 streamCache[this.SourceFilePath] = File.OpenRead(this.SourceFilePath);
             }
 
-            ParseFile.ExtractChunkToFile(streamCache[this.SourceFilePath], this.Lba, this.Size, destinationFile);
+            if (this.StoredInConsecutiveBlocks)
+            {
+                ParseFile.ExtractChunkToFile(streamCache[this.SourceFilePath], 
+                    MicrosoftSTFSVolume.GetOffsetForBlockNumber((int)this.Lba), this.Size, destinationFile);
+            }
+            else
+            { 
+                // read first chunk
+
+                // skip hash table
+
+                // write second chunk
+            }
         }
     }
 }
