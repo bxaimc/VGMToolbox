@@ -215,7 +215,8 @@ namespace VGMToolbox.format
                         parentDirectoryName,this.SourceFileName, 
                         fileTableEntry.FileName, this.VolumeBaseOffset,
                         fileTableEntry.StartingBlockForFileLE,
-                        fileTableEntry.FileSize, new DateTime(),
+                        fileTableEntry.FileSize, 
+                        ByteConversion.GetDateTimeFromFAT32Date(fileTableEntry.UpdateDateTime),
                         fileTableEntry.BlocksForFileLE1,
                         this.HeaderSize, this.BlockSeparation);
 
@@ -253,6 +254,7 @@ namespace VGMToolbox.format
             this.DirectoryStructureArray.Add(directoryList[MicrosoftSTFS.ROOT_DIRECTORY_PATH_INDICATOR]);
         }
 
+        // from Free60 wiki
         public static long ComputeBlockNumberAndGetOffset(int xBlock, uint headerSize, byte blockSeparation)
         {            
             int adjustedBlockNumber = ComputeDataBlockNumber(xBlock, headerSize, blockSeparation);
@@ -261,6 +263,7 @@ namespace VGMToolbox.format
             return offset;
         }
 
+        // from Free60 wiki
         public static int ComputeDataBlockNumber(int xBlock, uint headerSize, byte blockSeparation)
         {
             int xBlockShift;
@@ -307,6 +310,7 @@ namespace VGMToolbox.format
             return xReturn;
         }
 
+        // from Free60 wiki
         public static long BlockToOffset(int xBlock, uint headerSize)
         {
             long xReturn = 0;
@@ -465,39 +469,54 @@ namespace VGMToolbox.format
             long chunkSize;
             long currentBlock = this.Lba;
 
+            byte[] buffer = new byte[MicrosoftSTFS.BLOCK_SIZE];
+            int bytesRead;
+
             string destinationFile = Path.Combine(Path.Combine(destinationFolder, this.ParentDirectoryName), this.FileName);
+            string fullDestinationPath = Path.GetDirectoryName(destinationFile);
 
             if (!streamCache.ContainsKey(this.SourceFilePath))
             {
                 streamCache[this.SourceFilePath] = File.OpenRead(this.SourceFilePath);
             }
 
-            // extract to disk
-            for (int i = 0; i < this.BlocksForFile; i++)
+            // create destination folder, if needed
+            if (!Directory.Exists(fullDestinationPath))
             {
-                // set current block for reading source data
-                currentBlock = this.Lba + i;
-                
-                // set read size
-                if (i == (this.BlocksForFile - 1))
-                {
-                    // last chunk may not use entire block
-                    chunkSize = (this.Size - bytesWritten);
-                }
-                else
-                {
-                    chunkSize = MicrosoftSTFS.BLOCK_SIZE;
-                }
+                Directory.CreateDirectory(fullDestinationPath);
+            }
 
-                // write to file
-                offset = MicrosoftSTFSVolume.ComputeBlockNumberAndGetOffset((int)currentBlock, this.FileHeaderSize, this.BlockSeparation);
-                
-                ParseFile.AppendChunkToFile(streamCache[this.SourceFilePath],
-                    offset, chunkSize, destinationFile);            
+            using (FileStream outStream = File.Open(destinationFile, System.IO.FileMode.Create, FileAccess.Write))
+            {
+                // extract to disk
+                for (int i = 0; i < this.BlocksForFile; i++)
+                {
+                    // set current block for reading source data
+                    currentBlock = this.Lba + i;
+                    
+                    // set read size
+                    if (i == (this.BlocksForFile - 1))
+                    {
+                        // last chunk may not use entire block
+                        chunkSize = (this.Size - bytesWritten);
+                    }
+                    else
+                    {
+                        chunkSize = MicrosoftSTFS.BLOCK_SIZE;
+                    }
 
-                // increment bytes written
-                bytesWritten += chunkSize;
-            }               
+                    // read from stream
+                    offset = MicrosoftSTFSVolume.ComputeBlockNumberAndGetOffset((int)currentBlock, this.FileHeaderSize, this.BlockSeparation);
+                    streamCache[this.SourceFilePath].Position = offset;
+                    bytesRead = streamCache[this.SourceFilePath].Read(buffer, 0, (int)chunkSize);
+
+                    // write to file
+                    outStream.Write(buffer, 0, bytesRead);
+
+                    // increment bytes written
+                    bytesWritten += bytesRead;
+                }               
+            }
         }
     }
 }

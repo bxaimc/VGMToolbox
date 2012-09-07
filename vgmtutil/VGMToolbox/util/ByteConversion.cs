@@ -192,5 +192,26 @@ namespace VGMToolbox.util
             Array.Reverse(ret);
             return ret;
         }
+
+        public static DateTime GetDateTimeFromFAT32Date(int value)
+        {
+            short xDate = (short)(value >> 0x10);
+            short xTime = (short)(value & 0xFFFF);
+
+            if (xDate == 0 && xTime == 0)
+            {
+                return DateTime.Now;
+            }
+            else
+            {
+                return new DateTime(
+                    (((xDate & 0xFE00) >> 9) + 0x7BC),
+                    ((xDate & 0x1E0) >> 5),
+                    (xDate & 0x1F),
+                    ((xTime & 0xF800) >> 0xB),
+                    ((xTime & 0x7E0) >> 5),
+                    ((xTime & 0x1F) * 2));
+            }
+        }
     }
 }
