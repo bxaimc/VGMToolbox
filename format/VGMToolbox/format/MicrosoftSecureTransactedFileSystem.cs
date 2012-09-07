@@ -86,6 +86,7 @@ namespace VGMToolbox.format
             byte[] volumeIdentifierBytes;
 
             this.SourceFileName = isoStream.Name;
+            this.FormatDescription = MicrosoftSTFS.FORMAT_DESCRIPTION_STRING;
 
             this.VolumeBaseOffset = offset;
             this.IsRawDump = isRawDump;
@@ -96,6 +97,7 @@ namespace VGMToolbox.format
             // get identifier
             volumeIdentifierBytes = ParseFile.ParseSimpleOffset(isoStream, this.VolumeBaseOffset + 0x1691, 0x80);
             this.VolumeIdentifier = Encoding.BigEndianUnicode.GetString(volumeIdentifierBytes);
+            this.VolumeIdentifier = this.VolumeIdentifier.Substring(0, this.VolumeIdentifier.IndexOf('\0'));
 
             // get header size
             this.HeaderSize = ParseFile.ReadUintBE(isoStream, this.VolumeBaseOffset + 0x340);
@@ -250,89 +252,6 @@ namespace VGMToolbox.format
             // Add root element to Volumes directory list
             this.DirectoryStructureArray.Add(directoryList[MicrosoftSTFS.ROOT_DIRECTORY_PATH_INDICATOR]);
         }
-
-        //public static long GetOffsetForBlockNumber(int blockNumber)
-        //{
-        //    long offset = -1;
-        //    int hashCorrectedBlockNumber;
-
-        //    if (blockNumber >= 0)
-        //    {
-        //        hashCorrectedBlockNumber = blockNumber + (blockNumber / MicrosoftSTFS.HASH_TABLE_INTERVAL1);
-        //        hashCorrectedBlockNumber += (hashCorrectedBlockNumber / MicrosoftSTFS.HASH_TABLE_INTERVAL2);
-
-        //        offset = MicrosoftSTFS.FIRST_BLOCK_OFFSET + 
-        //                    (hashCorrectedBlockNumber * MicrosoftSTFS.BLOCK_SIZE);
-        //    }
-        //    else
-        //    {
-        //        throw new Exception("Block number cannot be less than 0.");
-        //    }
-
-        //    return offset;
-        //}
-
-        //public long BlockToOffset(int xBlock)
-        //{
-        //    long xReturn = 0;
-            
-        //    if (xBlock > 0xFFFFFF)
-        //    {
-        //        xReturn = -1;
-        //    }
-        //    else
-        //    {
-        //        xReturn = (((this.HeaderSize + 0xFFF) & 0xF000) + (xBlock << 12));
-        //    } 
-            
-        //    return xReturn;
-        //}
-
-        //public int ComputeDataBlockNumber(int xBlock)
-        //{
-        //    int xBlockShift;
-
-        //    if (((this.HeaderSize + 0xFFF) & 0xF000) == 0xB000)
-        //    {
-        //        xBlockShift = 1;
-        //    }
-        //    else
-        //    {
-        //        if ((this.BlockSeparation & 1) == 1)
-        //        {
-        //            xBlockShift = 0;
-        //        }
-        //        else
-        //        {
-        //            xBlockShift = 1;
-        //        }
-        //    }
-            
-        //    int xBase = ((xBlock + 0xAA) / 0xAA);
-            
-        //    //if (this.Header.Magic == XContent_Header.Header_Magic.CON)
-        //    //    xBase = (xBase << xBlockShift);
-        //    int xReturn = (xBase + xBlock);
-
-        //    if (xBlock > 0xAA)
-        //    {
-        //        xBase = ((xBlock + 0x70E4) / 0x70E4);
-        //        //if (this.Header.Magic == XContent_Header.Header_Magic.CON)
-        //        //    xBase = (xBase << xBlockShift);
-        //        xReturn += xBase;
-
-        //        if (xBlock > 0x70E4)
-        //        {
-        //            xBase = ((xBlock + 0x4AF768) / 0x4AF768);
-        //            //if (this.Header.Magic == xBlockShift)
-        //            //    xBase = (xBase << 1);
-
-        //            xReturn = (xReturn + xBase);
-        //        }
-        //    }
-
-        //    return xReturn;
-        //}
 
         public static long ComputeBlockNumberAndGetOffset(int xBlock, uint headerSize, byte blockSeparation)
         {            
