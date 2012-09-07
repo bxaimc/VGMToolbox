@@ -16,7 +16,9 @@ namespace VGMToolbox.format
         public static string FORMAT_DESCRIPTION_STRING = "Microsoft STFS";
 
         public const int FIRST_BLOCK_OFFSET = 0xC000;
-        public const int HASH_TABLE_INTERVAL = 0xAA;
+        public const int BLOCK_SIZE = 0x1000;
+        public const int HASH_TABLE_INTERVAL1 = 0xAA;
+        public const int HASH_TABLE_INTERVAL2 = 0x70E4;
 
         public const int ROOT_DIRECTORY_PATH_INDICATOR = -1;
     }
@@ -54,6 +56,7 @@ namespace VGMToolbox.format
         public string VolumeIdentifier { set; get; }
         public bool IsRawDump { set; get; }
 
+        public uint HeaderSize { set; get; }
         public byte BlockSeparation { set; get; }
         public short FileTableBlockCount { set; get; }
         public int FileTableBlockNumber { set; get; }
@@ -94,6 +97,9 @@ namespace VGMToolbox.format
             volumeIdentifierBytes = ParseFile.ParseSimpleOffset(isoStream, this.VolumeBaseOffset + 0x1691, 0x80);
             this.VolumeIdentifier = Encoding.BigEndianUnicode.GetString(volumeIdentifierBytes);
 
+            // get header size
+            this.HeaderSize = ParseFile.ReadUintBE(isoStream, this.VolumeBaseOffset + 0x340);
+
             // get file table info
             this.BlockSeparation = ParseFile.ReadByte(isoStream, this.VolumeBaseOffset + 0x37B);
             this.FileTableBlockCount = ParseFile.ReadInt16LE(isoStream, this.VolumeBaseOffset + 0x37C);
@@ -109,8 +115,11 @@ namespace VGMToolbox.format
         }
        
         public void ExtractAll(ref Dictionary<string, FileStream> streamCache, string destintionFolder, bool extractAsRaw)
-        { 
-        
+        {
+            foreach (MicrosoftSTFSDirectoryStructure ds in this.DirectoryStructureArray)
+            {
+                ds.Extract(ref streamCache, destintionFolder, extractAsRaw);
+            }
         }
 
         public void ParseFileTable(FileStream isoStream)
@@ -122,8 +131,8 @@ namespace VGMToolbox.format
             long fileSize = isoStream.Length;
 
             // get offset for blocks
-            fileTableMinOffset = GetOffsetForBlockNumber(this.FileTableBlockNumber);
-            fileTableMaxOffset = GetOffsetForBlockNumber(this.FileTableBlockNumber + this.FileTableBlockCount);
+            fileTableMinOffset = ComputeBlockNumberAndGetOffset(this.FileTableBlockNumber, this.HeaderSize, this.BlockSeparation);
+            fileTableMaxOffset = ComputeBlockNumberAndGetOffset(this.FileTableBlockNumber + this.FileTableBlockCount, this.HeaderSize, this.BlockSeparation);
             
             // check offsets
             if ((fileTableMinOffset >= MicrosoftSTFS.FIRST_BLOCK_OFFSET) &&
@@ -204,8 +213,9 @@ namespace VGMToolbox.format
                         parentDirectoryName,this.SourceFileName, 
                         fileTableEntry.FileName, this.VolumeBaseOffset,
                         fileTableEntry.StartingBlockForFileLE,
-                        fileTableEntry.FileSize, new DateTime(), 
-                        fileTableEntry.StoredInConsecutiveBlocks);
+                        fileTableEntry.FileSize, new DateTime(),
+                        fileTableEntry.BlocksForFileLE1,
+                        this.HeaderSize, this.BlockSeparation);
 
                     // add to directory
                     directoryList[fileTableEntry.PathIndicator].FileArray.Add(fileStructure);
@@ -241,21 +251,157 @@ namespace VGMToolbox.format
             this.DirectoryStructureArray.Add(directoryList[MicrosoftSTFS.ROOT_DIRECTORY_PATH_INDICATOR]);
         }
 
-        public static long GetOffsetForBlockNumber(int blockNumber)
-        {
-            long offset = -1;
+        //public static long GetOffsetForBlockNumber(int blockNumber)
+        //{
+        //    long offset = -1;
+        //    int hashCorrectedBlockNumber;
 
-            if (blockNumber >= 0)
+        //    if (blockNumber >= 0)
+        //    {
+        //        hashCorrectedBlockNumber = blockNumber + (blockNumber / MicrosoftSTFS.HASH_TABLE_INTERVAL1);
+        //        hashCorrectedBlockNumber += (hashCorrectedBlockNumber / MicrosoftSTFS.HASH_TABLE_INTERVAL2);
+
+        //        offset = MicrosoftSTFS.FIRST_BLOCK_OFFSET + 
+        //                    (hashCorrectedBlockNumber * MicrosoftSTFS.BLOCK_SIZE);
+        //    }
+        //    else
+        //    {
+        //        throw new Exception("Block number cannot be less than 0.");
+        //    }
+
+        //    return offset;
+        //}
+
+        //public long BlockToOffset(int xBlock)
+        //{
+        //    long xReturn = 0;
+            
+        //    if (xBlock > 0xFFFFFF)
+        //    {
+        //        xReturn = -1;
+        //    }
+        //    else
+        //    {
+        //        xReturn = (((this.HeaderSize + 0xFFF) & 0xF000) + (xBlock << 12));
+        //    } 
+            
+        //    return xReturn;
+        //}
+
+        //public int ComputeDataBlockNumber(int xBlock)
+        //{
+        //    int xBlockShift;
+
+        //    if (((this.HeaderSize + 0xFFF) & 0xF000) == 0xB000)
+        //    {
+        //        xBlockShift = 1;
+        //    }
+        //    else
+        //    {
+        //        if ((this.BlockSeparation & 1) == 1)
+        //        {
+        //            xBlockShift = 0;
+        //        }
+        //        else
+        //        {
+        //            xBlockShift = 1;
+        //        }
+        //    }
+            
+        //    int xBase = ((xBlock + 0xAA) / 0xAA);
+            
+        //    //if (this.Header.Magic == XContent_Header.Header_Magic.CON)
+        //    //    xBase = (xBase << xBlockShift);
+        //    int xReturn = (xBase + xBlock);
+
+        //    if (xBlock > 0xAA)
+        //    {
+        //        xBase = ((xBlock + 0x70E4) / 0x70E4);
+        //        //if (this.Header.Magic == XContent_Header.Header_Magic.CON)
+        //        //    xBase = (xBase << xBlockShift);
+        //        xReturn += xBase;
+
+        //        if (xBlock > 0x70E4)
+        //        {
+        //            xBase = ((xBlock + 0x4AF768) / 0x4AF768);
+        //            //if (this.Header.Magic == xBlockShift)
+        //            //    xBase = (xBase << 1);
+
+        //            xReturn = (xReturn + xBase);
+        //        }
+        //    }
+
+        //    return xReturn;
+        //}
+
+        public static long ComputeBlockNumberAndGetOffset(int xBlock, uint headerSize, byte blockSeparation)
+        {            
+            int adjustedBlockNumber = ComputeDataBlockNumber(xBlock, headerSize, blockSeparation);
+            long offset = BlockToOffset(adjustedBlockNumber, headerSize);
+
+            return offset;
+        }
+
+        public static int ComputeDataBlockNumber(int xBlock, uint headerSize, byte blockSeparation)
+        {
+            int xBlockShift;
+
+            if (((headerSize + 0xFFF) & 0xF000) == 0xB000)
             {
-                offset = (MicrosoftSTFS.FIRST_BLOCK_OFFSET +
-                         ((blockNumber + (blockNumber / MicrosoftSTFS.HASH_TABLE_INTERVAL)) * 0x1000));
+                xBlockShift = 1;
             }
             else
             {
-                throw new Exception("Block number cannot be less than 0.");
+                if ((blockSeparation & 1) == 1)
+                {
+                    xBlockShift = 0;
+                }
+                else
+                {
+                    xBlockShift = 1;
+                }
             }
 
-            return offset;
+            int xBase = ((xBlock + 0xAA) / 0xAA);
+
+            //if (this.Header.Magic == XContent_Header.Header_Magic.CON)
+            //    xBase = (xBase << xBlockShift);
+            int xReturn = (xBase + xBlock);
+
+            if (xBlock > 0xAA)
+            {
+                xBase = ((xBlock + 0x70E4) / 0x70E4);
+                //if (this.Header.Magic == XContent_Header.Header_Magic.CON)
+                //    xBase = (xBase << xBlockShift);
+                xReturn += xBase;
+
+                if (xBlock > 0x70E4)
+                {
+                    xBase = ((xBlock + 0x4AF768) / 0x4AF768);
+                    //if (this.Header.Magic == xBlockShift)
+                    //    xBase = (xBase << 1);
+
+                    xReturn = (xReturn + xBase);
+                }
+            }
+
+            return xReturn;
+        }
+
+        public static long BlockToOffset(int xBlock, uint headerSize)
+        {
+            long xReturn = 0;
+
+            if (xBlock > 0xFFFFFF)
+            {
+                xReturn = -1;
+            }
+            else
+            {
+                xReturn = (((headerSize + 0xFFF) & 0xF000) + (xBlock << 12));
+            }
+
+            return xReturn;
         }
     }
 
@@ -317,7 +463,7 @@ namespace VGMToolbox.format
                 f.Extract(ref streamCache, destinationFolder, extractAsRaw);
             }
 
-            foreach (GreenBookCdiDirectoryStructure d in this.SubDirectoryArray)
+            foreach (MicrosoftSTFSDirectoryStructure d in this.SubDirectoryArray)
             {
                 d.Extract(ref streamCache, destinationFolder, extractAsRaw);
             }        
@@ -352,7 +498,12 @@ namespace VGMToolbox.format
 
         public DateTime FileDateTime { set; get; }
 
-        public Boolean StoredInConsecutiveBlocks { set; get; }
+        //public bool StoredInConsecutiveBlocks { set; get; }
+        public int BlocksForFile { set; get; }
+        
+        public uint FileHeaderSize { set; get; }
+        public byte BlockSeparation { set; get; }
+
 
         public int CompareTo(object obj)
         {
@@ -368,7 +519,8 @@ namespace VGMToolbox.format
 
         public MicrosoftSTFSFileStructure(string parentDirectoryName, 
             string sourceFilePath, string fileName, long volumeBaseOffset, long lba,
-            long size, DateTime fileTime, Boolean storedInConsecutiveBlocks)
+            long size, DateTime fileTime, int blocksForFile, 
+            uint headerSize, byte blockSeparation)
         {
             this.ParentDirectoryName = parentDirectoryName;
             this.SourceFilePath = sourceFilePath;
@@ -380,11 +532,20 @@ namespace VGMToolbox.format
             this.Size = size;
             this.FileMode = CdSectorType.Unknown;
             this.FileDateTime = fileTime;
-            this.StoredInConsecutiveBlocks = storedInConsecutiveBlocks;
+            
+            //this.StoredInConsecutiveBlocks = storedInConsecutiveBlocks;
+            this.BlocksForFile = blocksForFile;
+            this.FileHeaderSize = headerSize;
+            this.BlockSeparation = blockSeparation;
         }
 
         public virtual void Extract(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
         {
+            long bytesWritten = 0;
+            long offset;
+            long chunkSize;
+            long currentBlock = this.Lba;
+
             string destinationFile = Path.Combine(Path.Combine(destinationFolder, this.ParentDirectoryName), this.FileName);
 
             if (!streamCache.ContainsKey(this.SourceFilePath))
@@ -392,19 +553,32 @@ namespace VGMToolbox.format
                 streamCache[this.SourceFilePath] = File.OpenRead(this.SourceFilePath);
             }
 
-            if (this.StoredInConsecutiveBlocks)
+            // extract to disk
+            for (int i = 0; i < this.BlocksForFile; i++)
             {
-                ParseFile.ExtractChunkToFile(streamCache[this.SourceFilePath], 
-                    MicrosoftSTFSVolume.GetOffsetForBlockNumber((int)this.Lba), this.Size, destinationFile);
-            }
-            else
-            { 
-                // read first chunk
+                // set current block for reading source data
+                currentBlock = this.Lba + i;
+                
+                // set read size
+                if (i == (this.BlocksForFile - 1))
+                {
+                    // last chunk may not use entire block
+                    chunkSize = (this.Size - bytesWritten);
+                }
+                else
+                {
+                    chunkSize = MicrosoftSTFS.BLOCK_SIZE;
+                }
 
-                // skip hash table
+                // write to file
+                offset = MicrosoftSTFSVolume.ComputeBlockNumberAndGetOffset((int)currentBlock, this.FileHeaderSize, this.BlockSeparation);
+                
+                ParseFile.AppendChunkToFile(streamCache[this.SourceFilePath],
+                    offset, chunkSize, destinationFile);            
 
-                // write second chunk
-            }
+                // increment bytes written
+                bytesWritten += chunkSize;
+            }               
         }
     }
 }

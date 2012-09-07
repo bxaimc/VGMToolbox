@@ -731,7 +731,6 @@ namespace VGMToolbox.util
                 }
             }
         }
-
         
         public static void ExtractChunkToFile64(
             Stream stream,
@@ -834,6 +833,51 @@ namespace VGMToolbox.util
                 }
             }
         }
+
+        public static void AppendChunkToFile(
+            Stream stream,
+            long startingOffset,
+            long length,
+            string filePath)
+        {
+            BinaryWriter bw = null;
+            string fullFilePath = Path.GetFullPath(filePath);
+            string fullOutputDirectory = Path.GetDirectoryName(fullFilePath);
+
+            // create directory if needed
+            if (!Directory.Exists(fullOutputDirectory))
+            {
+                Directory.CreateDirectory(fullOutputDirectory);
+            }
+
+            try
+            {
+                bw = new BinaryWriter(File.Open(fullFilePath, FileMode.Append, FileAccess.Write));
+
+                int read = 0;
+                long totalBytes = 0;
+                byte[] bytes = new byte[Constants.FileReadChunkSize];
+                stream.Seek((long)startingOffset, SeekOrigin.Begin);
+
+                int maxread = length > (long)bytes.Length ? bytes.Length : (int)length;
+
+                while ((read = stream.Read(bytes, 0, maxread)) > 0)
+                {
+                    bw.Write(bytes, 0, read);
+                    totalBytes += (long)read;
+
+                    maxread = (length - totalBytes) > (long)bytes.Length ? bytes.Length : (int)(length - totalBytes);
+                }
+            }
+            finally
+            {
+                if (bw != null)
+                {
+                    bw.Close();
+                }
+            }
+        }
+
 
         /// <summary>
         /// Convert the input bytes to a string containing the hex values.
