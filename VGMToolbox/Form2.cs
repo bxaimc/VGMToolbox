@@ -991,6 +991,31 @@ namespace VGMToolbox
             nodeTag.FormClass = extract_ExtractOggForm.GetType().Name;
             ext_ExtractOggNode.Tag = nodeTag;
 
+            ///////
+            // WII
+            ///////
+            TreeNode ext_WiiNode =
+                new TreeNode("WII");
+            ext_WiiNode.NodeFont = this.treeviewBoldFont;
+
+            nodeTag = new VGMToolbox.util.NodeTagStruct();
+            emptyForm = new EmptyForm();
+            nodeTag.FormClass = emptyForm.GetType().Name;
+            ext_WiiNode.Tag = nodeTag;
+
+            ///////////////////
+            // WII WAD Unpacker
+            ///////////////////
+            TreeNode ext_UnpackWadNode = new TreeNode("Nintendo WAD Unpacker");
+
+            // Add Extractor Form
+            UnpackNintendoWadForm extract_UnpackWadForm = new UnpackNintendoWadForm(ext_UnpackWadNode);
+            this.splitContainer1.Panel2.Controls.Add(extract_UnpackWadForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = extract_UnpackWadForm.GetType().Name;
+            ext_UnpackWadNode.Tag = nodeTag;
+
 
             ext_GenericNode.Nodes.Add(ext_ByteRemoverNode);
             ext_GenericNode.Nodes.Add(ext_SimpleCutterNode);
@@ -1010,6 +1035,9 @@ namespace VGMToolbox
             ext_StreamsNode.Nodes.Add(ext_ExtractOggNode);
             ext_StreamsNode.Nodes.Add(ext_SonyAdpcmNode);
             ext_RootNode.Nodes.Add(ext_StreamsNode);
+
+            ext_WiiNode.Nodes.Add(ext_UnpackWadNode);
+            ext_RootNode.Nodes.Add(ext_WiiNode);
 
             // ext_RootNode.Nodes.Add(ext_PcNode);
 

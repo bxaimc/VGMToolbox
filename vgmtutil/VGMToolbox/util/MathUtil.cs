@@ -21,6 +21,15 @@ namespace VGMToolbox.util
 
             return outputValue;
         }
+
+        public static long RoundUpToByteAlignment(long valueToRound, long byteAlignment)
+        {
+            long roundedValue = -1;
+
+            roundedValue = (valueToRound + byteAlignment - 1) / byteAlignment * byteAlignment;
+
+            return roundedValue;
+        }
     }
 
 }
