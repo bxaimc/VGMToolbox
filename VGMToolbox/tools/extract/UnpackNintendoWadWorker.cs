@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.ComponentModel;
+using System.IO;
 using System.Text;
 
 using VGMToolbox.format;
@@ -33,7 +34,10 @@ namespace VGMToolbox.tools.extract
                 wad = new NintendoWad(pPath);
                 extractedFiles = wad.ExtractAll();
             }
-            
+
+            this.progressStruct.Clear();
+            this.progressStruct.GenericMessage = String.Format("[{0}]{1}", Path.GetFileName(pPath), Environment.NewLine);
+            ReportProgress(this.progress, this.progressStruct);            
         }   
     }
 }
