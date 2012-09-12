@@ -1814,6 +1814,19 @@ namespace VGMToolbox.util
             return BitConverter.ToInt32(val, 0);
         }
 
+        public static ulong ReadUlongLE(Stream inStream, long offset)
+        {
+            return BitConverter.ToUInt64(ParseSimpleOffset(inStream, offset, 8), 0);
+        }
+
+        public static ulong ReadUlongBE(Stream inStream, long offset)
+        {
+            byte[] val = ParseSimpleOffset(inStream, offset, 8);
+            Array.Reverse(val);
+
+            return BitConverter.ToUInt64(val, 0);
+        }
+
         public static string ReadAsciiString(Stream inStream, long offset)
         { 
             long streamLength = inStream.Length;

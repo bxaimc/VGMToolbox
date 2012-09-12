@@ -37,15 +37,15 @@ namespace VGMToolbox.forms.extraction
         }
         protected override string getCancelMessage()
         {
-            return "Unpacking Nintendo WAD file...Cancelled.";
+            return "Unpacking WAD file...Cancelled.";
         }
         protected override string getCompleteMessage()
         {
-            return "Unpacking Nintendo WAD file...Completed.";
+            return "Unpacking WAD file...Completed.";
         }
         protected override string getBeginMessage()
         {
-            return "Unpacking Nintendo WAD file...Begin.";
+            return "Unpacking WAD file...Begin.";
         }
 
         private void UnpackNintendoWadForm_DragDrop(object sender, DragEventArgs e)

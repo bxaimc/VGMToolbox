@@ -201,7 +201,7 @@ namespace VGMToolbox.util
             }
         }
 
-        public static void TrimFileToLength(string path, int totalLength)
+        public static void TrimFileToLength(string path, long totalLength)
         {
             string fullPath = Path.GetFullPath(path);
 
