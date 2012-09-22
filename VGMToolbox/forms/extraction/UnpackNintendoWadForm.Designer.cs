@@ -29,14 +29,19 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.rbExtractDataOnly = new System.Windows.Forms.RadioButton();
+            this.rbExtractAllSections = new System.Windows.Forms.RadioButton();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 287);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 405);
             this.pnlLabels.Size = new System.Drawing.Size(843, 19);
             // 
             // pnlTitle
@@ -45,13 +50,13 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 210);
+            this.tbOutput.Location = new System.Drawing.Point(0, 328);
             this.tbOutput.Size = new System.Drawing.Size(843, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 190);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 308);
             this.pnlButtons.Size = new System.Drawing.Size(843, 20);
             // 
             // btnCancel
@@ -64,20 +69,56 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.groupBox2);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 23);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(843, 167);
+            this.groupBox1.Size = new System.Drawing.Size(843, 285);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Drop Files Here";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.rbExtractAllSections);
+            this.groupBox2.Controls.Add(this.rbExtractDataOnly);
+            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.groupBox2.Location = new System.Drawing.Point(3, 210);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(837, 72);
+            this.groupBox2.TabIndex = 0;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Options";
+            // 
+            // rbExtractDataOnly
+            // 
+            this.rbExtractDataOnly.AutoSize = true;
+            this.rbExtractDataOnly.Checked = true;
+            this.rbExtractDataOnly.Location = new System.Drawing.Point(6, 19);
+            this.rbExtractDataOnly.Name = "rbExtractDataOnly";
+            this.rbExtractDataOnly.Size = new System.Drawing.Size(122, 17);
+            this.rbExtractDataOnly.TabIndex = 0;
+            this.rbExtractDataOnly.TabStop = true;
+            this.rbExtractDataOnly.Text = "Extract Content Only";
+            this.rbExtractDataOnly.UseVisualStyleBackColor = true;
+            // 
+            // rbExtractAllSections
+            // 
+            this.rbExtractAllSections.AutoSize = true;
+            this.rbExtractAllSections.Location = new System.Drawing.Point(6, 42);
+            this.rbExtractAllSections.Name = "rbExtractAllSections";
+            this.rbExtractAllSections.Size = new System.Drawing.Size(267, 17);
+            this.rbExtractAllSections.TabIndex = 1;
+            this.rbExtractAllSections.TabStop = true;
+            this.rbExtractAllSections.Text = "Extract All Chunks (content, cert, ticket, title, footer)";
+            this.rbExtractAllSections.UseVisualStyleBackColor = true;
             // 
             // UnpackNintendoWadForm
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(843, 328);
+            this.ClientSize = new System.Drawing.Size(843, 446);
             this.Controls.Add(this.groupBox1);
             this.Name = "UnpackNintendoWadForm";
             this.Text = "UnpackNintendoWadForm";
@@ -94,6 +135,9 @@
             this.pnlTitle.PerformLayout();
             this.pnlButtons.ResumeLayout(false);
             this.pnlButtons.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -102,5 +146,8 @@
         #endregion
 
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.RadioButton rbExtractDataOnly;
+        private System.Windows.Forms.RadioButton rbExtractAllSections;
     }
 }

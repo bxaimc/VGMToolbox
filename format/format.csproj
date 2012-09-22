@@ -103,6 +103,7 @@
     <Compile Include="VGMToolbox\format\MpegStream.cs" />
     <Compile Include="VGMToolbox\format\Nds.cs" />
     <Compile Include="VGMToolbox\format\NintendoThpMovieStream.cs" />
+    <Compile Include="VGMToolbox\format\NintendoU8Archive.cs" />
     <Compile Include="VGMToolbox\format\NintendoWad.cs" />
     <Compile Include="VGMToolbox\format\Psf.cs" />
     <Compile Include="VGMToolbox\format\PsxSequence.cs" />

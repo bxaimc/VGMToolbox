@@ -15,6 +15,7 @@ namespace VGMToolbox.format
         public const uint IDENTIFIER_OFFSET = 0x03;
         public const string FORMAT_DESCRIPTION_STRING = "Nintendo WAD";
         public const string EXTRACTION_FOLDER = "VGMT_WAD_EXTRACT";
+        public const string EXTRACTION_FOLDER_NONCONTENT = "_non-content";
 
         public struct TmdContentStruct
         {
@@ -145,13 +146,29 @@ namespace VGMToolbox.format
         }
 
         /// <summary>
+        /// Extracts all content from the WAD object.
+        /// </summary>
+        /// <returns>Array containing the paths of all extracted files.</returns>
+        public string[] ExtractContent()
+        {
+            ArrayList extractedFiles = new ArrayList();
+
+            for (int i = 0; i < this.TmdContentEntries.Length; i++)
+            {
+                this.ExtractContentById((uint)i);
+            }
+
+            return (string[])extractedFiles.ToArray(typeof(string));
+        }
+
+        /// <summary>
         /// Extract the certificate chain.
         /// </summary>
         /// <returns>File name of extracted file.</returns>
         public string ExtractCertificateChain()
         {
             string destinationFile = Path.Combine(
-                                        this.GetUnpackFolder(),
+                                        this.GetUnpackFolder(false),
                                         (this.TitleId.ToString("X8") + ".cert"));
             
 
@@ -170,7 +187,7 @@ namespace VGMToolbox.format
         public string ExtractTicket()
         {
             string destinationFile = Path.Combine(
-                                        this.GetUnpackFolder(),
+                                        this.GetUnpackFolder(false),
                                         (this.TitleId.ToString("X8") + ".tik"));
 
 
@@ -189,7 +206,7 @@ namespace VGMToolbox.format
         public string ExtractTitleMetaData()
         {
             string destinationFile = Path.Combine(
-                                        this.GetUnpackFolder(),
+                                        this.GetUnpackFolder(false),
                                         (this.TitleId.ToString("X8") + ".tmd"));
 
 
@@ -212,7 +229,7 @@ namespace VGMToolbox.format
             if (this.FooterSize > 0)
             {
                 destinationFile = Path.Combine(
-                                    this.GetUnpackFolder(), 
+                                    this.GetUnpackFolder(false), 
                                     (this.TitleId.ToString("X8") + ".trailer"));
 
                 using (FileStream fs = File.OpenRead(this.SourceFileName))
@@ -301,13 +318,13 @@ namespace VGMToolbox.format
             IV[0] = (byte)(TmdContentEntries[contentId].ContentIndex & 0xFF00);
             IV[1] = (byte)(TmdContentEntries[contentId].ContentIndex & 0x00FF);
 
-            string destinationFile = Path.Combine(this.GetUnpackFolder(), String.Format("{0}.app", contentId.ToString("X8")));
+            string destinationFile = Path.Combine(this.GetUnpackFolder(true), String.Format("{0}.app", contentId.ToString("X8")));
 
             using (FileStream fs = File.OpenRead(this.SourceFileName))
             {
-                if (!Directory.Exists(this.GetUnpackFolder()))
+                if (!Directory.Exists(this.GetUnpackFolder(true)))
                 {
-                    Directory.CreateDirectory(this.GetUnpackFolder());
+                    Directory.CreateDirectory(this.GetUnpackFolder(true));
                 }
                 
                 using (FileStream outFs = File.Open(destinationFile, FileMode.Create, FileAccess.ReadWrite))
@@ -380,12 +397,19 @@ namespace VGMToolbox.format
         /// Builds the output folder path for unpacking.
         /// </summary>
         /// <returns>Full path of folder for unpacking.</returns>
-        private string GetUnpackFolder()
+        private string GetUnpackFolder(bool isContent)
         {
-            string unpackFolder = Path.Combine(
+            string unpackFolder;
+
+            unpackFolder = Path.Combine(
                 Path.GetDirectoryName(this.SourceFileName),
                 String.Format("{0}_{1}", NintendoWad.EXTRACTION_FOLDER, Path.GetFileNameWithoutExtension(this.SourceFileName)));
 
+            if (!isContent)
+            {
+                unpackFolder = Path.Combine(unpackFolder, NintendoWad.EXTRACTION_FOLDER_NONCONTENT);            
+            }
+            
             return unpackFolder;
         }
 

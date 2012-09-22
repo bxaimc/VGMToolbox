@@ -54,6 +54,7 @@ namespace VGMToolbox.forms.extraction
 
             UnpackNintendoWadWorker.WadUnpackerStruct taskStruct = new UnpackNintendoWadWorker.WadUnpackerStruct();
             taskStruct.SourcePaths = s;
+            taskStruct.ExtractAllFiles = this.rbExtractAllSections.Checked;
 
             base.backgroundWorker_Execute(taskStruct);
         }
