@@ -47,6 +47,10 @@ namespace VGMToolbox.tools.extract
                     extractedFiles = wad.ExtractContent();
                 }
 
+                this.progressStruct.Clear();
+                this.progressStruct.GenericMessage = String.Format("[{0}]{1}    WAD Unpacked.{1}", Path.GetFileName(pPath), Environment.NewLine);
+                ReportProgress(this.progress, this.progressStruct);            
+
                 //---------------------
                 // Extract U8 Archives
                 //---------------------
@@ -56,16 +60,16 @@ namespace VGMToolbox.tools.extract
                     {
                         if (NintendoU8Archive.IsU8File(f))
                         {
+                            this.progressStruct.Clear();
+                            this.progressStruct.GenericMessage = String.Format("    Extracting U8: {0}{1}", Path.GetFileName(f), Environment.NewLine);
+                            ReportProgress(this.progress, this.progressStruct);            
+                            
                             u8 = new NintendoU8Archive(f);
-                            //u8.ExtractAll();
+                            u8.ExtractAll();
                         }
                     }
                 }
             }
-
-            this.progressStruct.Clear();
-            this.progressStruct.GenericMessage = String.Format("[{0}]{1}", Path.GetFileName(pPath), Environment.NewLine);
-            ReportProgress(this.progress, this.progressStruct);            
         }   
     }
 }

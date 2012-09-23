@@ -239,6 +239,32 @@ namespace VGMToolbox.format
             }
         }
 
+        public void ExtractAll()
+        {
+            string outputFolder = this.GetUnpackFolder();
+            Dictionary<string, FileStream> streamCache = new Dictionary<string, FileStream>();
+
+            foreach (NintendoU8Directory ds in this.DirectoryStructureArray)
+            {
+                ds.Extract(ref streamCache, outputFolder, false);
+            }
+        }
+
+        /// <summary>
+        /// Builds the output folder path for unpacking.
+        /// </summary>
+        /// <returns>Full path of folder for unpacking.</returns>
+        private string GetUnpackFolder()
+        {
+            string unpackFolder;
+
+            unpackFolder = Path.Combine(
+                Path.GetDirectoryName(this.SourceFileName),
+                String.Format("{0}_{1}", NintendoU8Archive.EXTRACTION_FOLDER, Path.GetFileNameWithoutExtension(this.SourceFileName)));
+            
+            return unpackFolder;
+        }
+
         /// <summary>
         /// Checks for U8 file Magic Bytes.
         /// </summary>
