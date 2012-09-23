@@ -995,7 +995,7 @@ namespace VGMToolbox
             // WII
             ///////
             TreeNode ext_WiiNode =
-                new TreeNode("WII");
+                new TreeNode("Nintendo WII");
             ext_WiiNode.NodeFont = this.treeviewBoldFont;
 
             nodeTag = new VGMToolbox.util.NodeTagStruct();
@@ -1042,15 +1042,15 @@ namespace VGMToolbox
             ext_NdsNode.Nodes.Add(ext_SdatFinderNode);            
             ext_RootNode.Nodes.Add(ext_NdsNode);
 
+            ext_WiiNode.Nodes.Add(ext_ExtractU8Node);
+            ext_WiiNode.Nodes.Add(ext_UnpackWadNode);
+            ext_RootNode.Nodes.Add(ext_WiiNode);
+
             ext_StreamsNode.Nodes.Add(ext_ExtractAdxNode);
             ext_StreamsNode.Nodes.Add(ext_ExtractCdxaNode);
             ext_StreamsNode.Nodes.Add(ext_ExtractOggNode);
             ext_StreamsNode.Nodes.Add(ext_SonyAdpcmNode);
             ext_RootNode.Nodes.Add(ext_StreamsNode);
-
-            ext_WiiNode.Nodes.Add(ext_ExtractU8Node);
-            ext_WiiNode.Nodes.Add(ext_UnpackWadNode);
-            ext_RootNode.Nodes.Add(ext_WiiNode);
 
             // ext_RootNode.Nodes.Add(ext_PcNode);
 
