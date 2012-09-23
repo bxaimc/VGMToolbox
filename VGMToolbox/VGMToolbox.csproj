@@ -181,6 +181,12 @@
     <Compile Include="forms\examine\CrcCalculatorForm.Designer.cs">
       <DependentUpon>CrcCalculatorForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\extraction\ExtractNintendoU8ArchiveForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\extraction\ExtractNintendoU8ArchiveForm.Designer.cs">
+      <DependentUpon>ExtractNintendoU8ArchiveForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\extraction\ExtractOggForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -703,6 +709,9 @@
     <Compile Include="tools\extract\ExtractCdxaWorker.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\extract\ExtractNintendoU8ArchiveWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\extract\ExtractOggWorker.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1091,6 +1100,9 @@
     <EmbeddedResource Include="forms\extraction\ExtractCdxaForm.resx">
       <DependentUpon>ExtractCdxaForm.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\extraction\ExtractNintendoU8ArchiveForm.resx">
+      <DependentUpon>ExtractNintendoU8ArchiveForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\extraction\ExtractOggForm.resx">
       <DependentUpon>ExtractOggForm.cs</DependentUpon>

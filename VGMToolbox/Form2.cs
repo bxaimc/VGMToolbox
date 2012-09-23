@@ -1016,6 +1016,18 @@ namespace VGMToolbox
             nodeTag.FormClass = extract_UnpackWadForm.GetType().Name;
             ext_UnpackWadNode.Tag = nodeTag;
 
+            ///////////////////
+            // Nintendo U8 Extractor
+            ///////////////////
+            TreeNode ext_ExtractU8Node = new TreeNode("Nintendo U8 Unpacker");
+
+            // Add Extractor Form
+            ExtractNintendoU8ArchiveForm extract_ExtractU8Form = new ExtractNintendoU8ArchiveForm(ext_ExtractU8Node);
+            this.splitContainer1.Panel2.Controls.Add(extract_ExtractU8Form);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = extract_ExtractU8Form.GetType().Name;
+            ext_ExtractU8Node.Tag = nodeTag;
 
             ext_GenericNode.Nodes.Add(ext_ByteRemoverNode);
             ext_GenericNode.Nodes.Add(ext_SimpleCutterNode);
@@ -1036,6 +1048,7 @@ namespace VGMToolbox
             ext_StreamsNode.Nodes.Add(ext_SonyAdpcmNode);
             ext_RootNode.Nodes.Add(ext_StreamsNode);
 
+            ext_WiiNode.Nodes.Add(ext_ExtractU8Node);
             ext_WiiNode.Nodes.Add(ext_UnpackWadNode);
             ext_RootNode.Nodes.Add(ext_WiiNode);
 
