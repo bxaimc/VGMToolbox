@@ -54,7 +54,9 @@ namespace VGMToolbox.forms.extraction
 
             UnpackNintendoWadWorker.WadUnpackerStruct taskStruct = new UnpackNintendoWadWorker.WadUnpackerStruct();
             taskStruct.SourcePaths = s;
+            taskStruct.UnpackExtractedU8Files = this.cbUnpackU8Archives.Checked;
             taskStruct.ExtractAllFiles = this.rbExtractAllSections.Checked;
+
 
             base.backgroundWorker_Execute(taskStruct);
         }

@@ -38,11 +38,12 @@ namespace VGMToolbox.forms.extraction
             this.fileListView.ListViewItemSorter = this.lvwColumnSorter;
             this.listViewBoldFont = new Font(this.fileListView.Font, FontStyle.Bold);
 
-            this.lblTitle.Text = "ISO Browser/Extractor";
+            this.lblTitle.Text = "ISO and Archive Browser/Extractor";
             
             this.tbOutput.Text = "Browse and Extract contents of disc images and archives." + Environment.NewLine;
             this.tbOutput.Text += "- Currently supported image types: .CUE/.BIN, .GDI/ISO/BIN, .IMG, .ISO, .MDF" + Environment.NewLine;
-            this.tbOutput.Text += "- Currently supported file systems: GameCube, Green Book (CD-i), ISO 9660 (PC/PSX/PS2), Microsoft STFS (XBLA), NullDC GDI (Dreamcast), Opera FS (3DO), Wii Optical Disc, XDVDFS (XBOX/XBOX360)" + Environment.NewLine;
+            this.tbOutput.Text += "- Currently supported file systems: GameCube, Green Book (CD-i), ISO 9660 (PC/PSX/PS2), NullDC GDI (Dreamcast), Opera FS (3DO), Wii Optical Disc, XDVDFS (XBOX/XBOX360)" + Environment.NewLine;
+            this.tbOutput.Text += "- Currently supported archive types: Microsoft STFS (XBLA), Nintendo U8 Archives (Wii)" + Environment.NewLine;
             this.tbOutput.Text += String.Format("- WII images require 'ckey.bin' and/or 'kkey.bin' (for Korean discs) in the <{0}> directory.", NintendoWiiOpticalDisc.WII_EXTERNAL_FOLDER) + Environment.NewLine;
             this.tbOutput.Text += "- Not yet supported/tested: .CCD, .MDS style cue sheets; Redbook Audio Extraction" + Environment.NewLine;
             

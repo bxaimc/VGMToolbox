@@ -155,7 +155,7 @@ namespace VGMToolbox.format
 
             for (int i = 0; i < this.TmdContentEntries.Length; i++)
             {
-                this.ExtractContentById((uint)i);
+                extractedFiles.Add(this.ExtractContentById((uint)i));
             }
 
             return (string[])extractedFiles.ToArray(typeof(string));

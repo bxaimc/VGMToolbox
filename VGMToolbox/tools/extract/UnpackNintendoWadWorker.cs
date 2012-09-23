@@ -14,7 +14,7 @@ namespace VGMToolbox.tools.extract
     {
         public struct WadUnpackerStruct : IVgmtWorkerStruct
         {
-            public bool UnpackExtractedU8Files;
+            public bool UnpackExtractedU8Files { set; get; }
             public bool ExtractAllFiles { set; get; }
 
             public string[] SourcePaths {set;get;}
@@ -28,10 +28,14 @@ namespace VGMToolbox.tools.extract
             WadUnpackerStruct ws = (WadUnpackerStruct)pTaskStruct;
 
             NintendoWad wad;
+            NintendoU8Archive u8;
             string[] extractedFiles;
 
             if (NintendoWad.IsWadFile(pPath))
             {
+                //-------------
+                // Extract WAD
+                //-------------
                 wad = new NintendoWad(pPath);
 
                 if (ws.ExtractAllFiles)
@@ -41,6 +45,21 @@ namespace VGMToolbox.tools.extract
                 else
                 {
                     extractedFiles = wad.ExtractContent();
+                }
+
+                //---------------------
+                // Extract U8 Archives
+                //---------------------
+                if (ws.UnpackExtractedU8Files)
+                {
+                    foreach (string f in extractedFiles)
+                    {
+                        if (NintendoU8Archive.IsU8File(f))
+                        {
+                            u8 = new NintendoU8Archive(f);
+                            //u8.ExtractAll();
+                        }
+                    }
                 }
             }
 

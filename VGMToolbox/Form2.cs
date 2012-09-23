@@ -864,7 +864,7 @@ namespace VGMToolbox
             ext_VfsExtractorNode.Tag = nodeTag;
 
             // ISO Extractor
-            TreeNode ext_IsoExtractorNode = new TreeNode("ISO Extractor");
+            TreeNode ext_IsoExtractorNode = new TreeNode("ISO/Archive Extractor");
 
             // Add Offset Finder Form
             IsoExtractorForm extract_IsoExtractorForm = new IsoExtractorForm(ext_IsoExtractorNode);

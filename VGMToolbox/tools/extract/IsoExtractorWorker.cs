@@ -353,6 +353,20 @@ namespace VGMToolbox.tools.extract
                         break;
                     }
 
+                    //------------------------
+                    // NINTENDO U8 ARCHIVE 
+                    //------------------------
+                    else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, (int)NintendoU8Archive.IDENTIFIER_OFFSET, NintendoU8Archive.STANDARD_IDENTIFIER.Length, NintendoU8Archive.STANDARD_IDENTIFIER))
+                    {
+                        NintendoU8Archive isoVolume;
+                        isoVolume = new NintendoU8Archive(fs.Name);
+                        isoVolume.Initialize(fs, currentOffset, isRawFormat);
+                        volumeList.Add((IVolume)isoVolume);
+
+                        // should be the last volume
+                        break;
+                    }
+
                     else
                     {
                         currentOffset += sectorSize;
