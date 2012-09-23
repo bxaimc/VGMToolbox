@@ -130,7 +130,7 @@ namespace VGMToolbox.format
             string directoryName = ParseFile.ReadAsciiString(fs, this.NameTableOffset + node.NameOffset);            
 
             // create directory item    
-            NintendoU8Directory newDirectory = new NintendoU8Directory(this.SourceFileName, directoryName, String.Empty);
+            NintendoU8Directory newDirectory = new NintendoU8Directory(this.SourceFileName, directoryName, parentDirectory);
 
             // parse other items
             maxNodeIndex = node.DataSize;
