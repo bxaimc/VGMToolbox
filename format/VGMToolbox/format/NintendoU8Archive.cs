@@ -117,6 +117,7 @@ namespace VGMToolbox.format
         private NintendoU8Directory getDirectoryNode(FileStream fs, int nodeIndex, 
             string parentDirectory, out int lastIndexProcessed)
         {
+            string newParentDirectoryName;
             uint maxNodeIndex;
             NintendoU8Directory newSubDirectory;
             
@@ -126,8 +127,8 @@ namespace VGMToolbox.format
             u8Node node = this.NodeList[nodeIndex];
             
             // get directory name
-            string directoryName = ParseFile.ReadAsciiString(fs, this.NameTableOffset + node.NameOffset);
-            
+            string directoryName = ParseFile.ReadAsciiString(fs, this.NameTableOffset + node.NameOffset);            
+
             // create directory item    
             NintendoU8Directory newDirectory = new NintendoU8Directory(this.SourceFileName, directoryName, String.Empty);
 
@@ -138,10 +139,11 @@ namespace VGMToolbox.format
             for (int i = (nodeIndex + 1); i < maxNodeIndex; i = (lastIndexProcessed + 1))
             {
                 node = this.NodeList[i];
+                newParentDirectoryName = Path.Combine(parentDirectory, directoryName);
 
                 if (node.IsDirectory())
                 {
-                    newSubDirectory = this.getDirectoryNode(fs, i, directoryName, out lastIndexProcessed);
+                    newSubDirectory = this.getDirectoryNode(fs, i, newParentDirectoryName, out lastIndexProcessed);
 
                     if (!newSubDirectory.DirectoryName.Equals("."))
                     {
@@ -164,7 +166,7 @@ namespace VGMToolbox.format
                 }
                 else
                 {
-                    newDirectory.FileArray.Add(this.getFileNode(fs, i, directoryName));
+                    newDirectory.FileArray.Add(this.getFileNode(fs, i, newParentDirectoryName));
                     lastIndexProcessed = i;
                 }                
             }
