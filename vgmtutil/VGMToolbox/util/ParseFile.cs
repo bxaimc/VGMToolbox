@@ -1811,7 +1811,24 @@ namespace VGMToolbox.util
             val[3] = 0;
             Array.Reverse(val);
 
-            return BitConverter.ToInt32(val, 0);
+            return (BitConverter.ToInt32(val, 0) >> 8);
+        }
+
+        public static uint ReadUint24LE(Stream inStream, long offset)
+        {
+            byte[] val = ParseSimpleOffset(inStream, offset, 4);
+            val[3] = 0;
+
+            return BitConverter.ToUInt32(val, 0);
+        }
+
+        public static uint ReadUint24BE(Stream inStream, long offset)
+        {
+            byte[] val = ParseSimpleOffset(inStream, offset, 4);
+            val[3] = 0;
+            Array.Reverse(val);
+
+            return (BitConverter.ToUInt32(val, 0) >> 8);
         }
 
         public static ulong ReadUlongLE(Stream inStream, long offset)

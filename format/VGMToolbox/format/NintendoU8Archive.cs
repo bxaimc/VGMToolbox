@@ -16,13 +16,13 @@ namespace VGMToolbox.format
         public const string FORMAT_DESCRIPTION_STRING = "Nintendo U8";
         public const string EXTRACTION_FOLDER = "VGMT_U8_EXTRACT";
 
-        public const ushort NODE_TYPE_FILE = 0;
-        public const ushort NODE_TYPE_DIRECTORY = 0x100;
+        public const byte NODE_TYPE_FILE = 0;
+        public const byte NODE_TYPE_DIRECTORY = 1;
 
         public struct u8Node
         {
-            public ushort NodeType { set; get; }
-            public ushort NameOffset { set; get; }
+            public byte NodeType { set; get; }
+            public uint NameOffset { set; get; }
             public uint DataOffset { set; get; }
             public uint DataSize { set; get; }
 
@@ -207,8 +207,8 @@ namespace VGMToolbox.format
             uint maxNodeId;
 
             // read first node
-            node.NodeType = ParseFile.ReadUshortBE(fs, this.RootNodeOffset);
-            node.NameOffset = ParseFile.ReadUshortBE(fs, this.RootNodeOffset + 2);
+            node.NodeType = ParseFile.ReadByte(fs, this.RootNodeOffset);
+            node.NameOffset = ParseFile.ReadUint24BE(fs, this.RootNodeOffset + 1);
             node.DataOffset = ParseFile.ReadUintBE(fs, this.RootNodeOffset + 4);
             node.DataSize = ParseFile.ReadUintBE(fs, this.RootNodeOffset + 8);
             this.NodeArray.Add(node);
@@ -219,8 +219,8 @@ namespace VGMToolbox.format
             for (int i = 1; i < maxNodeId; i++)
             {
                 node = new u8Node();
-                node.NodeType = ParseFile.ReadUshortBE(fs, this.RootNodeOffset + (i * 0xC));
-                node.NameOffset = ParseFile.ReadUshortBE(fs, this.RootNodeOffset + (i * 0xC) + 2);
+                node.NodeType = ParseFile.ReadByte(fs, this.RootNodeOffset + (i * 0xC));
+                node.NameOffset = ParseFile.ReadUint24BE(fs, this.RootNodeOffset + (i * 0xC) + 1);
                 node.DataOffset = ParseFile.ReadUintBE(fs, this.RootNodeOffset + (i * 0xC) + 4);
                 node.DataSize = ParseFile.ReadUintBE(fs, this.RootNodeOffset + (i * 0xC) + 8);                                                
                 this.NodeArray.Add(node);
