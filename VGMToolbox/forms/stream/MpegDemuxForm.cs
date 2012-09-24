@@ -40,7 +40,8 @@ namespace VGMToolbox.forms.stream
             this.comboFormat.Items.Add("DSI (Racjin/Racdym PS2 Video)");
             this.comboFormat.Items.Add("DVD Video (VOB)");
             this.comboFormat.Items.Add("Electronic Arts VP6 (VP6)");
-            this.comboFormat.Items.Add("H4M (Hudson GameCube Video)");
+            this.comboFormat.Items.Add("Electronic Arts MPC (MPC)");
+            //this.comboFormat.Items.Add("H4M (Hudson GameCube Video)");
             this.comboFormat.Items.Add("MO (Mobiclip)");
             this.comboFormat.Items.Add("MPEG");
             this.comboFormat.Items.Add("PAM (PlayStation Advanced Movie)");
