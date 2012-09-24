@@ -84,12 +84,16 @@ namespace VGMToolbox.format
 
         public virtual void DemultiplexStreams(MpegStream.DemuxOptionsStruct demuxOptions)
         {
-            long currentOffset = 0;
+            long currentOffset = -1;
             long fileSize;
 
             byte[] chunkId;
             byte[] fullChunk;
             uint chunkSize = 0;
+
+            long mvhdOffset = -1;
+            long schlOffset = -1;
+            long shenOffset = -1;
 
             Dictionary<string, FileStream> streamWriters = new Dictionary<string, FileStream>();
 
@@ -99,49 +103,80 @@ namespace VGMToolbox.format
                 {
                     fileSize = fs.Length;
 
-                    // find header
-                    currentOffset = ParseFile.GetNextOffset(fs, 0, ElectronicArtsVp6Stream.MVHD_BYTES);
+                    // find header first header (audio or video)                  
+                    mvhdOffset = ParseFile.GetNextOffset(fs, 0, ElectronicArtsVp6Stream.MVHD_BYTES);
 
-                    if (currentOffset >= 0)
+                    if (mvhdOffset == 0) // video header comes first
                     {
-                        // process file
-                        while (currentOffset < fileSize)
+                        currentOffset = mvhdOffset;
+                    }
+                    else // audio header comes first
+                    {
+                        schlOffset = ParseFile.GetNextOffset(fs, 0, ElectronicArtsVp6Stream.SCHl_BYTES);
+
+                        if ((schlOffset > -1) && (schlOffset < mvhdOffset))
                         {
-                            // get chunk
-                            chunkId = ParseFile.ParseSimpleOffset(fs, currentOffset, 4);
+                            currentOffset = schlOffset;
+                        }
+                        else
+                        {
+                            shenOffset = ParseFile.GetNextOffset(fs, 0, ElectronicArtsVp6Stream.SHEN_BYTES);
 
-                            // get chunk size
-                            chunkSize = (uint)BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, currentOffset + 4, 4), 0);
-
-                            // audio chunk
-                            if (demuxOptions.ExtractAudio && this.IsThisAnAudioBlock(chunkId))
+                            if ((shenOffset > -1) && (shenOffset < mvhdOffset))
                             {
-                                fullChunk = ParseFile.ParseSimpleOffset(fs, currentOffset, (int)chunkSize);
-                                this.writeChunkToStream(fullChunk, "audio", streamWriters, this.FileExtensionAudio);
+                                currentOffset = shenOffset;
                             }
+                        }
+                    }
 
-                            // video chunk
-                            if (demuxOptions.ExtractVideo && this.IsThisAVideoBlock(chunkId))
+                    // verify headers found                    
+                    if (mvhdOffset >= 0)
+                    {
+                        if (currentOffset >= 0)
+                        {
+                            // process file
+                            while (currentOffset < fileSize)
                             {
-                                fullChunk = ParseFile.ParseSimpleOffset(fs, currentOffset, (int)chunkSize);
-                                this.writeChunkToStream(fullChunk, "video", streamWriters, this.FileExtensionVideo);
-                            }
+                                // get chunk
+                                chunkId = ParseFile.ParseSimpleOffset(fs, currentOffset, 4);
 
-                            // unknown chunk
-                            if (!this.IsThisAnAudioBlock(chunkId) && !this.IsThisAVideoBlock(chunkId))
-                            {
-                                fullChunk = ParseFile.ParseSimpleOffset(fs, currentOffset, (int)chunkSize);
-                                this.writeChunkToStream(fullChunk, "unknown", streamWriters, ".bin");
-                            }
+                                // get chunk size
+                                chunkSize = (uint)BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, currentOffset + 4, 4), 0);
 
-                            // move to next chunk
-                            currentOffset += (long)chunkSize;
+                                // audio chunk
+                                if (demuxOptions.ExtractAudio && this.IsThisAnAudioBlock(chunkId))
+                                {
+                                    fullChunk = ParseFile.ParseSimpleOffset(fs, currentOffset, (int)chunkSize);
+                                    this.writeChunkToStream(fullChunk, "audio", streamWriters, this.FileExtensionAudio);
+                                }
+
+                                // video chunk
+                                if (demuxOptions.ExtractVideo && this.IsThisAVideoBlock(chunkId))
+                                {
+                                    fullChunk = ParseFile.ParseSimpleOffset(fs, currentOffset, (int)chunkSize);
+                                    this.writeChunkToStream(fullChunk, "video", streamWriters, this.FileExtensionVideo);
+                                }
+
+                                // unknown chunk
+                                if (!this.IsThisAnAudioBlock(chunkId) && !this.IsThisAVideoBlock(chunkId))
+                                {
+                                    fullChunk = ParseFile.ParseSimpleOffset(fs, currentOffset, (int)chunkSize);
+                                    this.writeChunkToStream(fullChunk, "unknown", streamWriters, ".bin");
+                                }
+
+                                // move to next chunk
+                                currentOffset += (long)chunkSize;
+                            }
+                        }
+                        else
+                        {
+                            throw new Exception(String.Format("Cannot find MVHD, SCHl, or SHEN headers.{0}", Environment.NewLine));
                         }
                     }
                     else
                     {
                         throw new Exception(String.Format("Cannot find MVHD header.{0}", Environment.NewLine));
-                    }
+                    } // if (mvhdOffset >= 0)
                 }
             }
             catch (Exception ex)
