@@ -17,6 +17,20 @@ namespace VGMToolbox.format
             this.FilePath = path;            
             this.UsesSameIdForMultipleAudioTracks = false;
             this.BlockSizeIsLittleEndian = false;
+
+            //********************
+            // Add Slice Packets 
+            //********************
+            byte[] sliceBytes;
+            uint sliceBytesValue;
+            BlockSizeStruct blockSize = new BlockSizeStruct(PacketSizeType.Static, 0xE);
+
+            for (byte i = 0; i <= 0xAF; i++)
+            {
+                sliceBytes = new byte[] { 0x00, 0x00, 0x01, i };
+                sliceBytesValue = BitConverter.ToUInt32(sliceBytes, 0);
+                this.BlockIdDictionary.Add(sliceBytesValue, blockSize);
+            }
         }
 
         public enum PacketSizeType
@@ -57,7 +71,7 @@ namespace VGMToolbox.format
 
         protected Dictionary<uint, BlockSizeStruct> BlockIdDictionary =
             new Dictionary<uint, BlockSizeStruct>
-            {                                
+            {                                                
                 //********************
                 // System Packets
                 //********************
@@ -219,6 +233,18 @@ namespace VGMToolbox.format
                 {                    
                     while (currentOffset < fileSize)
                     {
+#if DEBUG
+                        //if (currentOffset == 0x3044800)
+                        //{
+                        //    int gggg = 1;
+                        //}
+
+                        //// hack for bad data (ni no kuni s09.pam)
+                        //if ((currentOffset & 1) == 1)
+                        //{
+                        //    currentOffset = MathUtil.RoundUpToByteAlignment(currentOffset, 0x800);
+                        //}
+#endif               
                         // get the current block
                         currentBlockId = ParseFile.ParseSimpleOffset(fs, currentOffset, 4);
                         

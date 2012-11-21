@@ -102,7 +102,7 @@ namespace VGMToolbox.tools.extract
                                     else
                                     {
                                         // create the output stream
-                                        outputFileName = Path.Combine(outputPath, String.Format("{0}_{1}.ogg", Path.GetFileNameWithoutExtension(pPath), bitstreamSerialNumber.ToString("X8")));
+                                        outputFileName = Path.Combine(outputPath, String.Format("{0}_0x{1}_{2}.ogg", Path.GetFileNameWithoutExtension(pPath), offset.ToString("X8"), bitstreamSerialNumber.ToString("X8")));
                                         outputFileName = FileUtil.GetNonDuplicateFileName(outputFileName);
 
                                         if (!Directory.Exists(outputPath))

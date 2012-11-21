@@ -687,7 +687,17 @@ namespace VGMToolbox
 
             nodeTag.FormClass = xsf_SsfMakeFrontEndForm.GetType().Name;
             xsf_SsfMakeFENode.Tag = nodeTag;
-            
+
+            // SSFMAKE ADVANCED
+            TreeNode xsf_AdvancedSsfMakeFENode = new TreeNode("ssfmake Advanced Front End");
+
+            SsfMakeAdvancedForm xsf_AdvancedSsfMakeFrontEndForm =
+                new SsfMakeAdvancedForm(xsf_AdvancedSsfMakeFENode);
+            this.splitContainer1.Panel2.Controls.Add(xsf_AdvancedSsfMakeFrontEndForm);
+
+            nodeTag.FormClass = xsf_AdvancedSsfMakeFrontEndForm.GetType().Name;
+            xsf_AdvancedSsfMakeFENode.Tag = nodeTag;
+
             // SEQ/TON Extractors
             TreeNode xsf_SsfSeqTonExtFENode = 
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SsfSeqTonExtFENode"]);
@@ -790,6 +800,7 @@ namespace VGMToolbox
             ssf_RootNode.NodeFont = this.treeviewBoldFont;
             ssf_RootNode.Tag = nodeTag;
             ssf_RootNode.Nodes.Add(xsf_SsfMakeFENode);
+            ssf_RootNode.Nodes.Add(xsf_AdvancedSsfMakeFENode);
             ssf_RootNode.Nodes.Add(xsf_SsfSeqTonExtFENode);            
             xsf_RootNode.Nodes.Add(ssf_RootNode);
 
