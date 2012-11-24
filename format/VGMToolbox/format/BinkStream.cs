@@ -102,7 +102,15 @@ namespace VGMToolbox.format
             
             for (uint i = 0; i < this.FrameCount; i++)
             {
-                this.FrameOffsetList[i].FrameOffset = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(inStream, offsetToHeader + 0x2C + (this.AudioTrackCount * 0xC) + (i * 4), 4), 0);
+#if DEBUG
+                if (i == 0x2b5)                 
+                {
+                    int dummy555 = 555;
+                }
+#endif
+
+                
+                this.FrameOffsetList[i].FrameOffset = ParseFile.ReadUintLE(inStream, offsetToHeader + 0x2C + (this.AudioTrackCount * 0xC) + (i * 4));
 
                 if ((this.FrameOffsetList[i].FrameOffset & 1) == 1)
                 {
@@ -525,97 +533,106 @@ namespace VGMToolbox.format
                     //////////////////////
                     for (uint frameId = 0; frameId < this.FrameCount; frameId++)
                     {
-                        currentPacketOffset = 0;
-
-                        if (demuxOptions.SplitAudioStreams)
+#if DEBUG
+                        if (frameId == 0x2b5)
                         {
-                            //////////////////
-                            // extract audio  - separate tracks
-                            //////////////////
-                            for (uint audioTrackId = 0; audioTrackId < this.AudioTrackCount; audioTrackId++)
+                            int vvv = 222;
+                        }
+#endif                        
+                        try
+                        {
+                            currentPacketOffset = 0;
+
+                            if (demuxOptions.SplitAudioStreams)
                             {
-                                audioPacketSize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, this.FrameOffsetList[frameId].FrameOffset + currentPacketOffset, 4), 0);
-                                audioPacketSize += 4;
-
-                                if (demuxOptions.ExtractAudio)
+                                //////////////////
+                                // extract audio  - separate tracks
+                                //////////////////
+                                for (uint audioTrackId = 0; audioTrackId < this.AudioTrackCount; audioTrackId++)
                                 {
-                                    audioPacket = ParseFile.ParseSimpleOffset(fs, this.FrameOffsetList[frameId].FrameOffset + currentPacketOffset, (int)audioPacketSize);
-                                    this.writeChunkToStream(audioPacket, this.AudioTrackIds[audioTrackId], streamOutputWriters, this.FileExtensionAudio);
-                                }
+                                    audioPacketSize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, this.FrameOffsetList[frameId].FrameOffset + currentPacketOffset, 4), 0);
+                                    audioPacketSize += 4;
 
-                                currentPacketOffset += audioPacketSize; // goto next packet                        
+                                    if (demuxOptions.ExtractAudio)
+                                    {
+                                        audioPacket = ParseFile.ParseSimpleOffset(fs, this.FrameOffsetList[frameId].FrameOffset + currentPacketOffset, (int)audioPacketSize);
+                                        this.writeChunkToStream(audioPacket, this.AudioTrackIds[audioTrackId], streamOutputWriters, this.FileExtensionAudio);
+                                    }
+
+                                    currentPacketOffset += audioPacketSize; // goto next packet                        
+
+                                    // update audio frame id
+                                    if ((frameId + 1) < this.FrameCount)
+                                    {
+                                        this.NewFrameOffsetsAudio[audioTrackId][frameId + 1] = this.NewFrameOffsetsAudio[audioTrackId][frameId] + audioPacketSize;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                ////////////////////////////////////
+                                // extract audio  - combine tracks
+                                ////////////////////////////////////
+                                for (uint audioTrackId = 0; audioTrackId < this.AudioTrackCount; audioTrackId++)
+                                {
+                                    audioPacketSize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, this.FrameOffsetList[frameId].FrameOffset + currentPacketOffset, 4), 0);
+                                    audioPacketSize += 4;
+
+                                    if ((demuxOptions.ExtractAudio))
+                                    {
+                                        audioPacket = ParseFile.ParseSimpleOffset(fs, this.FrameOffsetList[frameId].FrameOffset + currentPacketOffset, (int)audioPacketSize);
+                                        this.writeChunkToStream(audioPacket, 0, streamOutputWriters, this.FileExtensionAudio);
+                                    }
+
+                                    currentPacketOffset += audioPacketSize; // goto next packet                        
+                                }
 
                                 // update audio frame id
-                                if ((frameId + 1) < this.FrameCount)
+                                if ((this.AudioTrackCount > 0) && ((frameId + 1) < this.FrameCount))
                                 {
-                                    this.NewFrameOffsetsAudio[audioTrackId][frameId + 1] = this.NewFrameOffsetsAudio[audioTrackId][frameId] + audioPacketSize;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            ////////////////////////////////////
-                            // extract audio  - combine tracks
-                            ////////////////////////////////////
-                            for (uint audioTrackId = 0; audioTrackId < this.AudioTrackCount; audioTrackId++)
-                            {
-                                audioPacketSize = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(fs, this.FrameOffsetList[frameId].FrameOffset + currentPacketOffset, 4), 0);
-                                audioPacketSize += 4;
-
-                                if ((demuxOptions.ExtractAudio))
-                                {
-                                    audioPacket = ParseFile.ParseSimpleOffset(fs, this.FrameOffsetList[frameId].FrameOffset + currentPacketOffset, (int)audioPacketSize);
-                                    this.writeChunkToStream(audioPacket, 0, streamOutputWriters, this.FileExtensionAudio);
+                                    this.NewFrameOffsetsAudio[0][frameId + 1] = this.NewFrameOffsetsAudio[0][frameId] + (uint)currentPacketOffset;
                                 }
 
-                                currentPacketOffset += audioPacketSize; // goto next packet                        
+                                // add empty track for binkplay (WIP)
+                                //if ((this.AudioTrackCount > 0) && (demuxOptions.AddPlaybackHacks))
+                                //{
+                                //    this.writeChunkToStream(emptyAudioPacket, 0, streamOutputWriters, this.FileExtensionAudio);
+                                //}
                             }
 
-                            // update audio frame id
-                            if ((this.AudioTrackCount > 0) && ((frameId + 1) < this.FrameCount))
+                            /////////////////
+                            // extract video
+                            /////////////////
+                            if (frameId == (this.FrameCount - 1)) // last frame
                             {
-                                this.NewFrameOffsetsAudio[0][frameId + 1] = this.NewFrameOffsetsAudio[0][frameId] + (uint)currentPacketOffset;
+                                packetEndOffset = fileSize;
+                            }
+                            else
+                            {
+                                packetEndOffset = this.FrameOffsetList[frameId + 1].FrameOffset;
                             }
 
-                            // add empty track for binkplay (WIP)
-                            //if ((this.AudioTrackCount > 0) && (demuxOptions.AddPlaybackHacks))
-                            //{
-                            //    this.writeChunkToStream(emptyAudioPacket, 0, streamOutputWriters, this.FileExtensionAudio);
-                            //}
-                        }
+                            videoPacketSize = (uint)(packetEndOffset - (this.FrameOffsetList[frameId].FrameOffset + currentPacketOffset));
 
-                        /////////////////
-                        // extract video
-                        /////////////////
-                        if (frameId == (this.FrameCount - 1)) // last frame
-                        {
-                            packetEndOffset = fileSize;
-                        }
-                        else
-                        {
-                            packetEndOffset = this.FrameOffsetList[frameId + 1].FrameOffset;
-                        }
+                            if (demuxOptions.ExtractVideo)
+                            {
+                                // parse video packet
+                                videoPacket = ParseFile.ParseSimpleOffset(fs, this.FrameOffsetList[frameId].FrameOffset + currentPacketOffset, (int)videoPacketSize);
+                                this.writeChunkToStream(videoPacket, 0xFFFF, streamOutputWriters, this.FileExtensionVideo);
+                            }
 
-                        videoPacketSize = (uint)(packetEndOffset - (this.FrameOffsetList[frameId].FrameOffset + currentPacketOffset));
-                        
-                        if (demuxOptions.ExtractVideo)
-                        {
-                            // parse video packet
-                            videoPacket = ParseFile.ParseSimpleOffset(fs, this.FrameOffsetList[frameId].FrameOffset + currentPacketOffset, (int)videoPacketSize);
-                            this.writeChunkToStream(videoPacket, 0xFFFF, streamOutputWriters, this.FileExtensionVideo);
-                        }                    
-                    
-                        // update video frame offset
-                        if ((frameId + 1) < this.NewFrameOffsetsVideo.Length)
-                        {
-                            this.NewFrameOffsetsVideo[frameId + 1] = this.NewFrameOffsetsVideo[frameId] + (uint)videoPacketSize;
+                            // update video frame offset
+                            if ((frameId + 1) < this.NewFrameOffsetsVideo.Length)
+                            {
+                                this.NewFrameOffsetsVideo[frameId + 1] = this.NewFrameOffsetsVideo[frameId] + (uint)videoPacketSize;
+                            }
                         }
-                    
+                        catch (Exception fex)
+                        {
+                            throw new Exception(String.Format("Exception processing frame 0x{0} at offset 0x{1}: {2}{3}", frameId.ToString("X"), this.FrameOffsetList[frameId].FrameOffset.ToString("X"), fex.Message, Environment.NewLine));
+                        }
                     } // for (uint frameId = 0; frameId < this.FrameCount; frameId++)
-
-                                        
- 
-
+                                     
                 } // using (FileStream fs = File.OpenRead(this.FilePath))
             }
             catch (Exception ex)

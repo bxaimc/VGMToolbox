@@ -613,5 +613,22 @@ namespace VGMToolbox.util
             outputFileList = (string[])outputFiles.ToArray(typeof(string));
             return outputFileList;
         }
+
+        public static long? GetFileSize(string path)
+        {
+            long? fileSize;
+
+            try 
+            {
+                FileInfo fi = new FileInfo(Path.GetFullPath(path));
+                fileSize = fi.Length;
+            }            
+            catch (Exception)
+            {
+                fileSize = null;
+            }
+
+            return fileSize;
+        }
     }
 }
