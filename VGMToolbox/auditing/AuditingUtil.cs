@@ -29,7 +29,8 @@ namespace VGMToolbox.auditing
     class AuditingUtil
     {
         public const string ROM_SPACER = "  ";         // Simple spacer for formatting output lists
-     
+        public const string EMPTY_ROM_SIZE = "-1";     // VGMT checksums have -1 for size
+
         private Hashtable haveList = new Hashtable();   // Stores list of present files
         private Hashtable missList = new Hashtable();   // Stores list of missing files
         private datafile datafile;                      // Datafile used for building lists
@@ -37,6 +38,7 @@ namespace VGMToolbox.auditing
         private Hashtable checksumHash = new Hashtable();
         private ArrayList unknownFiles = new ArrayList();
 
+        public bool HasVgmtSizeFlag { set; get; } // check for size = -1, set flag that this is a VGMT checksum DAT
         public Hashtable ChecksumHash { get { return checksumHash; } }
 
         #region CONSTRUCTORS
@@ -49,6 +51,7 @@ namespace VGMToolbox.auditing
         {
             datafile = pDatafile;
             checksumHash = this.BuildChecksumHash();
+            HasVgmtSizeFlag = false;            
             // this.addCachedChecksumsToHash();
         }
         
@@ -151,6 +154,11 @@ namespace VGMToolbox.auditing
                     {
                         // @TODO Add MD5/SHA1 to make checksum hash correct String(CRC32 + MD5 + SHA1)
                         checksumKey = file.crc;
+
+                        if (this.HasVgmtSizeFlag && file.size.Equals(EMPTY_ROM_SIZE))
+                        {
+                            this.HasVgmtSizeFlag = true;
+                        }
 
                         if (!checksumHash.ContainsKey(checksumKey))
                         {

@@ -206,7 +206,7 @@ namespace VGMToolbox.auditing
                     */
 
 
-                    if (formatType != null)
+                    if ((pAuditingUtil.HasVgmtSizeFlag) && (formatType != null))
                     {
                         try
                         {
@@ -265,7 +265,7 @@ namespace VGMToolbox.auditing
                     }
 
                     // @TODO Add MD5/SHA1 to make checksum hash correct String(CRC32 + MD5 + SHA1)
-                    crc32Value = crc32Generator.Value.ToString("X2");
+                    crc32Value = crc32Generator.Value.ToString("X8");
 
                     pDestinationFiles = (ArrayList)pAuditingUtil.ChecksumHash[crc32Value];
                     if (pDestinationFiles != null)
