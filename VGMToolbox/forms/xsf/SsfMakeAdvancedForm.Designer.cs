@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.tbDriverFile = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tbDspProgram = new System.Windows.Forms.TextBox();
@@ -38,16 +39,35 @@
             this.lbToneData = new System.Windows.Forms.ListBox();
             this.grpFiles = new System.Windows.Forms.GroupBox();
             this.pb68000Memory = new System.Windows.Forms.PictureBox();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.grpSettings = new System.Windows.Forms.GroupBox();
+            this.tbVolume = new System.Windows.Forms.TextBox();
+            this.tbEffectNumber = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.tbMixerBank = new System.Windows.Forms.TextBox();
+            this.tbMixerNumber = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.tbSeqTrack = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.tbSeqBank = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.grpOptions = new System.Windows.Forms.GroupBox();
+            this.cbMakeSsflib = new System.Windows.Forms.CheckBox();
+            this.tbSequenceCount = new System.Windows.Forms.TextBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
             this.grpFiles.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pb68000Memory)).BeginInit();
+            this.grpSettings.SuspendLayout();
+            this.grpOptions.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 282);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 452);
             this.pnlLabels.Size = new System.Drawing.Size(755, 19);
             // 
             // pnlTitle
@@ -56,13 +76,13 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 205);
+            this.tbOutput.Location = new System.Drawing.Point(0, 375);
             this.tbOutput.Size = new System.Drawing.Size(755, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 185);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 355);
             this.pnlButtons.Size = new System.Drawing.Size(755, 20);
             // 
             // btnCancel
@@ -144,14 +164,19 @@
             // 
             // lbToneData
             // 
+            this.lbToneData.AllowDrop = true;
             this.lbToneData.FormattingEnabled = true;
             this.lbToneData.Location = new System.Drawing.Point(84, 98);
             this.lbToneData.Name = "lbToneData";
             this.lbToneData.Size = new System.Drawing.Size(229, 95);
             this.lbToneData.TabIndex = 12;
+            this.lbToneData.DragDrop += new System.Windows.Forms.DragEventHandler(this.lbToneData_DragDrop);
+            this.lbToneData.DragEnter += new System.Windows.Forms.DragEventHandler(this.lbToneData_DragEnter);
+            this.lbToneData.KeyUp += new System.Windows.Forms.KeyEventHandler(this.lbToneData_KeyUp);
             // 
             // grpFiles
             // 
+            this.grpFiles.Controls.Add(this.tbSequenceCount);
             this.grpFiles.Controls.Add(this.pb68000Memory);
             this.grpFiles.Controls.Add(this.label1);
             this.grpFiles.Controls.Add(this.label4);
@@ -167,21 +192,185 @@
             this.grpFiles.Size = new System.Drawing.Size(755, 202);
             this.grpFiles.TabIndex = 13;
             this.grpFiles.TabStop = false;
-            this.grpFiles.Text = "Files";
+            this.grpFiles.Text = "Files (drop onto boxes)";
             // 
             // pb68000Memory
             // 
-            this.pb68000Memory.Location = new System.Drawing.Point(389, 13);
+            this.pb68000Memory.Location = new System.Drawing.Point(403, 13);
             this.pb68000Memory.Name = "pb68000Memory";
             this.pb68000Memory.Size = new System.Drawing.Size(140, 180);
             this.pb68000Memory.TabIndex = 13;
             this.pb68000Memory.TabStop = false;
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            // 
+            // grpSettings
+            // 
+            this.grpSettings.Controls.Add(this.tbVolume);
+            this.grpSettings.Controls.Add(this.tbEffectNumber);
+            this.grpSettings.Controls.Add(this.label10);
+            this.grpSettings.Controls.Add(this.label9);
+            this.grpSettings.Controls.Add(this.tbMixerBank);
+            this.grpSettings.Controls.Add(this.tbMixerNumber);
+            this.grpSettings.Controls.Add(this.label8);
+            this.grpSettings.Controls.Add(this.label7);
+            this.grpSettings.Controls.Add(this.tbSeqTrack);
+            this.grpSettings.Controls.Add(this.label6);
+            this.grpSettings.Controls.Add(this.tbSeqBank);
+            this.grpSettings.Controls.Add(this.label5);
+            this.grpSettings.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpSettings.Location = new System.Drawing.Point(0, 225);
+            this.grpSettings.Name = "grpSettings";
+            this.grpSettings.Size = new System.Drawing.Size(755, 69);
+            this.grpSettings.TabIndex = 14;
+            this.grpSettings.TabStop = false;
+            this.grpSettings.Text = "Settings";
+            // 
+            // tbVolume
+            // 
+            this.tbVolume.Location = new System.Drawing.Point(317, 13);
+            this.tbVolume.Name = "tbVolume";
+            this.tbVolume.Size = new System.Drawing.Size(30, 20);
+            this.tbVolume.TabIndex = 11;
+            this.tbVolume.Text = "0x7F";
+            // 
+            // tbEffectNumber
+            // 
+            this.tbEffectNumber.Location = new System.Drawing.Point(317, 35);
+            this.tbEffectNumber.Name = "tbEffectNumber";
+            this.tbEffectNumber.Size = new System.Drawing.Size(30, 20);
+            this.tbEffectNumber.TabIndex = 10;
+            this.tbEffectNumber.Text = "0x00";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(236, 38);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(75, 13);
+            this.label10.TabIndex = 9;
+            this.label10.Text = "Effect Number";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(236, 16);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(42, 13);
+            this.label9.TabIndex = 8;
+            this.label9.Text = "Volume";
+            // 
+            // tbMixerBank
+            // 
+            this.tbMixerBank.Location = new System.Drawing.Point(186, 13);
+            this.tbMixerBank.Name = "tbMixerBank";
+            this.tbMixerBank.Size = new System.Drawing.Size(30, 20);
+            this.tbMixerBank.TabIndex = 7;
+            this.tbMixerBank.Text = "0x00";
+            // 
+            // tbMixerNumber
+            // 
+            this.tbMixerNumber.Location = new System.Drawing.Point(186, 35);
+            this.tbMixerNumber.Name = "tbMixerNumber";
+            this.tbMixerNumber.Size = new System.Drawing.Size(30, 20);
+            this.tbMixerNumber.TabIndex = 6;
+            this.tbMixerNumber.Text = "0x00";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(108, 38);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(72, 13);
+            this.label8.TabIndex = 5;
+            this.label8.Text = "Mixer Number";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(108, 16);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(60, 13);
+            this.label7.TabIndex = 4;
+            this.label7.Text = "Mixer Bank";
+            // 
+            // tbSeqTrack
+            // 
+            this.tbSeqTrack.Location = new System.Drawing.Point(72, 35);
+            this.tbSeqTrack.Name = "tbSeqTrack";
+            this.tbSeqTrack.Size = new System.Drawing.Size(30, 20);
+            this.tbSeqTrack.TabIndex = 3;
+            this.tbSeqTrack.Text = "0x00";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(6, 38);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(60, 13);
+            this.label6.TabIndex = 2;
+            this.label6.Text = "SEQ Track";
+            // 
+            // tbSeqBank
+            // 
+            this.tbSeqBank.Location = new System.Drawing.Point(72, 13);
+            this.tbSeqBank.Name = "tbSeqBank";
+            this.tbSeqBank.Size = new System.Drawing.Size(30, 20);
+            this.tbSeqBank.TabIndex = 1;
+            this.tbSeqBank.Text = "0x00";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(6, 16);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(57, 13);
+            this.label5.TabIndex = 0;
+            this.label5.Text = "SEQ Bank";
+            // 
+            // grpOptions
+            // 
+            this.grpOptions.Controls.Add(this.cbMakeSsflib);
+            this.grpOptions.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpOptions.Location = new System.Drawing.Point(0, 294);
+            this.grpOptions.Name = "grpOptions";
+            this.grpOptions.Size = new System.Drawing.Size(755, 55);
+            this.grpOptions.TabIndex = 15;
+            this.grpOptions.TabStop = false;
+            this.grpOptions.Text = "Options";
+            // 
+            // cbMakeSsflib
+            // 
+            this.cbMakeSsflib.AutoSize = true;
+            this.cbMakeSsflib.Checked = true;
+            this.cbMakeSsflib.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbMakeSsflib.Location = new System.Drawing.Point(9, 19);
+            this.cbMakeSsflib.Name = "cbMakeSsflib";
+            this.cbMakeSsflib.Size = new System.Drawing.Size(182, 17);
+            this.cbMakeSsflib.TabIndex = 0;
+            this.cbMakeSsflib.Text = "Create .minissfs/.ssflib, if possible";
+            this.cbMakeSsflib.UseVisualStyleBackColor = true;
+            // 
+            // tbSequenceCount
+            // 
+            this.tbSequenceCount.Enabled = false;
+            this.tbSequenceCount.Location = new System.Drawing.Point(319, 65);
+            this.tbSequenceCount.Name = "tbSequenceCount";
+            this.tbSequenceCount.ReadOnly = true;
+            this.tbSequenceCount.Size = new System.Drawing.Size(30, 20);
+            this.tbSequenceCount.TabIndex = 14;
+            // 
             // SsfMakeAdvancedForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(755, 323);
+            this.AutoScroll = true;
+            this.ClientSize = new System.Drawing.Size(755, 493);
+            this.Controls.Add(this.grpOptions);
+            this.Controls.Add(this.grpSettings);
             this.Controls.Add(this.grpFiles);
             this.Name = "SsfMakeAdvancedForm";
             this.Text = "SsfMakeAdvancedForm";
@@ -190,6 +379,8 @@
             this.Controls.SetChildIndex(this.pnlTitle, 0);
             this.Controls.SetChildIndex(this.pnlButtons, 0);
             this.Controls.SetChildIndex(this.grpFiles, 0);
+            this.Controls.SetChildIndex(this.grpSettings, 0);
+            this.Controls.SetChildIndex(this.grpOptions, 0);
             this.pnlLabels.ResumeLayout(false);
             this.pnlLabels.PerformLayout();
             this.pnlTitle.ResumeLayout(false);
@@ -199,6 +390,10 @@
             this.grpFiles.ResumeLayout(false);
             this.grpFiles.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pb68000Memory)).EndInit();
+            this.grpSettings.ResumeLayout(false);
+            this.grpSettings.PerformLayout();
+            this.grpOptions.ResumeLayout(false);
+            this.grpOptions.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -216,5 +411,22 @@
         private System.Windows.Forms.ListBox lbToneData;
         private System.Windows.Forms.GroupBox grpFiles;
         private System.Windows.Forms.PictureBox pb68000Memory;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.GroupBox grpSettings;
+        private System.Windows.Forms.TextBox tbSeqTrack;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox tbSeqBank;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox tbMixerBank;
+        private System.Windows.Forms.TextBox tbMixerNumber;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.TextBox tbVolume;
+        private System.Windows.Forms.TextBox tbEffectNumber;
+        private System.Windows.Forms.GroupBox grpOptions;
+        private System.Windows.Forms.CheckBox cbMakeSsflib;
+        private System.Windows.Forms.TextBox tbSequenceCount;
     }
 }

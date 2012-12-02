@@ -112,6 +112,7 @@
     <Compile Include="VGMToolbox\format\S98V3.cs" />
     <Compile Include="VGMToolbox\format\sdat\Swar.cs" />
     <Compile Include="VGMToolbox\format\sdat\Swav.cs" />
+    <Compile Include="VGMToolbox\format\SegaSaturnSequence.cs" />
     <Compile Include="VGMToolbox\format\Sgc.cs" />
     <Compile Include="VGMToolbox\format\SofdecStream.cs" />
     <Compile Include="VGMToolbox\format\SonyPamStream.cs" />

@@ -8,6 +8,8 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
+using VGMToolbox.format;
+using VGMToolbox.forms;
 using VGMToolbox.plugin;
 using VGMToolbox.tools.xsf;
 using VGMToolbox.util;
@@ -33,11 +35,12 @@ namespace VGMToolbox.forms.xsf
             this.btnDoTask.Text = "Make SSFs";
             
             InitializeComponent();
-            
+                        
             // setup colors
-            this.tbDriverFile.BackColor = Color.DarkGreen;
-            this.tbSequenceFile.BackColor = Color.Green;
-            this.tbDspProgram.BackColor = Color.GreenYellow;
+            this.tbDriverFile.BackColor = Color.Aqua;
+            this.tbSequenceFile.BackColor = Color.BlueViolet;
+            this.tbDspProgram.BackColor = Color.DarkKhaki;
+            this.lbToneData.BackColor = Color.Plum;
 
 
             // init memory
@@ -57,60 +60,149 @@ namespace VGMToolbox.forms.xsf
             long? driverFileSize;
             long? seqFileSize;
             long? dspFileSize;
+            uint? dspRamNeeded;
+            long? tonFileSize;
 
             long currentOffset = DATA_START_OFFSET;
             float currentHeight = DATA_START_HEIGHT;
+            
             float seqHeight;
             float dspHeight;
+            float dspRamHeight;
+            float tonHeight;
+
+            Brush rectangleColor;
 
             // draw white background
             this.graphicsRenderer.FillRectangle(Brushes.White, 0, 0, RECT_WIDTH, RECT_HEIGHT);
 
-            // render Driver
+            #region Render Driver
             if (!String.IsNullOrEmpty(this.tbDriverFile.Text))
             {
                 driverFileSize = FileUtil.GetFileSize(this.tbDriverFile.Text);
 
                 if (driverFileSize != null)
                 {
-                    this.graphicsRenderer.FillRectangle(Brushes.DarkGreen, 0, 0, RECT_WIDTH, this.GetRectangleHeight((float)driverFileSize));
+                    if (driverFileSize > TOTAL_68000_MEMORY)
+                    {
+                        rectangleColor = Brushes.Red;
+                    }
+                    else
+                    {
+                        rectangleColor = Brushes.Aqua;
+                    }
+
+                    this.graphicsRenderer.FillRectangle(rectangleColor, 0, 0, RECT_WIDTH, this.GetRectangleHeight((float)driverFileSize));
                 }
             }
+            #endregion
 
-            // render SEQ
+            #region Render SEQ
             if (!String.IsNullOrEmpty(this.tbSequenceFile.Text))
             {
                 seqFileSize = FileUtil.GetFileSize(this.tbSequenceFile.Text);
 
                 if (seqFileSize != null)
                 {
+                    if ((currentOffset + seqFileSize) > TOTAL_68000_MEMORY)
+                    {
+                        rectangleColor = Brushes.Red;
+                    }
+                    else
+                    {
+                        rectangleColor = Brushes.BlueViolet;
+                    }
+                    
                     seqHeight = this.GetRectangleHeight((float)seqFileSize);
-                    this.graphicsRenderer.FillRectangle(Brushes.Green, 0, currentHeight, RECT_WIDTH, seqHeight);
+                    this.graphicsRenderer.FillRectangle(rectangleColor, 0, currentHeight, RECT_WIDTH, seqHeight);
 
                     // update current offset/hieght
                     currentOffset += (long)seqFileSize;
                     currentHeight += seqHeight;
                 }
             }
+            #endregion
 
-            // render DSP
+            #region Render DSP
             if (!String.IsNullOrEmpty(this.tbDspProgram.Text))
             {
                 dspFileSize = FileUtil.GetFileSize(this.tbDspProgram.Text);
+                
+                // shoudl do some error handling around this
+                dspRamNeeded = SegaSaturnSequence.GetDspRamNeeded(this.tbDspProgram.Text);
 
                 if (dspFileSize != null)
                 {
                     currentOffset = MathUtil.RoundUpToByteAlignment((long)currentOffset, 0x2000);
                     currentHeight = GetRectangleHeight(currentOffset);
 
+                    if ((currentOffset + dspFileSize) > TOTAL_68000_MEMORY)
+                    {
+                        rectangleColor = Brushes.Red;
+                    }
+                    else
+                    {
+                        rectangleColor = Brushes.DarkKhaki;
+                    }
+
                     dspHeight = this.GetRectangleHeight((float)dspFileSize);
-                    this.graphicsRenderer.FillRectangle(Brushes.GreenYellow, 0, currentHeight, RECT_WIDTH, dspHeight);
+                    this.graphicsRenderer.FillRectangle(rectangleColor, 0, currentHeight, RECT_WIDTH, dspHeight);
 
                     // update current offset/height
                     currentOffset += (long)dspFileSize;
                     currentHeight += dspHeight;
+
+                    // handle DSP RAM
+                    dspRamHeight = this.GetRectangleHeight((float)dspRamNeeded);
+
+                    if ((currentOffset + dspRamHeight) > TOTAL_68000_MEMORY)
+                    {
+                        rectangleColor = Brushes.Red;
+                    }
+                    else
+                    {
+                        rectangleColor = Brushes.Lime;
+                    }
+
+                    this.graphicsRenderer.FillRectangle(rectangleColor, 0, currentHeight, RECT_WIDTH, dspRamHeight);
+                    this.graphicsRenderer.DrawString("DSP RAM", new Font(FontFamily.GenericSansSerif, 7), Brushes.Black, 5, currentHeight + 1);
+
+                    currentOffset += (long)dspRamNeeded;
+                    currentHeight += dspRamHeight;
                 }
             }
+            #endregion
+
+            #region Render TON
+
+            if (this.lbToneData.Items.Count > 0)
+            {
+                foreach (ListBoxFileInfoObject listFileObject in this.lbToneData.Items)
+                {
+                    tonFileSize = FileUtil.GetFileSize(listFileObject.FilePath);
+
+                    if (tonFileSize != null)
+                    {
+                        if ((currentOffset + tonFileSize) > TOTAL_68000_MEMORY)
+                        {
+                            rectangleColor = Brushes.Red;
+                        }
+                        else
+                        {
+                            rectangleColor = Brushes.Plum;
+                        }
+                                                
+                        tonHeight = this.GetRectangleHeight((float)tonFileSize);
+                        this.graphicsRenderer.FillRectangle(rectangleColor, 0, currentHeight, RECT_WIDTH, tonHeight);
+
+                        // update current offset/hieght
+                        currentOffset += (long)tonFileSize;
+                        currentHeight += tonHeight;
+                    }
+                }
+            }
+
+            #endregion
 
             //render outline
             this.graphicsRenderer.DrawRectangle(this.blackPen, 0, 0, RECT_WIDTH - this.blackPen.Width, RECT_HEIGHT - this.blackPen.Width);
@@ -172,7 +264,23 @@ namespace VGMToolbox.forms.xsf
         }
         private void tbSequenceFile_DragDrop(object sender, DragEventArgs e)
         {
-            this.tbSequenceFile.Text = this.getDroppedFile(e);            
+            this.tbSequenceFile.Text = this.getDroppedFile(e);
+
+            // get track count
+            SegaSaturnSequence s = new SegaSaturnSequence(this.tbSequenceFile.Text);
+            this.tbSequenceCount.Text = String.Format("0x{0}", s.SequenceCount.ToString("X2"));
+
+            // (de)activate ssflib checkbox
+            if (s.SequenceCount <= 1)
+            {
+                this.cbMakeSsflib.Checked = false;
+                this.cbMakeSsflib.Enabled = false;
+            }
+            else
+            {
+                this.cbMakeSsflib.Checked = true;
+                this.cbMakeSsflib.Enabled = true;            
+            }
         }
         private void tbSequenceFile_TextChanged(object sender, EventArgs e)
         {
@@ -191,6 +299,34 @@ namespace VGMToolbox.forms.xsf
         {
             this.RenderMemoryGrid();
         }
+
+        private void addToneData(string f)
+        {
+            ListBoxFileInfoObject listFileObject;
+            listFileObject = new ListBoxFileInfoObject(f);            
+            this.lbToneData.Items.Add(listFileObject);
+
+            this.RenderMemoryGrid();
+        }        
+        private void lbToneData_DragEnter(object sender, DragEventArgs e)
+        {
+            base.doDragEnter(sender, e);
+        }
+        private void lbToneData_DragDrop(object sender, DragEventArgs e)
+        {
+            string filename = this.getDroppedFile(e);
+            this.addToneData(filename);
+        }
+        private void lbToneData_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                this.lbToneData.Items.Remove(this.lbToneData.SelectedItem);
+
+                this.RenderMemoryGrid();
+            }
+        }
+
 
         
     }
