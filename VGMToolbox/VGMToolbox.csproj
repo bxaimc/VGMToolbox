@@ -847,7 +847,9 @@
     <Compile Include="tools\xsf\SdatOptimizerWorker.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tools\xsf\SsfMakeAdvancedWorker.cs" />
+    <Compile Include="tools\xsf\SsfMakeAdvancedWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\xsf\SsfMakeWorker.cs">
       <SubType>Component</SubType>
     </Compile>

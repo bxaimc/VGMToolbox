@@ -38,6 +38,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.lbToneData = new System.Windows.Forms.ListBox();
             this.grpFiles = new System.Windows.Forms.GroupBox();
+            this.tbSequenceCount = new System.Windows.Forms.TextBox();
             this.pb68000Memory = new System.Windows.Forms.PictureBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.grpSettings = new System.Windows.Forms.GroupBox();
@@ -55,7 +56,6 @@
             this.label5 = new System.Windows.Forms.Label();
             this.grpOptions = new System.Windows.Forms.GroupBox();
             this.cbMakeSsflib = new System.Windows.Forms.CheckBox();
-            this.tbSequenceCount = new System.Windows.Forms.TextBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -193,6 +193,15 @@
             this.grpFiles.TabIndex = 13;
             this.grpFiles.TabStop = false;
             this.grpFiles.Text = "Files (drop onto boxes)";
+            // 
+            // tbSequenceCount
+            // 
+            this.tbSequenceCount.Enabled = false;
+            this.tbSequenceCount.Location = new System.Drawing.Point(319, 65);
+            this.tbSequenceCount.Name = "tbSequenceCount";
+            this.tbSequenceCount.ReadOnly = true;
+            this.tbSequenceCount.Size = new System.Drawing.Size(30, 20);
+            this.tbSequenceCount.TabIndex = 14;
             // 
             // pb68000Memory
             // 
@@ -353,15 +362,6 @@
             this.cbMakeSsflib.TabIndex = 0;
             this.cbMakeSsflib.Text = "Create .minissfs/.ssflib, if possible";
             this.cbMakeSsflib.UseVisualStyleBackColor = true;
-            // 
-            // tbSequenceCount
-            // 
-            this.tbSequenceCount.Enabled = false;
-            this.tbSequenceCount.Location = new System.Drawing.Point(319, 65);
-            this.tbSequenceCount.Name = "tbSequenceCount";
-            this.tbSequenceCount.ReadOnly = true;
-            this.tbSequenceCount.Size = new System.Drawing.Size(30, 20);
-            this.tbSequenceCount.TabIndex = 14;
             // 
             // SsfMakeAdvancedForm
             // 
