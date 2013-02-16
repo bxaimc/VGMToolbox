@@ -619,6 +619,14 @@ namespace VGMToolbox.format
                 case INT_VERSION_0150:
                     headerSize = 0x40;
                     break;
+                /*
+                 * Removing, too many oddities and offsets to adjust.  For example,
+                 *  v1.51 files with v1.61 flags.  Also, current VGMT code does 
+                 *  not adjust the Loop Offset if the header size is trimmed to the 
+                 *  size identified in the specs.  That should be fixed if this
+                 *  code is uncommented.  The rebuildFile function should track the
+                 *  difference and adjust the Loop Start Offset accordingly.
+                 * 
                 case INT_VERSION_0151:
                 case INT_VERSION_0160:
                     headerSize = Math.Min(0x80,
@@ -628,6 +636,7 @@ namespace VGMToolbox.format
                     headerSize = Math.Min(0xC0,
                         ((uint)VGM_DATA_OFFSET_OFFSET + vgmDataOffset));
                     break;
+                */
                 default:
                     if (vgmDataOffset > 0)
                     {
