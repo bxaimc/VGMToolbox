@@ -616,7 +616,6 @@ namespace VGMToolbox.format
                 case INT_VERSION_0100:
                 case INT_VERSION_0101:
                 case INT_VERSION_0110:
-                case INT_VERSION_0150:
                     headerSize = 0x40;
                     break;
                 /*
@@ -626,7 +625,8 @@ namespace VGMToolbox.format
                  *  size identified in the specs.  That should be fixed if this
                  *  code is uncommented.  The rebuildFile function should track the
                  *  difference and adjust the Loop Start Offset accordingly.
-                 * 
+                 *                                
+                case INT_VERSION_0150:
                 case INT_VERSION_0151:
                 case INT_VERSION_0160:
                     headerSize = Math.Min(0x80,
