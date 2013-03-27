@@ -25,6 +25,7 @@ namespace VGMToolbox.format
         public const ushort VersionDsf = 0x12;
         public const ushort VersionGsf = 0x22;
         public const ushort VersionMdsf = 0x13;
+        public const ushort VersionNcsf = 0x25;
         public const ushort VersionPsf1 = 0x01;
         public const ushort VersionPsf2 = 0x02;
         public const ushort VersionQsf = 0x41;
@@ -477,6 +478,7 @@ namespace VGMToolbox.format
             this.formatHash.Add((ushort)0x22, "GSF");
             this.formatHash.Add((ushort)0x23, "SNSF");
             this.formatHash.Add((ushort)0x24, "2SF");
+            this.formatHash.Add((ushort)0x25, "NCSF");
             this.formatHash.Add((ushort)0x41, "QSF");
         }
 

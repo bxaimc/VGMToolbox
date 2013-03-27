@@ -800,7 +800,7 @@ namespace VGMToolbox
             ssf_RootNode.NodeFont = this.treeviewBoldFont;
             ssf_RootNode.Tag = nodeTag;
             ssf_RootNode.Nodes.Add(xsf_SsfMakeFENode);
-            ssf_RootNode.Nodes.Add(xsf_AdvancedSsfMakeFENode);
+            //ssf_RootNode.Nodes.Add(xsf_AdvancedSsfMakeFENode);
             ssf_RootNode.Nodes.Add(xsf_SsfSeqTonExtFENode);            
             xsf_RootNode.Nodes.Add(ssf_RootNode);
 
