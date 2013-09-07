@@ -81,7 +81,7 @@ namespace VGMToolbox.tools.extract
 
 
                             // calculate file size
-                            fileSize = (dataOffset - offset) + (blockCount * blockSize);
+                            fileSize = dataOffset + (blockCount * blockSize);
 
                             // extract file
                             outputFileName = String.Format("{0}_{1}.hca", Path.GetFileNameWithoutExtension(pPath), fileCount.ToString("X8"));
