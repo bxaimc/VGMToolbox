@@ -989,6 +989,16 @@ namespace VGMToolbox
             nodeTag.FormClass = extAdxForm.GetType().Name;
             ext_ExtractAdxNode.Tag = nodeTag;
 
+            // ExtractHCaForm
+            TreeNode ext_ExtractHcaNode = new TreeNode("CRI HCA Extractor");
+
+            ExtractHcaForm extHcaForm = new ExtractHcaForm(ext_ExtractHcaNode);
+            this.splitContainer1.Panel2.Controls.Add(extHcaForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = extHcaForm.GetType().Name;
+            ext_ExtractHcaNode.Tag = nodeTag;
+
             ///////////////////
             // OGG Extractor
             ///////////////////
@@ -1058,6 +1068,7 @@ namespace VGMToolbox
             ext_RootNode.Nodes.Add(ext_WiiNode);
 
             ext_StreamsNode.Nodes.Add(ext_ExtractAdxNode);
+            ext_StreamsNode.Nodes.Add(ext_ExtractHcaNode);
             ext_StreamsNode.Nodes.Add(ext_ExtractCdxaNode);
             ext_StreamsNode.Nodes.Add(ext_ExtractOggNode);
             ext_StreamsNode.Nodes.Add(ext_SonyAdpcmNode);

@@ -448,6 +448,69 @@ namespace VGMToolbox.util
         }
 
         /// <summary>
+        /// Search for bytes string within file offset [startingOffset - maxOffset].
+        /// </summary>
+        /// <param name="stream">Stream to search for bytes.</param>
+        /// <param name="startingOffset">Offset to begin searching at.</param>
+        /// <param name="maxOffset">Maximum offset to include in search.</param>
+        /// <param name="searchBytes">Bytes to search for.</param>
+        /// <param name="returnStreamToIncomingPosition">Return stream to incoming position.</param>
+        /// <returns></returns>
+        public static long GetNextOffsetWithLimit(Stream stream, long startingOffset,
+            long maxOffset, byte[] searchBytes, bool returnStreamToIncomingPosition)
+        {
+            long initialStreamPosition = 0;
+
+            if (returnStreamToIncomingPosition)
+            {
+                initialStreamPosition = stream.Position;
+            }
+
+            bool itemFound = false;
+            long absoluteOffset = startingOffset;
+            long relativeOffset;
+            byte[] checkBytes = new byte[Constants.FileReadChunkSize];
+            byte[] compareBytes;
+
+            long ret = -1;
+
+            while (!itemFound && (absoluteOffset < maxOffset))
+            {
+                stream.Position = absoluteOffset;
+                stream.Read(checkBytes, 0, Constants.FileReadChunkSize);
+                relativeOffset = 0;
+
+                while (!itemFound && (relativeOffset < Constants.FileReadChunkSize))
+                {
+                    if ((relativeOffset + searchBytes.Length) < checkBytes.Length)
+                    {
+                        compareBytes = new byte[searchBytes.Length];
+                        Array.Copy(checkBytes, relativeOffset, compareBytes, 0, searchBytes.Length);
+
+                        if (CompareSegment(compareBytes, 0, searchBytes))
+                        {
+                            itemFound = true;
+                            ret = absoluteOffset + relativeOffset;
+                            break;
+                        }
+                    }
+
+                    relativeOffset++;
+                }
+
+                absoluteOffset += Constants.FileReadChunkSize - searchBytes.Length;
+            }
+
+            // return stream to incoming position
+            if (returnStreamToIncomingPosition)
+            {
+                stream.Position = initialStreamPosition;
+            }
+
+            return ret;
+        }
+
+        /// <summary>
         /// Get the offset of the first instance of pSearchBytes after the input offset.
         /// </summary>
         /// <param name="bufferToSearch">Byte array to search.</param>
