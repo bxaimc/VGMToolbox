@@ -115,6 +115,7 @@ namespace VGMToolbox.forms.xsf
                         this.tbGenre.Text = this.vgmData.GetGenreTag();
                         this.tbYear.Text = this.vgmData.GetYearTag();
                         this.tbXsfBy.Text = this.vgmData.GetXsfByTag();
+                        this.tbTagger.Text = this.vgmData.GetTaggerTag();                         
 
                         if (this.cbGenerateTitleFromFilename.Checked)
                         {
@@ -205,6 +206,7 @@ namespace VGMToolbox.forms.xsf
             xtUpdateStruct.CommentTag = this.tbComments.Text;
             xtUpdateStruct.CopyrightTag = this.tbCopyright.Text;
             xtUpdateStruct.XsfByTag = this.tbXsfBy.Text;
+            xtUpdateStruct.TaggerTag = this.tbTagger.Text;
             xtUpdateStruct.VolumeTag = this.tbVolume.Text;
             xtUpdateStruct.LengthTag = this.tbLength.Text;
             xtUpdateStruct.FadeTag = this.tbFade.Text;

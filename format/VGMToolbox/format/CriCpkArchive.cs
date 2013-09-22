@@ -6,6 +6,9 @@ namespace VGMToolbox.format
 {
     public class CriCpkArchive
     {
-        public static readonly byte[] CPK_SIGNATURE = new byte[] { 0x43, 0x50, 0x4B, 0x20 };    
+        public static readonly byte[] CPK_SIGNATURE = new byte[] { 0x43, 0x50, 0x4B, 0x20 };
+        
+
+
     }
 }

@@ -30,6 +30,7 @@ namespace VGMToolbox.tools.xsf
             public string CommentTag;
             public string CopyrightTag;
             public string XsfByTag;
+            public string TaggerTag;
             public string VolumeTag;
             public string LengthTag;
             public string FadeTag;
@@ -81,6 +82,8 @@ namespace VGMToolbox.tools.xsf
                 updateXsfTag(xts, xsfTagUpdaterStruct.CopyrightTag, xsfTagUpdaterStruct.RemoveEmptyTags, xsfTagUpdaterStruct.AddToBatchFile);
                 xts = new XsfTagSetter(vgmData.SetXsfByTag);
                 updateXsfTag(xts, xsfTagUpdaterStruct.XsfByTag, xsfTagUpdaterStruct.RemoveEmptyTags, xsfTagUpdaterStruct.AddToBatchFile);
+                xts = new XsfTagSetter(vgmData.SetTaggerTag);
+                updateXsfTag(xts, xsfTagUpdaterStruct.TaggerTag, xsfTagUpdaterStruct.RemoveEmptyTags, xsfTagUpdaterStruct.AddToBatchFile);
                 xts = new XsfTagSetter(vgmData.SetSystemTag);
                 updateXsfTag(xts, xsfTagUpdaterStruct.SystemTag, xsfTagUpdaterStruct.RemoveEmptyTags, xsfTagUpdaterStruct.AddToBatchFile);
 

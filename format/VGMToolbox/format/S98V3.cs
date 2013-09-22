@@ -215,6 +215,7 @@ namespace VGMToolbox.format
         public string GetFadeTag() { return GetSimpleTag("fade"); }
         public string GetXsfByTag() { return GetSimpleTag("s98by"); }
         public string GetSystemTag() { return GetSimpleTag("system"); }
+        public string GetTaggerTag() { return GetSimpleTag("tagger"); }
 
         private void SetSimpleTag(string pKey, string pNewValue, bool AddActionToBatchFile)
         {            
@@ -243,6 +244,7 @@ namespace VGMToolbox.format
         public void SetFadeTag(string pNewValue, bool AddActionToBatchFile) { SetSimpleTag("fade", pNewValue, AddActionToBatchFile); }
         public void SetXsfByTag(string pNewValue, bool AddActionToBatchFile) { SetSimpleTag("s98by", pNewValue, AddActionToBatchFile); }
         public void SetSystemTag(string pNewValue, bool AddActionToBatchFile) { SetSimpleTag("system", pNewValue, AddActionToBatchFile); }
+        public void SetTaggerTag(string pNewValue, bool AddActionToBatchFile) { SetSimpleTag("tagger", pNewValue, AddActionToBatchFile); }
 
         public void UpdateTags()
         {

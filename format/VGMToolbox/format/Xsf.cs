@@ -593,6 +593,7 @@ namespace VGMToolbox.format
         public string GetLengthTag() { return this.GetSimpleTag("length"); }
         public string GetFadeTag() { return this.GetSimpleTag("fade"); }
         public string GetSystemTag() { return this.GetSimpleTag("system"); }
+        public string GetTaggerTag() { return this.GetSimpleTag("tagger"); }
         public string GetXsfByTag() 
         {
             string format = this.GetFormat();
@@ -695,7 +696,12 @@ namespace VGMToolbox.format
         {
             this.SetSimpleTag("system", pNewValue, AddActionToBatchFile);
         }
-        
+
+        public void SetTaggerTag(string pNewValue, bool AddActionToBatchFile)
+        {
+            this.SetSimpleTag("tagger", pNewValue, AddActionToBatchFile);
+        }
+
         public void SetXsfByTag(string pNewValue, bool AddActionToBatchFile) 
         { 
             string format = this.GetFormat();
