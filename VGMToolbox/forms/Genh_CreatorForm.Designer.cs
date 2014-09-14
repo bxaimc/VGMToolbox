@@ -43,10 +43,11 @@
             this.grpOptions = new System.Windows.Forms.GroupBox();
             this.pnlOptions = new System.Windows.Forms.Panel();
             this.grpCoefOptions = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.cbCoefficientType = new System.Windows.Forms.ComboBox();
             this.lblRightCoef = new System.Windows.Forms.Label();
             this.tbLeftCoef = new System.Windows.Forms.TextBox();
             this.lblLeftCoef = new System.Windows.Forms.Label();
-            this.cbCapcomHack = new System.Windows.Forms.CheckBox();
             this.tbRightCoef = new System.Windows.Forms.TextBox();
             this.grpLoopOptions = new System.Windows.Forms.GroupBox();
             this.cbLoopEndBytesToSamples = new System.Windows.Forms.CheckBox();
@@ -96,31 +97,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 460);
-            this.pnlLabels.Size = new System.Drawing.Size(843, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 498);
+            this.pnlLabels.Size = new System.Drawing.Size(973, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(843, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(973, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 383);
-            this.tbOutput.Size = new System.Drawing.Size(843, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 421);
+            this.tbOutput.Size = new System.Drawing.Size(973, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 363);
-            this.pnlButtons.Size = new System.Drawing.Size(843, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 401);
+            this.pnlButtons.Size = new System.Drawing.Size(973, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(783, 0);
+            this.btnCancel.Location = new System.Drawing.Point(913, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(723, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(853, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpFormat
@@ -129,7 +130,7 @@
             this.grpFormat.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFormat.Location = new System.Drawing.Point(0, 0);
             this.grpFormat.Name = "grpFormat";
-            this.grpFormat.Size = new System.Drawing.Size(820, 41);
+            this.grpFormat.Size = new System.Drawing.Size(950, 41);
             this.grpFormat.TabIndex = 7;
             this.grpFormat.TabStop = false;
             this.grpFormat.Text = "Format";
@@ -141,9 +142,9 @@
             this.comboFormat.Name = "comboFormat";
             this.comboFormat.Size = new System.Drawing.Size(527, 21);
             this.comboFormat.TabIndex = 0;
-            this.comboFormat.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.comboFormat_KeyPress);
             this.comboFormat.SelectedValueChanged += new System.EventHandler(this.comboFormat_SelectedValueChanged);
             this.comboFormat.KeyDown += new System.Windows.Forms.KeyEventHandler(this.comboFormat_KeyDown);
+            this.comboFormat.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.comboFormat_KeyPress);
             // 
             // cbHeaderOnly
             // 
@@ -197,19 +198,19 @@
             this.refreshFileListToolStripMenuItem,
             this.clearFileListToolStripMenuItem});
             this.contextMenuRefresh.Name = "contextMenuRefresh";
-            this.contextMenuRefresh.Size = new System.Drawing.Size(151, 48);
+            this.contextMenuRefresh.Size = new System.Drawing.Size(156, 48);
             // 
             // refreshFileListToolStripMenuItem
             // 
             this.refreshFileListToolStripMenuItem.Name = "refreshFileListToolStripMenuItem";
-            this.refreshFileListToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.refreshFileListToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.refreshFileListToolStripMenuItem.Text = "Refresh File List";
             this.refreshFileListToolStripMenuItem.Click += new System.EventHandler(this.refreshFileListToolStripMenuItem_Click);
             // 
             // clearFileListToolStripMenuItem
             // 
             this.clearFileListToolStripMenuItem.Name = "clearFileListToolStripMenuItem";
-            this.clearFileListToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.clearFileListToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.clearFileListToolStripMenuItem.Text = "Clear File List";
             this.clearFileListToolStripMenuItem.Click += new System.EventHandler(this.clearFileListToolStripMenuItem_Click);
             // 
@@ -218,12 +219,12 @@
             this.contextMenuBytesToSamples.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.bytesToSamplesToolStripMenuItem});
             this.contextMenuBytesToSamples.Name = "contextMenuBytesToSamples";
-            this.contextMenuBytesToSamples.Size = new System.Drawing.Size(157, 26);
+            this.contextMenuBytesToSamples.Size = new System.Drawing.Size(164, 26);
             // 
             // bytesToSamplesToolStripMenuItem
             // 
             this.bytesToSamplesToolStripMenuItem.Name = "bytesToSamplesToolStripMenuItem";
-            this.bytesToSamplesToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.bytesToSamplesToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.bytesToSamplesToolStripMenuItem.Text = "Bytes to Samples";
             this.bytesToSamplesToolStripMenuItem.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bytesToSamplesToolStripMenuItem_MouseUp);
             // 
@@ -233,7 +234,7 @@
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpOptions.Location = new System.Drawing.Point(0, 178);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(843, 185);
+            this.grpOptions.Size = new System.Drawing.Size(973, 223);
             this.grpOptions.TabIndex = 12;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
@@ -249,23 +250,41 @@
             this.pnlOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlOptions.Location = new System.Drawing.Point(3, 16);
             this.pnlOptions.Name = "pnlOptions";
-            this.pnlOptions.Size = new System.Drawing.Size(837, 166);
+            this.pnlOptions.Size = new System.Drawing.Size(967, 204);
             this.pnlOptions.TabIndex = 0;
             // 
             // grpCoefOptions
             // 
+            this.grpCoefOptions.Controls.Add(this.label1);
+            this.grpCoefOptions.Controls.Add(this.cbCoefficientType);
             this.grpCoefOptions.Controls.Add(this.lblRightCoef);
             this.grpCoefOptions.Controls.Add(this.tbLeftCoef);
             this.grpCoefOptions.Controls.Add(this.lblLeftCoef);
-            this.grpCoefOptions.Controls.Add(this.cbCapcomHack);
             this.grpCoefOptions.Controls.Add(this.tbRightCoef);
             this.grpCoefOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpCoefOptions.Location = new System.Drawing.Point(0, 281);
             this.grpCoefOptions.Name = "grpCoefOptions";
-            this.grpCoefOptions.Size = new System.Drawing.Size(820, 67);
+            this.grpCoefOptions.Size = new System.Drawing.Size(950, 67);
             this.grpCoefOptions.TabIndex = 37;
             this.grpCoefOptions.TabStop = false;
             this.grpCoefOptions.Text = "Coefficients";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(251, 22);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(84, 13);
+            this.label1.TabIndex = 20;
+            this.label1.Text = "Coefficient Type";
+            // 
+            // cbCoefficientType
+            // 
+            this.cbCoefficientType.FormattingEnabled = true;
+            this.cbCoefficientType.Location = new System.Drawing.Point(341, 18);
+            this.cbCoefficientType.Name = "cbCoefficientType";
+            this.cbCoefficientType.Size = new System.Drawing.Size(121, 21);
+            this.cbCoefficientType.TabIndex = 19;
             // 
             // lblRightCoef
             // 
@@ -291,16 +310,6 @@
             this.lblLeftCoef.Size = new System.Drawing.Size(126, 13);
             this.lblLeftCoef.TabIndex = 17;
             this.lblLeftCoef.Text = "Coef Offset: Left Channel";
-            // 
-            // cbCapcomHack
-            // 
-            this.cbCapcomHack.AutoSize = true;
-            this.cbCapcomHack.Location = new System.Drawing.Point(251, 47);
-            this.cbCapcomHack.Name = "cbCapcomHack";
-            this.cbCapcomHack.Size = new System.Drawing.Size(94, 17);
-            this.cbCapcomHack.TabIndex = 18;
-            this.cbCapcomHack.Text = "Capcom Hack";
-            this.cbCapcomHack.UseVisualStyleBackColor = true;
             // 
             // tbRightCoef
             // 
@@ -328,7 +337,7 @@
             this.grpLoopOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpLoopOptions.Location = new System.Drawing.Point(0, 152);
             this.grpLoopOptions.Name = "grpLoopOptions";
-            this.grpLoopOptions.Size = new System.Drawing.Size(820, 129);
+            this.grpLoopOptions.Size = new System.Drawing.Size(950, 129);
             this.grpLoopOptions.TabIndex = 36;
             this.grpLoopOptions.TabStop = false;
             this.grpLoopOptions.Text = "Looping";
@@ -490,7 +499,7 @@
             this.grpGeneralOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpGeneralOptions.Location = new System.Drawing.Point(0, 41);
             this.grpGeneralOptions.Name = "grpGeneralOptions";
-            this.grpGeneralOptions.Size = new System.Drawing.Size(820, 111);
+            this.grpGeneralOptions.Size = new System.Drawing.Size(950, 111);
             this.grpGeneralOptions.TabIndex = 35;
             this.grpGeneralOptions.TabStop = false;
             this.grpGeneralOptions.Text = "General";
@@ -604,7 +613,7 @@
             this.grpFunction.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFunction.Location = new System.Drawing.Point(0, 23);
             this.grpFunction.Name = "grpFunction";
-            this.grpFunction.Size = new System.Drawing.Size(843, 155);
+            this.grpFunction.Size = new System.Drawing.Size(973, 155);
             this.grpFunction.TabIndex = 13;
             this.grpFunction.TabStop = false;
             this.grpFunction.Text = "Functions";
@@ -633,8 +642,8 @@
             this.tbSourceDirectory.Name = "tbSourceDirectory";
             this.tbSourceDirectory.Size = new System.Drawing.Size(350, 20);
             this.tbSourceDirectory.TabIndex = 13;
-            this.tbSourceDirectory.TextChanged += new System.EventHandler(this.tbSourceDirectory_TextChanged);
             this.tbSourceDirectory.Click += new System.EventHandler(this.tbSourceDirectory_Click);
+            this.tbSourceDirectory.TextChanged += new System.EventHandler(this.tbSourceDirectory_TextChanged);
             // 
             // lbFiles
             // 
@@ -646,10 +655,10 @@
             this.lbFiles.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.lbFiles.Size = new System.Drawing.Size(388, 82);
             this.lbFiles.TabIndex = 12;
-            this.lbFiles.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lbFiles_MouseUp);
             this.lbFiles.SelectedIndexChanged += new System.EventHandler(this.lbFiles_SelectedIndexChanged);
             this.lbFiles.DragDrop += new System.Windows.Forms.DragEventHandler(this.lbFiles_DragDrop);
             this.lbFiles.DragEnter += new System.Windows.Forms.DragEventHandler(this.lbFiles_DragEnter);
+            this.lbFiles.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lbFiles_MouseUp);
             // 
             // btnBrowseDirectory
             // 
@@ -665,7 +674,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(843, 501);
+            this.ClientSize = new System.Drawing.Size(973, 539);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpFunction);
             this.Name = "Genh_CreatorForm";
@@ -731,7 +740,6 @@
         private System.Windows.Forms.TextBox tbLoopEnd;
         private System.Windows.Forms.ComboBox cbHeaderSkip;
         private System.Windows.Forms.Label lblLoopEnd;
-        private System.Windows.Forms.CheckBox cbCapcomHack;
         private System.Windows.Forms.TextBox tbRightCoef;
         private System.Windows.Forms.Label lblLeftCoef;
         private System.Windows.Forms.Label lblRightCoef;
@@ -754,5 +762,7 @@
         private System.Windows.Forms.CheckBox cbLoopEndBytesToSamples;
         private System.Windows.Forms.CheckBox cbLoopStartBytesToSamples;
         private System.Windows.Forms.ToolStripMenuItem clearFileListToolStripMenuItem;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox cbCoefficientType;
     }
 }

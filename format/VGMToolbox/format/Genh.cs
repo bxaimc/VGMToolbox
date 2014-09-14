@@ -59,8 +59,8 @@ namespace VGMToolbox.format
         private const int DSP_INTERLEAVE_OFFSET = 0x2C;
         private const int DSP_INTERLEAVE_LENGTH = 0x04;
 
-        private const int CAPCOM_HACK_FLAG_OFFSET = 0x30;
-        private const int CAPCOM_HACK_FLAG_LENGTH = 0x01;
+        private const int COEFFICIENT_TYPE_OFFSET = 0x30;
+        private const int COEFFICIENT_TYPE_LENGTH = 0x01;
 
         private const int SPLIT_COEF1_OFFSET = 0x34;
         private const int SPLIT_COEF1_LENGTH = 0x04;
@@ -112,7 +112,7 @@ namespace VGMToolbox.format
         public byte[] LeftCoef { get; set; }
         public byte[] RightCoef { get; set; }
         public byte[] DspInterleave { get; set; }
-        public byte[] CapcomHackFlag { get; set; }
+        public byte[] CoefficientType { get; set; }
         public byte[] SplitCoef1 { get; set; }
         public byte[] SplitCoef2 { get; set; }
 
@@ -139,7 +139,7 @@ namespace VGMToolbox.format
             this.LeftCoef = ParseFile.ParseSimpleOffset(pStream, LEFT_COEF_OFFSET, LEFT_COEF_LENGTH);
             this.RightCoef = ParseFile.ParseSimpleOffset(pStream, RIGHT_COEF_OFFSET, RIGHT_COEF_LENGTH);
             this.DspInterleave  = ParseFile.ParseSimpleOffset(pStream, DSP_INTERLEAVE_OFFSET, DSP_INTERLEAVE_LENGTH);
-            this.CapcomHackFlag  = ParseFile.ParseSimpleOffset(pStream, CAPCOM_HACK_FLAG_OFFSET, CAPCOM_HACK_FLAG_LENGTH);
+            this.CoefficientType = ParseFile.ParseSimpleOffset(pStream, COEFFICIENT_TYPE_OFFSET, COEFFICIENT_TYPE_LENGTH);
             this.SplitCoef1  = ParseFile.ParseSimpleOffset(pStream, SPLIT_COEF1_OFFSET, SPLIT_COEF1_LENGTH);
             this.SplitCoef2 = ParseFile.ParseSimpleOffset(pStream, SPLIT_COEF2_OFFSET, SPLIT_COEF2_LENGTH);
 

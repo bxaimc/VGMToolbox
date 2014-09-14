@@ -53,7 +53,7 @@ namespace VGMToolbox.forms
             this.cbFindLoop.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_CheckBoxFindLoop"];
             this.lblRightCoef.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_LblRightCoef"];
             this.lblLeftCoef.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_LblLeftCoef"];
-            this.cbCapcomHack.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_CheckBoxCapcomHack"];
+            //this.cbCapcomHack.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_CheckBoxCapcomHack"];
             this.cbHeaderOnly.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_CheckBoxHeaderOnly"];
 
             this.loadFormats();
@@ -61,6 +61,7 @@ namespace VGMToolbox.forms
             this.loadInterleave();
             this.loadChannels();
             this.loadFrequencies();
+            this.loadCoefficientTypes();
 
             rbCreate.Checked = true;
             this.updateFormForTask();
@@ -86,6 +87,14 @@ namespace VGMToolbox.forms
             this.comboFormat.DisplayMember = "GenhFormatDescription";
             this.comboFormat.ValueMember = "GenhFormatId";
         }
+
+        private void loadCoefficientTypes()
+        {
+            this.cbCoefficientType.DataSource = SqlLiteUtil.GetSimpleDataTable(DB_PATH, "CoefficientTypes", "CoefficientTypeId");
+            this.cbCoefficientType.DisplayMember = "CoefficientDescription";
+            this.cbCoefficientType.ValueMember = "CoefficientTypeId";
+        }
+
         private void loadHeaderSkip()
         {
             cbHeaderSkip.Items.Add("0");
@@ -174,7 +183,8 @@ namespace VGMToolbox.forms
                 tbRightCoef.Show();
                 lblLeftCoef.Show();
                 tbLeftCoef.Show();
-                cbCapcomHack.Show();
+                //cbCapcomHack.Show();
+                cbCoefficientType.Show();
             }
             else
             {
@@ -183,7 +193,8 @@ namespace VGMToolbox.forms
                 tbRightCoef.Hide();
                 lblLeftCoef.Hide();
                 tbLeftCoef.Hide();
-                cbCapcomHack.Hide();
+                //cbCapcomHack.Hide();
+                cbCoefficientType.Show();
             }
 
             this.showLoopPointsForSelectedFile();
@@ -304,13 +315,15 @@ namespace VGMToolbox.forms
             genhStruct.UseLoopEndOffset = this.cbUseLoopEndOffset.Checked;
             genhStruct.LoopEndOffsetDescription = this.loopEndOffsetDescription.GetOffsetValues();
             genhStruct.DoLoopEndBytesToSamples = this.cbLoopEndBytesToSamples.Checked;
-        
+
+            drv = (DataRowView)this.cbCoefficientType.SelectedItem;
+
             genhStruct.NoLoops = this.cbNoLoops.Checked;
             genhStruct.UseFileEnd = this.cbLoopFileEnd.Checked;
             genhStruct.FindLoop = this.cbFindLoop.Checked;
             genhStruct.CoefRightChannel = this.tbRightCoef.Text;
             genhStruct.CoefLeftChannel = this.tbLeftCoef.Text;
-            genhStruct.CapcomHack = this.cbCapcomHack.Checked;
+            genhStruct.CoefficientType = Convert.ToByte(drv.Row.ItemArray[0]);
             genhStruct.OutputHeaderOnly = this.cbHeaderOnly.Checked;
 
             genhStruct.SourcePaths = new string[this.lbFiles.SelectedIndices.Count];
@@ -342,7 +355,7 @@ namespace VGMToolbox.forms
 
             this.tbRightCoef.Text = genhStruct.CoefRightChannel;
             this.tbLeftCoef.Text = genhStruct.CoefLeftChannel;
-            this.cbCapcomHack.Checked = genhStruct.CapcomHack;
+            this.cbCoefficientType.SelectedValue = genhStruct.CoefficientType.ToString();
         }
 
         private void btnDoTask_Click(object sender, EventArgs e)

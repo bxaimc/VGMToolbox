@@ -36,7 +36,7 @@ namespace VGMToolbox.tools.genh
         public bool FindLoop { set; get; }
         public string CoefRightChannel { set; get; }
         public string CoefLeftChannel { set; get; }
-        public bool CapcomHack { set; get; }
+        public byte CoefficientType { set; get; }
         public bool OutputHeaderOnly { set; get; }
         public string[] SourcePaths { set; get; }
         public bool DoCreation { set; get; }
@@ -71,7 +71,7 @@ namespace VGMToolbox.tools.genh
             genhCreationStruct.FindLoop = this.FindLoop;
             genhCreationStruct.CoefRightChannel = this.CoefRightChannel;
             genhCreationStruct.CoefLeftChannel = this.CoefLeftChannel;
-            genhCreationStruct.CapcomHack = this.CapcomHack;
+            genhCreationStruct.CoefficientType = this.CoefficientType;
             genhCreationStruct.OutputHeaderOnly = this.OutputHeaderOnly;
             genhCreationStruct.SourcePaths = this.SourcePaths;
 

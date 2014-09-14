@@ -38,7 +38,7 @@ namespace VGMToolbox.format.util
 
         public string CoefRightChannel;
         public string CoefLeftChannel;
-        public bool CapcomHack;
+        public byte CoefficientType;
 
         public bool OutputHeaderOnly;
         public string[] SourcePaths;
@@ -73,7 +73,8 @@ namespace VGMToolbox.format.util
         {
             string ret = String.Empty;
             System.Text.Encoding enc = System.Text.Encoding.ASCII;
-            
+            long testCoefficient;
+ 
             int dspInterleaveType =
                 GetDspInterleave(pGenhCreationStruct.Interleave, pGenhCreationStruct.Channels);
 
@@ -192,13 +193,15 @@ namespace VGMToolbox.format.util
 
                     if (VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.Format) == 12)
                     {
+                        //testCoefficient = VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.CoefLeftChannel) + Genh.GENH_HEADER_SIZE;
+                        
                         bw.Write((UInt32)(VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.CoefLeftChannel) + Genh.GENH_HEADER_SIZE));
                         bw.Write((UInt32)(VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.CoefRightChannel) + Genh.GENH_HEADER_SIZE));
                         bw.Write((UInt32)dspInterleaveType);
 
-                        if (pGenhCreationStruct.CapcomHack)
+                        if (pGenhCreationStruct.CoefficientType == 1 || pGenhCreationStruct.CoefficientType == 3) // split coefficients (aka Capcom Hack)
                         {
-                            bw.Write((UInt32)1);
+                            bw.Write((UInt32)pGenhCreationStruct.CoefficientType);
                             bw.Write((UInt32)(VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.CoefLeftChannel) + Genh.GENH_HEADER_SIZE + 0x10));
                             bw.Write((UInt32)(VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.CoefRightChannel) + Genh.GENH_HEADER_SIZE + 0x10));
                         }
@@ -614,9 +617,9 @@ namespace VGMToolbox.format.util
 
             if (formatValue == 12)
             {
-                gcStruct.CapcomHack = (genhItem.CapcomHackFlag[0] == 1);
+                gcStruct.CoefficientType = genhItem.CoefficientType[0];
 
-                if (gcStruct.CapcomHack)
+                if (gcStruct.CoefficientType == 1 || gcStruct.CoefficientType == 3) // Split Coefficients (aka Capcom Hack)
                 {
                     gcStruct.CoefRightChannel = "0x" + (BitConverter.ToUInt32(genhItem.RightCoef, 0) - Genh.GENH_HEADER_SIZE - 0x10).ToString("X4");
                     gcStruct.CoefLeftChannel = "0x" + (BitConverter.ToUInt32(genhItem.LeftCoef, 0) - Genh.GENH_HEADER_SIZE - 0x10).ToString("X4");
