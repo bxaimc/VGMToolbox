@@ -41,7 +41,7 @@ namespace VGMToolbox.tools.examine
             string searchString;
 
             foreach (string s in examineSearchForFileStruct.SearchStrings)
-            {                              
+            {                                              
                 if (examineSearchForFileStruct.CaseSensitive)
                 {
                     searchString = s;
@@ -59,25 +59,32 @@ namespace VGMToolbox.tools.examine
                     filePaths.AppendFormat("---= Search String: [{0}] =---{1}", s, Environment.NewLine);
                     filePaths.Append(pPath);
                     filePaths.Append(Environment.NewLine);
+
+                    // copy to destination folder
+                    File.Copy(pPath, Path.Combine(examineSearchForFileStruct.OutputFolder, Path.GetFileName(pPath)));
                 }
-
-                compressedFilePaths = CompressionUtil.GetFileList(pPath);
-                if (compressedFilePaths != null)
+                else // check to see if this is an archive
                 {
-                    foreach (string f in compressedFilePaths)
-                    {
-                        if ((examineSearchForFileStruct.CaseSensitive &&
-                            f.Contains(searchString)) ||
-                            (!examineSearchForFileStruct.CaseSensitive &&
-                            f.ToUpper().Contains(searchString)))
-                        {
-                            filePaths.AppendFormat("---= Search String: [{0}] =---{1}", s, Environment.NewLine);
-                            filePaths.AppendFormat("{0} ({1})", pPath, f);
-                            filePaths.Append(Environment.NewLine);
+                    compressedFilePaths = CompressionUtil.GetFileList(pPath);
 
-                            if (examineSearchForFileStruct.ExtractFile)
+                    // Extract if inside a compressed file
+                    if (compressedFilePaths != null)
+                    {
+                        foreach (string f in compressedFilePaths)
+                        {
+                            if ((examineSearchForFileStruct.CaseSensitive &&
+                                f.Contains(searchString)) ||
+                                (!examineSearchForFileStruct.CaseSensitive &&
+                                f.ToUpper().Contains(searchString)))
                             {
-                                CompressionUtil.ExtractFileFromArchive(pPath, f, examineSearchForFileStruct.OutputFolder);
+                                filePaths.AppendFormat("---= Search String: [{0}] =---{1}", s, Environment.NewLine);
+                                filePaths.AppendFormat("{0} ({1})", pPath, f);
+                                filePaths.Append(Environment.NewLine);
+
+                                if (examineSearchForFileStruct.ExtractFile)
+                                {
+                                    CompressionUtil.ExtractFileFromArchive(pPath, f, examineSearchForFileStruct.OutputFolder);
+                                }
                             }
                         }
                     }

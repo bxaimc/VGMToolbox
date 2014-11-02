@@ -84,7 +84,7 @@ namespace VGMToolbox.tools.hoot
                     HootRomCheckStruct newRom;
 
                     foreach (game g in hootGames.Items)
-                    {
+                    {                        
                         gameArchiveFileName = g.romlist.archive + ".zip";
 
                         gameNode = new TreeNode(String.Format("{0} ({1})]", gameArchiveFileName, g.name));                        
@@ -171,38 +171,52 @@ namespace VGMToolbox.tools.hoot
             string pSetArchiveName, bool pIncludeSubDirectories)
         {
             ArrayList archiveContents;
+            string[] setArchiveSplitParameters = {","};
+            string[] setArchiveNames = pSetArchiveName.Split(setArchiveSplitParameters, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (string path in pArchivePaths)
             {
                 if (Directory.Exists(path))
                 {
                     string[] archiveFiles;
+                    string archiveName;
 
-                    if (pIncludeSubDirectories)
+                    foreach (string splitArchiveName in setArchiveNames)
                     {
-                        archiveFiles = Directory.GetFiles(path, pSetArchiveName, SearchOption.AllDirectories);
-                    }
-                    else
-                    {
-                        archiveFiles = Directory.GetFiles(path, pSetArchiveName, SearchOption.TopDirectoryOnly);
-                    }
-
-                    if (archiveFiles.Length > 1)
-                    {
-                        this.progressStruct.Clear();
-                        this.progressStruct.GenericMessage = String.Format("WARNING: Multiple copies of {0} found, results may be inaccurate", pSetArchiveName);
-                        ReportProgress(this.progress, this.progressStruct);
-                    }
-                    
-                    foreach (string file in archiveFiles)
-                    {
-                        archiveContents = new ArrayList(CompressionUtil.GetUpperCaseFileList(file));
-
-                        for (int i = 0; i < pHootSet[pSetArchiveName].Length; i++)
+                        archiveName = splitArchiveName;
+                        
+                        // add .zip if needed for split archives
+                        if (!archiveName.EndsWith(".zip"))
                         {
-                            if (archiveContents.Contains(pHootSet[pSetArchiveName][i].RomName.Replace('/', Path.DirectorySeparatorChar).ToUpper()))
+                            archiveName = archiveName + ".zip";
+                        }
+                        
+                        if (pIncludeSubDirectories)
+                        {
+                            archiveFiles = Directory.GetFiles(path, archiveName, SearchOption.AllDirectories);
+                        }
+                        else
+                        {
+                            archiveFiles = Directory.GetFiles(path, archiveName, SearchOption.TopDirectoryOnly);
+                        }
+
+                        if (archiveFiles.Length > 1)
+                        {
+                            this.progressStruct.Clear();
+                            this.progressStruct.GenericMessage = String.Format("WARNING: Multiple copies of {0} found, results may be inaccurate", pSetArchiveName);
+                            ReportProgress(this.progress, this.progressStruct);
+                        }
+
+                        foreach (string file in archiveFiles)
+                        {
+                            archiveContents = new ArrayList(CompressionUtil.GetUpperCaseFileList(file));
+
+                            for (int i = 0; i < pHootSet[pSetArchiveName].Length; i++)
                             {
-                                pHootSet[pSetArchiveName][i].IsPresent = true;
+                                if (archiveContents.Contains(pHootSet[pSetArchiveName][i].RomName.Replace('/', Path.DirectorySeparatorChar).ToUpper()))
+                                {
+                                    pHootSet[pSetArchiveName][i].IsPresent = true;
+                                }
                             }
                         }
                     }

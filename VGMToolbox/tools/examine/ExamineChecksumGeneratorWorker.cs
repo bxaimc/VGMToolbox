@@ -72,15 +72,18 @@ namespace VGMToolbox.tools.examine
                     this.addChecksumToHash(checksumKey, pPath, true);
                 }
 
-                formatType = FormatUtil.getObjectType(fs);
-                if (formatType != null)
+                if (examineChecksumGeneratorStruct.DoVgmtChecksums)
                 {
-                    vgmData = (IFormat)Activator.CreateInstance(formatType);
-                    vgmData.Initialize(fs, pPath);
+                    formatType = FormatUtil.getObjectType(fs);
+                    if (formatType != null)
+                    {
+                        vgmData = (IFormat)Activator.CreateInstance(formatType);
+                        vgmData.Initialize(fs, pPath);
+                    }
                 }
             }
 
-            if ((vgmData != null) && (examineChecksumGeneratorStruct.DoVgmtChecksums))
+            if (vgmData != null)
             {
                 Crc32 crc32Generator = new Crc32();
 
