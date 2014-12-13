@@ -347,41 +347,43 @@ namespace VGMToolbox.format.sdat
             string fileName = String.Empty;
             string outputDirectory = null;
 
-            int i = 0;
-            foreach (SdatInfoSection.SdatInfoStrm s in infoSection.SdatInfoStrms)
+            if (infoSection.SdatInfoStrms != null)
             {
-
-                if (s.fileId != null)
+                int i = 0;
+                foreach (SdatInfoSection.SdatInfoStrm s in infoSection.SdatInfoStrms)
                 {
-                    // get file information
-                    int fileId = BitConverter.ToInt16(s.fileId, 0);
-                    int fileOffset = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
-                    int fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
 
-                    // get filename, if exists                                
-                    if ((symbSection != null) && (i < symbSection.SymbStrmFileNames.Length) &&
-                        (!String.IsNullOrEmpty(symbSection.SymbStrmFileNames[i])))
+                    if (s.fileId != null)
                     {
-                        fileName = symbSection.SymbStrmFileNames[i] + ".strm";
-                    }
-                    else
-                    {
-                        fileName = String.Format("STRM{0}.strm", fileId.ToString("X4"));
+                        // get file information
+                        int fileId = BitConverter.ToInt16(s.fileId, 0);
+                        int fileOffset = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
+                        int fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
+
+                        // get filename, if exists                                
+                        if ((symbSection != null) && (i < symbSection.SymbStrmFileNames.Length) &&
+                            (!String.IsNullOrEmpty(symbSection.SymbStrmFileNames[i])))
+                        {
+                            fileName = symbSection.SymbStrmFileNames[i] + ".strm";
+                        }
+                        else
+                        {
+                            fileName = String.Format("STRM{0}.strm", fileId.ToString("X4"));
+                        }
+
+                        outputDirectory = Path.Combine(pOutputPath, "Strm");
+                        if (!Directory.Exists(outputDirectory))
+                        {
+                            Directory.CreateDirectory(outputDirectory);
+                        }
+                        fileName = Path.Combine(outputDirectory, fileName);
+
+                        ParseFile.ExtractChunkToFile(pStream, fileOffset, fileSize, fileName);
                     }
 
-                    outputDirectory = Path.Combine(pOutputPath, "Strm");
-                    if (!Directory.Exists(outputDirectory))
-                    {
-                        Directory.CreateDirectory(outputDirectory);
-                    }
-                    fileName = Path.Combine(outputDirectory, fileName);
-
-                    ParseFile.ExtractChunkToFile(pStream, fileOffset, fileSize, fileName);
+                    i++;
                 }
-
-                i++;
             }
-
             return outputDirectory;
         }
         public string ExtractSeqArc(Stream pStream, string pOutputPath)
@@ -473,41 +475,43 @@ namespace VGMToolbox.format.sdat
             string fileName = String.Empty;
             string outputDirectory = null;
 
-            int i = 0;
-            foreach (SdatInfoSection.SdatInfoWaveArc s in infoSection.SdatInfoWaveArcs)
+            if (infoSection.SdatInfoWaveArcs != null)
             {
-
-                if (s.fileId != null)
+                int i = 0;
+                foreach (SdatInfoSection.SdatInfoWaveArc s in infoSection.SdatInfoWaveArcs)
                 {
-                    // get file information
-                    int fileId = BitConverter.ToInt16(s.fileId, 0);
-                    int fileOffset = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
-                    int fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
 
-                    // get filename, if exists                                
-                    if ((symbSection != null) && (i < symbSection.SymbWaveArcFileNames.Length) &&
-                        (!String.IsNullOrEmpty(symbSection.SymbWaveArcFileNames[i])))
+                    if (s.fileId != null)
                     {
-                        fileName = symbSection.SymbWaveArcFileNames[i] + ".swar";
-                    }
-                    else
-                    {
-                        fileName = String.Format("SWAR{0}.swar", fileId.ToString("X4"));
+                        // get file information
+                        int fileId = BitConverter.ToInt16(s.fileId, 0);
+                        int fileOffset = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
+                        int fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
+
+                        // get filename, if exists                                
+                        if ((symbSection != null) && (i < symbSection.SymbWaveArcFileNames.Length) &&
+                            (!String.IsNullOrEmpty(symbSection.SymbWaveArcFileNames[i])))
+                        {
+                            fileName = symbSection.SymbWaveArcFileNames[i] + ".swar";
+                        }
+                        else
+                        {
+                            fileName = String.Format("SWAR{0}.swar", fileId.ToString("X4"));
+                        }
+
+                        outputDirectory = Path.Combine(pOutputPath, "WaveArc");
+                        if (!Directory.Exists(outputDirectory))
+                        {
+                            Directory.CreateDirectory(outputDirectory);
+                        }
+                        fileName = Path.Combine(outputDirectory, fileName);
+
+                        ParseFile.ExtractChunkToFile(pStream, fileOffset, fileSize, fileName);
                     }
 
-                    outputDirectory = Path.Combine(pOutputPath, "WaveArc");
-                    if (!Directory.Exists(outputDirectory))
-                    {
-                        Directory.CreateDirectory(outputDirectory);
-                    }
-                    fileName = Path.Combine(outputDirectory, fileName);
-
-                    ParseFile.ExtractChunkToFile(pStream, fileOffset, fileSize, fileName);
+                    i++;
                 }
-
-                i++;
             }
-
             return outputDirectory;
         }
 
@@ -538,17 +542,20 @@ namespace VGMToolbox.format.sdat
         }
 
         private void ZeroOutStrms()
-        {            
-            foreach (SdatInfoSection.SdatInfoStrm s in infoSection.SdatInfoStrms)
+        {
+            if (infoSection.SdatInfoStrms != null)
             {
-                if (s.fileId != null)
+                foreach (SdatInfoSection.SdatInfoStrm s in infoSection.SdatInfoStrms)
                 {
-                    // get file information
-                    int fileId = BitConverter.ToInt16(s.fileId, 0);
-                    int fileOffset = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
-                    int fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
+                    if (s.fileId != null)
+                    {
+                        // get file information
+                        int fileId = BitConverter.ToInt16(s.fileId, 0);
+                        int fileOffset = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nOffset, 0);
+                        int fileSize = BitConverter.ToInt32(fatSection.SdatFatRecs[fileId].nSize, 0);
 
-                    FileUtil.ZeroOutFileChunk(this.filePath, fileOffset, fileSize);   
+                        FileUtil.ZeroOutFileChunk(this.filePath, fileOffset, fileSize);
+                    }
                 }
             }
         }
@@ -725,14 +732,18 @@ namespace VGMToolbox.format.sdat
             int fileId;
 
             int i = 0;
-            foreach (SdatInfoSection.SdatInfoSseq s in infoSection.SdatInfoSseqs)
-            {
-                if ((s.fileId != null) && pSeqeuncesAllowed.Contains(i))
-                {
-                    sseqIsUsed[i] = true;
-                }
 
-                i++;
+            if (infoSection.SdatInfoSseqs != null)
+            {
+                foreach (SdatInfoSection.SdatInfoSseq s in infoSection.SdatInfoSseqs)
+                {
+                    if ((s.fileId != null) && pSeqeuncesAllowed.Contains(i))
+                    {
+                        sseqIsUsed[i] = true;
+                    }
+
+                    i++;
+                }
             }
 
             for (i = 0; i < sseqIsUsed.Length; i++)

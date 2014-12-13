@@ -264,21 +264,25 @@ namespace VGMToolbox.format.sdat
         private SdatInfoRec getInfoRec(Stream pStream, int pSectionOffset,
             int pInfoRecOffset)
         {
-            int entryOffsetCount;
-            SdatInfoRec sdatInfoRec = new SdatInfoRec();
-
-            sdatInfoRec.nCount = ParseFile.ParseSimpleOffset(pStream,
-                pSectionOffset + pInfoRecOffset + INFO_RECORD_STRUCT_COUNT_OFFSET,
-                INFO_RECORD_STRUCT_COUNT_LENGTH);
-
-            entryOffsetCount = BitConverter.ToInt32(sdatInfoRec.nCount, 0);
-            sdatInfoRec.nEntryOffsets = new byte[entryOffsetCount][];
-
-            for (int i = 1; i <= entryOffsetCount; i++)
+            SdatInfoRec sdatInfoRec = new SdatInfoRec(); ;
+            
+            if (pInfoRecOffset > 0)
             {
-                sdatInfoRec.nEntryOffsets[i - 1] = ParseFile.ParseSimpleOffset(pStream,
-                    pSectionOffset + pInfoRecOffset + (INFO_RECORD_STRUCT_OFFSETS_OFFSET * i),
-                    INFO_RECORD_STRUCT_OFFSETS_LENGTH);
+                int entryOffsetCount;
+
+                sdatInfoRec.nCount = ParseFile.ParseSimpleOffset(pStream,
+                    pSectionOffset + pInfoRecOffset + INFO_RECORD_STRUCT_COUNT_OFFSET,
+                    INFO_RECORD_STRUCT_COUNT_LENGTH);
+
+                entryOffsetCount = BitConverter.ToInt32(sdatInfoRec.nCount, 0);
+                sdatInfoRec.nEntryOffsets = new byte[entryOffsetCount][];
+
+                for (int i = 1; i <= entryOffsetCount; i++)
+                {
+                    sdatInfoRec.nEntryOffsets[i - 1] = ParseFile.ParseSimpleOffset(pStream,
+                        pSectionOffset + pInfoRecOffset + (INFO_RECORD_STRUCT_OFFSETS_OFFSET * i),
+                        INFO_RECORD_STRUCT_OFFSETS_LENGTH);
+                }
             }
 
             return sdatInfoRec;
@@ -421,38 +425,42 @@ namespace VGMToolbox.format.sdat
         private SdatInfoStrm[] getInfoStrmEntries(Stream pStream, int pSectionOffset,
             SdatInfoRec pSdatInfoRec)
         {
-            int entryCount = BitConverter.ToInt32(pSdatInfoRec.nCount, 0);
-            SdatInfoStrm[] ret = new SdatInfoStrm[entryCount];
-
-            for (int i = 0; i < entryCount; i++)
+            SdatInfoStrm[] ret = null;
+            
+            if (pSdatInfoRec.nCount != null)
             {
-                ret[i] = new SdatInfoStrm();
+                int entryCount = BitConverter.ToInt32(pSdatInfoRec.nCount, 0);
+                ret = new SdatInfoStrm[entryCount];
 
-                int infoOffset = BitConverter.ToInt32(pSdatInfoRec.nEntryOffsets[i], 0);
-
-                if (infoOffset > 0)
+                for (int i = 0; i < entryCount; i++)
                 {
-                    ret[i].fileId = ParseFile.ParseSimpleOffset(pStream,
-                        pSectionOffset + infoOffset +
-                        INFO_ENTRY_STRM_FILEID_OFFSET, INFO_ENTRY_STRM_FILEID_LENGTH);
-                    ret[i].unknown = ParseFile.ParseSimpleOffset(pStream,
-                        pSectionOffset + infoOffset +
-                        INFO_ENTRY_STRM_UNKNOWN_OFFSET, INFO_ENTRY_STRM_UNKNOWN_LENGTH);
-                    ret[i].vol = ParseFile.ParseSimpleOffset(pStream,
-                        pSectionOffset + infoOffset +
-                        INFO_ENTRY_STRM_VOL_OFFSET, INFO_ENTRY_STRM_VOL_LENGTH);
-                    ret[i].pri = ParseFile.ParseSimpleOffset(pStream,
-                        pSectionOffset + infoOffset +
-                        INFO_ENTRY_STRM_PRI_OFFSET, INFO_ENTRY_STRM_PRI_LENGTH);
-                    ret[i].ply = ParseFile.ParseSimpleOffset(pStream,
-                        pSectionOffset + infoOffset +
-                        INFO_ENTRY_STRM_PLY_OFFSET, INFO_ENTRY_STRM_PLY_LENGTH);
-                    ret[i].reserved = ParseFile.ParseSimpleOffset(pStream,
-                        pSectionOffset + infoOffset +
-                        INFO_ENTRY_STRM_RESERVED_OFFSET, INFO_ENTRY_STRM_RESERVED_LENGTH);
+                    ret[i] = new SdatInfoStrm();
+
+                    int infoOffset = BitConverter.ToInt32(pSdatInfoRec.nEntryOffsets[i], 0);
+
+                    if (infoOffset > 0)
+                    {
+                        ret[i].fileId = ParseFile.ParseSimpleOffset(pStream,
+                            pSectionOffset + infoOffset +
+                            INFO_ENTRY_STRM_FILEID_OFFSET, INFO_ENTRY_STRM_FILEID_LENGTH);
+                        ret[i].unknown = ParseFile.ParseSimpleOffset(pStream,
+                            pSectionOffset + infoOffset +
+                            INFO_ENTRY_STRM_UNKNOWN_OFFSET, INFO_ENTRY_STRM_UNKNOWN_LENGTH);
+                        ret[i].vol = ParseFile.ParseSimpleOffset(pStream,
+                            pSectionOffset + infoOffset +
+                            INFO_ENTRY_STRM_VOL_OFFSET, INFO_ENTRY_STRM_VOL_LENGTH);
+                        ret[i].pri = ParseFile.ParseSimpleOffset(pStream,
+                            pSectionOffset + infoOffset +
+                            INFO_ENTRY_STRM_PRI_OFFSET, INFO_ENTRY_STRM_PRI_LENGTH);
+                        ret[i].ply = ParseFile.ParseSimpleOffset(pStream,
+                            pSectionOffset + infoOffset +
+                            INFO_ENTRY_STRM_PLY_OFFSET, INFO_ENTRY_STRM_PLY_LENGTH);
+                        ret[i].reserved = ParseFile.ParseSimpleOffset(pStream,
+                            pSectionOffset + infoOffset +
+                            INFO_ENTRY_STRM_RESERVED_OFFSET, INFO_ENTRY_STRM_RESERVED_LENGTH);
+                    }
                 }
             }
-
             return ret;
         }
 

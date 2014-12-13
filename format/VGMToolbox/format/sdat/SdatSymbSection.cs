@@ -217,34 +217,37 @@ namespace VGMToolbox.format.sdat
         public void getSeqArcSymbRecord(Stream pStream, int pSectionOffset, int pSubSectionOffset,
             ref byte[][] pSymbFileNames, ref SdatSymbolRec pSdatSymbolRec)
         {
-            pSdatSymbolRec = new SdatSymbolRec();
-            
-            pSdatSymbolRec.nCount = ParseFile.ParseSimpleOffset(pStream,
-                pSectionOffset + pSubSectionOffset + SYMB_ENTRY_SEQARC_COUNT_OFFSET,
-                SYMB_ENTRY_SEQARC_COUNT_LENGTH);
-
-            int subRecordCount = BitConverter.ToInt32(pSdatSymbolRec.nCount, 0);
-
-            pSymbFileNames = new byte[subRecordCount][];
-
-            pSdatSymbolRec.nEntryOffsets = new byte[subRecordCount][];
-
-            for (int i = 1; i <= subRecordCount; i++)
+            if (pSubSectionOffset > 0)
             {
-                pSdatSymbolRec.nEntryOffsets[i - 1] = ParseFile.ParseSimpleOffset(pStream,
-                    pSectionOffset + pSubSectionOffset + SYMB_ENTRY_NUM_FILES_OFFSET + (SYMB_ENTRY_FILE_NAME_SIZE * i) + (SYMB_ENTRY_SEQARC_SUBENTRY_SUBREC_OFFSET_LENGTH * (i - 1)),
-                    SYMB_ENTRY_NUM_FILES_LENGTH);
+                pSdatSymbolRec = new SdatSymbolRec();
 
-                int fileOffset = BitConverter.ToInt32(pSdatSymbolRec.nEntryOffsets[i - 1], 0);
+                pSdatSymbolRec.nCount = ParseFile.ParseSimpleOffset(pStream,
+                    pSectionOffset + pSubSectionOffset + SYMB_ENTRY_SEQARC_COUNT_OFFSET,
+                    SYMB_ENTRY_SEQARC_COUNT_LENGTH);
 
-                if (fileOffset > 0)
+                int subRecordCount = BitConverter.ToInt32(pSdatSymbolRec.nCount, 0);
+
+                pSymbFileNames = new byte[subRecordCount][];
+
+                pSdatSymbolRec.nEntryOffsets = new byte[subRecordCount][];
+
+                for (int i = 1; i <= subRecordCount; i++)
                 {
-                    int fileLength = ParseFile.GetSegmentLength(pStream, pSectionOffset + fileOffset, NULL_BYTE_ARRAY);
-                    pSymbFileNames[i - 1] = ParseFile.ParseSimpleOffset(pStream, pSectionOffset + fileOffset, fileLength);
-                }
-                else
-                {
-                    pSymbFileNames[i - 1] = null;
+                    pSdatSymbolRec.nEntryOffsets[i - 1] = ParseFile.ParseSimpleOffset(pStream,
+                        pSectionOffset + pSubSectionOffset + SYMB_ENTRY_NUM_FILES_OFFSET + (SYMB_ENTRY_FILE_NAME_SIZE * i) + (SYMB_ENTRY_SEQARC_SUBENTRY_SUBREC_OFFSET_LENGTH * (i - 1)),
+                        SYMB_ENTRY_NUM_FILES_LENGTH);
+
+                    int fileOffset = BitConverter.ToInt32(pSdatSymbolRec.nEntryOffsets[i - 1], 0);
+
+                    if (fileOffset > 0)
+                    {
+                        int fileLength = ParseFile.GetSegmentLength(pStream, pSectionOffset + fileOffset, NULL_BYTE_ARRAY);
+                        pSymbFileNames[i - 1] = ParseFile.ParseSimpleOffset(pStream, pSectionOffset + fileOffset, fileLength);
+                    }
+                    else
+                    {
+                        pSymbFileNames[i - 1] = null;
+                    }
                 }
             }
         }
@@ -252,34 +255,37 @@ namespace VGMToolbox.format.sdat
         public void getSymbRecord(Stream pStream, int pSectionOffset, int pSubSectionOffset,
             ref byte[][] pSymbFileNames, ref SdatSymbolRec pSdatSymbolRec)
         {
-            pSdatSymbolRec = new SdatSymbolRec();
-
-            pSdatSymbolRec.nCount = ParseFile.ParseSimpleOffset(pStream,
-                pSectionOffset + pSubSectionOffset + SYMB_ENTRY_NUM_FILES_OFFSET,
-                SYMB_ENTRY_NUM_FILES_LENGTH);
-
-            int subRecordCount = BitConverter.ToInt32(pSdatSymbolRec.nCount, 0);
-
-            pSymbFileNames = new byte[subRecordCount][];
-
-            pSdatSymbolRec.nEntryOffsets = new byte[subRecordCount][];
-
-            for (int i = 1; i <= subRecordCount; i++)
+            if (pSubSectionOffset > 0)
             {
-                pSdatSymbolRec.nEntryOffsets[i - 1] = ParseFile.ParseSimpleOffset(pStream,
-                    pSectionOffset + pSubSectionOffset + SYMB_ENTRY_NUM_FILES_OFFSET + (SYMB_ENTRY_FILE_NAME_SIZE * i),
+                pSdatSymbolRec = new SdatSymbolRec();
+
+                pSdatSymbolRec.nCount = ParseFile.ParseSimpleOffset(pStream,
+                    pSectionOffset + pSubSectionOffset + SYMB_ENTRY_NUM_FILES_OFFSET,
                     SYMB_ENTRY_NUM_FILES_LENGTH);
 
-                int fileOffset = BitConverter.ToInt32(pSdatSymbolRec.nEntryOffsets[i - 1], 0);
+                int subRecordCount = BitConverter.ToInt32(pSdatSymbolRec.nCount, 0);
 
-                if (fileOffset > 0)
+                pSymbFileNames = new byte[subRecordCount][];
+
+                pSdatSymbolRec.nEntryOffsets = new byte[subRecordCount][];
+
+                for (int i = 1; i <= subRecordCount; i++)
                 {
-                    int fileLength = ParseFile.GetSegmentLength(pStream, pSectionOffset + fileOffset, NULL_BYTE_ARRAY);
-                    pSymbFileNames[i - 1] = ParseFile.ParseSimpleOffset(pStream, pSectionOffset + fileOffset, fileLength);
-                }
-                else
-                {
-                    pSymbFileNames[i - 1] = null;
+                    pSdatSymbolRec.nEntryOffsets[i - 1] = ParseFile.ParseSimpleOffset(pStream,
+                        pSectionOffset + pSubSectionOffset + SYMB_ENTRY_NUM_FILES_OFFSET + (SYMB_ENTRY_FILE_NAME_SIZE * i),
+                        SYMB_ENTRY_NUM_FILES_LENGTH);
+
+                    int fileOffset = BitConverter.ToInt32(pSdatSymbolRec.nEntryOffsets[i - 1], 0);
+
+                    if (fileOffset > 0)
+                    {
+                        int fileLength = ParseFile.GetSegmentLength(pStream, pSectionOffset + fileOffset, NULL_BYTE_ARRAY);
+                        pSymbFileNames[i - 1] = ParseFile.ParseSimpleOffset(pStream, pSectionOffset + fileOffset, fileLength);
+                    }
+                    else
+                    {
+                        pSymbFileNames[i - 1] = null;
+                    }
                 }
             }
         }
