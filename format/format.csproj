@@ -78,6 +78,7 @@
     <Compile Include="VGMToolbox\format\CriCpkArchive.cs" />
     <Compile Include="VGMToolbox\format\ElectronicArtsMpcStream.cs" />
     <Compile Include="VGMToolbox\format\HudsonHvqm4VideoStream.cs" />
+    <Compile Include="VGMToolbox\format\iso\NintendoWiiUOpticalDisc.cs" />
     <Compile Include="VGMToolbox\format\MicrosoftAsfContainer.cs" />
     <Compile Include="VGMToolbox\format\MicrosoftSecureTransactedFileSystem.cs" />
     <Compile Include="VGMToolbox\format\MobiclipNdsStream.cs" />
@@ -204,6 +205,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="external\psf\sigfind2.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="external\wiiu\dir.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="external\wii\dir.txt">

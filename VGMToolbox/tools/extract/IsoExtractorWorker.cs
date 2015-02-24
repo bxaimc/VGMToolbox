@@ -367,6 +367,23 @@ namespace VGMToolbox.tools.extract
                         break;
                     }
 
+                    //-----------------
+                    // NINTENDO WIIU
+                    //-----------------
+                    else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, (int)NintendoWiiUOpticalDisc.IDENTIFIER_OFFSET, NintendoWiiUOpticalDisc.STANDARD_IDENTIFIER.Length, NintendoWiiUOpticalDisc.STANDARD_IDENTIFIER))
+                    {
+                        NintendoWiiUOpticalDisc wiiUDisc = new NintendoWiiUOpticalDisc();
+                        wiiUDisc.Initialize(fs, currentOffset, isRawFormat);
+
+                        foreach (NintendoWiiUOpticalDiscVolume isoVolume in wiiUDisc.Volumes)
+                        {
+                            volumeList.Add((IVolume)isoVolume);
+                        }
+
+                        break;                                       
+                    }
+                    
+                    
                     else
                     {
                         currentOffset += sectorSize;
