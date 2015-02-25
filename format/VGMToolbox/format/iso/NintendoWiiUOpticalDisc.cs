@@ -16,7 +16,12 @@ namespace VGMToolbox.format.iso
         public struct Partition
         {
             public ulong PartitionOffset { set; get; }
-            public byte[] PartitionType { set; get; }
+            public byte[] PartitionIdentifier { set; get; }
+            public string PartitionName { set; get; }
+
+            public byte[] PartitionKey { set; get; }
+
+            public PartitionEntry[] PartitionEntries { set; get; }
 
             /*
             public byte[] TitleId { set; get; }
@@ -27,6 +32,46 @@ namespace VGMToolbox.format.iso
             public long RelativeDataOffset { set; get; }
             public long DataSize { set; get; }
             */ 
+        }
+
+        public struct PartitionEntry
+        {
+            // 0x00
+            public bool IsDirectory { set; get; }  // 0x00
+            public uint NameOffset { set; get; }   // 0x01 - 0x03
+            public string EntryName { set; get; }  
+
+            // 0x04
+            public uint OffsetWithinCluster { set; get; }
+            
+            // 0x08
+            public uint LastRowInDirectory { set; get; } // Only if IsDirectory is True
+            public uint Size { set; get; }               // Only if IsDirectory is False
+
+            // 0x0C
+            public ushort Unknown { set; get; }          // 0x0C
+            public ushort StartingCluster { set; get; }  // 0x0E
+
+            public PartitionEntry(byte[] RawPartitionEntry): this()
+            {                                
+                // check if this is a directory entry
+                if (RawPartitionEntry[0] == 1)
+                {
+                    this.IsDirectory = true;
+                    this.LastRowInDirectory = ParseFile.ReadUintBE(RawPartitionEntry, 8);
+                }
+                else
+                {
+                    this.IsDirectory = false;
+                    this.Size = ParseFile.ReadUintBE(RawPartitionEntry, 8);
+                }
+
+                this.NameOffset = ParseFile.ReadUintBE(RawPartitionEntry, 0) & 0x00FFFFFF;
+                this.OffsetWithinCluster = ParseFile.ReadUintBE(RawPartitionEntry, 4);
+
+                this.Unknown = ParseFile.ReadUshortBE(RawPartitionEntry, 0x0C);
+                this.StartingCluster = ParseFile.ReadUshortBE(RawPartitionEntry, 0x0E);
+            }
         }
         
         public static readonly byte[] STANDARD_IDENTIFIER = new byte[] { 0x57, 0x55, 0x50, 0x2D }; // "WUP-"
@@ -110,25 +155,33 @@ namespace VGMToolbox.format.iso
                         
             // initialize partition info
             this.InitializePartions(isoStream);
-            
-            
+                        
             // initialize volumes
             this.VolumeArrayList = new ArrayList();
-            //this.LoadVolumes(isoStream);
+            this.LoadVolumes(isoStream);
 
         }
 
         private void InitializePartions(FileStream isoStream)
-        {
-            byte[] temp = new byte[4];
-
+        {            
             // read and decrypt partition toc
             byte[] PartitionTocBlock = this.DiscReader.GetBytes(isoStream, this.DecryptedAreaOffset, 0x8000, this.DiscKey);
 
             // @TODO: Verify DiscKey before proceeding
 
+            // initialize partitions TOC
+            this.InitializePartitionToc(isoStream, PartitionTocBlock);
+           
+            // parse file table entries (FST block)
+            this.ParsePartitionFileTables(isoStream);
+        }
+
+        private void InitializePartitionToc(FileStream isoStream, byte[] DecryptedPartitionToc)
+        {
+            byte[] temp = new byte[4];
+    
             // get partition count from decrypted TOC
-            Array.Copy(PartitionTocBlock, 0x1C, temp, 0, 4);
+            Array.Copy(DecryptedPartitionToc, 0x1C, temp, 0, 4);
             this.PartitionCount = ByteConversion.GetUInt32BigEndian(temp);
         
             // initialize partition array
@@ -138,47 +191,118 @@ namespace VGMToolbox.format.iso
             for (uint i = 0; i < this.PartitionCount; i++)
             {
                 this.Partitions[i] = new Partition();
-                
-                // copy partition type bytes (SI, UP, GM, ??) from decrypted TOC
-                this.Partitions[i].PartitionType = new byte[2];
-                Array.Copy(PartitionTocBlock, (PARTITION_TOC_OFFSET + (i * PARTITION_TOC_ENTRY_SIZE)), this.Partitions[i].PartitionType, 0, 2);
+
+                // copy partition identifier bytes (SI, UP, GM, ??) from decrypted TOC
+                this.Partitions[i].PartitionIdentifier = new byte[0x19];
+                Array.Copy(DecryptedPartitionToc, (PARTITION_TOC_OFFSET + (i * PARTITION_TOC_ENTRY_SIZE)), this.Partitions[i].PartitionIdentifier, 0, 2);
+
+                // convert partition identifier to string for display
+                this.Partitions[i].PartitionName = ByteConversion.GetAsciiText(this.Partitions[i].PartitionIdentifier);
 
                 // calculate partition offset (relative from WIIU_DECRYPTED_AREA_OFFSET) from decrypted TOC
-                Array.Copy(PartitionTocBlock, (PARTITION_TOC_OFFSET + (i * PARTITION_TOC_ENTRY_SIZE) + 0x20), temp, 0, 4);
+                Array.Copy(DecryptedPartitionToc, (PARTITION_TOC_OFFSET + (i * PARTITION_TOC_ENTRY_SIZE) + 0x20), temp, 0, 4);
                 this.Partitions[i].PartitionOffset = (ulong)((ByteConversion.GetUInt32BigEndian(temp) * 0x8000) - 0x10000);
-                
-
             }
-
-
-
-
-
-
-
-
-
-
         }
-    
-    
-    
+
+        private void ParsePartitionFileTables(FileStream isoStream)
+        {
+            byte[] rawPartitionEntry;
+            byte[] fileTableBlock;
+
+            uint entriesOffset;
+            uint nameTableOffset;
+            uint totalEntries;
+
+            ArrayList partitionEntries;
+            PartitionEntry pe;
+
+            // loop through each partition
+            for (uint i = 0; i < this.Partitions.GetLength(0); i++)
+            {
+                partitionEntries = new ArrayList();
+
+                // decrypt file table block 
+                // @TODO: determine correct key to use per partition
+                //      remove or alter IF statement below
+                if (this.Partitions[i].PartitionName.StartsWith("SI") ||
+                    this.Partitions[i].PartitionName.StartsWith("UP"))
+                {
+                    fileTableBlock = this.DiscReader.GetBytes(isoStream,
+                        this.DecryptedAreaOffset + this.Partitions[i].PartitionOffset, 0x8000, this.DiscKey);
+
+                    // @TODO: Verify FST magic bytes
+
+                    // skip header to goto directory/file records
+                    entriesOffset = (ParseFile.ReadUintBE(fileTableBlock, 4) * ParseFile.ReadUintBE(fileTableBlock, 8)) + 0x20;
+
+                    // read first row for root directory and to get record count
+                    rawPartitionEntry = ParseFile.SimpleArrayCopy(fileTableBlock, entriesOffset, 0x10);
+                    pe = new PartitionEntry(rawPartitionEntry);
+
+                    // save total number of entries
+                    totalEntries = pe.LastRowInDirectory;
+                    nameTableOffset = entriesOffset + (totalEntries * 0x10);
+
+                    // get root directory Name (typically null for root dir)
+                    pe.EntryName = ByteConversion.GetAsciiText(fileTableBlock, nameTableOffset + pe.NameOffset);
+
+                    // add root directory to array list
+                    partitionEntries.Add(pe);
+
+                    // loop through remaining records                
+                    for (uint j = 1; j < totalEntries; j++)
+                    {
+                        rawPartitionEntry = ParseFile.SimpleArrayCopy(fileTableBlock, entriesOffset + (j * 0x10), 0x10);
+                        pe = new PartitionEntry(rawPartitionEntry);
+                        pe.EntryName = ByteConversion.GetAsciiText(fileTableBlock, nameTableOffset + pe.NameOffset);
+                        partitionEntries.Add(pe);
+
+                        // @TODO: Get title key
+                    } // for (uint j = 1; j < totalEntries; j++)
+
+                    this.Partitions[i].PartitionEntries = (PartitionEntry[])partitionEntries.ToArray(typeof(PartitionEntry));
+                } // if (this.Partitions[i].PartitionName.StartsWith("SI")
+            } // for (uint i = 0; i < this.Partitions.GetLength(0); i++)
+        }
+
+
+        public void LoadVolumes(FileStream isoStream)
+        {
+            NintendoWiiUOpticalDiscVolume newVolume;
+
+            for (uint i = 0; i < this.PartitionCount; i++)
+            {
+/*                
+                    newVolume = new NintendoWiiOpticalDiscVolume(
+                        this.Partitions[i].PartitionEntries[j].PartitionOffset,
+                        this.Partitions[i].PartitionEntries[j].RelativeDataOffset,
+                        this.Partitions[i].PartitionEntries[j].DecryptedTitleKey,
+                        this.DiscReader);
+
+                    newVolume.Initialize(isoStream, this.Partitions[i].PartitionEntries[j].PartitionOffset, this.IsRawDump);
+                    this.VolumeArrayList.Add(newVolume);
+ */ 
+            }
+        }
     }
 
 
 
     public class NintendoWiiUOpticalDiscVolume : IVolume
     {
+        public NintendoWiiUOpticalDisc.Partition SourcePartition { set; get; }
+
         public string VolumeIdentifier { set; get; }
         public string FormatDescription { set; get; }
         public VolumeDataType VolumeType { set; get; }
 
         public long VolumeBaseOffset { set; get; }
-        public long DataOffset { set; get; }
+        public long DataOffset { set; get; }        
         public byte[] PartitionKey { set; get; }
 
         public bool IsRawDump { set; get; }
-        public NintendoWiiEncryptedDiscReader DiscReader { set; get; }
+        public NintendoWiiUEncryptedDiscReader DiscReader { set; get; }
 
         public ArrayList DirectoryStructureArray { set; get; }
         public IDirectoryStructure[] Directories
@@ -187,22 +311,23 @@ namespace VGMToolbox.format.iso
             get
             {
                 DirectoryStructureArray.Sort();
-                return (IDirectoryStructure[])DirectoryStructureArray.ToArray(typeof(NintendoWiiOpticalDiscDirectoryStructure));
+                return (IDirectoryStructure[])DirectoryStructureArray.ToArray(typeof(NintendoWiiUOpticalDiscDirectoryStructure));
             }
         }
 
-        public long RootDirectoryOffset { set; get; }
+        public ulong RootDirectoryOffset { set; get; }
         public DateTime ImageCreationTime { set; get; }
 
-        public long NameTableOffset { set; get; }
+        public ulong NameTableOffset { set; get; }
 
-        public NintendoWiiUOpticalDiscVolume(long volumeBaseOffset, long dataOffset,
-            byte[] partitionKey, NintendoWiiEncryptedDiscReader discReader)
+        public NintendoWiiUOpticalDiscVolume(NintendoWiiUOpticalDisc.Partition partition, 
+            byte[] partitionKey, NintendoWiiUEncryptedDiscReader discReader)
         {
-            this.VolumeBaseOffset = volumeBaseOffset;
-            this.DataOffset = dataOffset;
+            this.SourcePartition = partition;
+            
             this.PartitionKey = partitionKey;
             this.DiscReader = discReader;
+                        
             this.DiscReader.CurrentDecryptedBlockNumber = -1;
             this.DiscReader.CurrentDecryptedBlock = null;
         }
@@ -221,49 +346,21 @@ namespace VGMToolbox.format.iso
 
         public void Initialize(FileStream isoStream, long offset, bool isRawDump)
         {
-            byte[] volumeIdentifierBytes;
-            byte[] imageDateBytes;
-            string imageDateString;
-
+            this.VolumeBaseOffset = (long)this.SourcePartition.PartitionOffset;
+            this.VolumeIdentifier = this.SourcePartition.PartitionName;
+            
             this.IsRawDump = isRawDump;
             this.DirectoryStructureArray = new ArrayList();
 
-            this.FormatDescription = NintendoWiiOpticalDisc.FORMAT_DESCRIPTION_STRING;
+            this.FormatDescription = NintendoWiiUOpticalDisc.FORMAT_DESCRIPTION_STRING;
             this.VolumeType = VolumeDataType.Data;
-
-            // get identifier
-            volumeIdentifierBytes = DiscReader.GetBytes(isoStream, this.VolumeBaseOffset,
-                this.DataOffset, 0x20, 64, this.PartitionKey);
-            volumeIdentifierBytes = FileUtil.ReplaceNullByteWithSpace(volumeIdentifierBytes);
-            this.VolumeIdentifier = ByteConversion.GetEncodedText(volumeIdentifierBytes, ByteConversion.GetPredictedCodePageForTags(volumeIdentifierBytes)).Trim(); ;
-
-            // get date 
-            imageDateBytes = DiscReader.GetBytes(isoStream, this.VolumeBaseOffset,
-                this.DataOffset, 0x2440, 0xA, this.PartitionKey);
-            imageDateString = ByteConversion.GetAsciiText(imageDateBytes);
-
-            try
-            {
-                this.ImageCreationTime = new DateTime(int.Parse(imageDateString.Substring(0, 4)),
-                                                      int.Parse(imageDateString.Substring(5, 2)),
-                                                      int.Parse(imageDateString.Substring(8, 2)));
-            }
-            catch (Exception)
-            {
-                this.ImageCreationTime = new DateTime();
-            }
-
-            // get offset of file table
-            this.RootDirectoryOffset = (long)ByteConversion.GetUInt32BigEndian(DiscReader.GetBytes(isoStream, this.VolumeBaseOffset,
-                this.DataOffset, 0x424, 4, this.PartitionKey));
-            this.RootDirectoryOffset <<= 2;
-
+                   
             this.LoadDirectories(isoStream);
         }
 
         public void ExtractAll(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
         {
-            foreach (NintendoWiiOpticalDiscDirectoryStructure ds in this.DirectoryStructureArray)
+            foreach (NintendoWiiUOpticalDiscDirectoryStructure ds in this.DirectoryStructureArray)
             {
                 ds.Extract(ref streamCache, destinationFolder, extractAsRaw);
             }
@@ -275,19 +372,21 @@ namespace VGMToolbox.format.iso
             NintendoWiiOpticalDiscDirectoryRecord rootDirectoryRecord;
             NintendoWiiOpticalDiscDirectoryStructure rootDirectory;
 
+            //rootDirectoryBytes = this.Dos
+
             // Get name table offset
-            rootDirectoryBytes = DiscReader.GetBytes(isoStream, this.VolumeBaseOffset,
-                this.DataOffset, this.RootDirectoryOffset, 0xC, this.PartitionKey);
-            rootDirectoryRecord = new NintendoWiiOpticalDiscDirectoryRecord(rootDirectoryBytes);
-            this.NameTableOffset = this.RootDirectoryOffset + ((long)rootDirectoryRecord.FileSize * 0xC);
+            //rootDirectoryBytes = DiscReader.GetBytes(isoStream, this.VolumeBaseOffset,
+            //    this.DataOffset, this.RootDirectoryOffset, 0xC, this.PartitionKey);
+            //rootDirectoryRecord = new NintendoWiiOpticalDiscDirectoryRecord(rootDirectoryBytes);
+            //this.NameTableOffset = this.RootDirectoryOffset + ((long)rootDirectoryRecord.FileSize * 0xC);
 
-            rootDirectory = new NintendoWiiOpticalDiscDirectoryStructure(isoStream,
-                isoStream.Name, rootDirectoryRecord, this.ImageCreationTime,
-                this.VolumeBaseOffset, this.DataOffset, this.RootDirectoryOffset,
-                this.RootDirectoryOffset, this.NameTableOffset,
-                String.Empty, String.Empty, this.DiscReader, this.PartitionKey);
+            //rootDirectory = new NintendoWiiOpticalDiscDirectoryStructure(isoStream,
+            //    isoStream.Name, rootDirectoryRecord, this.ImageCreationTime,
+            //    this.VolumeBaseOffset, this.DataOffset, this.RootDirectoryOffset,
+            //    this.RootDirectoryOffset, this.NameTableOffset,
+            //    String.Empty, String.Empty, this.DiscReader, this.PartitionKey);
 
-            this.DirectoryStructureArray.Add(rootDirectory);
+            //this.DirectoryStructureArray.Add(rootDirectory);
         }
     }
 

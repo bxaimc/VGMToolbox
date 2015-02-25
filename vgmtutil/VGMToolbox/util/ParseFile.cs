@@ -1803,6 +1803,13 @@ namespace VGMToolbox.util
             return path;
         }
 
+        public static byte[] SimpleArrayCopy(byte[] SourceArray, long offset, long length)
+        {
+            byte[] value = new byte[length];
+            Array.Copy(SourceArray, offset, value, 0, length);
+            return value;
+        }
+
         public static uint ReadUintLE(Stream inStream, long offset)
         {
             return BitConverter.ToUInt32(ParseSimpleOffset(inStream, offset, 4), 0);
@@ -1816,6 +1823,16 @@ namespace VGMToolbox.util
             return BitConverter.ToUInt32(val, 0);
         }
 
+        public static uint ReadUintBE(byte[] inBytes, long offset)
+        {
+            byte[] val = new byte[4];
+
+            Array.Copy(inBytes, offset, val, 0, 4);
+            Array.Reverse(val);
+
+            return BitConverter.ToUInt32(val, 0);
+        }
+
         public static ushort ReadUshortLE(Stream inStream, long offset)
         {
             return BitConverter.ToUInt16(ParseSimpleOffset(inStream, offset, 2), 0);
@@ -1826,6 +1843,16 @@ namespace VGMToolbox.util
             byte[] val = ParseSimpleOffset(inStream, offset, 2);
             Array.Reverse(val);
             
+            return BitConverter.ToUInt16(val, 0);
+        }
+
+        public static ushort ReadUshortBE(byte[] inBytes, long offset)
+        {
+            byte[] val = new byte[2];
+
+            Array.Copy(inBytes, offset, val, 0, 2);
+            Array.Reverse(val);
+
             return BitConverter.ToUInt16(val, 0);
         }
 

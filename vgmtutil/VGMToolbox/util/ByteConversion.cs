@@ -68,6 +68,32 @@ namespace VGMToolbox.util
         }
 
         /// <summary>
+        /// Get text encoded in ASCII, stops at null.
+        /// </summary>
+        /// <param name="pBytes">Bytes to decode.</param>
+        /// <param name="offset">Offet within byte array of string.</param>
+        /// <returns>String encoded using ASCII.</returns>
+        public static string GetAsciiText(byte[] value, long offset)
+        {
+            StringBuilder sb = new StringBuilder();
+            System.Text.Encoding ascii = System.Text.Encoding.ASCII;
+
+            for (long i = offset; i < value.Length; i++)
+            {
+                if (value[i] == 0)
+                {
+                    break;
+                }
+                else
+                {
+                    sb.Append((char)value[i]);    
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        /// <summary>
         /// Convert input string to a long.  Works for Decimal and Hexidecimal (use 0x prefix).
         /// </summary>
         /// <param name="pStringNumber">String containing a Decimal and Hexidecimal number.</param>
