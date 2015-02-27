@@ -163,6 +163,10 @@ namespace VGMToolbox.format.iso
             ArrayList partitionEntries;
             NintendoWiiUPartitionEntry pe;
 
+            uint currentFileTableSize;
+            uint currentEntryOffset;
+            uint currentNameOffset;
+
             // loop through each partition
             for (uint i = 0; i < this.Partitions.GetLength(0); i++)
             {
@@ -174,8 +178,12 @@ namespace VGMToolbox.format.iso
                 if (this.Partitions[i].PartitionName.StartsWith("SI") ||
                     this.Partitions[i].PartitionName.StartsWith("UP"))
                 {                    
+                    // set current file table size, increase later if needed
+                    currentFileTableSize = 0x8000;
+                    
+                    // decrypt file table block
                     fileTableBlock = this.DiscReader.GetBytes(isoStream,
-                        this.DecryptedAreaOffset + this.Partitions[i].PartitionOffset, 0x8000, this.DiscKey);
+                        this.DecryptedAreaOffset + this.Partitions[i].PartitionOffset, currentFileTableSize, this.DiscKey);
 
                     // verify FST magic bytes
                     if (!ParseFile.CompareSegmentUsingSourceOffset(fileTableBlock, 0, 4, PARTITION_FILE_TABLE_SIGNATURE))
@@ -204,9 +212,34 @@ namespace VGMToolbox.format.iso
                     // loop through remaining records                
                     for (uint j = 1; j < totalEntries; j++)
                     {
-                        rawPartitionEntry = ParseFile.SimpleArrayCopy(fileTableBlock, entriesOffset + (j * 0x10), 0x10);
+                        // verify we have the full table
+                        currentEntryOffset = entriesOffset + (j * 0x10);
+
+                        // increase file table size if needed
+                        if ((currentEntryOffset + 0x10) > currentFileTableSize)
+                        {
+                            currentFileTableSize += 0x8000;
+                            fileTableBlock = this.DiscReader.GetBytes(isoStream,
+                                this.DecryptedAreaOffset + this.Partitions[i].PartitionOffset, currentFileTableSize, this.DiscKey);
+                        }
+
+                        // parse partition entry
+                        rawPartitionEntry = ParseFile.SimpleArrayCopy(fileTableBlock, currentEntryOffset, 0x10);
                         pe = new NintendoWiiUPartitionEntry(rawPartitionEntry);
-                        pe.EntryName = ByteConversion.GetAsciiText(fileTableBlock, nameTableOffset + pe.NameOffset);
+
+                        // get entry name from file table
+                        currentNameOffset = nameTableOffset + pe.NameOffset;
+
+                        // increase size if needed, will be conservative with name
+                        if ((currentNameOffset + 0x200) > currentFileTableSize)
+                        {
+                            currentFileTableSize += 0x8000;
+                            fileTableBlock = this.DiscReader.GetBytes(isoStream,
+                                this.DecryptedAreaOffset + this.Partitions[i].PartitionOffset, currentFileTableSize, this.DiscKey);
+                        }
+
+                        pe.EntryName = ByteConversion.GetAsciiText(fileTableBlock, currentNameOffset);
+                        
                         partitionEntries.Add(pe);
 
                         // @TODO: Get title key
