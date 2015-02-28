@@ -59,6 +59,8 @@ namespace VGMToolbox.format.iso
 
         }
 
+        public NintendoWiiUTitleKeyStruct[] PartitionTitleKeys;
+
         public static byte[] GetKeyFromFile(string path)
         {
             byte[] keyArray = null;
@@ -78,6 +80,16 @@ namespace VGMToolbox.format.iso
             }
 
             return keyArray;
+        }
+
+        public static WiiUBlockStructure GetWiiUBlockStructureForOffset(long offset)
+        {
+            WiiUBlockStructure bs = new WiiUBlockStructure();
+
+            bs.BlockNumber = offset / 0x8000;
+            bs.BlockOffset = offset % 0x8000;
+
+            return bs;
         }
 
         public void Initialize(FileStream isoStream, long offset, bool isRawDump)
@@ -161,7 +173,10 @@ namespace VGMToolbox.format.iso
             uint totalEntries;
 
             ArrayList partitionEntries;
-            NintendoWiiUPartitionEntry pe;
+            NintendoWiiUPartitionEntry partitionEntry;
+
+            uint clusterStart;
+            uint clusterSize;
 
             uint currentFileTableSize;
             uint currentEntryOffset;
@@ -177,7 +192,12 @@ namespace VGMToolbox.format.iso
                 //      remove or alter IF statement below
                 if (this.Partitions[i].PartitionName.StartsWith("SI") ||
                     this.Partitions[i].PartitionName.StartsWith("UP"))
-                {                    
+                {
+                    if (this.Partitions[i].PartitionName.StartsWith("SI"))
+                    {
+                        this.Partitions[i].PartitionKey = this.DiscKey;
+                    }
+                    
                     // set current file table size, increase later if needed
                     currentFileTableSize = 0x8000;
                     
@@ -191,23 +211,49 @@ namespace VGMToolbox.format.iso
                         throw new FormatException(String.Format("File Table Signature not found for partition: {0}.", this.Partitions[i].PartitionName));
                     }
 
-                    // skip header to goto directory/file records
+                    // parse cluster entries
+                    this.Partitions[i].PartitionClusterCount = ParseFile.ReadUintBE(fileTableBlock, 8);
+                    this.Partitions[i].PartitionClusters = new NintendoWiiUClusterStruct[this.Partitions[i].PartitionClusterCount];
+
+                    for (uint c = 0; c < this.Partitions[i].PartitionClusterCount; c++)
+                    {
+                        this.Partitions[i].PartitionClusters[c] = new NintendoWiiUClusterStruct();
+                        
+                        // get cluster start offset
+                        clusterStart = ParseFile.ReadUintBE(fileTableBlock, (0x20 + (0x20 * c))) * 0x8000;
+
+                        if (clusterStart > 0) 
+                        {
+                            this.Partitions[i].PartitionClusters[c].StartOffset = clusterStart - 0x8000; // subtract 0x8000 since seems to use 1-based array
+                        }
+
+                        // calculate cluster end offset based on number of blocks value
+                        clusterSize = ParseFile.ReadUintBE(fileTableBlock, (0x20 + (0x20 * c) + 4)) * 0x8000;
+                        
+                        // @TODO: This seems to leave some empty space between clusters.
+                        if (clusterSize > 0)
+                        {
+                            this.Partitions[i].PartitionClusters[c].EndOffset = this.Partitions[i].PartitionClusters[c].StartOffset + clusterSize;
+                        }
+                    }
+
+                    // goto directory/file records
                     entriesOffset = (ParseFile.ReadUintBE(fileTableBlock, 4) * ParseFile.ReadUintBE(fileTableBlock, 8)) + 0x20;
 
                     // read first row for root directory and to get record count
                     rawPartitionEntry = ParseFile.SimpleArrayCopy(fileTableBlock, entriesOffset, 0x10);
-                    pe = new NintendoWiiUPartitionEntry(rawPartitionEntry);
+                    partitionEntry = new NintendoWiiUPartitionEntry(rawPartitionEntry);
 
                     // save total number of entries
                     // @TODO: Determine if additional blocks are needed for larger partitions, should be able to use total entries and name offset of last record.
-                    totalEntries = pe.LastRowInDirectory;
+                    totalEntries = partitionEntry.LastRowInDirectory;
                     nameTableOffset = entriesOffset + (totalEntries * 0x10);
 
                     // get root directory Name (typically null for root dir)
-                    pe.EntryName = ByteConversion.GetAsciiText(fileTableBlock, nameTableOffset + pe.NameOffset);
+                    partitionEntry.EntryName = ByteConversion.GetAsciiText(fileTableBlock, nameTableOffset + partitionEntry.NameOffset);
 
                     // add root directory to array list
-                    partitionEntries.Add(pe);
+                    partitionEntries.Add(partitionEntry);
 
                     // loop through remaining records                
                     for (uint j = 1; j < totalEntries; j++)
@@ -225,10 +271,10 @@ namespace VGMToolbox.format.iso
 
                         // parse partition entry
                         rawPartitionEntry = ParseFile.SimpleArrayCopy(fileTableBlock, currentEntryOffset, 0x10);
-                        pe = new NintendoWiiUPartitionEntry(rawPartitionEntry);
+                        partitionEntry = new NintendoWiiUPartitionEntry(rawPartitionEntry);
 
                         // get entry name from file table
-                        currentNameOffset = nameTableOffset + pe.NameOffset;
+                        currentNameOffset = nameTableOffset + partitionEntry.NameOffset;
 
                         // increase size if needed, will be conservative with name
                         if ((currentNameOffset + 0x200) > currentFileTableSize)
@@ -238,9 +284,9 @@ namespace VGMToolbox.format.iso
                                 this.DecryptedAreaOffset + this.Partitions[i].PartitionOffset, currentFileTableSize, this.DiscKey);
                         }
 
-                        pe.EntryName = ByteConversion.GetAsciiText(fileTableBlock, currentNameOffset);
+                        partitionEntry.EntryName = ByteConversion.GetAsciiText(fileTableBlock, currentNameOffset);
                         
-                        partitionEntries.Add(pe);
+                        partitionEntries.Add(partitionEntry);
 
                         // @TODO: Get title key
                         // @TODO: Add correct key to each partition for use in extraction later
@@ -251,6 +297,30 @@ namespace VGMToolbox.format.iso
             } // for (uint i = 0; i < this.Partitions.GetLength(0); i++)
         }
 
+        private NintendoWiiUTitleKeyStruct GetTitleKeyFromPartitionEntry(FileStream isoStream, long partitionOffset, 
+            NintendoWiiUPartitionEntry partitionEntry, byte[] partitionKey)
+        {
+            NintendoWiiUTitleKeyStruct titleKeyInfo = new NintendoWiiUTitleKeyStruct();
+        /*
+            long fileAbsoluteOffset;
+            byte[] decryptedBlock;
+
+            // decrypt file
+            fileAbsoluteOffset = this.DecryptedAreaOffset + partitionOffset + 
+                (partitionEntry.StartingCluster * 0x8000) +
+            
+            // will need to use encrypted reader to walk 
+            decryptedBlock = this.DiscReader.GetBytes(isoStream,
+                fileAbsoluteOffset, currentFileTableSize, this.DiscKey);
+
+            // read key
+
+            // read partition name
+
+            // decrypt key
+        */
+            return titleKeyInfo;
+        }
 
         public void LoadVolumes(FileStream isoStream)
         {
@@ -273,6 +343,9 @@ namespace VGMToolbox.format.iso
         public string PartitionName { set; get; }
 
         public byte[] PartitionKey { set; get; }
+
+        public uint PartitionClusterCount { set; get; }
+        public NintendoWiiUClusterStruct[] PartitionClusters { set; get; }
 
         public NintendoWiiUPartitionEntry[] PartitionEntries { set; get; }
 
@@ -325,9 +398,23 @@ namespace VGMToolbox.format.iso
             this.OffsetWithinCluster <<= 5;
 
             this.Unknown = ParseFile.ReadUshortBE(RawPartitionEntry, 0x0C);
-            this.StartingCluster = ParseFile.ReadUshortBE(RawPartitionEntry, 0x0E); // what is cluster size?  0x400000?
+            this.StartingCluster = ParseFile.ReadUshortBE(RawPartitionEntry, 0x0E);
         }
     }
+
+    public struct NintendoWiiUTitleKeyStruct
+    {
+        public byte[] EncryptedTitleKey { set; get; }
+        public byte[] DecryptedTitleKey { set; get; }
+        public string PartitionName { set; get; }
+    }
+
+    public struct NintendoWiiUClusterStruct
+    {
+        public ulong StartOffset { set; get; }
+        public ulong EndOffset { set; get; }
+    }
+
 
     public class NintendoWiiUOpticalDiscVolume : IVolume
     {
@@ -431,6 +518,7 @@ namespace VGMToolbox.format.iso
         public int NonRawSectorSize { set; get; }
 
         public NintendoWiiUEncryptedDiscReader DiscReader { set; get; }
+        public string PartitionIdentifier { set; get; }
         public byte[] PartitionKey { set; get; }
 
         public DateTime FileDateTime { set; get; }
@@ -450,7 +538,8 @@ namespace VGMToolbox.format.iso
         public NintendoWiiUOpticalDiscFileStructure(string parentDirectoryName,
             string sourceFilePath, string fileName, long volumeBaseOffset,
             long dataSectionOffset, long lba, long size, DateTime fileTime,
-            NintendoWiiUEncryptedDiscReader discReader, byte[] partitionKey)
+            NintendoWiiUEncryptedDiscReader discReader, string partitionIdentifier, 
+            byte[] partitionKey)
         {
             this.ParentDirectoryName = parentDirectoryName;
             this.SourceFilePath = sourceFilePath;
@@ -464,6 +553,7 @@ namespace VGMToolbox.format.iso
             this.FileMode = CdSectorType.Unknown;
             this.FileDateTime = fileTime;
             this.DiscReader = discReader;
+            this.PartitionIdentifier = partitionIdentifier;
             this.PartitionKey = partitionKey;
         }
 
@@ -476,8 +566,8 @@ namespace VGMToolbox.format.iso
                 streamCache[this.SourceFilePath] = File.OpenRead(this.SourceFilePath);
             }
 
-            this.DiscReader.ExtractFile(streamCache[this.SourceFilePath], destinationFile, this.VolumeBaseOffset,
-                this.DataSectionOffset, this.Lba, this.Size, this.PartitionKey);
+            this.DiscReader.ExtractFile(streamCache[this.SourceFilePath], destinationFile, this.PartitionIdentifier, 
+                this.VolumeBaseOffset, this.DataSectionOffset, this.Lba, this.Size, this.PartitionKey);
         }
     }
 
@@ -596,9 +686,10 @@ namespace VGMToolbox.format.iso
                 {
                     file = new NintendoWiiUOpticalDiscFileStructure(nextDirectory,
                         isoStream.Name, volumePartition.PartitionEntries[currentPartitionEntryIndex].EntryName,
-                        (long)volumePartition.PartitionOffset, volumePartition.PartitionEntries[currentPartitionEntryIndex].StartingCluster,
+                        (long)volumePartition.PartitionOffset, 
+                        (long)volumePartition.PartitionClusters[volumePartition.PartitionEntries[currentPartitionEntryIndex].StartingCluster].StartOffset,
                         volumePartition.PartitionEntries[currentPartitionEntryIndex].OffsetWithinCluster, volumePartition.PartitionEntries[currentPartitionEntryIndex].Size, 
-                        creationDateTime, discReader, volumePartition.PartitionKey);
+                        creationDateTime, discReader, volumePartition.PartitionName, volumePartition.PartitionKey);
 
                     this.FileArray.Add(file);
                 }
@@ -630,12 +721,14 @@ namespace VGMToolbox.format.iso
 
     public class NintendoWiiUEncryptedDiscReader
     {
+        public string CurrentVolumeIdentifier { set; get; }
         public byte[] CurrentDecryptedBlock { set; get; }
         public long CurrentDecryptedBlockNumber { set; get; }
         public Rijndael Algorithm { set; get; }
 
         public NintendoWiiUEncryptedDiscReader()
         {
+            this.CurrentVolumeIdentifier = String.Empty;
             this.CurrentDecryptedBlock = null;
             this.CurrentDecryptedBlockNumber = -1;
             this.Algorithm = Rijndael.Create();
@@ -653,15 +746,15 @@ namespace VGMToolbox.format.iso
             return decryptedChunk;
         }
         
-        public byte[] GetBytes(FileStream isoStream, long volumeOffset,
-                long dataOffset, long blockOffset, long size, byte[] partitionKey)
+        public byte[] GetBytes(FileStream isoStream, string volumeIdentifier, long volumeOffset,
+                long clusterOffset, long fileOffset, long size, byte[] partitionKey)
         {
             byte[] value = new byte[size];
-            
-            /*
+                        
             byte[] encryptedPartitionCluster;
-            byte[] encryptedClusterDataSection;
-            byte[] decryptedClusterDataSection;
+            byte[] decryptedPartitionCluster;
+            //byte[] encryptedClusterDataSection;
+            //byte[] decryptedClusterDataSection;
             byte[] clusterIV;
 
             long bufferLocation = 0;
@@ -671,31 +764,37 @@ namespace VGMToolbox.format.iso
             while (size > 0)
             {
                 // get block offset info
-                NintendoWiiUOpticalDisc.WiiBlockStructure blockStructure =
-                    NintendoWiiUOpticalDisc.GetWiiBlockStructureForOffset(blockOffset);
+                WiiUBlockStructure blockStructure = NintendoWiiUOpticalDisc.GetWiiUBlockStructureForOffset(fileOffset);
 
                 // read current block
                 //encryptedPartitionCluster = ParseFile.ParseSimpleOffset(isoStream,
                 //    volumeOffset + dataOffset + (blockStructure.BlockNumber * 0x8000),
                 //    0x8000);
 
-                if (this.CurrentDecryptedBlockNumber != blockStructure.BlockNumber)
+                if ((!this.CurrentVolumeIdentifier.Equals(volumeIdentifier)) ||
+                    (this.CurrentVolumeIdentifier.Equals(volumeIdentifier)) && (this.CurrentDecryptedBlockNumber != blockStructure.BlockNumber))
                 {
                     encryptedPartitionCluster = ParseFile.ParseSimpleOffset(isoStream,
-                        volumeOffset + dataOffset + (blockStructure.BlockNumber * 0x8000),
+                        (long)NintendoWiiUOpticalDisc.WIIU_DECRYPTED_AREA_OFFSET + volumeOffset + clusterOffset + (blockStructure.BlockNumber * 0x8000),
                         0x8000);
 
-                    clusterIV = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x03D0, 0x10);
-                    encryptedClusterDataSection = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x400, 0x7C00);
-                    decryptedClusterDataSection = AESEngine.Decrypt(this.Algorithm, encryptedClusterDataSection,
+                    clusterIV = new byte[0x10];
+                    //clusterIV = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x03D0, 0x10);
+                    //encryptedClusterDataSection = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x400, 0x7C00);
+                    //decryptedClusterDataSection = AESEngine.Decrypt(this.Algorithm, encryptedClusterDataSection,
+                    //                partitionKey, clusterIV, CipherMode.CBC, PaddingMode.Zeros);
+                    decryptedPartitionCluster = AESEngine.Decrypt(this.Algorithm, encryptedPartitionCluster,
                                     partitionKey, clusterIV, CipherMode.CBC, PaddingMode.Zeros);
 
-                    this.CurrentDecryptedBlock = decryptedClusterDataSection;
+                    //this.CurrentDecryptedBlock = decryptedClusterDataSection;
+                    this.CurrentDecryptedBlock = decryptedPartitionCluster;
                     this.CurrentDecryptedBlockNumber = blockStructure.BlockNumber;
+                    this.CurrentVolumeIdentifier = volumeIdentifier;
                 }
 
                 // copy the decrypted data
-                maxCopySize = 0x7C00 - blockStructure.BlockOffset;
+                //maxCopySize = 0x7C00 - blockStructure.BlockOffset;
+                maxCopySize = 0x8000 - blockStructure.BlockOffset;
                 copySize = (size > maxCopySize) ? maxCopySize : size;
                 Array.Copy(this.CurrentDecryptedBlock, blockStructure.BlockOffset,
                     value, bufferLocation, copySize);
@@ -703,20 +802,21 @@ namespace VGMToolbox.format.iso
                 // update counters
                 size -= copySize;
                 bufferLocation += copySize;
-                blockOffset += copySize;
+                fileOffset += copySize;
             }
-            */
+            
             return value;
         }
 
-        public void ExtractFile(FileStream isoStream, string destinationPath, long volumeOffset,
-            long dataOffset, long blockOffset, long size, byte[] partitionKey)
+        public void ExtractFile(FileStream isoStream, string destinationPath, string volumeIdentifier, 
+            long volumeOffset, long clusterOffset, long fileOffset, long size, byte[] partitionKey)
         {
-            /*
-            byte[] value = new byte[0x7C00];
+            
+            byte[] value = new byte[0x8000];
             byte[] encryptedPartitionCluster;
-            byte[] encryptedClusterDataSection;
-            byte[] decryptedClusterDataSection;
+            //byte[] encryptedClusterDataSection;
+            //byte[] decryptedClusterDataSection;
+            byte[] decryptedPartitionCluster;
             byte[] clusterIV;
 
             long maxCopySize;
@@ -735,42 +835,47 @@ namespace VGMToolbox.format.iso
                 while (size > 0)
                 {
                     // get block offset info
-                    NintendoWiiUOpticalDisc.WiiBlockStructure blockStructure =
-                        NintendoWiiUOpticalDisc.GetWiiBlockStructureForOffset(blockOffset);
+                    WiiUBlockStructure blockStructure = NintendoWiiUOpticalDisc.GetWiiUBlockStructureForOffset(fileOffset);
 
-                    // read current block
-                    //encryptedPartitionCluster = ParseFile.ParseSimpleOffset(isoStream,
-                    //    volumeOffset + dataOffset + (blockStructure.BlockNumber * 0x8000),
-                    //    0x8000);
-
-                    if (this.CurrentDecryptedBlockNumber != blockStructure.BlockNumber)
+                    if ((!this.CurrentVolumeIdentifier.Equals(volumeIdentifier)) ||
+                        (this.CurrentVolumeIdentifier.Equals(volumeIdentifier)) && (this.CurrentDecryptedBlockNumber != blockStructure.BlockNumber))
                     {
                         encryptedPartitionCluster = ParseFile.ParseSimpleOffset(isoStream,
-                            volumeOffset + dataOffset + (blockStructure.BlockNumber * 0x8000),
+                            (long)NintendoWiiUOpticalDisc.WIIU_DECRYPTED_AREA_OFFSET + volumeOffset + clusterOffset + (blockStructure.BlockNumber * 0x8000),
                             0x8000);
 
-                        clusterIV = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x03D0, 0x10);
-                        encryptedClusterDataSection = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x400, 0x7C00);
-                        decryptedClusterDataSection = AESEngine.Decrypt(this.Algorithm, encryptedClusterDataSection,
+                        clusterIV = new byte[0x10];
+                        //clusterIV = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x03D0, 0x10);
+                        //encryptedClusterDataSection = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x400, 0x7C00);
+                        //decryptedClusterDataSection = AESEngine.Decrypt(this.Algorithm, encryptedClusterDataSection,
+                        //                partitionKey, clusterIV, CipherMode.CBC, PaddingMode.Zeros);
+                        decryptedPartitionCluster = AESEngine.Decrypt(this.Algorithm, encryptedPartitionCluster,
                                         partitionKey, clusterIV, CipherMode.CBC, PaddingMode.Zeros);
 
-                        this.CurrentDecryptedBlock = decryptedClusterDataSection;
+                        //this.CurrentDecryptedBlock = decryptedClusterDataSection;
+                        this.CurrentDecryptedBlock = decryptedPartitionCluster;
                         this.CurrentDecryptedBlockNumber = blockStructure.BlockNumber;
+                        this.CurrentVolumeIdentifier = volumeIdentifier;
                     }
 
                     // copy the encrypted data
-                    maxCopySize = 0x7C00 - blockStructure.BlockOffset;
+                    //maxCopySize = 0x7C00 - blockStructure.BlockOffset;
+                    maxCopySize = 0x8000 - blockStructure.BlockOffset;
                     copySize = (size > maxCopySize) ? maxCopySize : size;
                     outStream.Write(this.CurrentDecryptedBlock, (int)blockStructure.BlockOffset, (int)copySize);
 
                     // update counters
                     size -= copySize;
-                    blockOffset += copySize;
+                    fileOffset += copySize;
                 }
               
-            }
-             */ 
+            } 
         }
     }
 
+    public struct WiiUBlockStructure
+    {
+        public long BlockNumber { set; get; }
+        public long BlockOffset { set; get; }
+    }
 }
