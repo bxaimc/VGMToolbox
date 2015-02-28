@@ -197,7 +197,11 @@ namespace VGMToolbox.format.iso
                     {
                         this.Partitions[i].PartitionKey = this.DiscKey;
                     }
-                    
+                    else if (this.Partitions[i].PartitionName.StartsWith("UP"))
+                    {
+                        this.Partitions[i].PartitionKey = this.DiscKey;
+                    }
+
                     // set current file table size, increase later if needed
                     currentFileTableSize = 0x8000;
                     
