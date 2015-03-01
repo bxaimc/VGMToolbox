@@ -32,6 +32,8 @@ namespace VGMToolbox.format.iso
         public static readonly byte[] DECRYPTED_AREA_SIGNATURE = new byte[] { 0xCC, 0xA6, 0xE6, 0x7B };
         public static readonly byte[] PARTITION_FILE_TABLE_SIGNATURE = new byte[] { 0x46, 0x53, 0x54, 0x00 }; // "FST"
 
+        public const string TITLE_TICKET_FILE = "TITLE.TIK";
+
         public NintendoWiiUEncryptedDiscReader DiscReader { set; get; }
 
         private byte[] CommonKey;
@@ -59,7 +61,8 @@ namespace VGMToolbox.format.iso
 
         }
 
-        public NintendoWiiUTitleKeyStruct[] PartitionTitleKeys;
+        public Dictionary<string, NintendoWiiUTitleKeyStruct> TitleKeyHash = 
+            new Dictionary<string, NintendoWiiUTitleKeyStruct>();
 
         public static byte[] GetKeyFromFile(string path)
         {
@@ -191,7 +194,8 @@ namespace VGMToolbox.format.iso
                 // @TODO: determine correct key to use per partition
                 //      remove or alter IF statement below
                 if (this.Partitions[i].PartitionName.StartsWith("SI") ||
-                    this.Partitions[i].PartitionName.StartsWith("UP"))
+                    this.Partitions[i].PartitionName.StartsWith("UP") ||
+                    this.TitleKeyHash.ContainsKey(this.Partitions[i].PartitionName))
                 {
                     if (this.Partitions[i].PartitionName.StartsWith("SI"))
                     {
@@ -201,13 +205,17 @@ namespace VGMToolbox.format.iso
                     {
                         this.Partitions[i].PartitionKey = this.DiscKey;
                     }
+                    else
+                    { 
+                        this.Partitions[i].PartitionKey = this.TitleKeyHash[this.Partitions[i].PartitionName].DecryptedTitleKey;
+                    }
 
                     // set current file table size, increase later if needed
                     currentFileTableSize = 0x8000;
                     
                     // decrypt file table block
                     fileTableBlock = this.DiscReader.GetBytes(isoStream,
-                        this.DecryptedAreaOffset + this.Partitions[i].PartitionOffset, currentFileTableSize, this.DiscKey);
+                        this.DecryptedAreaOffset + this.Partitions[i].PartitionOffset, currentFileTableSize, this.Partitions[i].PartitionKey);
 
                     // verify FST magic bytes
                     if (!ParseFile.CompareSegmentUsingSourceOffset(fileTableBlock, 0, 4, PARTITION_FILE_TABLE_SIGNATURE))
@@ -292,38 +300,71 @@ namespace VGMToolbox.format.iso
                         
                         partitionEntries.Add(partitionEntry);
 
-                        // @TODO: Get title key
                         // @TODO: Add correct key to each partition for use in extraction later
                     } // for (uint j = 1; j < totalEntries; j++)
 
                     this.Partitions[i].PartitionEntries = (NintendoWiiUPartitionEntry[])partitionEntries.ToArray(typeof(NintendoWiiUPartitionEntry));
+
+                    // get title keys
+                    if (this.Partitions[i].PartitionName.StartsWith("SI"))
+                    {
+                        this.AddTitleKeysToHashFromPartition(isoStream, this.Partitions[i]);
+                    }
                 } // if (this.Partitions[i].PartitionName.StartsWith("SI")...
             } // for (uint i = 0; i < this.Partitions.GetLength(0); i++)
         }
 
-        private NintendoWiiUTitleKeyStruct GetTitleKeyFromPartitionEntry(FileStream isoStream, long partitionOffset, 
-            NintendoWiiUPartitionEntry partitionEntry, byte[] partitionKey)
+        private void AddTitleKeysToHashFromPartition(FileStream isoStream, NintendoWiiUPartition partition)
         {
             NintendoWiiUTitleKeyStruct titleKeyInfo = new NintendoWiiUTitleKeyStruct();
-        /*
-            long fileAbsoluteOffset;
-            byte[] decryptedBlock;
+            byte[] encryptedKey;
+            byte[] decryptedKey;
+            byte[] partitionNameBytes;
+            UInt64 partitionNameBase;
+            string partitionName;
 
-            // decrypt file
-            fileAbsoluteOffset = this.DecryptedAreaOffset + partitionOffset + 
-                (partitionEntry.StartingCluster * 0x8000) +
-            
-            // will need to use encrypted reader to walk 
-            decryptedBlock = this.DiscReader.GetBytes(isoStream,
-                fileAbsoluteOffset, currentFileTableSize, this.DiscKey);
+            byte[] iv = new byte[0x10];
 
-            // read key
+            // loop through partitions looking for "title.tik"
+            for (uint i = 0; i < partition.PartitionEntries.Length; i++)
+            {
+                // open file
+                if (!partition.PartitionEntries[i].IsDirectory &&
+                    partition.PartitionEntries[i].EntryName.Equals(TITLE_TICKET_FILE, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    // extract decrypted key
+                    encryptedKey = this.DiscReader.GetBytes(isoStream, partition.PartitionName, (long)partition.PartitionOffset,
+                        (long)partition.PartitionClusters[partition.PartitionEntries[i].StartingCluster].StartOffset, partition.PartitionEntries[i].OffsetWithinCluster + 0x1BF,
+                        0x10, partition.PartitionKey);
 
-            // read partition name
+                    // decrypt key
+                    decryptedKey = AESEngine.Decrypt(encryptedKey, this.CommonKey, iv, CipherMode.CBC, PaddingMode.Zeros);
 
-            // decrypt key
-        */
-            return titleKeyInfo;
+                    // extract partition name
+                    partitionNameBytes = this.DiscReader.GetBytes(isoStream, partition.PartitionName, (long)partition.PartitionOffset,
+                        partition.PartitionEntries[i].StartingCluster, partition.PartitionEntries[i].OffsetWithinCluster + 0x1DD,
+                        8, partition.PartitionKey);
+                    
+                    Array.Reverse(partitionNameBytes);
+                    partitionNameBase = BitConverter.ToUInt64(partitionNameBytes, 0);
+                    partitionNameBase >>= 8;
+                    partitionNameBytes = BitConverter.GetBytes(partitionNameBase);
+                    Array.Reverse(partitionNameBytes);
+
+                    partitionName = "GM" + BitConverter.ToString(partitionNameBytes).Replace("-", String.Empty) + "000000000000";
+
+                    // add to dctionary
+                    titleKeyInfo.EncryptedTitleKey = encryptedKey;
+                    titleKeyInfo.DecryptedTitleKey = decryptedKey;
+                    titleKeyInfo.PartitionName = partitionName;
+
+                    if (!this.TitleKeyHash.ContainsKey(partitionName))
+                    {
+                        this.TitleKeyHash.Add(partitionName, titleKeyInfo);
+                    }
+                }
+
+            }
         }
 
         public void LoadVolumes(FileStream isoStream)
@@ -701,28 +742,7 @@ namespace VGMToolbox.format.iso
             }
         }
     }
-
-    public class NintendoWiiUOpticalDiscDirectoryRecord
-    {
-        public uint NameOffset { set; get; }
-        public long FileOffset { set; get; }
-        public uint FileSize { set; get; }
-        public bool IsDirectory { set; get; }
-
-        public NintendoWiiUOpticalDiscDirectoryRecord(byte[] directoryBytes)
-        {
-            this.NameOffset = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(directoryBytes, 0, 4));
-
-            this.FileOffset = (long)ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(directoryBytes, 4, 4));
-            this.FileOffset <<= 2;
-
-            this.FileSize = ByteConversion.GetUInt32BigEndian(ParseFile.ParseSimpleOffset(directoryBytes, 8, 4));
-            this.IsDirectory = ((this.NameOffset & 0xFF000000) != 0);
-
-            this.NameOffset &= 0xFFFFFF;
-        }
-    }
-
+    
     public class NintendoWiiUEncryptedDiscReader
     {
         public string CurrentVolumeIdentifier { set; get; }
