@@ -579,9 +579,12 @@ namespace VGMToolbox.format.iso
         public int NonRawSectorSize { set; get; }
 
         public NintendoWiiUEncryptedDiscReader DiscReader { set; get; }
-        public string PartitionIdentifier { set; get; }
-        public byte[] PartitionKey { set; get; }
-        public byte[] IV { set; get; }
+        public NintendoWiiUPartition ParentPartition { set; get; }
+        public uint PartitionEntryId { set; get; }
+
+        //public string PartitionIdentifier { set; get; }
+        //public byte[] PartitionKey { set; get; }
+        //public byte[] IV { set; get; }
 
         public DateTime FileDateTime { set; get; }
 
@@ -600,8 +603,8 @@ namespace VGMToolbox.format.iso
         public NintendoWiiUOpticalDiscFileStructure(string parentDirectoryName,
             string sourceFilePath, string fileName, long volumeBaseOffset,
             long dataSectionOffset, long lba, long size, DateTime fileTime,
-            NintendoWiiUEncryptedDiscReader discReader, string partitionIdentifier, 
-            byte[] partitionKey, byte[] iv)
+            NintendoWiiUEncryptedDiscReader discReader, NintendoWiiUPartition parentPartition, 
+            uint partitionEntryId)
         {
             this.ParentDirectoryName = parentDirectoryName;
             this.SourceFilePath = sourceFilePath;
@@ -615,13 +618,13 @@ namespace VGMToolbox.format.iso
             this.FileMode = CdSectorType.Unknown;
             this.FileDateTime = fileTime;
             this.DiscReader = discReader;
-            this.PartitionIdentifier = partitionIdentifier;
-            this.PartitionKey = partitionKey;
-            this.IV = iv;
+            this.ParentPartition = parentPartition;
+            this.PartitionEntryId = partitionEntryId;
         }
 
         public virtual void Extract(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
         {
+
             string destinationFile = Path.Combine(Path.Combine(destinationFolder, this.ParentDirectoryName), this.FileName);
 
             if (!streamCache.ContainsKey(this.SourceFilePath))
@@ -629,8 +632,15 @@ namespace VGMToolbox.format.iso
                 streamCache[this.SourceFilePath] = File.OpenRead(this.SourceFilePath);
             }
 
-            this.DiscReader.ExtractFile(streamCache[this.SourceFilePath], destinationFile, this.PartitionIdentifier, 
-                this.VolumeBaseOffset, this.DataSectionOffset, this.Lba, this.Size, this.PartitionKey, this.IV);
+            // setup initial IV
+            byte[] firstIV = new byte[0x10];
+            byte[] clusterId = BitConverter.GetBytes(this.ParentPartition.PartitionEntries[this.PartitionEntryId].StartingCluster);
+            firstIV[0] = clusterId[1];
+            firstIV[1] = clusterId[0];
+
+            this.DiscReader.ExtractFile(streamCache[this.SourceFilePath], destinationFile, this.ParentPartition.PartitionName,
+                this.VolumeBaseOffset, this.DataSectionOffset, this.Lba, this.Size, this.ParentPartition.PartitionKey,
+                firstIV);
         }
     }
 
@@ -751,9 +761,8 @@ namespace VGMToolbox.format.iso
                         isoStream.Name, volumePartition.PartitionEntries[currentPartitionEntryIndex].EntryName,
                         (long)volumePartition.PartitionOffset, 
                         (long)volumePartition.PartitionClusters[volumePartition.PartitionEntries[currentPartitionEntryIndex].StartingCluster].StartOffset,
-                        volumePartition.PartitionEntries[currentPartitionEntryIndex].OffsetWithinCluster, volumePartition.PartitionEntries[currentPartitionEntryIndex].Size, 
-                        creationDateTime, discReader, volumePartition.PartitionName, volumePartition.PartitionKey,
-                        volumePartition.IV);
+                        volumePartition.PartitionEntries[currentPartitionEntryIndex].OffsetWithinCluster, volumePartition.PartitionEntries[currentPartitionEntryIndex].Size,
+                        creationDateTime, discReader, volumePartition, currentPartitionEntryIndex);
 
                     this.FileArray.Add(file);
                 }
@@ -765,6 +774,7 @@ namespace VGMToolbox.format.iso
     public class NintendoWiiUEncryptedDiscReader
     {
         public string CurrentVolumeIdentifier { set; get; }
+        public long CurrentDecryptedClusterOffset { set; get; }
         public byte[] CurrentDecryptedBlock { set; get; }
         public long CurrentDecryptedBlockNumber { set; get; }
         public Rijndael Algorithm { set; get; }
@@ -772,6 +782,7 @@ namespace VGMToolbox.format.iso
         public NintendoWiiUEncryptedDiscReader()
         {
             this.CurrentVolumeIdentifier = String.Empty;
+            this.CurrentDecryptedClusterOffset = -1;
             this.CurrentDecryptedBlock = null;
             this.CurrentDecryptedBlockNumber = -1;
             this.Algorithm = Rijndael.Create();
@@ -796,8 +807,6 @@ namespace VGMToolbox.format.iso
                         
             byte[] encryptedPartitionCluster;
             byte[] decryptedPartitionCluster;
-            //byte[] encryptedClusterDataSection;
-            //byte[] decryptedClusterDataSection;
             byte[] clusterIV;
 
             long bufferLocation = 0;
@@ -809,34 +818,27 @@ namespace VGMToolbox.format.iso
                 // get block offset info
                 WiiUBlockStructure blockStructure = NintendoWiiUOpticalDisc.GetWiiUBlockStructureForOffset(fileOffset);
 
-                // read current block
-                //encryptedPartitionCluster = ParseFile.ParseSimpleOffset(isoStream,
-                //    volumeOffset + dataOffset + (blockStructure.BlockNumber * 0x8000),
-                //    0x8000);
-
-                if ((!this.CurrentVolumeIdentifier.Equals(volumeIdentifier)) ||
-                    (this.CurrentVolumeIdentifier.Equals(volumeIdentifier)) && (this.CurrentDecryptedBlockNumber != blockStructure.BlockNumber))
+                 if ((!this.CurrentVolumeIdentifier.Equals(volumeIdentifier)) ||
+                    (this.CurrentVolumeIdentifier.Equals(volumeIdentifier)) && 
+                    (this.CurrentDecryptedBlockNumber != blockStructure.BlockNumber) &&
+                    (this.CurrentDecryptedClusterOffset != clusterOffset))
                 {
                     encryptedPartitionCluster = ParseFile.ParseSimpleOffset(isoStream,
                         (long)NintendoWiiUOpticalDisc.WIIU_DECRYPTED_AREA_OFFSET + volumeOffset + clusterOffset + (blockStructure.BlockNumber * 0x8000),
                         0x8000);
 
                     clusterIV = new byte[0x10];
-                    //clusterIV = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x03D0, 0x10);
-                    //encryptedClusterDataSection = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x400, 0x7C00);
-                    //decryptedClusterDataSection = AESEngine.Decrypt(this.Algorithm, encryptedClusterDataSection,
-                    //                partitionKey, clusterIV, CipherMode.CBC, PaddingMode.Zeros);
+    
                     decryptedPartitionCluster = AESEngine.Decrypt(this.Algorithm, encryptedPartitionCluster,
                                     partitionKey, clusterIV, CipherMode.CBC, PaddingMode.Zeros);
 
-                    //this.CurrentDecryptedBlock = decryptedClusterDataSection;
                     this.CurrentDecryptedBlock = decryptedPartitionCluster;
+                    this.CurrentDecryptedClusterOffset = clusterOffset;
                     this.CurrentDecryptedBlockNumber = blockStructure.BlockNumber;
                     this.CurrentVolumeIdentifier = volumeIdentifier;
                 }
 
-                // copy the decrypted data
-                //maxCopySize = 0x7C00 - blockStructure.BlockOffset;
+                // copy the decrypted data              
                 maxCopySize = 0x8000 - blockStructure.BlockOffset;
                 copySize = (size > maxCopySize) ? maxCopySize : size;
                 Array.Copy(this.CurrentDecryptedBlock, blockStructure.BlockOffset,
@@ -853,15 +855,14 @@ namespace VGMToolbox.format.iso
 
         public void ExtractFile(FileStream isoStream, string destinationPath, string volumeIdentifier, 
             long volumeOffset, long clusterOffset, long fileOffset, long size, byte[] partitionKey,
-            byte[] partitionIV)
+            byte[] initialIV)
         {
             
             byte[] value = new byte[0x8000];
             byte[] encryptedPartitionCluster;
-            //byte[] encryptedClusterDataSection;
-            //byte[] decryptedClusterDataSection;
+            byte[] encryptedPartitionClusterLastBlock = new byte[0x10];
             byte[] decryptedPartitionCluster;
-            byte[] clusterIV;
+            byte[] clusterIV = initialIV;
 
             long maxCopySize;
             long copySize;
@@ -881,31 +882,36 @@ namespace VGMToolbox.format.iso
                     // get block offset info
                     WiiUBlockStructure blockStructure = NintendoWiiUOpticalDisc.GetWiiUBlockStructureForOffset(fileOffset);
 
-                    if ((!this.CurrentVolumeIdentifier.Equals(volumeIdentifier)) ||
-                        (this.CurrentVolumeIdentifier.Equals(volumeIdentifier)) && (this.CurrentDecryptedBlockNumber != blockStructure.BlockNumber))
-                    {
+                    //if ((!this.CurrentVolumeIdentifier.Equals(volumeIdentifier)) ||
+                    //    (this.CurrentVolumeIdentifier.Equals(volumeIdentifier)) && 
+                    //    (this.CurrentDecryptedBlockNumber != blockStructure.BlockNumber) &&
+                    //    (this.CurrentDecryptedClusterOffset != clusterOffset))
+                    //{
                         encryptedPartitionCluster = ParseFile.ParseSimpleOffset(isoStream,
                             (long)NintendoWiiUOpticalDisc.WIIU_DECRYPTED_AREA_OFFSET + volumeOffset + clusterOffset + (blockStructure.BlockNumber * 0x8000),
                             0x8000);
 
-                        //clusterIV = new byte[0x10];
-                        clusterIV = partitionIV;
-                        
-                        //clusterIV = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x03D0, 0x10);
-                        //encryptedClusterDataSection = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x400, 0x7C00);
-                        //decryptedClusterDataSection = AESEngine.Decrypt(this.Algorithm, encryptedClusterDataSection,
-                        //                partitionKey, clusterIV, CipherMode.CBC, PaddingMode.Zeros);
+                        // decrypt block
                         decryptedPartitionCluster = AESEngine.Decrypt(this.Algorithm, encryptedPartitionCluster,
                                         partitionKey, clusterIV, CipherMode.CBC, PaddingMode.Zeros);
 
-                        //this.CurrentDecryptedBlock = decryptedClusterDataSection;
+                        if (encryptedPartitionCluster.Length == 0x8000)
+                        {
+                            Array.Copy(encryptedPartitionCluster, 0x7FF0, encryptedPartitionClusterLastBlock, 0, 0x10);
+                        }
                         this.CurrentDecryptedBlock = decryptedPartitionCluster;
+                        this.CurrentDecryptedClusterOffset = clusterOffset;
                         this.CurrentDecryptedBlockNumber = blockStructure.BlockNumber;
                         this.CurrentVolumeIdentifier = volumeIdentifier;
-                    }
+
+                        // starting IV is cluster id, changes with each block
+                        for (int i = 0; i < 0x10; i++)
+                        {
+                            clusterIV[i] = encryptedPartitionClusterLastBlock[i];
+                        }
+                    //}
 
                     // copy the encrypted data
-                    //maxCopySize = 0x7C00 - blockStructure.BlockOffset;
                     maxCopySize = 0x8000 - blockStructure.BlockOffset;
                     copySize = (size > maxCopySize) ? maxCopySize : size;
                     outStream.Write(this.CurrentDecryptedBlock, (int)blockStructure.BlockOffset, (int)copySize);
