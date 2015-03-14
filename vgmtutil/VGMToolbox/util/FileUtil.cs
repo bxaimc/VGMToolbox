@@ -630,5 +630,20 @@ namespace VGMToolbox.util
 
             return fileSize;
         }
+
+        public static void CreateFileFromByteArray(string destinationFile, byte[] sourceBytes)
+        {
+            string destinationDirectory = Path.GetDirectoryName(destinationFile);
+
+            if (!Directory.Exists(destinationDirectory))
+            {
+                Directory.CreateDirectory(destinationDirectory);
+            }
+
+            using (FileStream outStream = File.Open(destinationFile, FileMode.Create, FileAccess.Write, FileShare.Read))
+            {
+                outStream.Write(sourceBytes, 0, sourceBytes.Length);
+            }
+        }
     }
 }
