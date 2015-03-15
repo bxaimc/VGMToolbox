@@ -645,5 +645,23 @@ namespace VGMToolbox.util
                 outStream.Write(sourceBytes, 0, sourceBytes.Length);
             }
         }
+
+        public static void CreateFileFromString(string destinationFile, string sourceText)
+        {
+            string destinationDirectory = Path.GetDirectoryName(destinationFile);
+
+            if (!Directory.Exists(destinationDirectory))
+            {
+                Directory.CreateDirectory(destinationDirectory);
+            }
+
+            using ( FileStream outStream = File.Open(destinationFile, FileMode.Create, FileAccess.Write, FileShare.Read))
+            {
+                using (StreamWriter sw = new StreamWriter(outStream, Encoding.ASCII))
+                {
+                    sw.Write(sourceText);
+                }
+            }
+        }
     }
 }
