@@ -194,13 +194,10 @@ namespace VGMToolbox.format.iso
             string partitionTextDestinationFile;
             StringBuilder partitionText = new StringBuilder();
 
-            ulong sumOfHeaderOffsets;
-
             // loop through each partition
             for (uint i = 0; i < this.Partitions.Length; i++)
             {
                 partitionEntries = new ArrayList();
-                sumOfHeaderOffsets = 0;
 
                 // decrypt file table block 
                 if (this.Partitions[i].PartitionName.StartsWith("SI") ||
@@ -251,6 +248,8 @@ namespace VGMToolbox.format.iso
                         
                         // get cluster start offset
                         clusterStart = (ulong)ParseFile.ReadUintBE(fileTableBlock, (0x20 + (0x20 * c))) * 0x8000;
+                        this.Partitions[i].PartitionClusters[c].Unknown1 = ParseFile.ReadUintBE(fileTableBlock, (0x20 + (0x20 * c) + 0x10));
+                        this.Partitions[i].PartitionClusters[c].Unknown2 = ParseFile.ReadUintBE(fileTableBlock, (0x20 + (0x20 * c) + 0x14));
 
                         if (clusterStart > 0) 
                         {
@@ -538,6 +537,9 @@ namespace VGMToolbox.format.iso
     {
         public ulong StartOffset { set; get; }
         public ulong Size { set; get; }
+
+        public uint Unknown1 { set; get; }
+        public uint Unknown2 { set; get; }
     }
 
 
@@ -701,8 +703,14 @@ namespace VGMToolbox.format.iso
             firstIV[0] = clusterId[1];
             firstIV[1] = clusterId[0];
 
-            if ((this.ParentPartition.PartitionEntries[this.PartitionEntryId].Unknown == 0x0400) ||
-                (this.ParentPartition.PartitionEntries[this.PartitionEntryId].Unknown == 0x0040))
+            // seems like 0x0400 and 0x0040 are hashed file flags.  0x440 doesn't seem to be hashed though (more samples may be needed)?
+            // some titles have a second GM partition.  so far I have not seen the file specific hashed flags, but the clusters seem to be marked
+            //   with 0x00000400 and 0x02000000 at offsets 0x10 and 0x14 within a cluster entry to indicate that files within that cluster are hashed
+            if ((this.ParentPartition.PartitionEntries[this.PartitionEntryId].Unknown == 0x0400) || 
+                (this.ParentPartition.PartitionEntries[this.PartitionEntryId].Unknown == 0x0040) ||                 
+                ((this.ParentPartition.PartitionClusters[this.ParentPartition.PartitionEntries[this.PartitionEntryId].StartingCluster].Unknown1 == 0x00000400) &&
+                 (this.ParentPartition.PartitionClusters[this.ParentPartition.PartitionEntries[this.PartitionEntryId].StartingCluster].Unknown2 == 0x02000000))
+                )
             {
                 this.DiscReader.ExtractFile(streamCache[this.SourceFilePath], destinationFile, this.ParentPartition.PartitionName,
                     this.VolumeBaseOffset, this.DataSectionOffset, this.Lba, this.Size, this.ParentPartition.PartitionKey,
