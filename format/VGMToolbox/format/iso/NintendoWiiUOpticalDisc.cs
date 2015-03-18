@@ -701,7 +701,8 @@ namespace VGMToolbox.format.iso
             firstIV[0] = clusterId[1];
             firstIV[1] = clusterId[0];
 
-            if ((this.ParentPartition.PartitionEntries[this.PartitionEntryId].Unknown & 0x400) == 0x400)
+            if ((this.ParentPartition.PartitionEntries[this.PartitionEntryId].Unknown == 0x0400) ||
+                (this.ParentPartition.PartitionEntries[this.PartitionEntryId].Unknown == 0x0040))
             {
                 this.DiscReader.ExtractFile(streamCache[this.SourceFilePath], destinationFile, this.ParentPartition.PartitionName,
                     this.VolumeBaseOffset, this.DataSectionOffset, this.Lba, this.Size, this.ParentPartition.PartitionKey,
@@ -1019,6 +1020,10 @@ namespace VGMToolbox.format.iso
 
             byte[] clusterIV = initialIV;
             byte[] cipherKey = partitionKey;
+            
+            byte[] h0 = new byte[0x14];
+            byte[] blockSha1 = new byte[0x14];
+            bool sha1ErrorDisplayed = false;
 
             long maxCopySize;
             long copySize;
@@ -1061,6 +1066,7 @@ namespace VGMToolbox.format.iso
                     
                     // decrypt the data
                     clusterIV = ParseFile.SimpleArrayCopy(decryptedPartitionHeader, (ivBlock * 0x14), clusterIV.Length);
+                    h0 = ParseFile.SimpleArrayCopy(decryptedPartitionHeader, (ivBlock * 0x14), h0.Length);
 
                     if (ivBlock == 0)
                     {
@@ -1070,6 +1076,24 @@ namespace VGMToolbox.format.iso
                     encryptedPartitionCluster = ParseFile.ParseSimpleOffset(isoStream, readOffset + 0x400, (int)blockSize);
                     decryptedPartitionCluster = AESEngine.Decrypt(this.Algorithm, encryptedPartitionCluster,
                                         cipherKey, ref clusterIV, CipherMode.CBC, PaddingMode.Zeros);
+
+                    // calculate SHA1 and verify block
+                    blockSha1 = ChecksumUtil.GetSha1(decryptedPartitionCluster);
+                    if (ivBlock == 0)
+                    {
+                        blockSha1[1] ^= (byte)clusterId;
+                    }
+
+                    // verify block
+                    if (!ParseFile.CompareSegment(blockSha1, 0, h0))
+                    {
+                        // only show error once per file
+                        if (!sha1ErrorDisplayed)
+                        {
+                            MessageBox.Show(String.Format("Warning: '{0},' failed SHA1 verification at offset 0x{1} during extraction.{2}",
+                                Path.GetFileName(destinationPath), readOffset, Environment.NewLine), "Warning - SHA1 Failure");
+                        }
+                    }
 
                     // copy the encrypted data
                     maxCopySize = blockSize - blockStructure.BlockOffset;

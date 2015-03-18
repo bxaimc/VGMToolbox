@@ -64,6 +64,13 @@ namespace VGMToolbox.util
             return ParseFile.ByteArrayToString(hashMd5.Hash);
         }
 
+        public static byte[] GetSha1(byte[] dataBlock)
+        {
+            SHA1CryptoServiceProvider sha1Hash = new SHA1CryptoServiceProvider();
+            sha1Hash.ComputeHash(dataBlock);
+            return sha1Hash.Hash;
+        }
+
         /// <summary>
         /// Get the SHA1 checksum of the input stream.
         /// </summary>
