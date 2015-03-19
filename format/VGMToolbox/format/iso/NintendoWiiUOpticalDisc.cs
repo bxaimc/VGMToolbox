@@ -290,7 +290,7 @@ namespace VGMToolbox.format.iso
                         currentEntryOffset = entriesOffset + (j * 0x10);
 
                         // increase file table size if needed
-                        if ((currentEntryOffset + 0x10) > currentFileTableSize)
+                        while ((currentEntryOffset + 0x10) > currentFileTableSize)
                         {
                             currentFileTableSize += 0x8000;
                             fileTableBlock = this.DiscReader.GetBytes(isoStream,
@@ -305,7 +305,7 @@ namespace VGMToolbox.format.iso
                         currentNameOffset = nameTableOffset + partitionEntry.NameOffset;
 
                         // increase size if needed, will be conservative with name
-                        if ((currentNameOffset + 0x200) > currentFileTableSize)
+                        while ((currentNameOffset + 0x200) > currentFileTableSize)
                         {
                             currentFileTableSize += 0x8000;
                             fileTableBlock = this.DiscReader.GetBytes(isoStream,
