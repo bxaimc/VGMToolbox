@@ -194,15 +194,28 @@ namespace VGMToolbox.format.iso
             string partitionTextDestinationFile;
             StringBuilder partitionText = new StringBuilder();
 
+            string partitionNameHashKey;
+
             // loop through each partition
             for (uint i = 0; i < this.Partitions.Length; i++)
             {
                 partitionEntries = new ArrayList();
 
+                // sometimes the TIK file doesn't contain the full string, first 0x10 plus GM prefix seems like enough, otherwise have
+                //   to explore TMD method.
+                if (this.Partitions[i].PartitionName.StartsWith("GM"))
+                {
+                    partitionNameHashKey = this.Partitions[i].PartitionName.Substring(0, 0x12);
+                }
+                else
+                {
+                    partitionNameHashKey = String.Empty;
+                }
+
                 // decrypt file table block 
                 if (this.Partitions[i].PartitionName.StartsWith("SI") ||
                     this.Partitions[i].PartitionName.StartsWith("UP") ||
-                    this.TitleKeyHash.ContainsKey(this.Partitions[i].PartitionName))
+                    this.TitleKeyHash.ContainsKey(partitionNameHashKey))
                 {
                     if (this.Partitions[i].PartitionName.StartsWith("SI"))
                     {
@@ -215,9 +228,9 @@ namespace VGMToolbox.format.iso
                         this.Partitions[i].IV = new byte[0x10];
                     }
                     else
-                    { 
-                        this.Partitions[i].PartitionKey = this.TitleKeyHash[this.Partitions[i].PartitionName].DecryptedTitleKey;
-                        this.Partitions[i].IV = this.TitleKeyHash[this.Partitions[i].PartitionName].IV;
+                    {
+                        this.Partitions[i].PartitionKey = this.TitleKeyHash[partitionNameHashKey].DecryptedTitleKey;
+                        this.Partitions[i].IV = this.TitleKeyHash[partitionNameHashKey].IV;
                     }
 
                     // write decryption key to file for analysis
@@ -375,7 +388,8 @@ namespace VGMToolbox.format.iso
                     decryptedTitleKey = AESEngine.Decrypt(encryptedTitleKey, this.CommonKey, iv, CipherMode.CBC, PaddingMode.Zeros);
 
                     // build partition name for this key
-                    partitionName = "GM" + BitConverter.ToString(titleId).Replace("-", String.Empty) + "000000000000";
+                    //partitionName = "GM" + BitConverter.ToString(titleId).Replace("-", String.Empty) + "000000000000";  // turns out this isn't always correct.
+                    partitionName = "GM" + BitConverter.ToString(titleId).Replace("-", String.Empty);
 
                     // add to dctionary
                     titleKeyInfo.EncryptedTitleKey = encryptedTitleKey;
