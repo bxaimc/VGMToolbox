@@ -240,7 +240,7 @@ namespace VGMToolbox.format.iso
 
                     // set current file table size, increase later if needed
                     currentFileTableSize = 0x8000;
-                    
+
                     // decrypt file table block
                     fileTableBlock = this.DiscReader.GetBytes(isoStream,
                         this.DecryptedAreaOffset + this.Partitions[i].PartitionOffset, currentFileTableSize, this.Partitions[i].PartitionKey);
@@ -258,20 +258,20 @@ namespace VGMToolbox.format.iso
                     for (uint c = 0; c < this.Partitions[i].PartitionClusterCount; c++)
                     {
                         this.Partitions[i].PartitionClusters[c] = new NintendoWiiUClusterStruct();
-                        
+
                         // get cluster start offset
                         clusterStart = (ulong)ParseFile.ReadUintBE(fileTableBlock, (0x20 + (0x20 * c))) * 0x8000;
                         this.Partitions[i].PartitionClusters[c].Unknown1 = ParseFile.ReadUintBE(fileTableBlock, (0x20 + (0x20 * c) + 0x10));
                         this.Partitions[i].PartitionClusters[c].Unknown2 = ParseFile.ReadUintBE(fileTableBlock, (0x20 + (0x20 * c) + 0x14));
 
-                        if (clusterStart > 0) 
+                        if (clusterStart > 0)
                         {
                             this.Partitions[i].PartitionClusters[c].StartOffset = clusterStart - 0x8000; // subtract 0x8000 since seems to use 1-based array
                         }
 
                         // calculate cluster size based on number of blocks value
                         clusterSize = (ulong)ParseFile.ReadUintBE(fileTableBlock, (0x20 + (0x20 * c) + 4)) * 0x8000;
-                        
+
                         // @TODO: This seems to leave some empty space between clusters.
                         if (clusterSize > 0)
                         {
@@ -326,7 +326,7 @@ namespace VGMToolbox.format.iso
                         }
 
                         partitionEntry.EntryName = ByteConversion.GetAsciiText(fileTableBlock, (long)currentNameOffset);
-                                                
+
                         partitionEntries.Add(partitionEntry);
 
                     } // for (uint j = 1; j < totalEntries; j++)
@@ -341,13 +341,18 @@ namespace VGMToolbox.format.iso
 
                     // write decrypted FST to file for analysis
                     fstDestinationFile = Path.Combine(Path.GetDirectoryName(isoStream.Name), String.Format("{0}_info", Path.GetFileNameWithoutExtension(isoStream.Name)));
-                    fstDestinationFile = Path.Combine(fstDestinationFile, String.Format("{0}.{1}.fst", Path.GetFileName(isoStream.Name), this.Partitions[i].PartitionName));                  
+                    fstDestinationFile = Path.Combine(fstDestinationFile, String.Format("{0}.{1}.fst", Path.GetFileName(isoStream.Name), this.Partitions[i].PartitionName));
                     FileUtil.CreateFileFromByteArray(fstDestinationFile, fileTableBlock);
 
                     // get text info about partition
                     partitionText.Append(NintendoWiiUOpticalDisc.GetPartitionTextDescription(this.Partitions[i]));
 
                 } // if (this.Partitions[i].PartitionName.StartsWith("SI")...
+                else
+                {
+                    MessageBox.Show(String.Format("Warning, unmatched partition found: '{0}'.  If this is an original (good) disc image, this could be a bug with VGMToolbox.", this.Partitions[i].PartitionName), "Warning - Unmatched Partition Found");
+                }
+            
             } // for (uint i = 0; i < this.Partitions.GetLength(0); i++)
 
             // write partition info to file
