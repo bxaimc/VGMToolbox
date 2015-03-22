@@ -198,10 +198,10 @@ namespace VGMToolbox.format.util
                         bw.Write((UInt32)(VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.CoefLeftChannel) + Genh.GENH_HEADER_SIZE));
                         bw.Write((UInt32)(VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.CoefRightChannel) + Genh.GENH_HEADER_SIZE));
                         bw.Write((UInt32)dspInterleaveType);
+                        bw.Write((UInt32)pGenhCreationStruct.CoefficientType);
 
                         if (pGenhCreationStruct.CoefficientType == 1 || pGenhCreationStruct.CoefficientType == 3) // split coefficients (aka Capcom Hack)
                         {
-                            bw.Write((UInt32)pGenhCreationStruct.CoefficientType);
                             bw.Write((UInt32)(VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.CoefLeftChannel) + Genh.GENH_HEADER_SIZE + 0x10));
                             bw.Write((UInt32)(VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.CoefRightChannel) + Genh.GENH_HEADER_SIZE + 0x10));
                         }
