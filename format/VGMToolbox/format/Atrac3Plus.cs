@@ -19,6 +19,8 @@ namespace VGMToolbox.format
         public static readonly byte[] Ea3HeaderChunk =
             new byte[] { 0x45, 0x41, 0x33, 0x01, 0x00, 0x60, 0xFF, 0xFF };
 
+        //public static readonly byte[] RiffHeaderChunkForPam
+
         public const long Aa3HeaderSize = 0x460;
         public const long Aa3FormatStringLocation = 0x420;
         public const long Aa3HeaderLocation = 0x00;
@@ -182,10 +184,15 @@ namespace VGMToolbox.format
 
             // insert format string
             Array.Copy(formatString, 0, headerBytes, Aa3FormatStringLocation, formatString.Length);
-
             return headerBytes;
         }
+
+        //public static byte[] GetRiffHeaderForPam(uint headerBlockValue)
+        //{ 
         
+        
+        //}
+
         //public static byte[] GetRiffHeaderFromMsfHeader(byte[] msfHeader)
         //{ 
         

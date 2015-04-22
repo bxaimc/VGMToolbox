@@ -16,7 +16,7 @@ namespace VGMToolbox.tools.extract
 {
     class IsoExtractorWorker : AVgmtDragAndDropWorker, IVgmtBackgroundWorker
     {
-        public static int MAX_ID_BYTES_LENGTH = 0x100;
+        public static int MAX_ID_BYTES_LENGTH = 0x150;
         
         public struct IsoExtractorStruct : IVgmtWorkerStruct
         {
@@ -382,8 +382,23 @@ namespace VGMToolbox.tools.extract
 
                         break;                                       
                     }
-                    
-                    
+
+
+                    //-----------------
+                    // NINTENDO 3DS
+                    //-----------------
+                    else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, (int)Nintendo3dsCtr.IDENTIFIER_OFFSET, Nintendo3dsCtr.STANDARD_IDENTIFIER.Length, Nintendo3dsCtr.STANDARD_IDENTIFIER))
+                    {
+                        Nintendo3dsCtr ctr = new Nintendo3dsCtr(fs.Name);
+
+                        //foreach (NintendoWiiUOpticalDiscVolume isoVolume in wiiUDisc.Volumes)
+                        //{
+                        //    volumeList.Add((IVolume)isoVolume);
+                        //}
+
+                        break;
+                    }
+
                     else
                     {
                         currentOffset += sectorSize;
