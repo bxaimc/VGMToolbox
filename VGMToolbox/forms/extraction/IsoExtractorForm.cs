@@ -168,11 +168,11 @@ namespace VGMToolbox.forms.extraction
             directoryNode.SelectedImageKey = "openFolder";
 
             foreach (IDirectoryStructure d in directory.SubDirectories)
-            {                
+            {
                 subDirectoryNode = GetDirectoryNode(d);
                 directoryNode.Nodes.Add(subDirectoryNode);
             }
-
+            
             //foreach (IFileStructure f in directory.Files)
             //{
             //    fileNode = GetFileNode(f);

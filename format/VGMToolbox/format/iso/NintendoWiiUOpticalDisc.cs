@@ -855,12 +855,7 @@ namespace VGMToolbox.format.iso
                     currentPartitionEntryIndex--;
                 }
                 else  // build file
-                {
-                    if (volumePartition.PartitionEntries[currentPartitionEntryIndex].NameOffset == 0x13f3)
-                    {
-                        int ddd = 1;
-                    }
-                    
+                {                    
                     file = new NintendoWiiUOpticalDiscFileStructure(nextDirectory,
                         isoStream.Name, volumePartition.PartitionEntries[currentPartitionEntryIndex].EntryName,
                         (long)volumePartition.PartitionOffset, 

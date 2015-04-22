@@ -225,7 +225,7 @@ namespace VGMToolbox.format
         public ulong ProgramId { set; get; }
         public byte[] Reserved02 { set; get; }
         public byte[] LogoRegionHash { set; get; }
-        public byte[] ProductCode { set; get; }
+        public string ProductCode { set; get; }
         
         public byte[] ExtendedHeaderHash { set; get; }
         public uint ExtendedHeaderSize { set; get; }
@@ -260,7 +260,7 @@ namespace VGMToolbox.format
             get
             {
                 DirectoryStructureArray.Sort();
-                return (IDirectoryStructure[])DirectoryStructureArray.ToArray(typeof(NintendoU8Directory)); // @TODO Fix this
+                return (IDirectoryStructure[])DirectoryStructureArray.ToArray(typeof(Nintendo3dsCtrExeFileSystem)); // @TODO May need to customize for each directory type or use separate array list for each type (ExeFs, RomFs, etc...) and combine on output
             }
         }
 
@@ -285,7 +285,7 @@ namespace VGMToolbox.format
             this.ProgramId = ParseFile.ReadUlongLE(fs, offset + 0x118);
             this.Reserved02 = ParseFile.ParseSimpleOffset(fs, offset + 0x120, 0x10);
             this.LogoRegionHash = ParseFile.ParseSimpleOffset(fs, offset + 0x130, 0x20);
-            this.ProductCode = ParseFile.ParseSimpleOffset(fs, offset + 0x150, 0x10);
+            this.ProductCode = ParseFile.ReadAsciiString(fs, offset + 0x150);
 
             this.ExtendedHeaderHash = ParseFile.ParseSimpleOffset(fs, offset + 0x160, 0x10);
             this.ExtendedHeaderSize = ParseFile.ReadUintLE(fs, offset + 0x180);
@@ -315,6 +315,9 @@ namespace VGMToolbox.format
 
         public void Initialize(FileStream fs, long offset, bool isRawDump)
         {
+            IDirectoryStructure directory;
+            long absoluteOffset;
+
             this.FormatDescription = Nintendo3dsCtr.FORMAT_DESCRIPTION_STRING_DECRYPTED;
 
             this.VolumeBaseOffset = offset;
@@ -322,9 +325,26 @@ namespace VGMToolbox.format
             this.VolumeType = VolumeDataType.Data;
             this.DirectoryStructureArray = new ArrayList();
 
+            // parse NCCH header
             this.ParseNcchHeader(fs, offset);
 
-            this.VolumeIdentifier = ByteConversion.GetAsciiText(this.ProductCode);
+            // set volume name
+            this.VolumeIdentifier = this.ProductCode;
+
+            // parse File Systems
+            Nintendo3dsCtrExeFileSystem dummyRoot = new Nintendo3dsCtrExeFileSystem();
+            dummyRoot.SubDirectoryArray = new ArrayList();
+            dummyRoot.FileArray = new ArrayList();
+            
+            if (this.ExeFsOffset > 0)
+            {                
+                absoluteOffset = offset + ((long)this.ExeFsOffset * Nintendo3dsCtr.MEDIA_UNIT_SIZE);
+                directory = new Nintendo3dsCtrExeFileSystem(fs, fs.Name, this.VolumeIdentifier, absoluteOffset);
+
+                dummyRoot.SubDirectoryArray.Add(directory);                
+            }
+
+            this.DirectoryStructureArray.Add(dummyRoot);
         }
 
         /// <summary>
@@ -342,5 +362,156 @@ namespace VGMToolbox.format
         }
     
     
+    }
+
+    //--------------------------------------------
+    // ExeFS
+    //--------------------------------------------
+    public class Nintendo3dsCtrExeFileSystemFile : IFileStructure
+    {
+        public string ParentDirectoryName { set; get; }
+        public string SourceFilePath { set; get; }
+        public string FileName { set; get; }
+        public long Offset { set; get; }
+
+        public long VolumeBaseOffset { set; get; }
+        public long Lba { set; get; }
+        public long Size { set; get; }
+        public bool IsRaw { set; get; }
+        public CdSectorType FileMode { set; get; }
+        public int NonRawSectorSize { set; get; }
+
+        public DateTime FileDateTime { set; get; }
+
+        public int CompareTo(object obj)
+        {
+            if (obj is Nintendo3dsCtrExeFileSystemFile)
+            {
+                Nintendo3dsCtrExeFileSystemFile o = (Nintendo3dsCtrExeFileSystemFile)obj;
+
+                return this.FileName.CompareTo(o.FileName);
+            }
+
+            throw new ArgumentException("object is not a Nintendo3dsCtrExeFileSystemFile");
+        }
+
+        public Nintendo3dsCtrExeFileSystemFile(string parentDirectoryName, string sourceFilePath, 
+            string fileName, long offset, long volumeBaseOffset, long lba, long size)
+        {
+            this.ParentDirectoryName = parentDirectoryName;
+            this.SourceFilePath = sourceFilePath;
+            this.FileName = fileName;
+            this.Offset = offset;
+            this.Size = size;
+            this.FileDateTime = new DateTime();
+
+            this.VolumeBaseOffset = volumeBaseOffset;
+            this.Lba =lba;
+            this.IsRaw = false;
+            this.NonRawSectorSize = 0;
+            this.FileMode = CdSectorType.Unknown;
+        }
+
+        public void Extract(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
+        {
+            string destinationFile = Path.Combine(Path.Combine(destinationFolder, this.ParentDirectoryName), this.FileName);
+
+            if (!streamCache.ContainsKey(this.SourceFilePath))
+            {
+                streamCache[this.SourceFilePath] = File.OpenRead(this.SourceFilePath);
+            }
+
+            ParseFile.ExtractChunkToFile(streamCache[this.SourceFilePath], this.Offset, this.Size, destinationFile);
+        }
+    }
+    
+    public class Nintendo3dsCtrExeFileSystem : IDirectoryStructure
+    {
+        public string SourceFilePath { set; get; }
+        public string DirectoryName { set; get; }
+        public string ParentDirectoryName { set; get; }
+
+        public ArrayList SubDirectoryArray { set; get; }
+        public IDirectoryStructure[] SubDirectories
+        {
+            set { this.SubDirectories = value; }
+            get
+            {
+                SubDirectoryArray.Sort();
+                return (IDirectoryStructure[])SubDirectoryArray.ToArray(typeof(Nintendo3dsCtrExeFileSystem));
+            }
+        }
+
+        public ArrayList FileArray { set; get; }
+        public IFileStructure[] Files
+        {
+            set { this.Files = value; }
+            get
+            {
+                FileArray.Sort();
+                return (IFileStructure[])FileArray.ToArray(typeof(Nintendo3dsCtrExeFileSystemFile));
+            }
+        }
+
+        public Nintendo3dsCtrExeFileSystem() { }
+
+        public Nintendo3dsCtrExeFileSystem(FileStream isoStream, string sourceFilePath, string parentDirectoryName, long offset)
+        {
+            string fileName;
+            long fileOffset;
+            uint fileLength;
+            Nintendo3dsCtrExeFileSystemFile file;
+            string nextDirectoryName;
+
+            this.SourceFilePath = sourceFilePath;
+            this.SubDirectoryArray = new ArrayList();            
+            this.FileArray = new ArrayList();
+            this.ParentDirectoryName = parentDirectoryName;
+            this.DirectoryName = "ExeFS"; // @TODO: Make a constant
+            nextDirectoryName = this.ParentDirectoryName + Path.DirectorySeparatorChar + this.DirectoryName;
+
+            for (int i = 0; i < 10; i++)
+            {
+                fileName = ParseFile.ReadAsciiString(isoStream, offset + (0x10 * i));                
+                fileOffset = ParseFile.ReadUintLE(isoStream, offset + (0x10 * i) + 8);
+                fileOffset += offset + 0x200;
+                fileLength = ParseFile.ReadUintLE(isoStream, offset + (0x10 * i) + 0xC);
+
+                if (fileLength > 0)
+                {
+                    file = new Nintendo3dsCtrExeFileSystemFile(nextDirectoryName, this.SourceFilePath,
+                        fileName, fileOffset, -1, fileOffset, fileLength);
+                    this.FileArray.Add(file);
+                }
+            }
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (obj is Nintendo3dsCtrExeFileSystem)
+            {
+                Nintendo3dsCtrExeFileSystem o = (Nintendo3dsCtrExeFileSystem)obj;
+
+                return this.DirectoryName.CompareTo(o.DirectoryName);
+            }
+
+            throw new ArgumentException("object is not an Nintendo3dsCtrExeFileSystem");
+        }
+
+        public void Extract(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
+        {
+            string fullDirectoryPath = Path.Combine(destinationFolder, this.DirectoryName);
+
+            // create directory
+            if (!Directory.Exists(fullDirectoryPath))
+            {
+                Directory.CreateDirectory(fullDirectoryPath);
+            }
+
+            foreach (Nintendo3dsCtrExeFileSystemFile f in this.FileArray)
+            {
+                f.Extract(ref streamCache, destinationFolder, extractAsRaw);
+            }        
+        }    
     }
 }
