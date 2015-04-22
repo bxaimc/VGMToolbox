@@ -32,8 +32,16 @@ namespace VGMToolbox.format
         public long DiscBaseOffset { set; get; }
         public string SourceFileName { set; get; }
         public bool IsRawDump { set; get; }
-        public ArrayList VolumeArrayList { set; get; }
         
+        public ArrayList VolumeArrayList { set; get; }
+        public Nintendo3dsNcchContainer[] Volumes
+        {
+            get
+            {
+                return (Nintendo3dsNcchContainer[])this.VolumeArrayList.ToArray(typeof(Nintendo3dsNcchContainer));
+            }
+
+        }
 
         // NCSD Header
 
@@ -314,7 +322,9 @@ namespace VGMToolbox.format
             this.VolumeType = VolumeDataType.Data;
             this.DirectoryStructureArray = new ArrayList();
 
-            this.ParseNcchHeader(fs, offset);   
+            this.ParseNcchHeader(fs, offset);
+
+            this.VolumeIdentifier = ByteConversion.GetAsciiText(this.ProductCode);
         }
 
         /// <summary>

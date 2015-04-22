@@ -391,10 +391,10 @@ namespace VGMToolbox.tools.extract
                     {
                         Nintendo3dsCtr ctr = new Nintendo3dsCtr(fs.Name);
 
-                        //foreach (NintendoWiiUOpticalDiscVolume isoVolume in wiiUDisc.Volumes)
-                        //{
-                        //    volumeList.Add((IVolume)isoVolume);
-                        //}
+                        foreach (Nintendo3dsNcchContainer isoVolume in ctr.Volumes)
+                        {
+                            volumeList.Add((IVolume)isoVolume);
+                        }
 
                         break;
                     }
