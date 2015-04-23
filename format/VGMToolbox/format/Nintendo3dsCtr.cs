@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
+using System.Windows.Forms;
 
 using VGMToolbox.format.iso;
 using VGMToolbox.util;
@@ -367,6 +369,7 @@ namespace VGMToolbox.format
     //--------------------------------------------
     // ExeFS
     //--------------------------------------------
+    #region ExeFS
     public class Nintendo3dsCtrExeFileSystemFile : IFileStructure
     {
         public string ParentDirectoryName { set; get; }
@@ -382,6 +385,7 @@ namespace VGMToolbox.format
         public int NonRawSectorSize { set; get; }
 
         public DateTime FileDateTime { set; get; }
+        public byte[] Sha256Hash { set; get; }
 
         public int CompareTo(object obj)
         {
@@ -415,6 +419,7 @@ namespace VGMToolbox.format
         public void Extract(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
         {
             string destinationFile = Path.Combine(Path.Combine(destinationFolder, this.ParentDirectoryName), this.FileName);
+            HashAlgorithm cryptoHash = SHA256.Create();
 
             if (!streamCache.ContainsKey(this.SourceFilePath))
             {
@@ -422,7 +427,44 @@ namespace VGMToolbox.format
             }
 
             ParseFile.ExtractChunkToFile(streamCache[this.SourceFilePath], this.Offset, this.Size, destinationFile);
+
+            //// validate against hash (probbly do extrraction in here as well
+            // @TODO: Calculate Hash upon extraction
+            SHA256 mySHA256 = SHA256Managed.Create();
+            byte[] hashValue;
+
+            using (FileStream fs = File.OpenRead(destinationFile))
+            {
+                hashValue = mySHA256.ComputeHash(fs);
+            }
+
+            if (!ParseFile.CompareSegment(hashValue, 0, this.Sha256Hash))
+            {
+                // @TODO: only show error once per file
+                //if (!sha1ErrorDisplayed)
+                {
+                    MessageBox.Show(String.Format("Warning: '{0},' failed SHA256 verification in ExeFS at offset 0x{1} during extraction.{2}",
+                        Path.GetFileName(destinationFile), this.Offset, Environment.NewLine), "Warning - SHA256 Failure");
+                }
+            }
+
+            //using (FileStream outStream = new FileStream(destinationFile, System.IO.FileMode.Create, FileAccess.Write))
+            //using (CryptoStream hashStream = new CryptoStream(outStream, cryptoHash, CryptoStreamMode.Write))
+            //{
+
+            
+
+
+
+
+            //}
+            
+
+
+            
         }
+
+        
     }
     
     public class Nintendo3dsCtrExeFileSystem : IDirectoryStructure
@@ -460,15 +502,22 @@ namespace VGMToolbox.format
             string fileName;
             long fileOffset;
             uint fileLength;
+            byte[] hash;
+            ArrayList tempFileList;
+            long hashOffset;
+
             Nintendo3dsCtrExeFileSystemFile file;
             string nextDirectoryName;
 
             this.SourceFilePath = sourceFilePath;
             this.SubDirectoryArray = new ArrayList();            
+            tempFileList = new ArrayList();
             this.FileArray = new ArrayList();
             this.ParentDirectoryName = parentDirectoryName;
             this.DirectoryName = "ExeFS"; // @TODO: Make a constant
             nextDirectoryName = this.ParentDirectoryName + Path.DirectorySeparatorChar + this.DirectoryName;
+
+            // parse file entries
 
             for (int i = 0; i < 10; i++)
             {
@@ -481,9 +530,20 @@ namespace VGMToolbox.format
                 {
                     file = new Nintendo3dsCtrExeFileSystemFile(nextDirectoryName, this.SourceFilePath,
                         fileName, fileOffset, -1, fileOffset, fileLength);
-                    this.FileArray.Add(file);
+                    tempFileList.Add(file);
                 }
             }
+
+            // parse hash entires
+            for (int j = 0; j < tempFileList.Count; j++)
+            {
+                hashOffset = offset + 0x200 - (0x20 * (j + 1));
+                hash = ParseFile.ParseSimpleOffset(isoStream, hashOffset, 0x20);
+                file = (Nintendo3dsCtrExeFileSystemFile)tempFileList[j];
+                file.Sha256Hash = hash;
+                this.FileArray.Add(file);
+            }
+
         }
 
         public int CompareTo(object obj)
@@ -500,7 +560,7 @@ namespace VGMToolbox.format
 
         public void Extract(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
         {
-            string fullDirectoryPath = Path.Combine(destinationFolder, this.DirectoryName);
+            string fullDirectoryPath = Path.Combine(destinationFolder, Path.Combine(this.ParentDirectoryName, this.DirectoryName));
 
             // create directory
             if (!Directory.Exists(fullDirectoryPath))
@@ -514,4 +574,10 @@ namespace VGMToolbox.format
             }        
         }    
     }
+    #endregion
+
+    //--------------------------------------------
+    // RomFS
+    //--------------------------------------------
+
 }
