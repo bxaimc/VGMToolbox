@@ -117,16 +117,22 @@ namespace VGMToolbox.format
         public void LoadVolumes(FileStream isoStream)
         {
             Nintendo3dsNcchContainer newVolume;
+            long streamLength = isoStream.Length;
+            long ncchAbsoluteOffset;
 
             for (int i = 0; i < NcchOffsetInfo.Length; i++)
             {
-                if (this.NcchOffsetInfo[i].Offset > 0)
+                if (this.NcchOffsetInfo[i].Offset > 0)  
                 {
-                    newVolume = new Nintendo3dsNcchContainer();
-                    newVolume.Initialize(isoStream,
-                        this.DiscBaseOffset + (long)((long)this.NcchOffsetInfo[i].Offset * Nintendo3dsCtr.MEDIA_UNIT_SIZE),
-                        this.IsRawDump);
-                    this.VolumeArrayList.Add(newVolume);
+                    ncchAbsoluteOffset = this.DiscBaseOffset + (long)((long)this.NcchOffsetInfo[i].Offset * Nintendo3dsCtr.MEDIA_UNIT_SIZE);
+
+                    // skip trimmed update partition
+                    if (ncchAbsoluteOffset + 1 < streamLength)
+                    {
+                        newVolume = new Nintendo3dsNcchContainer();
+                        newVolume.Initialize(isoStream, ncchAbsoluteOffset, this.IsRawDump);
+                        this.VolumeArrayList.Add(newVolume);
+                    }
                 }
             }
         }
@@ -426,19 +432,11 @@ namespace VGMToolbox.format
                 streamCache[this.SourceFilePath] = File.OpenRead(this.SourceFilePath);
             }
 
-            ParseFile.ExtractChunkToFile(streamCache[this.SourceFilePath], this.Offset, this.Size, destinationFile);
-
-            //// validate against hash (probbly do extrraction in here as well
-            // @TODO: Calculate Hash upon extraction
-            SHA256 mySHA256 = SHA256Managed.Create();
-            byte[] hashValue;
-
-            using (FileStream fs = File.OpenRead(destinationFile))
-            {
-                hashValue = mySHA256.ComputeHash(fs);
-            }
-
-            if (!ParseFile.CompareSegment(hashValue, 0, this.Sha256Hash))
+            // write file while calculating hash
+            byte[] outputHash = ParseFile.ExtractChunkToFile64ReturningHash(streamCache[this.SourceFilePath], (ulong)this.Offset, (ulong)this.Size, 
+                destinationFile, cryptoHash, false,false);
+            
+            if (!ParseFile.CompareSegment(outputHash, 0, this.Sha256Hash))
             {
                 // @TODO: only show error once per file
                 //if (!sha1ErrorDisplayed)
@@ -446,25 +444,8 @@ namespace VGMToolbox.format
                     MessageBox.Show(String.Format("Warning: '{0},' failed SHA256 verification in ExeFS at offset 0x{1} during extraction.{2}",
                         Path.GetFileName(destinationFile), this.Offset, Environment.NewLine), "Warning - SHA256 Failure");
                 }
-            }
-
-            //using (FileStream outStream = new FileStream(destinationFile, System.IO.FileMode.Create, FileAccess.Write))
-            //using (CryptoStream hashStream = new CryptoStream(outStream, cryptoHash, CryptoStreamMode.Write))
-            //{
-
-            
-
-
-
-
-            //}
-            
-
-
-            
-        }
-
-        
+            }            
+        }        
     }
     
     public class Nintendo3dsCtrExeFileSystem : IDirectoryStructure
@@ -521,20 +502,31 @@ namespace VGMToolbox.format
 
             for (int i = 0; i < 10; i++)
             {
-                fileName = ParseFile.ReadAsciiString(isoStream, offset + (0x10 * i));                
-                fileOffset = ParseFile.ReadUintLE(isoStream, offset + (0x10 * i) + 8);
-                fileOffset += offset + 0x200;
-                fileLength = ParseFile.ReadUintLE(isoStream, offset + (0x10 * i) + 0xC);
-
-                if (fileLength > 0)
+                // check if row has data
+                if (ParseFile.ReadByte(isoStream, offset + (0x10 * i)) != 0)
                 {
+                    // read VFS items
+                    fileName = ParseFile.ReadAsciiString(isoStream, offset + (0x10 * i));
+
+                    fileOffset = ParseFile.ReadUintLE(isoStream, offset + (0x10 * i) + 8);
+                    fileOffset += offset + 0x200;
+
+                    fileLength = ParseFile.ReadUintLE(isoStream, offset + (0x10 * i) + 0xC);
+
+                    // read SHA256 hash
+                    hashOffset = offset + 0x200 - (0x20 * (i + 1));
+                    hash = ParseFile.ParseSimpleOffset(isoStream, hashOffset, 0x20);
+
+                    // build file object
                     file = new Nintendo3dsCtrExeFileSystemFile(nextDirectoryName, this.SourceFilePath,
                         fileName, fileOffset, -1, fileOffset, fileLength);
-                    tempFileList.Add(file);
+                    file.Sha256Hash = hash;
+                    this.FileArray.Add(file);                    
                 }
             }
 
             // parse hash entires
+            /*
             for (int j = 0; j < tempFileList.Count; j++)
             {
                 hashOffset = offset + 0x200 - (0x20 * (j + 1));
@@ -543,7 +535,7 @@ namespace VGMToolbox.format
                 file.Sha256Hash = hash;
                 this.FileArray.Add(file);
             }
-
+            */
         }
 
         public int CompareTo(object obj)

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace VGMToolbox.util
@@ -895,6 +896,109 @@ namespace VGMToolbox.util
                     bw.Close();
                 }
             }
+        }
+
+        public static byte[] ExtractChunkToFile64ReturningHash(
+            Stream stream,
+            ulong startingOffset,
+            ulong length,
+            string filePath,
+            HashAlgorithm checksumAlgorithm,
+            bool outputLogFile,
+            bool outputSnakebiteBatchFile)
+        {
+            byte[] checksumHash;
+            bool makeBatchFile = (outputSnakebiteBatchFile && (stream is FileStream));
+            StringBuilder logInfo = new StringBuilder();
+            StringBuilder snakeBiteBatch = new StringBuilder();
+            //BinaryWriter bw = null;
+            string fullFilePath = Path.GetFullPath(filePath);
+            string fullOutputDirectory = Path.GetDirectoryName(fullFilePath);
+
+            // create output folder if needed
+            if (!Directory.Exists(fullOutputDirectory))
+            {
+                Directory.CreateDirectory(fullOutputDirectory);
+
+                if (outputLogFile)
+                {
+                    logInfo.AppendLine("Created Directory: " + fullOutputDirectory);
+                }
+            }
+
+            // check if file exists and change name as needed
+            if (File.Exists(fullFilePath))
+            {
+                int fileCount = Directory.GetFiles(fullOutputDirectory, (Path.GetFileName(fullFilePath) + "*"), SearchOption.TopDirectoryOnly).Length;
+                fullFilePath = Path.Combine(fullOutputDirectory, String.Format("{0}_{1}{2}", Path.GetFileNameWithoutExtension(fullFilePath), fileCount.ToString("X3"), Path.GetExtension(fullFilePath)));
+            }
+
+            using (FileStream fs = File.Open(fullFilePath, FileMode.Create, FileAccess.Write))
+            using (CryptoStream hashStream = new CryptoStream(fs, checksumAlgorithm, CryptoStreamMode.Write))
+            {
+                int read = 0;
+                ulong totalBytes = 0;
+                byte[] bytes = new byte[Constants.FileReadChunkSize];
+
+                // reset location
+                stream.Seek(0, SeekOrigin.Begin);
+
+                // move stream pointer in long size chunks
+                while (startingOffset > long.MaxValue) //
+                {
+                    stream.Seek(long.MaxValue, SeekOrigin.Current);
+                    startingOffset -= long.MaxValue;
+                }
+
+                // less than a long now, should be ok
+                stream.Seek((long)startingOffset, SeekOrigin.Current);
+
+                int maxread = length > (ulong)bytes.Length ? bytes.Length : (int)length;
+
+                while ((read = stream.Read(bytes, 0, maxread)) > 0)
+                {
+                    hashStream.Write(bytes, 0, read);
+                    totalBytes += (ulong)read;
+
+                    maxread = (length - totalBytes) > (ulong)bytes.Length ? bytes.Length : (int)(length - totalBytes);
+                }
+
+                hashStream.FlushFinalBlock();
+                checksumHash = checksumAlgorithm.Hash;
+
+                #region Log Files
+                if (outputLogFile)
+                {
+                    logInfo.AppendLine(
+                        String.Format("Extracted - Offset: 0x{0}    Length: 0x{1}    File: {2}",
+                            startingOffset.ToString("X8"),
+                            length.ToString("X8"),
+                            Path.GetFileName(fullFilePath)));
+
+                    using (StreamWriter logWriter = new StreamWriter(Path.Combine(fullOutputDirectory, ParseFile.LogFileName), true))
+                    {
+                        logWriter.Write(logInfo.ToString());
+                    }
+                }
+
+                if (makeBatchFile)
+                {
+                    snakeBiteBatch.AppendLine(
+                        String.Format("snakebite.exe \"{0}\" \"{1}\" 0x{2} 0x{3}",
+                            Path.GetFileName(((FileStream)stream).Name),
+                            Path.GetFileNameWithoutExtension(((FileStream)stream).Name) + Path.DirectorySeparatorChar + Path.GetFileName(fullFilePath),
+                            startingOffset.ToString("X8"),
+                            (startingOffset + length - 1).ToString("X8")));
+
+                    using (StreamWriter batchWriter = new StreamWriter(Path.Combine(fullOutputDirectory, ParseFile.SnakeBiteBatchFileName), true))
+                    {
+                        batchWriter.Write(snakeBiteBatch.ToString());
+                    }
+                }
+                #endregion
+
+                return checksumHash;                
+            }           
         }
 
         public static void AppendChunkToFile(
