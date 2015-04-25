@@ -30,6 +30,15 @@ namespace VGMToolbox.util
 
             return roundedValue;
         }
+
+        public static ulong RoundUpToByteAlignment(ulong valueToRound, ulong byteAlignment)
+        {
+            ulong roundedValue;
+
+            roundedValue = (valueToRound + byteAlignment - 1) / byteAlignment * byteAlignment;
+
+            return roundedValue;
+        }
     }
 
 }
