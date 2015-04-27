@@ -93,6 +93,13 @@ namespace VGMToolbox.util
             return sb.ToString();
         }
 
+        public static string GetUtf16LeText(byte[] value)
+        {
+            System.Text.Encoding encoding = System.Text.Encoding.Unicode;
+            return encoding.GetString(value);        
+        }
+
+
         /// <summary>
         /// Convert input string to a long.  Works for Decimal and Hexidecimal (use 0x prefix).
         /// </summary>

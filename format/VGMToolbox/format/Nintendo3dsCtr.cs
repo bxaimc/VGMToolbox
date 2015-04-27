@@ -11,12 +11,12 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.format
 {
-    public class SimpleNcchOffset
+    public class SimpleOffset
     {
         public uint Offset { set; get; }
         public uint Size { set; get; }
 
-        public SimpleNcchOffset(uint offset, uint size)
+        public SimpleOffset(uint offset, uint size)
         {
             this.Offset = offset;
             this.Size = size;
@@ -30,6 +30,8 @@ namespace VGMToolbox.format
         public static string FORMAT_DESCRIPTION_STRING = "3DS CTR Encrypted"; // currently unsupported
         public static string FORMAT_DESCRIPTION_STRING_DECRYPTED = "3DS CTR Decrypted";
         public const long MEDIA_UNIT_SIZE = 0x200;
+
+        public const string CTR_SYSTEM_PARTITION = "CTR-P-CTAP";
 
         public long DiscBaseOffset { set; get; }
         public string SourceFileName { set; get; }
@@ -53,7 +55,7 @@ namespace VGMToolbox.format
         public ulong MediaId { set; get; }
         public ulong PartitionsFsType { set; get; }
         public ulong PartitionsEncryptionType { set; get; }
-        public SimpleNcchOffset[] NcchOffsetInfo { set; get; }
+        public SimpleOffset[] NcchOffsetInfo { set; get; }
 
         public byte[] ExHeaderHash { set; get; }
         public uint AdditionalHeaderSize { set; get; }
@@ -147,10 +149,10 @@ namespace VGMToolbox.format
             this.PartitionsFsType = ParseFile.ReadUlongLE(fs, offset + 0x110);
             this.PartitionsEncryptionType = ParseFile.ReadUlongLE(fs, offset + 0x118);
 
-            this.NcchOffsetInfo = new SimpleNcchOffset[8];
+            this.NcchOffsetInfo = new SimpleOffset[8];
             for (int i = 0; i < 8; i++)
             {
-                this.NcchOffsetInfo[i] = new SimpleNcchOffset(
+                this.NcchOffsetInfo[i] = new SimpleOffset(
                     ParseFile.ReadUintLE(fs, offset + 0x120 + (8 * i)),
                     ParseFile.ReadUintLE(fs, offset + 0x120 + ((8 * i) + 4)));
             }
@@ -220,6 +222,88 @@ namespace VGMToolbox.format
     //--------------------------------------------
     // NCCH
     //--------------------------------------------
+    public class Nintendo3dsDummyFolder : IDirectoryStructure
+    {
+        public string SourceFilePath { set; get; }
+        public string DirectoryName { set; get; }
+        public string ParentDirectoryName { set; get; }
+
+        public ArrayList SubDirectoryArray { set; get; }
+        public IDirectoryStructure[] SubDirectories
+        {
+            set { this.SubDirectories = value; }
+            get
+            {
+                this.SubDirectories = new IDirectoryStructure[this.SubDirectoryArray.Count];
+
+                for (int i = 0; i < this.SubDirectoryArray.Count; i++)
+                {
+                    SubDirectories[i] = (IDirectoryStructure)this.SubDirectoryArray[i];
+                }
+
+                return SubDirectories;          
+            }
+        }
+
+        public ArrayList FileArray { set; get; }
+        public IFileStructure[] Files
+        {
+            set { this.Files = value; }
+            get
+            {
+                return null;
+                //FileArray.Sort();
+                //return (IFileStructure[])FileArray.ToArray(typeof(Nintendo3dsCtrExeFileSystemFile));
+            }
+        }
+
+        public Nintendo3dsDummyFolder(string sourceFilePath, string parentDirectoryName)
+        {
+            this.SourceFilePath = sourceFilePath;
+            this.DirectoryName = null;
+            this.ParentDirectoryName = parentDirectoryName;
+
+            this.SubDirectoryArray = new ArrayList();
+            this.SubDirectories = null;
+
+            this.FileArray = new ArrayList();
+            this.Files = null;
+        }
+
+        public void Extract(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
+        {
+            IDirectoryStructure dir;
+            string fullDirectoryPath = Path.Combine(destinationFolder, Path.Combine(this.ParentDirectoryName, this.DirectoryName));
+            
+            // create directory
+            if (!Directory.Exists(fullDirectoryPath))
+            {
+                Directory.CreateDirectory(fullDirectoryPath);
+            }
+
+            for (int i = 0; i < this.SubDirectories.Length; i++)
+            {
+                dir = (IDirectoryStructure)this.SubDirectories[i];
+                dir.Extract(ref streamCache, destinationFolder, extractAsRaw);
+            }
+        }
+
+        public int CompareTo(object obj)
+        {
+            if ((obj is Nintendo3dsDummyFolder))
+            {
+                Nintendo3dsDummyFolder o = (Nintendo3dsDummyFolder)obj;
+
+                return this.DirectoryName.CompareTo(o.DirectoryName);
+            }
+
+            throw new ArgumentException("object is not an Nintendo3dsDummyFoldesr");
+        }    
+    
+    
+    
+    }
+    
     public class Nintendo3dsNcchContainer : IVolume 
     {
         public byte[] NcsdHash { set; get; }
@@ -260,6 +344,9 @@ namespace VGMToolbox.format
         public byte[] ExeSuperblockHash { set; get; }
         public byte[] RomFsSuperblockHash { set; get; }
 
+        public Nintendo3dsCtrExeFileSystem ExeFs { set; get; }
+        public Nintendo3dsCtrRomFileSystem RomFs { set; get; }
+
         #region IVolume
         public ArrayList DirectoryStructureArray { set; get; }
         public IDirectoryStructure[] Directories
@@ -268,7 +355,7 @@ namespace VGMToolbox.format
             get
             {
                 DirectoryStructureArray.Sort();
-                return (IDirectoryStructure[])DirectoryStructureArray.ToArray(typeof(Nintendo3dsCtrExeFileSystem)); // @TODO May need to customize for each directory type or use separate array list for each type (ExeFs, RomFs, etc...) and combine on output
+                return (IDirectoryStructure[])DirectoryStructureArray.ToArray(typeof(Nintendo3dsCtrRomFileSystemDirectory)); // @TODO May need to customize for each directory type or use separate array list for each type (ExeFs, RomFs, etc...) and combine on output
             }
         }
 
@@ -323,7 +410,6 @@ namespace VGMToolbox.format
 
         public void Initialize(FileStream fs, long offset, bool isRawDump)
         {
-            IDirectoryStructure directory;
             long absoluteOffset;
 
             this.FormatDescription = Nintendo3dsCtr.FORMAT_DESCRIPTION_STRING_DECRYPTED;
@@ -340,25 +426,46 @@ namespace VGMToolbox.format
             this.VolumeIdentifier = this.ProductCode;
 
             // parse File Systems
-            Nintendo3dsCtrExeFileSystem dummyRoot = new Nintendo3dsCtrExeFileSystem();
+            //Nintendo3dsDummyFolder dummyRoot = new Nintendo3dsDummyFolder(fs.Name, null);
+            Nintendo3dsCtrRomFileSystemDirectory dummyRoot = new Nintendo3dsCtrRomFileSystemDirectory();
             dummyRoot.SubDirectoryArray = new ArrayList();
             dummyRoot.FileArray = new ArrayList();
-            
-            if (this.ExeFsOffset > 0)
-            {                
-                absoluteOffset = offset + ((long)this.ExeFsOffset * Nintendo3dsCtr.MEDIA_UNIT_SIZE);
-                directory = new Nintendo3dsCtrExeFileSystem(fs, fs.Name, this.VolumeIdentifier, absoluteOffset);
-                    
-                dummyRoot.SubDirectoryArray.Add(directory);                
-            }
+
+            //if (this.ExeFsOffset > 0)
+            //{                
+            //    absoluteOffset = offset + ((long)this.ExeFsOffset * Nintendo3dsCtr.MEDIA_UNIT_SIZE);
+            //    this.ExeFs = new Nintendo3dsCtrExeFileSystem(fs, fs.Name, this.VolumeIdentifier, absoluteOffset);
+            //    dummyRoot.SubDirectoryArray.Add((IDirectoryStructure)this.ExeFs);
+            //}
 
             if (this.RomFsOffset > 0)
             {
                 absoluteOffset = offset + ((long)this.RomFsOffset * Nintendo3dsCtr.MEDIA_UNIT_SIZE);
-                directory = new Nintendo3dsCtrRomFileSystem(fs, fs.Name, this.VolumeIdentifier, absoluteOffset);
+
+                try
+                {
+                    this.RomFs = new Nintendo3dsCtrRomFileSystem(fs, fs.Name, this.VolumeIdentifier, absoluteOffset);
+                    dummyRoot.SubDirectoryArray.Add((IDirectoryStructure)this.RomFs.RootDirectory);
+                }
+                catch (Exception ex)
+                {
+                    if ((ex is FormatException) &&
+                        (this.VolumeIdentifier.Equals(Nintendo3dsCtr.CTR_SYSTEM_PARTITION)))
+                    {
+                        MessageBox.Show(String.Format("IVFC magic bytes not found at expected RomFS offset for Volume '{0}, are you sure it is decrypted?'  Note: System Volume, {1}, has not been tested due to unavailability of decrypted samples.",
+                                                      this.VolumeIdentifier, Nintendo3dsCtr.CTR_SYSTEM_PARTITION), "Error Processing 3DS CTR");
+                    }
+                    else
+                    {
+                        throw ex;
+                    }
+                }
             }
 
-            this.DirectoryStructureArray.Add(dummyRoot);
+            if (dummyRoot.SubDirectoryArray.Count > 0)
+            {
+                this.DirectoryStructureArray.Add((IDirectoryStructure)dummyRoot);
+            }
         }
 
         /// <summary>
@@ -534,12 +641,12 @@ namespace VGMToolbox.format
 
         public int CompareTo(object obj)
         {
-            if (obj is Nintendo3dsCtrExeFileSystem)
+            if ((obj is Nintendo3dsCtrExeFileSystem))
             {
                 Nintendo3dsCtrExeFileSystem o = (Nintendo3dsCtrExeFileSystem)obj;
 
                 return this.DirectoryName.CompareTo(o.DirectoryName);
-            }
+            }            
 
             throw new ArgumentException("object is not an Nintendo3dsCtrExeFileSystem");
         }
@@ -573,8 +680,106 @@ namespace VGMToolbox.format
         public ulong DataOffset { set; get; }
         public ulong DataSize { set; get; }    
     }
+
+    public class RomFsDirEntry 
+    {
+        public uint ParentOffset { set; get; }
+        public int SiblingOffset { set; get; }
+        public int ChildOffset { set; get; }
+        public int FileOffset { set; get; }
+        public int WeirdOffset { set; get; }
+        public uint NameSize { set; get; }
+        public string Name { set; get; }
+
+        public RomFsDirEntry() { }
+    }
+
+    public class RomFsFileEntry
+    {
+        public uint ParentDirOffset { set; get; }
+        public uint SiblingOffset { set; get; }
+        public ulong DataOffset { set; get; }
+        public ulong DataSize { set; get; }
+        public uint WeirdOffset { set; get; }
+        public uint NameSize { set; get; }
+        public string Name { set; get; }
+
+        public RomFsFileEntry() { }
+    }
     
-    public class Nintendo3dsCtrRomFileSystem : IDirectoryStructure
+    public class Nintendo3dsCtrRomFileSystemFile : IFileStructure
+    {
+        public string ParentDirectoryName { set; get; }
+        public string SourceFilePath { set; get; }
+        public string FileName { set; get; }
+        public long Offset { set; get; }
+
+        public long VolumeBaseOffset { set; get; }
+        public long Lba { set; get; }
+        public long Size { set; get; }
+        public bool IsRaw { set; get; }
+        public CdSectorType FileMode { set; get; }
+        public int NonRawSectorSize { set; get; }
+
+        public DateTime FileDateTime { set; get; }
+        public byte[] Sha256Hash { set; get; }
+
+        public int CompareTo(object obj)
+        {
+            if (obj is Nintendo3dsCtrRomFileSystemFile)
+            {
+                Nintendo3dsCtrRomFileSystemFile o = (Nintendo3dsCtrRomFileSystemFile)obj;
+
+                return this.FileName.CompareTo(o.FileName);
+            }
+
+            throw new ArgumentException("object is not a Nintendo3dsCtrRomFileSystemFile");
+        }
+
+        public Nintendo3dsCtrRomFileSystemFile(string parentDirectoryName, string sourceFilePath,
+            string fileName, long offset, long volumeBaseOffset, long lba, long size)
+        {
+            this.ParentDirectoryName = parentDirectoryName;
+            this.SourceFilePath = sourceFilePath;
+            this.FileName = fileName;
+            this.Offset = offset;
+            this.Size = size;
+            this.FileDateTime = new DateTime();
+
+            this.VolumeBaseOffset = volumeBaseOffset;
+            this.Lba = lba;
+            this.IsRaw = false;
+            this.NonRawSectorSize = 0;
+            this.FileMode = CdSectorType.Unknown;
+        }
+
+        public void Extract(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
+        {
+            string destinationFile = Path.Combine(Path.Combine(destinationFolder, this.ParentDirectoryName), this.FileName);
+            HashAlgorithm cryptoHash = SHA256.Create();
+
+            if (!streamCache.ContainsKey(this.SourceFilePath))
+            {
+                streamCache[this.SourceFilePath] = File.OpenRead(this.SourceFilePath);
+            }
+
+            // write file while calculating hash
+            byte[] outputHash = ParseFile.ExtractChunkToFile64ReturningHash(streamCache[this.SourceFilePath], (ulong)this.Offset, (ulong)this.Size,
+                destinationFile, cryptoHash, false, false);
+
+            if (!ParseFile.CompareSegment(outputHash, 0, this.Sha256Hash))
+            {
+                // @TODO: only show error once per file
+                //if (!sha1ErrorDisplayed)
+                {
+                    MessageBox.Show(String.Format("Warning: '{0},' failed SHA256 verification in ExeFS at offset 0x{1} during extraction.{2}",
+                        Path.GetFileName(destinationFile), this.Offset, Environment.NewLine), "Warning - SHA256 Failure");
+                }
+            }
+        }
+    }
+
+    public class Nintendo3dsCtrRomFileSystemDirectory : IDirectoryStructure
     {
         public string SourceFilePath { set; get; }
         public string DirectoryName { set; get; }
@@ -587,7 +792,7 @@ namespace VGMToolbox.format
             get
             {
                 SubDirectoryArray.Sort();
-                return (IDirectoryStructure[])SubDirectoryArray.ToArray(typeof(Nintendo3dsCtrRomFileSystem));
+                return (IDirectoryStructure[])SubDirectoryArray.ToArray(typeof(Nintendo3dsCtrRomFileSystemDirectory));
             }
         }
 
@@ -598,9 +803,101 @@ namespace VGMToolbox.format
             get
             {
                 FileArray.Sort();
-                return (IFileStructure[])FileArray.ToArray(typeof(Nintendo3dsCtrExeFileSystemFile)); // @TODO:  Fix this
+                return (IFileStructure[])FileArray.ToArray(typeof(Nintendo3dsCtrRomFileSystemFile)); // @TODO:  Fix this
             }
         }
+
+        public Nintendo3dsCtrRomFileSystemDirectory() { }
+
+        public Nintendo3dsCtrRomFileSystemDirectory(FileStream isoStream, string sourceFilePath, string parentDirectoryName, 
+            long ivfcOffset, long directoryEntryOffset, long directoryBlockOffset, long fileBlockOffset)
+        {
+            RomFsDirEntry dir = new RomFsDirEntry();
+            RomFsFileEntry file = new RomFsFileEntry();
+            Nintendo3dsCtrRomFileSystemDirectory subDir;
+            
+            byte[] nameBytes;
+            string nextDirectory;
+
+            this.SourceFilePath = sourceFilePath;
+            this.ParentDirectoryName = parentDirectoryName;
+
+            // initialize arrays
+            this.SubDirectoryArray = new ArrayList();
+            this.FileArray = new ArrayList();           
+
+            // load dir
+            dir.ParentOffset = ParseFile.ReadUintLE(isoStream, ivfcOffset + directoryBlockOffset + directoryEntryOffset);
+            dir.SiblingOffset = ParseFile.ReadInt32LE(isoStream, ivfcOffset + directoryBlockOffset + directoryEntryOffset + 4);
+            dir.ChildOffset = ParseFile.ReadInt32LE(isoStream, ivfcOffset + directoryBlockOffset + directoryEntryOffset + 8);
+            dir.FileOffset = ParseFile.ReadInt32LE(isoStream, ivfcOffset + directoryBlockOffset + directoryEntryOffset + 0xC);
+            dir.WeirdOffset = ParseFile.ReadInt32LE(isoStream, ivfcOffset + directoryBlockOffset + directoryEntryOffset + 0x10);
+            dir.NameSize = ParseFile.ReadUintLE(isoStream, ivfcOffset + directoryBlockOffset + directoryEntryOffset + 0x14);
+
+            // build directory name
+            if (dir.NameSize > 0)
+            {
+                nameBytes = ParseFile.ParseSimpleOffset(isoStream, ivfcOffset + directoryBlockOffset + directoryEntryOffset + 0x18, (int)dir.NameSize);
+                dir.Name = ByteConversion.GetUtf16LeText(nameBytes);
+            }
+            else // this is root
+            {
+                dir.Name = "RomFS";
+            }
+
+            this.DirectoryName = dir.Name;
+            nextDirectory = this.ParentDirectoryName + Path.DirectorySeparatorChar + this.DirectoryName;
+
+            // add files
+
+
+
+
+            // add subdirs
+            if (dir.ChildOffset != -1)
+            {
+                subDir = new Nintendo3dsCtrRomFileSystemDirectory(isoStream, sourceFilePath, nextDirectory,
+                    ivfcOffset, dir.ChildOffset, directoryBlockOffset, fileBlockOffset);
+                this.SubDirectoryArray.Add(subDir);
+            }
+
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (obj is Nintendo3dsCtrRomFileSystemDirectory)
+            {
+                Nintendo3dsCtrRomFileSystemDirectory o = (Nintendo3dsCtrRomFileSystemDirectory)obj;
+
+                return this.DirectoryName.CompareTo(o.DirectoryName);
+            }
+
+            throw new ArgumentException("object is not an Nintendo3dsCtrRomFileSystemDirectory");
+        }
+
+        public void Extract(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
+        {
+            string fullDirectoryPath = Path.Combine(destinationFolder, Path.Combine(this.ParentDirectoryName, this.DirectoryName));
+
+            // create directory
+            if (!Directory.Exists(fullDirectoryPath))
+            {
+                Directory.CreateDirectory(fullDirectoryPath);
+            }
+
+            foreach (Nintendo3dsCtrRomFileSystemFile f in this.FileArray)
+            {
+                f.Extract(ref streamCache, destinationFolder, extractAsRaw);
+            }
+        }
+    }
+
+    public class Nintendo3dsCtrRomFileSystem //: IDirectoryStructure
+    {
+        public string SourceFilePath { set; get; }
+        public string DirectoryName { set; get; }
+        public string ParentDirectoryName { set; get; }
+        public Nintendo3dsCtrRomFileSystemDirectory RootDirectory { set; get; }
 
         // RomFS Header
 
@@ -626,30 +923,26 @@ namespace VGMToolbox.format
         public uint Reserved04 { set; get; }
         public uint OptionalInfoSize { set; get; }
 
-        // IVFC 
+        // IVFC Header
         public IvfcLevelInfo[] IvfcLevels { set; get; }
         
         public ulong BodyOffset { set; get; }
         public ulong BodySize { set; get; }
+
+        // RomFS Section Header
+        public uint RomFsHeaderSize { set; get; }
+        public SimpleOffset[] RomFsSections { set; get; }
+        public uint RomFsDataOffset { set; get; }
+
 
 
         public Nintendo3dsCtrRomFileSystem() { }
 
         public Nintendo3dsCtrRomFileSystem(FileStream isoStream, string sourceFilePath, string parentDirectoryName, long offset)
         {
-            //string fileName;
-            //long fileOffset;
-            //uint fileLength;
-            //byte[] hash;
-
-            //long hashOffset;
-
-            Nintendo3dsCtrExeFileSystemFile file;
             string nextDirectoryName;
 
             this.SourceFilePath = sourceFilePath;
-            this.SubDirectoryArray = new ArrayList();
-            this.FileArray = new ArrayList();
             this.ParentDirectoryName = parentDirectoryName;
             this.DirectoryName = "RomFS"; // @TODO: Make a constant
             nextDirectoryName = this.ParentDirectoryName + Path.DirectorySeparatorChar + this.DirectoryName;
@@ -657,14 +950,30 @@ namespace VGMToolbox.format
             // parse IVFC header
             this.ParseIvfcHeader(isoStream, offset);
 
-            // build directory structure
-            this.BuildDirectoryTree();
+            // Build Validation Info
+            this.BuildIvfcLevels();
+            
+            // Validate IVFC Levels
 
+            // Parse RomFS Header
+            this.ParseRomFsHeader(isoStream, offset);
+
+            // build directory structure
+            this.RootDirectory = new Nintendo3dsCtrRomFileSystemDirectory(isoStream, sourceFilePath, parentDirectoryName, 
+                offset, 0, (long)(this.RomFsSections[1].Offset + 0x1000), 
+                (long)(this.RomFsSections[3].Offset + 0x1000));
         }
 
         public void ParseIvfcHeader(FileStream fs, long offset)
         {
             this.MagicBytes = ParseFile.ReadUintBE(fs, offset);
+            
+            // verify magic bytes
+            if (this.MagicBytes != 0x49564643)
+            {
+                throw new FormatException(String.Format("IVFC bytes not found."));
+            }
+                        
             this.VersionNumber = ParseFile.ReadUintLE(fs, offset + 0x04);
             this.MasterHashSize = ParseFile.ReadUintLE(fs, offset + 0x08);
 
@@ -687,7 +996,7 @@ namespace VGMToolbox.format
             this.OptionalInfoSize = ParseFile.ReadUintLE(fs, offset + 0x58);               
         }
 
-        public void BuildDirectoryTree() // thanks to neimod's ctrtool
+        public void BuildIvfcLevels() // thanks to neimod's ctrtool
         {
             this.IvfcLevels = new IvfcLevelInfo[3];
             for (int i = 0; i < 3; i++) { this.IvfcLevels[i] = new IvfcLevelInfo(); }
@@ -715,33 +1024,19 @@ namespace VGMToolbox.format
             this.IvfcLevels[0].DataSize = MathUtil.RoundUpToByteAlignment(this.Level1HashDataSize, this.IvfcLevels[0].HashBlockSize);
         }
 
-        public int CompareTo(object obj)
+        public void ParseRomFsHeader(FileStream fs, long offset)
         {
-            if (obj is Nintendo3dsCtrExeFileSystem)
+            this.RomFsHeaderSize = ParseFile.ReadUintLE(fs, offset + 0x1000);
+            
+            this.RomFsSections = new SimpleOffset[4];
+            for (int i = 0; i < 4; i++)
             {
-                Nintendo3dsCtrExeFileSystem o = (Nintendo3dsCtrExeFileSystem)obj;
-
-                return this.DirectoryName.CompareTo(o.DirectoryName);
+                this.RomFsSections[i] = new SimpleOffset((ParseFile.ReadUintLE(fs, offset + 0x1004 + (8 * i))), 
+                                                          ParseFile.ReadUintLE(fs, offset + 0x1004 + ((8 * i) + 4)));
             }
 
-            throw new ArgumentException("object is not an Nintendo3dsCtrExeFileSystem");
-        }
-
-        public void Extract(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
-        {
-            string fullDirectoryPath = Path.Combine(destinationFolder, Path.Combine(this.ParentDirectoryName, this.DirectoryName));
-
-            // create directory
-            if (!Directory.Exists(fullDirectoryPath))
-            {
-                Directory.CreateDirectory(fullDirectoryPath);
-            }
-
-            foreach (Nintendo3dsCtrExeFileSystemFile f in this.FileArray)
-            {
-                f.Extract(ref streamCache, destinationFolder, extractAsRaw);
-            }
-        }
+            this.RomFsDataOffset = ParseFile.ReadUintLE(fs, offset + 0x1024);
+        }        
     }
 
 
