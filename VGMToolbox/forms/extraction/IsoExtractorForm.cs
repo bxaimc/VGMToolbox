@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows.Forms;
 
 using VGMToolbox.format.iso;
+using VGMToolbox.format;
 using VGMToolbox.plugin;
 using VGMToolbox.tools.extract;
 
@@ -124,7 +125,10 @@ namespace VGMToolbox.forms.extraction
             TreeNode volumeNode;
             TreeNode directoryNode;
             string volumeName;
-                        
+
+            //Nintendo3dsCtrRomFileSystemDirectory x = (Nintendo3dsCtrRomFileSystemDirectory)volumes[0];
+            
+
             foreach (IVolume v in volumes)
             {
                 volumeName = String.IsNullOrEmpty(v.VolumeIdentifier) ? "NO_NAME" : v.VolumeIdentifier.Trim();
