@@ -42,8 +42,8 @@ namespace VGMToolbox.forms.extraction
             this.lblTitle.Text = "ISO and Archive Browser/Extractor";
             
             this.tbOutput.Text = "Browse and Extract contents of disc images and archives." + Environment.NewLine;
-            this.tbOutput.Text += "- Currently supported image types: .CUE/.BIN, .GDI/ISO/BIN, .IMG, .ISO, .MDF, .WUD" + Environment.NewLine;
-            this.tbOutput.Text += "- Currently supported file systems: GameCube, Green Book (CD-i), ISO 9660 (PC/PSX/PS2), NullDC GDI (Dreamcast), Opera FS (3DO), Wii Optical Disc, Wii U Optical Disc, XDVDFS (XBOX/XBOX360)" + Environment.NewLine;
+            this.tbOutput.Text += "- Currently supported image types: .3DS, .CUE/.BIN, .GDI/ISO/BIN, .IMG, .ISO, .MDF, .WUD" + Environment.NewLine;
+            this.tbOutput.Text += "- Currently supported file systems: 3DS NCSD/CTR, GameCube, Green Book (CD-i), ISO 9660 (PC/PSX/PS2), NullDC GDI (Dreamcast), Opera FS (3DO), Wii Optical Disc, Wii U Optical Disc, XDVDFS (XBOX/XBOX360)" + Environment.NewLine;
             this.tbOutput.Text += "- Currently supported archive types: Microsoft STFS (XBLA), Nintendo U8 Archives (Wii)" + Environment.NewLine;
             this.tbOutput.Text += String.Format("- WII images require 'ckey.bin' and/or 'kkey.bin' (for Korean discs) in the <{0}> directory.", NintendoWiiOpticalDisc.WII_EXTERNAL_FOLDER) + Environment.NewLine;
             this.tbOutput.Text += String.Format("- WII U images require 'ckey.bin' in the <{0}> directory, and 'disckey.bin' in the same directory as the source .wud image file.", NintendoWiiUOpticalDisc.WIIU_EXTERNAL_FOLDER) + Environment.NewLine;
