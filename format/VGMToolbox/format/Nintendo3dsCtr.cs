@@ -425,7 +425,8 @@ namespace VGMToolbox.format
         public byte[] Sha256Hash { set; get; }
         
         public Nintendo3dsCtr.FileSystemType FileSystem { set; get; }
-        public Nintendo3dsCtrFile SiblingFile { set; get; }
+        // public Nintendo3dsCtrFile SiblingFile { set; get; }
+        public int SiblingOffset { set; get; }
 
         public int CompareTo(object obj)
         {
@@ -453,7 +454,7 @@ namespace VGMToolbox.format
             this.FileMode = CdSectorType.Unknown;
             
             this.FileSystem = fileSystem;
-            this.SiblingFile = null;
+            //this.SiblingFile = null;
 
             if (this.FileSystem == Nintendo3dsCtr.FileSystemType.RomFS)
             {
@@ -497,12 +498,15 @@ namespace VGMToolbox.format
             this.Size = (long)file.DataSize;
 
             // get sibling
-            if (file.SiblingOffset != -1)
-            {
-                tempFile = new Nintendo3dsCtrFile(isoStream, this.ParentDirectoryName, isoStream.Name, null, ivfcOffset,
-                    -1, Nintendo3dsCtr.FileSystemType.RomFS, file.SiblingOffset, fileBlockOffset, romFsDataOffset);
-                this.SiblingFile = tempFile;
-            }
+            this.SiblingOffset = file.SiblingOffset;
+            //if (file.SiblingOffset != -1)
+            //{
+
+                
+            //    tempFile = new Nintendo3dsCtrFile(isoStream, this.ParentDirectoryName, isoStream.Name, null, ivfcOffset,
+            //        -1, Nintendo3dsCtr.FileSystemType.RomFS, file.SiblingOffset, fileBlockOffset, romFsDataOffset);
+            //    this.SiblingFile = tempFile;
+            //}
         }
 
         public void Extract(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
@@ -813,15 +817,26 @@ namespace VGMToolbox.format
             // add files
             if (dir.FileOffset != -1)
             {
+
+                
                 tempFile = new Nintendo3dsCtrFile(isoStream, nextDirectory, isoStream.Name,
                     null, ivfcOffset, -1, Nintendo3dsCtr.FileSystemType.RomFS, dir.FileOffset,
                     fileBlockOffset, this.RomFsDataOffset);
                 this.FileArray.Add(tempFile);
 
-                while (tempFile.SiblingFile != null)
+                //while (tempFile.SiblingFile != null)
+                //{
+                //    this.FileArray.Add(tempFile.SiblingFile);
+                //    tempFile = tempFile.SiblingFile;
+                //}
+
+                while (tempFile.SiblingOffset != - 1)
                 {
-                    this.FileArray.Add(tempFile.SiblingFile);
-                    tempFile = tempFile.SiblingFile;
+                    tempFile = new Nintendo3dsCtrFile(isoStream, nextDirectory, isoStream.Name,
+                        null, ivfcOffset, -1, Nintendo3dsCtr.FileSystemType.RomFS, tempFile.SiblingOffset,
+                        fileBlockOffset, this.RomFsDataOffset);
+
+                    this.FileArray.Add(tempFile);
                 }
 
             }
