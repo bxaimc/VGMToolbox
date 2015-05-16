@@ -395,7 +395,7 @@ namespace VGMToolbox.format
         /// <param name="extractAsRaw"></param>
         public void ExtractAll(ref Dictionary<string, FileStream> streamCache, string destintionFolder, bool extractAsRaw)
         {
-            foreach (NintendoU8Directory ds in this.DirectoryStructureArray)
+            foreach (Nintendo3dsCtrDirectory ds in this.DirectoryStructureArray)
             {
                 ds.Extract(ref streamCache, destintionFolder, extractAsRaw);
             }
@@ -764,7 +764,62 @@ namespace VGMToolbox.format
             this.IvfcLevels[0].DataOffset = this.IvfcLevels[1].HashOffset;
             this.IvfcLevels[0].DataSize = MathUtil.RoundUpToByteAlignment(this.Level1HashDataSize, this.IvfcLevels[0].HashBlockSize);
         }
-        
+
+        private void ValidateIvfcContainer(FileStream fs, long offset) // thanks to neimod's ctrtool
+        {
+            StringBuilder hashFailures = new StringBuilder();
+            
+            ulong blockCount;
+            byte[] blockToHash;
+            byte[] calculatedHash;
+            byte[] testHash;
+            HashAlgorithm cryptoHash = SHA256.Create();
+
+            uint badHashCount = 0, goodHashCount = 0;
+
+            // only check level 1 and 2 hash on load, level 3 takes too long
+            for (ulong i = 0; i < 2; i++)
+            {
+                // verify hash block to data size
+                blockCount = this.IvfcLevels[i].DataSize / this.IvfcLevels[i].HashBlockSize;
+
+                if ((blockCount * this.IvfcLevels[i].HashBlockSize) != this.IvfcLevels[i].DataSize)
+                {
+                    throw new Exception("Error, IVFC block mismatch.");
+                }
+
+                // calculate hash and compare
+                for (ulong j = 0; j < blockCount; j++)
+                {
+                    testHash = ParseFile.ParseSimpleOffset(fs, offset + (long)this.IvfcLevels[i].HashOffset + (long)(0x20 * j), 0x20);
+
+                    blockToHash = ParseFile.ParseSimpleOffset(fs, offset + (long)this.IvfcLevels[i].DataOffset + ((long)this.IvfcLevels[i].HashBlockSize * (long)j), (int)this.IvfcLevels[i].HashBlockSize);
+                    calculatedHash = cryptoHash.ComputeHash(blockToHash);
+
+                    if (!ParseFile.CompareSegment(calculatedHash, 0, testHash))
+                    {
+                        badHashCount++;
+                    }
+                    else 
+                    {
+                        goodHashCount++;
+                    }
+                }
+
+                if (badHashCount > 0)
+                {
+                    hashFailures.AppendFormat("IVFC hash failure(s) in Level {0}.  Good Blocks: {1}  Bad Blocks: {2}{3}", i + 1, goodHashCount.ToString(), badHashCount.ToString(), Environment.NewLine);
+                }
+            } // for (ulong i = 0;...
+
+            // display warning about hash failures
+            if (hashFailures.Length > 0)
+            {
+                hashFailures.Insert(0, String.Format("Warning: Hash Failures when Validating .3DS file.  This file is corrupted.{0}{0}", Environment.NewLine));
+                MessageBox.Show(hashFailures.ToString(), "Warning: Hash Failures in .3DS file.");
+            }
+        }
+
         private void ParseRomFsHeader(FileStream fs, long offset)
         {
             this.RomFsHeaderSize = ParseFile.ReadUintLE(fs, offset + 0x1000);
@@ -870,6 +925,10 @@ namespace VGMToolbox.format
         {
             this.ParseIvfcHeader(isoStream, offset);
             this.BuildIvfcLevels();
+
+            // @TODO: Add validation here
+            this.ValidateIvfcContainer(isoStream, offset);
+
             this.ParseRomFsHeader(isoStream, offset);       
         }
         
@@ -949,5 +1008,16 @@ namespace VGMToolbox.format
                 d.Extract(ref streamCache, destinationFolder, extractAsRaw);
             }            
         }
+    }
+
+    public class Nintendo3dsCtrHashFailureException : Exception
+    {
+        public Nintendo3dsCtrHashFailureException() { }
+
+        public Nintendo3dsCtrHashFailureException(string message)
+            : base(message) { }
+
+        public Nintendo3dsCtrHashFailureException(string message, Exception inner)
+            : base(message, inner) { }
     }
 }
