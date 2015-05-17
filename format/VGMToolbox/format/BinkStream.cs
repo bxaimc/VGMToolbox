@@ -9,6 +9,8 @@ namespace VGMToolbox.format
 {
     public class BinkStream
     {
+        public enum BinkType { Version01, Version02 };
+        
         const string DefaultFileExtensionAudioMulti = ".audio.multi.bik";
         const string DefaultFileExtensionAudioSplit = ".audio.split.bik";
         const string DefaultFileExtensionVideo = ".video.bik";
@@ -17,6 +19,10 @@ namespace VGMToolbox.format
         public uint AudioTrackCount { set; get; }
         public uint[] AudioTrackIds { set; get; }
         public FrameOffsetStruct[] FrameOffsetList { set; get; }
+        public BinkType BinkVersion { set; get; }
+        public byte[] MagicBytes { set; get; }
+        
+
         public byte[] FullHeader { set; get; }
 
         public uint[][] NewFrameOffsetsAudio { set; get; }
@@ -89,6 +95,24 @@ namespace VGMToolbox.format
 
         public void ParseHeader(FileStream inStream, long offsetToHeader)
         {
+            long frameOffsetOffset;
+            long audioIdOffet;
+            int fullHeaderSize;
+
+            this.MagicBytes = ParseFile.ParseSimpleOffset(inStream, offsetToHeader, 3);
+            if (ParseFile.CompareSegment(this.MagicBytes, 0, BINK01_HEADER))
+            {
+                this.BinkVersion = BinkType.Version01;
+            }
+            else if (ParseFile.CompareSegment(this.MagicBytes, 0, BINK02_HEADER))
+            {
+                this.BinkVersion = BinkType.Version02;
+            }
+            else
+            {
+                throw new FormatException("Unrecognized Magic Bytes for Bink.");
+            }
+                        
             this.FrameCount = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(inStream, offsetToHeader + 8, 4), 0);
             this.AudioTrackCount = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(inStream, offsetToHeader + 0x28, 4), 0);
 
@@ -97,8 +121,15 @@ namespace VGMToolbox.format
 
             for (uint i = 0; i < this.AudioTrackCount; i++)
             {
-                this.AudioTrackIds[i] = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(inStream, offsetToHeader + 0x2C + (this.AudioTrackCount * 8) + (i * 4), 4), 0);
-            }
+                audioIdOffet = offsetToHeader + 0x2C + (this.AudioTrackCount * 8) + (i * 4);
+
+                if (this.BinkVersion == BinkType.Version02)
+                {
+                    audioIdOffet += 4;
+                }
+
+                this.AudioTrackIds[i] = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(inStream, audioIdOffet, 4), 0);
+             }
 
             // get frame offsets
             this.FrameOffsetList = new FrameOffsetStruct[this.FrameCount];
@@ -113,7 +144,14 @@ namespace VGMToolbox.format
 #endif
 
                 
-                this.FrameOffsetList[i].FrameOffset = ParseFile.ReadUintLE(inStream, offsetToHeader + 0x2C + (this.AudioTrackCount * 0xC) + (i * 4));
+                frameOffsetOffset = offsetToHeader + 0x2C + (this.AudioTrackCount * 0xC) + (i * 4);
+
+                if (this.BinkVersion == BinkType.Version02)
+                {
+                    frameOffsetOffset += 4;
+                }
+
+                this.FrameOffsetList[i].FrameOffset = ParseFile.ReadUintLE(inStream, frameOffsetOffset);
 
                 if ((this.FrameOffsetList[i].FrameOffset & 1) == 1)
                 {
@@ -123,7 +161,14 @@ namespace VGMToolbox.format
             }
 
             // get full header
-            this.FullHeader = ParseFile.ParseSimpleOffset(inStream, offsetToHeader, (int)(offsetToHeader + 0x2C + (this.AudioTrackCount * 0xC) + (this.FrameCount * 4) + 4));
+            fullHeaderSize = (int)(offsetToHeader + 0x2C + (this.AudioTrackCount * 0xC) + (this.FrameCount * 4) + 4);
+
+            if (this.BinkVersion == BinkType.Version02)
+            {
+                fullHeaderSize += 4;
+            }
+
+            this.FullHeader = ParseFile.ParseSimpleOffset(inStream, offsetToHeader, fullHeaderSize);
 
         }
 
@@ -133,6 +178,7 @@ namespace VGMToolbox.format
             string sourceFile;
             string headeredFile;
 
+            int headerSize;
             byte[] headerBytes;
             byte[] frameOffsetBytes;
 
@@ -166,6 +212,11 @@ namespace VGMToolbox.format
 
                             // set frame start location
                             frameStartLocation = 0x2C + (this.AudioTrackCount * 0xC);
+
+                            if (this.BinkVersion == BinkType.Version02)
+                            {
+                                frameStartLocation += 4;
+                            }
 
                             // set file size
                             fileLength = (uint)(streamWriters[key].Length + headerBytes.Length - 8);
@@ -299,7 +350,14 @@ namespace VGMToolbox.format
                             audioTrackIndex = this.getIndexForSplitAudioTrackFileName(streamWriters[key].Name);
 
                             // resize header since all audio info except this track will be removied
-                            Array.Resize(ref headerBytes, (int)(0x2C + 0xC + ((this.FrameCount + 1) * 4)));
+                            headerSize = (int)(0x2C + 0xC + ((this.FrameCount + 1) * 4));
+                            
+                            if (this.BinkVersion == BinkType.Version02)
+                            {
+                                headerSize += 4;
+                            }
+                            
+                            Array.Resize(ref headerBytes, headerSize);
 
                             // insert audio info for this track
                             headerBytes[0x28] = 1;
@@ -307,7 +365,18 @@ namespace VGMToolbox.format
                             Array.Copy(this.FullHeader, 0x2C + (this.AudioTrackCount * 4) + (audioTrackIndex * 4), headerBytes, 0x30, 4);
 
                             // only one audio track, audio track id must equal zero
-                            Array.Copy(BitConverter.GetBytes((uint)0), 0, headerBytes, 0x34, 4);
+                            if (this.BinkVersion == BinkType.Version01)
+                            {
+                                Array.Copy(BitConverter.GetBytes((uint)0), 0, headerBytes, 0x34, 4);
+                            }
+                            else if (this.BinkVersion == BinkType.Version02)
+                            {
+                                Array.Copy(BitConverter.GetBytes((uint)0), 0, headerBytes, 0x38, 4);
+                            }
+                            else
+                            {
+                                throw new FormatException("Unsupported Bink type for split audio streams.");
+                            }
 
                             // set file size
                             fileLength = (uint)(streamWriters[key].Length + headerBytes.Length - 8);
@@ -317,6 +386,13 @@ namespace VGMToolbox.format
                             previousFrameOffset = 0;
                             frameOffset = 0;
                             maxFrameSize = 0;
+
+                            frameStartLocation = 0x2C + 0xC;
+
+                            if (this.BinkVersion == BinkType.Version02)
+                            {
+                                frameStartLocation += 4;
+                            }
 
                             for (uint i = 0; i < this.FrameCount; i++)
                             {
@@ -335,7 +411,7 @@ namespace VGMToolbox.format
                                 }
 
                                 // insert offset
-                                Array.Copy(frameOffsetBytes, 0, headerBytes, (0x2C + 0xC + (i * 4)), 4);
+                                Array.Copy(frameOffsetBytes, 0, headerBytes, (frameStartLocation + (i * 4)), 4);
 
                                 // calculate max frame size
                                 if ((frameOffset - previousFrameOffset) > maxFrameSize)
@@ -347,7 +423,7 @@ namespace VGMToolbox.format
 
                             // Add last frame offset (EOF)
                             fileLength = (uint)(streamWriters[key].Length + headerBytes.Length);
-                            Array.Copy(BitConverter.GetBytes(fileLength), 0, headerBytes, (0x2C + 0xC + (this.FrameCount * 4)), 4);
+                            Array.Copy(BitConverter.GetBytes(fileLength), 0, headerBytes, (frameStartLocation + (this.FrameCount * 4)), 4);
 
                             // insert max frame size
                             if ((fileLength - frameOffset) > maxFrameSize)
@@ -381,7 +457,14 @@ namespace VGMToolbox.format
                             Array.Copy(this.FullHeader, headerBytes, this.FullHeader.Length);
 
                             // resize header since audio info will be removied
-                            Array.Resize(ref headerBytes, (int)(0x2C + ((this.FrameCount + 1) * 4)));
+                            headerSize = (int)(0x2C + ((this.FrameCount + 1) * 4));
+
+                            if (this.BinkVersion == BinkType.Version02)
+                            {
+                                headerSize += 4;
+                            }
+
+                            Array.Resize(ref headerBytes, headerSize);
 
                             // set file size
                             fileLength = (uint)(streamWriters[key].Length + headerBytes.Length - 8);
@@ -394,6 +477,13 @@ namespace VGMToolbox.format
                             previousFrameOffset = 0;
                             frameOffset = 0;
                             maxFrameSize = 0;
+
+                            frameStartLocation = 0x2C;
+
+                            if (this.BinkVersion == BinkType.Version02)
+                            {
+                                frameStartLocation += 4;
+                            }
 
                             for (uint i = 0; i < this.FrameCount; i++)
                             {
@@ -412,7 +502,7 @@ namespace VGMToolbox.format
                                 }
 
                                 // insert frame offset
-                                Array.Copy(frameOffsetBytes, 0, headerBytes, (0x2C + (i * 4)), 4);
+                                Array.Copy(frameOffsetBytes, 0, headerBytes, (frameStartLocation + (i * 4)), 4);
 
                                 // calculate max frame size
                                 if ((frameOffset - previousFrameOffset) > maxFrameSize)
@@ -423,7 +513,7 @@ namespace VGMToolbox.format
 
                             // Add last frame offset (EOF)
                             fileLength = (uint)(streamWriters[key].Length + headerBytes.Length);
-                            Array.Copy(BitConverter.GetBytes(fileLength), 0, headerBytes, (0x2C + (this.FrameCount * 4)), 4);
+                            Array.Copy(BitConverter.GetBytes(fileLength), 0, headerBytes, (frameStartLocation + (this.FrameCount * 4)), 4);
 
                             // insert max frame size
                             if ((fileLength - frameOffset) > maxFrameSize)
