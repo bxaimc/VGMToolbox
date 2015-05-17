@@ -29,6 +29,9 @@ namespace VGMToolbox.format
         public string FileExtensionAudio { get; set; }
         public string FileExtensionVideo { get; set; }
 
+        public static readonly byte[] BINK01_HEADER = new byte[] { 0x42, 0x49, 0x4B };
+        public static readonly byte[] BINK02_HEADER = new byte[] { 0x4B, 0x42, 0x32 };
+
         public struct FrameOffsetStruct
         {
             public uint FrameOffset { get; set; }

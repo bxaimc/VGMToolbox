@@ -927,7 +927,7 @@ namespace VGMToolbox.format
             this.BuildIvfcLevels();
 
             // @TODO: Add validation here
-            this.ValidateIvfcContainer(isoStream, offset);
+            //this.ValidateIvfcContainer(isoStream, offset);
 
             this.ParseRomFsHeader(isoStream, offset);       
         }
