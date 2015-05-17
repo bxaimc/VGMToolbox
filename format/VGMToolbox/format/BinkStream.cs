@@ -19,10 +19,11 @@ namespace VGMToolbox.format
         public uint AudioTrackCount { set; get; }
         public uint[] AudioTrackIds { set; get; }
         public FrameOffsetStruct[] FrameOffsetList { set; get; }
-        public BinkType BinkVersion { set; get; }
-        public byte[] MagicBytes { set; get; }
-        
 
+        public byte[] MagicBytes { set; get; }
+        public BinkType BinkVersion { set; get; }
+        public ushort AudioInfoRecordLength { set; get; }
+        
         public byte[] FullHeader { set; get; }
 
         public uint[][] NewFrameOffsetsAudio { set; get; }
@@ -99,14 +100,17 @@ namespace VGMToolbox.format
             long audioIdOffet;
             int fullHeaderSize;
 
+            // determine what type of Bink file this is
             this.MagicBytes = ParseFile.ParseSimpleOffset(inStream, offsetToHeader, 3);
             if (ParseFile.CompareSegment(this.MagicBytes, 0, BINK01_HEADER))
             {
                 this.BinkVersion = BinkType.Version01;
+                this.AudioInfoRecordLength = 0xC;
             }
             else if (ParseFile.CompareSegment(this.MagicBytes, 0, BINK02_HEADER))
             {
                 this.BinkVersion = BinkType.Version02;
+                this.AudioInfoRecordLength = 0x10;
             }
             else
             {
@@ -121,13 +125,8 @@ namespace VGMToolbox.format
 
             for (uint i = 0; i < this.AudioTrackCount; i++)
             {
-                audioIdOffet = offsetToHeader + 0x2C + (this.AudioTrackCount * 8) + (i * 4);
-
-                if (this.BinkVersion == BinkType.Version02)
-                {
-                    audioIdOffet += 4;
-                }
-
+                // @TODO: Double check this, seems like calculation is unneeded
+                audioIdOffet = offsetToHeader + 0x2C + (this.AudioTrackCount * (this.AudioInfoRecordLength - 4)) + (i * 4);
                 this.AudioTrackIds[i] = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(inStream, audioIdOffet, 4), 0);
              }
 
@@ -144,12 +143,7 @@ namespace VGMToolbox.format
 #endif
 
                 
-                frameOffsetOffset = offsetToHeader + 0x2C + (this.AudioTrackCount * 0xC) + (i * 4);
-
-                if (this.BinkVersion == BinkType.Version02)
-                {
-                    frameOffsetOffset += 4;
-                }
+                frameOffsetOffset = offsetToHeader + 0x2C + (this.AudioTrackCount * this.AudioInfoRecordLength) + (i * 4);
 
                 this.FrameOffsetList[i].FrameOffset = ParseFile.ReadUintLE(inStream, frameOffsetOffset);
 
@@ -161,13 +155,7 @@ namespace VGMToolbox.format
             }
 
             // get full header
-            fullHeaderSize = (int)(offsetToHeader + 0x2C + (this.AudioTrackCount * 0xC) + (this.FrameCount * 4) + 4);
-
-            if (this.BinkVersion == BinkType.Version02)
-            {
-                fullHeaderSize += 4;
-            }
-
+            fullHeaderSize = (int)(offsetToHeader + 0x2C + (this.AudioTrackCount * this.AudioInfoRecordLength) + (this.FrameCount * 4) + 4);
             this.FullHeader = ParseFile.ParseSimpleOffset(inStream, offsetToHeader, fullHeaderSize);
 
         }
@@ -211,12 +199,7 @@ namespace VGMToolbox.format
                             Array.Copy(this.FullHeader, headerBytes, this.FullHeader.Length);
 
                             // set frame start location
-                            frameStartLocation = 0x2C + (this.AudioTrackCount * 0xC);
-
-                            if (this.BinkVersion == BinkType.Version02)
-                            {
-                                frameStartLocation += 4;
-                            }
+                            frameStartLocation = 0x2C + (this.AudioTrackCount * this.AudioInfoRecordLength);
 
                             // set file size
                             fileLength = (uint)(streamWriters[key].Length + headerBytes.Length - 8);
@@ -225,44 +208,8 @@ namespace VGMToolbox.format
                             Array.Copy(BitConverter.GetBytes((uint)1), 0, headerBytes, 0x14, 4);
                             Array.Copy(BitConverter.GetBytes((uint)1), 0, headerBytes, 0x18, 4);
 
-                            // update values for playback hacks, adding space for dummy audio info
-                            //if (demuxOptions.AddPlaybackHacks)
-                            //{
-                            //    Array.Resize(ref headerBytes, this.FullHeader.Length + 0xC);
-                            //    frameStartLocation += 0xC;
-                            //    fileLength += 0xC;
-                            //}
-                            
                             // insert file length                            
                             Array.Copy(BitConverter.GetBytes(fileLength), 0, headerBytes, 4, 4);
-
-                            // insert dummy header values
-                            //if (demuxOptions.AddPlaybackHacks)
-                            //{
-                            //    // insert audio info for this track
-                            //    headerBytes[0x28] = (byte)(headerBytes[0x28] + 1); // add an audio track
-                                
-                            //    // copy existing data (unknown, channel count)
-                            //    Array.Copy(this.FullHeader, 0x2C, headerBytes, 0x2C, (this.AudioTrackCount * 4));
-
-                            //    // insert dummy values (unknown, channel count)
-                            //    Array.Copy(this.FullHeader, 0x2C, dummyValues, 0, 4); // copy from first stream
-                            //    Array.Copy(dummyValues, 0, headerBytes, 0x2C + (this.AudioTrackCount * 4), 4);
-
-                            //    // copy existing data (sample rate, flags)
-                            //    Array.Copy(this.FullHeader, 0x2C + (this.AudioTrackCount * 4), headerBytes, 0x2C + (this.AudioTrackCount * 4) + 4, (this.AudioTrackCount * 4));
-
-                            //    // insert dummy values (sample rate, flags)
-                            //    Array.Copy(this.FullHeader, 0x2C + (this.AudioTrackCount * 4), dummyValues, 0, 4); // copy from first stream
-                            //    Array.Copy(dummyValues, 0, headerBytes, 0x2C + (this.AudioTrackCount * 8) + 4, 4);
-
-                            //    // copy existing values (stream id)
-                            //    Array.Copy(this.FullHeader, 0x2C + (this.AudioTrackCount * 8), headerBytes, 0x2C + (this.AudioTrackCount * 8) + 8, (this.AudioTrackCount * 4));
-
-                            //    // insert dummy values (stream id)
-                            //    Array.Copy(BitConverter.GetBytes((uint)0x7FFF), 0, dummyValues, 0, 4); // copy from first stream
-                            //    Array.Copy(dummyValues, 0, headerBytes, 0x2C + (this.AudioTrackCount * 0xC) + 8, 4);
-                            //}
 
                             // insert frame offsets
                             previousFrameOffset = 0;
@@ -274,17 +221,6 @@ namespace VGMToolbox.format
                                 // set previous offset
                                 previousFrameOffset = frameOffset;
                                 frameOffset = this.NewFrameOffsetsAudio[0][i];
-
-                                // add 0xC for dummy header and +4 bytes for dummy stream
-                                //if (demuxOptions.AddPlaybackHacks)
-                                //{
-                                //    frameOffset += 0xC; // dummy stream header
-                                    
-                                //    if (i > 0)
-                                //    {
-                                //        frameOffset += 4; // empty stream data
-                                //    }
-                                //}
 
                                 if (this.FrameOffsetList[i].IsKeyFrame)
                                 {
@@ -350,13 +286,7 @@ namespace VGMToolbox.format
                             audioTrackIndex = this.getIndexForSplitAudioTrackFileName(streamWriters[key].Name);
 
                             // resize header since all audio info except this track will be removied
-                            headerSize = (int)(0x2C + 0xC + ((this.FrameCount + 1) * 4));
-                            
-                            if (this.BinkVersion == BinkType.Version02)
-                            {
-                                headerSize += 4;
-                            }
-                            
+                            headerSize = (int)(0x2C + this.AudioInfoRecordLength + ((this.FrameCount + 1) * 4));
                             Array.Resize(ref headerBytes, headerSize);
 
                             // insert audio info for this track
@@ -387,12 +317,7 @@ namespace VGMToolbox.format
                             frameOffset = 0;
                             maxFrameSize = 0;
 
-                            frameStartLocation = 0x2C + 0xC;
-
-                            if (this.BinkVersion == BinkType.Version02)
-                            {
-                                frameStartLocation += 4;
-                            }
+                            frameStartLocation = 0x2C + (uint)this.AudioInfoRecordLength;
 
                             for (uint i = 0; i < this.FrameCount; i++)
                             {
@@ -611,7 +536,9 @@ namespace VGMToolbox.format
                         for (uint i = 0; i < this.AudioTrackCount; i++)
                         {
                             this.NewFrameOffsetsAudio[i] = new uint[this.FrameCount];
-                            this.NewFrameOffsetsAudio[i][0] = this.FrameOffsetList[0].FrameOffset - ((this.AudioTrackCount - 1) * 0xC); // only need one audio header area
+                            
+                            // @TODO: Confirm this works for BINK2 multiatreams
+                            this.NewFrameOffsetsAudio[i][0] = this.FrameOffsetList[0].FrameOffset - ((this.AudioTrackCount - 1) * this.AudioInfoRecordLength); // only need one audio header area
                         }
                     }
                     else if (this.AudioTrackCount > 0)
@@ -685,12 +612,6 @@ namespace VGMToolbox.format
                                 {
                                     this.NewFrameOffsetsAudio[0][frameId + 1] = this.NewFrameOffsetsAudio[0][frameId] + (uint)currentPacketOffset;
                                 }
-
-                                // add empty track for binkplay (WIP)
-                                //if ((this.AudioTrackCount > 0) && (demuxOptions.AddPlaybackHacks))
-                                //{
-                                //    this.writeChunkToStream(emptyAudioPacket, 0, streamOutputWriters, this.FileExtensionAudio);
-                                //}
                             }
 
                             /////////////////
