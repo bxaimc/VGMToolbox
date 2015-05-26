@@ -306,16 +306,17 @@ namespace VGMToolbox.format
                             // insert audio info for this track
                             headerBytes[0x28] = 1;
                             Array.Copy(this.FullHeader, 0x2C + (audioTrackIndex * 4), headerBytes, 0x2C, 4);
-                            Array.Copy(this.FullHeader, 0x2C + (this.AudioTrackCount * 4) + (audioTrackIndex * 4), headerBytes, 0x30, 4);
-
+                            
                             // only one audio track, audio track id must equal zero
                             if (this.BinkVersion == BinkType.Version01)
                             {
+                                Array.Copy(this.FullHeader, 0x2C + (this.AudioTrackCount * 4) + (audioTrackIndex * 4), headerBytes, 0x30, 4);
                                 Array.Copy(BitConverter.GetBytes((uint)0), 0, headerBytes, 0x34, 4);
                             }
                             else if (this.BinkVersion == BinkType.Version02)
                             {
-                                Array.Copy(this.FullHeader, 0x2C + (this.AudioTrackCount * 4) + (audioTrackIndex * 8) + 4, headerBytes, 0x34, 4);
+                                Array.Copy(this.FullHeader, 0x30 + (audioTrackIndex * 4), headerBytes, 0x30, 4);
+                                Array.Copy(this.FullHeader, 0x30 + (this.AudioTrackCount * 4) + (audioTrackIndex * 4), headerBytes, 0x34, 4);
                                 Array.Copy(BitConverter.GetBytes((uint)0), 0, headerBytes, 0x38, 4);
                             }
                             else

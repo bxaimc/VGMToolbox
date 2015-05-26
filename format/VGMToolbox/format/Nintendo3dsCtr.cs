@@ -777,8 +777,8 @@ namespace VGMToolbox.format
 
             uint badHashCount = 0, goodHashCount = 0;
 
-            // only check level 1 and 2 hash on load, level 3 takes too long
-            for (ulong i = 0; i < 2; i++)
+            // only check level 1 and 2 hash on load, level 3 takes too long and can be performed on extraction
+            for (ulong i = 0; i < 3; i++)
             {
                 // verify hash block to data size
                 blockCount = this.IvfcLevels[i].DataSize / this.IvfcLevels[i].HashBlockSize;
@@ -810,13 +810,18 @@ namespace VGMToolbox.format
                 {
                     hashFailures.AppendFormat("IVFC hash failure(s) in Level {0}.  Good Blocks: {1}  Bad Blocks: {2}{3}", i + 1, goodHashCount.ToString(), badHashCount.ToString(), Environment.NewLine);
                 }
+                else
+                {
+                    hashFailures.AppendFormat("No IVFC hash failures found in Level {0} check.{1}", i + 1, Environment.NewLine);
+                }
             } // for (ulong i = 0;...
 
             // display warning about hash failures
             if (hashFailures.Length > 0)
             {
-                hashFailures.Insert(0, String.Format("Warning: Hash Failures when Validating .3DS file.  This file is corrupted.{0}{0}", Environment.NewLine));
-                MessageBox.Show(hashFailures.ToString(), "Warning: Hash Failures in .3DS file.");
+                //hashFailures.Insert(0, String.Format("Hash Failures when Validating .3DS file.  This file is corrupted.{0}{0}", Environment.NewLine));
+                //MessageBox.Show(hashFailures.ToString(), "Warning: Hash Failures in .3DS file.");
+                MessageBox.Show(hashFailures.ToString(), "Hash Validation Results");
             }
         }
 
