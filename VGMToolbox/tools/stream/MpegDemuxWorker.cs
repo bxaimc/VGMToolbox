@@ -104,6 +104,11 @@ namespace VGMToolbox.tools.stream
                             throw new FormatException(String.Format("Unsupported MPEG type, for file: {0}", Path.GetFileName(path)));
                     }
                     break;
+                case "MPS (PSP UMD Movie)":
+                    SonyPspMpsStream mpsStream = new SonyPspMpsStream(path);
+                    mpsStream.DemultiplexStreams(demuxOptions);
+                    break;
+
                 case "PAM (PlayStation Advanced Movie)":
                     SonyPamStream pamStream = new SonyPamStream(path);
                     pamStream.DemultiplexStreams(demuxOptions);

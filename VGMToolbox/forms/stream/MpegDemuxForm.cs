@@ -44,6 +44,7 @@ namespace VGMToolbox.forms.stream
             //this.comboFormat.Items.Add("H4M (Hudson GameCube Video)");
             this.comboFormat.Items.Add("MO (Mobiclip)");
             this.comboFormat.Items.Add("MPEG");
+            this.comboFormat.Items.Add("MPS (PSP UMD Movie)");
             this.comboFormat.Items.Add("PAM (PlayStation Advanced Movie)");
             this.comboFormat.Items.Add("PMF (PSP Movie Format)");
             this.comboFormat.Items.Add("PSS (PlayStation Stream)");
@@ -114,6 +115,7 @@ namespace VGMToolbox.forms.stream
                 case "DSI (Racjin/Racdym PS2 Video)":
                 case "H4M (Hudson GameCube Video)":
                 case "MO (Mobiclip)":
+                case "MPS (PSP UMD Movie)":
                 case "PAM (PlayStation Advanced Movie)":
                 case "PMF (PSP Movie Format)":
                 //case "WMV (MS Advanced Systems Format)":
