@@ -185,15 +185,6 @@ namespace VGMToolbox.format
             this.CardInfoInitialData = ParseFile.ParseSimpleOffset(fs, offset + 0x1010, 0x30);
             this.CardInfoReserved03 = ParseFile.ParseSimpleOffset(fs, offset + 0x1040, 0xC0);
             this.CardInfoNcchHeaderCopy = ParseFile.ParseSimpleOffset(fs, offset + 0x1011, 0x100);
-
-
-            //// parse nodes
-            //this.NodeArray = new ArrayList();
-            //this.ParseNodes(fs);
-            //this.NameTableOffset = this.RootNodeOffset + ((uint)this.NodeList.Length * 0xC);
-
-            //// build directory structure
-            //this.BuildDirectoryTree(fs);
         }
 
         /// <summary>
@@ -353,7 +344,7 @@ namespace VGMToolbox.format
             {
                 absoluteOffset = offset + ((long)this.ExeFsOffset * Nintendo3dsCtr.MEDIA_UNIT_SIZE);
                 Nintendo3dsCtrDirectory ExeFs = new Nintendo3dsCtrDirectory(fs, fs.Name, this.VolumeIdentifier, 
-                    absoluteOffset, Nintendo3dsCtr.FileSystemType.ExeFS);
+                    absoluteOffset, Nintendo3dsCtr.FileSystemType.ExeFS, null);
                 dummyRoot.SubDirectoryArray.Add((IDirectoryStructure)ExeFs);
             }
 
@@ -364,7 +355,7 @@ namespace VGMToolbox.format
                 try
                 {
                     Nintendo3dsCtrDirectory RomFs = new Nintendo3dsCtrDirectory(fs, fs.Name, this.VolumeIdentifier,
-                        absoluteOffset, Nintendo3dsCtr.FileSystemType.RomFS);                   
+                        absoluteOffset, Nintendo3dsCtr.FileSystemType.RomFS, null);                   
                     dummyRoot.SubDirectoryArray.Add((IDirectoryStructure)RomFs);
                 }
                 catch (Exception ex)
@@ -425,8 +416,9 @@ namespace VGMToolbox.format
         public byte[] Sha256Hash { set; get; }
         
         public Nintendo3dsCtr.FileSystemType FileSystem { set; get; }
-        // public Nintendo3dsCtrFile SiblingFile { set; get; }
         public int SiblingOffset { set; get; }
+
+        public IvfcLevelInfo Level3HashInfo { set; get; }
 
         public int CompareTo(object obj)
         {
@@ -442,19 +434,19 @@ namespace VGMToolbox.format
 
         public Nintendo3dsCtrFile(FileStream isoStream, string parentDirectoryName, string sourceFilePath,
             string fileName, long offset, long size, Nintendo3dsCtr.FileSystemType fileSystem,
-            long fileEntryOffset = 0, long fileBlockOffset = -1, long romFsDataOffset = -1)
+            IvfcLevelInfo level3HashInfo, long fileEntryOffset = 0, long fileBlockOffset = -1, long romFsDataOffset = -1)
         {                        
             this.ParentDirectoryName = parentDirectoryName;
             this.SourceFilePath = sourceFilePath;
             this.FileDateTime = new DateTime();            
-
-            this.Lba = offset;
+            
             this.IsRaw = false;
             this.NonRawSectorSize = 0;
             this.FileMode = CdSectorType.Unknown;
             
+            this.Level3HashInfo = level3HashInfo;
+
             this.FileSystem = fileSystem;
-            //this.SiblingFile = null;
 
             if (this.FileSystem == Nintendo3dsCtr.FileSystemType.RomFS)
             {
@@ -466,6 +458,8 @@ namespace VGMToolbox.format
                 this.Offset = offset;
                 this.Size = size;
             }
+
+            this.Lba = this.Offset;
         }
 
         private void BuildRomFsFile(FileStream isoStream, long ivfcOffset, long fileEntryOffset, long fileBlockOffset, long romFsDataOffset)
@@ -498,15 +492,7 @@ namespace VGMToolbox.format
             this.Size = (long)file.DataSize;
 
             // get sibling
-            this.SiblingOffset = file.SiblingOffset;
-            //if (file.SiblingOffset != -1)
-            //{
-
-                
-            //    tempFile = new Nintendo3dsCtrFile(isoStream, this.ParentDirectoryName, isoStream.Name, null, ivfcOffset,
-            //        -1, Nintendo3dsCtr.FileSystemType.RomFS, file.SiblingOffset, fileBlockOffset, romFsDataOffset);
-            //    this.SiblingFile = tempFile;
-            //}
+            this.SiblingOffset = file.SiblingOffset;            
         }
 
         public void Extract(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
@@ -666,8 +652,9 @@ namespace VGMToolbox.format
         public Nintendo3dsCtrDirectory() { }
 
         public Nintendo3dsCtrDirectory(FileStream isoStream, string sourceFilePath, string parentDirectoryName,
-            long offset, Nintendo3dsCtr.FileSystemType fileSystem, long directoryEntryOffset = 0,
-            long directoryBlockOffset = -1, long fileBlockOffset = -1, uint romFsDataOffset = 0)
+            long offset, Nintendo3dsCtr.FileSystemType fileSystem, IvfcLevelInfo[] ivfcLevels, 
+            long directoryEntryOffset = 0, long directoryBlockOffset = -1, long fileBlockOffset = -1, 
+            uint romFsDataOffset = 0)
         {
             string nextDirectoryName;
 
@@ -678,6 +665,8 @@ namespace VGMToolbox.format
 
             this.FileSystem = fileSystem;
             this.SiblingDirectory = null;
+
+            this.IvfcLevels = ivfcLevels;
 
             if (this.FileSystem == Nintendo3dsCtr.FileSystemType.ExeFS)
             {
@@ -876,25 +865,17 @@ namespace VGMToolbox.format
 
             // add files
             if (dir.FileOffset != -1)
-            {
-
-                
+            {                
                 tempFile = new Nintendo3dsCtrFile(isoStream, nextDirectory, isoStream.Name,
-                    null, ivfcOffset, -1, Nintendo3dsCtr.FileSystemType.RomFS, dir.FileOffset,
-                    fileBlockOffset, this.RomFsDataOffset);
+                    null, ivfcOffset, -1, Nintendo3dsCtr.FileSystemType.RomFS, this.IvfcLevels[2], 
+                    dir.FileOffset, fileBlockOffset, this.RomFsDataOffset);
                 this.FileArray.Add(tempFile);
-
-                //while (tempFile.SiblingFile != null)
-                //{
-                //    this.FileArray.Add(tempFile.SiblingFile);
-                //    tempFile = tempFile.SiblingFile;
-                //}
 
                 while (tempFile.SiblingOffset != - 1)
                 {
                     tempFile = new Nintendo3dsCtrFile(isoStream, nextDirectory, isoStream.Name,
-                        null, ivfcOffset, -1, Nintendo3dsCtr.FileSystemType.RomFS, tempFile.SiblingOffset,
-                        fileBlockOffset, this.RomFsDataOffset);
+                        null, ivfcOffset, -1, Nintendo3dsCtr.FileSystemType.RomFS, this.IvfcLevels[2], 
+                        tempFile.SiblingOffset, fileBlockOffset, this.RomFsDataOffset);
 
                     this.FileArray.Add(tempFile);
                 }
@@ -905,8 +886,8 @@ namespace VGMToolbox.format
             if (dir.SiblingOffset != -1)
             {
                 tempDir = new Nintendo3dsCtrDirectory(isoStream, isoStream.Name, this.ParentDirectoryName,
-                    ivfcOffset, Nintendo3dsCtr.FileSystemType.RomFS, dir.SiblingOffset, directoryBlockOffset, fileBlockOffset,
-                    this.RomFsDataOffset);
+                    ivfcOffset, Nintendo3dsCtr.FileSystemType.RomFS, this.IvfcLevels, dir.SiblingOffset, directoryBlockOffset, 
+                    fileBlockOffset, this.RomFsDataOffset);
                 this.SiblingDirectory = tempDir;
             }                                
 
@@ -914,8 +895,8 @@ namespace VGMToolbox.format
             if (dir.ChildOffset != -1)
             {
                 tempDir = new Nintendo3dsCtrDirectory(isoStream, isoStream.Name, nextDirectory,
-                    ivfcOffset, Nintendo3dsCtr.FileSystemType.RomFS, dir.ChildOffset, directoryBlockOffset, fileBlockOffset,
-                    this.RomFsDataOffset);
+                    ivfcOffset, Nintendo3dsCtr.FileSystemType.RomFS, this.IvfcLevels, dir.ChildOffset, directoryBlockOffset, 
+                    fileBlockOffset, this.RomFsDataOffset);
                 this.SubDirectoryArray.Add(tempDir);
 
                 while (tempDir.SiblingDirectory != null)
@@ -929,7 +910,11 @@ namespace VGMToolbox.format
         public void InitializeRomFileSystem(FileStream isoStream, long offset)
         {
             this.ParseIvfcHeader(isoStream, offset);
-            this.BuildIvfcLevels();
+
+            if (this.IvfcLevels == null)
+            {
+                this.BuildIvfcLevels();
+            }
 
             // @TODO: Add validation here
             //this.ValidateIvfcContainer(isoStream, offset);
@@ -972,7 +957,7 @@ namespace VGMToolbox.format
 
                     // build file object
                     file = new Nintendo3dsCtrFile(isoStream, nextDirectoryName, this.SourceFilePath,
-                        fileName, fileOffset, fileLength, this.FileSystem);
+                        fileName, fileOffset, fileLength, this.FileSystem, null);
                     file.Sha256Hash = hash;
                     this.FileArray.Add(file);
                 }
