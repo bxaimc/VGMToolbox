@@ -49,7 +49,7 @@ namespace VGMToolbox.tools.extract
                         // open the stream and cache it
                         if (!streamCache.ContainsKey(d.SourceFilePath))
                         {
-                            streamCache[d.SourceFilePath] = File.OpenRead(d.SourceFilePath);
+                            streamCache[d.SourceFilePath] = File.Open(d.SourceFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
                         }
 
                         d.Extract(ref streamCache, taskStruct.DestinationFolder, taskStruct.ExtractAsRaw);

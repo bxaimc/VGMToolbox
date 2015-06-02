@@ -60,7 +60,7 @@ namespace VGMToolbox.format
 
             // get track ID
             fileExtensionLocation = splitAudioFileName.IndexOf(BinkStream.DefaultFileExtensionAudioSplit, 0);
-            audioTrackIdString = splitAudioFileName.Substring(fileExtensionLocation - 4, 4);
+            audioTrackIdString = splitAudioFileName.Substring(fileExtensionLocation - 8, 8);
             audioTrackId = (uint)ByteConversion.GetLongValueFromString("0x" + audioTrackIdString);
 
             for (int i = 0; i < this.AudioTrackIds.Length; i++)
@@ -86,7 +86,7 @@ namespace VGMToolbox.format
             if (!streamWriters.ContainsKey(chunkId))
             {
                 destinationFile = Path.Combine(Path.GetDirectoryName(this.FilePath),
-                    String.Format("{0}_{1}{2}", Path.GetFileNameWithoutExtension(this.FilePath), chunkId.ToString("X4"), fileExtension));
+                    String.Format("{0}_{1}{2}", Path.GetFileNameWithoutExtension(this.FilePath), chunkId.ToString("X8"), fileExtension));
                 streamWriters[chunkId] = File.Open(destinationFile, FileMode.Create, FileAccess.ReadWrite);
             }
 
