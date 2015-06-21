@@ -529,6 +529,7 @@ namespace VGMToolbox.format
             //---------------
             else
             {
+                // @TODO: Modify to verify on extraction
                 ParseFile.ExtractChunkToFile64(streamCache[this.SourceFilePath], (ulong)this.Offset,
                     (ulong)this.Size, destinationFile, false, false);
             }
@@ -916,8 +917,12 @@ namespace VGMToolbox.format
                 this.BuildIvfcLevels();
             }
 
-            // @TODO: Add validation here
-            //this.ValidateIvfcContainer(isoStream, offset);
+            DialogResult m = MessageBox.Show("Verify partition against internal hashes/checksums?", "Verify Integrity?", MessageBoxButtons.YesNo);
+
+            if (m == DialogResult.Yes)
+            {
+                this.ValidateIvfcContainer(isoStream, offset);
+            }
 
             this.ParseRomFsHeader(isoStream, offset);       
         }

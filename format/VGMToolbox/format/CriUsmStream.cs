@@ -10,6 +10,9 @@ namespace VGMToolbox.format
     {
         public const string DefaultAudioExtension = ".adx";
         public const string DefaultVideoExtension = ".m2v";
+        public const string HcaAudioExtension = ".hca";
+
+        static readonly byte[] HCA_SIG_BYTES = new byte[] { 0x48, 0x43, 0x41, 0x00 };
 
         protected static readonly byte[] ALP_BYTES = new byte[] { 0x40, 0x41, 0x4C, 0x50 };
         protected static readonly byte[] CRID_BYTES = new byte[] { 0x43, 0x52, 0x49, 0x44 };
@@ -141,6 +144,7 @@ namespace VGMToolbox.format
             string sourceFileName;
             string workingFile;
             string fileExtension;
+            string destinationFileName;
 
             foreach (uint streamId in outputFiles.Keys)
             {
@@ -182,6 +186,10 @@ namespace VGMToolbox.format
                     {
                         fileExtension = SofdecStream.AdxAudioExtension;
                     }
+                    else if (ParseFile.CompareSegment(checkBytes, 0, HCA_SIG_BYTES))
+                    {
+                        fileExtension = HcaAudioExtension;
+                    }                    
                     else
                     {
                         fileExtension = ".bin";
@@ -200,8 +208,14 @@ namespace VGMToolbox.format
                 File.Delete(workingFile);
 
                 workingFile = FileUtil.RemoveChunkFromFile(sourceFileName, footerOffset, footerSize);
-                File.Copy(workingFile, Path.ChangeExtension(sourceFileName, fileExtension), true);
+                destinationFileName = Path.ChangeExtension(sourceFileName, fileExtension);
+                File.Copy(workingFile, destinationFileName, true);                
                 File.Delete(workingFile);
+
+                if ((sourceFileName != destinationFileName) && (File.Exists(sourceFileName)))
+                {
+                    File.Delete(sourceFileName);
+                }
             }
         }
     }

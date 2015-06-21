@@ -12,6 +12,7 @@ namespace VGMToolbox.format
 
         public const string Atrac3AudioExtension = ".at3";
         public const string LpcmAudioExtension = ".lpcm";
+        public const string SubTitleExtension = ".subs";
 
         public const byte LpcmStreamId = 0x40;
 
@@ -48,37 +49,7 @@ namespace VGMToolbox.format
         }
 
         protected override int GetAudioPacketHeaderSize(Stream readStream, long currentOffset)
-        {
-            /*
-            int headerSize;
-            UInt16 checkBytes;
-            OffsetDescription od = new OffsetDescription();
-
-            od.OffsetByteOrder = Constants.BigEndianByteOrder;
-            od.OffsetSize = "2";
-            od.OffsetValue = "6";
-
-            checkBytes = (UInt16)ParseFile.GetVaryingByteValueAtRelativeOffset(readStream, od, currentOffset);
-
-            switch (checkBytes)
-            {
-                // Thanks to FastElbJa and creator of pmfdemuxer (used to compare output) for this information
-                case 0x8100:
-                    headerSize = 0x07;
-                    break;
-                case 0x8180:
-                case 0x8101:
-                    headerSize = 0x0C;
-                    break;
-                case 0x8181:
-                    headerSize = 0x0F;
-                    break;
-                default:
-                    throw new FormatException(String.Format("Unexpected secondary bytes found for block starting at 0x{0}: 0x{1}", currentOffset.ToString("X8"), checkBytes.ToString("X4")));
-            }
-            return headerSize;
-            */
-            
+        {            
             byte checkBytes;
             OffsetDescription od = new OffsetDescription();
 
@@ -112,6 +83,10 @@ namespace VGMToolbox.format
             else if ((streamId >= 0x40) && (streamId < 0x50))
             {
                 fileExtension = LpcmAudioExtension;
+            }
+            else if ((streamId >= 0x80) && (streamId < 0x9F))
+            {
+                fileExtension = SubTitleExtension;
             }
             else
             {

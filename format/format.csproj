@@ -78,6 +78,7 @@
     <Compile Include="VGMToolbox\format\CriCpkArchive.cs" />
     <Compile Include="VGMToolbox\format\ElectronicArtsMpcStream.cs" />
     <Compile Include="VGMToolbox\format\HudsonHvqm4VideoStream.cs" />
+    <Compile Include="VGMToolbox\format\INoIntroHeaderFormat.cs" />
     <Compile Include="VGMToolbox\format\Nintendo3dsCtr.cs" />
     <Compile Include="VGMToolbox\format\iso\NintendoWiiUOpticalDisc.cs" />
     <Compile Include="VGMToolbox\format\MicrosoftAsfContainer.cs" />

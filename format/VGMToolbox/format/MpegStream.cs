@@ -175,6 +175,11 @@ namespace VGMToolbox.format
             return ((blockToCheck[3] >= 0xE0) && (blockToCheck[3] <= 0xEF));
         }
 
+        protected virtual bool IsThisASubPictureBlock(byte[] blockToCheck)
+        {
+            return ((blockToCheck[3] >= 0xE0) && (blockToCheck[3] <= 0xEF));
+        }
+
         protected virtual string GetAudioFileExtension(Stream readStream, long currentOffset)
         {
             return this.FileExtensionAudio;
