@@ -61,7 +61,23 @@ namespace VGMToolbox.format
 
             return checkBytes + 7;           
         }
+        protected override int GetAudioPacketSubHeaderSize(Stream readStream, long currentOffset, byte streamId)
+        {
+            int subHeaderSize = 0;
+            string streamFileExtension = this.StreamIdFileType[streamId];
 
+            switch (streamFileExtension)
+            {
+                case SubTitleExtension:     // leave timing data attached for post-processing
+                    subHeaderSize = -0xC;
+                    break;
+                default:
+                    subHeaderSize = 0;
+                    break;
+            }
+
+            return subHeaderSize;
+        }
         protected override bool IsThisAnAudioBlock(byte[] blockToCheck)
         {
             return (blockToCheck[3] == 0xBD);
@@ -128,6 +144,57 @@ namespace VGMToolbox.format
             return streamId;
         }
 
+        protected void ConvertSubtitles(uint streamId, FileStream subtitleStream)
+        {
+            long subsLength = subtitleStream.Length;
+            long currentOffset = 0;
+
+            byte[] encodedPresentationTimeStamp;
+            ulong decodedTimeStamp;
+            ushort subtitlePacketSize;
+
+            byte[] PNG_HEADER = new byte[] { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
+            byte[] PNG_END = new byte[] { 0x49, 0x45, 0x4E, 0x44 };
+
+            long pngStartOffset;
+            long pngEndOffset;
+            long pngSize;
+            uint pngCount = 0;
+
+            string baseDirectory = Path.GetDirectoryName(subtitleStream.Name);
+            baseDirectory = Path.Combine(baseDirectory, String.Format("{0}_PNGs", Path.GetFileNameWithoutExtension(subtitleStream.Name)));
+            string destinationFile;
+
+            while (currentOffset < subsLength)
+            {
+                // decode time stamp
+                encodedPresentationTimeStamp = ParseFile.ParseSimpleOffset(subtitleStream, currentOffset, 5);
+                decodedTimeStamp = this.DecodePresentationTimeStamp(encodedPresentationTimeStamp);
+
+                // get subtitle packet size
+                subtitlePacketSize = ParseFile.ReadUshortBE(subtitleStream, currentOffset + 0xC);
+
+                // extract PNG
+                pngStartOffset = ParseFile.GetNextOffset(subtitleStream, currentOffset + 0x1E, PNG_HEADER);
+                pngEndOffset = ParseFile.GetNextOffset(subtitleStream, pngStartOffset, PNG_END) + 4;
+                pngSize = pngEndOffset - pngStartOffset;
+
+                if (pngSize > (subtitlePacketSize - 0x14))
+                {
+                    throw new Exception("Warning, PNG size exceeds packet size.");
+                }
+
+                destinationFile = Path.Combine(baseDirectory, String.Format("{0}.png", pngCount.ToString("D8")));
+                ParseFile.ExtractChunkToFile(subtitleStream, pngStartOffset, pngSize, destinationFile);
+                pngCount++;
+
+                // write timestamp and PNG to file
+
+                // move to next block
+                currentOffset += 0xE + subtitlePacketSize;
+            }
+        }
+
         protected override void DoFinalTasks(FileStream sourceFileStream, Dictionary<uint, FileStream> outputFiles, bool addHeader)
         {
             byte[] headerBytes;
@@ -167,6 +234,12 @@ namespace VGMToolbox.format
                         File.Delete(sourceFile);
                     }
                 }
+                //else if (this.IsThisAnAudioBlock(BitConverter.GetBytes(streamId)) &&
+                //    outputFiles[streamId].Name.EndsWith(SubTitleExtension))
+                //{
+                //    this.ConvertSubtitles(streamId, outputFiles[streamId]);
+
+                //}
             }
         }
     }

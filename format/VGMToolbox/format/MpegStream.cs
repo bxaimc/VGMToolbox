@@ -16,6 +16,7 @@ namespace VGMToolbox.format
         {
             this.FilePath = path;            
             this.UsesSameIdForMultipleAudioTracks = false;
+            this.SubTitleExtractionSupported = false;
             this.BlockSizeIsLittleEndian = false;
 
             //********************
@@ -147,6 +148,7 @@ namespace VGMToolbox.format
         protected Dictionary<byte, string> StreamIdFileType = new Dictionary<byte, string>();
 
         public bool UsesSameIdForMultipleAudioTracks { set; get; } // for PMF/PAM/DVD, who use 000001BD for all audio tracks
+        public bool SubTitleExtractionSupported { set; get; } // assume not supported.
 
         public bool BlockSizeIsLittleEndian { set; get; }
 
@@ -383,7 +385,7 @@ namespace VGMToolbox.format
                                                 //    int aaa = 1;
                                                 //}
 #endif
-                                            }
+                                            }                                           
                                             else
                                             {
                                                 // write video
@@ -427,7 +429,7 @@ namespace VGMToolbox.format
                         catch (Exception _ex)
                         {
                             this.closeAllWriters(streamOutputWriters);
-                            throw new Exception(String.Format("Error parsing file at offset {0).", currentOffset.ToString("X8")), _ex);
+                            throw new Exception(String.Format("Error parsing file at offset {0), '{1}'", currentOffset.ToString("X8"), _ex.Message), _ex);
                         }
                     } // while (currentOffset < fileSize)
                 }

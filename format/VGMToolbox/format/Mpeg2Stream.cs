@@ -12,7 +12,7 @@ namespace VGMToolbox.format
         public const string DefaultAudioExtension = ".m2a";
         public const string DefaultVideoExtension = ".m2v";
 
-        public Mpeg2Stream(string path):
+        public Mpeg2Stream(string path) :
             base(path)
         {
             this.FileExtensionAudio = DefaultAudioExtension;
@@ -36,7 +36,7 @@ namespace VGMToolbox.format
         }
 
         protected override int GetAudioPacketHeaderSize(Stream readStream, long currentOffset)
-        {            
+        {
             int packetSize = GetStandardPesHeaderSize(readStream, currentOffset);
             return packetSize;
         }
@@ -46,8 +46,34 @@ namespace VGMToolbox.format
         }
 
         protected override string GetAudioFileExtension(Stream readStream, long currentOffset)
-        {           
+        {
             return DefaultAudioExtension;
+        }
+
+        protected ulong DecodePresentationTimeStamp(byte[] EncodedTimeStampBytes)
+        {
+            ulong decodedTimeStamp = 0;
+            ulong encodedTimeStamp = 0;
+
+            if (EncodedTimeStampBytes.Length != 5)
+            {
+                throw new FormatException("Encoded time stamp must be 5 bytes.");
+            }
+
+            // convert to ulong from bytes
+            encodedTimeStamp = EncodedTimeStampBytes[0];
+            encodedTimeStamp &= 0x0F;
+            encodedTimeStamp <<= 32;
+            encodedTimeStamp += (ulong)(EncodedTimeStampBytes[1] << 24);
+            encodedTimeStamp += (ulong)(EncodedTimeStampBytes[2] << 16);
+            encodedTimeStamp += (ulong)(EncodedTimeStampBytes[3] << 8);                        
+            encodedTimeStamp += EncodedTimeStampBytes[4];
+            
+            decodedTimeStamp |= (encodedTimeStamp >> 3) & (0x0007ul << 30); // top 3 bits, shifted left by 3, other bits zeroed out
+            decodedTimeStamp |= (encodedTimeStamp >> 2) & (0x7ffful << 15); // middle 15 bits
+            decodedTimeStamp |= (encodedTimeStamp >> 1) & (0x7ffful << 0); // bottom 15 bits
+
+            return decodedTimeStamp;
         }
     }
 }
