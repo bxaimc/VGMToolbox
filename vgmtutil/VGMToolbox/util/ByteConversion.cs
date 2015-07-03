@@ -34,6 +34,7 @@ namespace VGMToolbox.util
         /// <returns>String encoding using the input Codepage.</returns>
         public static string GetEncodedText(byte[] value, int codePage)
         {
+            //return Encoding.Unicode.GetString(value);
             return System.Text.Encoding.GetEncoding(codePage).GetString(value);
         }
 
