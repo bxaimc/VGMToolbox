@@ -1262,6 +1262,19 @@ namespace VGMToolbox
             nodeTag.FormClass = other_InternalRenamerForm.GetType().Name;
             internalRenamerNode.Tag = nodeTag;
 
+            // EXTERNAL LIST RENAMER
+            TreeNode externalRenamerNode = new TreeNode("External List Renamer");
+
+            // Add Form
+            ExternalListFileRenamerForm other_ExternalListRenamerForm =
+                new ExternalListFileRenamerForm(externalRenamerNode);
+            this.splitContainer1.Panel2.Controls.Add(other_ExternalListRenamerForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = other_ExternalListRenamerForm.GetType().Name;
+            externalRenamerNode.Tag = nodeTag;
+
+
             // INTERLEAVER
             TreeNode interleaverNode = new TreeNode("Interleaver");
 
@@ -1274,6 +1287,7 @@ namespace VGMToolbox
             interleaverNode.Tag = nodeTag;
 
             other_RootNode.Nodes.Add(internalRenamerNode);
+            other_RootNode.Nodes.Add(externalRenamerNode);
             //other_RootNode.Nodes.Add(interleaverNode);
 
             return other_RootNode;

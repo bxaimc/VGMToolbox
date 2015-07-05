@@ -308,6 +308,12 @@
     </Compile>
     <Compile Include="forms\ListBoxFileInfoObject.cs" />
     <Compile Include="forms\ListViewColumnSorter.cs" />
+    <Compile Include="forms\other\ExternalListFileRenamerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\other\ExternalListFileRenamerForm.Designer.cs">
+      <DependentUpon>ExternalListFileRenamerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\other\InterleaverForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -626,6 +632,9 @@
       <DependentUpon>SingleTagUpdateForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="forms\other\ExternalListFileRenamerForm.resx">
+      <DependentUpon>ExternalListFileRenamerForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="forms\xsf\SdatOptimizerForm.resx">
       <DependentUpon>SdatOptimizerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -787,6 +796,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\nsf\NsfeM3uBuilderWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tools\other\ExternalListFileRenamerWorker.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\other\InternalNameFileRenamerWorker.cs">
