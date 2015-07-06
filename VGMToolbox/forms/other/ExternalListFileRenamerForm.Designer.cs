@@ -50,17 +50,12 @@
             this.tbSourceFileMask = new System.Windows.Forms.TextBox();
             this.tbSourceFolder = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.dgFilePreview = new System.Windows.Forms.DataGridView();
-            this.RenameCheckboxColum = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.SourceFileNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.DestinationFile = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
             this.gbOptions.SuspendLayout();
             this.gbListFileFileNames.SuspendLayout();
             this.gbFilesToRename.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgFilePreview)).BeginInit();
             this.SuspendLayout();
             // 
             // pnlLabels
@@ -206,7 +201,6 @@
             this.tbListFileOffsetToFileList.Name = "tbListFileOffsetToFileList";
             this.tbListFileOffsetToFileList.Size = new System.Drawing.Size(73, 20);
             this.tbListFileOffsetToFileList.TabIndex = 4;
-            this.tbListFileOffsetToFileList.TextChanged += new System.EventHandler(this.tbListFileOffsetToFileList_TextChanged);
             // 
             // label2
             // 
@@ -243,7 +237,6 @@
             this.tbListFile.Name = "tbListFile";
             this.tbListFile.Size = new System.Drawing.Size(279, 20);
             this.tbListFile.TabIndex = 0;
-            this.tbListFile.TextChanged += new System.EventHandler(this.tbListFile_TextChanged);
             this.tbListFile.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbListFile_DragDrop);
             this.tbListFile.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbListFile_DragEnter);
             // 
@@ -298,7 +291,6 @@
             this.tbSourceFileMask.Name = "tbSourceFileMask";
             this.tbSourceFileMask.Size = new System.Drawing.Size(128, 20);
             this.tbSourceFileMask.TabIndex = 2;
-            this.tbSourceFileMask.TextChanged += new System.EventHandler(this.tbSourceFileMask_TextChanged);
             // 
             // tbSourceFolder
             // 
@@ -307,7 +299,6 @@
             this.tbSourceFolder.Name = "tbSourceFolder";
             this.tbSourceFolder.Size = new System.Drawing.Size(279, 20);
             this.tbSourceFolder.TabIndex = 1;
-            this.tbSourceFolder.TextChanged += new System.EventHandler(this.tbSourceFolder_TextChanged);
             this.tbSourceFolder.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbSourceFolder_DragDrop);
             this.tbSourceFolder.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbSourceFolder_DragEnter);
             // 
@@ -320,51 +311,11 @@
             this.label3.TabIndex = 0;
             this.label3.Text = "Source Folder";
             // 
-            // dgFilePreview
-            // 
-            this.dgFilePreview.AllowUserToAddRows = false;
-            this.dgFilePreview.AllowUserToDeleteRows = false;
-            this.dgFilePreview.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgFilePreview.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.RenameCheckboxColum,
-            this.SourceFileNameColumn,
-            this.DestinationFile});
-            this.dgFilePreview.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgFilePreview.Location = new System.Drawing.Point(0, 206);
-            this.dgFilePreview.Name = "dgFilePreview";
-            this.dgFilePreview.ReadOnly = true;
-            this.dgFilePreview.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.dgFilePreview.RowHeadersVisible = false;
-            this.dgFilePreview.Size = new System.Drawing.Size(858, 140);
-            this.dgFilePreview.TabIndex = 7;
-            // 
-            // RenameCheckboxColum
-            // 
-            this.RenameCheckboxColum.HeaderText = "";
-            this.RenameCheckboxColum.Name = "RenameCheckboxColum";
-            this.RenameCheckboxColum.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.RenameCheckboxColum.Width = 20;
-            // 
-            // SourceFileNameColumn
-            // 
-            this.SourceFileNameColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.SourceFileNameColumn.HeaderText = "Source File";
-            this.SourceFileNameColumn.MinimumWidth = 100;
-            this.SourceFileNameColumn.Name = "SourceFileNameColumn";
-            // 
-            // DestinationFile
-            // 
-            this.DestinationFile.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.DestinationFile.HeaderText = "Destination File";
-            this.DestinationFile.Name = "DestinationFile";
-            this.DestinationFile.ReadOnly = true;
-            // 
             // ExternalListFileRenamerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(858, 484);
-            this.Controls.Add(this.dgFilePreview);
             this.Controls.Add(this.gbOptions);
             this.Controls.Add(this.gbFilesToRename);
             this.Name = "ExternalListFileRenamerForm";
@@ -375,7 +326,6 @@
             this.Controls.SetChildIndex(this.pnlButtons, 0);
             this.Controls.SetChildIndex(this.gbFilesToRename, 0);
             this.Controls.SetChildIndex(this.gbOptions, 0);
-            this.Controls.SetChildIndex(this.dgFilePreview, 0);
             this.pnlLabels.ResumeLayout(false);
             this.pnlLabels.PerformLayout();
             this.pnlTitle.ResumeLayout(false);
@@ -388,7 +338,6 @@
             this.gbListFileFileNames.PerformLayout();
             this.gbFilesToRename.ResumeLayout(false);
             this.gbFilesToRename.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgFilePreview)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -414,10 +363,6 @@
         private System.Windows.Forms.TextBox tbSourceFileMask;
         private System.Windows.Forms.Button btnBrowseSource;
         private System.Windows.Forms.CheckBox cbKeepExtension;
-        private System.Windows.Forms.DataGridView dgFilePreview;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn RenameCheckboxColum;
-        private System.Windows.Forms.DataGridViewTextBoxColumn SourceFileNameColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn DestinationFile;
         private System.Windows.Forms.ComboBox comboListFileNameTextFormat;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox tbListFilesCodePage;

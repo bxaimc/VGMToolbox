@@ -45,27 +45,30 @@ namespace VGMToolbox.forms.other
         {
             return "Renaming Files...Begin";
         }
-
-        
-        
-
+              
         private bool validateAll()
         {
             bool isValid = true;
 
-            //isValid &= AVgmtForm.checkTextBox(this.tbNameOffset.Text, this.lblNameOffset.Text);
+            isValid &= AVgmtForm.checkTextBox(this.tbSourceFolder.Text, this.label3.Text);
+            
+            isValid &= AVgmtForm.checkTextBox(this.tbListFile.Text, this.label1.Text);            
+            isValid &= AVgmtForm.checkTextBox(this.tbListFileOffsetToFileList.Text, this.label2.Text);
+            isValid &= AVgmtForm.checkIfTextIsParsableAsLong(this.tbListFileOffsetToFileList.Text, this.label2.Text);
 
-            //if (this.rbNameLength.Checked)
-            //{
-            //    isValid &= AVgmtForm.checkTextBox(this.tbNameLength.Text, this.rbNameLength.Text);
-            //    AVgmtForm.checkIfTextIsParsableAsLong(this.tbNameLength.Text, this.rbNameLength.Text);
-            //}
+            if (this.comboListFileNameTextFormat.SelectedItem == "Code Page")
+            {
+                isValid &= AVgmtForm.checkTextBox(this.tbListFilesCodePage.Text, this.label6.Text);            
+            }
 
-            //if (this.rbTerminatorBytes.Checked)
-            //{
-            //    isValid &= AVgmtForm.checkTextBox(this.tbTerminatorBytes.Text, this.rbTerminatorBytes.Text);
-            //    AVgmtForm.checkIfTextIsParsableAsLong("0x" + this.tbTerminatorBytes.Text, this.rbTerminatorBytes.Text);            
-            //}
+            if (this.rbListFileTerminator.Checked)
+            {
+                isValid &= AVgmtForm.checkTextBox(this.tbListFileTerminator.Text, "File Name Terminator");            
+            }
+            else if (this.rbListFileStaticSize.Checked)
+            {
+                isValid &= AVgmtForm.checkTextBox(this.tbListFileStaticSize.Text, this.rbListFileStaticSize.Text);            
+            }
 
             return isValid;
         }
@@ -92,17 +95,6 @@ namespace VGMToolbox.forms.other
             }
         }
 
-        private void tbListFile_TextChanged(object sender, EventArgs e)
-        {
-            //this.loadDestinationFiles();
-        }
-
-        private void tbListFileOffsetToFileList_TextChanged(object sender, EventArgs e)
-        {
-            //this.loadDestinationFiles();
-        }
-
-
         private void comboListFileNameTextFormat_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (this.comboListFileNameTextFormat.SelectedItem.Equals("Code Page"))
@@ -126,9 +118,7 @@ namespace VGMToolbox.forms.other
         {
             e.Handled = true;
         }
-        
-
-        
+               
         private void InitializeTextFormatComboBox()
         {
             // this is hokey, but I don't feel like doing it the right way right now
@@ -141,44 +131,6 @@ namespace VGMToolbox.forms.other
 
             this.comboListFileNameTextFormat.SelectedItem = "ASCII";
         }
-
-        private void loadDestinationFiles()
-        {
-            long listOffset;
-            
-            int fileCount;
-            int rowCount = this.dgFilePreview.RowCount;
-
-            if (rowCount > 0)
-            {
-                // clear destination files
-                for (int i = 0; i < rowCount; i++)
-                {
-                    this.dgFilePreview.Rows[i].Cells[2].Value = String.Empty;
-                }
-
-                // load list from file
-                if (!String.IsNullOrEmpty(this.tbListFileOffsetToFileList.Text.Trim()) &&
-                    File.Exists(this.tbListFile.Text.Trim()))
-                {
-                    try
-                    {
-                        listOffset = ByteConversion.GetLongValueFromString(this.tbListFileOffsetToFileList.Text.Trim());
-
-                        // read files
-                    }
-                    catch (Exception ex)
-                    { 
-                    
-                    }
-                }
-            } // if (rowCount > 0)
-        }
-
-
-
-
-
 
         # endregion
 
@@ -250,73 +202,31 @@ namespace VGMToolbox.forms.other
             }
         }
 
-        private void tbSourceFolder_TextChanged(object sender, EventArgs e)
-        {
-            //this.loadSourceFilesIntoPreview();
-        }
-
-        private void tbSourceFileMask_TextChanged(object sender, EventArgs e)
-        {
-            //this.loadSourceFilesIntoPreview();
-        }
-
-        private void loadSourceFilesIntoPreview()
-        {
-            DataGridViewRow row;
-            string fileMask;
-
-            // clear existing preview
-            this.dgFilePreview.Rows.Clear();
-
-            // verify directory exists
-            if (Directory.Exists(this.tbSourceFolder.Text))
-            {
-                // build file mask
-                fileMask = this.tbSourceFileMask.Text.Trim();
-                fileMask = String.IsNullOrEmpty(fileMask) ? "*.*" : fileMask;
-
-                // loop over source files
-                foreach (string fileName in Directory.GetFiles(this.tbSourceFolder.Text, fileMask))
-                {
-                    // @TODO: Add limit to file count to prevent issues?
-
-                    // build row
-                    row = new DataGridViewRow();
-                    row.CreateCells(this.dgFilePreview);
-
-                    row.Cells[0].Value = true; // checkbox
-                    row.Cells[1].Value = Path.GetFileName(fileName); // source file
-
-                    // add row to grid
-                    this.dgFilePreview.Rows.Add(row);
-                }
-
-            } // if (Directory.Exists(this.tbSourceFolder.Text))
-        }
-
         #endregion
 
         private void btnDoTask_Click(object sender, EventArgs e)
         {
             // @TODO: Validate Entries
+            if (this.validateAll())
+            {
+                // build input struct
+                ExternalListFileRenamerWorker.ExternalListFileRenamerStruct taskStruct = new ExternalListFileRenamerWorker.ExternalListFileRenamerStruct();
+                taskStruct.SourceFolder = this.tbSourceFolder.Text;
+                taskStruct.SourceFileMask = this.tbSourceFileMask.Text;
+                taskStruct.KeepOriginalFileExtension = this.cbKeepExtension.Checked;
 
-            // build input struct
-            ExternalListFileRenamerWorker.ExternalListFileRenamerStruct taskStruct = new ExternalListFileRenamerWorker.ExternalListFileRenamerStruct();
-            taskStruct.SourceFolder = this.tbSourceFolder.Text;
-            taskStruct.SourceFileMask = this.tbSourceFileMask.Text;
-            taskStruct.KeepOriginalFileExtension = this.cbKeepExtension.Checked;
+                taskStruct.ListFileLocation = this.tbListFile.Text;
+                taskStruct.OffsetToFileNames = this.tbListFileOffsetToFileList.Text;
+                taskStruct.FileNameEncoding = (string)this.comboListFileNameTextFormat.SelectedItem;
+                taskStruct.FileNameCodePage = this.tbListFilesCodePage.Text;
 
-            taskStruct.ListFileLocation = this.tbListFile.Text;
-            taskStruct.OffsetToFileNames = this.tbListFileOffsetToFileList.Text;
-            taskStruct.FileNameEncoding = (string)this.comboListFileNameTextFormat.SelectedItem;
-            taskStruct.FileNameCodePage = this.tbListFilesCodePage.Text;
-            
-            taskStruct.FileNameHasTerminator = this.rbListFileTerminator.Checked;
-            taskStruct.FileNameTerminator = this.tbListFileTerminator.Text;
-            taskStruct.FileNameHasStaticSize = this.rbListFileStaticSize.Checked;
-            taskStruct.FileNameStaticSize = this.tbListFileStaticSize.Text;
+                taskStruct.FileNameHasTerminator = this.rbListFileTerminator.Checked;
+                taskStruct.FileNameTerminator = this.tbListFileTerminator.Text;
+                taskStruct.FileNameHasStaticSize = this.rbListFileStaticSize.Checked;
+                taskStruct.FileNameStaticSize = this.tbListFileStaticSize.Text;
 
-            base.backgroundWorker_Execute(taskStruct);
+                base.backgroundWorker_Execute(taskStruct);
+            }
         }
 
 
