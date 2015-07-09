@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
 
 using VGMToolbox.plugin;
 using VGMToolbox.tools.other;
-using VGMToolbox.util;
 
 namespace VGMToolbox.forms.other
 {

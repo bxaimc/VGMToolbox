@@ -829,7 +829,7 @@ namespace VGMToolbox
             // Byte Remover
             TreeNode ext_ByteRemoverNode = new TreeNode("Byte Remover");
 
-            // Add Offset Finder Form
+            // Add Byte Remover Form
             ByteRemoverForm extract_ByteRemoverForm = new ByteRemoverForm(ext_ByteRemoverNode);
             this.splitContainer1.Panel2.Controls.Add(extract_ByteRemoverForm);
 
@@ -841,7 +841,7 @@ namespace VGMToolbox
             TreeNode ext_SimpleCutterNode = 
                 new TreeNode(ConfigurationSettings.AppSettings["MenuTree_SimpleCutterNode"]);
 
-            // Add Offset Finder Form
+            // Add Snakebite Form
             SnakebiteGuiForm extract_SnakebiteGuiForm = new SnakebiteGuiForm(ext_SimpleCutterNode);
             this.splitContainer1.Panel2.Controls.Add(extract_SnakebiteGuiForm);
 
@@ -907,6 +907,18 @@ namespace VGMToolbox
             // Set Tag for displaying the Form
             nodeTag.FormClass = extract_MidiExtractorForm.GetType().Name;
             ext_ExtractMidiNode.Tag = nodeTag;
+
+            // CRI CPK
+            TreeNode ext_CriCpkExtractorNode =
+                new TreeNode("CRI CPK Archive Extractor");
+
+            // Add Snakebite Form
+            CriCpkExtractorForm extract_CriCpkExtractorForm = new CriCpkExtractorForm(ext_CriCpkExtractorNode);
+            this.splitContainer1.Panel2.Controls.Add(extract_CriCpkExtractorForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = extract_CriCpkExtractorForm.GetType().Name;
+            ext_CriCpkExtractorNode.Tag = nodeTag;
 
 
             ///////
@@ -1050,12 +1062,14 @@ namespace VGMToolbox
             nodeTag.FormClass = extract_ExtractU8Form.GetType().Name;
             ext_ExtractU8Node.Tag = nodeTag;
 
+
             ext_GenericNode.Nodes.Add(ext_ByteRemoverNode);
             ext_GenericNode.Nodes.Add(ext_SimpleCutterNode);
             ext_GenericNode.Nodes.Add(ext_OffsetFinderNode);
             ext_GenericNode.Nodes.Add(ext_VfsExtractorNode);
             ext_GenericNode.Nodes.Add(ext_IsoExtractorNode);
             ext_GenericNode.Nodes.Add(ext_ExtractMidiNode);
+            ext_GenericNode.Nodes.Add(ext_CriCpkExtractorNode);
                                
             ext_RootNode.Nodes.Add(ext_GenericNode);
             
