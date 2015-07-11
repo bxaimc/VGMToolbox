@@ -31,9 +31,18 @@ namespace VGMToolbox.tools.extract
                 cpkUtf.Initialize(fs, 0x10);
 
                 CriUtfTable tocUtf = new CriUtfTable();
-                tocUtf.Initialize(fs, 0x810);
+                tocUtf.Initialize(fs, (long)((ulong)cpkUtf.Rows[0]["TocOffset"].Value) + 0x10);
 
-            
+                //CriUtfTable etocUtf = new CriUtfTable();
+                //tocUtf.Initialize(fs, (long)((ulong)cpkUtf.Rows[0]["EtocOffset"].Value) + 0x10);
+
+                //CriUtfTable itocUtf = new CriUtfTable();
+                //tocUtf.Initialize(fs, (long)((ulong)cpkUtf.Rows[0]["ItocOffset"].Value) + 0x10);
+
+                //CriUtfTable gtocUtf = new CriUtfTable();
+                //tocUtf.Initialize(fs, (long)((ulong)cpkUtf.Rows[0]["GtocOffset"].Value) + 0x10);
+
+
             }
         }
     }
