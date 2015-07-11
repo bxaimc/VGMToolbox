@@ -1913,6 +1913,19 @@ namespace VGMToolbox.util
             Array.Copy(SourceArray, offset, value, 0, length);
             return value;
         }
+        
+        public static float ReadFloatLE(Stream inStream, long offset)
+        {
+            return BitConverter.ToSingle(ParseSimpleOffset(inStream, offset, 4), 0);
+        }
+
+        public static float ReadFloatBE(Stream inStream, long offset)
+        {
+            byte[] val = ParseSimpleOffset(inStream, offset, 4);
+            Array.Reverse(val);
+
+            return BitConverter.ToSingle(val, 0);
+        }
 
         public static uint ReadUintLE(Stream inStream, long offset)
         {
@@ -1963,6 +1976,11 @@ namespace VGMToolbox.util
         public static byte ReadByte(Stream inStream, long offset)
         {
             return (byte)ParseSimpleOffset(inStream, offset, 1)[0];
+        }
+
+        public static SByte ReadSByte(Stream inStream, long offset)
+        {
+            return (SByte)ParseSimpleOffset(inStream, offset, 1)[0];
         }
 
         public static int ReadInt32LE(Stream inStream, long offset)
