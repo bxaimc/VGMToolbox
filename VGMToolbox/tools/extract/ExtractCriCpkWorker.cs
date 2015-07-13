@@ -139,7 +139,7 @@ namespace VGMToolbox.tools.extract
 
                     if (fileInfo.ExtractSize > fileInfo.FileSize)
                     {
-                        CriCpkArchive.Uncompress(bs, (long)fileInfo.FileOffset, fileInfo.FileSize, destinationFile);
+                        CriCpkArchive.Uncompress2(bs, (long)fileInfo.FileOffset, fileInfo.FileSize, destinationFile);
                     }
                     else
                     {
