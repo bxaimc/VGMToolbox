@@ -14,7 +14,16 @@ namespace VGMToolbox.format
         public string Name { set; get; }        
         public object Value { set; get; }
     }
-    
+
+    public class CriUtfTocFileInfo
+    {
+        public string DirName { set; get; }
+        public string FileName { set; get; }
+        public uint FileSize { set; get; }
+        public uint ExtractSize { set; get; }
+        public ulong FileOffset { set; get; }
+    }
+
     public class CriUtfTable
     {
         // thanks to hcs for all of this!!!
@@ -84,8 +93,10 @@ namespace VGMToolbox.format
                 this.Rows = new Dictionary<string, CriField>[this.NumberOfRows];
 
                 // read schema
-                this.initializeUtfHeader(fs);
-                this.initializeUtfSchema(fs, (this.BaseOffset + 0x20));
+                if (this.TableSize > 0)
+                {
+                    this.initializeUtfSchema(fs, (this.BaseOffset + 0x20));
+                }               
             }
             else
             {
@@ -131,138 +142,150 @@ namespace VGMToolbox.format
 
             for (uint i = 0; i < this.NumberOfRows; i++)
             {
-                currentOffset = schemaOffset;
-                currentRowBase = this.BaseOffset + this.RowOffset + (this.RowSize * i);
-                this.Rows[i] = new Dictionary<string, CriField>();
-                
-                // parse fields
-                for (ushort j = 0; j < this.NumberOfFields; j++)
-                {
-                    field = new CriField();
+                //if (i == 0x2a2)
+                //{
+                //    int yuuuu = 1;
+                //}                
+                //try
+                //{
+                    currentOffset = schemaOffset;
+                    currentRowBase = this.BaseOffset + this.RowOffset + (this.RowSize * i);
+                    currentRowOffset = 0;
+                    this.Rows[i] = new Dictionary<string, CriField>();
 
-                    field.Type = ParseFile.ReadByte(fs, currentOffset);
-                    nameOffset = ParseFile.ReadUintBE(fs, currentOffset + 1);
-                    field.Name = ParseFile.ReadAsciiString(fs, this.BaseOffset + this.StringTableOffset + nameOffset);
-
-                    // each row will have a constant
-                    if ((field.Type & COLUMN_STORAGE_MASK) == COLUMN_STORAGE_CONSTANT)
+                    // parse fields
+                    for (ushort j = 0; j < this.NumberOfFields; j++)
                     {
-                        // capture offset of constant
-                        constantOffset = currentOffset + 5;
+                        field = new CriField();
 
-                        // read the constant depending on the type
-                        switch (field.Type & COLUMN_TYPE_MASK)
+                        field.Type = ParseFile.ReadByte(fs, currentOffset);
+                        nameOffset = ParseFile.ReadUintBE(fs, currentOffset + 1);
+                        field.Name = ParseFile.ReadAsciiString(fs, this.BaseOffset + this.StringTableOffset + nameOffset);
+
+                        // each row will have a constant
+                        if ((field.Type & COLUMN_STORAGE_MASK) == COLUMN_STORAGE_CONSTANT)
                         {
-                            case COLUMN_TYPE_STRING:
-                                dataOffset = ParseFile.ReadUintBE(fs, constantOffset);
-                                field.Value = ParseFile.ReadAsciiString(fs, this.BaseOffset + this.StringTableOffset + dataOffset);
-                                currentOffset += 4;
-                                break;
-                            case COLUMN_TYPE_8BYTE:
-                                field.Value = ParseFile.ReadUlongBE(fs, constantOffset);
-                                currentOffset += 8;
-                                break;
-                            case COLUMN_TYPE_DATA:
-                                dataOffset = ParseFile.ReadUintBE(fs, constantOffset);
-                                dataSize = ParseFile.ReadUintBE(fs, constantOffset + 4);
-                                field.Value = ParseFile.ParseSimpleOffset(fs, this.BaseOffset + this.DataOffset + dataOffset, (int)dataSize);
-                                currentOffset += 8;
-                                break;
-                            case COLUMN_TYPE_FLOAT:
-                                field.Value = ParseFile.ReadFloatBE(fs, constantOffset);
-                                currentOffset += 4;
-                                break;
-                            case COLUMN_TYPE_4BYTE2:
-                                field.Value = ParseFile.ReadInt32BE(fs, constantOffset);
-                                currentOffset += 4;
-                                break;
-                            case COLUMN_TYPE_4BYTE:
-                                field.Value = ParseFile.ReadUintBE(fs, constantOffset);
-                                currentOffset += 4;
-                                break;
-                            case COLUMN_TYPE_2BYTE2:
-                                field.Value = ParseFile.ReadInt16BE(fs, constantOffset);
-                                currentOffset += 2;
-                                break;
-                            case COLUMN_TYPE_2BYTE:
-                                field.Value = ParseFile.ReadUshortBE(fs, constantOffset);
-                                currentOffset += 2;
-                                break;
-                            case COLUMN_TYPE_1BYTE2:
-                                field.Value = ParseFile.ReadSByte(fs, constantOffset);
-                                currentOffset += 1;
-                                break;
-                            case COLUMN_TYPE_1BYTE:
-                                field.Value = ParseFile.ReadByte(fs, constantOffset);
-                                currentOffset += 1;
-                                break;
-                            default:
-                                throw new FormatException(String.Format("Unknown COLUMN TYPE at offset: 0x{0}", currentOffset.ToString("X8")));
+                            // capture offset of constant
+                            constantOffset = currentOffset + 5;
 
-                        } // switch (field.Type & COLUMN_TYPE_MASK)
-                    }
-                    else if ((field.Type & COLUMN_STORAGE_MASK) == COLUMN_STORAGE_PERROW)
-                    {
-                        // read the constant depending on the type
-                        switch (field.Type & COLUMN_TYPE_MASK)
+                            // read the constant depending on the type
+                            switch (field.Type & COLUMN_TYPE_MASK)
+                            {
+                                case COLUMN_TYPE_STRING:
+                                    dataOffset = ParseFile.ReadUintBE(fs, constantOffset);
+                                    field.Value = ParseFile.ReadAsciiString(fs, this.BaseOffset + this.StringTableOffset + dataOffset);
+                                    currentOffset += 4;
+                                    break;
+                                case COLUMN_TYPE_8BYTE:
+                                    field.Value = ParseFile.ReadUlongBE(fs, constantOffset);
+                                    currentOffset += 8;
+                                    break;
+                                case COLUMN_TYPE_DATA:
+                                    dataOffset = ParseFile.ReadUintBE(fs, constantOffset);
+                                    dataSize = ParseFile.ReadUintBE(fs, constantOffset + 4);
+                                    field.Value = ParseFile.ParseSimpleOffset(fs, this.BaseOffset + this.DataOffset + dataOffset, (int)dataSize);
+                                    currentOffset += 8;
+                                    break;
+                                case COLUMN_TYPE_FLOAT:
+                                    field.Value = ParseFile.ReadFloatBE(fs, constantOffset);
+                                    currentOffset += 4;
+                                    break;
+                                case COLUMN_TYPE_4BYTE2:
+                                    field.Value = ParseFile.ReadInt32BE(fs, constantOffset);
+                                    currentOffset += 4;
+                                    break;
+                                case COLUMN_TYPE_4BYTE:
+                                    field.Value = ParseFile.ReadUintBE(fs, constantOffset);
+                                    currentOffset += 4;
+                                    break;
+                                case COLUMN_TYPE_2BYTE2:
+                                    field.Value = ParseFile.ReadInt16BE(fs, constantOffset);
+                                    currentOffset += 2;
+                                    break;
+                                case COLUMN_TYPE_2BYTE:
+                                    field.Value = ParseFile.ReadUshortBE(fs, constantOffset);
+                                    currentOffset += 2;
+                                    break;
+                                case COLUMN_TYPE_1BYTE2:
+                                    field.Value = ParseFile.ReadSByte(fs, constantOffset);
+                                    currentOffset += 1;
+                                    break;
+                                case COLUMN_TYPE_1BYTE:
+                                    field.Value = ParseFile.ReadByte(fs, constantOffset);
+                                    currentOffset += 1;
+                                    break;
+                                default:
+                                    throw new FormatException(String.Format("Unknown COLUMN TYPE at offset: 0x{0}", currentOffset.ToString("X8")));
+
+                            } // switch (field.Type & COLUMN_TYPE_MASK)
+                        }
+                        else if ((field.Type & COLUMN_STORAGE_MASK) == COLUMN_STORAGE_PERROW)
                         {
-                            case COLUMN_TYPE_STRING:
-                                rowDataOffset = ParseFile.ReadUintBE(fs, currentRowBase + currentRowOffset);
-                                field.Value = ParseFile.ReadAsciiString(fs, this.BaseOffset + this.StringTableOffset + rowDataOffset);
-                                currentRowOffset += 4;
-                                break;
-                            case COLUMN_TYPE_8BYTE:
-                                field.Value = ParseFile.ReadUlongBE(fs, currentRowBase + currentRowOffset);
-                                currentRowOffset += 8;
-                                break;
-                            case COLUMN_TYPE_DATA:
-                                rowDataOffset = ParseFile.ReadUintBE(fs, currentRowBase + currentRowOffset);
-                                rowDataSize = ParseFile.ReadUintBE(fs, currentRowBase + currentRowOffset + 4);
-                                field.Value = ParseFile.ParseSimpleOffset(fs, this.BaseOffset + this.DataOffset + rowDataOffset, (int)rowDataSize);
-                                currentRowOffset += 8;
-                                break;
-                            case COLUMN_TYPE_FLOAT:
-                                field.Value = ParseFile.ReadFloatBE(fs, currentRowBase + currentRowOffset);
-                                currentRowOffset += 4;
-                                break;
-                            case COLUMN_TYPE_4BYTE2:
-                                field.Value = ParseFile.ReadInt32BE(fs, currentRowBase + currentRowOffset);
-                                currentRowOffset += 4;
-                                break;
-                            case COLUMN_TYPE_4BYTE:
-                                field.Value = ParseFile.ReadUintBE(fs, currentRowBase + currentRowOffset);
-                                currentRowOffset += 4;
-                                break;
-                            case COLUMN_TYPE_2BYTE2:
-                                field.Value = ParseFile.ReadInt16BE(fs, currentRowBase + currentRowOffset);
-                                currentRowOffset += 2;
-                                break;
-                            case COLUMN_TYPE_2BYTE:
-                                field.Value = ParseFile.ReadUshortBE(fs, currentRowBase + currentRowOffset);
-                                currentRowOffset += 2;
-                                break;
-                            case COLUMN_TYPE_1BYTE2:
-                                field.Value = ParseFile.ReadSByte(fs, currentRowBase + currentRowOffset);
-                                currentRowOffset += 1;
-                                break;
-                            case COLUMN_TYPE_1BYTE:
-                                field.Value = ParseFile.ReadByte(fs, currentRowBase + currentRowOffset);
-                                currentRowOffset += 1;
-                                break;
-                            default:
-                                throw new FormatException(String.Format("Unknown COLUMN TYPE at offset: 0x{0}", currentOffset.ToString("X8")));
+                            // read the constant depending on the type
+                            switch (field.Type & COLUMN_TYPE_MASK)
+                            {
+                                case COLUMN_TYPE_STRING:
+                                    rowDataOffset = ParseFile.ReadUintBE(fs, currentRowBase + currentRowOffset);
+                                    field.Value = ParseFile.ReadAsciiString(fs, this.BaseOffset + this.StringTableOffset + rowDataOffset);
+                                    currentRowOffset += 4;
+                                    break;
+                                case COLUMN_TYPE_8BYTE:
+                                    field.Value = ParseFile.ReadUlongBE(fs, currentRowBase + currentRowOffset);
+                                    currentRowOffset += 8;
+                                    break;
+                                case COLUMN_TYPE_DATA:
+                                    rowDataOffset = ParseFile.ReadUintBE(fs, currentRowBase + currentRowOffset);
+                                    rowDataSize = ParseFile.ReadUintBE(fs, currentRowBase + currentRowOffset + 4);
+                                    field.Value = ParseFile.ParseSimpleOffset(fs, this.BaseOffset + this.DataOffset + rowDataOffset, (int)rowDataSize);
+                                    currentRowOffset += 8;
+                                    break;
+                                case COLUMN_TYPE_FLOAT:
+                                    field.Value = ParseFile.ReadFloatBE(fs, currentRowBase + currentRowOffset);
+                                    currentRowOffset += 4;
+                                    break;
+                                case COLUMN_TYPE_4BYTE2:
+                                    field.Value = ParseFile.ReadInt32BE(fs, currentRowBase + currentRowOffset);
+                                    currentRowOffset += 4;
+                                    break;
+                                case COLUMN_TYPE_4BYTE:
+                                    field.Value = ParseFile.ReadUintBE(fs, currentRowBase + currentRowOffset);
+                                    currentRowOffset += 4;
+                                    break;
+                                case COLUMN_TYPE_2BYTE2:
+                                    field.Value = ParseFile.ReadInt16BE(fs, currentRowBase + currentRowOffset);
+                                    currentRowOffset += 2;
+                                    break;
+                                case COLUMN_TYPE_2BYTE:
+                                    field.Value = ParseFile.ReadUshortBE(fs, currentRowBase + currentRowOffset);
+                                    currentRowOffset += 2;
+                                    break;
+                                case COLUMN_TYPE_1BYTE2:
+                                    field.Value = ParseFile.ReadSByte(fs, currentRowBase + currentRowOffset);
+                                    currentRowOffset += 1;
+                                    break;
+                                case COLUMN_TYPE_1BYTE:
+                                    field.Value = ParseFile.ReadByte(fs, currentRowBase + currentRowOffset);
+                                    currentRowOffset += 1;
+                                    break;
+                                default:
+                                    throw new FormatException(String.Format("Unknown COLUMN TYPE at offset: 0x{0}", currentOffset.ToString("X8")));
 
-                        } // switch (field.Type & COLUMN_TYPE_MASK)
+                            } // switch (field.Type & COLUMN_TYPE_MASK)
 
-                    } // if ((fields[i].Type & COLUMN_STORAGE_MASK) == COLUMN_STORAGE_CONSTANT)
+                        } // if ((fields[i].Type & COLUMN_STORAGE_MASK) == COLUMN_STORAGE_CONSTANT)
 
-                    // add field to dictionary
-                    this.Rows[i].Add(field.Name, field);
+                        // add field to dictionary
+                        this.Rows[i].Add(field.Name, field);
 
-                    // move to next field
-                    currentOffset += 5; //  sizeof(CriField.Type + CriField.NameOffset)
+                        // move to next field
+                        currentOffset += 5; //  sizeof(CriField.Type + CriField.NameOffset)
 
-                } // for (ushort j = 0; j < this.NumberOfFields; j++)
+                    } // for (ushort j = 0; j < this.NumberOfFields; j++)
+                //}
+                //catch (Exception ex)
+                //{
+                //    int xxxx = 1;
+                //}
             } // for (uint i = 0; i < this.NumberOfRows; i++)
         }
     }
