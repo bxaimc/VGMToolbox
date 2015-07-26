@@ -399,6 +399,20 @@ namespace VGMToolbox.tools.extract
                         break;
                     }
 
+                    //------------------------
+                    // CRI CPK ARCHIVE 
+                    //------------------------
+                    else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, (int)CriCpkArchive.IDENTIFIER_OFFSET, CriCpkArchive.STANDARD_IDENTIFIER.Length, CriCpkArchive.STANDARD_IDENTIFIER))
+                    {
+                        CriCpkArchive isoVolume;
+                        isoVolume = new CriCpkArchive();
+                        isoVolume.Initialize(fs, currentOffset, isRawFormat);
+                        volumeList.Add((IVolume)isoVolume);
+
+                        // should be the last volume
+                        break;
+                    }
+
                     else
                     {
                         currentOffset += sectorSize;

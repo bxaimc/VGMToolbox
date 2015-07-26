@@ -186,6 +186,12 @@
     <Compile Include="forms\examine\CrcCalculatorForm.Designer.cs">
       <DependentUpon>CrcCalculatorForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\extraction\CriAcbAwbExtractorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\extraction\CriAcbAwbExtractorForm.Designer.cs">
+      <DependentUpon>CriAcbAwbExtractorForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\extraction\CriCpkExtractorForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -618,6 +624,9 @@
       <DependentUpon>TagViewerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="forms\extraction\CriAcbAwbExtractorForm.resx">
+      <DependentUpon>CriAcbAwbExtractorForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="forms\extraction\CriCpkExtractorForm.resx">
       <DependentUpon>CriCpkExtractorForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -742,6 +751,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\extract\ExtractCdxaWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tools\extract\ExtractCriAcbAwbWorker.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\extract\ExtractCriCpkWorker.cs">

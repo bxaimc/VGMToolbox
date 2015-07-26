@@ -75,6 +75,8 @@
     <Compile Include="VGMToolbox\format\brsar\Brsar.cs" />
     <Compile Include="VGMToolbox\format\brsar\BrsarSymbSection.cs" />
     <Compile Include="VGMToolbox\format\Cdxa.cs" />
+    <Compile Include="VGMToolbox\format\CriAcbFile.cs" />
+    <Compile Include="VGMToolbox\format\CriAfs2Archive.cs" />
     <Compile Include="VGMToolbox\format\CriCpkArchive.cs" />
     <Compile Include="VGMToolbox\format\CriUtfTable.cs" />
     <Compile Include="VGMToolbox\format\ElectronicArtsMpcStream.cs" />

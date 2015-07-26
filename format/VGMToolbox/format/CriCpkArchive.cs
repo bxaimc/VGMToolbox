@@ -1,22 +1,327 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
+using VGMToolbox.format.iso;
 using VGMToolbox.util;
 
 namespace VGMToolbox.format
 {
-    public class CriCpkArchive
+    public class CriCpkArchive : IVolume
     {
-        public static readonly byte[] CPK_SIGNATURE = new byte[] { 0x43, 0x50, 0x4B, 0x20 };
+        public static readonly byte[] STANDARD_IDENTIFIER = new byte[] { 0x43, 0x50, 0x4B, 0x20 };
+        public const uint IDENTIFIER_OFFSET = 0x00;
+        public const string FORMAT_DESCRIPTION_STRING = "CRI CPK Archive";
+        
         public static readonly byte[] CRILAYLA_SIGNATURE = new byte[] { 0x43, 0x52, 0x49, 0x4C, 0x41, 0x59, 0x4C, 0x41 };
 
         // public static byte[] CriCpkDecompressionOutputBuffer = new byte[64000000];
 
+        public string SourceFileName { set; get; }
+
+        public void Initialize(FileStream fs, long offset, bool isRawDump)
+        {
+            this.FormatDescription = CriCpkArchive.FORMAT_DESCRIPTION_STRING;
+
+            this.VolumeBaseOffset = offset;
+            this.IsRawDump = isRawDump;
+            this.VolumeType = VolumeDataType.Data;
+            this.DirectoryStructureArray = new ArrayList();
+
+            this.SourceFileName = fs.Name;            
+
+            CriUtfTable cpkUtf = new CriUtfTable();
+            cpkUtf.Initialize(fs, 0x10);
+
+            this.VolumeIdentifier = cpkUtf.TableName;
+
+            CriUtfTable tocUtf = InitializeToc(fs, cpkUtf, "TocOffset");
+            CriUtfTable etocUtf = InitializeToc(fs, cpkUtf, "EtocOffset");
+            CriUtfTable itocUtf = InitializeToc(fs, cpkUtf, "ItocOffset");
+            CriUtfTable gtocUtf = InitializeToc(fs, cpkUtf, "GtocOffset");
+
+            CriCpkDirectory dummy = new CriCpkDirectory(this.SourceFileName, String.Empty, String.Empty);
+
+            if (tocUtf != null)
+            {
+                CriCpkDirectory tocDir = this.GetDirectoryForToc(fs, cpkUtf, tocUtf, "TOC");
+
+                if ((tocDir.FileArray.Count > 0) || (tocDir.SubDirectoryArray.Count > 0))
+                {
+                    dummy.SubDirectoryArray.Add(tocDir);
+                }
+            }
+
+            if (etocUtf != null)
+            {
+                CriCpkDirectory etocDir = this.GetDirectoryForToc(fs, cpkUtf, etocUtf, "ETOC");
+
+                if ((etocDir.FileArray.Count > 0) || (etocDir.SubDirectoryArray.Count > 0))
+                {
+                    dummy.SubDirectoryArray.Add(etocDir);
+                }
+            }
+
+            if (itocUtf != null)
+            {
+                CriCpkDirectory itocDir = this.GetDirectoryForToc(fs, cpkUtf, itocUtf, "ITOC");
+
+                if ((itocDir.FileArray.Count > 0) || (itocDir.SubDirectoryArray.Count > 0))
+                {
+                    dummy.SubDirectoryArray.Add(itocDir);
+                }
+            }
+
+            if (gtocUtf != null)
+            {
+                CriCpkDirectory gtocDir = this.GetDirectoryForToc(fs, cpkUtf, gtocUtf, "GTOC");
+
+                if ((gtocDir.FileArray.Count > 0) || (gtocDir.SubDirectoryArray.Count > 0))
+                {
+                    dummy.SubDirectoryArray.Add(gtocDir);
+                }
+            }
+            
+            
+            this.DirectoryStructureArray.Add(dummy);
+        }
+
+        #region IVolume
+
+        public ArrayList DirectoryStructureArray { set; get; }
+        public IDirectoryStructure[] Directories
+        {
+            set { Directories = value; }
+            get
+            {
+                DirectoryStructureArray.Sort();
+                return (IDirectoryStructure[])DirectoryStructureArray.ToArray(typeof(CriCpkDirectory));
+            }
+        }
+
+        public long VolumeBaseOffset { set; get; }
+        public string FormatDescription { set; get; }
+        public VolumeDataType VolumeType { set; get; }
+        public string VolumeIdentifier { set; get; }
+        public bool IsRawDump { set; get; }
+
+        #endregion
+
+        /// <summary>
+        /// Extract all files in archive.
+        /// </summary>
+        /// <param name="streamCache"></param>
+        /// <param name="destintionFolder"></param>
+        /// <param name="extractAsRaw"></param>
+        public void ExtractAll(ref Dictionary<string, FileStream> streamCache, string destintionFolder, bool extractAsRaw)
+        {
+            foreach (CriCpkDirectory ds in this.DirectoryStructureArray)
+            {
+                ds.Extract(ref streamCache, destintionFolder, extractAsRaw);
+            }
+        }
+
+
+        #region Static Functions
+
+        public static CriUtfTable InitializeToc(FileStream fs, CriUtfTable cpkUtf, string tocIdentifierString)
+        {
+            CriUtfTable toc = null;
+            if (cpkUtf.Rows[0].ContainsKey(tocIdentifierString) &&
+                cpkUtf.Rows[0][tocIdentifierString].Value != null)
+            {
+                toc = new CriUtfTable();
+                toc.Initialize(fs, (long)((ulong)cpkUtf.Rows[0][tocIdentifierString].Value) + 0x10);
+            }
+
+            return toc;
+        }
+        
+        public static CriUtfTocFileInfo GetUtfTocFileInfo(CriUtfTable tocUtf, int rowIndex)
+        {
+            CriUtfTocFileInfo fileInfo = new CriUtfTocFileInfo();
+            object temp;
+
+            temp = CriUtfTable.GetUtfFieldForRow(tocUtf, rowIndex, "DirName");
+            fileInfo.DirName = temp != null ? (string)temp : null;
+
+            temp = CriUtfTable.GetUtfFieldForRow(tocUtf, rowIndex, "FileName");
+            fileInfo.FileName = temp != null ? (string)temp : null;
+
+            temp = CriUtfTable.GetUtfFieldForRow(tocUtf, rowIndex, "FileOffset");
+            fileInfo.FileOffset = temp != null ? (ulong)temp : ulong.MaxValue;
+
+            temp = CriUtfTable.GetUtfFieldForRow(tocUtf, rowIndex, "FileSize");
+            fileInfo.FileSize = temp != null ? (uint)temp : uint.MaxValue;
+
+            temp = CriUtfTable.GetUtfFieldForRow(tocUtf, rowIndex, "ExtractSize");
+            fileInfo.ExtractSize = temp != null ? (uint)temp : uint.MaxValue;
+
+            return fileInfo;
+        }
+
+        public static void ExtractFilesForToc(FileStream fs, CriUtfTable cpkUtf, CriUtfTable tocUtf, string extractionDestination)
+        {
+            CriUtfTocFileInfo fileInfo = new CriUtfTocFileInfo();
+
+            long trueTocBaseOffset;
+            string destinationFile;
+            ulong contentOffset = (ulong)CriUtfTable.GetUtfFieldForRow(cpkUtf, 0, "ContentOffset");
+
+            // create destination if needed
+            if (!Directory.Exists(extractionDestination))
+            {
+                Directory.CreateDirectory(extractionDestination);
+            }
+
+            using (BufferedStream bs = new BufferedStream(fs))
+            {
+
+                // loop over files
+                for (int i = 0; i < tocUtf.Rows.GetLength(0); i++)
+                {
+                    fileInfo = GetUtfTocFileInfo(tocUtf, i);
+
+                    // set true base offset, since UTF header starts at 0x10 of a container type
+                    trueTocBaseOffset = tocUtf.BaseOffset - 0x10;
+
+                    // get absolute offset
+                    if (contentOffset < (ulong)trueTocBaseOffset)
+                    {
+                        fileInfo.FileOffset += contentOffset;
+                    }
+                    else
+                    {
+                        fileInfo.FileOffset += (ulong)trueTocBaseOffset;
+                    }
+
+                    // build output file path
+                    destinationFile = Path.Combine(extractionDestination, fileInfo.DirName);
+                    destinationFile = Path.Combine(destinationFile, fileInfo.FileName);
+
+                    if (fileInfo.ExtractSize > fileInfo.FileSize)
+                    {
+                        // create destination if needed
+                        if (!Directory.Exists(Path.Combine(extractionDestination, fileInfo.DirName)))
+                        {
+                            Directory.CreateDirectory(Path.Combine(extractionDestination, fileInfo.DirName));
+                        }
+                        
+                        CriCpkArchive.Uncompress2(bs, (long)fileInfo.FileOffset, fileInfo.FileSize, destinationFile);
+                    }
+                    else
+                    {
+                        ParseFile.ExtractChunkToFile64(fs, fileInfo.FileOffset, fileInfo.FileSize, destinationFile, false, false);
+                    }
+                } // for (int i = 0; i < tocUtf.Rows.GetLength(0); i++)
+            } // using (BufferedStream bs = new BufferedStream(fs))
+        }
+
+        private CriCpkDirectory GetDirectoryForToc(FileStream fs, CriUtfTable cpkUtf, CriUtfTable tocUtf, string BaseDirectoryName)
+        {
+            CriUtfTocFileInfo fileInfo = new CriUtfTocFileInfo();
+
+            long trueTocBaseOffset;
+            ulong contentOffset = (ulong)CriUtfTable.GetUtfFieldForRow(cpkUtf, 0, "ContentOffset");
+            
+            char[] separators = new char[] {'/', '\\'};            
+            ArrayList allDirectories = new ArrayList();
+
+            CriCpkDirectory baseDirectory = new CriCpkDirectory(this.SourceFileName, BaseDirectoryName, String.Empty);
+            CriCpkDirectory newDirectory;
+            CriCpkDirectory currentDirectory;
+            int indexOfNewDirectory;
+
+            CriCpkFile tempFile;
+            Dictionary<string, ArrayList> fileListDictionary = new Dictionary<string, ArrayList>();
+            string parentName;
+
+            // loop over files to get unique dirs
+            for (int i = 0; i < tocUtf.Rows.GetLength(0); i++)
+            {
+                fileInfo = GetUtfTocFileInfo(tocUtf, i);
+
+                if (fileInfo.FileName != null)
+                {
+                    //---------------
+                    // get directory
+                    //---------------
+                    if (!fileListDictionary.ContainsKey(fileInfo.DirName))
+                    {
+                        fileListDictionary.Add(fileInfo.DirName, new ArrayList());
+                    }
+
+                    //--------------
+                    // create file
+                    //--------------
+                    // set true base offset, since UTF header starts at 0x10 of a container type
+                    trueTocBaseOffset = tocUtf.BaseOffset - 0x10;
+
+                    // get absolute offset
+                    if (contentOffset < (ulong)trueTocBaseOffset)
+                    {
+                        fileInfo.FileOffset += contentOffset;
+                    }
+                    else
+                    {
+                        fileInfo.FileOffset += (ulong)trueTocBaseOffset;
+                    }
+
+                    parentName = BaseDirectoryName + Path.DirectorySeparatorChar + fileInfo.DirName;
+                    parentName = parentName.Replace('/', Path.DirectorySeparatorChar);
+
+                    tempFile = new CriCpkFile(parentName, this.SourceFileName, fileInfo.FileName, (long)fileInfo.FileOffset, this.VolumeBaseOffset,
+                        (long)fileInfo.FileOffset, fileInfo.FileSize, fileInfo.ExtractSize);
+
+                    // add to Dictionary
+                    fileListDictionary[fileInfo.DirName].Add(tempFile);
+                }
+            }
+            
+            foreach (var path in fileListDictionary.Keys)
+            {
+                currentDirectory = baseDirectory;
+                var pathItems = path.Split(separators);
+
+                parentName = BaseDirectoryName;
+
+                for (int i = 0; i < pathItems.Count(); i++)
+                {
+                    var item = pathItems[i];
+
+                    var tmp = currentDirectory.SubDirectoryArray.Cast<CriCpkDirectory>().Where(x => x.DirectoryName.Equals(item));
+
+                    if (tmp.Count() > 0)
+                    {
+                        currentDirectory = tmp.Single();
+                    }
+                    else
+                    {
+                        newDirectory = new CriCpkDirectory(this.SourceFileName, item, parentName);
+                        indexOfNewDirectory = currentDirectory.SubDirectoryArray.Add(newDirectory);
+                        currentDirectory = (CriCpkDirectory)currentDirectory.SubDirectoryArray[indexOfNewDirectory];
+                    }
+
+                    if (i == pathItems.GetUpperBound(0))
+                    {
+                        foreach (CriCpkFile f in fileListDictionary[path])
+                        {
+                            currentDirectory.FileArray.Add(f);
+                        }
+                    }
+
+                    parentName += Path.DirectorySeparatorChar + item;
+                }
 
 
 
+            }
+
+            return baseDirectory;
+        }
 
 
         private static ushort get_next_bits(Stream inFile, ref long offset, ref byte bit_pool, ref int bits_left, 
@@ -164,7 +469,7 @@ namespace VGMToolbox.format
                       
             return 0x100 + bytes_output;
         }
-
+        
         public static long Uncompress2(Stream inFile, long offset, long input_size, string outFile)
         {
             byte[] output_buffer;            
@@ -261,6 +566,164 @@ namespace VGMToolbox.format
             }
 
             return 0x100 + bytes_output;
+        }
+
+        #endregion
+    }
+
+    public class CriCpkDirectory : IDirectoryStructure
+    {
+        public string SourceFilePath { set; get; }
+        public string DirectoryName { set; get; }
+        public string ParentDirectoryName { set; get; }
+
+        public ArrayList SubDirectoryArray { set; get; }
+        public IDirectoryStructure[] SubDirectories
+        {
+            set { this.SubDirectories = value; }
+            get
+            {
+                SubDirectoryArray.Sort();
+                return (IDirectoryStructure[])SubDirectoryArray.ToArray(typeof(CriCpkDirectory));
+            }
+        }
+
+        public ArrayList FileArray { set; get; }
+        public IFileStructure[] Files
+        {
+            set { this.Files = value; }
+            get
+            {
+                FileArray.Sort();
+                return (IFileStructure[])FileArray.ToArray(typeof(CriCpkFile));
+            }
+        }
+
+        //public CriCpkDirectory(string sourceFilePath, string directoryName, string parentDirectoryName,
+        //    string[] directoryListItems, int currentListOffset)
+        public CriCpkDirectory(string sourceFilePath, string directoryName, string parentDirectoryName)
+        {
+            this.SourceFilePath = sourceFilePath;
+            this.SubDirectoryArray = new ArrayList();
+            this.FileArray = new ArrayList();
+
+            this.ParentDirectoryName = parentDirectoryName;
+            this.DirectoryName = directoryName;
+
+            //string nextDirectory;
+            //CriCpkDirectory subdir;
+
+            /*
+            if (currentListOffset < directoryListItems.GetUpperBound(0))
+            {
+                subdir = (CriCpkDirectory)this.SubDirectories.FirstOrDefault(c => c.DirectoryName == directoryListItems[currentListOffset + 1]);
+
+                if (subdir == null)
+                {
+                    nextDirectory = parentDirectoryName + Path.DirectorySeparatorChar + directoryName;
+
+                    CriCpkDirectory subDir = new CriCpkDirectory(sourceFilePath, directoryListItems[currentListOffset + 1],
+                        nextDirectory, directoryListItems, currentListOffset);
+
+                    this.SubDirectoryArray.Add(subDir);
+                }
+            }
+            */
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (obj is CriCpkDirectory)
+            {
+                CriCpkDirectory o = (CriCpkDirectory)obj;
+
+                return this.DirectoryName.CompareTo(o.DirectoryName);
+            }
+
+            throw new ArgumentException("object is not a CriCpkDirectory");
+        }
+
+        public void Extract(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
+        {
+            string fullDirectoryPath = Path.Combine(destinationFolder, Path.Combine(this.ParentDirectoryName, this.DirectoryName));
+
+            // create directory
+            if (!Directory.Exists(fullDirectoryPath))
+            {
+                Directory.CreateDirectory(fullDirectoryPath);
+            }
+
+            foreach (CriCpkFile f in this.FileArray)
+            {
+                f.Extract(ref streamCache, destinationFolder, extractAsRaw);
+            }
+
+            foreach (CriCpkDirectory d in this.SubDirectoryArray)
+            {
+                d.Extract(ref streamCache, destinationFolder, extractAsRaw);
+            }
+        }
+    }
+
+    public class CriCpkFile : IFileStructure
+    {
+        public string ParentDirectoryName { set; get; }
+        public string SourceFilePath { set; get; }
+        public string FileName { set; get; }
+        public long Offset { set; get; }
+
+        public long VolumeBaseOffset { set; get; }
+        public long Lba { set; get; }
+        public long Size { set; get; }
+        public bool IsRaw { set; get; }
+        public CdSectorType FileMode { set; get; }
+        public int NonRawSectorSize { set; get; }
+
+        public DateTime FileDateTime { set; get; }
+
+        public long ExtractSize { set; get; }
+
+        public int CompareTo(object obj)
+        {
+            if (obj is CriCpkFile)
+            {
+                CriCpkFile o = (CriCpkFile)obj;
+
+                return this.FileName.CompareTo(o.FileName);
+            }
+
+            throw new ArgumentException("object is not a CriCpkFile");
+        }
+
+        public CriCpkFile(string parentDirectoryName, string sourceFilePath,
+            string fileName, long offset, long volumeBaseOffset, long lba, long size, 
+            long extractSize)
+        {
+            this.ParentDirectoryName = parentDirectoryName;
+            this.SourceFilePath = sourceFilePath;
+            this.FileName = fileName;
+            this.Offset = offset;
+            this.Size = size;
+            this.ExtractSize = extractSize;
+            this.FileDateTime = new DateTime();
+
+            this.VolumeBaseOffset = volumeBaseOffset;
+            this.Lba = lba;
+            this.IsRaw = false;
+            this.NonRawSectorSize = 0;
+            this.FileMode = CdSectorType.Unknown;
+        }
+
+        public void Extract(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
+        {
+            string destinationFile = Path.Combine(Path.Combine(destinationFolder, this.ParentDirectoryName), this.FileName);
+
+            if (!streamCache.ContainsKey(this.SourceFilePath))
+            {
+                streamCache[this.SourceFilePath] = File.OpenRead(this.SourceFilePath);
+            }
+
+            ParseFile.ExtractChunkToFile(streamCache[this.SourceFilePath], this.Offset, this.Size, destinationFile);
         }
     }
 }

@@ -920,6 +920,18 @@ namespace VGMToolbox
             nodeTag.FormClass = extract_CriCpkExtractorForm.GetType().Name;
             ext_CriCpkExtractorNode.Tag = nodeTag;
 
+            // CRI ACB/AWB
+            TreeNode ext_CriAcbAwbExtractorNode =
+                new TreeNode("CRI ACB/AWB Archive Extractor");
+
+            // Add Form
+            CriAcbAwbExtractorForm extract_CriAcbAwbExtractorForm = new CriAcbAwbExtractorForm(ext_CriAcbAwbExtractorNode);
+            this.splitContainer1.Panel2.Controls.Add(extract_CriAcbAwbExtractorForm);
+
+            // Set Tag for displaying the Form
+            nodeTag.FormClass = extract_CriAcbAwbExtractorForm.GetType().Name;
+            ext_CriAcbAwbExtractorNode.Tag = nodeTag;
+
 
             ///////
             // NDS
@@ -1070,6 +1082,7 @@ namespace VGMToolbox
             ext_GenericNode.Nodes.Add(ext_IsoExtractorNode);
             ext_GenericNode.Nodes.Add(ext_ExtractMidiNode);
             ext_GenericNode.Nodes.Add(ext_CriCpkExtractorNode);
+            ext_GenericNode.Nodes.Add(ext_CriAcbAwbExtractorNode);
                                
             ext_RootNode.Nodes.Add(ext_GenericNode);
             

@@ -13,6 +13,8 @@ namespace VGMToolbox.format
         public byte Type { set; get; }
         public string Name { set; get; }        
         public object Value { set; get; }
+        public ulong Offset { set; get; }
+        public ulong Size { set; get; }
     }
 
     public class CriUtfTocFileInfo
@@ -56,10 +58,13 @@ namespace VGMToolbox.format
 
         #region Members
 
+        public string SourceFile { set; get; }
         public long BaseOffset { set; get; }
 
         public byte[] MagicBytes { set; get; }
         public uint TableSize { set; get; }
+
+        public ushort Unknown1 { set; get; }
 
         public uint RowOffset { set; get; }
         public uint StringTableOffset { set; get; }
@@ -79,6 +84,7 @@ namespace VGMToolbox.format
 
         public void Initialize(FileStream fs, long offset)
         {
+            this.SourceFile = fs.Name;
             this.MagicBytes = ParseFile.ParseSimpleOffset(fs, offset + 0, 4);
 
             if (ParseFile.CompareSegment(this.MagicBytes, 0, SIGNATURE_BYTES))
@@ -100,6 +106,7 @@ namespace VGMToolbox.format
             }
             else
             {
+                //Dictionary<string, byte> foo = GetKeysForEncryptedUtfTable(this.MagicBytes);
                 throw new FormatException(String.Format("@UTF signature not found at offset <0x{0}>.", offset.ToString("X8")));           
             }
         
@@ -109,7 +116,9 @@ namespace VGMToolbox.format
         {
             this.TableSize = ParseFile.ReadUintBE(fs, this.BaseOffset + 4);
 
-            this.RowOffset = ParseFile.ReadUintBE(fs, this.BaseOffset + 8) + 8;
+            this.Unknown1 = ParseFile.ReadUshortBE(fs, this.BaseOffset + 8);
+
+            this.RowOffset = (uint)ParseFile.ReadUshortBE(fs, this.BaseOffset + 0xA) + 8;
             this.StringTableOffset = ParseFile.ReadUintBE(fs, this.BaseOffset + 0xC) + 8;
             this.DataOffset = ParseFile.ReadUintBE(fs, this.BaseOffset + 0x10) + 8;
 
@@ -183,7 +192,9 @@ namespace VGMToolbox.format
                                 case COLUMN_TYPE_DATA:
                                     dataOffset = ParseFile.ReadUintBE(fs, constantOffset);
                                     dataSize = ParseFile.ReadUintBE(fs, constantOffset + 4);
-                                    field.Value = ParseFile.ParseSimpleOffset(fs, this.BaseOffset + this.DataOffset + dataOffset, (int)dataSize);
+                                    field.Offset = (ulong)(this.BaseOffset + this.DataOffset + dataOffset);
+                                    field.Size = (ulong)dataSize;
+                                    field.Value = ParseFile.ParseSimpleOffset(fs, (long)field.Offset, (int)dataSize);
                                     currentOffset += 8;
                                     break;
                                 case COLUMN_TYPE_FLOAT:
@@ -236,7 +247,9 @@ namespace VGMToolbox.format
                                 case COLUMN_TYPE_DATA:
                                     rowDataOffset = ParseFile.ReadUintBE(fs, currentRowBase + currentRowOffset);
                                     rowDataSize = ParseFile.ReadUintBE(fs, currentRowBase + currentRowOffset + 4);
-                                    field.Value = ParseFile.ParseSimpleOffset(fs, this.BaseOffset + this.DataOffset + rowDataOffset, (int)rowDataSize);
+                                    field.Offset = (ulong)(this.BaseOffset + this.DataOffset + rowDataOffset);
+                                    field.Size = (ulong)rowDataSize;
+                                    field.Value = ParseFile.ParseSimpleOffset(fs, (long)field.Offset, (int)rowDataSize);
                                     currentRowOffset += 8;
                                     break;
                                 case COLUMN_TYPE_FLOAT:
@@ -287,6 +300,105 @@ namespace VGMToolbox.format
                 //    int xxxx = 1;
                 //}
             } // for (uint i = 0; i < this.NumberOfRows; i++)
+        }
+
+        public static object GetUtfFieldForRow(CriUtfTable utfTable, int rowIndex, string key)
+        {
+            object ret = null;
+
+            if (utfTable.Rows.GetLength(0) > rowIndex)
+            {
+                if (utfTable.Rows[rowIndex].ContainsKey(key))
+                {
+                    ret = utfTable.Rows[rowIndex][key].Value;
+                }
+            }
+
+            return ret;
+        }
+
+        public static ulong GetOffsetForUtfFieldForRow(CriUtfTable utfTable, int rowIndex, string key)
+        {
+            ulong ret = 0;
+
+            if (utfTable.Rows.GetLength(0) > rowIndex)
+            {
+                if (utfTable.Rows[rowIndex].ContainsKey(key))
+                {
+                    ret = utfTable.Rows[rowIndex][key].Offset;
+                }
+            }
+
+            return ret;
+        }
+
+        public static ulong GetSizeForUtfFieldForRow(CriUtfTable utfTable, int rowIndex, string key)
+        {
+            ulong ret = 0;
+
+            if (utfTable.Rows.GetLength(0) > rowIndex)
+            {
+                if (utfTable.Rows[rowIndex].ContainsKey(key))
+                {
+                    ret = utfTable.Rows[rowIndex][key].Size;
+                }
+            }
+
+            return ret;
+        }
+
+        public static Dictionary<string, byte> GetKeysForEncryptedUtfTable(byte[] encryptedUtfSignature)
+        {
+            Dictionary<string, byte> keys = new Dictionary<string, byte>();
+            byte m, t, xor;
+
+            byte[] xorBytes = new byte[SIGNATURE_BYTES.Length];
+            bool keysFound = false;
+
+            for (byte seed = 0; seed <= byte.MaxValue; seed++)
+            {
+                if (!keysFound)
+                {
+                    // match first char
+                    if ((encryptedUtfSignature[0] ^ seed) == SIGNATURE_BYTES[0])
+                    {
+                        for (byte increment = 0; increment <= byte.MaxValue; increment++)
+                        {
+                            if (!keysFound)
+                            {
+                                m = (byte)(seed * increment);
+
+                                if ((encryptedUtfSignature[1] ^ m) == SIGNATURE_BYTES[1])
+                                {
+                                    t = increment;
+
+                                    for (int j = 2; j < SIGNATURE_BYTES.Length; j++)
+                                    {
+                                        m *= t;
+
+                                        if ((encryptedUtfSignature[j] ^ m) != SIGNATURE_BYTES[j])
+                                        {
+                                            break;
+                                        }
+                                        else if (j == (SIGNATURE_BYTES.Length - 1))
+                                        {
+                                            keys.Add("seed", seed);
+                                            keys.Add("increment", increment);
+                                            keysFound = true;
+                                        }
+                                    }
+                                } // if ((encryptedUtfSignature[1] ^ m) == SIGNATURE_BYTES[1])
+                            }
+                            else
+                            {
+                                break;
+                            } // if (!keysFound)
+                        } // for (byte inc = 0; inc <= byte.MaxValue; inc++)
+                    } // if ((encryptedUtfSignature[0] ^ mult) == SIGNATURE_BYTES[0])
+                } // if (!keysFound)
+            } // for (byte mult = 0; mult <= byte.MaxValue; mult++)
+
+            return keys;
         }
     }
 }
