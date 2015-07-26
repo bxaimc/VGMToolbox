@@ -33,6 +33,8 @@ namespace VGMToolbox.format
         #region Constants
 
         public static readonly byte[] SIGNATURE_BYTES = new byte[] { 0x40, 0x55, 0x54, 0x46 };
+        public const string LCG_SEED_KEY = "SEED";
+        public const string LCG_INCREMENT_KEY = "INC";
 
         public const byte COLUMN_STORAGE_MASK = 0xF0;
         public const byte COLUMN_STORAGE_PERROW = 0x50;
@@ -62,6 +64,7 @@ namespace VGMToolbox.format
         public long BaseOffset { set; get; }
 
         public byte[] MagicBytes { set; get; }
+        public bool IsEncrypted { set; get; } 
         public uint TableSize { set; get; }
 
         public ushort Unknown1 { set; get; }
@@ -80,6 +83,8 @@ namespace VGMToolbox.format
 
         public Dictionary<string, CriField>[] Rows { set; get; }
 
+        public CriUtfReader UtfReader { set; get; }
+
         #endregion
 
         public void Initialize(FileStream fs, long offset)
@@ -87,6 +92,29 @@ namespace VGMToolbox.format
             this.SourceFile = fs.Name;
             this.MagicBytes = ParseFile.ParseSimpleOffset(fs, offset + 0, 4);
 
+            if (ParseFile.CompareSegment(this.MagicBytes, 0, SIGNATURE_BYTES))
+            {
+                this.IsEncrypted = false;
+                this.UtfReader = new CriUtfReader();
+            }
+            else
+            {
+                this.IsEncrypted = true;
+                Dictionary<string, byte> lcgKeys = GetKeysForEncryptedUtfTable(this.MagicBytes);
+
+                if (lcgKeys.Count != 2)
+                {
+                    throw new FormatException(String.Format("Unable to decrypt UTF table at offset: 0x{0}", offset.ToString("X8")));
+                }
+                else
+                {
+                    this.UtfReader = new CriUtfReader(lcgKeys[LCG_SEED_KEY], lcgKeys[LCG_INCREMENT_KEY], this.IsEncrypted);
+                }
+
+                this.MagicBytes = this.UtfReader.GetBytes(fs, offset, 4, 0);
+            }
+            
+            
             if (ParseFile.CompareSegment(this.MagicBytes, 0, SIGNATURE_BYTES))
             {
                 // set base offset
@@ -382,8 +410,8 @@ namespace VGMToolbox.format
                                         }
                                         else if (j == (SIGNATURE_BYTES.Length - 1))
                                         {
-                                            keys.Add("seed", seed);
-                                            keys.Add("increment", increment);
+                                            keys.Add(LCG_SEED_KEY, seed);
+                                            keys.Add(LCG_INCREMENT_KEY, increment);
                                             keysFound = true;
                                         }
                                     }
@@ -396,9 +424,52 @@ namespace VGMToolbox.format
                         } // for (byte inc = 0; inc <= byte.MaxValue; inc++)
                     } // if ((encryptedUtfSignature[0] ^ mult) == SIGNATURE_BYTES[0])
                 } // if (!keysFound)
+                else
+                {
+                    break;
+                }
             } // for (byte mult = 0; mult <= byte.MaxValue; mult++)
 
             return keys;
         }
+    }
+
+    public class CriUtfReader
+    {
+        public byte Seed { set; get; }
+        public byte Increment { set; get; }
+        public bool IsEncrypted { set; get; }
+
+        public CriUtfReader()
+        {
+            this.IsEncrypted = false;
+        }
+
+        public CriUtfReader(byte seed, byte increment, bool isEncrypted)
+        {
+            this.Seed = seed;
+            this.Increment = increment;
+            this.IsEncrypted = isEncrypted;
+        }
+
+        public byte[] GetBytes(FileStream fs, long FileOffset, int Size, long UtfOffset)
+        {
+            byte[] ret;
+            byte xorByte;
+
+            ret = ParseFile.ParseSimpleOffset(fs, FileOffset, Size);
+
+            if (this.IsEncrypted)
+            {
+                for (long i = UtfOffset; i < (UtfOffset + Size); i++)
+                {
+                    xorByte = (byte)(this.Seed * Math.Pow(this.Increment, i));
+                    ret[i] ^= xorByte;
+                }
+            }
+            
+            return ret;
+        }
+
     }
 }
