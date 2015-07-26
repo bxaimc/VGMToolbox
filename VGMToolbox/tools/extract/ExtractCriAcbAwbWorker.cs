@@ -232,6 +232,7 @@ namespace VGMToolbox.tools.extract
                                         break;
                                 }
 
+                                // @TODO: This should be in ReferenceItems.Value
                                 waveformIndex = ParseFile.ReadUshortBE(fs, (long)(referenceItemsOffset + referenceCorrection));
 
                                 // get awb id and encode type from corresponding waveform
