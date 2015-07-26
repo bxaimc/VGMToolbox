@@ -90,36 +90,14 @@ namespace VGMToolbox.format
         public void Initialize(FileStream fs, long offset)
         {
             this.SourceFile = fs.Name;
+            this.BaseOffset = offset;
             this.MagicBytes = ParseFile.ParseSimpleOffset(fs, offset + 0, 4);
 
-            if (ParseFile.CompareSegment(this.MagicBytes, 0, SIGNATURE_BYTES))
-            {
-                this.IsEncrypted = false;
-                this.UtfReader = new CriUtfReader();
-            }
-            else
-            {
-                this.IsEncrypted = true;
-                Dictionary<string, byte> lcgKeys = GetKeysForEncryptedUtfTable(this.MagicBytes);
-
-                if (lcgKeys.Count != 2)
-                {
-                    throw new FormatException(String.Format("Unable to decrypt UTF table at offset: 0x{0}", offset.ToString("X8")));
-                }
-                else
-                {
-                    this.UtfReader = new CriUtfReader(lcgKeys[LCG_SEED_KEY], lcgKeys[LCG_INCREMENT_KEY], this.IsEncrypted);
-                }
-
-                this.MagicBytes = this.UtfReader.GetBytes(fs, offset, 4, 0);
-            }
-            
+            // check if file is decrypted and get decryption keys if needed
+            this.checkEncryption(fs);            
             
             if (ParseFile.CompareSegment(this.MagicBytes, 0, SIGNATURE_BYTES))
-            {
-                // set base offset
-                this.BaseOffset = offset;
-
+            {               
                 // read header
                 this.initializeUtfHeader(fs);
 
@@ -140,23 +118,49 @@ namespace VGMToolbox.format
         
         }
 
+        private void checkEncryption(FileStream fs)
+        {
+            if (ParseFile.CompareSegment(this.MagicBytes, 0, SIGNATURE_BYTES))
+            {
+                this.IsEncrypted = false;
+                this.UtfReader = new CriUtfReader();
+            }
+            else
+            {
+                this.IsEncrypted = true;
+                Dictionary<string, byte> lcgKeys = GetKeysForEncryptedUtfTable(this.MagicBytes);
+
+                if (lcgKeys.Count != 2)
+                {
+                    throw new FormatException(String.Format("Unable to decrypt UTF table at offset: 0x{0}", this.BaseOffset.ToString("X8")));
+                }
+                else
+                {
+                    this.UtfReader = new CriUtfReader(lcgKeys[LCG_SEED_KEY], lcgKeys[LCG_INCREMENT_KEY], this.IsEncrypted);
+                }
+
+                this.MagicBytes = this.UtfReader.GetBytes(fs, this.BaseOffset, 4, 0);
+            }
+
+        }
+
         private void initializeUtfHeader(FileStream fs)
         {
-            this.TableSize = ParseFile.ReadUintBE(fs, this.BaseOffset + 4);
+            this.TableSize = this.UtfReader.ReadUint(fs, this.BaseOffset, 4);
 
-            this.Unknown1 = ParseFile.ReadUshortBE(fs, this.BaseOffset + 8);
+            this.Unknown1 = this.UtfReader.ReadUshort(fs, this.BaseOffset, 8);
 
-            this.RowOffset = (uint)ParseFile.ReadUshortBE(fs, this.BaseOffset + 0xA) + 8;
-            this.StringTableOffset = ParseFile.ReadUintBE(fs, this.BaseOffset + 0xC) + 8;
-            this.DataOffset = ParseFile.ReadUintBE(fs, this.BaseOffset + 0x10) + 8;
+            this.RowOffset = (uint)this.UtfReader.ReadUshort(fs, this.BaseOffset, 0xA) + 8;
+            this.StringTableOffset = this.UtfReader.ReadUint(fs, this.BaseOffset, 0xC) + 8;
+            this.DataOffset = this.UtfReader.ReadUint(fs, this.BaseOffset, 0x10) + 8;
 
-            this.TableNameOffset = ParseFile.ReadUintBE(fs, this.BaseOffset + 0x14);
-            this.TableName = ParseFile.ReadAsciiString(fs, (this.BaseOffset + this.StringTableOffset + this.TableNameOffset));
+            this.TableNameOffset = this.UtfReader.ReadUint(fs, this.BaseOffset, 0x14);
+            this.TableName = UtfReader.ReadAsciiString(fs, this.BaseOffset, this.StringTableOffset + this.TableNameOffset);
 
-            this.NumberOfFields = ParseFile.ReadUshortBE(fs, this.BaseOffset + 0x18);
+            this.NumberOfFields = this.UtfReader.ReadUshort(fs, this.BaseOffset, 0x18);
 
-            this.RowSize = ParseFile.ReadUshortBE(fs, this.BaseOffset + 0x1A);
-            this.NumberOfRows = ParseFile.ReadUintBE(fs, this.BaseOffset + 0x1C);        
+            this.RowSize = this.UtfReader.ReadUshort(fs, this.BaseOffset, 0x1A);
+            this.NumberOfRows = this.UtfReader.ReadUint(fs, this.BaseOffset, 0x1C);        
         }
 
         private void initializeUtfSchema(FileStream fs, long schemaOffset)
@@ -452,18 +456,27 @@ namespace VGMToolbox.format
             this.IsEncrypted = isEncrypted;
         }
 
-        public byte[] GetBytes(FileStream fs, long FileOffset, int Size, long UtfOffset)
+        public byte[] GetBytes(FileStream fs, long BaseOffset, int Size, long UtfOffset)
         {
             byte[] ret;
             byte xorByte;
 
-            ret = ParseFile.ParseSimpleOffset(fs, FileOffset, Size);
+            ret = ParseFile.ParseSimpleOffset(fs, BaseOffset + UtfOffset, Size);
 
             if (this.IsEncrypted)
             {
-                for (long i = UtfOffset; i < (UtfOffset + Size); i++)
+                xorByte = this.Seed;
+
+                // catch up to this offset
+                for (long j = 1; j < UtfOffset; j++)
                 {
-                    xorByte = (byte)(this.Seed * Math.Pow(this.Increment, i));
+                    xorByte *= this.Increment;
+                }
+
+                // decrypt this offset
+                for (long i = 0; i < Size; i++)
+                {
+                    xorByte *= this.Increment;
                     ret[i] ^= xorByte;
                 }
             }
@@ -471,5 +484,127 @@ namespace VGMToolbox.format
             return ret;
         }
 
+        public string ReadAsciiString(FileStream fs, long BaseOffset, long UtfOffset)
+        {
+            byte encryptedByte;
+            byte decryptedByte;
+
+            StringBuilder asciiVal =  new StringBuilder();
+            byte xorByte;
+            long fileSize = fs.Length;
+
+            if (this.IsEncrypted)
+            {
+                fs.Position = (BaseOffset + UtfOffset);
+
+                // catch up to this offset
+                xorByte = this.Seed;
+                
+                for (long j = 1; j < UtfOffset; j++)
+                {
+                    xorByte *= this.Increment;
+                }
+
+                for (long i = UtfOffset; i < (fileSize - (BaseOffset + UtfOffset)); i++)
+                {
+                    xorByte *= this.Increment;
+                    encryptedByte = (byte)fs.ReadByte();
+                    decryptedByte = (byte)(encryptedByte ^ xorByte);
+
+                    if (decryptedByte == 0)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        asciiVal.Append(Convert.ToChar(decryptedByte));
+                    }
+
+                }
+            }
+            else
+            {
+                asciiVal.Append(ParseFile.ReadAsciiString(fs, BaseOffset + UtfOffset));
+            }
+            
+            return asciiVal.ToString();
+        }
+
+
+        public byte ReadByte(FileStream fs, long BaseOffset, long UtfOffset)
+        {
+            return this.GetBytes(fs, BaseOffset, 1, UtfOffset)[0];
+        }
+
+        public SByte ReadSByte(FileStream fs, long BaseOffset, long UtfOffset)
+        {
+            return (SByte)this.GetBytes(fs, BaseOffset, 1, UtfOffset)[0];
+        }
+
+        public ushort ReadUshort(FileStream fs, long BaseOffset, long UtfOffset)
+        {
+            byte[] temp = this.GetBytes(fs, BaseOffset, 2, UtfOffset);
+
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(temp);
+            }
+            return BitConverter.ToUInt16(temp, 0);
+        }
+
+        public short ReadShort(FileStream fs, long BaseOffset, long UtfOffset)
+        {
+            byte[] temp = this.GetBytes(fs, BaseOffset, 2, UtfOffset);
+
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(temp);
+            }
+            return BitConverter.ToInt16(temp, 0);
+        }
+
+        public uint ReadUint(FileStream fs, long BaseOffset, long UtfOffset)
+        {
+            byte[] temp = this.GetBytes(fs, BaseOffset, 4, UtfOffset);
+
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(temp);
+            }
+            return BitConverter.ToUInt32(temp, 0);
+        }
+
+        public int ReadInt(FileStream fs, long BaseOffset, long UtfOffset)
+        {
+            byte[] temp = this.GetBytes(fs, BaseOffset, 4, UtfOffset);
+
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(temp);
+            }
+            return BitConverter.ToInt32(temp, 0);
+        }
+
+        public ulong ReadUlong(FileStream fs, long BaseOffset, long UtfOffset)
+        {
+            byte[] temp = this.GetBytes(fs, BaseOffset, 8, UtfOffset);
+
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(temp);
+            }
+            return BitConverter.ToUInt64(temp, 0);
+        }
+
+        public float ReadFloat(FileStream fs, long BaseOffset, long UtfOffset)
+        {
+            byte[] temp = this.GetBytes(fs, BaseOffset, 4, UtfOffset);
+
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(temp);
+            }
+            return BitConverter.ToSingle(temp, 0);
+        }
     }
 }
