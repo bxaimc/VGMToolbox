@@ -254,7 +254,8 @@ namespace VGMToolbox.format
 
             long trueTocBaseOffset;
             ulong contentOffset = (ulong)CriUtfTable.GetUtfFieldForRow(cpkUtf, 0, "ContentOffset");
-            
+            ushort align = (ushort)CriUtfTable.GetUtfFieldForRow(cpkUtf, 0, "Align");
+
             char[] separators = new char[] {'/', '\\'};            
             ArrayList allDirectories = new ArrayList();
 
@@ -296,6 +297,11 @@ namespace VGMToolbox.format
                     else
                     {
                         fileInfo.FileOffset += (ulong)trueTocBaseOffset;
+                    }
+
+                    if (fileInfo.FileOffset % align != 0)
+                    {
+                        fileInfo.FileOffset = MathUtil.RoundUpToByteAlignment(fileInfo.FileOffset, align);
                     }
 
                     parentName = BaseDirectoryName + Path.DirectorySeparatorChar + fileInfo.DirName;
@@ -350,21 +356,8 @@ namespace VGMToolbox.format
 
         private CriCpkDirectory GetDirectoryForItoc(FileStream fs, CriUtfTable cpkUtf, CriUtfTable tocUtf, string BaseDirectoryName)
         {
-            long trueTocBaseOffset;
             ulong currentOffset = 0;
             CriUtfTocFileInfo fileInfo = new CriUtfTocFileInfo();
-
-            // read file group
-            uint filesH = (uint)CriUtfTable.GetUtfFieldForRow(tocUtf, 0, "FilesH"); //count of files in DataH
-            uint filesL = (uint)CriUtfTable.GetUtfFieldForRow(tocUtf, 0, "FilesL"); // count of files in DataL
-            
-            // read DataH group
-            CriUtfTable dataH = new CriUtfTable();
-            dataH.Initialize(fs, (long)CriUtfTable.GetOffsetForUtfFieldForRow(tocUtf, 0, "DataH"));
-
-            // read DataL group
-            CriUtfTable dataL = new CriUtfTable();
-            dataL.Initialize(fs, (long)CriUtfTable.GetOffsetForUtfFieldForRow(tocUtf, 0, "DataL"));
 
             // get content offset and align
             ulong contentOffset = (ulong)CriUtfTable.GetUtfFieldForRow(cpkUtf, 0, "ContentOffset");
@@ -374,65 +367,85 @@ namespace VGMToolbox.format
             CriCpkDirectory baseDirectory = new CriCpkDirectory(this.SourceFileName, BaseDirectoryName, String.Empty);
             CriCpkFile tempFile;
 
-            Dictionary<string, CriUtfTocFileInfo> fileList = new Dictionary<string, CriUtfTocFileInfo>();
+            // read file groups
+            uint filesH = 0;
+            uint filesL = 0;
+            object filesHObj = CriUtfTable.GetUtfFieldForRow(tocUtf, 0, "FilesH"); //count of files in DataH
+            object filesLObj = CriUtfTable.GetUtfFieldForRow(tocUtf, 0, "FilesL"); // count of files in DataL
 
-            // loop over file groups
-            for (int i = 0; i < dataH.Rows.GetLength(0); i++)
+            if (filesHObj != null)
             {
-                fileInfo = GetUtfItocFileInfo(dataH, i);
-                fileList.Add(fileInfo.FileName, fileInfo);
+                filesH = (uint)filesHObj;
             }
 
-            for (int i = 0; i < dataL.Rows.GetLength(0); i++)
+            if (filesHObj != null)
             {
-                fileInfo = GetUtfItocFileInfo(dataL, i);
-                fileList.Add(fileInfo.FileName, fileInfo);
+                filesL = (uint)filesLObj;
             }
 
-            //----------------------
-            // setup current offset
-            //----------------------
-            currentOffset = contentOffset;
-            /*
-            trueTocBaseOffset = tocUtf.BaseOffset - 0x10;
+            if ((filesH > 0) || (filesL > 0))
+            {
 
-            // get absolute offset
-            if (contentOffset < (ulong)trueTocBaseOffset)
-            {
-                currentOffset += contentOffset;
-            }
-            else
-            {
-                currentOffset += (ulong)trueTocBaseOffset;
-            }
-            */
-            // populate offsets for files
-            var keys = fileList.Keys.ToList();
-            keys.Sort();
+                Dictionary<string, CriUtfTocFileInfo> fileList = new Dictionary<string, CriUtfTocFileInfo>();
 
-            foreach (string key in keys)
-            {
-                // align offset
-                if (currentOffset % align != 0) 
-                { 
-                    currentOffset = MathUtil.RoundUpToByteAlignment(currentOffset, align); 
+                if (filesH > 0)
+                {
+                    // read DataH group
+                    CriUtfTable dataH = new CriUtfTable();
+                    dataH.Initialize(fs, (long)CriUtfTable.GetOffsetForUtfFieldForRow(tocUtf, 0, "DataH"));
+
+                    for (int i = 0; i < dataH.Rows.GetLength(0); i++)
+                    {
+                        fileInfo = GetUtfItocFileInfo(dataH, i);
+                        fileList.Add(fileInfo.FileName, fileInfo);
+                    }
                 }
-                
-                // update file info
-                fileList[key].FileOffset = currentOffset;
-                fileList[key].FileName += ".bin";
-    
-                // increment current offset
-                currentOffset += fileList[key].FileSize;
 
-                // create file and add to base directory
-                tempFile = new CriCpkFile(BaseDirectoryName, this.SourceFileName, fileList[key].FileName,
-                    (long)fileList[key].FileOffset, this.VolumeBaseOffset, (long)fileList[key].FileOffset,
-                    fileList[key].FileSize, fileList[key].ExtractSize);
+                if (filesL > 0)
+                {
+                    // read DataL group
+                    CriUtfTable dataL = new CriUtfTable();
+                    dataL.Initialize(fs, (long)CriUtfTable.GetOffsetForUtfFieldForRow(tocUtf, 0, "DataL"));
 
-                baseDirectory.FileArray.Add(tempFile);
-            }
-                      
+                    for (int i = 0; i < dataL.Rows.GetLength(0); i++)
+                    {
+                        fileInfo = GetUtfItocFileInfo(dataL, i);
+                        fileList.Add(fileInfo.FileName, fileInfo);
+                    }
+                }
+               
+                // initialize current offset
+                currentOffset = contentOffset;
+
+                // populate offsets for files
+                var keys = fileList.Keys.ToList();
+                keys.Sort();
+
+                foreach (string key in keys)
+                {
+                    // align offset
+                    if (currentOffset % align != 0)
+                    {
+                        currentOffset = MathUtil.RoundUpToByteAlignment(currentOffset, align);
+                    }
+
+                    // update file info
+                    fileList[key].FileOffset = currentOffset;
+                    fileList[key].FileName += ".bin";
+
+                    // increment current offset
+                    currentOffset += fileList[key].FileSize;
+
+                    // create file and add to base directory
+                    tempFile = new CriCpkFile(BaseDirectoryName, this.SourceFileName, fileList[key].FileName,
+                        (long)fileList[key].FileOffset, this.VolumeBaseOffset, (long)fileList[key].FileOffset,
+                        fileList[key].FileSize, fileList[key].ExtractSize);
+
+                    baseDirectory.FileArray.Add(tempFile);
+                } // foreach (string key in keys)
+            } // if ((filesH > 0) || (filesL > 0))       
+            
+            
             return baseDirectory;
         }
 
