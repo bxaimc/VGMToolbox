@@ -14,6 +14,7 @@ namespace VGMToolbox.forms.extraction
             // set title
             this.lblTitle.Text = "CRI CPK Archive Extractor";
             this.tbOutput.Text = "Extract Files from CRI CPK Archives" + Environment.NewLine;
+            this.tbOutput.Text += " Currently supports encrypted and unencrypted CPK files using TOC and ITOC structures." + Environment.NewLine;
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();

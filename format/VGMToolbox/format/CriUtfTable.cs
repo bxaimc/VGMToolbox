@@ -372,7 +372,7 @@ namespace VGMToolbox.format
             int maxRead;
             byte[] buffer = new byte[Constants.FileReadChunkSize];
             
-            int tableSize = (int)this.UtfReader.ReadUint(fs, offsetToUtfTable, 4);
+            int tableSize = (int)this.UtfReader.ReadUint(fs, offsetToUtfTable, 4) + 4;
 
             pathToUtf = Path.Combine(Path.GetTempPath(), TEMP_UTF_TABLE_FILE);
             

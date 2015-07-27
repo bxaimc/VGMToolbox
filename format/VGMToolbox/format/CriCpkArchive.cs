@@ -17,6 +17,7 @@ namespace VGMToolbox.format
         public const string FORMAT_DESCRIPTION_STRING = "CRI CPK Archive";
         
         public static readonly byte[] CRILAYLA_SIGNATURE = new byte[] { 0x43, 0x52, 0x49, 0x4C, 0x41, 0x59, 0x4C, 0x41 };
+        public const string CRI_CPK_EXTRACTION_FOLDER = "VGMT_CPK_EXTRACT_{0}";
 
         // public static byte[] CriCpkDecompressionOutputBuffer = new byte[64000000];
 
@@ -55,6 +56,7 @@ namespace VGMToolbox.format
                 }
             }
 
+            /*
             if (etocUtf != null)
             {
                 CriCpkDirectory etocDir = this.GetDirectoryForToc(fs, cpkUtf, etocUtf, "ETOC");
@@ -64,10 +66,11 @@ namespace VGMToolbox.format
                     dummy.SubDirectoryArray.Add(etocDir);
                 }
             }
+            */
 
             if (itocUtf != null)
             {
-                CriCpkDirectory itocDir = this.GetDirectoryForToc(fs, cpkUtf, itocUtf, "ITOC");
+                CriCpkDirectory itocDir = this.GetDirectoryForItoc(fs, cpkUtf, itocUtf, "ITOC");
 
                 if ((itocDir.FileArray.Count > 0) || (itocDir.SubDirectoryArray.Count > 0))
                 {
@@ -75,6 +78,7 @@ namespace VGMToolbox.format
                 }
             }
 
+            /*
             if (gtocUtf != null)
             {
                 CriCpkDirectory gtocDir = this.GetDirectoryForToc(fs, cpkUtf, gtocUtf, "GTOC");
@@ -84,7 +88,7 @@ namespace VGMToolbox.format
                     dummy.SubDirectoryArray.Add(gtocDir);
                 }
             }
-            
+            */
             
             this.DirectoryStructureArray.Add(dummy);
         }
@@ -124,6 +128,19 @@ namespace VGMToolbox.format
             }
         }
 
+        public void ExtractAll()
+        {
+            string extractionDirectoryBase = Path.Combine(Path.GetDirectoryName(this.SourceFileName),
+                    String.Format(CRI_CPK_EXTRACTION_FOLDER, Path.GetFileName(this.SourceFileName)));
+            Dictionary<string, FileStream> streamCache = new Dictionary<string, FileStream>();
+
+            foreach (CriCpkDirectory ds in this.DirectoryStructureArray)
+            {
+                ds.Extract(ref streamCache, extractionDirectoryBase, false);    
+            }
+
+        }
+
 
         #region Static Functions
 
@@ -159,6 +176,23 @@ namespace VGMToolbox.format
 
             temp = CriUtfTable.GetUtfFieldForRow(tocUtf, rowIndex, "ExtractSize");
             fileInfo.ExtractSize = temp != null ? (uint)temp : uint.MaxValue;
+
+            return fileInfo;
+        }
+
+        public static CriUtfTocFileInfo GetUtfItocFileInfo(CriUtfTable dataUtf, int rowIndex)
+        {
+            CriUtfTocFileInfo fileInfo = new CriUtfTocFileInfo();
+            object temp;
+
+            temp = CriUtfTable.GetUtfFieldForRow(dataUtf, rowIndex, "ID");
+            fileInfo.FileName = temp != null ? ((ushort)temp).ToString("D5") : null;
+
+            temp = CriUtfTable.GetUtfFieldForRow(dataUtf, rowIndex, "FileSize");
+            fileInfo.FileSize = temp != null ? Convert.ToUInt32(temp) : uint.MaxValue;
+
+            temp = CriUtfTable.GetUtfFieldForRow(dataUtf, rowIndex, "ExtractSize");
+            fileInfo.ExtractSize = temp != null ? Convert.ToUInt32(temp) : uint.MaxValue;
 
             return fileInfo;
         }
@@ -203,14 +237,8 @@ namespace VGMToolbox.format
                     destinationFile = Path.Combine(destinationFile, fileInfo.FileName);
 
                     if (fileInfo.ExtractSize > fileInfo.FileSize)
-                    {
-                        // create destination if needed
-                        if (!Directory.Exists(Path.Combine(extractionDestination, fileInfo.DirName)))
-                        {
-                            Directory.CreateDirectory(Path.Combine(extractionDestination, fileInfo.DirName));
-                        }
-                        
-                        CriCpkArchive.Uncompress2(bs, (long)fileInfo.FileOffset, fileInfo.FileSize, destinationFile);
+                    {                        
+                        CriCpkArchive.Uncompress(bs, (long)fileInfo.FileOffset, fileInfo.FileSize, destinationFile);
                     }
                     else
                     {
@@ -315,14 +343,98 @@ namespace VGMToolbox.format
 
                     parentName += Path.DirectorySeparatorChar + item;
                 }
-
-
-
             }
 
             return baseDirectory;
         }
 
+        private CriCpkDirectory GetDirectoryForItoc(FileStream fs, CriUtfTable cpkUtf, CriUtfTable tocUtf, string BaseDirectoryName)
+        {
+            long trueTocBaseOffset;
+            ulong currentOffset = 0;
+            CriUtfTocFileInfo fileInfo = new CriUtfTocFileInfo();
+
+            // read file group
+            uint filesH = (uint)CriUtfTable.GetUtfFieldForRow(tocUtf, 0, "FilesH"); //count of files in DataH
+            uint filesL = (uint)CriUtfTable.GetUtfFieldForRow(tocUtf, 0, "FilesL"); // count of files in DataL
+            
+            // read DataH group
+            CriUtfTable dataH = new CriUtfTable();
+            dataH.Initialize(fs, (long)CriUtfTable.GetOffsetForUtfFieldForRow(tocUtf, 0, "DataH"));
+
+            // read DataL group
+            CriUtfTable dataL = new CriUtfTable();
+            dataL.Initialize(fs, (long)CriUtfTable.GetOffsetForUtfFieldForRow(tocUtf, 0, "DataL"));
+
+            // get content offset and align
+            ulong contentOffset = (ulong)CriUtfTable.GetUtfFieldForRow(cpkUtf, 0, "ContentOffset");
+            ushort align = (ushort)CriUtfTable.GetUtfFieldForRow(cpkUtf, 0, "Align");
+
+            // build direcory path
+            CriCpkDirectory baseDirectory = new CriCpkDirectory(this.SourceFileName, BaseDirectoryName, String.Empty);
+            CriCpkFile tempFile;
+
+            Dictionary<string, CriUtfTocFileInfo> fileList = new Dictionary<string, CriUtfTocFileInfo>();
+
+            // loop over file groups
+            for (int i = 0; i < dataH.Rows.GetLength(0); i++)
+            {
+                fileInfo = GetUtfItocFileInfo(dataH, i);
+                fileList.Add(fileInfo.FileName, fileInfo);
+            }
+
+            for (int i = 0; i < dataL.Rows.GetLength(0); i++)
+            {
+                fileInfo = GetUtfItocFileInfo(dataL, i);
+                fileList.Add(fileInfo.FileName, fileInfo);
+            }
+
+            //----------------------
+            // setup current offset
+            //----------------------
+            currentOffset = contentOffset;
+            /*
+            trueTocBaseOffset = tocUtf.BaseOffset - 0x10;
+
+            // get absolute offset
+            if (contentOffset < (ulong)trueTocBaseOffset)
+            {
+                currentOffset += contentOffset;
+            }
+            else
+            {
+                currentOffset += (ulong)trueTocBaseOffset;
+            }
+            */
+            // populate offsets for files
+            var keys = fileList.Keys.ToList();
+            keys.Sort();
+
+            foreach (string key in keys)
+            {
+                // align offset
+                if (currentOffset % align != 0) 
+                { 
+                    currentOffset = MathUtil.RoundUpToByteAlignment(currentOffset, align); 
+                }
+                
+                // update file info
+                fileList[key].FileOffset = currentOffset;
+                fileList[key].FileName += ".bin";
+    
+                // increment current offset
+                currentOffset += fileList[key].FileSize;
+
+                // create file and add to base directory
+                tempFile = new CriCpkFile(BaseDirectoryName, this.SourceFileName, fileList[key].FileName,
+                    (long)fileList[key].FileOffset, this.VolumeBaseOffset, (long)fileList[key].FileOffset,
+                    fileList[key].FileSize, fileList[key].ExtractSize);
+
+                baseDirectory.FileArray.Add(tempFile);
+            }
+                      
+            return baseDirectory;
+        }
 
         private static ushort get_next_bits(Stream inFile, ref long offset, ref byte bit_pool, ref int bits_left, 
             int bit_count)
@@ -360,117 +472,8 @@ namespace VGMToolbox.format
 
             return out_bits;
         }
-
-        public static long Uncompress(Stream inFile, long offset, long input_size, string outFile)
-        {
-            byte[] output_buffer = null;
-            long bytes_output = 0;
-            byte[] magicBytes = ParseFile.ParseSimpleOffset(inFile, offset, CRILAYLA_SIGNATURE.GetLength(0));
-            
-            if (!ParseFile.CompareSegment(magicBytes, 0, CRILAYLA_SIGNATURE))
-            {
-                throw new FormatException(String.Format("CRILAYLA Signature not found at offset: 0x{0}", offset.ToString("X8")));
-            }
-
-            long uncompressed_size = (long)ParseFile.ReadUintLE(inFile, offset + 8);
-            long uncompressed_header_offset = (long)(offset + ParseFile.ReadUintLE(inFile, offset + 0x0C) + 0x10);
-
-            if ((uncompressed_header_offset + 0x100) != (offset + input_size))
-            {
-                throw new FormatException(String.Format("CRILAYLA: Uncompressed header size does not match expected size at offset: 0x{0}", offset.ToString("X8")));            
-            }
-            
-            using (FileStream os = File.Open(outFile, FileMode.Create, FileAccess.ReadWrite, FileShare.Read))
-            {                                
-                using (BufferedStream outStream = new BufferedStream(os))
-                {
-                    // set length of output file
-                    outStream.SetLength(uncompressed_size + 0x100);
-
-                    // write uncompressed header
-                    output_buffer = ParseFile.ParseSimpleOffset(inFile, uncompressed_header_offset, 0x100);
-                    outStream.Write(output_buffer, 0, 0x100);
-
-                    // do the hocus pocus?
-                    long input_end = offset + input_size - 0x100 - 1;
-                    long input_offset = input_end;
-                    long output_end = 0x100 + uncompressed_size - 1;
-
-                    byte bit_pool = 0;
-                    int bits_left = 0;
-                    int[] vle_lens = new int[4] { 2, 3, 5, 8 };
-
-                    long backreference_offset;
-                    long backreference_length;
-
-                    int vle_level;
-                    int this_level;
-
-                    ushort temp;
-
-                    while (bytes_output < uncompressed_size)
-                    {
-                        if (get_next_bits(inFile, ref input_offset, ref bit_pool, ref bits_left, 1) != 0)
-                        {
-                            backreference_offset = output_end - bytes_output +
-                                get_next_bits(inFile, ref input_offset, ref bit_pool, ref bits_left, 13) + 3;
-                            backreference_length = 3;
-
-                            // decode variable length coding for length                        
-                            for (vle_level = 0; vle_level < vle_lens.Length; vle_level++)
-                            {
-                                this_level = get_next_bits(inFile, ref input_offset, ref bit_pool, ref bits_left, vle_lens[vle_level]);
-                                backreference_length += this_level;
-
-                                if (this_level != ((1 << vle_lens[vle_level]) - 1))
-                                {
-                                    break;
-                                }
-                            }
-
-                            if (vle_level == vle_lens.Length)
-                            {
-                                do
-                                {
-                                    this_level = get_next_bits(inFile, ref input_offset, ref bit_pool, ref bits_left, 8);
-                                    backreference_length += this_level;
-
-                                } while (this_level == 255);
-                            }
-
-                            //printf("0x%08lx backreference to 0x%lx, length 0x%lx\n", output_end-bytes_output, backreference_offset, backreference_length);
-                            for (int i = 0; i < backreference_length; i++)
-                            {
-                                //output_buffer[output_end - bytes_output] = output_buffer[backreference_offset--];
-
-                                output_buffer = ParseFile.ParseSimpleOffset(outStream, backreference_offset--, 1);
-                                outStream.Position = (output_end - bytes_output);
-                                outStream.Write(output_buffer, 0, 1);
-
-                                bytes_output++;
-                            }
-                        }
-                        else
-                        {
-                            // verbatim byte
-                            // output_buffer[output_end - bytes_output] = get_next_bits(inFile, ref input_offset, ref bit_pool, ref bits_left, 8);
-
-                            temp = get_next_bits(inFile, ref input_offset, ref bit_pool, ref bits_left, 8);
-                            output_buffer = BitConverter.GetBytes(temp);
-                            outStream.Position = (output_end - bytes_output);
-                            outStream.Write(output_buffer, 0, 1);
-
-                            //printf("0x%08lx verbatim byte\n", output_end-bytes_output);
-                            bytes_output++;
-                        }
-                    }
-                } // using (BufferedStream outStream = new BufferedStream(os))            
-            } // using (FileStream outStream = File.Open(outFile, FileMode.Create, FileAccess.ReadWrite, FileShare.Read))
-                      
-            return 0x100 + bytes_output;
-        }
         
-        public static long Uncompress2(Stream inFile, long offset, long input_size, string outFile)
+        public static long Uncompress(Stream inFile, long offset, long input_size, string outFile)
         {
             byte[] output_buffer;            
             long bytes_output = 0;
@@ -479,6 +482,11 @@ namespace VGMToolbox.format
             if (!ParseFile.CompareSegment(magicBytes, 0, CRILAYLA_SIGNATURE))
             {
                 throw new FormatException(String.Format("CRILAYLA Signature not found at offset: 0x{0}", offset.ToString("X8")));
+            }
+
+            if (!Directory.Exists(Path.GetDirectoryName(outFile)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(outFile));
             }
 
             long uncompressed_size = (long)ParseFile.ReadUintLE(inFile, offset + 8);
@@ -599,8 +607,6 @@ namespace VGMToolbox.format
             }
         }
 
-        //public CriCpkDirectory(string sourceFilePath, string directoryName, string parentDirectoryName,
-        //    string[] directoryListItems, int currentListOffset)
         public CriCpkDirectory(string sourceFilePath, string directoryName, string parentDirectoryName)
         {
             this.SourceFilePath = sourceFilePath;
@@ -608,27 +614,7 @@ namespace VGMToolbox.format
             this.FileArray = new ArrayList();
 
             this.ParentDirectoryName = parentDirectoryName;
-            this.DirectoryName = directoryName;
-
-            //string nextDirectory;
-            //CriCpkDirectory subdir;
-
-            /*
-            if (currentListOffset < directoryListItems.GetUpperBound(0))
-            {
-                subdir = (CriCpkDirectory)this.SubDirectories.FirstOrDefault(c => c.DirectoryName == directoryListItems[currentListOffset + 1]);
-
-                if (subdir == null)
-                {
-                    nextDirectory = parentDirectoryName + Path.DirectorySeparatorChar + directoryName;
-
-                    CriCpkDirectory subDir = new CriCpkDirectory(sourceFilePath, directoryListItems[currentListOffset + 1],
-                        nextDirectory, directoryListItems, currentListOffset);
-
-                    this.SubDirectoryArray.Add(subDir);
-                }
-            }
-            */
+            this.DirectoryName = directoryName;            
         }
 
         public int CompareTo(object obj)
@@ -723,7 +709,14 @@ namespace VGMToolbox.format
                 streamCache[this.SourceFilePath] = File.OpenRead(this.SourceFilePath);
             }
 
-            ParseFile.ExtractChunkToFile(streamCache[this.SourceFilePath], this.Offset, this.Size, destinationFile);
+            if (this.ExtractSize > this.Size)
+            {
+                CriCpkArchive.Uncompress(streamCache[this.SourceFilePath], (long)this.Offset, this.Size, destinationFile);
+            }
+            else
+            {
+                ParseFile.ExtractChunkToFile64(streamCache[this.SourceFilePath], (ulong)this.Offset, (ulong)this.Size, destinationFile, false, false);
+            }
         }
     }
 }
