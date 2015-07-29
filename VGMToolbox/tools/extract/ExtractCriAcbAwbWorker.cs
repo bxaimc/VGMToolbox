@@ -47,7 +47,9 @@ namespace VGMToolbox.tools.extract
                 
                 // initialize ACB
                 CriAcbFile acb = new CriAcbFile(fs, 0);
+                acb.ExtractAll();
 
+                /*
                 // parse Cue Name Table
                 if (acb.CueNameTableOffset > 0)
                 {
@@ -87,7 +89,7 @@ namespace VGMToolbox.tools.extract
                 {
                     throw new FormatException(String.Format("Error parsing ACB file, <{0}>, cannot find '{1}'", pPath, CUE_NAME_TABLE));
                 }
-
+                */
             }            
         }
 

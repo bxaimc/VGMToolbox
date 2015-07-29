@@ -30,6 +30,8 @@ namespace VGMToolbox.format
 
         public CriAfs2Archive(FileStream fs, long offset)
         {
+            ushort previousCueId = 0;
+            
             if (IsCriAfs2Archive(fs, offset))
             {
                 this.SourceFile = fs.Name;
@@ -53,8 +55,9 @@ namespace VGMToolbox.format
                 {
                     dummy = new CriAfs2File();
 
-                    dummy.CueId = ParseFile.ReadUshortLE(fs, (0x10 + (2 * i)));
-                    dummy.FileOffsetRaw = ParseFile.ReadUintLE(fs, (0x10 + (this.FileCount * 2) + (4 * i)));
+                    dummy.CueId = ParseFile.ReadUshortLE(fs, offset + (0x10 + (2 * i)));
+                    dummy.FileOffsetRaw = ParseFile.ReadUintLE(fs, offset + (0x10 + (this.FileCount * 2) + (4 * i)));
+                    dummy.FileOffsetRaw += offset;  // for AFS2 files inside of other files (ACB, etc.)
 
                     // set file offset to byte alignment
                     if ((dummy.FileOffsetRaw % this.ByteAlignment) != 0)
@@ -76,11 +79,12 @@ namespace VGMToolbox.format
                         }
                         
                         // set length for previos entry
-                        this.Files[(ushort)(i - 1)].FileLength = dummy.FileOffsetRaw - this.Files[(ushort)(i - 1)].FileOffsetByteAligned;                        
+                        this.Files[previousCueId].FileLength = dummy.FileOffsetRaw - this.Files[previousCueId].FileOffsetByteAligned;                        
 
                     } // if (i > 0)
 
                     this.Files.Add(dummy.CueId, dummy);
+                    previousCueId = dummy.CueId;
                 } // for (uint i = 0; i < this.FileCount; i++)
 
             }
@@ -110,6 +114,19 @@ namespace VGMToolbox.format
         
         }
 
+        public void ExtractAllRaw(string destinationFolder)
+        {
+            using (FileStream fs = File.Open(this.SourceFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                foreach (ushort key in this.Files.Keys)
+                {
+                    ParseFile.ExtractChunkToFile64(fs,
+                        (ulong)this.Files[key].FileOffsetByteAligned,
+                        (ulong)this.Files[key].FileLength,
+                        Path.Combine(destinationFolder, (key.ToString("D5") + ".bin")), false, false);
+                }
+            }
+        }
     
     
     }
