@@ -40,6 +40,7 @@ namespace VGMToolbox.format
         public const byte COLUMN_STORAGE_MASK = 0xF0;
         public const byte COLUMN_STORAGE_PERROW = 0x50;
         public const byte COLUMN_STORAGE_CONSTANT = 0x30;
+        public const byte COLUMN_STORAGE_CONSTANT2 = 0x70;
         public const byte COLUMN_STORAGE_ZERO = 0x10;
 
         // I suspect that "type 2" is signed
@@ -230,7 +231,8 @@ namespace VGMToolbox.format
                         field.Name = ParseFile.ReadAsciiString(UtfTableFs, this.StringTableOffset + nameOffset);
 
                         // each row will have a constant
-                        if ((field.Type & COLUMN_STORAGE_MASK) == COLUMN_STORAGE_CONSTANT)
+                        if (((field.Type & COLUMN_STORAGE_MASK) == COLUMN_STORAGE_CONSTANT) ||
+                            ((field.Type & COLUMN_STORAGE_MASK) == COLUMN_STORAGE_CONSTANT2))
                         {
                             // capture offset of constant
                             constantOffset = currentOffset + 5;

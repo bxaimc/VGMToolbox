@@ -30,16 +30,27 @@ namespace VGMToolbox.format
 
         public CriAfs2Archive(FileStream fs, long offset)
         {
-            ushort previousCueId = 0;
+            ushort previousCueId = ushort.MaxValue;
             
             if (IsCriAfs2Archive(fs, offset))
             {
                 this.SourceFile = fs.Name;
                 long afs2FileSize = fs.Length;
-                
+
                 this.MagicBytes = ParseFile.ParseSimpleOffset(fs, offset, SIGNATURE.Length);
                 this.Version = ParseFile.ParseSimpleOffset(fs, offset + 4, 4);
                 this.FileCount = ParseFile.ReadUintLE(fs, offset + 8);
+
+                // setup offset field size
+                int offsetFieldSize = this.Version[1]; // known values: 2 and 4.  4 is most common.  I've only seen 2 in 'se_enemy_gurdon_galaga_bee.acb' from Sonic Lost World.
+                uint offsetMask = 0;
+
+                for (int j = 0; j < offsetFieldSize; j++)
+                {
+                    offsetMask |= (uint)((byte)0xFF << (j * 8));
+                }
+
+
 
                 if (this.FileCount > ushort.MaxValue)
                 {
@@ -56,7 +67,12 @@ namespace VGMToolbox.format
                     dummy = new CriAfs2File();
 
                     dummy.CueId = ParseFile.ReadUshortLE(fs, offset + (0x10 + (2 * i)));
-                    dummy.FileOffsetRaw = ParseFile.ReadUintLE(fs, offset + (0x10 + (this.FileCount * 2) + (4 * i)));
+                    dummy.FileOffsetRaw = ParseFile.ReadUintLE(fs, offset + (0x10 + (this.FileCount * 2) + (offsetFieldSize * i)));
+                    
+                    // mask off unneeded info
+                    dummy.FileOffsetRaw &= offsetMask;
+                    
+                    // add offset
                     dummy.FileOffsetRaw += offset;  // for AFS2 files inside of other files (ACB, etc.)
 
                     // set file offset to byte alignment
@@ -69,19 +85,20 @@ namespace VGMToolbox.format
                         dummy.FileOffsetByteAligned = dummy.FileOffsetRaw;
                     }
 
+                    //---------------
                     // set file size
-                    if (i > 0)
+                    //---------------
+                    // last file will use final offset entry
+                    if (i == this.FileCount - 1)
                     {
-                        // last file will use EOF
-                        if (i == this.FileCount - 1)
-                        {
-                            dummy.FileLength = afs2FileSize - dummy.FileOffsetByteAligned;
-                        }
-                        
-                        // set length for previos entry
-                        this.Files[previousCueId].FileLength = dummy.FileOffsetRaw - this.Files[previousCueId].FileOffsetByteAligned;                        
+                        dummy.FileLength = (ParseFile.ReadUintLE(fs, offset + (0x10 + (this.FileCount * 2) + ((offsetFieldSize) * i)) + offsetFieldSize) + offset) - dummy.FileOffsetByteAligned;
+                    }
 
-                    } // if (i > 0)
+                    // else set length for previous cue id
+                    if (previousCueId != ushort.MaxValue)
+                    {                                                
+                        this.Files[previousCueId].FileLength = dummy.FileOffsetRaw - this.Files[previousCueId].FileOffsetByteAligned;                        
+                    } 
 
                     this.Files.Add(dummy.CueId, dummy);
                     previousCueId = dummy.CueId;
@@ -108,26 +125,23 @@ namespace VGMToolbox.format
             return ret;        
         }
 
-        // used when matching ACB to AWB
-        public void SortFilesByCueNumber()
-        { 
-        
-        }
-
         public void ExtractAllRaw(string destinationFolder)
         {
+            string rawFileFormat = "{0}_{1}.bin";
+            
             using (FileStream fs = File.Open(this.SourceFile, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
+                
                 foreach (ushort key in this.Files.Keys)
                 {
                     ParseFile.ExtractChunkToFile64(fs,
                         (ulong)this.Files[key].FileOffsetByteAligned,
                         (ulong)this.Files[key].FileLength,
-                        Path.Combine(destinationFolder, (key.ToString("D5") + ".bin")), false, false);
+                        Path.Combine(destinationFolder,
+                                     String.Format(rawFileFormat, Path.GetFileNameWithoutExtension(this.SourceFile), key.ToString("D5"))), false, false);
                 }
             }
         }
-    
-    
+
     }
 }

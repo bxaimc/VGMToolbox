@@ -19,6 +19,8 @@ namespace VGMToolbox.format
         public const byte WAVEFORM_ENCODE_TYPE_BCWAV = 9;
         public const byte WAVEFORM_ENCODE_TYPE_NINTENDO_DSP = 13;
         
+        protected enum AwbToExtract { Internal, External };
+
         public CriAcbFile(FileStream fs, long offset)
         {
             this.Initialize(fs, offset);
@@ -124,7 +126,7 @@ namespace VGMToolbox.format
                 return (ulong)CriUtfTable.GetSizeForUtfFieldForRow(this, 0, "StreamAwbAfs2Header");
             }
         }
-
+        public CriAfs2Archive ExternalAwb { set; get; }
 
         public void ExtractAll()
         { 
@@ -135,11 +137,10 @@ namespace VGMToolbox.format
             string internalAwbExtractionFolder = Path.Combine(acbExtractionFolder, "awb");
             string awbExtractionFolder = Path.Combine(baseExtractionFolder, "awb");
         
-            using (FileStream acbStream = File.Open(this.SourceFile, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                this.ExtractInternalAwb(acbStream,  internalAwbExtractionFolder);
             
-            }
+            this.ExtractInternalAwb(internalAwbExtractionFolder);
+            
+            
         }
 
         
@@ -278,47 +279,14 @@ namespace VGMToolbox.format
             }
         }
 
-        protected void ExtractInternalAwb(FileStream fs, string destinationFolder)
+        protected void ExtractInternalAwb(string destinationFolder)
         {
-            CriUtfTable waveformTableUtf;
-            byte encodeType;
-            string rawFileName;
-
             // check internal awb
             if (this.InternalAwb != null)
             {
                 if (this.StreamAwbAfs2HeaderSize == 0)
                 {
-                    // use files names for internal AWB
-                    foreach (string key in this.CueNamesToWaveforms.Keys)
-                    {
-                        // extract file
-                        ParseFile.ExtractChunkToFile64(fs,
-                            (ulong)this.InternalAwb.Files[this.CueNamesToWaveforms[key]].FileOffsetByteAligned,
-                            (ulong)this.InternalAwb.Files[this.CueNamesToWaveforms[key]].FileLength,
-                            Path.Combine(destinationFolder, key), false, false);                                        
-                    }
-
-                    // extract any items without a CueName
-                    waveformTableUtf = new CriUtfTable();
-                    waveformTableUtf.Initialize(fs, (long)this.WaveformTableOffset);
-
-                    var unextractedFiles = this.InternalAwb.Files.Keys.Where(x => !this.CueNamesToWaveforms.ContainsValue(x));
-                    foreach (ushort key in unextractedFiles)
-                    { 
-                        encodeType = (byte)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, key, "EncodeType");
-                        
-                        rawFileName = String.Format("XXXXX-{0}_afs2_raw_0x{1}{2}", 
-                            key.ToString("D5"), this.InternalAwb.Files[key].FileOffsetByteAligned.ToString("X8"),
-                            CriAcbFile.GetFileExtensionForEncodeType(encodeType));
-
-                        // extract file
-                        ParseFile.ExtractChunkToFile64(fs,
-                            (ulong)this.InternalAwb.Files[key].FileOffsetByteAligned,
-                            (ulong)this.InternalAwb.Files[key].FileLength,
-                            Path.Combine(destinationFolder, rawFileName), false, false);
-                    }
-
+                    this.ExtractAwbWithCueNames(destinationFolder, AwbToExtract.Internal);
                 }
                 else
                 { 
@@ -328,6 +296,65 @@ namespace VGMToolbox.format
             }        
         }
 
+
+        protected void ExtractAwbWithCueNames(string destinationFolder, AwbToExtract whichAwb)
+        {
+            CriUtfTable waveformTableUtf;
+            byte encodeType;
+            string rawFileName;
+            
+            CriAfs2Archive awb;
+            string rawFileFormat = "{0}_{1}{2}";
+
+            if (whichAwb == AwbToExtract.Internal)
+            {
+                awb = this.InternalAwb;
+            }
+            else
+            {
+                awb = this.ExternalAwb;
+            }
+
+            using (FileStream fs = File.Open(awb.SourceFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                // use files names for internal AWB
+                foreach (string key in this.CueNamesToWaveforms.Keys)
+                {
+                    // extract file
+                    ParseFile.ExtractChunkToFile64(fs,
+                        (ulong)awb.Files[this.CueNamesToWaveforms[key]].FileOffsetByteAligned,
+                        (ulong)awb.Files[this.CueNamesToWaveforms[key]].FileLength,
+                        Path.Combine(destinationFolder, FileUtil.CleanFileName(key)), false, false);
+                }
+
+                //-------------------------------------
+                // extract any items without a CueName
+                //-------------------------------------
+                using (FileStream acbStream = File.Open(this.SourceFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    waveformTableUtf = new CriUtfTable();
+                    waveformTableUtf.Initialize(acbStream, (long)this.WaveformTableOffset);
+                }
+
+                // get list of unextracted files
+                var unextractedFiles = awb.Files.Keys.Where(x => !this.CueNamesToWaveforms.ContainsValue(x));
+                foreach (ushort key in unextractedFiles)
+                {
+                    encodeType = (byte)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, key, "EncodeType");
+
+                    rawFileName = String.Format(rawFileFormat,
+                        Path.GetFileNameWithoutExtension(awb.SourceFile), key.ToString("D5"), 
+                        CriAcbFile.GetFileExtensionForEncodeType(encodeType));
+
+                    // extract file
+                    ParseFile.ExtractChunkToFile64(fs,
+                        (ulong)awb.Files[key].FileOffsetByteAligned,
+                        (ulong)awb.Files[key].FileLength,
+                        Path.Combine(destinationFolder, rawFileName), false, false);
+                }
+            }
+        }
+        
         public static string GetFileExtensionForEncodeType(byte encodeType)
         {
             string ext;
