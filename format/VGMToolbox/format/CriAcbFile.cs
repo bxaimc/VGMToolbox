@@ -15,6 +15,7 @@ namespace VGMToolbox.format
         public byte ReferenceType { set; get; }
         public ushort ReferenceIndex { set; get; }
 
+        public bool IsWaveformIdentified { set; get; }
         public ushort WaveformIndex { set; get; }
         public ushort WaveformId { set; get; }
         public byte EncodeType { set; get; }
@@ -208,18 +209,23 @@ namespace VGMToolbox.format
             for (int i = 0; i < cueNameTableUtf.NumberOfRows; i++)
             {
                 cueIndex = (ushort)CriUtfTable.GetUtfFieldForRow(cueNameTableUtf, i, "CueIndex");
-                cueName = (string)CriUtfTable.GetUtfFieldForRow(cueNameTableUtf, i, "CueName");
 
-                this.CueList[cueIndex].CueName = cueName;
-                this.CueList[cueIndex].CueName += CriAcbFile.GetFileExtensionForEncodeType(this.CueList[cueIndex].EncodeType);
-
-                if (includeCueIdInFileName)
+                // skip cues with unidentified waveforms (see 'vc05_0140.acb, vc10_0372.acb' in Kidou_Senshi_Gundam_AGE_Universe_Accel (PSP))
+                if (this.CueList[cueIndex].IsWaveformIdentified)
                 {
-                    this.CueList[cueIndex].CueName = String.Format("{0}_{1}",
-                        this.CueList[cueIndex].CueId.ToString("D5"), this.CueList[cueIndex].CueName);
-                }
+                    cueName = (string)CriUtfTable.GetUtfFieldForRow(cueNameTableUtf, i, "CueName");
 
-                this.CueNamesToWaveforms.Add(this.CueList[cueIndex].CueName, this.CueList[cueIndex].WaveformId);            
+                    this.CueList[cueIndex].CueName = cueName;
+                    this.CueList[cueIndex].CueName += CriAcbFile.GetFileExtensionForEncodeType(this.CueList[cueIndex].EncodeType);
+
+                    if (includeCueIdInFileName)
+                    {
+                        this.CueList[cueIndex].CueName = String.Format("{0}_{1}",
+                            this.CueList[cueIndex].CueId.ToString("D5"), this.CueList[cueIndex].CueName);
+                    }
+
+                    this.CueNamesToWaveforms.Add(this.CueList[cueIndex].CueName, this.CueList[cueIndex].WaveformId);
+                }
             }              
         }
 
@@ -228,7 +234,7 @@ namespace VGMToolbox.format
             this.CueNamesToWaveforms = new Dictionary<string, ushort>();
 
             ulong referenceItemsOffset = 0;
-            ulong referenceItemsSize;
+            ulong referenceItemsSize = 0;
             ulong referenceCorrection = 0;
 
             CriUtfTable cueTableUtf = new CriUtfTable();
@@ -245,6 +251,7 @@ namespace VGMToolbox.format
             for (int i = 0; i < cueTableUtf.NumberOfRows; i++)
             {
                 this.CueList[i] = new CriAcbCueRecord();
+                this.CueList[i].IsWaveformIdentified = false;
 
                 this.CueList[i].CueId = (uint)CriUtfTable.GetUtfFieldForRow(cueTableUtf, i, "CueId");
                 this.CueList[i].ReferenceType = (byte)CriUtfTable.GetUtfFieldForRow(cueTableUtf, i, "ReferenceType");
@@ -275,12 +282,18 @@ namespace VGMToolbox.format
                         break;
                 }
 
-                // get wave form info
-                this.CueList[i].WaveformIndex = ParseFile.ReadUshortBE(fs, (long)(referenceItemsOffset + referenceCorrection));
+                if (referenceItemsSize != 0)
+                {
+                    // get wave form info
+                    this.CueList[i].WaveformIndex = ParseFile.ReadUshortBE(fs, (long)(referenceItemsOffset + referenceCorrection));
 
-                // get waveform id and encode type from corresponding waveform
-                this.CueList[i].WaveformId = (ushort)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, this.CueList[i].WaveformIndex, "Id");
-                this.CueList[i].EncodeType = (byte)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, this.CueList[i].WaveformIndex, "EncodeType");
+                    // get waveform id and encode type from corresponding waveform
+                    this.CueList[i].WaveformId = (ushort)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, this.CueList[i].WaveformIndex, "Id");
+                    this.CueList[i].EncodeType = (byte)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, this.CueList[i].WaveformIndex, "EncodeType");
+                    
+                    // update flag
+                    this.CueList[i].IsWaveformIdentified = true;
+                }                
             }
         }
 
