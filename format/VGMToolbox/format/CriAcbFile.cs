@@ -9,12 +9,26 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.format
 {
+    public class CriAcbCueRecord
+    {
+        public uint CueId { set; get; }
+        public byte ReferenceType { set; get; }
+        public ushort ReferenceIndex { set; get; }
+
+        public ushort WaveformIndex { set; get; }
+        public ushort WaveformId { set; get; }
+        public byte EncodeType { set; get; }
+
+        public string CueName { set; get; }
+    }
+    
     public class CriAcbFile : CriUtfTable
     {
         public const string EXTRACTION_FOLDER_FORMAT = "VGMT_ACB_EXT_{0}";
         
         public const byte WAVEFORM_ENCODE_TYPE_ADX = 0;
         public const byte WAVEFORM_ENCODE_TYPE_HCA = 2;
+        public const byte WAVEFORM_ENCODE_TYPE_VAG = 7;
         public const byte WAVEFORM_ENCODE_TYPE_ATRAC3 = 8;
         public const byte WAVEFORM_ENCODE_TYPE_BCWAV = 9;
         public const byte WAVEFORM_ENCODE_TYPE_NINTENDO_DSP = 13;
@@ -24,13 +38,15 @@ namespace VGMToolbox.format
 
         protected enum AwbToExtract { Internal, External };
 
-        public CriAcbFile(FileStream fs, long offset)
+        public CriAcbFile(FileStream fs, long offset, bool includeCueIdInFileName)
         {
+            // initialize UTF
             this.Initialize(fs, offset);
-
-            // @TODO: Make CueId field a parameter
-            this.GetCueNameToWaveformMap(fs, true);
-
+            
+            // initialize ACB specific items
+            this.InitializeCueList(fs);
+            this.InitializeCueNameToWaveformMap(fs, includeCueIdInFileName);
+                       
             // initialize internal AWB
             if (this.InternalAwbFileSize > 0)
             {
@@ -104,6 +120,8 @@ namespace VGMToolbox.format
                 return CriUtfTable.GetOffsetForUtfFieldForRow(this, 0, "SynthTable");
             }
         }
+
+        public CriAcbCueRecord[] CueList { set; get; }
         public Dictionary<string, ushort> CueNamesToWaveforms { set; get; }
 
         public byte[] AcfMd5Hash
@@ -179,36 +197,42 @@ namespace VGMToolbox.format
         }
 
         
+        protected void InitializeCueNameToWaveformMap(FileStream fs, bool includeCueIdInFileName)
+        {
+            ushort cueIndex;
+            string cueName;
+                        
+            CriUtfTable cueNameTableUtf = new CriUtfTable();
+            cueNameTableUtf.Initialize(fs, (long)this.CueNameTableOffset);
 
-        protected void GetCueNameToWaveformMap(FileStream fs, bool includeCueIdInFileName)
+            for (int i = 0; i < cueNameTableUtf.NumberOfRows; i++)
+            {
+                cueIndex = (ushort)CriUtfTable.GetUtfFieldForRow(cueNameTableUtf, i, "CueIndex");
+                cueName = (string)CriUtfTable.GetUtfFieldForRow(cueNameTableUtf, i, "CueName");
+
+                this.CueList[cueIndex].CueName = cueName;
+                this.CueList[cueIndex].CueName += CriAcbFile.GetFileExtensionForEncodeType(this.CueList[cueIndex].EncodeType);
+
+                if (includeCueIdInFileName)
+                {
+                    this.CueList[cueIndex].CueName = String.Format("{0}_{1}",
+                        this.CueList[cueIndex].CueId.ToString("D5"), this.CueList[cueIndex].CueName);
+                }
+
+                this.CueNamesToWaveforms.Add(this.CueList[cueIndex].CueName, this.CueList[cueIndex].WaveformId);            
+            }              
+        }
+
+        protected void InitializeCueList(FileStream fs)
         {
             this.CueNamesToWaveforms = new Dictionary<string, ushort>();
 
-            long fileSize = fs.Length;
-
-            // CueName
-            string cueName;
-            ushort? cueIndex = ushort.MaxValue;
-
-            // Cue
-            uint? cueId;
-            byte? referenceType;
-            ushort? referenceId;
-
-            // Synth
-            ulong referenceItemsOffset;
-            ulong referenceCorrection;
-            ushort? waveformIndex;
-
-            // Waveform
-            ushort? awbId;
-            byte? encodeType;
+            ulong referenceItemsOffset = 0;
+            ulong referenceItemsSize;
+            ulong referenceCorrection = 0;
 
             CriUtfTable cueTableUtf = new CriUtfTable();
             cueTableUtf.Initialize(fs, (long)this.CueTableOffset);
-
-            CriUtfTable cueNameTableUtf = new CriUtfTable();
-            cueNameTableUtf.Initialize(fs, (long)this.CueNameTableOffset);
 
             CriUtfTable waveformTableUtf = new CriUtfTable();
             waveformTableUtf.Initialize(fs, (long)this.WaveformTableOffset);
@@ -216,120 +240,48 @@ namespace VGMToolbox.format
             CriUtfTable synthTableUtf = new CriUtfTable();
             synthTableUtf.Initialize(fs, (long)this.SynthTableOffset);
 
-            // Loop over cue names
-            for (int i = 0; i < cueNameTableUtf.NumberOfRows; i++)
+            this.CueList = new CriAcbCueRecord[cueTableUtf.NumberOfRows];
+
+            for (int i = 0; i < cueTableUtf.NumberOfRows; i++)
             {
-                // this is the basic mapping
-                // WaveFormTable[(ushort)*(&SynthTable[CueTable[CueNameTable.CueIndex].ReferenceIndex].ReferenceItems + referenceCorrection)].Id
+                this.CueList[i] = new CriAcbCueRecord();
 
-                try
+                this.CueList[i].CueId = (uint)CriUtfTable.GetUtfFieldForRow(cueTableUtf, i, "CueId");
+                this.CueList[i].ReferenceType = (byte)CriUtfTable.GetUtfFieldForRow(cueTableUtf, i, "ReferenceType");
+                this.CueList[i].ReferenceIndex = (ushort)CriUtfTable.GetUtfFieldForRow(cueTableUtf, i, "ReferenceIndex");
+
+                switch (this.CueList[i].ReferenceType)
                 {
-                    // get cue index and cue name
-                    cueIndex = (ushort?)CriUtfTable.GetUtfFieldForRow(cueNameTableUtf, i, "CueIndex");
-                    cueName = (string)CriUtfTable.GetUtfFieldForRow(cueNameTableUtf, i, "CueName");
-
-                    if (cueIndex.HasValue && !String.IsNullOrEmpty(cueName))
-                    {
-                        // lookup cue index and get reference id
-                        cueId = (uint?)CriUtfTable.GetUtfFieldForRow(cueTableUtf, cueIndex.Value, "CueId");
-                        referenceType = (byte?)CriUtfTable.GetUtfFieldForRow(cueTableUtf, cueIndex.Value, "ReferenceType");
-                        referenceId = (ushort?)CriUtfTable.GetUtfFieldForRow(cueTableUtf, cueIndex.Value, "ReferenceIndex");
-
-                        if (cueId.HasValue && referenceType.HasValue && referenceId.HasValue)
+                    case 2:
+                        referenceItemsOffset = (ulong)CriUtfTable.GetOffsetForUtfFieldForRow(synthTableUtf, this.CueList[i].ReferenceIndex, "ReferenceItems");
+                        referenceItemsSize = CriUtfTable.GetSizeForUtfFieldForRow(synthTableUtf, this.CueList[i].ReferenceIndex, "ReferenceItems");
+                        referenceCorrection = referenceItemsSize + 2;
+                        break;
+                    case 3:
+                    case 8:
+                        if (i == 0) 
                         {
-                            // lookup reference items offset for corresponding synth
-                            referenceItemsOffset = (ulong)CriUtfTable.GetOffsetForUtfFieldForRow(synthTableUtf, referenceId.Value, "ReferenceItems");
-
-                            if (referenceItemsOffset > 0)
-                            {
-                                switch (referenceType)
-                                {
-                                    case 2:
-                                    case 8:
-                                        referenceCorrection = 6;
-                                        break;
-                                    case 3:
-                                        referenceCorrection = 2;
-                                        break;
-                                    default:
-                                        throw new FormatException(String.Format("  Unexpected ReferenceType: '{0}' for CueIndex: '{1}.'  Please report to VGMToolbox thread at hcs64.com forums, see link in 'Other' menu item.", referenceType.Value.ToString("D"), cueIndex.Value.ToString("D")));
-                                        break;
-                                }
-
-                                // @TODO: This should be in ReferenceItems.Value
-                                waveformIndex = ParseFile.ReadUshortBE(fs, (long)(referenceItemsOffset + referenceCorrection));
-                                // waveformIndex = ParseFile.ReadUshortBE((byte[])CriUtfTable.GetUtfFieldForRow(synthTableUtf, referenceId.Value, "ReferenceItems"), (long)referenceCorrection);
-
-                                // get awb id and encode type from corresponding waveform
-                                awbId = (ushort?)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, waveformIndex.Value, "Id");
-                                encodeType = (byte?)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, waveformIndex.Value, "EncodeType");
-
-                                if (awbId.HasValue && encodeType.HasValue)
-                                {
-                                    // build cue name
-                                    cueName += CriAcbFile.GetFileExtensionForEncodeType(encodeType.Value);
-
-                                    if (includeCueIdInFileName)
-                                    {
-                                        cueName = String.Format("{0}_{1}", cueId.Value.ToString("D5"), cueName);
-                                    }
-
-                                    // add to Dictionary
-                                    CueNamesToWaveforms.Add(cueName, awbId.Value);
-
-                                }
-                                else
-                                {
-                                    //this.progressStruct.Clear();
-                                    //this.progressStruct.GenericMessage = String.Format("  Warning, WaveformIndex entry not found for CueIndex: '{0}' ({1}) with ReferenceItemsOffset and Reference Type: '0x{2}', '{3}'...Skipping.{4}", cueIndex.Value.ToString("D"), cueName, referenceItemsOffset.ToString("X8"), referenceType.Value.ToString("D"), Environment.NewLine);
-                                    //ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
-                                } // if (waveformIndex.HasValue)
-                            }
-                            else
-                            {
-                                //this.progressStruct.Clear();
-                                //this.progressStruct.GenericMessage = String.Format("  Warning, SynthTable entry not found for CueIndex: '{0}' ({1}) with ReferenceId '{2}'...Skipping.{3}", cueIndex.Value.ToString("D"), cueName, referenceId.Value.ToString("D"), Environment.NewLine);
-                                //ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
-
-                            } // if (referenceItemsOffset.HasValue)
+                            referenceItemsOffset = (ulong)CriUtfTable.GetOffsetForUtfFieldForRow(synthTableUtf, 0, "ReferenceItems");
+                            referenceItemsSize = CriUtfTable.GetSizeForUtfFieldForRow(synthTableUtf, 0, "ReferenceItems");
+                            referenceCorrection = referenceItemsSize - 2; // samples found have only had a '01 00' record => Always Waveform[0]?.                       
                         }
                         else
                         {
-                            //this.progressStruct.Clear();
-                            //this.progressStruct.GenericMessage = String.Format("  Warning, CueTable entry not found for CueIndex: '{0}' ({1})...Skipping.{2}", cueIndex.Value.ToString("D"), cueName, Environment.NewLine);
-                            //ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
+                            referenceCorrection += 4; // relative to previous offset, do not lookup
+                        }
+                        break;
+                    default:
+                        throw new FormatException(String.Format("  Unexpected ReferenceType: '{0}' for CueIndex: '{1}.'  Please report to VGMToolbox thread at hcs64.com forums, see link in 'Other' menu item.", this.CueList[i].ReferenceType.ToString("D"), i.ToString("D")));
+                        break;
+                }
 
-                        } // if (cueId != null && referenceType != null && referenceId != null)
-                    }
-                    else
-                    {
-                        //this.progressStruct.Clear();
-                        //this.progressStruct.GenericMessage = String.Format("  Warning, CueIndex or CueName entry not found for CueNameTable index: '{0}'...Skipping.{1}", i.ToString("D"), Environment.NewLine);
-                        //ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
-                    } // if (cueIndex.HasValue && !String.IsNullOrEmpty(cueName))
-                }
-                catch (Exception ex)
-                {
-                    throw new FormatException(String.Format("  Error mapping CueName to Waveform for CueIndex: {0}: {1}", cueIndex.Value.ToString("D"), ex.Message));
-                }
+                // get wave form info
+                this.CueList[i].WaveformIndex = ParseFile.ReadUshortBE(fs, (long)(referenceItemsOffset + referenceCorrection));
+
+                // get waveform id and encode type from corresponding waveform
+                this.CueList[i].WaveformId = (ushort)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, this.CueList[i].WaveformIndex, "Id");
+                this.CueList[i].EncodeType = (byte)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, this.CueList[i].WaveformIndex, "EncodeType");
             }
-        }
-
-        protected void ExtractInternalAwb(string destinationFolder)
-        {
-            // check internal awb
-            if (this.InternalAwb != null)
-            {
-                if (this.StreamAwbAfs2HeaderSize == 0)
-                {
-                    this.ExtractAwbWithCueNames(destinationFolder, AwbToExtract.Internal);
-                }
-                else
-                { 
-                    // use AFS2 IDs
-                    this.InternalAwb.ExtractAllRaw(destinationFolder);
-                }
-            }        
         }
 
         protected void ExtractAwbWithCueNames(string destinationFolder, AwbToExtract whichAwb)
@@ -463,6 +415,9 @@ namespace VGMToolbox.format
                 case WAVEFORM_ENCODE_TYPE_ATRAC3:
                     ext = ".at3";
                     break;
+                case WAVEFORM_ENCODE_TYPE_VAG:
+                    ext = ".vag";
+                    break;
                 case WAVEFORM_ENCODE_TYPE_BCWAV:
                     ext = ".bcwav";
                     break;
@@ -476,7 +431,5 @@ namespace VGMToolbox.format
 
             return ext;
         }
-
-
     }
 }
