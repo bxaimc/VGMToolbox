@@ -210,7 +210,7 @@ namespace VGMToolbox.format
 
             for (uint i = 0; i < this.NumberOfRows; i++)
             {
-                //if (i == 0x2a2)
+                //if (i == 0x1a2a)
                 //{
                 //    int yuuuu = 1;
                 //}                
@@ -374,7 +374,7 @@ namespace VGMToolbox.format
             int maxRead;
             byte[] buffer = new byte[Constants.FileReadChunkSize];
             
-            int tableSize = (int)this.UtfReader.ReadUint(fs, offsetToUtfTable, 4) + 4;
+            int tableSize = (int)this.UtfReader.ReadUint(fs, offsetToUtfTable, 4) + 8;
 
             pathToUtf = Path.Combine(Path.GetTempPath(), TEMP_UTF_TABLE_FILE);
             
@@ -456,7 +456,7 @@ namespace VGMToolbox.format
 
             return ret;
         }
-
+       
         public static Dictionary<string, byte> GetKeysForEncryptedUtfTable(byte[] encryptedUtfSignature)
         {
             Dictionary<string, byte> keys = new Dictionary<string, byte>();

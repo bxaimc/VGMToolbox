@@ -19,6 +19,7 @@ namespace VGMToolbox.format
         public ushort WaveformIndex { set; get; }
         public ushort WaveformId { set; get; }
         public byte EncodeType { set; get; }
+        public bool IsStreaming { set; get; }
 
         public string CueName { set; get; }
     }
@@ -36,6 +37,7 @@ namespace VGMToolbox.format
 
         public const string AWB_FORMAT1 = "{0}_streamfiles.awb";
         public const string AWB_FORMAT2 = "{0}.awb";
+        public const string AWB_FORMAT3 = "{0}_STR.awb";
 
         protected enum AwbToExtract { Internal, External };
 
@@ -172,10 +174,11 @@ namespace VGMToolbox.format
             string acbExtractionFolder = Path.Combine(baseExtractionFolder, "acb");
             string internalAwbExtractionFolder = Path.Combine(acbExtractionFolder, "awb");
             string awbExtractionFolder = Path.Combine(baseExtractionFolder, "awb");
-        
+
+            this.ExtractAllUsingCueList(baseExtractionFolder);
             
-            // this.ExtractInternalAwb(internalAwbExtractionFolder);
-            
+        // this.ExtractInternalAwb(internalAwbExtractionFolder);
+            /*
             // extract internal awb
             if (this.InternalAwb != null)
             {
@@ -195,6 +198,7 @@ namespace VGMToolbox.format
             {
                 this.ExtractAwbWithCueNames(awbExtractionFolder, AwbToExtract.External);
             }
+            */ 
         }
 
         
@@ -236,6 +240,7 @@ namespace VGMToolbox.format
             ulong referenceItemsOffset = 0;
             ulong referenceItemsSize = 0;
             ulong referenceCorrection = 0;
+            byte isStreaming = 0;
 
             CriUtfTable cueTableUtf = new CriUtfTable();
             cueTableUtf.Initialize(fs, (long)this.CueTableOffset);
@@ -275,6 +280,11 @@ namespace VGMToolbox.format
                         else
                         {
                             referenceCorrection += 4; // relative to previous offset, do not lookup
+                                                      // @TODO: Should this do a referenceItemsSize - 2 for the ReferenceIndex?  Need to find 
+                                                      //    one where size > 4.
+                            //referenceItemsOffset = (ulong)CriUtfTable.GetOffsetForUtfFieldForRow(synthTableUtf, this.CueList[i].ReferenceIndex, "ReferenceItems");
+                            //referenceItemsSize = CriUtfTable.GetSizeForUtfFieldForRow(synthTableUtf, this.CueList[i].ReferenceIndex, "ReferenceItems");
+                            //referenceCorrection = referenceItemsSize - 2;
                         }
                         break;
                     default:
@@ -291,6 +301,10 @@ namespace VGMToolbox.format
                     this.CueList[i].WaveformId = (ushort)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, this.CueList[i].WaveformIndex, "Id");
                     this.CueList[i].EncodeType = (byte)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, this.CueList[i].WaveformIndex, "EncodeType");
                     
+                    // get Streaming flag, 0 = in ACB files, 1 = in AWB file
+                    isStreaming = (byte)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, this.CueList[i].WaveformIndex, "Streaming");
+                    this.CueList[i].IsStreaming = isStreaming == 0 ? false : true;
+
                     // update flag
                     this.CueList[i].IsWaveformIdentified = true;
                 }                
@@ -355,6 +369,126 @@ namespace VGMToolbox.format
             }
         }
 
+        protected void ExtractAllUsingCueList(string destinationFolder)
+        {
+            CriUtfTable waveformTableUtf;
+            ushort waveformIndex;
+            byte encodeType;
+            string rawFileName;
+            string rawFileFormat = "{0}_{1}{2}";
+            
+            FileStream internalFs = null;
+            FileStream externalFs = null;
+
+            ArrayList internalIdsExtracted = new ArrayList();
+            ArrayList externalIdsExtracted = new ArrayList();
+
+            try
+            {
+                // open streams
+                if (this.InternalAwb != null)
+                {
+                    internalFs = File.Open(this.InternalAwb.SourceFile, FileMode.Open, FileAccess.Read, FileShare.Read);
+                }
+
+                if (this.ExternalAwb != null)
+                {
+                    externalFs = File.Open(this.ExternalAwb.SourceFile, FileMode.Open, FileAccess.Read, FileShare.Read);
+                }
+
+                // loop through cues and extract
+                for (int i = 0; i < CueList.Length; i++)
+                {
+                    CriAcbCueRecord cue = CueList[i];
+
+                    if (cue.IsWaveformIdentified)
+                    {
+                        if (cue.IsStreaming) // external AWB file
+                        {
+                            ParseFile.ExtractChunkToFile64(externalFs,
+                                (ulong)this.ExternalAwb.Files[cue.WaveformId].FileOffsetByteAligned,
+                                (ulong)this.ExternalAwb.Files[cue.WaveformId].FileLength,
+                                Path.Combine(destinationFolder, FileUtil.CleanFileName(cue.CueName)), false, false);
+
+                            externalIdsExtracted.Add(cue.WaveformId);
+                        }
+                        else // internal AWB file (inside ACB)
+                        {
+                            ParseFile.ExtractChunkToFile64(internalFs,
+                                (ulong)this.InternalAwb.Files[cue.WaveformId].FileOffsetByteAligned,
+                                (ulong)this.InternalAwb.Files[cue.WaveformId].FileLength,
+                                Path.Combine(destinationFolder, FileUtil.CleanFileName(cue.CueName)), false, false);
+
+                            internalIdsExtracted.Add(cue.WaveformId);
+                        }
+                    } // if (cue.IsWaveformIdentified)
+                }
+
+                // extract leftovers
+                using (FileStream acbStream = File.Open(this.SourceFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    waveformTableUtf = new CriUtfTable();
+                    waveformTableUtf.Initialize(acbStream, (long)this.WaveformTableOffset);
+                }
+
+                var unextractedExternalFiles = this.ExternalAwb.Files.Keys.Where(x => !externalIdsExtracted.Contains(x));
+                foreach (ushort key in unextractedExternalFiles)
+                {
+                    waveformIndex = GetWaveformRowIndexForWaveformId(waveformTableUtf, key);
+
+                    encodeType = (byte)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, waveformIndex, "EncodeType");
+
+                    rawFileName = String.Format(rawFileFormat,
+                        Path.GetFileNameWithoutExtension(this.ExternalAwb.SourceFile), key.ToString("D5"),
+                        CriAcbFile.GetFileExtensionForEncodeType(encodeType));
+
+                    // extract file
+                    ParseFile.ExtractChunkToFile64(externalFs,
+                        (ulong)this.ExternalAwb.Files[key].FileOffsetByteAligned,
+                        (ulong)this.ExternalAwb.Files[key].FileLength,
+                        Path.Combine(destinationFolder, rawFileName), false, false);
+                }
+
+                var unextractedInternalFiles = this.InternalAwb.Files.Keys.Where(x => !internalIdsExtracted.Contains(x));
+                foreach (ushort key in unextractedInternalFiles)
+                {
+                    waveformIndex = GetWaveformRowIndexForWaveformId(waveformTableUtf, key);
+
+                    encodeType = (byte)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, waveformIndex, "EncodeType");
+
+                    rawFileName = String.Format(rawFileFormat,
+                        Path.GetFileNameWithoutExtension(this.InternalAwb.SourceFile), key.ToString("D5"),
+                        CriAcbFile.GetFileExtensionForEncodeType(encodeType));
+
+                    // extract file
+                    ParseFile.ExtractChunkToFile64(internalFs,
+                        (ulong)this.InternalAwb.Files[key].FileOffsetByteAligned,
+                        (ulong)this.InternalAwb.Files[key].FileLength,
+                        Path.Combine(destinationFolder, rawFileName), false, false);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (internalFs != null)
+                {
+                    internalFs.Close();
+                    internalFs.Dispose();
+                }
+
+                if (externalFs != null)
+                {
+                    externalFs.Close();
+                    externalFs.Dispose();
+                }
+
+            }        
+        }
+        
         protected CriAfs2Archive InitializeExternalAwbArchive()
         {
             CriAfs2Archive afs2 = null;
@@ -380,11 +514,18 @@ namespace VGMToolbox.format
                 awbFiles = Directory.GetFiles(awbDirectory, awbMask, SearchOption.TopDirectoryOnly);
             }
 
+            if (awbFiles.Length < 1)
+            {
+                // try format 3
+                awbMask = String.Format(AWB_FORMAT3, acbBaseFileName);
+                awbFiles = Directory.GetFiles(awbDirectory, awbMask, SearchOption.TopDirectoryOnly);
+            }
+
             // file not found
             if (awbFiles.Length < 1)
             {
-                throw new FileNotFoundException(String.Format("Cannot find AWB file. Please verify corresponding AWB file is named '{0}' or '{1}'.",
-                    String.Format(AWB_FORMAT1, acbBaseFileName), String.Format(AWB_FORMAT2, acbBaseFileName)));
+                throw new FileNotFoundException(String.Format("Cannot find AWB file. Please verify corresponding AWB file is named '{0}', '{1}', or '{2}'.",
+                    String.Format(AWB_FORMAT1, acbBaseFileName), String.Format(AWB_FORMAT2, acbBaseFileName), String.Format(AWB_FORMAT3, acbBaseFileName)));
             }
 
             if (awbFiles.Length > 1)
@@ -412,6 +553,23 @@ namespace VGMToolbox.format
             return afs2;
         }
 
+        public static ushort GetWaveformRowIndexForWaveformId(CriUtfTable utfTable, ushort waveformId)
+        {
+            ushort ret = ushort.MaxValue;
+            ushort tempId;
+
+            for (int i = 0; i < utfTable.NumberOfRows; i++)
+            {
+                tempId = (ushort)CriUtfTable.GetUtfFieldForRow(utfTable, i, "Id");
+
+                if (tempId == waveformId)
+                {
+                    ret = (ushort)i;
+                }
+            }
+
+            return ret;
+        }
 
         public static string GetFileExtensionForEncodeType(byte encodeType)
         {
