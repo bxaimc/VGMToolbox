@@ -41,30 +41,30 @@
             // pnlLabels
             // 
             this.pnlLabels.Location = new System.Drawing.Point(0, 443);
-            this.pnlLabels.Size = new System.Drawing.Size(717, 19);
+            this.pnlLabels.Size = new System.Drawing.Size(897, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(717, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(897, 20);
             // 
             // tbOutput
             // 
             this.tbOutput.Location = new System.Drawing.Point(0, 366);
-            this.tbOutput.Size = new System.Drawing.Size(717, 77);
+            this.tbOutput.Size = new System.Drawing.Size(897, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
             this.pnlButtons.Location = new System.Drawing.Point(0, 346);
-            this.pnlButtons.Size = new System.Drawing.Size(717, 20);
+            this.pnlButtons.Size = new System.Drawing.Size(897, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(657, 0);
+            this.btnCancel.Location = new System.Drawing.Point(837, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(597, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(777, 0);
             // 
             // grpSourceFiles
             // 
@@ -72,7 +72,7 @@
             this.grpSourceFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpSourceFiles.Location = new System.Drawing.Point(0, 23);
             this.grpSourceFiles.Name = "grpSourceFiles";
-            this.grpSourceFiles.Size = new System.Drawing.Size(717, 323);
+            this.grpSourceFiles.Size = new System.Drawing.Size(897, 323);
             this.grpSourceFiles.TabIndex = 5;
             this.grpSourceFiles.TabStop = false;
             this.grpSourceFiles.Text = "Placeholder";
@@ -85,7 +85,7 @@
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.grpOptions.Location = new System.Drawing.Point(3, 271);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(711, 49);
+            this.grpOptions.Size = new System.Drawing.Size(891, 49);
             this.grpOptions.TabIndex = 0;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
@@ -95,16 +95,16 @@
             this.cbIncludeCueIdInFileName.AutoSize = true;
             this.cbIncludeCueIdInFileName.Location = new System.Drawing.Point(16, 19);
             this.cbIncludeCueIdInFileName.Name = "cbIncludeCueIdInFileName";
-            this.cbIncludeCueIdInFileName.Size = new System.Drawing.Size(155, 17);
+            this.cbIncludeCueIdInFileName.Size = new System.Drawing.Size(207, 17);
             this.cbIncludeCueIdInFileName.TabIndex = 0;
-            this.cbIncludeCueIdInFileName.Text = "Prefix file name with Cue ID";
+            this.cbIncludeCueIdInFileName.Text = "Prefix file name with Cue ID (.acb only)";
             this.cbIncludeCueIdInFileName.UseVisualStyleBackColor = true;
             // 
             // CriAcbAwbExtractorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(717, 484);
+            this.ClientSize = new System.Drawing.Size(897, 484);
             this.Controls.Add(this.grpSourceFiles);
             this.Name = "CriAcbAwbExtractorForm";
             this.Text = "CriAwbAcbExtractorForm";

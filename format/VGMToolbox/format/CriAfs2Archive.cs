@@ -20,6 +20,7 @@ namespace VGMToolbox.format
     public class CriAfs2Archive
     {
         public static readonly byte[] SIGNATURE = new byte[] { 0x41, 0x46, 0x53, 0x32 };
+        public const string EXTRACTION_FOLDER_FORMAT = "_vgmt_awb_ext_{0}";
 
         public string SourceFile { set; get; }
         public byte[] MagicBytes { set; get; }
@@ -49,8 +50,6 @@ namespace VGMToolbox.format
                 {
                     offsetMask |= (uint)((byte)0xFF << (j * 8));
                 }
-
-
 
                 if (this.FileCount > ushort.MaxValue)
                 {
@@ -125,9 +124,17 @@ namespace VGMToolbox.format
             return ret;        
         }
 
+        public void ExtractAll()
+        {
+            string baseExtractionFolder = Path.Combine(Path.GetDirectoryName(this.SourceFile),
+                                                       String.Format(EXTRACTION_FOLDER_FORMAT, Path.GetFileNameWithoutExtension(this.SourceFile)));
+
+            this.ExtractAllRaw(baseExtractionFolder);
+        }
+
         public void ExtractAllRaw(string destinationFolder)
         {
-            string rawFileFormat = "{0}_{1}.bin";
+            string rawFileFormat = "{0}.{1}.bin";
             
             using (FileStream fs = File.Open(this.SourceFile, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
@@ -138,7 +145,7 @@ namespace VGMToolbox.format
                         (ulong)this.Files[key].FileOffsetByteAligned,
                         (ulong)this.Files[key].FileLength,
                         Path.Combine(destinationFolder,
-                                     String.Format(rawFileFormat, Path.GetFileNameWithoutExtension(this.SourceFile), key.ToString("D5"))), false, false);
+                                     String.Format(rawFileFormat, Path.GetFileName(this.SourceFile), key.ToString("D5"))), false, false);
                 }
             }
         }

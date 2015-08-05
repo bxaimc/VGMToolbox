@@ -26,7 +26,7 @@ namespace VGMToolbox.format
     
     public class CriAcbFile : CriUtfTable
     {
-        public const string EXTRACTION_FOLDER_FORMAT = "VGMT_ACB_EXT_{0}";
+        public const string EXTRACTION_FOLDER_FORMAT = "_vgmt_acb_ext_{0}";
         
         public const byte WAVEFORM_ENCODE_TYPE_ADX = 0;
         public const byte WAVEFORM_ENCODE_TYPE_HCA = 2;
@@ -375,7 +375,7 @@ namespace VGMToolbox.format
             ushort waveformIndex;
             byte encodeType;
             string rawFileName;
-            string rawFileFormat = "{0}_{1}{2}";
+            string rawFileFormat = "{0}.{1}{2}";
             
             FileStream internalFs = null;
             FileStream externalFs = null;
@@ -439,7 +439,7 @@ namespace VGMToolbox.format
                     encodeType = (byte)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, waveformIndex, "EncodeType");
 
                     rawFileName = String.Format(rawFileFormat,
-                        Path.GetFileNameWithoutExtension(this.ExternalAwb.SourceFile), key.ToString("D5"),
+                        Path.GetFileName(this.ExternalAwb.SourceFile), key.ToString("D5"),
                         CriAcbFile.GetFileExtensionForEncodeType(encodeType));
 
                     // extract file
@@ -457,7 +457,7 @@ namespace VGMToolbox.format
                     encodeType = (byte)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, waveformIndex, "EncodeType");
 
                     rawFileName = String.Format(rawFileFormat,
-                        Path.GetFileNameWithoutExtension(this.InternalAwb.SourceFile), key.ToString("D5"),
+                        Path.GetFileName(this.InternalAwb.SourceFile), key.ToString("D5"),
                         CriAcbFile.GetFileExtensionForEncodeType(encodeType));
 
                     // extract file

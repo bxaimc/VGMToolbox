@@ -26,15 +26,36 @@ namespace VGMToolbox.tools.extract
         protected override void DoTaskForFile(string pPath, IVgmtWorkerStruct pExtractStruct, DoWorkEventArgs e)
         {
             ExtractCriAcbAwbStruct extractStruct = (ExtractCriAcbAwbStruct)pExtractStruct;
+            byte[] magicBytes;
 
             using (FileStream fs = File.Open(pPath, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
+                magicBytes = ParseFile.ParseSimpleOffset(fs, 0, 4);
+
                 this.progressStruct.Clear();
-                this.progressStruct.GenericMessage = String.Format("Processing: '{0}'{1}", Path.GetFileName(pPath), Environment.NewLine);
-                ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
-                
-                CriAcbFile acb = new CriAcbFile(fs, 0, extractStruct.IncludeCueIdInFileName);
-                acb.ExtractAll();
+
+                // ACB
+                if (ParseFile.CompareSegment(magicBytes, 0, CriAcbFile.SIGNATURE_BYTES))
+                {
+                    this.progressStruct.GenericMessage = String.Format("Processing ACB file: '{0}'.{1}", Path.GetFileName(pPath), Environment.NewLine);
+                    ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
+
+                    CriAcbFile acb = new CriAcbFile(fs, 0, extractStruct.IncludeCueIdInFileName);
+                    acb.ExtractAll();
+                }
+                else if (ParseFile.CompareSegment(magicBytes, 0, CriAfs2Archive.SIGNATURE))
+                {
+                    this.progressStruct.GenericMessage = String.Format("Processing AWB file: '{0}'.{1}", Path.GetFileName(pPath), Environment.NewLine);
+                    ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
+
+                    CriAfs2Archive afs2 = new CriAfs2Archive(fs, 0);
+                    afs2.ExtractAll();
+                }
+                else
+                {
+                    this.progressStruct.GenericMessage = String.Format("File is not an ACB or AWB...skipping: '{0}'.{1}", Path.GetFileName(pPath), Environment.NewLine);
+                    ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);                
+                }
             }            
         }        
     }

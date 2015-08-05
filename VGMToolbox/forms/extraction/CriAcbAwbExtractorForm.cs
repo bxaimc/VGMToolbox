@@ -15,6 +15,7 @@ namespace VGMToolbox.forms.extraction
             // set title
             this.lblTitle.Text = "CRI ACB/AWB Archive Extractor";
             this.tbOutput.Text = "Extract Files from CRI ACB/AWB Archives" + Environment.NewLine;
+            this.tbOutput.Text += "*** For ACB/AWB pairs, only the ACB needs to be dropped." + Environment.NewLine;
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
@@ -22,7 +23,7 @@ namespace VGMToolbox.forms.extraction
             InitializeComponent();
 
             this.grpSourceFiles.AllowDrop = true;
-            this.grpSourceFiles.Text = "Drop .ACB files here.";
+            this.grpSourceFiles.Text = "Drop .acb/.awb files here.";
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -50,11 +51,9 @@ namespace VGMToolbox.forms.extraction
         private void grpSourceFiles_DragDrop(object sender, DragEventArgs e)
         {
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
-            var acbPaths = s.Where(x => x.ToLower().EndsWith(".acb"));
             
-
             ExtractCriAcbAwbWorker.ExtractCriAcbAwbStruct bwStruct = new ExtractCriAcbAwbWorker.ExtractCriAcbAwbStruct();
-            bwStruct.SourcePaths = (string[])acbPaths.ToArray();
+            bwStruct.SourcePaths = s;
             bwStruct.IncludeCueIdInFileName = this.cbIncludeCueIdInFileName.Checked;
 
             base.backgroundWorker_Execute(bwStruct);
