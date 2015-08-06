@@ -19,15 +19,15 @@ namespace VGMToolbox.forms.audit
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_AuditDatafileCreator_Title"];
-            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_AuditDatafileCreator_DoTaskButton"];
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_AuditDatafileCreator_IntroText"];
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_AuditDatafileCreator_Title"];
+            this.btnDoTask.Text = ConfigurationManager.AppSettings["Form_AuditDatafileCreator_DoTaskButton"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_AuditDatafileCreator_IntroText"];
 
             InitializeComponent();
 
-            this.gbHeader.Text = ConfigurationSettings.AppSettings["Form_AuditDatafileCreator_GroupHeader"];
-            this.gbSourceDestPaths.Text = ConfigurationSettings.AppSettings["Form_AuditDatafileCreator_GroupSourceDestination"];
-            this.lblHeaderName.Text = ConfigurationSettings.AppSettings["Form_AuditDatafileCreator_LblHeaderName"];
+            this.gbHeader.Text = ConfigurationManager.AppSettings["Form_AuditDatafileCreator_GroupHeader"];
+            this.gbSourceDestPaths.Text = ConfigurationManager.AppSettings["Form_AuditDatafileCreator_GroupSourceDestination"];
+            this.lblHeaderName.Text = ConfigurationManager.AppSettings["Form_AuditDatafileCreator_LblHeaderName"];
 
             this.grpOptions.Text = "Options";
             this.cbUseNormalChecksum.Text = "Use normal checksums and sizes (No VGMToolbox methods used).";
@@ -42,7 +42,7 @@ namespace VGMToolbox.forms.audit
             if (checkDatafileCreatorInputs())
             {
                 toolStripStatusLabel1.Text = 
-                    ConfigurationSettings.AppSettings["Form_AuditDatafileCreator_MessageBegin"];
+                    ConfigurationManager.AppSettings["Form_AuditDatafileCreator_MessageBegin"];
 
                 DatafileCreatorWorker.GetGameParamsStruct vGetGameParamsStruct = new DatafileCreatorWorker.GetGameParamsStruct();
                 vGetGameParamsStruct.pDir = tbDatCreator_SourceFolder.Text;
@@ -64,9 +64,9 @@ namespace VGMToolbox.forms.audit
             if (e.Cancelled)
             {
                 toolStripStatusLabel1.Text = 
-                    ConfigurationSettings.AppSettings["Form_AuditDatafileCreator_MessageCancel"];
+                    ConfigurationManager.AppSettings["Form_AuditDatafileCreator_MessageCancel"];
                 tbOutput.Text +=
-                    ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
+                    ConfigurationManager.AppSettings["Form_Global_OperationCancelled"];
             }
             else
             {
@@ -88,7 +88,7 @@ namespace VGMToolbox.forms.audit
                 textWriter.Dispose();
 
                 toolStripStatusLabel1.Text = 
-                    ConfigurationSettings.AppSettings["Form_AuditDatafileCreator_MessageComplete"];
+                    ConfigurationManager.AppSettings["Form_AuditDatafileCreator_MessageComplete"];
             }
 
             // update node color
@@ -99,7 +99,7 @@ namespace VGMToolbox.forms.audit
         {
             if (datCreator != null && datCreator.IsBusy)
             {
-                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
+                tbOutput.Text += ConfigurationManager.AppSettings["Form_Global_CancelPending"];
                 datCreator.CancelAsync();
                 this.errorFound = true;
             }

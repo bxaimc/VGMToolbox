@@ -14,14 +14,14 @@ namespace VGMToolbox.forms.xsf
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_Title"];
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_IntroText"];
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_UnpkPsf2FE_Title"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_UnpkPsf2FE_IntroText"];
             this.btnDoTask.Hide();
 
             InitializeComponent();
 
             this.grpSource.AllowDrop = true;
-            this.grpSource.Text = ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
+            this.grpSource.Text = ConfigurationManager.AppSettings["Form_Global_DropSourceFiles"];
         }
 
         private void tbPsf2Source_DragDrop(object sender, DragEventArgs e)
@@ -44,15 +44,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_UnpkPsf2FE_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_UnpkPsf2FE_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_UnpkPsf2FE_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_UnpkPsf2FE_MessageBegin"];
         }
     }
 }

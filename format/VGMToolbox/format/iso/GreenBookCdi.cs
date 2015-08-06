@@ -482,10 +482,10 @@ namespace VGMToolbox.format.iso
                     if (!tempDirectoryRecord.FileIdentifierString.Equals(".") &&
                         !tempDirectoryRecord.FileIdentifierString.Equals("..")) // skip "this" directory
                     {
-                        if (tempDirectoryRecord.FlagMultiExtent)
-                        {
-                            int x = 1;
-                        }
+                        //if (tempDirectoryRecord.FlagMultiExtent)
+                        //{
+                        //    int x = 1;
+                        //}
 
                         if (tempDirectoryRecord.FlagDirectory)
                         {

@@ -23,17 +23,17 @@ namespace VGMToolbox.forms.compression
             this.grpSourceFiles.AllowDrop = true;
             this.btnDoTask.Hide();
 
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_GzipCompress_Title"];
-            this.tbOutput.Text = String.Format(ConfigurationSettings.AppSettings["Form_GzipCompress_IntroText1"],
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_GzipCompress_Title"];
+            this.tbOutput.Text = String.Format(ConfigurationManager.AppSettings["Form_GzipCompress_IntroText1"],
                             CompressionUtil.GzipDecompressOutputExtension, Environment.NewLine);
-            this.tbOutput.Text += String.Format(ConfigurationSettings.AppSettings["Form_GzipCompress_IntroText2"],
+            this.tbOutput.Text += String.Format(ConfigurationManager.AppSettings["Form_GzipCompress_IntroText2"],
                 CompressionUtil.GzipCompressOutputExtension, Environment.NewLine);
 
-            this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
-            this.grpOptions.Text = ConfigurationSettings.AppSettings["Form_GzipCompress_GrpOptions"];
-            this.rbDecompress.Text = ConfigurationSettings.AppSettings["Form_GzipCompress_RbDecompress"];
-            this.rbCompress.Text = ConfigurationSettings.AppSettings["Form_GzipCompress_RbCompress"];
-            this.lblOffset.Text = ConfigurationSettings.AppSettings["Form_GzipCompress_LblOffset"];
+            this.grpSourceFiles.Text = ConfigurationManager.AppSettings["Form_Global_DropSourceFiles"];
+            this.grpOptions.Text = ConfigurationManager.AppSettings["Form_GzipCompress_GrpOptions"];
+            this.rbDecompress.Text = ConfigurationManager.AppSettings["Form_GzipCompress_RbDecompress"];
+            this.rbCompress.Text = ConfigurationManager.AppSettings["Form_GzipCompress_RbCompress"];
+            this.lblOffset.Text = ConfigurationManager.AppSettings["Form_GzipCompress_LblOffset"];
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -47,15 +47,15 @@ namespace VGMToolbox.forms.compression
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_GzipCompress_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_GzipCompress_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_GzipCompress_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_GzipCompress_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_GzipCompress_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_GzipCompress_MessageBegin"];
         }
 
         private bool validateInputs()
@@ -74,8 +74,8 @@ namespace VGMToolbox.forms.compression
             }
             catch
             {
-                MessageBox.Show(ConfigurationSettings.AppSettings["Form_GzipCompress_ErrorIntParse"],
-                    ConfigurationSettings.AppSettings["Form_Global_ErrorWindowTitle"]);
+                MessageBox.Show(ConfigurationManager.AppSettings["Form_GzipCompress_ErrorIntParse"],
+                    ConfigurationManager.AppSettings["Form_Global_ErrorWindowTitle"]);
                 ret = false;
             }
 

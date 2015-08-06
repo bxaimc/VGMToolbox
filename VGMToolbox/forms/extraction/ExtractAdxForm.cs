@@ -21,7 +21,7 @@ namespace VGMToolbox.forms.extraction
             InitializeComponent();
 
             this.grpSourceFiles.AllowDrop = true;
-            this.grpSourceFiles.Text =  ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
+            this.grpSourceFiles.Text =  ConfigurationManager.AppSettings["Form_Global_DropSourceFiles"];
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)

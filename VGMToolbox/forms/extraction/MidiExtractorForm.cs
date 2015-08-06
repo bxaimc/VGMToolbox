@@ -14,9 +14,9 @@ namespace VGMToolbox.forms.extraction
         {
             InitializeComponent();
 
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_MidiExtractor_Title"];
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_MidiExtractor_IntroText"];
-            this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_MidiExtractor_Title"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_MidiExtractor_IntroText"];
+            this.grpSourceFiles.Text = ConfigurationManager.AppSettings["Form_Global_DropSourceFiles"];
             
             this.grpSourceFiles.AllowDrop = true;
             this.btnDoTask.Hide();
@@ -41,15 +41,15 @@ namespace VGMToolbox.forms.extraction
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_MidiExtractor_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_MidiExtractor_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_MidiExtractor_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_MidiExtractor_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_MidiExtractor_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_MidiExtractor_MessageBegin"];
         }
     }
 }

@@ -243,7 +243,6 @@ namespace VGMToolbox.tools.stream
         {
             string workingFolder = getWorkingFolderPath(processingFilePath, taskStruct);
             string[] xmashXmaFiles;
-            string[] dllFiles;
 
             // delete working copy of source file
             if (File.Exists(workingFile))

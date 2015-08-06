@@ -460,7 +460,7 @@ namespace VGMToolbox.format
         public static Dictionary<string, byte> GetKeysForEncryptedUtfTable(byte[] encryptedUtfSignature)
         {
             Dictionary<string, byte> keys = new Dictionary<string, byte>();
-            byte m, t, xor;
+            byte m, t;
 
             byte[] xorBytes = new byte[SIGNATURE_BYTES.Length];
             bool keysFound = false;
@@ -543,7 +543,6 @@ namespace VGMToolbox.format
         public byte[] GetBytes(FileStream fs, long BaseOffset, int Size, long UtfOffset)
         {
             byte[] ret;
-            byte xorByte;
 
             ret = ParseFile.ParseSimpleOffset(fs, BaseOffset + UtfOffset, Size);
 

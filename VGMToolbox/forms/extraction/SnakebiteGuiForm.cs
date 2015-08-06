@@ -24,23 +24,23 @@ namespace VGMToolbox.forms.extraction
             this.grpFiles.AllowDrop = true;
             this.doDrag = false;
 
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_Title"];
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_IntroText"];
-            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_BtnDoTask"];
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_SnakebiteGUI_Title"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_SnakebiteGUI_IntroText"];
+            this.btnDoTask.Text = ConfigurationManager.AppSettings["Form_SnakebiteGUI_BtnDoTask"];
 
-            this.grpFiles.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_GrpFiles"];
-            this.lblSourceFiles.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_LblSourceFiles"];
-            this.lblDragNDrop.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_LblDragNDrop"];
-            this.groupOutputMode.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_GroupOutputMode"];
-            this.rbNameOutput.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_RbNameOutput"];
-            this.rbAutoName.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_RbAutoName"];
-            this.lblOutputFile.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_LblOutputFile"];
-            this.lblFileExtension.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_LblFileExtension"];            
-            this.grpOptions.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_GrpOptions"];
-            this.lblStartAddress.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_LblStartAddress"];
-            this.rbEndAddress.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_RbEndAddress"];
-            this.rbLength.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_RbLength"];
-            this.rbEndOfFile.Text = ConfigurationSettings.AppSettings["Form_SnakebiteGUI_RbEndOfFile"];
+            this.grpFiles.Text = ConfigurationManager.AppSettings["Form_SnakebiteGUI_GrpFiles"];
+            this.lblSourceFiles.Text = ConfigurationManager.AppSettings["Form_SnakebiteGUI_LblSourceFiles"];
+            this.lblDragNDrop.Text = ConfigurationManager.AppSettings["Form_SnakebiteGUI_LblDragNDrop"];
+            this.groupOutputMode.Text = ConfigurationManager.AppSettings["Form_SnakebiteGUI_GroupOutputMode"];
+            this.rbNameOutput.Text = ConfigurationManager.AppSettings["Form_SnakebiteGUI_RbNameOutput"];
+            this.rbAutoName.Text = ConfigurationManager.AppSettings["Form_SnakebiteGUI_RbAutoName"];
+            this.lblOutputFile.Text = ConfigurationManager.AppSettings["Form_SnakebiteGUI_LblOutputFile"];
+            this.lblFileExtension.Text = ConfigurationManager.AppSettings["Form_SnakebiteGUI_LblFileExtension"];            
+            this.grpOptions.Text = ConfigurationManager.AppSettings["Form_SnakebiteGUI_GrpOptions"];
+            this.lblStartAddress.Text = ConfigurationManager.AppSettings["Form_SnakebiteGUI_LblStartAddress"];
+            this.rbEndAddress.Text = ConfigurationManager.AppSettings["Form_SnakebiteGUI_RbEndAddress"];
+            this.rbLength.Text = ConfigurationManager.AppSettings["Form_SnakebiteGUI_RbLength"];
+            this.rbEndOfFile.Text = ConfigurationManager.AppSettings["Form_SnakebiteGUI_RbEndOfFile"];
 
             this.rbEndAddress.Checked = true;
         }
@@ -105,15 +105,15 @@ namespace VGMToolbox.forms.extraction
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SnakebiteGUI_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_SnakebiteGUI_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SnakebiteGUI_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_SnakebiteGUI_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SnakebiteGUI_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_SnakebiteGUI_MessageBegin"];
         }
 
         private void tbSourceFiles_DragDrop(object sender, DragEventArgs e)
@@ -127,9 +127,9 @@ namespace VGMToolbox.forms.extraction
                 ((s.Length == 1) && (Directory.Exists(s[0]))))
             {
                 warningMessage =
-                    ConfigurationSettings.AppSettings["Form_SnakebiteGUI_ErrorSingleFile"];
+                    ConfigurationManager.AppSettings["Form_SnakebiteGUI_ErrorSingleFile"];
                 MessageBox.Show(warningMessage, 
-                    ConfigurationSettings.AppSettings["Form_Global_ErrorWindowTitle"]);
+                    ConfigurationManager.AppSettings["Form_Global_ErrorWindowTitle"]);
             }
             else
             {
@@ -207,8 +207,8 @@ namespace VGMToolbox.forms.extraction
             
             if (pCheckInputFile && (this.tbSourceFiles.Text.Equals(this.tbOutputFile.Text)))
             {
-                MessageBox.Show(ConfigurationSettings.AppSettings["Form_SnakebiteGUI_ErrorInputOutputSame"],
-                    ConfigurationSettings.AppSettings["Form_Global_ErrorWindowTitle"]);
+                MessageBox.Show(ConfigurationManager.AppSettings["Form_SnakebiteGUI_ErrorInputOutputSame"],
+                    ConfigurationManager.AppSettings["Form_Global_ErrorWindowTitle"]);
                 ret = false;
             }
 

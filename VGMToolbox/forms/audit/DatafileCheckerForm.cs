@@ -15,11 +15,11 @@ namespace VGMToolbox.forms.audit
         {
             // set title
             this.lblTitle.Text =
-                ConfigurationSettings.AppSettings["Form_AuditDatafileChecker_Title"];
+                ConfigurationManager.AppSettings["Form_AuditDatafileChecker_Title"];
             this.btnDoTask.Text =
-                ConfigurationSettings.AppSettings["Form_AuditDatafileChecker_DoTaskButton"];
+                ConfigurationManager.AppSettings["Form_AuditDatafileChecker_DoTaskButton"];
             this.tbOutput.Text =
-                ConfigurationSettings.AppSettings["Form_AuditDatafileChecker_IntroText"];
+                ConfigurationManager.AppSettings["Form_AuditDatafileChecker_IntroText"];
 
             this.btnCancel.Hide();
 
@@ -27,11 +27,11 @@ namespace VGMToolbox.forms.audit
 
             // languages
             this.gbSourceDestination.Text = 
-                ConfigurationSettings.AppSettings["Form_AuditDatafileChecker_GroupSource"];
+                ConfigurationManager.AppSettings["Form_AuditDatafileChecker_GroupSource"];
             this.lblSourceDataFile.Text = 
-                ConfigurationSettings.AppSettings["Form_AuditDatafileChecker_LblSourceDataFile"];
+                ConfigurationManager.AppSettings["Form_AuditDatafileChecker_LblSourceDataFile"];
             this.lblReportDestination.Text = 
-                ConfigurationSettings.AppSettings["Form_AuditDatafileChecker_LblReportDestination"];
+                ConfigurationManager.AppSettings["Form_AuditDatafileChecker_LblReportDestination"];
                     
         }
 
@@ -62,15 +62,15 @@ namespace VGMToolbox.forms.audit
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_AuditDatafileChecker_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_AuditDatafileChecker_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_AuditDatafileChecker_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_AuditDatafileChecker_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_AuditDatafileChecker_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_AuditDatafileChecker_MessageBegin"];
         }
     }
 }

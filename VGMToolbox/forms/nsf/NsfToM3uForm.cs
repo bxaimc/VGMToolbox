@@ -26,10 +26,10 @@ namespace VGMToolbox.forms.nsf
             this.grpSource.AllowDrop = true;
 
             this.grpSource.Text = 
-                ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
+                ConfigurationManager.AppSettings["Form_Global_DropSourceFiles"];
             this.grpOptions.Text = "Options";
             this.cbOneM3uPerTrack.Text = 
-                ConfigurationSettings.AppSettings["Form_GbsM3u_CheckBoxOneM3uPerTrack"];
+                ConfigurationManager.AppSettings["Form_GbsM3u_CheckBoxOneM3uPerTrack"];
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)

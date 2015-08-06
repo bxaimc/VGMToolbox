@@ -23,10 +23,10 @@ namespace VGMToolbox.forms.xsf
             this.grpSourceFiles.AllowDrop = true;
             this.btnDoTask.Hide();
 
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_EasyPsfExtractor_Title"];
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_EasyPsfExtractor_IntroText"];
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_EasyPsfExtractor_Title"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_EasyPsfExtractor_IntroText"];
 
-            this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
+            this.grpSourceFiles.Text = ConfigurationManager.AppSettings["Form_Global_DropSourceFiles"];
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -39,15 +39,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_EasyPsfExtractor_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_EasyPsfExtractor_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_EasyPsfExtractor_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_EasyPsfExtractor_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_EasyPsfExtractor_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_EasyPsfExtractor_MessageBegin"];
         }
 
         private void grpSourceFiles_DragDrop(object sender, DragEventArgs e)

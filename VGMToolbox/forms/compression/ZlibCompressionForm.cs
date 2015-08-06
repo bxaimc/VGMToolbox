@@ -18,17 +18,17 @@ namespace VGMToolbox.forms.compression
             this.grpSourceFiles.AllowDrop = true;
             this.btnDoTask.Hide();
 
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_ZlibCompress_Title"];
-            this.tbOutput.Text = String.Format(ConfigurationSettings.AppSettings["Form_ZlibCompress_IntroText1"],
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_ZlibCompress_Title"];
+            this.tbOutput.Text = String.Format(ConfigurationManager.AppSettings["Form_ZlibCompress_IntroText1"],
                             CompressionUtil.ZlibDecompressOutputExtension, Environment.NewLine);
-            this.tbOutput.Text += String.Format(ConfigurationSettings.AppSettings["Form_ZlibCompress_IntroText2"],
+            this.tbOutput.Text += String.Format(ConfigurationManager.AppSettings["Form_ZlibCompress_IntroText2"],
                 CompressionUtil.ZlibCompressOutputExtension, Environment.NewLine);
 
-            this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
-            this.grpOptions.Text = ConfigurationSettings.AppSettings["Form_ZlibCompress_GrpOptions"];
-            this.rbDecompress.Text = ConfigurationSettings.AppSettings["Form_ZlibCompress_RbDecompress"];
-            this.rbCompress.Text = ConfigurationSettings.AppSettings["Form_ZlibCompress_RbCompress"];
-            this.lblOffset.Text = ConfigurationSettings.AppSettings["Form_ZlibCompress_LblOffset"];
+            this.grpSourceFiles.Text = ConfigurationManager.AppSettings["Form_Global_DropSourceFiles"];
+            this.grpOptions.Text = ConfigurationManager.AppSettings["Form_ZlibCompress_GrpOptions"];
+            this.rbDecompress.Text = ConfigurationManager.AppSettings["Form_ZlibCompress_RbDecompress"];
+            this.rbCompress.Text = ConfigurationManager.AppSettings["Form_ZlibCompress_RbCompress"];
+            this.lblOffset.Text = ConfigurationManager.AppSettings["Form_ZlibCompress_LblOffset"];
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -42,15 +42,15 @@ namespace VGMToolbox.forms.compression
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_ZlibCompress_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_ZlibCompress_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_ZlibCompress_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_ZlibCompress_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_ZlibCompress_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_ZlibCompress_MessageBegin"];
         }
 
         private void grpSourceFiles_DragDrop(object sender, DragEventArgs e)
@@ -85,7 +85,7 @@ namespace VGMToolbox.forms.compression
             catch
             {
                 MessageBox.Show("Cannot parse Offset, please enter an integer.  Be sure to prefix hex values with 0x",
-                    ConfigurationSettings.AppSettings["Form_Global_ErrorWindowTitle"]);
+                    ConfigurationManager.AppSettings["Form_Global_ErrorWindowTitle"]);
                 ret = false;
             }
 

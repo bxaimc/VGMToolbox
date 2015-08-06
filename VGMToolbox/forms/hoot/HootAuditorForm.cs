@@ -29,19 +29,19 @@ namespace VGMToolbox.forms.hoot
 
             NodePrintMessageStruct n = new NodePrintMessageStruct();
             n.NodeColor = HootAuditorWorker.HOOT_MISSING_FILE_COLOR;
-            n.Message = ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_MessageMissing"];
+            n.Message = ConfigurationManager.AppSettings["Form_HootCollectionAuditor_MessageMissing"];
             base.outputColorToMessageRules = new NodePrintMessageStruct[] { n };
 
             InitializeComponent();
 
-            this.grpOptions.Text = ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_GrpOptions"];
-            this.lblFolder.Text = ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_LblFolder"];
-            this.lblArchiveFolders.Text = ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_LblArchiveFolders"];
-            this.cbIncludeSubDirs.Text = ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_CheckboxIncludeSubDirs"];
+            this.grpOptions.Text = ConfigurationManager.AppSettings["Form_HootCollectionAuditor_GrpOptions"];
+            this.lblFolder.Text = ConfigurationManager.AppSettings["Form_HootCollectionAuditor_LblFolder"];
+            this.lblArchiveFolders.Text = ConfigurationManager.AppSettings["Form_HootCollectionAuditor_LblArchiveFolders"];
+            this.cbIncludeSubDirs.Text = ConfigurationManager.AppSettings["Form_HootCollectionAuditor_CheckboxIncludeSubDirs"];
 
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_Title"];
-            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_BtnDoTask"];
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_Intro"];
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_HootCollectionAuditor_Title"];
+            this.btnDoTask.Text = ConfigurationManager.AppSettings["Form_HootCollectionAuditor_BtnDoTask"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_HootCollectionAuditor_Intro"];
         }
 
         protected override IVgmtBackgroundWorker getBackgroundWorker()
@@ -50,15 +50,15 @@ namespace VGMToolbox.forms.hoot
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_HootCollectionAuditor_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_HootCollectionAuditor_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_HootCollectionAuditor_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_HootCollectionAuditor_MessageBegin"];
         }
 
         private void btnDoTask_Click(object sender, EventArgs e)

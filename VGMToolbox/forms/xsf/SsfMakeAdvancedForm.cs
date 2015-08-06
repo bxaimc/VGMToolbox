@@ -222,15 +222,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SsfMakeFE_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_SsfMakeFE_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SsfMakeFE_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_SsfMakeFE_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SsfMakeFE_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_SsfMakeFE_MessageBegin"];
         }
 
         protected string getDroppedFile(DragEventArgs e)

@@ -19,11 +19,11 @@ namespace VGMToolbox.forms.xsf
 
             this.grpSourceFiles.AllowDrop = true;
 
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_PsfStubCreator_Title"];
-            this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
-            this.grpOptions.Text = ConfigurationSettings.AppSettings["Form_PsfStubCreator_GroupOptions"];
-            this.lblDriverText.Text = ConfigurationSettings.AppSettings["Form_PsfStubCreator_LblDriverText"];
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_PsfStubCreator_IntroText"];
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_PsfStubCreator_Title"];
+            this.grpSourceFiles.Text = ConfigurationManager.AppSettings["Form_Global_DropSourceFiles"];
+            this.grpOptions.Text = ConfigurationManager.AppSettings["Form_PsfStubCreator_GroupOptions"];
+            this.lblDriverText.Text = ConfigurationManager.AppSettings["Form_PsfStubCreator_LblDriverText"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_PsfStubCreator_IntroText"];
             
             this.btnDoTask.Hide();            
             this.loadDefaults();
@@ -44,15 +44,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_PsfStubCreator_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_PsfStubCreator_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_PsfStubCreator_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_PsfStubCreator_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_PsfStubCreator_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_PsfStubCreator_MessageBegin"];
         }
 
         private void grpSourceFiles_DragDrop(object sender, DragEventArgs e)
@@ -61,14 +61,14 @@ namespace VGMToolbox.forms.xsf
             if (!XsfUtil.IsPsyQPathVariablePresent())
             {
                 MessageBox.Show(
-                    ConfigurationSettings.AppSettings["Form_PsfStubCreator_ErrPsyQPath"],
-                    ConfigurationSettings.AppSettings["Form_Global_ErrorWindowTitle"]);                           
+                    ConfigurationManager.AppSettings["Form_PsfStubCreator_ErrPsyQPath"],
+                    ConfigurationManager.AppSettings["Form_Global_ErrorWindowTitle"]);                           
             }
             else if (!XsfUtil.IsPsyQSdkPresent())
             {
                 MessageBox.Show(
-                    ConfigurationSettings.AppSettings["Form_PsfStubCreator_IntroText"],
-                    ConfigurationSettings.AppSettings["Form_Global_ErrorWindowTitle"]);
+                    ConfigurationManager.AppSettings["Form_PsfStubCreator_IntroText"],
+                    ConfigurationManager.AppSettings["Form_Global_ErrorWindowTitle"]);
             }
             else if (this.validateInputs())
             {

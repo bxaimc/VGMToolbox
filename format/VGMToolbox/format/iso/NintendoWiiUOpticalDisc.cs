@@ -975,9 +975,6 @@ namespace VGMToolbox.format.iso
             long copySize;
             long readOffset;
 
-            bool isFirstBlockOfFile = true;
-            long offsetCorrection = 0;
-
             // create destination
             string destintionDirectory = Path.GetDirectoryName(destinationPath);
 

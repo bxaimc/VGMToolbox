@@ -19,15 +19,15 @@ namespace VGMToolbox.forms.xsf
         {
             InitializeComponent();
 
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_Title"];
-            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_DoTaskButton"];
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_Title_IntroText"];
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_V1toV2TagMigrator_Title"];
+            this.btnDoTask.Text = ConfigurationManager.AppSettings["Form_V1toV2TagMigrator_DoTaskButton"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_V1toV2TagMigrator_Title_IntroText"];
 
-            this.lblV1Folder.Text = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_LblV1Folder"];
-            this.lblV2Folder.Text = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_LblV2Folder"];
-            this.btnDefault.Text = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_BtnDefault"];
-            this.btnCheckAll.Text = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_BtnCheckAll"];
-            this.btnCheckNone.Text = ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_BtnCheckNone"];
+            this.lblV1Folder.Text = ConfigurationManager.AppSettings["Form_V1toV2TagMigrator_LblV1Folder"];
+            this.lblV2Folder.Text = ConfigurationManager.AppSettings["Form_V1toV2TagMigrator_LblV2Folder"];
+            this.btnDefault.Text = ConfigurationManager.AppSettings["Form_V1toV2TagMigrator_BtnDefault"];
+            this.btnCheckAll.Text = ConfigurationManager.AppSettings["Form_V1toV2TagMigrator_BtnCheckAll"];
+            this.btnCheckNone.Text = ConfigurationManager.AppSettings["Form_V1toV2TagMigrator_BtnCheckNone"];
             
             // Add checkmarks later?  Since they are a standard, may never be changed anyhow
         }
@@ -47,15 +47,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_Title_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_V1toV2TagMigrator_Title_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_Title_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_V1toV2TagMigrator_Title_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_Title_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_V1toV2TagMigrator_Title_MessageBegin"];
         }
 
         private void btnDoTask_Click(object sender, EventArgs e)
@@ -143,8 +143,8 @@ namespace VGMToolbox.forms.xsf
 
             if (this.tbV1Source.Text.Equals(this.tbV2Source.Text))
             {
-                MessageBox.Show(String.Format(ConfigurationSettings.AppSettings["Form_V1toV2TagMigrator_ErrorMatch"], this.lblV1Folder.Text, this.lblV2Folder.Text), 
-                    ConfigurationSettings.AppSettings["Form_Global_ErrorWindowTitle"]);
+                MessageBox.Show(String.Format(ConfigurationManager.AppSettings["Form_V1toV2TagMigrator_ErrorMatch"], this.lblV1Folder.Text, this.lblV2Folder.Text), 
+                    ConfigurationManager.AppSettings["Form_Global_ErrorWindowTitle"]);
                 ret = false;
             }
 

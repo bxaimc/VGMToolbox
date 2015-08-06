@@ -16,31 +16,31 @@ namespace VGMToolbox.forms.audit
         {
             // set title
             this.lblTitle.Text = 
-                ConfigurationSettings.AppSettings["Form_AuditRebuilder_Title"];
+                ConfigurationManager.AppSettings["Form_AuditRebuilder_Title"];
             this.btnDoTask.Text = 
-                ConfigurationSettings.AppSettings["Form_AuditRebuilder_DoTaskButton"];
+                ConfigurationManager.AppSettings["Form_AuditRebuilder_DoTaskButton"];
             this.tbOutput.Text =
-                ConfigurationSettings.AppSettings["Form_AuditRebuilder_IntroText"];
+                ConfigurationManager.AppSettings["Form_AuditRebuilder_IntroText"];
             InitializeComponent();
 
             grpRebuilder_Directories.Text =
-                ConfigurationSettings.AppSettings["Form_AuditRebuilder_GroupDirectories"];
+                ConfigurationManager.AppSettings["Form_AuditRebuilder_GroupDirectories"];
             lblRebuilder_SourceDir.Text =
-                ConfigurationSettings.AppSettings["Form_AuditRebuilder_LblSourceDir"];
+                ConfigurationManager.AppSettings["Form_AuditRebuilder_LblSourceDir"];
             lblRebuilder_DestinationDir.Text =
-                ConfigurationSettings.AppSettings["Form_AuditRebuilder_LblDestinationDir"];
+                ConfigurationManager.AppSettings["Form_AuditRebuilder_LblDestinationDir"];
             grpRebuilder_Datafile.Text =
-                ConfigurationSettings.AppSettings["Form_AuditRebuilder_GroupDatafile"];
+                ConfigurationManager.AppSettings["Form_AuditRebuilder_GroupDatafile"];
             grpRebuilder_Options.Text =
-                ConfigurationSettings.AppSettings["Form_AuditRebuilder_GroupOptions"];
+                ConfigurationManager.AppSettings["Form_AuditRebuilder_GroupOptions"];
             cbRebuilder_RemoveSource.Text =
-                ConfigurationSettings.AppSettings["Form_AuditRebuilder_CheckBoxRemoveSource"];
+                ConfigurationManager.AppSettings["Form_AuditRebuilder_CheckBoxRemoveSource"];
             cbRebuilder_Overwrite.Text =
-                ConfigurationSettings.AppSettings["Form_AuditRebuilder_CheckBoxOverwrite"];
+                ConfigurationManager.AppSettings["Form_AuditRebuilder_CheckBoxOverwrite"];
             cbRebuilder_ScanOnly.Text =
-                ConfigurationSettings.AppSettings["Form_AuditRebuilder_CheckBoxScanOnly"];
+                ConfigurationManager.AppSettings["Form_AuditRebuilder_CheckBoxScanOnly"];
             cbRebuilder_CompressOutput.Text =
-                ConfigurationSettings.AppSettings["Form_AuditRebuilder_CheckBoxCompressOutput"];
+                ConfigurationManager.AppSettings["Form_AuditRebuilder_CheckBoxCompressOutput"];
         }
 
         private void btnRebuilder_Rebuild_Click(object sender, EventArgs e)
@@ -102,7 +102,7 @@ namespace VGMToolbox.forms.audit
 
                 if (tbRebuilder_SourceDir.Text.Trim().Equals(tbRebuilder_DestinationDir.Text.Trim()))
                 {
-                    MessageBox.Show(ConfigurationSettings.AppSettings["Form_AuditRebuilder_ErrorSourceDestSame"]);
+                    MessageBox.Show(ConfigurationManager.AppSettings["Form_AuditRebuilder_ErrorSourceDestSame"]);
                     ret = false;
                 }
             }
@@ -152,15 +152,15 @@ namespace VGMToolbox.forms.audit
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_AuditRebuilder_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_AuditRebuilder_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_AuditRebuilder_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_AuditRebuilder_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_AuditRebuilder_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_AuditRebuilder_MessageBegin"];
         }
     }
 }

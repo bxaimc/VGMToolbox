@@ -12,8 +12,8 @@ namespace VGMToolbox.forms.xsf
         public SdatOptimizerForm(TreeNode pTreeNode)
             : base(pTreeNode)
         {
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_SdatOptimizer_Title"];
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_SdatOptimizer_IntroText"] + Environment.NewLine;
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_SdatOptimizer_Title"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_SdatOptimizer_IntroText"] + Environment.NewLine;
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
@@ -21,17 +21,17 @@ namespace VGMToolbox.forms.xsf
             InitializeComponent();
 
             this.grpSource.Text =
-                ConfigurationSettings.AppSettings["Form_SdatOptimizer_GroupSource"];
+                ConfigurationManager.AppSettings["Form_SdatOptimizer_GroupSource"];
             this.lblDragNDrop.Text =
-                ConfigurationSettings.AppSettings["Form_SdatOptimizer_LblDragNDrop"];
+                ConfigurationManager.AppSettings["Form_SdatOptimizer_LblDragNDrop"];
             this.grpOptions.Text =
-                ConfigurationSettings.AppSettings["Form_SdatOptimizer_GroupOptions"];
+                ConfigurationManager.AppSettings["Form_SdatOptimizer_GroupOptions"];
             this.lblStartingSequence.Text =
-                ConfigurationSettings.AppSettings["Form_SdatOptimizer_LblStartingSequence"];
+                ConfigurationManager.AppSettings["Form_SdatOptimizer_LblStartingSequence"];
             this.lblEndingSequence.Text =
-                ConfigurationSettings.AppSettings["Form_SdatOptimizer_LblEndingSequence"];
+                ConfigurationManager.AppSettings["Form_SdatOptimizer_LblEndingSequence"];
             this.cbIncludeAllSseq.Text =
-                ConfigurationSettings.AppSettings["Form_SdatOptimizer_CheckBoxIncludeAllSequences"];
+                ConfigurationManager.AppSettings["Form_SdatOptimizer_CheckBoxIncludeAllSequences"];
         }
 
         private void tbSourceSdat_DragDrop(object sender, DragEventArgs e)
@@ -74,15 +74,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SdatOptimizer_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_SdatOptimizer_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SdatOptimizer_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_SdatOptimizer_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SdatOptimizer_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_SdatOptimizer_MessageBegin"];
         }
     }
 }

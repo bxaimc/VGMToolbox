@@ -26,55 +26,55 @@ namespace VGMToolbox.forms.extraction
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_SimpleCutter_Title"];
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_SimpleCutter_Title"];
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
 
-            this.tbOutput.Text = String.Format(ConfigurationSettings.AppSettings["Form_SimpleCutter_IntroText"], PLUGIN_PATH);
+            this.tbOutput.Text = String.Format(ConfigurationManager.AppSettings["Form_SimpleCutter_IntroText"], PLUGIN_PATH);
            
             InitializeComponent();
 
             this.toolTip1.SetToolTip(this.btnRefresh, "Refresh Presets");
 
             this.grpFiles.Text =
-                ConfigurationSettings.AppSettings["Form_SimpleCutter_GroupFiles"];
+                ConfigurationManager.AppSettings["Form_SimpleCutter_GroupFiles"];
             this.lblDragNDrop.Text =
-                ConfigurationSettings.AppSettings["Form_SimpleCutter_LblDragNDrop"];
+                ConfigurationManager.AppSettings["Form_SimpleCutter_LblDragNDrop"];
             this.grpCriteria.Text =
-                ConfigurationSettings.AppSettings["Form_SimpleCutter_GroupCriteria"];
+                ConfigurationManager.AppSettings["Form_SimpleCutter_GroupCriteria"];
             this.cbDoCut.Text =
-                ConfigurationSettings.AppSettings["Form_SimpleCutter_CheckBoxDoCut"];
+                ConfigurationManager.AppSettings["Form_SimpleCutter_CheckBoxDoCut"];
             this.lblStringAtOffset.Text =
-                ConfigurationSettings.AppSettings["Form_SimpleCutter_LblStringAtOffset"];
+                ConfigurationManager.AppSettings["Form_SimpleCutter_LblStringAtOffset"];
             this.lblOutputExtension.Text =
-                ConfigurationSettings.AppSettings["Form_SimpleCutter_LblOutputExtension"];
+                ConfigurationManager.AppSettings["Form_SimpleCutter_LblOutputExtension"];
             this.gbCutSizeOptions.Text =
-                ConfigurationSettings.AppSettings["Form_SimpleCutter_GroupCutSizeOptions"];
+                ConfigurationManager.AppSettings["Form_SimpleCutter_GroupCutSizeOptions"];
             this.rbStaticCutSize.Text =
-                ConfigurationSettings.AppSettings["Form_SimpleCutter_RadioStaticCutSize"];
+                ConfigurationManager.AppSettings["Form_SimpleCutter_RadioStaticCutSize"];
             this.rbOffsetBasedCutSize.Text =
-                ConfigurationSettings.AppSettings["Form_SimpleCutter_RadioOffsetBasedCutSize"];
+                ConfigurationManager.AppSettings["Form_SimpleCutter_RadioOffsetBasedCutSize"];
             this.lblHasSize.Text =
-                ConfigurationSettings.AppSettings["Form_SimpleCutter_LblHasSize"];
+                ConfigurationManager.AppSettings["Form_SimpleCutter_LblHasSize"];
             this.lblStoredIn.Text =
-                ConfigurationSettings.AppSettings["Form_SimpleCutter_LblStoredIn"];
+                ConfigurationManager.AppSettings["Form_SimpleCutter_LblStoredIn"];
             this.lblInBytes.Text =
-                ConfigurationSettings.AppSettings["Form_SimpleCutter_LblInBytes"];
+                ConfigurationManager.AppSettings["Form_SimpleCutter_LblInBytes"];
             this.lblFromStart.Text =
-                ConfigurationSettings.AppSettings["Form_SimpleCutter_LblFromStart"];
+                ConfigurationManager.AppSettings["Form_SimpleCutter_LblFromStart"];
             this.lblInBytes2.Text =
-                ConfigurationSettings.AppSettings["Form_SimpleCutter_LblInBytes2"];
+                ConfigurationManager.AppSettings["Form_SimpleCutter_LblInBytes2"];
             this.lblByteOrder.Text =
-                ConfigurationSettings.AppSettings["Form_SimpleCutter_LblByteOrder"];
+                ConfigurationManager.AppSettings["Form_SimpleCutter_LblByteOrder"];
             this.rbUseTerminator.Text =
-                ConfigurationSettings.AppSettings["Form_SimpleCutter_RadioUseTerminator"];
+                ConfigurationManager.AppSettings["Form_SimpleCutter_RadioUseTerminator"];
             this.cbTreatTerminatorAsHex.Text =
-                ConfigurationSettings.AppSettings["Form_SimpleCutter_CheckBoxTreatTerminatorAsHex"];
+                ConfigurationManager.AppSettings["Form_SimpleCutter_CheckBoxTreatTerminatorAsHex"];
             this.cbIncludeTerminatorInLength.Text =
-                ConfigurationSettings.AppSettings["Form_SimpleCutter_CheckBoxIncludeTerminatorInLength"];
+                ConfigurationManager.AppSettings["Form_SimpleCutter_CheckBoxIncludeTerminatorInLength"];
             this.cbAddExtraBytes.Text =
-                ConfigurationSettings.AppSettings["Form_SimpleCutter_CheckBoxExtracCutSizeBytes"];
+                ConfigurationManager.AppSettings["Form_SimpleCutter_CheckBoxExtracCutSizeBytes"];
 
             // this.lblStartingOffset.Text
             // this.lblMinCutSize.Text
@@ -463,15 +463,15 @@ namespace VGMToolbox.forms.extraction
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SimpleCutter_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_SimpleCutter_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SimpleCutter_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_SimpleCutter_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SimpleCutter_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_SimpleCutter_MessageBegin"];
         }
 
         private void loadPresetsComboBox()

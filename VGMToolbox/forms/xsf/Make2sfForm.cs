@@ -30,34 +30,34 @@ namespace VGMToolbox.forms.xsf
             
             InitializeComponent();
 
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_Make2sf_Title"];
-            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_Make2sf_DoTaskButton"];
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_Make2sf_IntroText1"] + Environment.NewLine;
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_Make2sf_Title"];
+            this.btnDoTask.Text = ConfigurationManager.AppSettings["Form_Make2sf_DoTaskButton"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_Make2sf_IntroText1"] + Environment.NewLine;
             this.tbOutput.Text +=
-                String.Format(ConfigurationSettings.AppSettings["Form_Make2sf_IntroText2"], Path.GetDirectoryName(testpackPath)) + Environment.NewLine;
-            this.tbOutput.Text += ConfigurationSettings.AppSettings["Form_Make2sf_IntroText3"] + Environment.NewLine;
-            this.tbOutput.Text += ConfigurationSettings.AppSettings["Form_Make2sf_IntroText4"];
+                String.Format(ConfigurationManager.AppSettings["Form_Make2sf_IntroText2"], Path.GetDirectoryName(testpackPath)) + Environment.NewLine;
+            this.tbOutput.Text += ConfigurationManager.AppSettings["Form_Make2sf_IntroText3"] + Environment.NewLine;
+            this.tbOutput.Text += ConfigurationManager.AppSettings["Form_Make2sf_IntroText4"];
 
-            this.grpSourcePaths.Text = ConfigurationSettings.AppSettings["Form_Make2sf_GroupSourcePaths"];
-            this.lblSdat.Text = ConfigurationSettings.AppSettings["Form_Make2sf_LabelSdat"];
-            this.lblOutputPath.Text = ConfigurationSettings.AppSettings["Form_Make2sf_LabelOutputPath"];
-            this.grpSetInformation.Text = ConfigurationSettings.AppSettings["Form_Make2sf_GroupSetInformation"];
-            this.lblGame.Text = ConfigurationSettings.AppSettings["Form_Make2sf_LabelGame"];
-            this.lblArtist.Text = ConfigurationSettings.AppSettings["Form_Make2sf_LabelArtist"];
-            this.lblCopyright.Text = ConfigurationSettings.AppSettings["Form_Make2sf_LabelCopyright"];
-            this.lblGameSerial.Text = ConfigurationSettings.AppSettings["Form_Make2sf_LabelGameSerial"];
-            this.lblYear.Text = ConfigurationSettings.AppSettings["Form_Make2sf_LabelYear"];
+            this.grpSourcePaths.Text = ConfigurationManager.AppSettings["Form_Make2sf_GroupSourcePaths"];
+            this.lblSdat.Text = ConfigurationManager.AppSettings["Form_Make2sf_LabelSdat"];
+            this.lblOutputPath.Text = ConfigurationManager.AppSettings["Form_Make2sf_LabelOutputPath"];
+            this.grpSetInformation.Text = ConfigurationManager.AppSettings["Form_Make2sf_GroupSetInformation"];
+            this.lblGame.Text = ConfigurationManager.AppSettings["Form_Make2sf_LabelGame"];
+            this.lblArtist.Text = ConfigurationManager.AppSettings["Form_Make2sf_LabelArtist"];
+            this.lblCopyright.Text = ConfigurationManager.AppSettings["Form_Make2sf_LabelCopyright"];
+            this.lblGameSerial.Text = ConfigurationManager.AppSettings["Form_Make2sf_LabelGameSerial"];
+            this.lblYear.Text = ConfigurationManager.AppSettings["Form_Make2sf_LabelYear"];
 
-            this.dataGridSseq.Columns[0].HeaderText = ConfigurationSettings.AppSettings["Form_Make2sf_ColumnHeader0"];
-            this.dataGridSseq.Columns[1].HeaderText = ConfigurationSettings.AppSettings["Form_Make2sf_ColumnHeader1"];
-            this.dataGridSseq.Columns[2].HeaderText = ConfigurationSettings.AppSettings["Form_Make2sf_ColumnHeader2"];
-            this.dataGridSseq.Columns[3].HeaderText = ConfigurationSettings.AppSettings["Form_Make2sf_ColumnHeader3"];
-            this.dataGridSseq.Columns[4].HeaderText = ConfigurationSettings.AppSettings["Form_Make2sf_ColumnHeader4"];
-            this.dataGridSseq.Columns[5].HeaderText = ConfigurationSettings.AppSettings["Form_Make2sf_ColumnHeader5"];
-            this.dataGridSseq.Columns[6].HeaderText = ConfigurationSettings.AppSettings["Form_Make2sf_ColumnHeader6"];
-            this.dataGridSseq.Columns[7].HeaderText = ConfigurationSettings.AppSettings["Form_Make2sf_ColumnHeader7"];
-            this.dataGridSseq.Columns[8].HeaderText = ConfigurationSettings.AppSettings["Form_Make2sf_ColumnHeader8"];
-            this.dataGridSseq.Columns[9].HeaderText = ConfigurationSettings.AppSettings["Form_Make2sf_ColumnHeader9"];
+            this.dataGridSseq.Columns[0].HeaderText = ConfigurationManager.AppSettings["Form_Make2sf_ColumnHeader0"];
+            this.dataGridSseq.Columns[1].HeaderText = ConfigurationManager.AppSettings["Form_Make2sf_ColumnHeader1"];
+            this.dataGridSseq.Columns[2].HeaderText = ConfigurationManager.AppSettings["Form_Make2sf_ColumnHeader2"];
+            this.dataGridSseq.Columns[3].HeaderText = ConfigurationManager.AppSettings["Form_Make2sf_ColumnHeader3"];
+            this.dataGridSseq.Columns[4].HeaderText = ConfigurationManager.AppSettings["Form_Make2sf_ColumnHeader4"];
+            this.dataGridSseq.Columns[5].HeaderText = ConfigurationManager.AppSettings["Form_Make2sf_ColumnHeader5"];
+            this.dataGridSseq.Columns[6].HeaderText = ConfigurationManager.AppSettings["Form_Make2sf_ColumnHeader6"];
+            this.dataGridSseq.Columns[7].HeaderText = ConfigurationManager.AppSettings["Form_Make2sf_ColumnHeader7"];
+            this.dataGridSseq.Columns[8].HeaderText = ConfigurationManager.AppSettings["Form_Make2sf_ColumnHeader8"];
+            this.dataGridSseq.Columns[9].HeaderText = ConfigurationManager.AppSettings["Form_Make2sf_ColumnHeader9"];
         }
         
         private void btnBrowseSource_Click(object sender, EventArgs e)
@@ -194,9 +194,9 @@ namespace VGMToolbox.forms.xsf
             if (!File.Exists(testpackPath))
             {
                 ret = false;
-                MessageBox.Show(String.Format(ConfigurationSettings.AppSettings["Form_Make2sf_ErrorMessageTestpackMissing"],
+                MessageBox.Show(String.Format(ConfigurationManager.AppSettings["Form_Make2sf_ErrorMessageTestpackMissing"],
                     Path.GetFileName(testpackPath), Path.GetDirectoryName(testpackPath)),
-                    String.Format(ConfigurationSettings.AppSettings["Form_Make2sf_ErrorMessageTestpackMissingHeader"], Path.GetFileName(testpackPath)));
+                    String.Format(ConfigurationManager.AppSettings["Form_Make2sf_ErrorMessageTestpackMissingHeader"], Path.GetFileName(testpackPath)));
             }
             else
             {
@@ -205,9 +205,9 @@ namespace VGMToolbox.forms.xsf
                     if (!ChecksumUtil.GetCrc32OfFullFile(fs).Equals(Mk2sfWorker.TESTPACK_CRC32))
                     {
                         ret = false;
-                        MessageBox.Show(String.Format(ConfigurationSettings.AppSettings["Form_Make2sf_ErrorMessageTestpackCrc32"],
+                        MessageBox.Show(String.Format(ConfigurationManager.AppSettings["Form_Make2sf_ErrorMessageTestpackCrc32"],
                             Path.GetFileName(testpackPath), Path.GetDirectoryName(testpackPath), Mk2sfWorker.TESTPACK_CRC32),
-                            String.Format(ConfigurationSettings.AppSettings["Form_Make2sf_ErrorMessageTestpackCrc32Header"], Path.GetFileName(testpackPath)));                    
+                            String.Format(ConfigurationManager.AppSettings["Form_Make2sf_ErrorMessageTestpackCrc32Header"], Path.GetFileName(testpackPath)));                    
                     }
                 }                
             }
@@ -226,15 +226,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_Make2sf_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_Make2sf_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_Make2sf_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_Make2sf_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_Make2sf_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_Make2sf_MessageBegin"];
         }
 
         private bool CheckSdatPathAndOutputDir()
@@ -246,8 +246,8 @@ namespace VGMToolbox.forms.xsf
             if (sdatSourceDirectory.Equals(tbOutputPath.Text.Trim()))
             {
                 ret = false;
-                MessageBox.Show(ConfigurationSettings.AppSettings["Form_Make2sf_ErrorMessageOutputFolder"],
-                    ConfigurationSettings.AppSettings["Form_Make2sf_ErrorMessageOutputFolderHeader"]);             
+                MessageBox.Show(ConfigurationManager.AppSettings["Form_Make2sf_ErrorMessageOutputFolder"],
+                    ConfigurationManager.AppSettings["Form_Make2sf_ErrorMessageOutputFolderHeader"]);             
             }
 
             return ret;

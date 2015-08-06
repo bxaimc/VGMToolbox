@@ -15,7 +15,7 @@ namespace VGMToolbox.forms.nsf
         {
             // set title
             this.lblTitle.Text = 
-                ConfigurationSettings.AppSettings["Form_Nsfe2M3u_Title"];
+                ConfigurationManager.AppSettings["Form_Nsfe2M3u_Title"];
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
             
@@ -24,11 +24,11 @@ namespace VGMToolbox.forms.nsf
             this.grpSourceFiles.AllowDrop = true;
 
             this.grpSourceFiles.Text =
-                ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
+                ConfigurationManager.AppSettings["Form_Global_DropSourceFiles"];
             this.grpOptions.Text =
-                ConfigurationSettings.AppSettings["Form_Nsfe2M3u_GroupOptions"];
+                ConfigurationManager.AppSettings["Form_Nsfe2M3u_GroupOptions"];
             this.cbNSFE_OneM3uPerTrack.Text =
-                ConfigurationSettings.AppSettings["Form_Nsfe2M3u_CheckBoxOneM3uPerTrack"];
+                ConfigurationManager.AppSettings["Form_Nsfe2M3u_CheckBoxOneM3uPerTrack"];
         }
 
         private void tbNSF_nsfe2m3uSource_DragDrop(object sender, DragEventArgs e)
@@ -52,15 +52,15 @@ namespace VGMToolbox.forms.nsf
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_Nsfe2M3u_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_Nsfe2M3u_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_Nsfe2M3u_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_Nsfe2M3u_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_Nsfe2M3u_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_Nsfe2M3u_MessageBegin"];
         }
     }
 }

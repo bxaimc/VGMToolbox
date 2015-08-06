@@ -198,7 +198,7 @@ namespace VGMToolbox.tools.extract
 
                 bool isRawFormat = false;
                 int sectorSize = 0x800;
-                CdSectorType mode;
+                // CdSectorType mode;
 
                 //----------------------
                 // check for sync bytes

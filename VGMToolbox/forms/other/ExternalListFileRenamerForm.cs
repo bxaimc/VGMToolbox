@@ -50,7 +50,7 @@ namespace VGMToolbox.forms.other
             isValid &= AVgmtForm.checkTextBox(this.tbListFileOffsetToFileList.Text, this.label2.Text);
             isValid &= AVgmtForm.checkIfTextIsParsableAsLong(this.tbListFileOffsetToFileList.Text, this.label2.Text);
 
-            if (this.comboListFileNameTextFormat.SelectedItem == "Code Page")
+            if (this.comboListFileNameTextFormat.SelectedItem.Equals("Code Page"))
             {
                 isValid &= AVgmtForm.checkTextBox(this.tbListFilesCodePage.Text, this.label6.Text);            
             }

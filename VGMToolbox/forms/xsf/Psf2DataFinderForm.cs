@@ -17,13 +17,13 @@ namespace VGMToolbox.forms.xsf
             this.btnDoTask.Hide();
             this.grpSource.AllowDrop = true;
 
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_Psf2DataFinder_Title"];
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_Psf2DataFinder_IntroText"] + Environment.NewLine;
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_Psf2DataFinder_Title"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_Psf2DataFinder_IntroText"] + Environment.NewLine;
 
-            this.grpOptions.Text = ConfigurationSettings.AppSettings["Form_Psf2DataFinder_GrpOptions"];
-            this.cbUseMinimum.Text = ConfigurationSettings.AppSettings["Form_Psf2DataFinder_CbMinSqSize"];
-            this.cb00ByteAligned.Text = ConfigurationSettings.AppSettings["Form_Psf2DataFinder_CbByteAlign"];
-            this.cbReorderSqFiles.Text = ConfigurationSettings.AppSettings["Form_Psf2DataFinder_CbReorderSq"];
+            this.grpOptions.Text = ConfigurationManager.AppSettings["Form_Psf2DataFinder_GrpOptions"];
+            this.cbUseMinimum.Text = ConfigurationManager.AppSettings["Form_Psf2DataFinder_CbMinSqSize"];
+            this.cb00ByteAligned.Text = ConfigurationManager.AppSettings["Form_Psf2DataFinder_CbByteAlign"];
+            this.cbReorderSqFiles.Text = ConfigurationManager.AppSettings["Form_Psf2DataFinder_CbReorderSq"];
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -37,15 +37,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_Psf2DataFinder_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_Psf2DataFinder_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_Psf2DataFinder_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_Psf2DataFinder_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_Psf2DataFinder_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_Psf2DataFinder_MessageBegin"];
         }
 
         private void grpSource_DragDrop(object sender, DragEventArgs e)

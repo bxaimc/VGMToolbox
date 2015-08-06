@@ -15,9 +15,9 @@ namespace VGMToolbox.forms.hoot
         {
             // set title
             this.lblTitle.Text = 
-                ConfigurationSettings.AppSettings["Form_HootXmlBuilder_Title"];
+                ConfigurationManager.AppSettings["Form_HootXmlBuilder_Title"];
             this.tbOutput.Text =
-                ConfigurationSettings.AppSettings["Form_HootXmlBuilder_Intro"];
+                ConfigurationManager.AppSettings["Form_HootXmlBuilder_Intro"];
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
 
@@ -26,13 +26,13 @@ namespace VGMToolbox.forms.hoot
             this.gbHootXML_Source.AllowDrop = true;
 
             this.gbHootXML_Source.Text =
-                ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
+                ConfigurationManager.AppSettings["Form_Global_DropSourceFiles"];
             this.gbHootXML_Options.Text =
-                ConfigurationSettings.AppSettings["Form_HootXmlBuilder_GroupOptions"];
+                ConfigurationManager.AppSettings["Form_HootXmlBuilder_GroupOptions"];
             this.cbHootXML_CombineOutput.Text =
-                ConfigurationSettings.AppSettings["Form_HootXmlBuilder_CheckBoxCombineOutput"];
+                ConfigurationManager.AppSettings["Form_HootXmlBuilder_CheckBoxCombineOutput"];
             this.cbHootXML_SplitOutput.Text =
-                ConfigurationSettings.AppSettings["Form_HootXmlBuilder_CheckBoxSplitOutput"];
+                ConfigurationManager.AppSettings["Form_HootXmlBuilder_CheckBoxSplitOutput"];
         }
 
         private void tbHootXML_Path_DragDrop(object sender, DragEventArgs e)
@@ -58,15 +58,15 @@ namespace VGMToolbox.forms.hoot
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_HootXmlBuilder_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_HootXmlBuilder_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_HootXmlBuilder_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_HootXmlBuilder_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_HootXmlBuilder_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_HootXmlBuilder_MessageBegin"];
         }
     }
 }

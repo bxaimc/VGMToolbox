@@ -17,8 +17,8 @@ namespace VGMToolbox.forms.xsf
         public Psf2TimerForm(TreeNode pTreeNode)
             : base(pTreeNode) 
         {
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_Psf2Timer_Title"];
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_Psf2Timer_IntroText"];
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_Psf2Timer_Title"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_Psf2Timer_IntroText"];
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
@@ -27,7 +27,7 @@ namespace VGMToolbox.forms.xsf
 
             this.gbSource.AllowDrop = true;
             this.gbSource.Text =
-                ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
+                ConfigurationManager.AppSettings["Form_Global_DropSourceFiles"];
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -50,15 +50,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_Psf2Timer_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_Psf2Timer_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_Psf2Timer_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_Psf2Timer_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_Psf2Timer_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_Psf2Timer_MessageBegin"];
         }
     }
 }

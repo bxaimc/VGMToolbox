@@ -15,7 +15,7 @@ namespace VGMToolbox.forms.xsf
         {
             // set title
             this.lblTitle.Text = 
-                ConfigurationSettings.AppSettings["Form_Xsf2Exe_Title"];
+                ConfigurationManager.AppSettings["Form_Xsf2Exe_Title"];
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();            
             
@@ -24,15 +24,15 @@ namespace VGMToolbox.forms.xsf
             this.grpXsfPsf2Exe_Source.AllowDrop = true;
 
             this.grpXsfPsf2Exe_Source.Text =
-                ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
+                ConfigurationManager.AppSettings["Form_Global_DropSourceFiles"];
             this.grpOptions.Text =
-                ConfigurationSettings.AppSettings["Form_Xsf2Exe_GroupOptions"];
+                ConfigurationManager.AppSettings["Form_Xsf2Exe_GroupOptions"];
             this.cbExtractReservedSection.Text =
-                ConfigurationSettings.AppSettings["Form_Xsf2Exe_CheckBoxExtractReservedSection"];
+                ConfigurationManager.AppSettings["Form_Xsf2Exe_CheckBoxExtractReservedSection"];
             this.cbXsfPsf2Exe_IncludeOrigExt.Text =
-                ConfigurationSettings.AppSettings["Form_Xsf2Exe_CheckBoxIncludeOriginalExtension"];
+                ConfigurationManager.AppSettings["Form_Xsf2Exe_CheckBoxIncludeOriginalExtension"];
             this.cbXsfPsf2Exe_StripGsfHeader.Text =
-                ConfigurationSettings.AppSettings["Form_Xsf2Exe_CheckBoxStripGsfHeader"];
+                ConfigurationManager.AppSettings["Form_Xsf2Exe_CheckBoxStripGsfHeader"];
         }
 
         private void tbXsfPsf2Exe_Source_DragDrop(object sender, DragEventArgs e)
@@ -60,15 +60,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_Xsf2Exe_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_Xsf2Exe_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_Xsf2Exe_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_Xsf2Exe_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_Xsf2Exe_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_Xsf2Exe_MessageBegin"];
         }
     }
 }

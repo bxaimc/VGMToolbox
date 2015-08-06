@@ -15,8 +15,8 @@ namespace VGMToolbox.forms.extraction
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_CdxaExtractor_Title"];
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_CdxaExtractor_IntroText"];
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_CdxaExtractor_Title"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_CdxaExtractor_IntroText"];
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
             
@@ -25,15 +25,15 @@ namespace VGMToolbox.forms.extraction
             this.grpSource.AllowDrop = true;
 
             this.grpSource.Text =
-                ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
+                ConfigurationManager.AppSettings["Form_Global_DropSourceFiles"];
             this.grpOptions.Text =
-                ConfigurationSettings.AppSettings["Form_CdxaExtractor_GroupOptions"];
-            this.lblSilentBlocks.Text = ConfigurationSettings.AppSettings["Form_CdxaExtractor_LblSilentBlocks"];
+                ConfigurationManager.AppSettings["Form_CdxaExtractor_GroupOptions"];
+            this.lblSilentBlocks.Text = ConfigurationManager.AppSettings["Form_CdxaExtractor_LblSilentBlocks"];
             
             this.cbAddRiffHeader.Text =
-                ConfigurationSettings.AppSettings["Form_CdxaExtractor_CheckBoxAddRiffHeader"];
+                ConfigurationManager.AppSettings["Form_CdxaExtractor_CheckBoxAddRiffHeader"];
             this.cbPatchByte0x11.Text =
-                ConfigurationSettings.AppSettings["Form_CdxaExtractor_CheckBoxPatchByte0x11"];
+                ConfigurationManager.AppSettings["Form_CdxaExtractor_CheckBoxPatchByte0x11"];
 
             this.silentFrameCounter.Value = Cdxa.NUM_SILENT_FRAMES_FOR_SILENT_BLOCK;
             this.rbUseTrackEof.Checked = true;
@@ -67,15 +67,15 @@ namespace VGMToolbox.forms.extraction
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_CdxaExtractor_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_CdxaExtractor_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_CdxaExtractor_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_CdxaExtractor_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_CdxaExtractor_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_CdxaExtractor_MessageBegin"];
         }
 
         private void toggleEofOptions()

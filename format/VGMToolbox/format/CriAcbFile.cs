@@ -289,7 +289,6 @@ namespace VGMToolbox.format
                         break;
                     default:
                         throw new FormatException(String.Format("  Unexpected ReferenceType: '{0}' for CueIndex: '{1}.'  Please report to VGMToolbox thread at hcs64.com forums, see link in 'Other' menu item.", this.CueList[i].ReferenceType.ToString("D"), i.ToString("D")));
-                        break;
                 }
 
                 if (referenceItemsSize != 0)

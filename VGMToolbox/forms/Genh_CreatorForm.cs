@@ -33,28 +33,28 @@ namespace VGMToolbox.forms
         {
             InitializeComponent();
             
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_Title"];            
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_IntroText"];
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_GenhCreator_Title"];            
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_GenhCreator_IntroText"];
             
-            //this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_GroupSourceFiles"];
-            this.tbSourceDirectory.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_tbSourceDirectory"];
-            this.lblFilenameFilter.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_LblFilenameFilter"];
-            this.grpFormat.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_GroupFormat"];
-            this.grpOptions.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_GroupOptions"];
-            this.lblHeaderSkip.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_LblHeaderSkip"];
-            this.lblInterleave.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_LblInterleave"];
-            this.lblChannels.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_LblChannels"];
-            this.lblFrequency.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_LblFrequency"];
-            this.lblLoopStart.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_LblLoopStart"];
-            this.lblLoopEnd.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_LblLoopEnd"];
-            this.cbManualEntry.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_CheckBoxManualEntry"];
-            this.cbNoLoops.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_CheckBoxNoLoops"];
-            this.cbLoopFileEnd.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_CheckBoxFileEnd"];
-            this.cbFindLoop.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_CheckBoxFindLoop"];
-            this.lblRightCoef.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_LblRightCoef"];
-            this.lblLeftCoef.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_LblLeftCoef"];
-            //this.cbCapcomHack.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_CheckBoxCapcomHack"];
-            this.cbHeaderOnly.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_CheckBoxHeaderOnly"];
+            //this.grpSourceFiles.Text = ConfigurationManager.AppSettings["Form_GenhCreator_GroupSourceFiles"];
+            this.tbSourceDirectory.Text = ConfigurationManager.AppSettings["Form_GenhCreator_tbSourceDirectory"];
+            this.lblFilenameFilter.Text = ConfigurationManager.AppSettings["Form_GenhCreator_LblFilenameFilter"];
+            this.grpFormat.Text = ConfigurationManager.AppSettings["Form_GenhCreator_GroupFormat"];
+            this.grpOptions.Text = ConfigurationManager.AppSettings["Form_GenhCreator_GroupOptions"];
+            this.lblHeaderSkip.Text = ConfigurationManager.AppSettings["Form_GenhCreator_LblHeaderSkip"];
+            this.lblInterleave.Text = ConfigurationManager.AppSettings["Form_GenhCreator_LblInterleave"];
+            this.lblChannels.Text = ConfigurationManager.AppSettings["Form_GenhCreator_LblChannels"];
+            this.lblFrequency.Text = ConfigurationManager.AppSettings["Form_GenhCreator_LblFrequency"];
+            this.lblLoopStart.Text = ConfigurationManager.AppSettings["Form_GenhCreator_LblLoopStart"];
+            this.lblLoopEnd.Text = ConfigurationManager.AppSettings["Form_GenhCreator_LblLoopEnd"];
+            this.cbManualEntry.Text = ConfigurationManager.AppSettings["Form_GenhCreator_CheckBoxManualEntry"];
+            this.cbNoLoops.Text = ConfigurationManager.AppSettings["Form_GenhCreator_CheckBoxNoLoops"];
+            this.cbLoopFileEnd.Text = ConfigurationManager.AppSettings["Form_GenhCreator_CheckBoxFileEnd"];
+            this.cbFindLoop.Text = ConfigurationManager.AppSettings["Form_GenhCreator_CheckBoxFindLoop"];
+            this.lblRightCoef.Text = ConfigurationManager.AppSettings["Form_GenhCreator_LblRightCoef"];
+            this.lblLeftCoef.Text = ConfigurationManager.AppSettings["Form_GenhCreator_LblLeftCoef"];
+            //this.cbCapcomHack.Text = ConfigurationManager.AppSettings["Form_GenhCreator_CheckBoxCapcomHack"];
+            this.cbHeaderOnly.Text = ConfigurationManager.AppSettings["Form_GenhCreator_CheckBoxHeaderOnly"];
 
             this.loadFormats();
             this.loadHeaderSkip();
@@ -368,7 +368,7 @@ namespace VGMToolbox.forms
 
             if ((!rbExtract.Checked) && (!ValidateInputs(genhStruct, out errorMessages)))
             {
-                MessageBox.Show(errorMessages, ConfigurationSettings.AppSettings["Form_GenhCreator_MessageErrors"]);
+                MessageBox.Show(errorMessages, ConfigurationManager.AppSettings["Form_GenhCreator_MessageErrors"]);
                 this.errorFound = true;
                 this.setNodeAsComplete();
             }
@@ -388,7 +388,7 @@ namespace VGMToolbox.forms
             if (pGenhCreatorStruct.SourcePaths.GetLength(0) < 1)
             {
                 isValid = false;
-                errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageNoInputs"]);
+                errorBuffer.Append(ConfigurationManager.AppSettings["Form_GenhCreator_MessageNoInputs"]);
                 errorBuffer.Append(Environment.NewLine);
             }
 
@@ -396,7 +396,7 @@ namespace VGMToolbox.forms
             if (String.IsNullOrEmpty(pGenhCreatorStruct.HeaderSkip.Trim()))
             {
                 isValid = false;
-                errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageHeaderSkip"]);
+                errorBuffer.Append(ConfigurationManager.AppSettings["Form_GenhCreator_MessageHeaderSkip"]);
                 errorBuffer.Append(Environment.NewLine);
             }
 
@@ -404,7 +404,7 @@ namespace VGMToolbox.forms
             if (String.IsNullOrEmpty(pGenhCreatorStruct.Interleave.Trim()))
             {
                 isValid = false;
-                errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageInterleave"]);
+                errorBuffer.Append(ConfigurationManager.AppSettings["Form_GenhCreator_MessageInterleave"]);
                 errorBuffer.Append(Environment.NewLine);
             }
 
@@ -412,7 +412,7 @@ namespace VGMToolbox.forms
             if (String.IsNullOrEmpty(pGenhCreatorStruct.Channels.Trim()))
             {
                 isValid = false;
-                errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageChannels"]);
+                errorBuffer.Append(ConfigurationManager.AppSettings["Form_GenhCreator_MessageChannels"]);
                 errorBuffer.Append(Environment.NewLine);
             }
 
@@ -421,7 +421,7 @@ namespace VGMToolbox.forms
                 String.IsNullOrEmpty(pGenhCreatorStruct.FrequencyOffsetDescription.OffsetValue))
             {
                 isValid = false;
-                errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageFrequency"]);
+                errorBuffer.Append(ConfigurationManager.AppSettings["Form_GenhCreator_MessageFrequency"]);
                 errorBuffer.Append(Environment.NewLine);
             }
 
@@ -432,7 +432,7 @@ namespace VGMToolbox.forms
                 String.IsNullOrEmpty(pGenhCreatorStruct.LoopStartOffsetDescription.OffsetValue))
             {
                 isValid = false;
-                errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageLoopStart1"]);
+                errorBuffer.Append(ConfigurationManager.AppSettings["Form_GenhCreator_MessageLoopStart1"]);
                 errorBuffer.Append(Environment.NewLine);
             }
             else if (!pGenhCreatorStruct.NoLoops &&
@@ -441,7 +441,7 @@ namespace VGMToolbox.forms
                      VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreatorStruct.LoopStart.Trim()) < 0)
             {
                 isValid = false;
-                errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageLoopStart2"]);
+                errorBuffer.Append(ConfigurationManager.AppSettings["Form_GenhCreator_MessageLoopStart2"]);
                 errorBuffer.Append(Environment.NewLine);            
             }
 
@@ -453,7 +453,7 @@ namespace VGMToolbox.forms
                 String.IsNullOrEmpty(pGenhCreatorStruct.LoopEndOffsetDescription.OffsetValue))
             {
                 isValid = false;
-                errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageLoopEnd"]);
+                errorBuffer.Append(ConfigurationManager.AppSettings["Form_GenhCreator_MessageLoopEnd"]);
                 errorBuffer.Append(Environment.NewLine);
             }
 
@@ -462,7 +462,7 @@ namespace VGMToolbox.forms
                 String.IsNullOrEmpty(pGenhCreatorStruct.CoefRightChannel.Trim()))
             {
                 isValid = false;
-                errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageCoefRight"]);
+                errorBuffer.Append(ConfigurationManager.AppSettings["Form_GenhCreator_MessageCoefRight"]);
                 errorBuffer.Append(Environment.NewLine);
             }
 
@@ -471,7 +471,7 @@ namespace VGMToolbox.forms
                 String.IsNullOrEmpty(pGenhCreatorStruct.CoefLeftChannel.Trim()))
             {
                 isValid = false;
-                errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageCoefLeft"]);
+                errorBuffer.Append(ConfigurationManager.AppSettings["Form_GenhCreator_MessageCoefLeft"]);
                 errorBuffer.Append(Environment.NewLine);
             }
 
@@ -479,7 +479,7 @@ namespace VGMToolbox.forms
             if (pGenhCreatorStruct.UseFileEnd && pGenhCreatorStruct.Format.Equals("8"))
             {
                 isValid = false;
-                errorBuffer.Append(ConfigurationSettings.AppSettings["Form_GenhCreator_MessageFileEnd"]);
+                errorBuffer.Append(ConfigurationManager.AppSettings["Form_GenhCreator_MessageFileEnd"]);
                 errorBuffer.Append(Environment.NewLine);            
             }
 
@@ -493,15 +493,15 @@ namespace VGMToolbox.forms
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_GenhCreator_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_GenhCreator_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_GenhCreator_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_GenhCreator_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_GenhCreator_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_GenhCreator_MessageBegin"];
         }
 
         private void reloadFiles()
@@ -529,7 +529,7 @@ namespace VGMToolbox.forms
             {
                 this.btnDoTask.Enabled = true;
                 
-                this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_BtnDoTaskCreate"];
+                this.btnDoTask.Text = ConfigurationManager.AppSettings["Form_GenhCreator_BtnDoTaskCreate"];
                 grpOptions.Show();
                 grpFormat.Show();
                 cbHeaderOnly.Show();
@@ -538,7 +538,7 @@ namespace VGMToolbox.forms
             {
                 this.btnDoTask.Enabled = true;
                 
-                this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_BtnDoTaskEdit"];
+                this.btnDoTask.Text = ConfigurationManager.AppSettings["Form_GenhCreator_BtnDoTaskEdit"];
                 grpOptions.Show();
                 grpFormat.Show();
                 cbHeaderOnly.Show();
@@ -547,7 +547,7 @@ namespace VGMToolbox.forms
             {
                 this.btnDoTask.Enabled = true;
                 
-                this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_GenhCreator_BtnDoTaskExtract"];
+                this.btnDoTask.Text = ConfigurationManager.AppSettings["Form_GenhCreator_BtnDoTaskExtract"];
                 grpOptions.Hide();
                 grpFormat.Hide();
                 cbHeaderOnly.Hide();
@@ -592,7 +592,7 @@ namespace VGMToolbox.forms
         }
         private void tbSourceDirectory_Click(object sender, EventArgs e)
         {
-            if (tbSourceDirectory.Text.Equals(ConfigurationSettings.AppSettings["Form_GenhCreator_tbSourceDirectory"]))
+            if (tbSourceDirectory.Text.Equals(ConfigurationManager.AppSettings["Form_GenhCreator_tbSourceDirectory"]))
             {
                 tbSourceDirectory.Clear();
             }

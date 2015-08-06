@@ -265,7 +265,7 @@ namespace VGMToolbox.format
         {
             ProbableItemStruct probableAdpcmItem = new ProbableItemStruct();
             byte[] adpcmRow = new byte[0x10];
-            bool errorExists = false;
+            // bool errorExists = false;
 
             probableAdpcmItem.Init();
             adpcmRow = ParseFile.ParseSimpleOffset(searchStream, offsetToCheck, adpcmRow.Length);

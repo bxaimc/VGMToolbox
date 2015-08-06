@@ -12,20 +12,20 @@ namespace VGMToolbox.forms.xsf
         public Psf2ToPsf2LibForm(TreeNode pTreeNode)
             : base(pTreeNode)
         {
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_Title"];
-            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_DoTaskButton"];
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_IntroText1"] + Environment.NewLine;
-            this.tbOutput.Text += ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_IntroText2"] + Environment.NewLine;
-            this.tbOutput.Text += ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_IntroText3"] + Environment.NewLine;
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_Psf2ToPsf2Lib_Title"];
+            this.btnDoTask.Text = ConfigurationManager.AppSettings["Form_Psf2ToPsf2Lib_DoTaskButton"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_Psf2ToPsf2Lib_IntroText1"] + Environment.NewLine;
+            this.tbOutput.Text += ConfigurationManager.AppSettings["Form_Psf2ToPsf2Lib_IntroText2"] + Environment.NewLine;
+            this.tbOutput.Text += ConfigurationManager.AppSettings["Form_Psf2ToPsf2Lib_IntroText3"] + Environment.NewLine;
 
             InitializeComponent();
 
             this.grpSource.Text =
-                ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_GroupSource"];
+                ConfigurationManager.AppSettings["Form_Psf2ToPsf2Lib_GroupSource"];
             this.grpOptions.Text =
-                ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_GroupOptions"];
+                ConfigurationManager.AppSettings["Form_Psf2ToPsf2Lib_GroupOptions"];
             this.lblOutputFilePrefix.Text =
-                ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_LblOutputFilePrefix"];
+                ConfigurationManager.AppSettings["Form_Psf2ToPsf2Lib_LblOutputFilePrefix"];
 
         }
 
@@ -48,15 +48,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_Psf2ToPsf2Lib_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_Psf2ToPsf2Lib_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_Psf2ToPsf2Lib_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_Psf2ToPsf2Lib_MessageBegin"];
         }
     }
 }

@@ -19,17 +19,17 @@ namespace VGMToolbox.forms.examine
         {
             InitializeComponent();
 
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_SearchForFile_Title"];
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_SearchForFile_IntroText"];
-            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_SearchForFile_DoTaskButton"];
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_SearchForFile_Title"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_SearchForFile_IntroText"];
+            this.btnDoTask.Text = ConfigurationManager.AppSettings["Form_SearchForFile_DoTaskButton"];
 
-            this.grpSource.Text = ConfigurationSettings.AppSettings["Form_SearchForFile_GroupSource"];
-            this.lblDragNDrop.Text = ConfigurationSettings.AppSettings["Form_SearchForFile_LblDragNDrop"];
-            this.grpOptions.Text = ConfigurationSettings.AppSettings["Form_SearchForFile_GroupOptions"];
-            this.lblSearchString.Text = ConfigurationSettings.AppSettings["Form_SearchForFile_LblSearchString"];
-            this.cbCaseSensitive.Text = ConfigurationSettings.AppSettings["Form_SearchForFile_CheckBoxCaseSensitive"];
-            this.cbExtract.Text = ConfigurationSettings.AppSettings["Form_SearchForFile_CheckBoxExtract"];
-            this.lblOutputFolder.Text = ConfigurationSettings.AppSettings["Form_SearchForFile_LblOutputFolder"];
+            this.grpSource.Text = ConfigurationManager.AppSettings["Form_SearchForFile_GroupSource"];
+            this.lblDragNDrop.Text = ConfigurationManager.AppSettings["Form_SearchForFile_LblDragNDrop"];
+            this.grpOptions.Text = ConfigurationManager.AppSettings["Form_SearchForFile_GroupOptions"];
+            this.lblSearchString.Text = ConfigurationManager.AppSettings["Form_SearchForFile_LblSearchString"];
+            this.cbCaseSensitive.Text = ConfigurationManager.AppSettings["Form_SearchForFile_CheckBoxCaseSensitive"];
+            this.cbExtract.Text = ConfigurationManager.AppSettings["Form_SearchForFile_CheckBoxExtract"];
+            this.lblOutputFolder.Text = ConfigurationManager.AppSettings["Form_SearchForFile_LblOutputFolder"];
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -43,15 +43,15 @@ namespace VGMToolbox.forms.examine
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SearchForFile_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_SearchForFile_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SearchForFile_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_SearchForFile_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SearchForFile_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_SearchForFile_MessageBegin"];
         }
 
         private void tbSource_DragDrop(object sender, DragEventArgs e)

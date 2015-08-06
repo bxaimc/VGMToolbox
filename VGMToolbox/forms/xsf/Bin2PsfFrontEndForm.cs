@@ -15,35 +15,35 @@ namespace VGMToolbox.forms.xsf
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_Bin2PsfFE_Title"];
-            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_Bin2PsfFE_DoTaskButton"];
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_Bin2PsfFE_IntroText"];
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_Bin2PsfFE_Title"];
+            this.btnDoTask.Text = ConfigurationManager.AppSettings["Form_Bin2PsfFE_DoTaskButton"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_Bin2PsfFE_IntroText"];
 
             InitializeComponent();
 
             this.grpSource.Text =
-                ConfigurationSettings.AppSettings["Form_Bin2PsfFE_GroupSource"];
+                ConfigurationManager.AppSettings["Form_Bin2PsfFE_GroupSource"];
             this.lblDriverPath.Text =
-                ConfigurationSettings.AppSettings["Form_Bin2PsfFE_LblDriverPath"];
+                ConfigurationManager.AppSettings["Form_Bin2PsfFE_LblDriverPath"];
             this.lblSourceFiles.Text =
-                ConfigurationSettings.AppSettings["Form_Bin2PsfFE_LblSourceFiles"];
+                ConfigurationManager.AppSettings["Form_Bin2PsfFE_LblSourceFiles"];
             this.lblOutputFolder.Text =
-                ConfigurationSettings.AppSettings["Form_Bin2PsfFE_LblOutputFolder"];
+                ConfigurationManager.AppSettings["Form_Bin2PsfFE_LblOutputFolder"];
             this.lblPsfLibName.Text =
-                ConfigurationSettings.AppSettings["Form_Bin2PsfFE_LblPsfLibName"];
+                ConfigurationManager.AppSettings["Form_Bin2PsfFE_LblPsfLibName"];
             this.cbMinipsf.Text =
-                ConfigurationSettings.AppSettings["Form_Bin2PsfFE_CheckBoxMinipsf"];
+                ConfigurationManager.AppSettings["Form_Bin2PsfFE_CheckBoxMinipsf"];
             this.grpOptions.Text =
-                ConfigurationSettings.AppSettings["Form_Bin2PsfFE_GroupOptions"];
+                ConfigurationManager.AppSettings["Form_Bin2PsfFE_GroupOptions"];
             this.lblSeqOffset.Text =
-                ConfigurationSettings.AppSettings["Form_Bin2PsfFE_LblSeqOffset"];
+                ConfigurationManager.AppSettings["Form_Bin2PsfFE_LblSeqOffset"];
             this.lblVhOffset.Text =
-                ConfigurationSettings.AppSettings["Form_Bin2PsfFE_LblVhOffset"];
+                ConfigurationManager.AppSettings["Form_Bin2PsfFE_LblVhOffset"];
             this.lblVbOffset.Text =
-                ConfigurationSettings.AppSettings["Form_Bin2PsfFE_LblVbOffset"];
+                ConfigurationManager.AppSettings["Form_Bin2PsfFE_LblVbOffset"];
 
-            this.grpGenericDrivers.Text = ConfigurationSettings.AppSettings["Form_Bin2PsfFE_GrpGenericDrivers"];
-            this.lblGenericDriver.Text = ConfigurationSettings.AppSettings["Form_Bin2PsfFE_LblGenericDriver"];
+            this.grpGenericDrivers.Text = ConfigurationManager.AppSettings["Form_Bin2PsfFE_GrpGenericDrivers"];
+            this.lblGenericDriver.Text = ConfigurationManager.AppSettings["Form_Bin2PsfFE_LblGenericDriver"];
 
             this.loadGenericDriversList();
 
@@ -127,15 +127,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_Bin2PsfFE_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_Bin2PsfFE_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_Bin2PsfFE_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_Bin2PsfFE_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_Bin2PsfFE_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_Bin2PsfFE_MessageBegin"];
         }
 
         private void loadGenericDriversList()

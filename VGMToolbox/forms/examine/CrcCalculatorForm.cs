@@ -21,17 +21,17 @@ namespace VGMToolbox.forms.examine
 
             this.grpSourceFiles.AllowDrop = true;
             
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_ChecksumCalculator_Title"];
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_ChecksumCalculator_IntroText"];
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_ChecksumCalculator_Title"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_ChecksumCalculator_IntroText"];
 
-            this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_ChecksumCalculator_GroupSourceFiles"];
-            this.grpOptions.Text = ConfigurationSettings.AppSettings["Form_ChecksumCalculator_GroupOptions"];
-            this.cbDoVgmtChecksums.Text = ConfigurationSettings.AppSettings["Form_ChecksumCalculator_CheckBoxDoVgmtChecksums"];
-            this.checkForDuplicatesFlag.Text = ConfigurationSettings.AppSettings["Form_ChecksumCalculator_CheckBoxCheckForDuplicates"];
+            this.grpSourceFiles.Text = ConfigurationManager.AppSettings["Form_ChecksumCalculator_GroupSourceFiles"];
+            this.grpOptions.Text = ConfigurationManager.AppSettings["Form_ChecksumCalculator_GroupOptions"];
+            this.cbDoVgmtChecksums.Text = ConfigurationManager.AppSettings["Form_ChecksumCalculator_CheckBoxDoVgmtChecksums"];
+            this.checkForDuplicatesFlag.Text = ConfigurationManager.AppSettings["Form_ChecksumCalculator_CheckBoxCheckForDuplicates"];
 
-            this.cbMoveDuplicates.Text = ConfigurationSettings.AppSettings["Form_ChecksumCalculator_CheckBoxMoveDuplicates"];
+            this.cbMoveDuplicates.Text = ConfigurationManager.AppSettings["Form_ChecksumCalculator_CheckBoxMoveDuplicates"];
             this.cbMoveDuplicates.Enabled = false;
-            this.cbMoveVgmtDuplicates.Text = ConfigurationSettings.AppSettings["Form_ChecksumCalculator_CheckBoxMoveVgmtDuplicates"];
+            this.cbMoveVgmtDuplicates.Text = ConfigurationManager.AppSettings["Form_ChecksumCalculator_CheckBoxMoveVgmtDuplicates"];
             this.cbMoveVgmtDuplicates.Enabled = false;
 
             this.btnDoTask.Hide();
@@ -62,15 +62,15 @@ namespace VGMToolbox.forms.examine
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_ChecksumCalculator_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_ChecksumCalculator_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_ChecksumCalculator_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_ChecksumCalculator_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_ChecksumCalculator_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_ChecksumCalculator_MessageBegin"];
         }
 
         private void checkForDuplicatesFlag_CheckedChanged(object sender, EventArgs e)

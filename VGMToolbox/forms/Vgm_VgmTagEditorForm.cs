@@ -28,24 +28,24 @@ namespace VGMToolbox.forms
             
             InitializeComponent();
 
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_Title"];
-            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_DoTaskButton"];
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_Info"];
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_Title"];
+            this.btnDoTask.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_DoTaskButton"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_Info"];
 
-            this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_GrpSourceFiles"];
-            this.grpSetTags.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_GrpSetTags"];
-            this.lblGameEn.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblGameEn"];
-            this.lblGameJp.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblGameJp"];
-            this.lblSystemEn.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblSystemEn"];
-            this.lblSystemJp.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblSystemJp"];
-            this.lblArtistEn.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblArtistEn"];
-            this.lblArtistJp.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblArtistJp"];
-            this.lblGameDate.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblGameDate"];
-            this.lblRipper.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblRipper"];
-            this.grpTrackTags.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_GrpTrackTags"];
-            this.lblTrackTitleEn.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblTrackTitleEn"];
-            this.lblTrackTitleJp.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblTrackTitleJp"];
-            this.grpComments.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_GrpComments"];
+            this.grpSourceFiles.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_GrpSourceFiles"];
+            this.grpSetTags.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_GrpSetTags"];
+            this.lblGameEn.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_LblGameEn"];
+            this.lblGameJp.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_LblGameJp"];
+            this.lblSystemEn.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_LblSystemEn"];
+            this.lblSystemJp.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_LblSystemJp"];
+            this.lblArtistEn.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_LblArtistEn"];
+            this.lblArtistJp.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_LblArtistJp"];
+            this.lblGameDate.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_LblGameDate"];
+            this.lblRipper.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_LblRipper"];
+            this.grpTrackTags.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_GrpTrackTags"];
+            this.lblTrackTitleEn.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_LblTrackTitleEn"];
+            this.lblTrackTitleJp.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_LblTrackTitleJp"];
+            this.grpComments.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_GrpComments"];
 
             this.loadSystems();
             this.setReadonlyFields();
@@ -171,15 +171,15 @@ namespace VGMToolbox.forms
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_VgmTagEditor_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_VgmTagEditor_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_VgmTagEditor_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_VgmTagEditor_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_VgmTagEditor_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_VgmTagEditor_MessageBegin"];
         }
 
         private void btnDoTask_Click(object sender, EventArgs e)

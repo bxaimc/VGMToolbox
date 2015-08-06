@@ -465,7 +465,7 @@ namespace VGMToolbox.format
         private void BuildRomFsFile(FileStream isoStream, long ivfcOffset, long fileEntryOffset, long fileBlockOffset, long romFsDataOffset)
         {
             RomFsFileEntry file = new RomFsFileEntry();
-            Nintendo3dsCtrFile tempFile;
+            // Nintendo3dsCtrFile tempFile;
             byte[] nameBytes;
 
             // load dir

@@ -14,15 +14,15 @@ namespace VGMToolbox.forms.xsf
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_Psf2SqExtractor_Title"];          
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_Psf2SqExtractor_Title"];          
             this.btnDoTask.Hide();
 
             InitializeComponent();
             this.grpSource.AllowDrop = true;
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_Psf2SqExtractor_IntroText"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_Psf2SqExtractor_IntroText"];
 
             this.grpSource.Text =
-                ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
+                ConfigurationManager.AppSettings["Form_Global_DropSourceFiles"];
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -46,15 +46,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_Psf2SqExtractor_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_Psf2SqExtractor_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_Psf2SqExtractor_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_Psf2SqExtractor_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_Psf2SqExtractor_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_Psf2SqExtractor_MessageBegin"];
         }
     }
 }

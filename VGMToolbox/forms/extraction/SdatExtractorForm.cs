@@ -14,8 +14,8 @@ namespace VGMToolbox.forms.extraction
         public SdatExtractorForm(TreeNode pTreeNode): base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_SdatExtractor_Title"];
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_SdatExtractor_IntroText"];
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_SdatExtractor_Title"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_SdatExtractor_IntroText"];
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
 
@@ -24,7 +24,7 @@ namespace VGMToolbox.forms.extraction
             this.groupSource.AllowDrop = true;
 
             this.groupSource.Text =
-                ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
+                ConfigurationManager.AppSettings["Form_Global_DropSourceFiles"];
         }
 
         private void tbNDS_SdatExtractor_Source_DragDrop(object sender, DragEventArgs e)
@@ -47,15 +47,15 @@ namespace VGMToolbox.forms.extraction
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SdatExtractor_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_SdatExtractor_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SdatExtractor_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_SdatExtractor_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SdatExtractor_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_SdatExtractor_MessageBegin"];
         }
     }
 }

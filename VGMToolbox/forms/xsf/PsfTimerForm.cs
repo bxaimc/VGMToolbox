@@ -14,24 +14,24 @@ namespace VGMToolbox.forms.xsf
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_SeqExtractor_Title"];
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_SeqExtractor_IntroText"];
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_SeqExtractor_Title"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_SeqExtractor_IntroText"];
             this.btnDoTask.Hide();
             
             InitializeComponent();
 
             this.grpSource.Text =
-                ConfigurationSettings.AppSettings["Form_SeqExtractor_GroupSource"];
+                ConfigurationManager.AppSettings["Form_SeqExtractor_GroupSource"];
             this.grpOptions.Text =
-                ConfigurationSettings.AppSettings["Form_SeqExtractor_GroupOptions"];
+                ConfigurationManager.AppSettings["Form_SeqExtractor_GroupOptions"];
             this.cbForce2Loops.Text =
-                ConfigurationSettings.AppSettings["Form_SeqExtractor_CheckBoxForce2Loops"];
+                ConfigurationManager.AppSettings["Form_SeqExtractor_CheckBoxForce2Loops"];
             this.rbForceSepType.Text =
-                ConfigurationSettings.AppSettings["Form_SeqExtractor_RadioForceSepType"];
+                ConfigurationManager.AppSettings["Form_SeqExtractor_RadioForceSepType"];
             this.rbForceSeqType.Text =
-                ConfigurationSettings.AppSettings["Form_SeqExtractor_RadioForceSeqType"];
+                ConfigurationManager.AppSettings["Form_SeqExtractor_RadioForceSeqType"];
             this.cbLoopEntireTrack.Text =
-                ConfigurationSettings.AppSettings["Form_SeqExtractor_CheckBoxLoopEntireTrack"];
+                ConfigurationManager.AppSettings["Form_SeqExtractor_CheckBoxLoopEntireTrack"];
 
             this.grpSource.AllowDrop = true;
             this.rbForceSeqType.Checked = true;
@@ -73,15 +73,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SeqExtractor_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_SeqExtractor_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SeqExtractor_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_SeqExtractor_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SeqExtractor_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_SeqExtractor_MessageBegin"];
         }
 
         private void rbForceSepType_CheckedChanged(object sender, EventArgs e)

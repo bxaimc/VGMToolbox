@@ -278,7 +278,7 @@ namespace VGMToolbox.plugin
             if (e.Cancelled)
             {
                 toolStripStatusLabel1.Text = this.cancelMessage;
-                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_OperationCancelled"];
+                tbOutput.Text += ConfigurationManager.AppSettings["Form_Global_OperationCancelled"];
             }
             else
             {
@@ -293,7 +293,7 @@ namespace VGMToolbox.plugin
         {
             if (backgroundWorker != null && backgroundWorker.IsBusy)
             {
-                tbOutput.Text += ConfigurationSettings.AppSettings["Form_Global_CancelPending"];
+                tbOutput.Text += ConfigurationManager.AppSettings["Form_Global_CancelPending"];
                 backgroundWorker.CancelAsync();
                 this.errorFound = true;
             }

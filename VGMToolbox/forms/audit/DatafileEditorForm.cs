@@ -20,9 +20,9 @@ namespace VGMToolbox.forms.audit
         {
             InitializeComponent();
 
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_DatafileEditor_Title"];
-            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_DatafileEditor_DoTaskButton"];
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_DatafileEditor_IntroText"];
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_DatafileEditor_Title"];
+            this.btnDoTask.Text = ConfigurationManager.AppSettings["Form_DatafileEditor_DoTaskButton"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_DatafileEditor_IntroText"];
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace VGMToolbox.forms.audit
                 catch (Exception ex)
                 {
                     MessageBox.Show(
-                        String.Format(ConfigurationSettings.AppSettings["Form_DatafileEditor_ErrorDatafileParse"], ex.Message, Environment.NewLine), "Error");
+                        String.Format(ConfigurationManager.AppSettings["Form_DatafileEditor_ErrorDatafileParse"], ex.Message, Environment.NewLine), "Error");
                 }
             }
         }
@@ -155,8 +155,8 @@ namespace VGMToolbox.forms.audit
             }
             else
             {
-                MessageBox.Show(ConfigurationSettings.AppSettings["Form_DatafileEditor_ErrorDatafileSelectedNode"], 
-                    ConfigurationSettings.AppSettings["Form_DatafileEditor_ErrorDatafileSelectedNodeTitle"]);
+                MessageBox.Show(ConfigurationManager.AppSettings["Form_DatafileEditor_ErrorDatafileSelectedNode"], 
+                    ConfigurationManager.AppSettings["Form_DatafileEditor_ErrorDatafileSelectedNodeTitle"]);
             }
 
         }
@@ -185,8 +185,8 @@ namespace VGMToolbox.forms.audit
             }
             else
             {
-                MessageBox.Show(ConfigurationSettings.AppSettings["Form_DatafileEditor_ErrorDatafileSelectedNode"],
-                    ConfigurationSettings.AppSettings["Form_DatafileEditor_ErrorDatafileSelectedNodeTitle"]);
+                MessageBox.Show(ConfigurationManager.AppSettings["Form_DatafileEditor_ErrorDatafileSelectedNode"],
+                    ConfigurationManager.AppSettings["Form_DatafileEditor_ErrorDatafileSelectedNodeTitle"]);
             }
         }
 

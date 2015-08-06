@@ -24,14 +24,14 @@ namespace VGMToolbox.forms.xsf
         {
             InitializeComponent();
 
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_RecompressXsf_Title"];
-            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_RecompressXsf_DoTaskButton"];
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_RecompressXsf_Title"];
+            this.btnDoTask.Text = ConfigurationManager.AppSettings["Form_RecompressXsf_DoTaskButton"];
             this.loadCompressionComboBox();
 
-            this.grpSource.Text = ConfigurationSettings.AppSettings["Form_RecompressXsf_GroupSource"];
-            this.lblSourceDragNDrop.Text = ConfigurationSettings.AppSettings["Form_RecompressXsf_LabelSourceDragNDrop"];
-            this.grpOptions.Text = ConfigurationSettings.AppSettings["Form_RecompressXsf_GroupOptions"];
-            this.cb7zipTopLevelFolders.Text = ConfigurationSettings.AppSettings["Form_RecompressXsf_CheckBox7zipTopLevelFolders"];
+            this.grpSource.Text = ConfigurationManager.AppSettings["Form_RecompressXsf_GroupSource"];
+            this.lblSourceDragNDrop.Text = ConfigurationManager.AppSettings["Form_RecompressXsf_LabelSourceDragNDrop"];
+            this.grpOptions.Text = ConfigurationManager.AppSettings["Form_RecompressXsf_GroupOptions"];
+            this.cb7zipTopLevelFolders.Text = ConfigurationManager.AppSettings["Form_RecompressXsf_CheckBox7zipTopLevelFolders"];
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -45,15 +45,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_RecompressXsf_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_RecompressXsf_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_RecompressXsf_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_RecompressXsf_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_RecompressXsf_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_RecompressXsf_MessageBegin"];
         }
 
         private void loadCompressionComboBox()

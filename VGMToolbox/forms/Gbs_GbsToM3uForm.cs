@@ -15,7 +15,7 @@ namespace VGMToolbox.forms
         {
             // set title
             this.lblTitle.Text = 
-                ConfigurationSettings.AppSettings["Form_GbsM3u_Title"];
+                ConfigurationManager.AppSettings["Form_GbsM3u_Title"];
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
             
@@ -24,11 +24,11 @@ namespace VGMToolbox.forms
             this.grpSource.AllowDrop = true;
 
             this.grpSource.Text =
-                ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
+                ConfigurationManager.AppSettings["Form_Global_DropSourceFiles"];
             this.grpOptions.Text =
-                ConfigurationSettings.AppSettings["Form_GbsM3u_GroupOptions"];
+                ConfigurationManager.AppSettings["Form_GbsM3u_GroupOptions"];
             this.cbGBS_OneM3uPerTrack.Text =
-                ConfigurationSettings.AppSettings["Form_GbsM3u_CheckBoxOneM3uPerTrack"];
+                ConfigurationManager.AppSettings["Form_GbsM3u_CheckBoxOneM3uPerTrack"];
         }
 
         private void tbGBS_gbsm3uSource_DragDrop(object sender, DragEventArgs e)
@@ -53,15 +53,15 @@ namespace VGMToolbox.forms
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_GbsM3u_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_GbsM3u_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_GbsM3u_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_GbsM3u_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_GbsM3u_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_GbsM3u_MessageBegin"];
         }
     }
 }

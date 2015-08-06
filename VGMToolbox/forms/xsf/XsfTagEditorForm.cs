@@ -27,27 +27,27 @@ namespace VGMToolbox.forms.xsf
             
             InitializeComponent();
 
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_Title"];
-            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_DoTaskButton"];
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_Info"];
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_XsfTagEditor_Title"];
+            this.btnDoTask.Text = ConfigurationManager.AppSettings["Form_XsfTagEditor_DoTaskButton"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_XsfTagEditor_Info"];
 
-            this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_GrpSourceFiles"];
-            this.grpSetTags.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_GrpSetTags"];
-            this.lblGame.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblGame"];
-            this.lblArtist.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblArtist"];
-            this.lblCopyright.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblCopyright"];
-            this.lblGenre.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblGenre"];
-            this.lblYear.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblYear"];
-            this.lblXsfBy.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblXsfBy"];
-            this.lblSystem.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblSystem"];
-            this.grpTrackTags.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_GrpTrackTags"];
-            this.lblTrackTitle.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblTrackTitle"];
-            this.lblLength.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblLength"];
-            this.lblFade.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblFade"];
-            this.lblVolume.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_LblVolume"];
-            this.grpComments.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_GrpComments"];
-            this.cbDeleteEmpty.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_CbDeleteEmpty"];
-            this.cbAddToBatchFile.Text = ConfigurationSettings.AppSettings["Form_XsfTagEditor_CheckboxCreateBatch"];
+            this.grpSourceFiles.Text = ConfigurationManager.AppSettings["Form_XsfTagEditor_GrpSourceFiles"];
+            this.grpSetTags.Text = ConfigurationManager.AppSettings["Form_XsfTagEditor_GrpSetTags"];
+            this.lblGame.Text = ConfigurationManager.AppSettings["Form_XsfTagEditor_LblGame"];
+            this.lblArtist.Text = ConfigurationManager.AppSettings["Form_XsfTagEditor_LblArtist"];
+            this.lblCopyright.Text = ConfigurationManager.AppSettings["Form_XsfTagEditor_LblCopyright"];
+            this.lblGenre.Text = ConfigurationManager.AppSettings["Form_XsfTagEditor_LblGenre"];
+            this.lblYear.Text = ConfigurationManager.AppSettings["Form_XsfTagEditor_LblYear"];
+            this.lblXsfBy.Text = ConfigurationManager.AppSettings["Form_XsfTagEditor_LblXsfBy"];
+            this.lblSystem.Text = ConfigurationManager.AppSettings["Form_XsfTagEditor_LblSystem"];
+            this.grpTrackTags.Text = ConfigurationManager.AppSettings["Form_XsfTagEditor_GrpTrackTags"];
+            this.lblTrackTitle.Text = ConfigurationManager.AppSettings["Form_XsfTagEditor_LblTrackTitle"];
+            this.lblLength.Text = ConfigurationManager.AppSettings["Form_XsfTagEditor_LblLength"];
+            this.lblFade.Text = ConfigurationManager.AppSettings["Form_XsfTagEditor_LblFade"];
+            this.lblVolume.Text = ConfigurationManager.AppSettings["Form_XsfTagEditor_LblVolume"];
+            this.grpComments.Text = ConfigurationManager.AppSettings["Form_XsfTagEditor_GrpComments"];
+            this.cbDeleteEmpty.Text = ConfigurationManager.AppSettings["Form_XsfTagEditor_CbDeleteEmpty"];
+            this.cbAddToBatchFile.Text = ConfigurationManager.AppSettings["Form_XsfTagEditor_CheckboxCreateBatch"];
 
             // this.cbRemoveBrackets.Text
             this.cbRemoveBrackets.Enabled = false;
@@ -221,15 +221,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_XsfTagEditor_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_XsfTagEditor_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_XsfTagEditor_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_XsfTagEditor_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_XsfTagEditor_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_XsfTagEditor_MessageBegin"];
         }
 
         private void cbGenerateTitleFromFilename_CheckedChanged(object sender, EventArgs e)

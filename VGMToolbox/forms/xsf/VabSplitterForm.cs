@@ -11,15 +11,15 @@ namespace VGMToolbox.forms.xsf
         public VabSplitterForm(TreeNode pTreeNode)
             : base(pTreeNode)
         {
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_VabSplitter_Title"];
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_VabSplitter_IntroText"];
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_VabSplitter_Title"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_VabSplitter_IntroText"];
 
             InitializeComponent();
 
             this.grpSourceFiles.AllowDrop = true;
             this.btnDoTask.Hide();
             
-            this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
+            this.grpSourceFiles.Text = ConfigurationManager.AppSettings["Form_Global_DropSourceFiles"];
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -33,15 +33,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_VabSplitter_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_VabSplitter_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_VabSplitter_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_VabSplitter_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_VabSplitter_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_VabSplitter_MessageBegin"];
         }
 
         private void grpSourceFiles_DragDrop(object sender, DragEventArgs e)

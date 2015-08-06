@@ -27,19 +27,19 @@ namespace VGMToolbox.forms.examine
             
             InitializeComponent();
 
-            this.grpSetTags.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_GrpSetTags"];
-            this.lblGameEn.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblGameEn"];
-            this.lblGameJp.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblGameJp"];
-            this.lblSystemEn.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblSystemEn"];
-            this.lblSystemJp.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblSystemJp"];
-            this.lblArtistEn.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblArtistEn"];
-            this.lblArtistJp.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblArtistJp"];
-            this.lblGameDate.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblGameDate"];
-            this.lblRipper.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblRipper"];
-            this.grpTrackTags.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_GrpTrackTags"];
-            this.lblTrackTitleEn.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblTrackTitleEn"];
-            this.lblTrackTitleJp.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_LblTrackTitleJp"];
-            this.grpComments.Text = ConfigurationSettings.AppSettings["Form_VgmTagEditor_GrpComments"];
+            this.grpSetTags.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_GrpSetTags"];
+            this.lblGameEn.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_LblGameEn"];
+            this.lblGameJp.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_LblGameJp"];
+            this.lblSystemEn.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_LblSystemEn"];
+            this.lblSystemJp.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_LblSystemJp"];
+            this.lblArtistEn.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_LblArtistEn"];
+            this.lblArtistJp.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_LblArtistJp"];
+            this.lblGameDate.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_LblGameDate"];
+            this.lblRipper.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_LblRipper"];
+            this.grpTrackTags.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_GrpTrackTags"];
+            this.lblTrackTitleEn.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_LblTrackTitleEn"];
+            this.lblTrackTitleJp.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_LblTrackTitleJp"];
+            this.grpComments.Text = ConfigurationManager.AppSettings["Form_VgmTagEditor_GrpComments"];
 
             this.loadSystems();
             this.loadCurrentTagInformation();

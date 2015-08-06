@@ -15,37 +15,37 @@ namespace VGMToolbox.forms.xsf
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_MkPsf2FE_Title"];
-            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_MkPsf2FE_DoTaskButton"];
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_MkPsf2FE_Title"];
+            this.btnDoTask.Text = ConfigurationManager.AppSettings["Form_MkPsf2FE_DoTaskButton"];
 
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_MkPsf2FE_IntroText1"] + Environment.NewLine;
-            this.tbOutput.Text += ConfigurationSettings.AppSettings["Form_MkPsf2FE_IntroText2"] + Environment.NewLine + Environment.NewLine;
-            this.tbOutput.Text += ConfigurationSettings.AppSettings["Form_MkPsf2FE_IntroText3"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_MkPsf2FE_IntroText1"] + Environment.NewLine;
+            this.tbOutput.Text += ConfigurationManager.AppSettings["Form_MkPsf2FE_IntroText2"] + Environment.NewLine + Environment.NewLine;
+            this.tbOutput.Text += ConfigurationManager.AppSettings["Form_MkPsf2FE_IntroText3"];
 
             InitializeComponent();
 
             this.grpDirectory.Text =
-                ConfigurationSettings.AppSettings["Form_MkPsf2FE_GroupDirectory"];
+                ConfigurationManager.AppSettings["Form_MkPsf2FE_GroupDirectory"];
             this.lblSourceDirectory.Text =
-                ConfigurationSettings.AppSettings["Form_MkPsf2FE_LblSourceDirectory"];
+                ConfigurationManager.AppSettings["Form_MkPsf2FE_LblSourceDirectory"];
             this.lblModulesDirectory.Text =
-                ConfigurationSettings.AppSettings["Form_MkPsf2FE_LblModulesDirectory"];
+                ConfigurationManager.AppSettings["Form_MkPsf2FE_LblModulesDirectory"];
             this.lblOutputFolder.Text =
-                ConfigurationSettings.AppSettings["Form_MkPsf2FE_LblOutputFolder"];
+                ConfigurationManager.AppSettings["Form_MkPsf2FE_LblOutputFolder"];
             this.grpOptions.Text =
-                ConfigurationSettings.AppSettings["Form_MkPsf2FE_GroupOptions"];
+                ConfigurationManager.AppSettings["Form_MkPsf2FE_GroupOptions"];
             this.lblReverb.Text =
-                ConfigurationSettings.AppSettings["Form_MkPsf2FE_LblReverb"];
+                ConfigurationManager.AppSettings["Form_MkPsf2FE_LblReverb"];
             this.lblDepth.Text =
-                ConfigurationSettings.AppSettings["Form_MkPsf2FE_LblDepth"];
+                ConfigurationManager.AppSettings["Form_MkPsf2FE_LblDepth"];
             this.lblVolume.Text =
-                ConfigurationSettings.AppSettings["Form_MkPsf2FE_LblVolume"];
+                ConfigurationManager.AppSettings["Form_MkPsf2FE_LblVolume"];
             this.lblTempo.Text =
-                ConfigurationSettings.AppSettings["Form_MkPsf2FE_LblTempo"];
+                ConfigurationManager.AppSettings["Form_MkPsf2FE_LblTempo"];
             this.lblTickInterval.Text =
-                ConfigurationSettings.AppSettings["Form_MkPsf2FE_LblTickInterval"];
+                ConfigurationManager.AppSettings["Form_MkPsf2FE_LblTickInterval"];
             this.lblAuthor.Text =
-                ConfigurationSettings.AppSettings["Form_MkPsf2FE_LblAuthor"];
+                ConfigurationManager.AppSettings["Form_MkPsf2FE_LblAuthor"];
             
             this.lblPsf2LibName.Text = "PSF2Lib Name";
             this.cbMakePsf2Lib.Text = "Create .psf2lib for HD/BD data";
@@ -95,15 +95,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_MkPsf2FE_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_MkPsf2FE_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_MkPsf2FE_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_MkPsf2FE_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_MkPsf2FE_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_MkPsf2FE_MessageBegin"];
         }
 
         private void tbSourceDirectory_DragEnter(object sender, DragEventArgs e)

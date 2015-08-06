@@ -161,7 +161,6 @@ namespace VGMToolbox.forms.extraction
         {
             TreeNode directoryNode;
             TreeNode subDirectoryNode;
-            TreeNode fileNode;
 
             directoryNode = new TreeNode(directory.DirectoryName);
             directoryNode.Tag = directory;
@@ -174,13 +173,6 @@ namespace VGMToolbox.forms.extraction
                 directoryNode.Nodes.Add(subDirectoryNode);
             }
             
-            //foreach (IFileStructure f in directory.Files)
-            //{
-            //    fileNode = GetFileNode(f);
-            //    fileNode.Tag = fileNode;
-            //    directoryNode.Nodes.Add(fileNode);
-            //}
-
             return directoryNode;
         }
 

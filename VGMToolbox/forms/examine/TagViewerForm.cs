@@ -13,19 +13,19 @@ namespace VGMToolbox.forms.examine
         public TagViewerForm(TreeNode pTreeNode) : base(pTreeNode) 
         {
             this.lblTitle.Text =
-                ConfigurationSettings.AppSettings["Form_ExamineTags_Title"];
+                ConfigurationManager.AppSettings["Form_ExamineTags_Title"];
             this.btnDoTask.Text =
-                ConfigurationSettings.AppSettings["Form_ExamineTags_DoTaskButton"];
+                ConfigurationManager.AppSettings["Form_ExamineTags_DoTaskButton"];
 
             this.tbOutput.Text =
-                ConfigurationSettings.AppSettings["Form_ExamineTags_IntroText1"] + System.Environment.NewLine;
+                ConfigurationManager.AppSettings["Form_ExamineTags_IntroText1"] + System.Environment.NewLine;
             this.tbOutput.Text +=
-                ConfigurationSettings.AppSettings["Form_ExamineTags_IntroText2"] + System.Environment.NewLine;
+                ConfigurationManager.AppSettings["Form_ExamineTags_IntroText2"] + System.Environment.NewLine;
 
             InitializeComponent();
 
             this.cbCheckForLibs.Text =
-                ConfigurationSettings.AppSettings["Form_ExamineTags_CheckBoxCheckForLibs"];
+                ConfigurationManager.AppSettings["Form_ExamineTags_CheckBoxCheckForLibs"];
         }
 
         private void tbXsfSource_DragDrop(object sender, DragEventArgs e)
@@ -56,15 +56,15 @@ namespace VGMToolbox.forms.examine
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_ExamineTags_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_ExamineTags_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_ExamineTags_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_ExamineTags_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_ExamineTags_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_ExamineTags_MessageBegin"];
         }
     }
 }

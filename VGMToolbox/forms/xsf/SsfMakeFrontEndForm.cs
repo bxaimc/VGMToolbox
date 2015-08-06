@@ -15,43 +15,43 @@ namespace VGMToolbox.forms.xsf
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_SsfMakeFE_Title"];
-            this.btnDoTask.Text = ConfigurationSettings.AppSettings["Form_SsfMakeFE_DoTaskButton"];
-            this.tbOutput.Text += ConfigurationSettings.AppSettings["Form_SsfMakeFE_IntroText1"] + Environment.NewLine;
-            this.tbOutput.Text += ConfigurationSettings.AppSettings["Form_SsfMakeFE_IntroText2"] + Environment.NewLine;
-            this.tbOutput.Text += ConfigurationSettings.AppSettings["Form_SsfMakeFE_IntroText3"] + Environment.NewLine;
-            this.tbOutput.Text += ConfigurationSettings.AppSettings["Form_SsfMakeFE_IntroText4"] + Environment.NewLine;
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_SsfMakeFE_Title"];
+            this.btnDoTask.Text = ConfigurationManager.AppSettings["Form_SsfMakeFE_DoTaskButton"];
+            this.tbOutput.Text += ConfigurationManager.AppSettings["Form_SsfMakeFE_IntroText1"] + Environment.NewLine;
+            this.tbOutput.Text += ConfigurationManager.AppSettings["Form_SsfMakeFE_IntroText2"] + Environment.NewLine;
+            this.tbOutput.Text += ConfigurationManager.AppSettings["Form_SsfMakeFE_IntroText3"] + Environment.NewLine;
+            this.tbOutput.Text += ConfigurationManager.AppSettings["Form_SsfMakeFE_IntroText4"] + Environment.NewLine;
 
             InitializeComponent();
 
             this.groupFiles.Text =
-                ConfigurationSettings.AppSettings["Form_SsfMakeFE_GroupFiles"];
+                ConfigurationManager.AppSettings["Form_SsfMakeFE_GroupFiles"];
             this.lblDriver.Text =
-                ConfigurationSettings.AppSettings["Form_SsfMakeFE_LblDriver"];
+                ConfigurationManager.AppSettings["Form_SsfMakeFE_LblDriver"];
             this.lblSourcePath.Text =
-                ConfigurationSettings.AppSettings["Form_SsfMakeFE_LblSourcePath"];
+                ConfigurationManager.AppSettings["Form_SsfMakeFE_LblSourcePath"];
             this.lblOutputFolder.Text =
-                ConfigurationSettings.AppSettings["Form_SsfMakeFE_LblOutputFolder"];
+                ConfigurationManager.AppSettings["Form_SsfMakeFE_LblOutputFolder"];
             this.lblSingleDspFile.Text =
-                ConfigurationSettings.AppSettings["Form_SsfMakeFE_LblSingleDspFile"];
+                ConfigurationManager.AppSettings["Form_SsfMakeFE_LblSingleDspFile"];
             this.grpSettings.Text =
-                ConfigurationSettings.AppSettings["Form_SsfMakeFE_GroupSettings"];
+                ConfigurationManager.AppSettings["Form_SsfMakeFE_GroupSettings"];
             this.lblSequenceBank.Text =
-                ConfigurationSettings.AppSettings["Form_SsfMakeFE_LblSequenceBank"];
+                ConfigurationManager.AppSettings["Form_SsfMakeFE_LblSequenceBank"];
             this.lblSequenceTrack.Text =
-                ConfigurationSettings.AppSettings["Form_SsfMakeFE_LblSequenceTrack"];
+                ConfigurationManager.AppSettings["Form_SsfMakeFE_LblSequenceTrack"];
             this.lblVolume.Text =
-                ConfigurationSettings.AppSettings["Form_SsfMakeFE_LblVolume"];
+                ConfigurationManager.AppSettings["Form_SsfMakeFE_LblVolume"];
             this.lblMixerBank.Text =
-                ConfigurationSettings.AppSettings["Form_SsfMakeFE_LblMixerBank"];
+                ConfigurationManager.AppSettings["Form_SsfMakeFE_LblMixerBank"];
             this.lblMixerNumber.Text =
-                ConfigurationSettings.AppSettings["Form_SsfMakeFE_LblMixerNumber"];
+                ConfigurationManager.AppSettings["Form_SsfMakeFE_LblMixerNumber"];
             this.lblEffect.Text =
-                ConfigurationSettings.AppSettings["Form_SsfMakeFE_LblEffect"];
+                ConfigurationManager.AppSettings["Form_SsfMakeFE_LblEffect"];
             this.cbMatchSeqBank.Text =
-                ConfigurationSettings.AppSettings["Form_SsfMakeFE_CheckBoxMatchSeqBank"];
+                ConfigurationManager.AppSettings["Form_SsfMakeFE_CheckBoxMatchSeqBank"];
             this.cbSeekData.Text =
-                ConfigurationSettings.AppSettings["Form_SsfMakeFE_CheckBoxSeekData"];
+                ConfigurationManager.AppSettings["Form_SsfMakeFE_CheckBoxSeekData"];
 
         }
 
@@ -112,15 +112,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SsfMakeFE_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_SsfMakeFE_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SsfMakeFE_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_SsfMakeFE_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SsfMakeFE_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_SsfMakeFE_MessageBegin"];
         }
 
         private void tbDriver_DragEnter(object sender, DragEventArgs e)

@@ -16,24 +16,24 @@ namespace VGMToolbox.forms.xsf
         {
             // set title
             this.lblTitle.Text = 
-                ConfigurationSettings.AppSettings["Form_2sfTimer_Title"];
+                ConfigurationManager.AppSettings["Form_2sfTimer_Title"];
             this.btnDoTask.Text = 
-                ConfigurationSettings.AppSettings["Form_2sfTimer_DoTaskButton"];
+                ConfigurationManager.AppSettings["Form_2sfTimer_DoTaskButton"];
             this.tbOutput.Text = 
-                ConfigurationSettings.AppSettings["Form_2sfTimer_IntroText"];
+                ConfigurationManager.AppSettings["Form_2sfTimer_IntroText"];
 
             InitializeComponent();
 
             this.grpSourcePaths.Text =
-                ConfigurationSettings.AppSettings["Form_2sfTimer_GroupSourcePaths"];
+                ConfigurationManager.AppSettings["Form_2sfTimer_GroupSourcePaths"];
             this.lblPathTo2sfFiles.Text =
-                ConfigurationSettings.AppSettings["Form_2sfTimer_LblPathTo2sfFiles"];
+                ConfigurationManager.AppSettings["Form_2sfTimer_LblPathTo2sfFiles"];
             this.lblPathToSdat.Text =
-                ConfigurationSettings.AppSettings["Form_2sfTimer_LblPathToSdat"];
+                ConfigurationManager.AppSettings["Form_2sfTimer_LblPathToSdat"];
             this.grpOptions.Text =
-                ConfigurationSettings.AppSettings["Form_2sfTimer_GroupOptions"];
+                ConfigurationManager.AppSettings["Form_2sfTimer_GroupOptions"];
             this.cbOneLoop.Text =
-                ConfigurationSettings.AppSettings["Form_2sfTimer_CheckboxSingleLoop"];
+                ConfigurationManager.AppSettings["Form_2sfTimer_CheckboxSingleLoop"];
         }
 
         private void btnDoTask_Click(object sender, EventArgs e)
@@ -61,15 +61,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_2sfTimer_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_2sfTimer_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_2sfTimer_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_2sfTimer_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_2sfTimer_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_2sfTimer_MessageBegin"];
         }
     }
 }

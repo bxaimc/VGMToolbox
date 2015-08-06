@@ -18,8 +18,8 @@ namespace VGMToolbox.forms.xsf
             : base(pTreeNode)
         {
             // set title
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_SeqextTonextFE_Title"];
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_SeqextTonextFE_IntroText"];
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_SeqextTonextFE_Title"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_SeqextTonextFE_IntroText"];
 
             // hide the DoTask button since this is a drag and drop form
             this.btnDoTask.Hide();
@@ -27,13 +27,13 @@ namespace VGMToolbox.forms.xsf
             InitializeComponent();
 
             this.grpSource.Text =
-                ConfigurationSettings.AppSettings["Form_SeqextTonextFE_GroupSource"];
+                ConfigurationManager.AppSettings["Form_SeqextTonextFE_GroupSource"];
             this.lblDragNDrop.Text =
-                ConfigurationSettings.AppSettings["Form_SeqextTonextFE_LblDragNDrop"];
+                ConfigurationManager.AppSettings["Form_SeqextTonextFE_LblDragNDrop"];
             this.cbExtractToSubfolder.Text =
-                ConfigurationSettings.AppSettings["Form_SeqextTonextFE_CheckBoxExtractToSubfolder"];
+                ConfigurationManager.AppSettings["Form_SeqextTonextFE_CheckBoxExtractToSubfolder"];
             this.lblAuthor.Text =
-                ConfigurationSettings.AppSettings["Form_SeqextTonextFE_LblAuthor"];
+                ConfigurationManager.AppSettings["Form_SeqextTonextFE_LblAuthor"];
         }
 
         private void tbSsfSqTonExtSource_DragDrop(object sender, DragEventArgs e)
@@ -57,15 +57,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SeqextTonextFE_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_SeqextTonextFE_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SeqextTonextFE_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_SeqextTonextFE_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_SeqextTonextFE_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_SeqextTonextFE_MessageBegin"];
         }
     }
 }

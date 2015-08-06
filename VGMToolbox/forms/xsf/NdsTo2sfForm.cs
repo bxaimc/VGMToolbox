@@ -28,12 +28,12 @@ namespace VGMToolbox.forms.xsf
             this.grpSourceFiles.AllowDrop = true;
             this.btnDoTask.Hide();
 
-            this.lblTitle.Text = ConfigurationSettings.AppSettings["Form_NdsTo2sf_Title"];
-            this.tbOutput.Text = ConfigurationSettings.AppSettings["Form_NdsTo2sf_IntroText"] + Environment.NewLine;
-            this.tbOutput.Text += ConfigurationSettings.AppSettings["Form_Make2sf_IntroText1"] + Environment.NewLine;            
+            this.lblTitle.Text = ConfigurationManager.AppSettings["Form_NdsTo2sf_Title"];
+            this.tbOutput.Text = ConfigurationManager.AppSettings["Form_NdsTo2sf_IntroText"] + Environment.NewLine;
+            this.tbOutput.Text += ConfigurationManager.AppSettings["Form_Make2sf_IntroText1"] + Environment.NewLine;            
             this.tbOutput.Text +=
-                String.Format(ConfigurationSettings.AppSettings["Form_Make2sf_IntroText2"], Path.GetDirectoryName(testpackPath)) + Environment.NewLine;
-            this.grpSourceFiles.Text = ConfigurationSettings.AppSettings["Form_Global_DropSourceFiles"];
+                String.Format(ConfigurationManager.AppSettings["Form_Make2sf_IntroText2"], Path.GetDirectoryName(testpackPath)) + Environment.NewLine;
+            this.grpSourceFiles.Text = ConfigurationManager.AppSettings["Form_Global_DropSourceFiles"];
         }
 
         protected override void doDragEnter(object sender, DragEventArgs e)
@@ -46,15 +46,15 @@ namespace VGMToolbox.forms.xsf
         }
         protected override string getCancelMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_NdsTo2sf_MessageCancel"];
+            return ConfigurationManager.AppSettings["Form_NdsTo2sf_MessageCancel"];
         }
         protected override string getCompleteMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_NdsTo2sf_MessageComplete"];
+            return ConfigurationManager.AppSettings["Form_NdsTo2sf_MessageComplete"];
         }
         protected override string getBeginMessage()
         {
-            return ConfigurationSettings.AppSettings["Form_NdsTo2sf_MessageBegin"];
+            return ConfigurationManager.AppSettings["Form_NdsTo2sf_MessageBegin"];
         }
 
         private static bool CheckForTestPackNds()
@@ -66,9 +66,9 @@ namespace VGMToolbox.forms.xsf
             if (!File.Exists(testpackPath))
             {
                 ret = false;
-                MessageBox.Show(String.Format(ConfigurationSettings.AppSettings["Form_Make2sf_ErrorMessageTestpackMissing"],
+                MessageBox.Show(String.Format(ConfigurationManager.AppSettings["Form_Make2sf_ErrorMessageTestpackMissing"],
                     Path.GetFileName(testpackPath), Path.GetDirectoryName(testpackPath)),
-                    String.Format(ConfigurationSettings.AppSettings["Form_Make2sf_ErrorMessageTestpackMissingHeader"], Path.GetFileName(testpackPath)));
+                    String.Format(ConfigurationManager.AppSettings["Form_Make2sf_ErrorMessageTestpackMissingHeader"], Path.GetFileName(testpackPath)));
             }
             else
             {
@@ -77,9 +77,9 @@ namespace VGMToolbox.forms.xsf
                     if (!ChecksumUtil.GetCrc32OfFullFile(fs).Equals(Mk2sfWorker.TESTPACK_CRC32))
                     {
                         ret = false;
-                        MessageBox.Show(String.Format(ConfigurationSettings.AppSettings["Form_Make2sf_ErrorMessageTestpackCrc32"],
+                        MessageBox.Show(String.Format(ConfigurationManager.AppSettings["Form_Make2sf_ErrorMessageTestpackCrc32"],
                             Path.GetFileName(testpackPath), Path.GetDirectoryName(testpackPath), NdsTo2sfWorker.TESTPACK_CRC32),
-                            String.Format(ConfigurationSettings.AppSettings["Form_Make2sf_ErrorMessageTestpackCrc32Header"], Path.GetFileName(testpackPath)));
+                            String.Format(ConfigurationManager.AppSettings["Form_Make2sf_ErrorMessageTestpackCrc32Header"], Path.GetFileName(testpackPath)));
                     }
                 }
             }

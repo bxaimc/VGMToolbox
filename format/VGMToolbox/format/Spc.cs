@@ -521,7 +521,7 @@ namespace VGMToolbox.format
 
             string exidSubChunkIntId;
             int exidSubChunkIntLength;            
-            int exidSubChunkRemainder;
+            // int exidSubChunkRemainder;
 
             string ostTrackNo;
 

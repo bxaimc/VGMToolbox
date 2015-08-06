@@ -284,9 +284,9 @@ namespace VGMToolbox.format.util
             int interleave = (int)VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.Interleave);
             int loopEnd = -1;
 
-            int frames;
-            int lastFrame;
-            int dataSize;
+            //int frames;
+            //int lastFrame;
+            //int dataSize;
 
             FileInfo fi = new FileInfo(Path.GetFullPath(pSourcePath));
             int fileLength = (int)fi.Length;
