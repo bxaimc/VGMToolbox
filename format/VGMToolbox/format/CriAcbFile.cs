@@ -170,35 +170,8 @@ namespace VGMToolbox.format
         { 
             string baseExtractionFolder = Path.Combine(Path.GetDirectoryName(this.SourceFile),
                                                        String.Format(EXTRACTION_FOLDER_FORMAT, Path.GetFileNameWithoutExtension(this.SourceFile)));
-        
-            string acbExtractionFolder = Path.Combine(baseExtractionFolder, "acb");
-            string internalAwbExtractionFolder = Path.Combine(acbExtractionFolder, "awb");
-            string awbExtractionFolder = Path.Combine(baseExtractionFolder, "awb");
-
+                  
             this.ExtractAllUsingCueList(baseExtractionFolder);
-            
-        // this.ExtractInternalAwb(internalAwbExtractionFolder);
-            /*
-            // extract internal awb
-            if (this.InternalAwb != null)
-            {
-                if (this.ExternalAwb == null)
-                {
-                    // use cue names since no AWB exists
-                    this.ExtractAwbWithCueNames(internalAwbExtractionFolder, AwbToExtract.Internal);
-                }
-                else
-                {
-                    // use AFS2 IDs, since cue names will apply to external AWB (@TODO: Does a flag exist?)
-                    this.InternalAwb.ExtractAllRaw(internalAwbExtractionFolder);
-                }
-            }
-
-            if (this.ExternalAwb != null)
-            {
-                this.ExtractAwbWithCueNames(awbExtractionFolder, AwbToExtract.External);
-            }
-            */ 
         }
 
         
@@ -420,7 +393,7 @@ namespace VGMToolbox.format
 
                             internalIdsExtracted.Add(cue.WaveformId);
                         }
-                    } // if (cue.IsWaveformIdentified)
+                    } // if (cue.IsWaveformIdentified)                    
                 }
 
                 // extract leftovers
@@ -430,42 +403,47 @@ namespace VGMToolbox.format
                     waveformTableUtf.Initialize(acbStream, (long)this.WaveformTableOffset);
                 }
 
-                var unextractedExternalFiles = this.ExternalAwb.Files.Keys.Where(x => !externalIdsExtracted.Contains(x));
-                foreach (ushort key in unextractedExternalFiles)
+                if (this.ExternalAwb != null)
                 {
-                    waveformIndex = GetWaveformRowIndexForWaveformId(waveformTableUtf, key);
+                    var unextractedExternalFiles = this.ExternalAwb.Files.Keys.Where(x => !externalIdsExtracted.Contains(x));
+                    foreach (ushort key in unextractedExternalFiles)
+                    {
+                        waveformIndex = GetWaveformRowIndexForWaveformId(waveformTableUtf, key);
 
-                    encodeType = (byte)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, waveformIndex, "EncodeType");
+                        encodeType = (byte)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, waveformIndex, "EncodeType");
 
-                    rawFileName = String.Format(rawFileFormat,
-                        Path.GetFileName(this.ExternalAwb.SourceFile), key.ToString("D5"),
-                        CriAcbFile.GetFileExtensionForEncodeType(encodeType));
+                        rawFileName = String.Format(rawFileFormat,
+                            Path.GetFileName(this.ExternalAwb.SourceFile), key.ToString("D5"),
+                            CriAcbFile.GetFileExtensionForEncodeType(encodeType));
 
-                    // extract file
-                    ParseFile.ExtractChunkToFile64(externalFs,
-                        (ulong)this.ExternalAwb.Files[key].FileOffsetByteAligned,
-                        (ulong)this.ExternalAwb.Files[key].FileLength,
-                        Path.Combine(destinationFolder, rawFileName), false, false);
+                        // extract file
+                        ParseFile.ExtractChunkToFile64(externalFs,
+                            (ulong)this.ExternalAwb.Files[key].FileOffsetByteAligned,
+                            (ulong)this.ExternalAwb.Files[key].FileLength,
+                            Path.Combine(destinationFolder, rawFileName), false, false);
+                    }
                 }
 
-                var unextractedInternalFiles = this.InternalAwb.Files.Keys.Where(x => !internalIdsExtracted.Contains(x));
-                foreach (ushort key in unextractedInternalFiles)
+                if (this.InternalAwb != null)
                 {
-                    waveformIndex = GetWaveformRowIndexForWaveformId(waveformTableUtf, key);
+                    var unextractedInternalFiles = this.InternalAwb.Files.Keys.Where(x => !internalIdsExtracted.Contains(x));
+                    foreach (ushort key in unextractedInternalFiles)
+                    {
+                        waveformIndex = GetWaveformRowIndexForWaveformId(waveformTableUtf, key);
 
-                    encodeType = (byte)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, waveformIndex, "EncodeType");
+                        encodeType = (byte)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, waveformIndex, "EncodeType");
 
-                    rawFileName = String.Format(rawFileFormat,
-                        Path.GetFileName(this.InternalAwb.SourceFile), key.ToString("D5"),
-                        CriAcbFile.GetFileExtensionForEncodeType(encodeType));
+                        rawFileName = String.Format(rawFileFormat,
+                            Path.GetFileName(this.InternalAwb.SourceFile), key.ToString("D5"),
+                            CriAcbFile.GetFileExtensionForEncodeType(encodeType));
 
-                    // extract file
-                    ParseFile.ExtractChunkToFile64(internalFs,
-                        (ulong)this.InternalAwb.Files[key].FileOffsetByteAligned,
-                        (ulong)this.InternalAwb.Files[key].FileLength,
-                        Path.Combine(destinationFolder, rawFileName), false, false);
+                        // extract file
+                        ParseFile.ExtractChunkToFile64(internalFs,
+                            (ulong)this.InternalAwb.Files[key].FileOffsetByteAligned,
+                            (ulong)this.InternalAwb.Files[key].FileLength,
+                            Path.Combine(destinationFolder, rawFileName), false, false);
+                    }
                 }
-
             }
             catch (Exception ex)
             {

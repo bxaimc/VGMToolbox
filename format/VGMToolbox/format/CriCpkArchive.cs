@@ -15,7 +15,9 @@ namespace VGMToolbox.format
         public static readonly byte[] STANDARD_IDENTIFIER = new byte[] { 0x43, 0x50, 0x4B, 0x20 };
         public const uint IDENTIFIER_OFFSET = 0x00;
         public const string FORMAT_DESCRIPTION_STRING = "CRI CPK Archive";
-        
+
+        public const string NULL_FILENAME = "<NULL>";
+
         public static readonly byte[] CRILAYLA_SIGNATURE = new byte[] { 0x43, 0x52, 0x49, 0x4C, 0x41, 0x59, 0x4C, 0x41 };
         public const string CRI_CPK_EXTRACTION_FOLDER = "VGMT_CPK_EXTRACT_{0}";
 
@@ -164,9 +166,11 @@ namespace VGMToolbox.format
 
             temp = CriUtfTable.GetUtfFieldForRow(tocUtf, rowIndex, "DirName");
             fileInfo.DirName = temp != null ? (string)temp : null;
+            fileInfo.DirName = fileInfo.DirName.Equals(CriCpkArchive.NULL_FILENAME) ? String.Empty : fileInfo.DirName;
 
             temp = CriUtfTable.GetUtfFieldForRow(tocUtf, rowIndex, "FileName");
             fileInfo.FileName = temp != null ? (string)temp : null;
+            fileInfo.FileName = fileInfo.FileName.Equals(CriCpkArchive.NULL_FILENAME) ? String.Format("{0}.bin", rowIndex.ToString("D5")) : fileInfo.FileName;
 
             temp = CriUtfTable.GetUtfFieldForRow(tocUtf, rowIndex, "FileOffset");
             fileInfo.FileOffset = temp != null ? (ulong)temp : ulong.MaxValue;
@@ -716,13 +720,19 @@ namespace VGMToolbox.format
         public void Extract(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
         {
             string destinationFile = Path.Combine(Path.Combine(destinationFolder, this.ParentDirectoryName), this.FileName);
+            byte[] magicBytes;
 
             if (!streamCache.ContainsKey(this.SourceFilePath))
             {
                 streamCache[this.SourceFilePath] = File.OpenRead(this.SourceFilePath);
             }
 
-            if (this.ExtractSize > this.Size)
+            // check for CRILAYLA signature since file size is not always reliable, 
+            //    this will be a little slower, but hopefully the stream caching will minimize
+            //    the impact
+            magicBytes = ParseFile.ParseSimpleOffset(streamCache[this.SourceFilePath], (long)this.Offset, CriCpkArchive.CRILAYLA_SIGNATURE.Length);
+
+            if (ParseFile.CompareSegment(magicBytes, 0, CriCpkArchive.CRILAYLA_SIGNATURE))
             {
                 CriCpkArchive.Uncompress(streamCache[this.SourceFilePath], (long)this.Offset, this.Size, destinationFile);
             }

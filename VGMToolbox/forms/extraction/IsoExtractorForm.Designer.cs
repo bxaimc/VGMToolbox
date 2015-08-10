@@ -32,11 +32,11 @@
             this.IsoFolderTreeView = new System.Windows.Forms.TreeView();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.fileListView = new System.Windows.Forms.ListView();
-            this.columnName = new System.Windows.Forms.ColumnHeader();
-            this.columnExtension = new System.Windows.Forms.ColumnHeader();
-            this.columnLba = new System.Windows.Forms.ColumnHeader();
-            this.columnSize = new System.Windows.Forms.ColumnHeader();
-            this.columnDate = new System.Windows.Forms.ColumnHeader();
+            this.columnName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnExtension = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnLba = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.extractToToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extractToSubfolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -45,6 +45,7 @@
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -53,41 +54,41 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 519);
-            this.pnlLabels.Size = new System.Drawing.Size(701, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 443);
+            this.pnlLabels.Size = new System.Drawing.Size(897, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(701, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(897, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 442);
-            this.tbOutput.Size = new System.Drawing.Size(701, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 366);
+            this.tbOutput.Size = new System.Drawing.Size(897, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 422);
-            this.pnlButtons.Size = new System.Drawing.Size(701, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 346);
+            this.pnlButtons.Size = new System.Drawing.Size(897, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(641, 0);
+            this.btnCancel.Location = new System.Drawing.Point(837, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(581, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(777, 0);
             // 
             // IsoFolderTreeView
             // 
             this.IsoFolderTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.IsoFolderTreeView.Location = new System.Drawing.Point(0, 0);
             this.IsoFolderTreeView.Name = "IsoFolderTreeView";
-            this.IsoFolderTreeView.Size = new System.Drawing.Size(231, 399);
+            this.IsoFolderTreeView.Size = new System.Drawing.Size(295, 323);
             this.IsoFolderTreeView.TabIndex = 5;
-            this.IsoFolderTreeView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.IsoFolderTreeView_MouseUp);
             this.IsoFolderTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.IsoFolderTreeView_AfterSelect);
+            this.IsoFolderTreeView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.IsoFolderTreeView_MouseUp);
             // 
             // splitContainer1
             // 
@@ -102,8 +103,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.fileListView);
-            this.splitContainer1.Size = new System.Drawing.Size(701, 399);
-            this.splitContainer1.SplitterDistance = 231;
+            this.splitContainer1.Size = new System.Drawing.Size(897, 323);
+            this.splitContainer1.SplitterDistance = 295;
             this.splitContainer1.TabIndex = 6;
             // 
             // fileListView
@@ -118,15 +119,15 @@
             this.fileListView.FullRowSelect = true;
             this.fileListView.Location = new System.Drawing.Point(0, 0);
             this.fileListView.Name = "fileListView";
-            this.fileListView.Size = new System.Drawing.Size(466, 399);
+            this.fileListView.Size = new System.Drawing.Size(598, 323);
             this.fileListView.TabIndex = 0;
             this.fileListView.UseCompatibleStateImageBehavior = false;
             this.fileListView.View = System.Windows.Forms.View.Details;
+            this.fileListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.fileListView_ColumnClick);
+            this.fileListView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.fileListView_ItemDrag);
+            this.fileListView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.fileListView_KeyUp);
             this.fileListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.fileListView_MouseDoubleClick);
             this.fileListView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.fileListView_MouseUp);
-            this.fileListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.fileListView_ColumnClick);
-            this.fileListView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.fileListView_KeyUp);
-            this.fileListView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.fileListView_ItemDrag);
             // 
             // columnName
             // 
@@ -160,33 +161,33 @@
             this.extractRAWToToolStripMenuItem,
             this.extractRAWToSubfolderToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(199, 92);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(207, 92);
             // 
             // extractToToolStripMenuItem
             // 
             this.extractToToolStripMenuItem.Name = "extractToToolStripMenuItem";
-            this.extractToToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.extractToToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.extractToToolStripMenuItem.Text = "Extract to...";
             this.extractToToolStripMenuItem.Click += new System.EventHandler(this.extractToToolStripMenuItem_Click);
             // 
             // extractToSubfolderToolStripMenuItem
             // 
             this.extractToSubfolderToolStripMenuItem.Name = "extractToSubfolderToolStripMenuItem";
-            this.extractToSubfolderToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.extractToSubfolderToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.extractToSubfolderToolStripMenuItem.Text = "Extract to Subfolder";
             this.extractToSubfolderToolStripMenuItem.Click += new System.EventHandler(this.extractToSubfolderToolStripMenuItem_Click);
             // 
             // extractRAWToToolStripMenuItem
             // 
             this.extractRAWToToolStripMenuItem.Name = "extractRAWToToolStripMenuItem";
-            this.extractRAWToToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.extractRAWToToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.extractRAWToToolStripMenuItem.Text = "Extract RAW to...";
             this.extractRAWToToolStripMenuItem.Click += new System.EventHandler(this.extractRAWToToolStripMenuItem_Click);
             // 
             // extractRAWToSubfolderToolStripMenuItem
             // 
             this.extractRAWToSubfolderToolStripMenuItem.Name = "extractRAWToSubfolderToolStripMenuItem";
-            this.extractRAWToSubfolderToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.extractRAWToSubfolderToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.extractRAWToSubfolderToolStripMenuItem.Text = "Extract RAW to Subfolder";
             this.extractRAWToSubfolderToolStripMenuItem.Click += new System.EventHandler(this.extractRAWToSubfolderToolStripMenuItem_Click);
             // 
@@ -195,7 +196,7 @@
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(701, 560);
+            this.ClientSize = new System.Drawing.Size(897, 484);
             this.Controls.Add(this.splitContainer1);
             this.Name = "IsoExtractorForm";
             this.Text = "IsoExtractorForm";
@@ -214,6 +215,7 @@
             this.pnlButtons.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);

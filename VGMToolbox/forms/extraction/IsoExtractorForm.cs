@@ -214,7 +214,9 @@ namespace VGMToolbox.forms.extraction
 
                         this.fileListView.Items.Add(directoryItem);
                     }
-                    
+
+                    this.fileListView.BeginUpdate();
+
                     foreach (IFileStructure f in dirStructure.Files)
                     {
                         fileItem = new ListViewItem(f.FileName);
@@ -242,16 +244,22 @@ namespace VGMToolbox.forms.extraction
                         fileItem.SubItems.Add(sizeItem);
                         fileItem.SubItems.Add(dateItem);
 
+                        
                         // refresh page for huge sets
-                        if (fileCount % 100 == 0)
+                        if (fileCount % 1000 == 0)
                         {
-                            Application.DoEvents();
+                            this.fileListView.EndUpdate();
+                            // Application.DoEvents();
+                            this.fileListView.BeginUpdate();
                         }
-
+                        
+                        
                         this.fileListView.Items.Add(fileItem);
 
                         fileCount++;                        
                     }
+
+                    this.fileListView.EndUpdate();
                 }                
             }
         }
