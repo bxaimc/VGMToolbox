@@ -445,6 +445,8 @@ namespace VGMToolbox.util
 
         public static readonly byte[] NullByteArray = new byte[] { 0x00 };
 
+        public const string StringNullTerminator = "\0";
+
         // empty constructor
         private Constants() { }
     }

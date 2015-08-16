@@ -25,6 +25,11 @@ namespace VGMToolbox.format
 
         public string SourceFileName { set; get; }
 
+        public CriUtfTable TocUtf { set; get; }
+        public CriUtfTable EtocUtf { set; get; }
+        public CriUtfTable ItocUtf { set; get; }
+        public CriUtfTable GtocUtf { set; get; } 
+
         public void Initialize(FileStream fs, long offset, bool isRawDump)
         {
             this.FormatDescription = CriCpkArchive.FORMAT_DESCRIPTION_STRING;
@@ -41,16 +46,16 @@ namespace VGMToolbox.format
 
             this.VolumeIdentifier = cpkUtf.TableName;
 
-            CriUtfTable tocUtf = InitializeToc(fs, cpkUtf, "TocOffset");
-            CriUtfTable etocUtf = InitializeToc(fs, cpkUtf, "EtocOffset");
-            CriUtfTable itocUtf = InitializeToc(fs, cpkUtf, "ItocOffset");
-            CriUtfTable gtocUtf = InitializeToc(fs, cpkUtf, "GtocOffset");
+            this.TocUtf = InitializeToc(fs, cpkUtf, "TocOffset");
+            // this.EtocUtf = InitializeToc(fs, cpkUtf, "EtocOffset");
+            this.ItocUtf = InitializeToc(fs, cpkUtf, "ItocOffset");
+            // this.GtocUtf = InitializeToc(fs, cpkUtf, "GtocOffset");
 
             CriCpkDirectory dummy = new CriCpkDirectory(this.SourceFileName, String.Empty, String.Empty);
 
-            if (tocUtf != null)
+            if (this.TocUtf != null)
             {
-                CriCpkDirectory tocDir = this.GetDirectoryForToc(fs, cpkUtf, tocUtf, "TOC");
+                CriCpkDirectory tocDir = this.GetDirectoryForToc(fs, cpkUtf, "TOC");
 
                 if ((tocDir.FileArray.Count > 0) || (tocDir.SubDirectoryArray.Count > 0))
                 {
@@ -70,9 +75,9 @@ namespace VGMToolbox.format
             }
             */
 
-            if (itocUtf != null)
+            if (this.ItocUtf != null)
             {
-                CriCpkDirectory itocDir = this.GetDirectoryForItoc(fs, cpkUtf, itocUtf, "ITOC");
+                CriCpkDirectory itocDir = this.GetDirectoryForItoc(fs, cpkUtf, "ITOC");
 
                 if ((itocDir.FileArray.Count > 0) || (itocDir.SubDirectoryArray.Count > 0))
                 {
@@ -80,17 +85,17 @@ namespace VGMToolbox.format
                 }
             }
 
-            /*
-            if (gtocUtf != null)
-            {
-                CriCpkDirectory gtocDir = this.GetDirectoryForToc(fs, cpkUtf, gtocUtf, "GTOC");
+            
+            //if (this.GtocUtf != null)
+            //{
+            //    CriCpkDirectory gtocDir = this.GetDirectoryForGtoc(fs, cpkUtf, "GTOC");
 
-                if ((gtocDir.FileArray.Count > 0) || (gtocDir.SubDirectoryArray.Count > 0))
-                {
-                    dummy.SubDirectoryArray.Add(gtocDir);
-                }
-            }
-            */
+            //    if ((gtocDir.FileArray.Count > 0) || (gtocDir.SubDirectoryArray.Count > 0))
+            //    {
+            //        dummy.SubDirectoryArray.Add(gtocDir);
+            //    }
+            //}
+            
             
             this.DirectoryStructureArray.Add(dummy);
         }
@@ -201,58 +206,26 @@ namespace VGMToolbox.format
             return fileInfo;
         }
 
-        public static void ExtractFilesForToc(FileStream fs, CriUtfTable cpkUtf, CriUtfTable tocUtf, string extractionDestination)
+        public static CriCpkDirectory GetGtocDirectory(CriUtfTable dataUtf, int rowIndex, string sourceFile, 
+            string parentDirectory)
         {
-            CriUtfTocFileInfo fileInfo = new CriUtfTocFileInfo();
+            CriCpkDirectory gtocDirectory;
+            object temp;
 
-            long trueTocBaseOffset;
-            string destinationFile;
-            ulong contentOffset = (ulong)CriUtfTable.GetUtfFieldForRow(cpkUtf, 0, "ContentOffset");
+            temp = CriUtfTable.GetUtfFieldForRow(dataUtf, rowIndex, "Gname");
+            gtocDirectory = new CriCpkDirectory(sourceFile, (string)temp, parentDirectory);
 
-            // create destination if needed
-            if (!Directory.Exists(extractionDestination))
-            {
-                Directory.CreateDirectory(extractionDestination);
+            temp = CriUtfTable.GetUtfFieldForRow(dataUtf, rowIndex, "Child");
+
+            if ((short)temp != -1)
+            { 
+                // add files
             }
 
-            using (BufferedStream bs = new BufferedStream(fs))
-            {
-
-                // loop over files
-                for (int i = 0; i < tocUtf.Rows.GetLength(0); i++)
-                {
-                    fileInfo = GetUtfTocFileInfo(tocUtf, i);
-
-                    // set true base offset, since UTF header starts at 0x10 of a container type
-                    trueTocBaseOffset = tocUtf.BaseOffset - 0x10;
-
-                    // get absolute offset
-                    if (contentOffset < (ulong)trueTocBaseOffset)
-                    {
-                        fileInfo.FileOffset += contentOffset;
-                    }
-                    else
-                    {
-                        fileInfo.FileOffset += (ulong)trueTocBaseOffset;
-                    }
-
-                    // build output file path
-                    destinationFile = Path.Combine(extractionDestination, fileInfo.DirName);
-                    destinationFile = Path.Combine(destinationFile, fileInfo.FileName);
-
-                    if (fileInfo.ExtractSize > fileInfo.FileSize)
-                    {                        
-                        CriCpkArchive.Uncompress(bs, (long)fileInfo.FileOffset, fileInfo.FileSize, destinationFile);
-                    }
-                    else
-                    {
-                        ParseFile.ExtractChunkToFile64(fs, fileInfo.FileOffset, fileInfo.FileSize, destinationFile, false, false);
-                    }
-                } // for (int i = 0; i < tocUtf.Rows.GetLength(0); i++)
-            } // using (BufferedStream bs = new BufferedStream(fs))
+            return gtocDirectory;       
         }
 
-        private CriCpkDirectory GetDirectoryForToc(FileStream fs, CriUtfTable cpkUtf, CriUtfTable tocUtf, string BaseDirectoryName)
+        public CriCpkDirectory GetDirectoryForToc(FileStream fs, CriUtfTable cpkUtf, string BaseDirectoryName)
         {
             CriUtfTocFileInfo fileInfo = new CriUtfTocFileInfo();
 
@@ -273,9 +246,9 @@ namespace VGMToolbox.format
             string parentName;
 
             // loop over files to get unique dirs
-            for (int i = 0; i < tocUtf.Rows.GetLength(0); i++)
+            for (int i = 0; i < this.TocUtf.Rows.GetLength(0); i++)
             {
-                fileInfo = GetUtfTocFileInfo(tocUtf, i);
+                fileInfo = GetUtfTocFileInfo(this.TocUtf, i);
 
                 if (fileInfo.FileName != null)
                 {
@@ -291,7 +264,7 @@ namespace VGMToolbox.format
                     // create file
                     //--------------
                     // set true base offset, since UTF header starts at 0x10 of a container type
-                    trueTocBaseOffset = tocUtf.BaseOffset - 0x10;
+                    trueTocBaseOffset = this.TocUtf.BaseOffset - 0x10;
 
                     // get absolute offset
                     if (contentOffset < (ulong)trueTocBaseOffset)
@@ -358,7 +331,7 @@ namespace VGMToolbox.format
             return baseDirectory;
         }
 
-        private CriCpkDirectory GetDirectoryForItoc(FileStream fs, CriUtfTable cpkUtf, CriUtfTable tocUtf, string BaseDirectoryName)
+        public CriCpkDirectory GetDirectoryForItoc(FileStream fs, CriUtfTable cpkUtf, string BaseDirectoryName)
         {
             ulong currentOffset = 0;
             CriUtfTocFileInfo fileInfo = new CriUtfTocFileInfo();
@@ -374,8 +347,8 @@ namespace VGMToolbox.format
             // read file groups
             uint filesH = 0;
             uint filesL = 0;
-            object filesHObj = CriUtfTable.GetUtfFieldForRow(tocUtf, 0, "FilesH"); //count of files in DataH
-            object filesLObj = CriUtfTable.GetUtfFieldForRow(tocUtf, 0, "FilesL"); // count of files in DataL
+            object filesHObj = CriUtfTable.GetUtfFieldForRow(this.ItocUtf, 0, "FilesH"); //count of files in DataH
+            object filesLObj = CriUtfTable.GetUtfFieldForRow(this.ItocUtf, 0, "FilesL"); // count of files in DataL
 
             if (filesHObj != null)
             {
@@ -396,7 +369,7 @@ namespace VGMToolbox.format
                 {
                     // read DataH group
                     CriUtfTable dataH = new CriUtfTable();
-                    dataH.Initialize(fs, (long)CriUtfTable.GetOffsetForUtfFieldForRow(tocUtf, 0, "DataH"));
+                    dataH.Initialize(fs, (long)CriUtfTable.GetOffsetForUtfFieldForRow(this.ItocUtf, 0, "DataH"));
 
                     for (int i = 0; i < dataH.Rows.GetLength(0); i++)
                     {
@@ -409,7 +382,7 @@ namespace VGMToolbox.format
                 {
                     // read DataL group
                     CriUtfTable dataL = new CriUtfTable();
-                    dataL.Initialize(fs, (long)CriUtfTable.GetOffsetForUtfFieldForRow(tocUtf, 0, "DataL"));
+                    dataL.Initialize(fs, (long)CriUtfTable.GetOffsetForUtfFieldForRow(this.ItocUtf, 0, "DataL"));
 
                     for (int i = 0; i < dataL.Rows.GetLength(0); i++)
                     {
@@ -452,6 +425,138 @@ namespace VGMToolbox.format
             
             return baseDirectory;
         }
+        
+        /*
+        public CriCpkDirectory GetDirectoryForGtoc(FileStream fs, CriUtfTable cpkUtf, string BaseDirectoryName)
+        {
+            CriUtfTocFileInfo fileInfo = new CriUtfTocFileInfo();
+
+            CriCpkDirectory baseDirectory = new CriCpkDirectory(this.SourceFileName, BaseDirectoryName, String.Empty);
+            CriCpkDirectory newDirectory;
+            CriCpkDirectory currentDirectory;
+            int indexOfNewDirectory;
+
+            // get Gdata UTF table (Directories)
+            uint glink = (uint)CriUtfTable.GetOffsetForUtfFieldForRow(this.GtocUtf, 0, "Glink");
+            
+            ulong gDataOffset = (ulong)CriUtfTable.GetOffsetForUtfFieldForRow(this.GtocUtf, 0, "Gdata");
+            CriUtfTable gData = new CriUtfTable();
+            gData.Initialize(fs, (long)gDataOffset);
+
+            // get directories
+            int currentIndex = 0;
+            currentDirectory = GetGtocDirectory(gData, currentIndex, this.SourceFileName, String.Empty);
+            int next = (int)CriUtfTable.GetUtfFieldForRow(gData, currentIndex, "Next");
+            baseDirectory.SubDirectoryArray.Add(currentDirectory);
+
+            while (next != -1)
+            { 
+            
+            }
+
+
+
+
+
+            long trueTocBaseOffset;
+            ulong contentOffset = (ulong)CriUtfTable.GetUtfFieldForRow(cpkUtf, 0, "ContentOffset");
+            ushort align = (ushort)CriUtfTable.GetUtfFieldForRow(cpkUtf, 0, "Align");
+
+            char[] separators = new char[] { '/', '\\' };
+            ArrayList allDirectories = new ArrayList();
+
+
+
+            CriCpkFile tempFile;
+            Dictionary<string, ArrayList> fileListDictionary = new Dictionary<string, ArrayList>();
+            string parentName;
+
+            // loop over files to get unique dirs
+            for (int i = 0; i < this.TocUtf.Rows.GetLength(0); i++)
+            {
+                fileInfo = GetUtfTocFileInfo(this.TocUtf, i);
+
+                if (fileInfo.FileName != null)
+                {
+                    //---------------
+                    // get directory
+                    //---------------
+                    if (!fileListDictionary.ContainsKey(fileInfo.DirName))
+                    {
+                        fileListDictionary.Add(fileInfo.DirName, new ArrayList());
+                    }
+
+                    //--------------
+                    // create file
+                    //--------------
+                    // set true base offset, since UTF header starts at 0x10 of a container type
+                    trueTocBaseOffset = this.TocUtf.BaseOffset - 0x10;
+
+                    // get absolute offset
+                    if (contentOffset < (ulong)trueTocBaseOffset)
+                    {
+                        fileInfo.FileOffset += contentOffset;
+                    }
+                    else
+                    {
+                        fileInfo.FileOffset += (ulong)trueTocBaseOffset;
+                    }
+
+                    if (fileInfo.FileOffset % align != 0)
+                    {
+                        fileInfo.FileOffset = MathUtil.RoundUpToByteAlignment(fileInfo.FileOffset, align);
+                    }
+
+                    parentName = BaseDirectoryName + Path.DirectorySeparatorChar + fileInfo.DirName;
+                    parentName = parentName.Replace('/', Path.DirectorySeparatorChar);
+
+                    tempFile = new CriCpkFile(parentName, this.SourceFileName, fileInfo.FileName, (long)fileInfo.FileOffset, this.VolumeBaseOffset,
+                        (long)fileInfo.FileOffset, fileInfo.FileSize, fileInfo.ExtractSize);
+
+                    // add to Dictionary
+                    fileListDictionary[fileInfo.DirName].Add(tempFile);
+                }
+            }
+
+            foreach (var path in fileListDictionary.Keys)
+            {
+                currentDirectory = baseDirectory;
+                var pathItems = path.Split(separators);
+
+                parentName = BaseDirectoryName;
+
+                for (int i = 0; i < pathItems.Count(); i++)
+                {
+                    var item = pathItems[i];
+
+                    var tmp = currentDirectory.SubDirectoryArray.Cast<CriCpkDirectory>().Where(x => x.DirectoryName.Equals(item));
+
+                    if (tmp.Count() > 0)
+                    {
+                        currentDirectory = tmp.Single();
+                    }
+                    else
+                    {
+                        newDirectory = new CriCpkDirectory(this.SourceFileName, item, parentName);
+                        indexOfNewDirectory = currentDirectory.SubDirectoryArray.Add(newDirectory);
+                        currentDirectory = (CriCpkDirectory)currentDirectory.SubDirectoryArray[indexOfNewDirectory];
+                    }
+
+                    if (i == pathItems.GetUpperBound(0))
+                    {
+                        foreach (CriCpkFile f in fileListDictionary[path])
+                        {
+                            currentDirectory.FileArray.Add(f);
+                        }
+                    }
+
+                    parentName += Path.DirectorySeparatorChar + item;
+                }
+            }
+
+            return baseDirectory;
+        }
+        */
 
         private static ushort get_next_bits(Stream inFile, ref long offset, ref byte bit_pool, ref int bits_left, 
             int bit_count)

@@ -117,7 +117,8 @@ namespace VGMToolbox.format.util
                         {
                             trackId = ParseFile.ParseSimpleOffset(fs, offset + Cdxa.XA_TRACK_OFFSET, Cdxa.XA_TRACK_SIZE);
                             trackKey = GetTrackKey(trackId);
-                                                        
+                            //trackKey = ParseFile.ReadUintBE(fs, offset + Cdxa.XA_TRACK_OFFSET) & 0xFFFF0000;
+                            
                             if (pExtractXaStruct.UseEndOfTrackMarkerForEof &&
                                 (
                                   ((trackId[2] & Cdxa.XA_END_OF_TRACK_MARKER) == Cdxa.XA_END_OF_TRACK_MARKER) ||
@@ -399,10 +400,15 @@ namespace VGMToolbox.format.util
 
         private static uint GetTrackKey(byte[] trackIdBytes)
         {
-            uint ret;
+            uint ret = 0;
+
+            //ret |= (uint)(trackIdBytes[0] << 24);
+            //ret |= (uint)(trackIdBytes[0] << 16);
 
             ret = BitConverter.ToUInt32(trackIdBytes, 0);
             ret &= 0xFF00FFFF;
+
+
 
             return ret;
         }

@@ -246,7 +246,7 @@ namespace VGMToolbox.forms.extraction
 
                         
                         // refresh page for huge sets
-                        if (fileCount % 1000 == 0)
+                        if (fileCount % 300 == 0)
                         {
                             this.fileListView.EndUpdate();
                             // Application.DoEvents();

@@ -221,26 +221,34 @@ namespace VGMToolbox.tools.other
 
         private string getFileNameFromEncodedBytes(string EncodingString, string CodePageString, byte[] FileNameBytes)
         {
-            string fileName;
+            StringBuilder fileNameBuffer = new StringBuilder();
+            string fileNameChar;
+
             Encoding enc = null;
             long codePage = ByteConversion.CodePageUnitedStates;
+            int bytesToRead;
 
             switch (EncodingString)
             { 
                 case "ASCII":
                     enc = Encoding.ASCII;
+                    bytesToRead = 1;
                     break;
                 case "UTF8":
                     enc = Encoding.UTF8;
+                    bytesToRead = 1;
                     break;
                 case "UTF16-LE":
                     enc = Encoding.Unicode;
+                    bytesToRead = 2;
                     break;
                 case "UTF16-BE":
                     enc = Encoding.BigEndianUnicode;
+                    bytesToRead = 2;
                     break;
                 case "UTF32-LE":
                     enc = Encoding.UTF32;
+                    bytesToRead = 4;
                     break;
                 case "Code Page":
                     // convert code page to number
@@ -250,16 +258,29 @@ namespace VGMToolbox.tools.other
                     }
 
                     enc = Encoding.GetEncoding((int)(codePage));
+                    bytesToRead = 1;
                     break;
                 default:
                     enc = Encoding.ASCII;
+                    bytesToRead = 1;
                     break;            
             }
 
-            // decode file name
-            fileName = enc.GetString(FileNameBytes);
+            for (int i = 0; i < FileNameBytes.Length; i += bytesToRead)
+            {
+                fileNameChar = enc.GetString(FileNameBytes, i, bytesToRead);
 
-            return fileName;
+                if (fileNameChar.Equals(Constants.StringNullTerminator))
+                {
+                    break;
+                }
+                else
+                {
+                    fileNameBuffer.Append(fileNameChar);
+                }
+            }
+
+            return fileNameBuffer.ToString();
         }
                
         protected override void OnDoWork(DoWorkEventArgs e)
