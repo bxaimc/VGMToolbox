@@ -978,6 +978,9 @@
     <Content Include="external\xma\dir.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="history.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="hoot\dir.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
