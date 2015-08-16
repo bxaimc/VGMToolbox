@@ -50,28 +50,7 @@ namespace VGMToolbox
                 new TreeNode(ConfigurationManager.AppSettings["MenuTree_RootNode"]);
             rootNode.NodeFont = this.treeviewBoldFont;
             rootNode.Tag = nodeTag;
-
-            ////////////
-            // Auditing
-            ////////////
-            TreeNode auditing_RootNode = buildAuditingTreeNode();
-            auditing_RootNode.Tag = nodeTag;
-            rootNode.Nodes.Add(auditing_RootNode);            
-
-            ///////////
-            // Examine
-            ///////////
-            TreeNode examine_RootNode = buildExamineTreeNode();
-            examine_RootNode.Tag = nodeTag;
-            rootNode.Nodes.Add(examine_RootNode);
-
-            /////////
-            // GENH
-            ////////
-            TreeNode genh_RootNode = buildGenhTreeNode();
-            genh_RootNode.Tag = nodeTag;
-            rootNode.Nodes.Add(genh_RootNode);
-
+            
             /////////
             // Tools
             /////////
@@ -80,25 +59,30 @@ namespace VGMToolbox
             tools_RootNode.Tag = nodeTag;
             tools_RootNode.NodeFont = this.treeviewBoldFont;
 
-            // GBS
-            TreeNode gbs_RootNode = buildGbsTreeNode();
-            gbs_RootNode.Tag = nodeTag;
-            tools_RootNode.Nodes.Add(gbs_RootNode);
-
-            // Hoot
-            TreeNode hoot_RootNode = buildHootTreeNode();
-            hoot_RootNode.Tag = nodeTag;
-            tools_RootNode.Nodes.Add(hoot_RootNode);
-
-            // NSF
-            TreeNode nsf_RootNode = buildNsfTreeNode();
-            nsf_RootNode.Tag = nodeTag;
-            tools_RootNode.Nodes.Add(nsf_RootNode);
+            // EXTRACTION                        
+            TreeNode ext_RootNode = buildExtractionTreeNode();
+            ext_RootNode.Tag = nodeTag;
+            tools_RootNode.Nodes.Add(ext_RootNode);
 
             // Stream
             TreeNode stream_RootNode = buildStreamTreeNode();
             stream_RootNode.Tag = nodeTag;
             tools_RootNode.Nodes.Add(stream_RootNode);
+
+            // GENH
+            TreeNode genh_RootNode = buildGenhTreeNode();
+            genh_RootNode.Tag = nodeTag;
+            tools_RootNode.Nodes.Add(genh_RootNode);
+
+            // GBS
+            TreeNode gbs_RootNode = buildGbsTreeNode();
+            gbs_RootNode.Tag = nodeTag;
+            tools_RootNode.Nodes.Add(gbs_RootNode);
+
+            // NSF
+            TreeNode nsf_RootNode = buildNsfTreeNode();
+            nsf_RootNode.Tag = nodeTag;
+            tools_RootNode.Nodes.Add(nsf_RootNode);
 
             // VGM
             TreeNode vgm_RootNode = buildVgmTreeNode();
@@ -110,10 +94,10 @@ namespace VGMToolbox
             xsf_RootNode.Tag = nodeTag;
             tools_RootNode.Nodes.Add(xsf_RootNode);
 
-            // EXTRACTION                        
-            TreeNode ext_RootNode = buildExtractionTreeNode();
-            ext_RootNode.Tag = nodeTag;
-            tools_RootNode.Nodes.Add(ext_RootNode);
+            // Hoot
+            TreeNode hoot_RootNode = buildHootTreeNode();
+            hoot_RootNode.Tag = nodeTag;
+            tools_RootNode.Nodes.Add(hoot_RootNode);
 
             // Compression                        
             TreeNode comp_RootNode = buildCompressionTreeNode();
@@ -127,6 +111,21 @@ namespace VGMToolbox
 
             // add Tools node to Root
             rootNode.Nodes.Add(tools_RootNode);
+
+            ///////////
+            // Examine
+            ///////////
+            TreeNode examine_RootNode = buildExamineTreeNode();
+            examine_RootNode.Tag = nodeTag;
+            rootNode.Nodes.Add(examine_RootNode);
+
+            ////////////
+            // Auditing
+            ////////////
+            TreeNode auditing_RootNode = buildAuditingTreeNode();
+            auditing_RootNode.Tag = nodeTag;
+            rootNode.Nodes.Add(auditing_RootNode);            
+
 
             // add Root node to tree
             tvMenuTree.Nodes.Add(rootNode);
