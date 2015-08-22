@@ -1,3 +1,10 @@
+*** VGMToolbox r1004 (2015-08-16)
+[CRI ACB/AWB EXTRACTOR] Add CRI ACB/AWB extraction. AWB (AFS2) files do not have internal names, so the files will be named after the source file.
+[CRI CPK EXTRACTOR] Add tool to extract from CRI CPK archives.  Encrypted and Decrypted TOC and ITOC folder structures supported.
+[EXTERNAL LIST RENAMER] Add tool to rename a directory of files using file names contained in another file.
+[ISO EXTRACTOR] Add CRI CPK suppport to the ISO/Archive Extractor.
+[GENERAL INTERFACE] Reorganized the tool tree a little bit.  Maybe a little more reorganization later?
+
 *** VGMToolbox r977 (2015-06-25)
 [VIDEO DEMULTIPLEXER] Bink 2 support in release phase.  No known issues.
 [ISO EXTRACTOR] Update 3DS extraction to prompt user to verify image against internal checksums.  Not all tools will decrypt 3ds images without errors, for example rxTools does not always decrypt correctly.

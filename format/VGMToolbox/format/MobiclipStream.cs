@@ -7,6 +7,13 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.format
 {
+    public class MobiclipAudioStreamFeatures
+    {
+        public ushort StreamType { set; get; }
+        public uint Frequency { set; get; }
+        public uint Channels { set; get; }
+    }
+    
     public abstract class MobiclipStream
     {
         public enum MovieType
@@ -27,10 +34,9 @@ namespace VGMToolbox.format
         
         public long HeaderSize { set; get; }
 
-        public int VideoStreamCount { set; get; }
-        public int AudioStreamCount { set; get; }
-
-        public int AudioBitrate { set; get; }
+        public uint VideoStreamCount { set; get; }
+        public uint AudioStreamCount { set; get; }
+        public MobiclipAudioStreamFeatures[] AudioStreamFeatures { set; get; }
 
         public string FilePath { get; set; }
         public string FileExtensionAudio { get; set; }
@@ -41,6 +47,8 @@ namespace VGMToolbox.format
         protected abstract ChunkStruct GetVideoChunk(FileStream inStream, long currentOffset);
 
         protected abstract ChunkStruct GetAudioChunk(FileStream inStream, long currentOffset, long blockSize, long videoChunkSize);
+
+        protected virtual void ReadHeader(FileStream inStream, long offset) { }
 
         protected virtual void DoFinalTasks(Dictionary<uint, FileStream> streamWriters,
             MpegStream.DemuxOptionsStruct demuxOptions)
@@ -90,6 +98,8 @@ namespace VGMToolbox.format
             {
                 using (FileStream fs = File.OpenRead(this.FilePath))
                 {
+                    this.ReadHeader(fs, currentOffset);
+                    
                     fileSize = fs.Length;
                     currentOffset = ParseFile.GetNextOffset(fs, currentOffset, DataStartBytes) + 4;
 
@@ -114,7 +124,11 @@ namespace VGMToolbox.format
                             if (demuxOptions.ExtractAudio)
                             {
                                 currentChunk = this.GetAudioChunk(fs, currentOffset, blockSize, currentChunk.Chunk.Length);
-                                this.writeChunkToStream(currentChunk.Chunk, currentChunk.ChunkId, streamOutputWriters, this.FileExtensionAudio);
+
+                                if (currentChunk.Chunk != null)
+                                {
+                                    this.writeChunkToStream(currentChunk.Chunk, currentChunk.ChunkId, streamOutputWriters, this.FileExtensionAudio);
+                                }
                             }
 
                             // move offset
