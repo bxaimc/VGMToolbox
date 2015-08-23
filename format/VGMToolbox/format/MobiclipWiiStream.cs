@@ -11,7 +11,10 @@ namespace VGMToolbox.format
     public class MobiclipWiiStream : MobiclipStream
     {
         public static readonly byte[] StreamTypeBytes = new byte[] { 0x43, 0x35 }; //C5
-        public const ushort AudioChunkSignature = 0x414D;
+        
+        public const ushort AudioChunkSignature = 0x414D; // AM
+        public const ushort AudioChunkSignaturePcm = 0x4150;   // AP
+        public const ushort AudioChunkSignatureA3 = 0x4133;   // A3
 
         public MobiclipWiiStream(string path)
         {
@@ -72,8 +75,16 @@ namespace VGMToolbox.format
 
                         break;                
                     
-                    
-                    
+                    case MobiclipWiiStream.AudioChunkSignaturePcm:
+                    case MobiclipWiiStream.AudioChunkSignatureA3:
+                        this.AudioStreamCount = 1;
+                        this.AudioStreamFeatures = new MobiclipAudioStreamFeatures[this.AudioStreamCount];
+                        this.AudioStreamFeatures[0] = new MobiclipAudioStreamFeatures();
+                        this.AudioStreamFeatures[0].StreamType = ParseFile.ReadUshortBE(inStream, currentOffset);
+                        this.AudioStreamFeatures[0].Frequency = ParseFile.ReadUintLE(inStream, currentOffset + 4);
+                        this.AudioStreamFeatures[0].Channels = ParseFile.ReadUintLE(inStream, currentOffset + 8);                                                                        
+                        break;
+                                        
                     default:                        
                         break;
                 }
@@ -95,24 +106,55 @@ namespace VGMToolbox.format
             return videoChunkStruct;        
         }
 
-        protected override ChunkStruct GetAudioChunk(FileStream inStream, long currentOffset, long blockSize, long videoChunkSize)
+        protected override ChunkStruct[] GetAudioChunk(FileStream inStream, long currentOffset, long blockSize, long videoChunkSize)
         {
-            ChunkStruct audioChunkStruct = new ChunkStruct();
-            byte[] audioChunk;
+            ChunkStruct[] audioChunkStructs = new ChunkStruct[this.AudioStreamCount];
 
             long absoluteOffset = currentOffset + 8 + videoChunkSize + 4;
-            int chunkSize = (int)(blockSize - videoChunkSize - 8 - 4);
+            uint baseChunkId;// = ParseFile.ReadUintLE(inStream, absoluteOffset - 4);
+            baseChunkId = 0;
+            uint chunkSize = 0;
 
-            if (chunkSize > 0)
-            {                
-                audioChunk = ParseFile.ParseSimpleOffset(inStream, absoluteOffset, chunkSize);
+            for (uint i = 0; i < this.AudioStreamCount; i++)
+            {
+                audioChunkStructs[i] = new ChunkStruct();
+                
+                // Untested for file with more than 2 streams
+                if (this.AudioStreamCount > 1)
+                {
+                    if (i == 0)
+                    {
+                        // read chunk size before first audio stream, should be the same for each.
+                        chunkSize = ParseFile.ReadUintLE(inStream, absoluteOffset);
+                        absoluteOffset += 4;
+                    }                        
+                }
+                else
+                {
+                    chunkSize = (uint)((currentOffset + blockSize) - absoluteOffset);
+                }
 
-                audioChunkStruct.Chunk = audioChunk;
-                audioChunkStruct.ChunkId = BitConverter.ToUInt32(ParseFile.ParseSimpleOffset(inStream, absoluteOffset - 4, 4), 0);
-                audioChunkStruct.ChunkId = 0;
+                if (chunkSize > 0)
+                {                    
+                    audioChunkStructs[i].ChunkId = baseChunkId + i;
+                    audioChunkStructs[i].Chunk = ParseFile.ParseSimpleOffset(inStream, absoluteOffset, (int)chunkSize);
+                }
+
+                absoluteOffset += chunkSize;
             }
+            
+            //int chunkSize = (int)(blockSize - videoChunkSize - 8 - 4);
 
-            return audioChunkStruct;
+            //if (chunkSize > 0)
+            //{                
+            //    audioChunk = ParseFile.ParseSimpleOffset(inStream, absoluteOffset, chunkSize);
+
+            //    audioChunkStruct.Chunk = audioChunk;
+            //    audioChunkStructs[0].ChunkId = ParseFile.ReadUintLE(inStream, absoluteOffset - 4);
+            //    audioChunkStruct.ChunkId = 0;
+            //}
+
+            return audioChunkStructs;
         }
 
         protected override void DoFinalTasks(Dictionary<uint, FileStream> streamWriters,
@@ -129,12 +171,6 @@ namespace VGMToolbox.format
                 {
                     if (streamWriters[key].Name.EndsWith(this.FileExtensionAudio))
                     {
-                        // get frequency
-                        //using (FileStream fs = File.OpenRead(this.FilePath))
-                        //{
-                        //    frequency = BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(fs, 0xDE, 2), 0);
-                        //}
-
                         sourceFile = streamWriters[key].Name;
 
                         streamWriters[key].Close();

@@ -26,9 +26,10 @@ namespace VGMToolbox.format
             return blockSize;
         }
 
-        protected override ChunkStruct GetAudioChunk(FileStream inStream, long currentOffset, long blockSize, long videoChunkSize)
+        protected override ChunkStruct[] GetAudioChunk(FileStream inStream, long currentOffset, long blockSize, long videoChunkSize)
         {
-            ChunkStruct audioChunkStruct = new ChunkStruct();
+            // @TODO: Fix this for multi-audio streams
+            ChunkStruct[] audioChunkStructs = new ChunkStruct[1];
 
             long chunkSize = (long)BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(inStream, currentOffset, 2), 0);
             chunkSize *= 4;
@@ -40,10 +41,11 @@ namespace VGMToolbox.format
 
             byte[] audioChunk = ParseFile.ParseSimpleOffset(inStream, currentOffset + 4, (int)chunkSize);
 
-            audioChunkStruct.Chunk = audioChunk;
-            audioChunkStruct.ChunkId = (uint)BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(inStream, currentOffset, 2), 0);
+            audioChunkStructs[0] = new ChunkStruct();
+            audioChunkStructs[0].Chunk = audioChunk;
+            audioChunkStructs[0].ChunkId = (uint)BitConverter.ToUInt16(ParseFile.ParseSimpleOffset(inStream, currentOffset, 2), 0);
 
-            return audioChunkStruct;        
+            return audioChunkStructs;        
         }
 
         protected override ChunkStruct GetVideoChunk(FileStream inStream, long currentOffset)

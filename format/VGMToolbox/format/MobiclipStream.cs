@@ -46,7 +46,7 @@ namespace VGMToolbox.format
 
         protected abstract ChunkStruct GetVideoChunk(FileStream inStream, long currentOffset);
 
-        protected abstract ChunkStruct GetAudioChunk(FileStream inStream, long currentOffset, long blockSize, long videoChunkSize);
+        protected abstract ChunkStruct[] GetAudioChunk(FileStream inStream, long currentOffset, long blockSize, long videoChunkSize);
 
         protected virtual void ReadHeader(FileStream inStream, long offset) { }
 
@@ -93,6 +93,7 @@ namespace VGMToolbox.format
             Dictionary<uint, FileStream> streamOutputWriters = new Dictionary<uint, FileStream>();
 
             ChunkStruct currentChunk = new ChunkStruct();
+            ChunkStruct[] audioChunks;
 
             try
             {
@@ -121,13 +122,16 @@ namespace VGMToolbox.format
 
 
                             // write audio block to stream
-                            if (demuxOptions.ExtractAudio)
+                            if (demuxOptions.ExtractAudio && (this.AudioStreamCount > 0))
                             {
-                                currentChunk = this.GetAudioChunk(fs, currentOffset, blockSize, currentChunk.Chunk.Length);
+                                audioChunks = this.GetAudioChunk(fs, currentOffset, blockSize, currentChunk.Chunk.Length);
 
-                                if (currentChunk.Chunk != null)
+                                for (uint i = 0; i < this.AudioStreamCount; i++)
                                 {
-                                    this.writeChunkToStream(currentChunk.Chunk, currentChunk.ChunkId, streamOutputWriters, this.FileExtensionAudio);
+                                    if (audioChunks[i].Chunk != null)
+                                    {
+                                        this.writeChunkToStream(audioChunks[i].Chunk, audioChunks[i].ChunkId, streamOutputWriters, this.FileExtensionAudio);
+                                    }
                                 }
                             }
 
