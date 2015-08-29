@@ -16,6 +16,8 @@ namespace VGMToolbox.format
         public const ushort AudioChunkSignaturePcm = 0x4150;   // AP
         public const ushort AudioChunkSignatureA3 = 0x4133;   // A3
 
+        public const string FileExtensionAudioA3 = ".a3.raw";
+
         public MobiclipWiiStream(string path)
         {
             this.FilePath = path;
@@ -163,11 +165,14 @@ namespace VGMToolbox.format
             GenhCreationStruct gcStruct;
             ushort frequency;
             string sourceFile;
-            string genhFile;
+            string genhFile = null;
+
+            string rawFile;
 
             foreach (uint key in streamWriters.Keys)
             {
-                if (demuxOptions.AddHeader)
+                if (demuxOptions.AddHeader &&
+                   (this.AudioStreamFeatures[key].StreamType == AudioChunkSignaturePcm))
                 {
                     if (streamWriters[key].Name.EndsWith(this.FileExtensionAudio))
                     {
@@ -178,22 +183,43 @@ namespace VGMToolbox.format
 
                         gcStruct = new GenhCreationStruct();
 
-                        //@TODO: Update to use this.AudioStreamFeatures[key].StreamType
-                        gcStruct.Format = "0x04";
-                                                
-                        gcStruct.HeaderSkip = "0";
-                        gcStruct.Interleave = "0x2";
-                        gcStruct.Channels = this.AudioStreamFeatures[key].Channels.ToString();
-                        gcStruct.Frequency = this.AudioStreamFeatures[key].Frequency.ToString();
-                        gcStruct.NoLoops = true;
+                        switch (this.AudioStreamFeatures[key].StreamType)
+                        {
+                            case AudioChunkSignaturePcm:
+                                gcStruct.Format = "0x04";
 
-                        genhFile = GenhUtil.CreateGenhFile(sourceFile, gcStruct);
+                                gcStruct.HeaderSkip = "0";
+                                gcStruct.Interleave = "0x2";
+                                gcStruct.Channels = this.AudioStreamFeatures[key].Channels.ToString();
+                                gcStruct.Frequency = this.AudioStreamFeatures[key].Frequency.ToString();
+                                gcStruct.NoLoops = true;
 
+                                genhFile = GenhUtil.CreateGenhFile(sourceFile, gcStruct);
+
+                                break;
+                            
+                            default:
+                                break;
+                        }
+                        
                         // delete original file
                         if (!String.IsNullOrEmpty(genhFile))
                         {
                             File.Delete(sourceFile);
                         }
+                    }
+                }
+                else
+                { 
+                    // update raw file extension
+                    if (this.AudioStreamFeatures[key].StreamType == AudioChunkSignatureA3)
+                    {
+                        rawFile = streamWriters[key].Name;
+                        streamWriters[key].Close();
+                        streamWriters[key].Dispose();
+
+                        File.Copy(rawFile, Path.ChangeExtension(rawFile, FileExtensionAudioA3));
+                        File.Delete(rawFile);
                     }
                 }
             }
