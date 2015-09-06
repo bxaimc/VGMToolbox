@@ -26,6 +26,7 @@ namespace VGMToolbox.forms.stream
             this.tbOutput.Text += "- Bink Audio files do not always playback correctly with RAD Video Tools (binkplay.exe), but will convert to WAV correctly using RAD Video Tools 'Convert a file' (binkconv.exe)." + Environment.NewLine;
             this.tbOutput.Text += "- ASF/WMV demultiplexing does not yet rebuild to ASF streams for output." + Environment.NewLine;
             this.tbOutput.Text += "- MKVMerge can be used to add raw .264 data to a container file for playback." + Environment.NewLine;
+            this.tbOutput.Text += "- The following audio output formats are unknown and untestable: MO (A3 type)." + Environment.NewLine;
             this.tbOutput.Text += "- The following video output formats are unknown and untestable: MO, XMV." + Environment.NewLine;
 
 

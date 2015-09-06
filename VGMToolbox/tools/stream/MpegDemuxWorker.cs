@@ -70,10 +70,10 @@ namespace VGMToolbox.tools.stream
                     hvqmStream.DemultiplexStreams(demuxOptions);
                     break;
                 case "MO (Mobiclip)":
-                    MobiclipStream.MovieType movieType = MobiclipStream.GetCriMovie2StreamType(path);                    
+                    MobiclipStream.MovieType movieType = MobiclipStream.GetMobiclipStreamType(path);                    
 
                     switch (movieType)
-                    { 
+                    {
                         //case MobiclipStream.MovieType.NintendoDs:
                         //    MobiclipNdsStream mobiclipNdsStream = new MobiclipNdsStream(path);
                         //    mobiclipNdsStream.DemultiplexStreams(demuxOptions);

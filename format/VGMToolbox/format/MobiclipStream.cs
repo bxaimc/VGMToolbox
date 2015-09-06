@@ -89,6 +89,7 @@ namespace VGMToolbox.format
             long fileSize;
 
             long blockSize;
+            long videoChunkSize;
 
             Dictionary<uint, FileStream> streamOutputWriters = new Dictionary<uint, FileStream>();
 
@@ -107,6 +108,11 @@ namespace VGMToolbox.format
                     while (currentOffset < fileSize)
                     {
 
+                        if (currentOffset == 0x4C7DC)
+                        {
+                            int ccc = 1;
+                        }
+                        
                         blockSize = this.GetBlockSize(fs, currentOffset);
 
                         if (blockSize > 0)
@@ -114,7 +120,7 @@ namespace VGMToolbox.format
                             // write video block to stream                        
                             currentChunk = this.GetVideoChunk(fs, currentOffset);
 
-                            if (demuxOptions.ExtractVideo)
+                            if (demuxOptions.ExtractVideo && (currentChunk.Chunk != null))
                             {
                                 this.writeChunkToStream(currentChunk.Chunk, currentChunk.ChunkId, streamOutputWriters, this.FileExtensionVideo);
                             }
@@ -124,7 +130,8 @@ namespace VGMToolbox.format
                             // write audio block to stream
                             if (demuxOptions.ExtractAudio && (this.AudioStreamCount > 0))
                             {
-                                audioChunks = this.GetAudioChunk(fs, currentOffset, blockSize, currentChunk.Chunk.Length);
+                                videoChunkSize = currentChunk.Chunk == null ? 0 : currentChunk.Chunk.Length;
+                                audioChunks = this.GetAudioChunk(fs, currentOffset, blockSize, videoChunkSize);
 
                                 for (uint i = 0; i < this.AudioStreamCount; i++)
                                 {
@@ -158,7 +165,7 @@ namespace VGMToolbox.format
         }
         
 
-        public static MovieType GetCriMovie2StreamType(string path)
+        public static MovieType GetMobiclipStreamType(string path)
         {
             MovieType streamType = MovieType.Unknown;
 

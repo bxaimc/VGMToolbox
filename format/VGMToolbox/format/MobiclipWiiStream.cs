@@ -17,6 +17,7 @@ namespace VGMToolbox.format
         public const ushort AudioChunkSignatureA3 = 0x4133;   // A3
 
         public const string FileExtensionAudioA3 = ".a3.raw";
+        public const uint VideoChunkId = 0xFFFF;
 
         public MobiclipWiiStream(string path)
         {
@@ -103,7 +104,7 @@ namespace VGMToolbox.format
             byte[] videoChunk = ParseFile.ParseSimpleOffset(inStream, currentOffset + 8, (int)chunkSize);
 
             videoChunkStruct.Chunk = videoChunk;
-            videoChunkStruct.ChunkId = 0xFFFF;
+            videoChunkStruct.ChunkId = MobiclipWiiStream.VideoChunkId;
             
             return videoChunkStruct;        
         }
@@ -172,6 +173,8 @@ namespace VGMToolbox.format
             foreach (uint key in streamWriters.Keys)
             {
                 if (demuxOptions.AddHeader &&
+                   (key != MobiclipWiiStream.VideoChunkId) && 
+                   (this.AudioStreamFeatures[key].StreamType != null) &&
                    (this.AudioStreamFeatures[key].StreamType == AudioChunkSignaturePcm))
                 {
                     if (streamWriters[key].Name.EndsWith(this.FileExtensionAudio))
@@ -209,7 +212,7 @@ namespace VGMToolbox.format
                         }
                     }
                 }
-                else
+                else if (key != MobiclipWiiStream.VideoChunkId)
                 { 
                     // update raw file extension
                     if (this.AudioStreamFeatures[key].StreamType == AudioChunkSignatureA3)
