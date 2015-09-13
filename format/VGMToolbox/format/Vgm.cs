@@ -565,40 +565,10 @@ namespace VGMToolbox.format
         
         private int getIntVersion()
         {
-            int ret = INT_VERSION_UNKNOWN;
-
-            if (ParseFile.CompareSegment(this.version, 0, VERSION_0100))
-            {
-                ret = INT_VERSION_0100;
-            }
-            else if (ParseFile.CompareSegment(this.version, 0, VERSION_0101))
-            {
-                ret = INT_VERSION_0101;
-            }
-            else if (ParseFile.CompareSegment(this.version, 0, VERSION_0110))
-            {
-                ret = INT_VERSION_0110;
-            }
-            else if (ParseFile.CompareSegment(this.version, 0, VERSION_0150))
-            {
-                ret = INT_VERSION_0150;
-            }
-            else if (ParseFile.CompareSegment(this.version, 0, VERSION_0151))
-            {
-                ret = INT_VERSION_0151;
-            }
-            else if (ParseFile.CompareSegment(this.version, 0, VERSION_0160))
-            {
-                ret = INT_VERSION_0160;
-            }
-            else if (ParseFile.CompareSegment(this.version, 0, VERSION_0161))
-            {
-                ret = INT_VERSION_0161;
-            }
-            else if (ParseFile.CompareSegment(this.version, 0, VERSION_0170))
-            {
-                ret = INT_VERSION_0170;
-            }
+            int ret = Convert.ToInt32(this.Version[0].ToString("X2")) +
+                  (Convert.ToInt32(this.Version[1].ToString("X2")) * 100) +
+                  (Convert.ToInt32(this.Version[2].ToString("X2")) * 10000) +
+                  (Convert.ToInt32(this.Version[3].ToString("X2")) * 1000000);
 
             return ret;
         }
