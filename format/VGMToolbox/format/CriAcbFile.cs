@@ -27,7 +27,9 @@ namespace VGMToolbox.format
     public class CriAcbFile : CriUtfTable
     {
         public const string EXTRACTION_FOLDER_FORMAT = "_vgmt_acb_ext_{0}";
-        
+        public static readonly string ACB_AWB_EXTRACTION_FOLDER = "acb" + Path.DirectorySeparatorChar + "awb";
+        public static readonly string EXT_AWB_EXTRACTION_FOLDER = "awb";
+
         public const byte WAVEFORM_ENCODE_TYPE_ADX = 0;
         public const byte WAVEFORM_ENCODE_TYPE_HCA = 2;
         public const byte WAVEFORM_ENCODE_TYPE_VAG = 7;
@@ -355,6 +357,9 @@ namespace VGMToolbox.format
             ArrayList internalIdsExtracted = new ArrayList();
             ArrayList externalIdsExtracted = new ArrayList();
 
+            string acbAwbDestinationFolder = Path.Combine(destinationFolder, ACB_AWB_EXTRACTION_FOLDER);
+            string extAwbDestinationFolder = Path.Combine(destinationFolder, EXT_AWB_EXTRACTION_FOLDER);
+
             try
             {
                 // open streams
@@ -380,7 +385,7 @@ namespace VGMToolbox.format
                             ParseFile.ExtractChunkToFile64(externalFs,
                                 (ulong)this.ExternalAwb.Files[cue.WaveformId].FileOffsetByteAligned,
                                 (ulong)this.ExternalAwb.Files[cue.WaveformId].FileLength,
-                                Path.Combine(destinationFolder, FileUtil.CleanFileName(cue.CueName)), false, false);
+                                Path.Combine(extAwbDestinationFolder, FileUtil.CleanFileName(cue.CueName)), false, false);
 
                             externalIdsExtracted.Add(cue.WaveformId);
                         }
@@ -389,7 +394,7 @@ namespace VGMToolbox.format
                             ParseFile.ExtractChunkToFile64(internalFs,
                                 (ulong)this.InternalAwb.Files[cue.WaveformId].FileOffsetByteAligned,
                                 (ulong)this.InternalAwb.Files[cue.WaveformId].FileLength,
-                                Path.Combine(destinationFolder, FileUtil.CleanFileName(cue.CueName)), false, false);
+                                Path.Combine(acbAwbDestinationFolder, FileUtil.CleanFileName(cue.CueName)), false, false);
 
                             internalIdsExtracted.Add(cue.WaveformId);
                         }
@@ -420,7 +425,7 @@ namespace VGMToolbox.format
                         ParseFile.ExtractChunkToFile64(externalFs,
                             (ulong)this.ExternalAwb.Files[key].FileOffsetByteAligned,
                             (ulong)this.ExternalAwb.Files[key].FileLength,
-                            Path.Combine(destinationFolder, rawFileName), false, false);
+                            Path.Combine(extAwbDestinationFolder, rawFileName), false, false);
                     }
                 }
 
@@ -441,7 +446,7 @@ namespace VGMToolbox.format
                         ParseFile.ExtractChunkToFile64(internalFs,
                             (ulong)this.InternalAwb.Files[key].FileOffsetByteAligned,
                             (ulong)this.InternalAwb.Files[key].FileLength,
-                            Path.Combine(destinationFolder, rawFileName), false, false);
+                            Path.Combine(acbAwbDestinationFolder, rawFileName), false, false);
                     }
                 }
             }
