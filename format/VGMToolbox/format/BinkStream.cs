@@ -98,6 +98,7 @@ namespace VGMToolbox.format
             long frameOffsetOffset;
             long audioIdOffet;
             int fullHeaderSize;
+            byte versionId;
 
             this.MagicBytes = ParseFile.ParseSimpleOffset(inStream, offsetToHeader, 3);
             if (ParseFile.CompareSegment(this.MagicBytes, 0, BINK01_HEADER))
@@ -106,7 +107,16 @@ namespace VGMToolbox.format
             }
             else if (ParseFile.CompareSegment(this.MagicBytes, 0, BINK02_HEADER))
             {
-                this.BinkVersion = BinkType.Version02;
+                versionId = ParseFile.ReadByte(inStream, offsetToHeader + 3);
+
+                if (versionId < 0x69) // version "i"
+                {
+                    this.BinkVersion = BinkType.Version01;
+                }
+                else // version "a" through "h"
+                {
+                    this.BinkVersion = BinkType.Version02;
+                }                
             }
             else
             {
@@ -575,6 +585,12 @@ namespace VGMToolbox.format
                         try
                         {
                             currentPacketOffset = 0;
+
+                            //// check to see if final frame offset is file size frame
+                            //if (this.FrameOffsetList[frameId].FrameOffset + currentPacketOffset >= fileSize)
+                            //{
+                            //    break;
+                            //}
 
                             if (demuxOptions.SplitAudioStreams)
                             {
