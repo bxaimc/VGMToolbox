@@ -46,8 +46,10 @@ namespace VGMToolbox.tools.xsf
         public const string STUB_BUILDER = "PSF Stub Builder Defaults";
         public const string GENERIC_DRIVER_MGRASS = "Mark Grass Generic Driver v2.5";
         public const string GENERIC_DRIVER_MGRASS_300 = "Mark Grass Generic Driver v3.0.0";
+        public const string GENERIC_DRIVER_MGRASS_422 = "Mark Grass Generic Driver v4.2.2";
         public const string GENERIC_DRIVER_DAVIRONICA = "Davironica's Generic Driver v1.0.4";
 
+        public static readonly string MGRASS422_EXE_PATH = Path.Combine(PSF_PROGRAMS_FOLDER, "MG_DRIVER_V422.SEQ.INFINITE.EXE");
         public static readonly string MGRASS300_EXE_PATH = Path.Combine(PSF_PROGRAMS_FOLDER, "MG_DRIVER_V300.SEQ.INFINITE.EXE");
         public static readonly string MGRASS_EXE_PATH = Path.Combine(PSF_PROGRAMS_FOLDER, "MG_DRIVER_V25.SEQ.INFINITE.EXE");
         public static readonly string EZPSF_EXE_PATH = Path.Combine(PSF_PROGRAMS_FOLDER, "EZPSF_V104.EXE");

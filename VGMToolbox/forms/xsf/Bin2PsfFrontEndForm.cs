@@ -142,8 +142,9 @@ namespace VGMToolbox.forms.xsf
         {
             this.genericDriver.Items.Add(String.Empty);
             this.genericDriver.Items.Add(Bin2PsfWorker.STUB_BUILDER);                        
-            //this.genericDriver.Items.Add(Bin2PsfWorker.GENERIC_DRIVER_MGRASS);
+            this.genericDriver.Items.Add(Bin2PsfWorker.GENERIC_DRIVER_MGRASS);
             this.genericDriver.Items.Add(Bin2PsfWorker.GENERIC_DRIVER_MGRASS_300);
+            this.genericDriver.Items.Add(Bin2PsfWorker.GENERIC_DRIVER_MGRASS_422);
             this.genericDriver.Items.Add(Bin2PsfWorker.GENERIC_DRIVER_DAVIRONICA);
         }
         private void loadGenericDriverPreset()
@@ -163,6 +164,10 @@ namespace VGMToolbox.forms.xsf
                 case Bin2PsfWorker.GENERIC_DRIVER_MGRASS_300:
                     this.disablePresetFields();
                     this.loadMarkGrass300GenericPresets();
+                    break;
+                case Bin2PsfWorker.GENERIC_DRIVER_MGRASS_422:
+                    this.disablePresetFields();
+                    this.loadMarkGrass422GenericPresets();
                     break;
                 case Bin2PsfWorker.GENERIC_DRIVER_DAVIRONICA:
                     this.disablePresetFields();
@@ -205,6 +210,22 @@ namespace VGMToolbox.forms.xsf
         private void loadMarkGrass300GenericPresets()
         {
             this.tbExePath.Text = Bin2PsfWorker.MGRASS300_EXE_PATH;
+            this.tbPsflibName.Clear();
+
+            this.tbSeqOffset.Text = "0x800A0000";
+            this.tbMySeqSize.Text = "0x00040000";
+            this.tbVhOffset.Text = "0x800E0000";
+            this.tbVbOffset.Text = "0x80160000";
+            this.tbParamOffset.Text = "0";
+
+            this.tbExePath.Enabled = false;
+            this.tbExePath.ReadOnly = true;
+            this.btnExeBrowse.Enabled = false;
+        }
+
+        private void loadMarkGrass422GenericPresets()
+        {
+            this.tbExePath.Text = Bin2PsfWorker.MGRASS422_EXE_PATH;
             this.tbPsflibName.Clear();
 
             this.tbSeqOffset.Text = "0x800A0000";

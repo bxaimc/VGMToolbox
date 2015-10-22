@@ -204,6 +204,9 @@
     <Content Include="external\psf\MG_DRIVER_V300.SEQ.INFINITE.EXE">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="external\psf\MG_DRIVER_V422.SEQ.INFINITE.EXE">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="external\psf\minipsf.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
