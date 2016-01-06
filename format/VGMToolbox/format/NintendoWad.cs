@@ -94,7 +94,7 @@ namespace VGMToolbox.format
                     this.TitleId = ParseFile.ReadUlongBE(fs, this.TicketOffset + 0x1DC);
                     this.TitleIdBytes = ParseFile.ParseSimpleOffset(fs, this.TicketOffset + 0x1DC, 8);
                     this.EncryptedTitleKey = ParseFile.ParseSimpleOffset(fs, this.TicketOffset + 0x1BF, 0x10);
-                    this.CommonKeyIndex = ParseFile.ReadByte(fs, 0x1F1);
+                    this.CommonKeyIndex = ParseFile.ReadByte(fs, this.TicketOffset + 0x1F1);
 
                     // decrypt title key
                     this.DecryptTitleKey();

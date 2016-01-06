@@ -1,3 +1,11 @@
+*** VGMToolbox r1012 (2015-10-21)
+[PSF MAKER] Add Mark Grass v4.2.2 driver.
+[CRI ACB/AWB EXTRACTOR] Update to extract to subfolders for each type of archive (ACB, AWB) since some pairs have data in each file.
+[VGM TAGGER] Fixed to handle v1.71 and above files.  New versions should not require updating.
+[VIDEO DEMULTIPLEXER] 
+- Update Mobiclip Wii support to better handle audio.  Only files with PCM audio can be verified since a Mobiclip audio player doesn't exist.
+- Update Bink 2 demultiplexing for KB2a - KB2h magic bytes.
+
 *** VGMToolbox r1004 (2015-08-16)
 [CRI ACB/AWB EXTRACTOR] Add CRI ACB/AWB extraction. AWB (AFS2) files do not have internal names, so the files will be named after the source file.
 [CRI CPK EXTRACTOR] Add tool to extract from CRI CPK archives.  Encrypted and Decrypted TOC and ITOC folder structures supported.
