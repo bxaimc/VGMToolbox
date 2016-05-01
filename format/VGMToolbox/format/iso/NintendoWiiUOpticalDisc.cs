@@ -215,9 +215,11 @@ namespace VGMToolbox.format.iso
                 // decrypt file table block 
                 if (this.Partitions[i].PartitionName.StartsWith("SI") ||
                     this.Partitions[i].PartitionName.StartsWith("UP") ||
+                    this.Partitions[i].PartitionName.StartsWith("GI") ||
                     this.TitleKeyHash.ContainsKey(partitionNameHashKey))
                 {
-                    if (this.Partitions[i].PartitionName.StartsWith("SI"))
+                    if (this.Partitions[i].PartitionName.StartsWith("SI") || 
+                        this.Partitions[i].PartitionName.StartsWith("GI"))
                     {
                         this.Partitions[i].PartitionKey = this.DiscKey;
                         this.Partitions[i].IV = new byte[0x10];
@@ -334,7 +336,8 @@ namespace VGMToolbox.format.iso
                     this.Partitions[i].PartitionEntries = (NintendoWiiUPartitionEntry[])partitionEntries.ToArray(typeof(NintendoWiiUPartitionEntry));
 
                     // get title keys
-                    if (this.Partitions[i].PartitionName.StartsWith("SI"))
+                    if (this.Partitions[i].PartitionName.StartsWith("SI") ||
+                        this.Partitions[i].PartitionName.StartsWith("GI"))
                     {
                         this.AddTitleKeysToHashFromPartition(isoStream, this.Partitions[i]);
                     }
@@ -407,7 +410,6 @@ namespace VGMToolbox.format.iso
                         this.TitleKeyHash.Add(partitionName, titleKeyInfo);
                     }
                 }
-
             }
         }
 
