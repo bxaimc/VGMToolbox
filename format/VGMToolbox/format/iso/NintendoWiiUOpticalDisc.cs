@@ -24,6 +24,7 @@ namespace VGMToolbox.format.iso
         public static readonly string WIIU_EXTERNAL_FOLDER = Path.Combine(PROGRAMS_FOLDER, "wiiu");
         public static readonly string COMMON_KEY_PATH = Path.Combine(WIIU_EXTERNAL_FOLDER, "ckey.bin");
         public static readonly string DISC_KEY_FILE_NAME = "disckey.bin";
+        public static readonly string SCENE_DISC_KEY_FILE_EXTENSION = ".key";
 
         public const ulong WIIU_DECRYPTED_AREA_OFFSET = 0x18000;
         public const uint PARTITION_TOC_OFFSET = 0x800;
@@ -102,9 +103,20 @@ namespace VGMToolbox.format.iso
 
         public void Initialize(FileStream isoStream, long offset, bool isRawDump)
         {
+            string discKeyPath;
+
             this.CommonKey = GetKeyFromFile(COMMON_KEY_PATH);
-            this.DiscKey = GetKeyFromFile(Path.Combine(Path.GetDirectoryName(isoStream.Name), DISC_KEY_FILE_NAME));
             
+            // check for format used by some scene releases
+            discKeyPath = Path.ChangeExtension(isoStream.Name, SCENE_DISC_KEY_FILE_EXTENSION);
+
+            if (!File.Exists(discKeyPath))
+            {
+                discKeyPath = Path.Combine(Path.GetDirectoryName(isoStream.Name), DISC_KEY_FILE_NAME);
+            }
+
+            this.DiscKey = GetKeyFromFile(discKeyPath);
+                        
             this.GameSerial = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(isoStream, this.DiscBaseOffset, 9));
             this.GameRevision = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(isoStream, this.DiscBaseOffset + 0xB, 2));
             this.SystemMenuVersion = ByteConversion.GetAsciiText(ParseFile.ParseSimpleOffset(isoStream, this.DiscBaseOffset + 0xE, 3));
