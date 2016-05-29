@@ -35,6 +35,7 @@ namespace VGMToolbox.format
         public const byte WAVEFORM_ENCODE_TYPE_VAG = 7;
         public const byte WAVEFORM_ENCODE_TYPE_ATRAC3 = 8;
         public const byte WAVEFORM_ENCODE_TYPE_BCWAV = 9;
+        public const byte WAVEFORM_ENCODE_TYPE_ATRAC9 = 11;
         public const byte WAVEFORM_ENCODE_TYPE_NINTENDO_DSP = 13;
 
         public const string AWB_FORMAT1 = "{0}_streamfiles.awb";
@@ -567,6 +568,9 @@ namespace VGMToolbox.format
                     break;
                 case WAVEFORM_ENCODE_TYPE_ATRAC3:
                     ext = ".at3";
+                    break;
+                case WAVEFORM_ENCODE_TYPE_ATRAC9:
+                    ext = ".at9";
                     break;
                 case WAVEFORM_ENCODE_TYPE_VAG:
                     ext = ".vag";

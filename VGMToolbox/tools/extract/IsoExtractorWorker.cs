@@ -342,16 +342,19 @@ namespace VGMToolbox.tools.extract
                     //------------------------
                     // MS STFS Package (XBLA) 
                     //------------------------
-                    else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, (int)MicrosoftSTFS.IDENTIFIER_OFFSET, MicrosoftSTFS.STANDARD_IDENTIFIER.Length, MicrosoftSTFS.STANDARD_IDENTIFIER))
-                    {
-                        MicrosoftSTFSVolume isoVolume;
-                        isoVolume = new MicrosoftSTFSVolume();
-                        isoVolume.Initialize(fs, currentOffset, isRawFormat);
-                        volumeList.Add((IVolume)isoVolume);
+                    //
+                    // @TODO: Currently Broken
+                    //
+                    //else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, (int)MicrosoftSTFS.IDENTIFIER_OFFSET, MicrosoftSTFS.STANDARD_IDENTIFIER.Length, MicrosoftSTFS.STANDARD_IDENTIFIER))
+                    //{
+                    //    MicrosoftSTFSVolume isoVolume;
+                    //    isoVolume = new MicrosoftSTFSVolume();
+                    //    isoVolume.Initialize(fs, currentOffset, isRawFormat);
+                    //    volumeList.Add((IVolume)isoVolume);
 
-                        // should be the last volume
-                        break;
-                    }
+                    //    // should be the last volume
+                    //    break;
+                    //}
 
                     //------------------------
                     // NINTENDO U8 ARCHIVE 

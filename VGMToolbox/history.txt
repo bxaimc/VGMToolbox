@@ -1,3 +1,6 @@
+*** VGMToolbox r1013 (2016-01-06)
+[NINTENDO WAD UNPACKER] Fix detection of Korean WAD files.
+
 *** VGMToolbox r1012 (2015-10-21)
 [PSF MAKER] Add Mark Grass v4.2.2 driver.
 [CRI ACB/AWB EXTRACTOR] Update to extract to subfolders for each type of archive (ACB, AWB) since some pairs have data in each file.
