@@ -47,7 +47,7 @@ namespace VGMToolbox.forms.extraction
             //this.tbOutput.Text += "- Currently supported archive types: CRI CPK, Microsoft STFS (XBLA), Nintendo U8 Archives (Wii)" + Environment.NewLine;
             this.tbOutput.Text += "- Currently supported archive types: CRI CPK, Nintendo U8 Archives (Wii)" + Environment.NewLine;
             this.tbOutput.Text += String.Format("- WII images require 'ckey.bin' and/or 'kkey.bin' (for Korean discs) in the <{0}> directory.", NintendoWiiOpticalDisc.WII_EXTERNAL_FOLDER) + Environment.NewLine;
-            this.tbOutput.Text += String.Format("- WII U images require 'ckey.bin' in the <{0}> directory, and 'disckey.bin' in the same directory as the source .wud image file.", NintendoWiiUOpticalDisc.WIIU_EXTERNAL_FOLDER) + Environment.NewLine;
+            this.tbOutput.Text += String.Format("- WII U images require 'ckey.bin' in the <{0}> directory, and 'disckey.bin' or '<iso name>.key' in the same directory as the source .wud image file.", NintendoWiiUOpticalDisc.WIIU_EXTERNAL_FOLDER) + Environment.NewLine;
             this.tbOutput.Text += "- Not yet supported/tested: .CCD, .MDS style cue sheets; Redbook Audio Extraction" + Environment.NewLine;
             
             this.btnDoTask.Hide();
