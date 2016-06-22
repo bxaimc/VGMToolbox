@@ -2,6 +2,8 @@
 [NINTENDO WIIU WUD]
 - Added support for GI type partitions.
 - Added disk key file name option for scene release key name defaults: <ISO NAME>.key.  If that key is not present, will look for old default, "disckey.bin."
+[CRI ACB/AWB EXTRACTOR] Add ATRAC9 file extension.
+[ISO EXTRACTOR] Remove Microsoft STFS support.  Will fix eventually.
 
 *** VGMToolbox r1013 (2016-01-06)
 [NINTENDO WAD UNPACKER] Fix detection of Korean WAD files.

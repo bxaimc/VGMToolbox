@@ -416,6 +416,19 @@ namespace VGMToolbox.tools.extract
                         break;
                     }
 
+                    //-----------------------------
+                    // MICROSOFT EXFAT FILE SYSTEM (PSVita)
+                    //-----------------------------
+                    else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, (int)MicrosoftExFatFileSystem.IDENTIFIER_OFFSET, MicrosoftExFatFileSystem.STANDARD_IDENTIFIER.Length, MicrosoftExFatFileSystem.STANDARD_IDENTIFIER))
+                    {
+                        MicrosoftExFatVolume isoVolume;
+                        isoVolume = new MicrosoftExFatVolume();
+                        isoVolume.Initialize(fs, currentOffset, isRawFormat);
+                        volumeList.Add((IVolume)isoVolume);
+
+                        break;
+                    }
+
                     else
                     {
                         currentOffset += sectorSize;
