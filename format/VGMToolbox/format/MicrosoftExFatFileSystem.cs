@@ -195,7 +195,6 @@ namespace VGMToolbox.format
         private void ProcessRootDirectory(FileStream isoStream)
         {
             byte[] primaryEntry = new byte[MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE];
-            byte[][] secondaryEntries;
 
             byte entryType = 0xFF;
             long currentOffset = (long)this.RootDirectoryAbsoluteOffset;
@@ -204,8 +203,8 @@ namespace VGMToolbox.format
             {
                 // read primary entry
                 primaryEntry = ParseFile.ParseSimpleOffset(isoStream, currentOffset, MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE);
-                
-                // move pointer variable
+
+                // move pointer
                 currentOffset += MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE;
                 
                 // process primary entry and subentries if needed
@@ -214,7 +213,16 @@ namespace VGMToolbox.format
                 switch (entryType)
                 { 
                     case MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_TYPE_VOLUME_LABEL:
-                        this.ProcessRootDirectoryVolumeLabelEntry(primaryEntry);
+                        this.ProcessRootDirectoryVolumeLabelEntry(primaryEntry);                        
+                        break;
+                    case MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_TYPE_FILE_DIRECTORY:
+
+                        break;
+                    case MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_TYPE_ALLOCATION_BITMAP:
+                    case MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_TYPE_UPCASE:
+                    case MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_TYPE_VOLUME_GUID:
+                    case MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_TYPE_TEXFAT_PADDING:
+                    case MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_TYPE_WINDOWS_CE_ACL:
                         break;
                     default:
                         break;
@@ -239,8 +247,53 @@ namespace VGMToolbox.format
             byte[] labelBytes = ParseFile.SimpleArrayCopy(volumeLabelEntry, 2, nameLength);
             this.VolumeIdentifier = Encoding.Unicode.GetString(labelBytes);        
         }
-    
-    
+
+        private uint ProcessRootDirectoryFileDirectoryEntry(FileStream isoStream, long currentOffset, byte[] fileDirectoryEntry)
+        {
+            uint bytesProcessed = 0;
+            byte[] secondaryRecord;
+
+            MicrosoftExFatRootDirFileDirectoryEntry fileEntry = 
+                new MicrosoftExFatRootDirFileDirectoryEntry(fileDirectoryEntry);
+
+            MicrosoftExFatRootDirStreamExtensionEntry streamExtensionEntry;
+            MicrosoftExFatRootDirFileNameExtensionEntry fileNameExtensionEntry;
+
+            string fileName = String.Empty;
+
+
+            // check if in use and process, and skip if not
+            if (fileEntry.IsInUse)
+            {
+                // process Stream Extension Entry
+                secondaryRecord = ParseFile.ParseSimpleOffset(isoStream, currentOffset, MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE);
+                streamExtensionEntry = new MicrosoftExFatRootDirStreamExtensionEntry(secondaryRecord);
+                bytesProcessed += MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE;
+
+                // process File Name Extention Entry
+                for (int i = 0; i < (fileEntry.SecondaryCount - 1); i++)
+                {
+                    secondaryRecord = ParseFile.ParseSimpleOffset(isoStream, (currentOffset + bytesProcessed), MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE);
+                    fileNameExtensionEntry = new MicrosoftExFatRootDirFileNameExtensionEntry(secondaryRecord);
+
+                    // build name from chunks
+                    fileName += fileNameExtensionEntry.FileNameChunk;
+
+                    bytesProcessed += MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE;
+                }
+
+                // trim any excess from name
+                fileName = fileName.Substring(0, streamExtensionEntry.NameLength);
+
+                // create dir or file and add to array list
+            }
+            else
+            {
+                bytesProcessed = (uint)(MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE * fileEntry.SecondaryCount);
+            }
+
+            return bytesProcessed;
+        }
     
     
     
@@ -249,7 +302,112 @@ namespace VGMToolbox.format
 
 
 
+    public class MicrosoftExFatRootDirFileDirectoryEntry
+    {
+        public byte EntryType { set; get; }
+        
+        public byte SecondaryCount { set; get; }
+        public ushort SetChecksum { set; get; }
+        public ushort FileAttributes { set; get; }
+        public ushort Reserved1 { set; get; }
+        
+        public uint Create { set; get; }
+        public uint LastModified { set; get; }
+        public uint LastAccessed { set; get; }
 
+        public byte Create10ms { set; get; }
+        public byte LastModified10ms { set; get; }
+        
+        public byte CreateTZOffset { set; get; }
+        public byte LastModifiedTZOffset { set; get; }
+        public byte LastAccessTZOffset { set; get; }
+
+        public byte[] Reserved2 { set; get; }
+
+        public bool IsInUse { set; get; }
+
+        public MicrosoftExFatRootDirFileDirectoryEntry(byte[] directoryEntry)
+        {
+            this.EntryType = directoryEntry[0];
+
+            this.SecondaryCount = directoryEntry[1];
+            this.SetChecksum = ParseFile.ReadUshortLE(directoryEntry, 2);
+            this.FileAttributes = ParseFile.ReadUshortLE(directoryEntry, 4);
+            this.Reserved1 = ParseFile.ReadUshortLE(directoryEntry, 6);
+
+            this.Create = ParseFile.ReadUintLE(directoryEntry, 8);
+            this.LastModified = ParseFile.ReadUintLE(directoryEntry, 0x0C);
+            this.LastAccessed = ParseFile.ReadUintLE(directoryEntry, 0x10);
+
+            this.Create10ms = directoryEntry[0x14];
+            this.LastModified10ms = directoryEntry[0x15];
+
+            this.CreateTZOffset = directoryEntry[0x16];
+            this.LastModifiedTZOffset = directoryEntry[0x17];
+            this.LastAccessTZOffset = directoryEntry[0x18];
+
+            this.Reserved2 = ParseFile.SimpleArrayCopy(directoryEntry, 0x19, 7);
+
+            this.IsInUse = ((this.EntryType & 0x80) == 0x80);        
+        }
+    
+    }
+
+    public class MicrosoftExFatRootDirStreamExtensionEntry
+    {
+        public byte EntryType { set; get; }
+        public byte GeneralSecondaryFlags { set; get; }
+        public byte Reserved1 { set; get; }
+
+        public byte NameLength { set; get; }
+        public ushort NameHash { set; get; }
+        public ushort Reserved2 { set; get; }
+
+        public ulong ValidDataLength { set; get; }
+        public uint Reserved3 { set; get; }
+
+        public uint FirstCluster { set; get; }
+        public ulong DataLength { set; get; }
+
+        public MicrosoftExFatRootDirStreamExtensionEntry(byte[] streamExtensionEntry)
+        {
+            this.EntryType = streamExtensionEntry[0];
+            this.GeneralSecondaryFlags = streamExtensionEntry[1];
+            this.Reserved1 = streamExtensionEntry[2];
+
+            this.NameLength = streamExtensionEntry[3];
+            this.NameHash = ParseFile.ReadUshortLE(streamExtensionEntry, 4);
+            this.Reserved2 = ParseFile.ReadUshortLE(streamExtensionEntry, 6);
+
+            this.ValidDataLength = ParseFile.ReadUlongLE(streamExtensionEntry, 8);
+            this.Reserved3 = ParseFile.ReadUintLE(streamExtensionEntry, 0x10);
+
+            this.FirstCluster = ParseFile.ReadUintLE(streamExtensionEntry, 0x14);
+            this.DataLength = ParseFile.ReadUlongLE(streamExtensionEntry, 0x18);                        
+        }
+
+
+    
+    }
+
+    public class MicrosoftExFatRootDirFileNameExtensionEntry
+    {
+        public byte EntryType { set; get; }
+        public byte GeneralSecondaryFlags { set; get; }
+        public string FileNameChunk { set; get; }
+
+        public MicrosoftExFatRootDirFileNameExtensionEntry(byte[] fileNameExtensionEntry)
+        {
+            byte[] fileNameChunkBytes;
+            
+            this.EntryType = fileNameExtensionEntry[0];
+            this.GeneralSecondaryFlags = fileNameExtensionEntry[1];
+
+            fileNameChunkBytes = ParseFile.SimpleArrayCopy(fileNameExtensionEntry, 2, 30);
+            this.FileNameChunk = Encoding.Unicode.GetString(fileNameChunkBytes);        
+        }
+
+    }
 
     public class MicrosoftExFatFileStructure : IFileStructure
     {
