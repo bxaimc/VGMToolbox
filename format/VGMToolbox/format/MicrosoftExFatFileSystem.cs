@@ -21,9 +21,14 @@ namespace VGMToolbox.format
         public const uint FAT_FIRST_USABLE_CLUSTER = 2;
         public const uint FAT_MEDIA_TYPE = 0xFFFFFFF8;
         public const uint FAT_CELL1_PLACEHOLDER = 0xFFFFFFFF;
+        
+        public const uint FAT_CELL_EOF = 0xFFFFFFFF;
+        public const uint FAT_CELL_NO_CHAIN = 0;
+        public const uint FAT_CELL_MAX_VALUE = 0xFFFFFFF7;
 
         public const byte ROOT_DIR_ENTRY_SIZE = 0X20;
 
+        public const byte ROOT_DIR_ENTRY_EMPTY = 0;
         public const byte ROOT_DIR_ENTRY_TYPE_ALLOCATION_BITMAP = 0x81;
         public const byte ROOT_DIR_ENTRY_TYPE_UPCASE = 0x82;
         public const byte ROOT_DIR_ENTRY_TYPE_VOLUME_LABEL = 0x83;
@@ -43,6 +48,17 @@ namespace VGMToolbox.format
         public const uint CLUSTER_CORRECTION_OFFSET = 2;  // first sector in actual cluster heap is number 2, 
                                                           //   cluster 0 and 1 are reserved (see page 37 in 
                                                           //   Robert Shullich's "Reverse Engineering...[exFAT]"
+
+        public static ulong GetOffsetForClusterId(ulong clusterHeapOffset, uint clusterSize, uint clusterId)
+        {
+            ulong offset;
+
+            offset = clusterHeapOffset +
+                ((clusterId - MicrosoftExFatFileSystem.CLUSTER_CORRECTION_OFFSET) * clusterSize);
+
+
+            return offset;
+        }
     }
     
     public class MicrosoftExFatVolume : IVolume
@@ -79,8 +95,6 @@ namespace VGMToolbox.format
         public ulong FatLengthInBytes { set; get; }        
         public ulong ClusterHeapAbsoluteOffset { set; get; }
         public ulong RootDirectoryAbsoluteOffset { set; get; }
-
-
 
         // FAT
         public uint[] FileAllocationTable { set; get; }
@@ -145,7 +159,8 @@ namespace VGMToolbox.format
             this.FatAbsoluteOffset = (ulong)this.VolumeBaseOffset + (this.FatOffset * this.SectorSizeInBytes);
             this.FatLengthInBytes = this.FatLength * this.SectorSizeInBytes;
             this.ClusterHeapAbsoluteOffset = (ulong)this.VolumeBaseOffset + (this.ClusterHeapOffset * this.SectorSizeInBytes);
-            this.RootDirectoryAbsoluteOffset = this.ClusterHeapAbsoluteOffset + ((this.RootDirectoryFirstCluster - MicrosoftExFatFileSystem.CLUSTER_CORRECTION_OFFSET) * this.ClusterSizeInBytes);
+            this.RootDirectoryAbsoluteOffset =
+                MicrosoftExFatFileSystem.GetOffsetForClusterId(this.ClusterHeapAbsoluteOffset, this.ClusterSizeInBytes, this.RootDirectoryFirstCluster); // this.ClusterHeapAbsoluteOffset + ((this.RootDirectoryFirstCluster - MicrosoftExFatFileSystem.CLUSTER_CORRECTION_OFFSET) * this.ClusterSizeInBytes);
 
             if (this.FileSystemRevision == MicrosoftExFatFileSystem.EXFAT_VERSION_0100)
             {
@@ -153,8 +168,10 @@ namespace VGMToolbox.format
                 this.InitializeAndValidateFat(isoStream);
 
                 // process root directory entry
-                this.ProcessRootDirectory(isoStream);
+                this.GetVolumeLabel(isoStream);
 
+                // load directories
+                this.LoadDirectories(isoStream);
             }
             else
             {
@@ -162,7 +179,7 @@ namespace VGMToolbox.format
             }
 
         }
-        
+
         public void ExtractAll(ref Dictionary<string, FileStream> streamCache, string destinationFolder, bool extractAsRaw)
         {
             foreach (MicrosoftExFatDirectoryStructure ds in this.DirectoryStructureArray)
@@ -172,6 +189,23 @@ namespace VGMToolbox.format
         }
 
         #endregion
+
+        public ulong GetMaxDataSizeForFirstCluster(uint firstCluster)
+        {
+            ulong maxDataSize = 0;
+            uint currentCluster = firstCluster;
+
+            do
+            {
+                maxDataSize += this.ClusterSizeInBytes;
+            }
+            while ((this.FileAllocationTable[currentCluster] != MicrosoftExFatFileSystem.FAT_CELL_NO_CHAIN) &&
+                  (this.FileAllocationTable[currentCluster] != MicrosoftExFatFileSystem.FAT_CELL_EOF) &&
+                  (this.FileAllocationTable[currentCluster] <= MicrosoftExFatFileSystem.FAT_CELL_MAX_VALUE));
+
+
+            return maxDataSize;
+        }
 
         private void InitializeAndValidateFat(FileStream isoStream)
         {
@@ -192,12 +226,14 @@ namespace VGMToolbox.format
             } // for (ulong i = 0; i < (this.ClusterCount + 2); i++ )               
         }
 
-        private void ProcessRootDirectory(FileStream isoStream)
+        private void GetVolumeLabel(FileStream isoStream)
         {
             byte[] primaryEntry = new byte[MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE];
 
             byte entryType = 0xFF;
             long currentOffset = (long)this.RootDirectoryAbsoluteOffset;
+
+            bool volumeLabelProcessed = false;
 
             do
             {
@@ -213,10 +249,14 @@ namespace VGMToolbox.format
                 switch (entryType)
                 { 
                     case MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_TYPE_VOLUME_LABEL:
-                        this.ProcessRootDirectoryVolumeLabelEntry(primaryEntry);                        
+                        this.ProcessRootDirectoryVolumeLabelEntry(primaryEntry);
+                        volumeLabelProcessed = true;
                         break;
                     case MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_TYPE_FILE_DIRECTORY:
-
+                        // this.ProcessRootDirectoryFileDirectoryEntry(isoStream, ref currentOffset, primaryEntry);
+                     
+                        // skip the extra info, primaryEntry[1] is the FileDirectoryEntry.SecondaryCount value
+                        currentOffset += (uint)(MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE * primaryEntry[1]);                        
                         break;
                     case MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_TYPE_ALLOCATION_BITMAP:
                     case MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_TYPE_UPCASE:
@@ -225,18 +265,66 @@ namespace VGMToolbox.format
                     case MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_TYPE_WINDOWS_CE_ACL:
                         break;
                     default:
-                        break;
-                
-                
-                } // switch (entryType)
-
-
-
-
-                
+                        break;                                
+                } // switch (entryType)                
             }
-            while (entryType != 0xFF);
-        
+            while ((!volumeLabelProcessed) && (entryType != MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_EMPTY));        
+        }
+
+        private void LoadDirectories(FileStream isoStream)
+        {
+            MicrosoftExFatDirectoryStructure rootDirectory;
+            byte[] primaryEntry = new byte[MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE];
+
+            byte entryType = 0xFF;
+            long currentOffset = (long)this.RootDirectoryAbsoluteOffset;
+            ulong maxDirectoryLength;
+
+            bool rootDirectoryProcessed = false;
+
+            // @TODO: Updated to use max data size and to jump clusters if needed.
+            do
+            {
+                // read primary entry
+                primaryEntry = ParseFile.ParseSimpleOffset(isoStream, currentOffset, MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE);
+
+                // process primary entry and subentries if needed
+                entryType = primaryEntry[0];
+
+                switch (entryType)
+                {
+                    case MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_TYPE_FILE_DIRECTORY:
+                        // calculate max size for root directory entries
+                        maxDirectoryLength = this.GetMaxDataSizeForFirstCluster(this.RootDirectoryFirstCluster);
+
+                        // build root directory
+                        rootDirectory = new MicrosoftExFatDirectoryStructure(isoStream, this.VolumeBaseOffset, (long)this.RootDirectoryAbsoluteOffset, (long)maxDirectoryLength,
+                            String.Empty, String.Empty, this.ClusterHeapAbsoluteOffset, this.ClusterSizeInBytes);
+
+                            // add root directory
+                        this.DirectoryStructureArray.Add(rootDirectory);
+
+                        // skip the root directory entries, primaryEntry[1] is the FileDirectoryEntry.SecondaryCount value
+                        currentOffset += MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE + 
+                            (uint)(MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE * primaryEntry[1]);
+                        
+                        // set flag to indicate directory was processed
+                        rootDirectoryProcessed = true;
+                        break;
+                    case MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_TYPE_VOLUME_LABEL:
+                    case MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_TYPE_ALLOCATION_BITMAP:
+                    case MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_TYPE_UPCASE:
+                    case MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_TYPE_VOLUME_GUID:
+                    case MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_TYPE_TEXFAT_PADDING:
+                    case MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_TYPE_WINDOWS_CE_ACL:
+                        currentOffset += MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE;    
+                        break;
+                    default:
+                        currentOffset += MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE;
+                        break;
+                } // switch (entryType)                
+            }
+            while ((!rootDirectoryProcessed) && (entryType != MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_EMPTY)); // @todo: add max size?
         }
 
         private void ProcessRootDirectoryVolumeLabelEntry(byte[] volumeLabelEntry)
@@ -246,57 +334,7 @@ namespace VGMToolbox.format
 
             byte[] labelBytes = ParseFile.SimpleArrayCopy(volumeLabelEntry, 2, nameLength);
             this.VolumeIdentifier = Encoding.Unicode.GetString(labelBytes);        
-        }
-
-        private uint ProcessRootDirectoryFileDirectoryEntry(FileStream isoStream, long currentOffset, byte[] fileDirectoryEntry)
-        {
-            uint bytesProcessed = 0;
-            byte[] secondaryRecord;
-
-            MicrosoftExFatRootDirFileDirectoryEntry fileEntry = 
-                new MicrosoftExFatRootDirFileDirectoryEntry(fileDirectoryEntry);
-
-            MicrosoftExFatRootDirStreamExtensionEntry streamExtensionEntry;
-            MicrosoftExFatRootDirFileNameExtensionEntry fileNameExtensionEntry;
-
-            string fileName = String.Empty;
-
-
-            // check if in use and process, and skip if not
-            if (fileEntry.IsInUse)
-            {
-                // process Stream Extension Entry
-                secondaryRecord = ParseFile.ParseSimpleOffset(isoStream, currentOffset, MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE);
-                streamExtensionEntry = new MicrosoftExFatRootDirStreamExtensionEntry(secondaryRecord);
-                bytesProcessed += MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE;
-
-                // process File Name Extention Entry
-                for (int i = 0; i < (fileEntry.SecondaryCount - 1); i++)
-                {
-                    secondaryRecord = ParseFile.ParseSimpleOffset(isoStream, (currentOffset + bytesProcessed), MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE);
-                    fileNameExtensionEntry = new MicrosoftExFatRootDirFileNameExtensionEntry(secondaryRecord);
-
-                    // build name from chunks
-                    fileName += fileNameExtensionEntry.FileNameChunk;
-
-                    bytesProcessed += MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE;
-                }
-
-                // trim any excess from name
-                fileName = fileName.Substring(0, streamExtensionEntry.NameLength);
-
-                // create dir or file and add to array list
-            }
-            else
-            {
-                bytesProcessed = (uint)(MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE * fileEntry.SecondaryCount);
-            }
-
-            return bytesProcessed;
-        }
-    
-    
-    
+        }          
     }
 
 
@@ -325,6 +363,7 @@ namespace VGMToolbox.format
         public byte[] Reserved2 { set; get; }
 
         public bool IsInUse { set; get; }
+        public bool IsDirectory { set; get; }
 
         public MicrosoftExFatRootDirFileDirectoryEntry(byte[] directoryEntry)
         {
@@ -348,7 +387,8 @@ namespace VGMToolbox.format
 
             this.Reserved2 = ParseFile.SimpleArrayCopy(directoryEntry, 0x19, 7);
 
-            this.IsInUse = ((this.EntryType & 0x80) == 0x80);        
+            this.IsInUse = ((this.EntryType & 0x80) == 0x80);
+            this.IsDirectory = ((this.FileAttributes & 0x10) == 0x10);        
         }
     
     }
@@ -439,8 +479,7 @@ namespace VGMToolbox.format
         }
 
         public MicrosoftExFatFileStructure(string parentDirectoryName, string sourceFilePath, string fileName, 
-            long offset, long volumeBaseOffset, long lba, long size, DateTime fileTime, bool isRaw, 
-            int nonRawSectorSize)
+            long offset, long volumeBaseOffset, long lba, long size, DateTime fileTime)
         {
             this.ParentDirectoryName = parentDirectoryName;
             this.SourceFilePath = sourceFilePath;
@@ -451,8 +490,8 @@ namespace VGMToolbox.format
 
             this.VolumeBaseOffset = volumeBaseOffset;
             this.Lba = lba;
-            this.IsRaw = isRaw;
-            this.NonRawSectorSize = nonRawSectorSize;
+            this.IsRaw = true;
+            this.NonRawSectorSize = -1;
             this.FileMode = CdSectorType.Unknown;
         }
 
@@ -469,6 +508,8 @@ namespace VGMToolbox.format
         }
     }
 
+   
+    
     public class MicrosoftExFatDirectoryStructure : IDirectoryStructure
     {
         public long DirectoryRecordOffset { set; get; }
@@ -498,6 +539,171 @@ namespace VGMToolbox.format
 
         public string SourceFilePath { set; get; }
         public string DirectoryName { set; get; }
+
+        public MicrosoftExFatDirectoryStructure(
+            FileStream isoStream, 
+            long volumeBaseOffset,
+            long directoryOffset,
+            long maxDirectoryLength,
+            string directoryName, 
+            string parentDirectory,
+            ulong clusterHeapOffset,
+            uint clusterSize)
+        {
+            string nextDirectory;
+            this.SourceFilePath = isoStream.Name;
+            this.SubDirectoryArray = new ArrayList();
+            this.FileArray = new ArrayList();
+            this.DirectoryRecordOffset = directoryOffset;
+
+            if (String.IsNullOrEmpty(parentDirectory))
+            {
+                this.ParentDirectoryName = String.Empty;
+                this.DirectoryName = directoryName;
+                nextDirectory = this.DirectoryName;
+            }
+            else
+            {
+                this.ParentDirectoryName = parentDirectory;
+                this.DirectoryName = directoryName;
+                nextDirectory = this.ParentDirectoryName + Path.DirectorySeparatorChar + this.DirectoryName;
+            }
+
+            this.processDirectory(isoStream, directoryOffset, maxDirectoryLength, nextDirectory, volumeBaseOffset, clusterHeapOffset, clusterSize);                                
+        
+        }
+
+        private void processDirectory(
+           FileStream isoStream,
+           long directoryOffset,
+           long maxDirectoryLength,
+           string parentDirectory,
+           long volumeBaseOffset, 
+           ulong clusterHeapOffset,
+           uint clusterSize)
+        {
+            byte[] primaryEntry;
+            byte[] secondaryRecord;
+            byte entryType = 0xFF;
+
+            MicrosoftExFatDirectoryStructure directory;
+            MicrosoftExFatFileStructure newFile;
+            MicrosoftExFatDirectoryStructure newDirectory;
+            ulong objectOffset;
+
+            MicrosoftExFatRootDirFileDirectoryEntry fileEntry; // = new MicrosoftExFatRootDirFileDirectoryEntry(fileDirectoryEntry);
+
+            MicrosoftExFatRootDirStreamExtensionEntry streamExtensionEntry;
+            MicrosoftExFatRootDirFileNameExtensionEntry fileNameExtensionEntry;
+
+            string fileName = String.Empty;
+            DateTime fileDate = new DateTime();  // @todo update to actually parse date
+
+            long currentOffset = directoryOffset;
+            long maxOffset = directoryOffset + maxDirectoryLength;
+
+            // @TODO: need to handle when in non-contiguous clusters
+            while ((currentOffset < maxOffset) && (entryType != MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_EMPTY))
+            {
+                // read primary entry
+                primaryEntry = ParseFile.ParseSimpleOffset(isoStream, currentOffset, MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE);
+
+                // process primary entry and subentries if needed
+                entryType = primaryEntry[0];
+
+                switch (entryType)
+                {
+                    case MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_TYPE_FILE_DIRECTORY:
+                        fileEntry = new MicrosoftExFatRootDirFileDirectoryEntry(primaryEntry);
+                        currentOffset += MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE;
+                        
+                        // check if in use and process, and skip if not
+                        if (fileEntry.IsInUse)
+                        {
+                            // process Stream Extension Entry
+                            secondaryRecord = ParseFile.ParseSimpleOffset(isoStream, currentOffset, MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE);
+                            streamExtensionEntry = new MicrosoftExFatRootDirStreamExtensionEntry(secondaryRecord);
+                            objectOffset = MicrosoftExFatFileSystem.GetOffsetForClusterId(clusterHeapOffset, clusterSize, streamExtensionEntry.FirstCluster);
+                            
+                            currentOffset += MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE;
+
+                            // process File Name Extention Entry
+                            fileName = String.Empty;
+                            
+                            for (int i = 0; i < (fileEntry.SecondaryCount - 1); i++)
+                            {
+                                secondaryRecord = ParseFile.ParseSimpleOffset(isoStream, (currentOffset), MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE);
+                                fileNameExtensionEntry = new MicrosoftExFatRootDirFileNameExtensionEntry(secondaryRecord);
+
+                                // build name from chunks
+                                fileName += fileNameExtensionEntry.FileNameChunk;
+
+                                // move pointer
+                                currentOffset += MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE;
+                            }
+
+                            // trim any excess from name
+                            fileName = fileName.Substring(0, streamExtensionEntry.NameLength);
+                            
+                            // create dir or file and add to array list
+                            if (fileEntry.IsDirectory)
+                            {
+                                // get new directory
+                                newDirectory = new MicrosoftExFatDirectoryStructure(isoStream, volumeBaseOffset,
+                                    (long)objectOffset, (long)streamExtensionEntry.DataLength, 
+                                    fileName, parentDirectory, clusterHeapOffset, clusterSize);
+
+                                // add directory to subdirectory array
+                                this.SubDirectoryArray.Add(newDirectory);
+                                
+                            }
+                            else // file
+                            {
+                                newFile = new MicrosoftExFatFileStructure(parentDirectory, isoStream.Name, fileName, (long)objectOffset,
+                                    volumeBaseOffset, streamExtensionEntry.FirstCluster, (long)streamExtensionEntry.DataLength, fileDate);
+
+                                this.FileArray.Add(newFile);
+                            }
+                        }
+                        else
+                        {
+                            currentOffset = (uint)(MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE * fileEntry.SecondaryCount);
+                        }
+
+                        break;
+                    case MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_TYPE_VOLUME_LABEL:
+                    case MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_TYPE_ALLOCATION_BITMAP:
+                    case MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_TYPE_UPCASE:
+                    case MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_TYPE_VOLUME_GUID:
+                    case MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_TYPE_TEXFAT_PADDING:
+                    case MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_TYPE_WINDOWS_CE_ACL:
+                        currentOffset += MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE;
+                        break;
+                    default:
+                        currentOffset += MicrosoftExFatFileSystem.ROOT_DIR_ENTRY_SIZE;
+                        break;
+                } // switch (entryType)                
+
+                       
+            }
+
+
+
+
+
+
+
+
+
+
+
+        
+        
+        
+        
+        }
+
+
 
         public int CompareTo(object obj)
         {
