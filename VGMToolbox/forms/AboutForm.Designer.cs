@@ -34,6 +34,7 @@
             this.tbMain = new System.Windows.Forms.TextBox();
             this.linkLabelSupport = new System.Windows.Forms.LinkLabel();
             this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // linkLabelHomePage
@@ -89,11 +90,21 @@
             this.label1.TabIndex = 4;
             this.label1.Text = "VGMToolbox is freeware, Licensed under the MIT license.";
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(9, 196);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(150, 13);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "Email: vgmtoolbox@gmail.com";
+            // 
             // AboutForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 240);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.linkLabelSupport);
             this.Controls.Add(this.tbMain);
@@ -114,5 +125,6 @@
         private System.Windows.Forms.TextBox tbMain;
         private System.Windows.Forms.LinkLabel linkLabelSupport;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }

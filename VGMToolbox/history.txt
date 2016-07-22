@@ -1,3 +1,11 @@
+*** VGMToolbox r1022 (2016-07-21)
+[MICROSOFT EXFAT / PS VITA] 
+- Added support for current PS Vita Black Fin dumps.  
+- Basic parsing working, but non-contiguous clusters not supported.  I haven't seen any of these in the PSV dumps, but the ExFAT system supports it.
+- Extraction supported, but most, not all, files are encrypted.
+
+[OTHER] Add email link to "About" screen.
+
 *** VGMToolbox r1017 (2016-05-29)
 [NINTENDO WIIU WUD]
 - Added support for GI type partitions.
