@@ -195,6 +195,7 @@ namespace VGMToolbox.tools.extract
                 byte[] sectorBytes;
                 byte[] sectorDataBytes;
                 byte[] volumeIdBytes;
+                byte[] secondaryHeaderBytes;
 
                 bool isRawFormat = false;
                 int sectorSize = 0x800;
@@ -417,16 +418,24 @@ namespace VGMToolbox.tools.extract
                     }
 
                     //-----------------------------
-                    // MICROSOFT EXFAT FILE SYSTEM (PSVita)
+                    // PS VITA (MICROSOFT EXFAT FILE SYSTEM)
                     //-----------------------------
-                    else if (ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, (int)MicrosoftExFatFileSystem.IDENTIFIER_OFFSET, MicrosoftExFatFileSystem.STANDARD_IDENTIFIER.Length, MicrosoftExFatFileSystem.STANDARD_IDENTIFIER))
+                    else if ((ParseFile.CompareSegmentUsingSourceOffset(volumeIdBytes, (int)SonyPsVitaCartridge.IDENTIFIER_OFFSET, SonyPsVitaCartridge.STANDARD_IDENTIFIER.Length, SonyPsVitaCartridge.STANDARD_IDENTIFIER))) 
                     {
-                        MicrosoftExFatVolume isoVolume;
-                        isoVolume = new MicrosoftExFatVolume();
-                        isoVolume.Initialize(fs, currentOffset, isRawFormat);
-                        volumeList.Add((IVolume)isoVolume);
+                        secondaryHeaderBytes = ParseFile.ParseSimpleOffset(fs, currentOffset + SonyPsVitaCartridge.EXFAT_HEADER_OFFSET, (int)(MicrosoftExFatFileSystem.STANDARD_IDENTIFIER.Length + MicrosoftExFatFileSystem.IDENTIFIER_OFFSET));
+                                                
+                        if (ParseFile.CompareSegmentUsingSourceOffset(secondaryHeaderBytes, 
+                                (int)MicrosoftExFatFileSystem.IDENTIFIER_OFFSET, 
+                                MicrosoftExFatFileSystem.STANDARD_IDENTIFIER.Length, 
+                                MicrosoftExFatFileSystem.STANDARD_IDENTIFIER))
+                        {
+                            MicrosoftExFatVolume isoVolume;
+                            isoVolume = new MicrosoftExFatVolume();
+                            isoVolume.Initialize(fs, currentOffset + SonyPsVitaCartridge.EXFAT_HEADER_OFFSET, isRawFormat);
+                            volumeList.Add((IVolume)isoVolume);
 
-                        break;
+                            break;
+                        }
                     }
 
                     else
