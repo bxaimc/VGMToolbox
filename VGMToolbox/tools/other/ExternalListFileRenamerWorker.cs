@@ -58,6 +58,7 @@ namespace VGMToolbox.tools.other
             long destinationFileBytesSize = -1;
             byte[] destinationFileBytes;
             string destinationFile;
+            string destinationFolder;
 
             long currentOffset;
 
@@ -174,6 +175,13 @@ namespace VGMToolbox.tools.other
                                     {
                                         renameScript.AppendFormat("rename \"{0}\" \"{1}\" {2}", Path.GetFileName(sourceFile), Path.GetFileName(destinationFile), Environment.NewLine);
                                         undoScript.AppendFormat("rename \"{0}\" \"{1}\" {2}", Path.GetFileName(destinationFile), Path.GetFileName(sourceFile), Environment.NewLine);
+
+                                        destinationFolder = Path.GetDirectoryName(destinationFile);
+
+                                        if (!Directory.Exists(destinationFolder))
+                                        {
+                                            Directory.CreateDirectory(destinationFolder);
+                                        }
 
                                         File.Move(sourceFile, destinationFile);
                                     }

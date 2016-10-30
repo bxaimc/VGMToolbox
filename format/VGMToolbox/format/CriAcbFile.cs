@@ -272,13 +272,33 @@ namespace VGMToolbox.format
                     // get wave form info
                     this.CueList[i].WaveformIndex = ParseFile.ReadUshortBE(fs, (long)(referenceItemsOffset + referenceCorrection));
 
-                    // get waveform id and encode type from corresponding waveform
-                    this.CueList[i].WaveformId = (ushort)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, this.CueList[i].WaveformIndex, "Id");
-                    this.CueList[i].EncodeType = (byte)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, this.CueList[i].WaveformIndex, "EncodeType");
-                    
                     // get Streaming flag, 0 = in ACB files, 1 = in AWB file
                     isStreaming = (byte)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, this.CueList[i].WaveformIndex, "Streaming");
                     this.CueList[i].IsStreaming = isStreaming == 0 ? false : true;
+
+                    // get waveform id and encode type from corresponding waveform
+                    var waveformId = CriUtfTable.GetUtfFieldForRow(waveformTableUtf, this.CueList[i].WaveformIndex, "Id");
+
+                    if (waveformId != null)
+                    {
+                        // early revisions of ACB spec used "Id"
+                        this.CueList[i].WaveformId = (ushort)waveformId;
+                    }
+                    else
+                    {
+                        // later versions using "MemoryAwbId" and  "StreamingAwbId"
+                        if (this.CueList[i].IsStreaming)
+                        {
+                            this.CueList[i].WaveformId = (ushort)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, this.CueList[i].WaveformIndex, "StreamAwbId");
+                        }
+                        else
+                        {
+                            this.CueList[i].WaveformId = (ushort)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, this.CueList[i].WaveformIndex, "MemoryAwbId");
+                        }
+                    }
+
+                    this.CueList[i].EncodeType = (byte)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, this.CueList[i].WaveformIndex, "EncodeType");
+                    
 
                     // update flag
                     this.CueList[i].IsWaveformIdentified = true;
@@ -414,7 +434,7 @@ namespace VGMToolbox.format
                     var unextractedExternalFiles = this.ExternalAwb.Files.Keys.Where(x => !externalIdsExtracted.Contains(x));
                     foreach (ushort key in unextractedExternalFiles)
                     {
-                        waveformIndex = GetWaveformRowIndexForWaveformId(waveformTableUtf, key);
+                        waveformIndex = GetWaveformRowIndexForWaveformId(waveformTableUtf, key, true);
 
                         encodeType = (byte)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, waveformIndex, "EncodeType");
 
@@ -435,7 +455,7 @@ namespace VGMToolbox.format
                     var unextractedInternalFiles = this.InternalAwb.Files.Keys.Where(x => !internalIdsExtracted.Contains(x));
                     foreach (ushort key in unextractedInternalFiles)
                     {
-                        waveformIndex = GetWaveformRowIndexForWaveformId(waveformTableUtf, key);
+                        waveformIndex = GetWaveformRowIndexForWaveformId(waveformTableUtf, key, false);
 
                         encodeType = (byte)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, waveformIndex, "EncodeType");
 
@@ -481,7 +501,8 @@ namespace VGMToolbox.format
             string acbBaseFileName;
             string[] awbFiles;
 
-            byte[] awbMd5Calculated;
+            byte[] awbHashStored;
+            byte[] awbHashCalculated;
 
             awbDirectory = Path.GetDirectoryName(this.SourceFile);
 
@@ -520,32 +541,47 @@ namespace VGMToolbox.format
             // initialize AFS2 file                        
             using (FileStream fs = File.Open(awbFiles[0], FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                // validate MD5 checksum
-                awbMd5Calculated = ByteConversion.GetBytesFromHexString(ChecksumUtil.GetMd5OfFullFile(fs));
+                awbHashStored = this.StreamAwbHash;
 
-                if (ParseFile.CompareSegment(awbMd5Calculated, 0, this.StreamAwbHash))
+                if (awbHashStored.Length == 0x10) // MD5, hash in newer format unknown
                 {
-                    afs2 = new CriAfs2Archive(fs, 0);
+                    // validate MD5 checksum
+                    awbHashCalculated = ByteConversion.GetBytesFromHexString(ChecksumUtil.GetMd5OfFullFile(fs));
+
+                    if (!ParseFile.CompareSegment(awbHashCalculated, 0, awbHashStored))
+                    {
+                        throw new FormatException(String.Format("AWB file, <{0}>, did not match checksum inside ACB file.", Path.GetFileName(fs.Name)));
+                    }
                 }
-                else
-                {
-                    throw new FormatException(String.Format("AWB file, <{0}>, did not match MD5 checksum inside ACB file.", Path.GetFileName(fs.Name)));
-                }
+                
+                afs2 = new CriAfs2Archive(fs, 0);
             }
 
             return afs2;
         }
 
-        public static ushort GetWaveformRowIndexForWaveformId(CriUtfTable utfTable, ushort waveformId)
+        public static ushort GetWaveformRowIndexForWaveformId(CriUtfTable utfTable, ushort waveformId, bool isStreamed)
         {
-            ushort ret = ushort.MaxValue;
-            ushort tempId;
+            ushort ret = ushort.MaxValue;            
 
             for (int i = 0; i < utfTable.NumberOfRows; i++)
             {
-                tempId = (ushort)CriUtfTable.GetUtfFieldForRow(utfTable, i, "Id");
+                var tempId = CriUtfTable.GetUtfFieldForRow(utfTable, i, "Id");
 
-                if (tempId == waveformId)
+                // newer archives use different labels
+                if (tempId == null)
+                {
+                    if (isStreamed)
+                    {
+                        tempId = CriUtfTable.GetUtfFieldForRow(utfTable, i, "StreamAwbId");
+                    }
+                    else
+                    {
+                        tempId = CriUtfTable.GetUtfFieldForRow(utfTable, i, "MemoryAwbId");
+                    }
+                }
+
+                if ((ushort)tempId == waveformId)
                 {
                     ret = (ushort)i;
                 }

@@ -648,7 +648,8 @@ namespace VGMToolbox.format.util
             {
                 Type dataType = FormatUtil.getObjectType(typeFs);
 
-                if (dataType != null && dataType.Name.Equals("Xsf"))
+                if (dataType != null && 
+                    (dataType.Name.Equals("Xsf") || dataType.Name.Equals("Psf")))
                 {
                     Xsf xsfFile = new Xsf();
                     xsfFile.Initialize(typeFs, pPath);
@@ -656,6 +657,7 @@ namespace VGMToolbox.format.util
                     ret = xsfFile.GetFormat();
                 }
             }
+
             
             return ret;
         }

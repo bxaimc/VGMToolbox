@@ -1553,7 +1553,7 @@ namespace VGMToolbox.util
                     newFileItem.FileNameLength = nameLength + nameTerminatorBytes.Length;
                 }
 
-                if ((nameOffset > 0) && (nameLength > 0))
+                if ((nameOffset > -1) && (nameLength > 0))
                 {
                     byte[] nameBytes = ParseSimpleOffset(vfsStream, nameOffset, (int)nameLength);                    
                     //nameBytes = FileUtil.ReplaceNullByteWithSpace(nameBytes);

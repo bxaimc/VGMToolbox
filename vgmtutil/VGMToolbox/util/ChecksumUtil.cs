@@ -86,6 +86,20 @@ namespace VGMToolbox.util
         }
 
         /// <summary>
+        /// Get the SHA-512 checksum of the input stream.
+        /// </summary>
+        /// <param name="stream">File Stream for which to generate the checksum.</param>
+        /// <returns>String containing the hexidecimal representation of the SHA-512 of the input stream.</returns>
+        public static string GetSha512OfFullFile(FileStream stream)
+        {
+            SHA512CryptoServiceProvider sha512 = new SHA512CryptoServiceProvider();
+
+            stream.Seek(0, SeekOrigin.Begin);
+            sha512.ComputeHash(stream);
+            return ParseFile.ByteArrayToString(sha512.Hash);
+        }
+
+        /// <summary>
         /// Adds a chunk of data to the input CRC32 generator.
         /// </summary>
         /// <param name="stream">Stream to read data from.</param>
