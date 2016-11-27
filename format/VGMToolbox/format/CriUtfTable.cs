@@ -15,6 +15,52 @@ namespace VGMToolbox.format
         public object Value { set; get; }
         public ulong Offset { set; get; }
         public ulong Size { set; get; }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            string value = String.Empty;
+
+            sb.AppendFormat("0x{0} {1} {2} = {3}", 
+                                this.Offset.ToString("X8"),
+                                this.Type.ToString("X2"),
+                                this.Name,
+                                this.GetStringValue());
+            return sb.ToString();
+        }
+
+        public string GetStringValue()
+        {
+            ulong numericValue;
+            byte maksedType = (byte)(this.Type & CriUtfTable.COLUMN_TYPE_MASK);
+            string stringValue = String.Empty;
+
+            switch (maksedType)
+            {
+                case CriUtfTable.COLUMN_TYPE_DATA:
+                    stringValue = this.Value.ToString();
+                    break;
+                case CriUtfTable.COLUMN_TYPE_STRING:
+                    stringValue = (string)this.Value;
+                    break;
+                case CriUtfTable.COLUMN_TYPE_FLOAT:
+                    stringValue = Convert.ToSingle(this.Value).ToString();
+                    break;
+                case CriUtfTable.COLUMN_TYPE_8BYTE:                    
+                case CriUtfTable.COLUMN_TYPE_4BYTE2:
+                case CriUtfTable.COLUMN_TYPE_4BYTE:
+                case CriUtfTable.COLUMN_TYPE_2BYTE2:
+                case CriUtfTable.COLUMN_TYPE_2BYTE:
+                case CriUtfTable.COLUMN_TYPE_1BYTE2:
+                case CriUtfTable.COLUMN_TYPE_1BYTE:
+                    numericValue = Convert.ToUInt64(this.Value);
+                    stringValue = String.Format("0x{0}", numericValue.ToString("X8"));
+                    break;
+
+            }
+
+            return stringValue;
+        }
     }
 
     public class CriUtfTocFileInfo
@@ -513,7 +559,52 @@ namespace VGMToolbox.format
             } // for (byte mult = 0; mult <= byte.MaxValue; mult++)
 
             return keys;
-        }        
+        }
+
+        public static bool IsUtfTable(FileStream fs, long offset)
+        {
+            bool ret = false;
+            CriUtfTable utf = new CriUtfTable();
+
+            utf.SourceFile = fs.Name;
+            utf.BaseOffset = offset;
+
+            try
+            {
+                utf.MagicBytes = ParseFile.ParseSimpleOffset(fs, utf.BaseOffset, 4);
+
+                // check if file is decrypted and get decryption keys if needed
+                utf.checkEncryption(fs);
+
+                // write (decrypted) utf header to file 
+                utf.UtfTableFile = utf.WriteTableToTempFile(fs, offset);
+
+                utf.IsEncrypted = false; // since we've decrypted to a temp file
+                utf.UtfReader.IsEncrypted = false;
+
+                if (ParseFile.CompareSegment(utf.MagicBytes, 0, SIGNATURE_BYTES))
+                {
+                    ret = true;
+                }
+                else
+                {
+                    ret = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (!String.IsNullOrEmpty(utf.UtfTableFile))
+                {
+                    File.Delete(utf.UtfTableFile);
+                }
+            }
+
+            return ret;
+        }
     }
 
     public class CriUtfReader

@@ -1,0 +1,54 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
+
+using VGMToolbox.format;
+using VGMToolbox.util;
+
+namespace utflist
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string inFile = args[0];
+            string outFile = args[1];
+            long startOffset = long.Parse(args[2]);
+
+            CriUtfTable topUtf = new CriUtfTable();
+
+            using (FileStream fs = File.Open(Path.GetFullPath(inFile), FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                topUtf.Initialize(fs, startOffset);
+                CriField field;
+
+                for (int i = 0; i < topUtf.Rows.Length; i++)
+                {
+                    var d = topUtf.Rows[i];
+                    //field = d.
+
+                    foreach (var key in d.Keys)
+                    {
+                        field = d[key];
+                        Console.WriteLine(field.ToString());
+                    }
+
+
+
+
+                }
+
+            }
+
+            Console.ReadKey();
+        }
+
+        private static void usage()
+        {
+
+
+        }
+    }
+}

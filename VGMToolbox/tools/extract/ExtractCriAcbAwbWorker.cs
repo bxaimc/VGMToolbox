@@ -27,6 +27,7 @@ namespace VGMToolbox.tools.extract
         {
             ExtractCriAcbAwbStruct extractStruct = (ExtractCriAcbAwbStruct)pExtractStruct;
             byte[] magicBytes;
+            long awbOffset = 0;
 
             using (FileStream fs = File.Open(pPath, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
@@ -53,8 +54,21 @@ namespace VGMToolbox.tools.extract
                 }
                 else
                 {
-                    this.progressStruct.GenericMessage = String.Format("File is not an ACB or AWB...skipping: '{0}'.{1}", Path.GetFileName(pPath), Environment.NewLine);
-                    ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);                
+                    this.progressStruct.GenericMessage = String.Format("ACB/AWB signature not found at offset 0...scanning for AWB signature: '{0}'.{1}", Path.GetFileName(pPath), Environment.NewLine);
+                    ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
+
+                    awbOffset = ParseFile.GetNextOffset(fs, 0, CriAfs2Archive.SIGNATURE);
+
+                    if (awbOffset > 0)
+                    {
+                        CriAfs2Archive afs2 = new CriAfs2Archive(fs, awbOffset);
+                        afs2.ExtractAll();                    
+                    }
+                    else
+                    {
+                        this.progressStruct.GenericMessage = String.Format("File is not an ACB or AWB...skipping: '{0}'.{1}", Path.GetFileName(pPath), Environment.NewLine);
+                        ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
+                    }
                 }
             }            
         }        

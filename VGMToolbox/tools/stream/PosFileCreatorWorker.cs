@@ -126,7 +126,16 @@ namespace VGMToolbox.tools.stream
                     }
                     else if (posStruct.DoLoopStartRiffOffset)
                     {
-                        loopStartValue = ParseFile.GetRiffCalculatedVaryingByteValueAtAbsoluteOffset(fs, posStruct.LoopStartRiffCalculatingOffset, true);
+                        try
+                        {
+                            loopStartValue = ParseFile.GetRiffCalculatedVaryingByteValueAtAbsoluteOffset(fs, posStruct.LoopStartRiffCalculatingOffset, true);
+                        }
+                        catch (IndexOutOfRangeException iorEx)
+                        {
+                            this.progressStruct.Clear();
+                            this.progressStruct.GenericMessage = String.Format("Error processing RIFF Loop Start for <{0}>: {1}{2}", Path.GetFileName(pPath), iorEx.Message, Environment.NewLine);
+                            ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
+                        }
                     }
                     else if (posStruct.DoLoopStartByteStringOffset)
                     {
@@ -148,7 +157,16 @@ namespace VGMToolbox.tools.stream
                         }
                         else if (posStruct.DoLoopEndRiffOffset)
                         {
-                            loopEndValue = ParseFile.GetRiffCalculatedVaryingByteValueAtAbsoluteOffset(fs, posStruct.LoopEndRiffCalculatingOffset, true);
+                            try
+                            {
+                                loopEndValue = ParseFile.GetRiffCalculatedVaryingByteValueAtAbsoluteOffset(fs, posStruct.LoopEndRiffCalculatingOffset, true);
+                            }
+                            catch (IndexOutOfRangeException iorEx)
+                            {
+                                this.progressStruct.Clear();
+                                this.progressStruct.GenericMessage = String.Format("Error processing RIFF Loop End for <{0}>: {1}{2}", Path.GetFileName(pPath), iorEx.Message, Environment.NewLine);
+                                ReportProgress(Constants.ProgressMessageOnly, this.progressStruct);
+                            }
                         }
                         else if (posStruct.DoLoopEndByteStringOffset)
                         {
@@ -300,7 +318,7 @@ namespace VGMToolbox.tools.stream
                     m3uString.AppendFormat("{0}{1}", Path.GetFileName(posFileName), Environment.NewLine);
 
                     // set loop shift
-                    if (posStruct.PredictLoopShiftForBatch)
+                    if (posStruct.PredictLoopShiftForBatch && (predictedShiftCount > (long)(this.WorkingList.Count * .1))) // greater than 10%
                     {
                         loopShift = predictedShift;
 
@@ -314,7 +332,7 @@ namespace VGMToolbox.tools.stream
                             outputMessage.AppendFormat("  * Loop Shift (predicted): {0} (Calculated: {1}){2}", loopShift.ToString("D"), this.WorkingList[s].LoopShift.ToString("D"), Environment.NewLine);
                         }
                     }
-                    else
+                    else if (this.WorkingList[s].LoopShift != DEFAULT_LOOP_VALUE)
                     {
                         loopShift = this.WorkingList[s].LoopShift;
 
