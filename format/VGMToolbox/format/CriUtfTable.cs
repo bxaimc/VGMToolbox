@@ -29,16 +29,40 @@ namespace VGMToolbox.format
             return sb.ToString();
         }
 
-        public string GetStringValue()
+        public string ToString(FileStream fs)
+        {
+            StringBuilder sb = new StringBuilder();
+            string value = String.Empty;
+
+            sb.AppendFormat("0x{0} {1} {2} = {3}",
+                                this.Offset.ToString("X8"),
+                                this.Type.ToString("X2"),
+                                this.Name,
+                                this.GetStringValue(fs));
+            return sb.ToString();
+        }
+
+        public string GetStringValue(FileStream utfStream = null)
         {
             ulong numericValue;
-            byte maksedType = (byte)(this.Type & CriUtfTable.COLUMN_TYPE_MASK);
+            byte maskedType = (byte)(this.Type & CriUtfTable.COLUMN_TYPE_MASK);
             string stringValue = String.Empty;
 
-            switch (maksedType)
+            switch (maskedType)
             {
                 case CriUtfTable.COLUMN_TYPE_DATA:
-                    stringValue = this.Value.ToString();
+                    if (utfStream == null)
+                    {
+                        stringValue = this.Value.ToString();
+                    }
+                    else
+                    {
+                        if (CriUtfTable.IsUtfTable(utfStream, (long)this.Offset))
+                        {
+                            CriUtfTable newUtf = new CriUtfTable();
+                            newUtf.Initialize(utfStream, (long)this.Offset);
+                        }
+                    }
                     break;
                 case CriUtfTable.COLUMN_TYPE_STRING:
                     stringValue = (string)this.Value;
@@ -189,6 +213,27 @@ namespace VGMToolbox.format
                 }
             }
         
+        }
+
+        public override string ToString()
+        {
+            CriField field;
+            StringBuilder sb = new StringBuilder();
+
+            using (FileStream fs = File.Open(this.SourceFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                for (int i = 0; i < this.Rows.Length; i++)
+                {
+                    var d = this.Rows[i];
+
+                    foreach (var key in d.Keys)
+                    {
+                        field = d[key];
+                        sb.AppendLine(field.ToString(fs));
+                    }
+                }
+            }
+            return sb.ToString();
         }
 
         private void checkEncryption(FileStream fs)

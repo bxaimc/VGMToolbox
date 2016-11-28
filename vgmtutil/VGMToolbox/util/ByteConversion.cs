@@ -247,5 +247,6 @@ namespace VGMToolbox.util
                     ((xTime & 0x1F) * 2));
             }
         }
+
     }
 }

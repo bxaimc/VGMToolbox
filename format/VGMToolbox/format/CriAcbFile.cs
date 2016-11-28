@@ -216,6 +216,8 @@ namespace VGMToolbox.format
             ulong referenceItemsOffset = 0;
             ulong referenceItemsSize = 0;
             ulong referenceCorrection = 0;
+
+            object dummy;
             byte isStreaming = 0;
 
             CriUtfTable cueTableUtf = new CriUtfTable();
@@ -273,35 +275,40 @@ namespace VGMToolbox.format
                     this.CueList[i].WaveformIndex = ParseFile.ReadUshortBE(fs, (long)(referenceItemsOffset + referenceCorrection));
 
                     // get Streaming flag, 0 = in ACB files, 1 = in AWB file
-                    isStreaming = (byte)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, this.CueList[i].WaveformIndex, "Streaming");
-                    this.CueList[i].IsStreaming = isStreaming == 0 ? false : true;
+                    dummy = CriUtfTable.GetUtfFieldForRow(waveformTableUtf, this.CueList[i].WaveformIndex, "Streaming");
 
-                    // get waveform id and encode type from corresponding waveform
-                    var waveformId = CriUtfTable.GetUtfFieldForRow(waveformTableUtf, this.CueList[i].WaveformIndex, "Id");
+                    if (dummy != null) // check to see if this Id actually exists in the WaveformIndex
+                    {
+                        isStreaming = (byte)dummy;
+                        this.CueList[i].IsStreaming = isStreaming == 0 ? false : true;
 
-                    if (waveformId != null)
-                    {
-                        // early revisions of ACB spec used "Id"
-                        this.CueList[i].WaveformId = (ushort)waveformId;
-                    }
-                    else
-                    {
-                        // later versions using "MemoryAwbId" and  "StreamingAwbId"
-                        if (this.CueList[i].IsStreaming)
+                        // get waveform id and encode type from corresponding waveform
+                        var waveformId = CriUtfTable.GetUtfFieldForRow(waveformTableUtf, this.CueList[i].WaveformIndex, "Id");
+
+                        if (waveformId != null)
                         {
-                            this.CueList[i].WaveformId = (ushort)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, this.CueList[i].WaveformIndex, "StreamAwbId");
+                            // early revisions of ACB spec used "Id"
+                            this.CueList[i].WaveformId = (ushort)waveformId;
                         }
                         else
                         {
-                            this.CueList[i].WaveformId = (ushort)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, this.CueList[i].WaveformIndex, "MemoryAwbId");
+                            // later versions using "MemoryAwbId" and  "StreamingAwbId"
+                            if (this.CueList[i].IsStreaming)
+                            {
+                                this.CueList[i].WaveformId = (ushort)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, this.CueList[i].WaveformIndex, "StreamAwbId");
+                            }
+                            else
+                            {
+                                this.CueList[i].WaveformId = (ushort)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, this.CueList[i].WaveformIndex, "MemoryAwbId");
+                            }
                         }
-                    }
 
-                    this.CueList[i].EncodeType = (byte)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, this.CueList[i].WaveformIndex, "EncodeType");
-                    
+                        this.CueList[i].EncodeType = (byte)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, this.CueList[i].WaveformIndex, "EncodeType");
 
-                    // update flag
-                    this.CueList[i].IsWaveformIdentified = true;
+
+                        // update flag
+                        this.CueList[i].IsWaveformIdentified = true;
+                    } // if (dummy != null)
                 }                
             }
         }

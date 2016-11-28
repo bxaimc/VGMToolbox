@@ -22,23 +22,21 @@ namespace utflist
             using (FileStream fs = File.Open(Path.GetFullPath(inFile), FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 topUtf.Initialize(fs, startOffset);
-                CriField field;
+                //CriField field;
 
-                for (int i = 0; i < topUtf.Rows.Length; i++)
-                {
-                    var d = topUtf.Rows[i];
-                    //field = d.
+                //for (int i = 0; i < topUtf.Rows.Length; i++)
+                //{
+                //    var d = topUtf.Rows[i];
+                //    //field = d.
 
-                    foreach (var key in d.Keys)
-                    {
-                        field = d[key];
-                        Console.WriteLine(field.ToString());
-                    }
+                //    foreach (var key in d.Keys)
+                //    {
+                //        field = d[key];
+                //        Console.WriteLine(field.ToString());
+                //    }
+                //}
 
-
-
-
-                }
+                Console.WriteLine(topUtf.ToString());
 
             }
 
