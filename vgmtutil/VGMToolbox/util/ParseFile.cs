@@ -186,6 +186,11 @@ namespace VGMToolbox.util
             return GetNextOffset(stream, startingOffset, searchBytes, true);
         }
 
+        public static long GetNextOffsetMasked(Stream stream, long startingOffset, byte[] searchBytes, byte[] searchMask)
+        {
+            return GetNextOffsetMasked(stream, startingOffset, searchBytes, searchMask, true);
+        }
+
         public static long GetNextOffset(Stream stream, long startingOffset, 
             byte[] searchBytes, bool returnStreamToIncomingPosition)
         {
@@ -216,6 +221,64 @@ namespace VGMToolbox.util
                     {
                         compareBytes = new byte[searchBytes.Length];
                         Array.Copy(checkBytes, relativeOffset, compareBytes, 0, searchBytes.Length);
+
+                        if (CompareSegment(compareBytes, 0, searchBytes))
+                        {
+                            itemFound = true;
+                            ret = absoluteOffset + relativeOffset;
+                            break;
+                        }
+                    }
+
+                    relativeOffset++;
+                }
+
+                absoluteOffset += Constants.FileReadChunkSize - searchBytes.Length;
+            }
+
+            // return stream to incoming position
+            if (returnStreamToIncomingPosition)
+            {
+                stream.Position = initialStreamPosition;
+            }
+
+            return ret;
+        }
+
+        public static long GetNextOffsetMasked(Stream stream, long startingOffset,
+            byte[] searchBytes, byte[] searchMask, bool returnStreamToIncomingPosition)
+        {
+            long initialStreamPosition = 0;
+
+            if (returnStreamToIncomingPosition)
+            {
+                initialStreamPosition = stream.Position;
+            }
+
+            bool itemFound = false;
+            long absoluteOffset = startingOffset;
+            long relativeOffset;
+            byte[] checkBytes = new byte[Constants.FileReadChunkSize];
+            byte[] compareBytes;
+
+            long ret = -1;
+
+            while (!itemFound && (absoluteOffset < stream.Length))
+            {
+                stream.Position = absoluteOffset;
+                stream.Read(checkBytes, 0, Constants.FileReadChunkSize);
+                relativeOffset = 0;
+
+                while (!itemFound && (relativeOffset < Constants.FileReadChunkSize))
+                {
+                    if ((relativeOffset + searchBytes.Length) < checkBytes.Length)
+                    {
+                        compareBytes = new byte[searchBytes.Length];
+                        Array.Copy(checkBytes, relativeOffset, compareBytes, 0, searchBytes.Length);
+                        for (int idx = 0; idx < searchMask.Length; ++idx)
+                        {
+                            compareBytes[idx] &= searchMask[idx];
+                        }
 
                         if (CompareSegment(compareBytes, 0, searchBytes))
                         {
@@ -487,6 +550,64 @@ namespace VGMToolbox.util
                     {
                         compareBytes = new byte[searchBytes.Length];
                         Array.Copy(checkBytes, relativeOffset, compareBytes, 0, searchBytes.Length);
+
+                        if (CompareSegment(compareBytes, 0, searchBytes))
+                        {
+                            itemFound = true;
+                            ret = absoluteOffset + relativeOffset;
+                            break;
+                        }
+                    }
+
+                    relativeOffset++;
+                }
+
+                absoluteOffset += Constants.FileReadChunkSize - searchBytes.Length;
+            }
+
+            // return stream to incoming position
+            if (returnStreamToIncomingPosition)
+            {
+                stream.Position = initialStreamPosition;
+            }
+
+            return ret;
+        }
+
+        public static long GetNextOffsetWithLimitMasked(Stream stream, long startingOffset,
+            long maxOffset, byte[] searchBytes, byte[] searchMask, bool returnStreamToIncomingPosition)
+        {
+            long initialStreamPosition = 0;
+
+            if (returnStreamToIncomingPosition)
+            {
+                initialStreamPosition = stream.Position;
+            }
+
+            bool itemFound = false;
+            long absoluteOffset = startingOffset;
+            long relativeOffset;
+            byte[] checkBytes = new byte[Constants.FileReadChunkSize];
+            byte[] compareBytes;
+
+            long ret = -1;
+
+            while (!itemFound && (absoluteOffset < maxOffset))
+            {
+                stream.Position = absoluteOffset;
+                stream.Read(checkBytes, 0, Constants.FileReadChunkSize);
+                relativeOffset = 0;
+
+                while (!itemFound && (relativeOffset < Constants.FileReadChunkSize))
+                {
+                    if ((relativeOffset + searchBytes.Length) < checkBytes.Length)
+                    {
+                        compareBytes = new byte[searchBytes.Length];
+                        Array.Copy(checkBytes, relativeOffset, compareBytes, 0, searchBytes.Length);
+                        for (int idx = 0; idx < searchMask.Length; ++idx)
+                        {
+                            compareBytes[idx] &= searchMask[idx];
+                        }
 
                         if (CompareSegment(compareBytes, 0, searchBytes))
                         {
@@ -2087,7 +2208,8 @@ namespace VGMToolbox.util
         { 
             long streamLength = inStream.Length;
             int stringLength = 0;
-            
+            int codePage;
+
             int dummy;
             byte[] stringBytes;
             string ret = String.Empty;
@@ -2112,7 +2234,9 @@ namespace VGMToolbox.util
 
             // parse string
             stringBytes = ParseSimpleOffset(inStream, offset, stringLength);
-            ret = ByteConversion.GetAsciiText(stringBytes);
+            codePage = ByteConversion.GetPredictedCodePageForTags(stringBytes);
+            ret = ByteConversion.GetEncodedText(stringBytes, codePage);
+            //ret = ByteConversion.GetAsciiText(stringBytes);
 
             return ret;
         }

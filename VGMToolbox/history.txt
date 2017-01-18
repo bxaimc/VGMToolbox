@@ -1,3 +1,12 @@
+*** VGMToolbox r1026 (2016-11-28)
+[ADVANCED CUTTER] Add some 3DS, PS2, and WMA plugins.
+[CRI ACB/AWB ARCHIVES] 
+- Updated to support newer type.  AWB checksum not performed due to unknown hashing algorithm.  New Waveform IDs: "MemoryAwbId" and "StreamAwbId" now supported. 
+- Updated to skip entries with invalid Waveform Ids.
+[EXTERNAL FILE RENAMER] Fixed to create destination folder if it does not exist.
+[VFS EXTRACTOR] Fixed issue with filename being located at offset zero.
+[POS CREATOR] Update to handle missing RIFF chunks.  Update to require more than 10% occurrences of a shift within a batch for shift prediction.
+
 *** VGMToolbox r1022 (2016-07-21)
 [MICROSOFT EXFAT / PS VITA] 
 - Added support for current PS Vita Black Fin dumps.  

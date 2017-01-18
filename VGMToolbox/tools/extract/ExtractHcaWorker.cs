@@ -17,6 +17,7 @@ namespace VGMToolbox.tools.extract
         static readonly byte[] FMT_CHUNK_BYTES = new byte[] { 0x66, 0x6D, 0x74, 0x00 };
         static readonly byte[] DEC_CHUNK_BYTES = new byte[] { 0x64, 0x65, 0x63, 0x00 };
         static readonly byte[] COMP_CHUNK_BYTES = new byte[] { 0x63, 0x6F, 0x6D, 0x70 };
+        static readonly byte[] MASK_BYTES = new byte[] { 0x7F, 0x7F, 0x7F, 0x7F };
 
         const long MAX_HEADER_SIZE = 0x20000; // just a guess, never seen more than 0x1000;
 
@@ -56,7 +57,7 @@ namespace VGMToolbox.tools.extract
             {
                 outputPath = Path.Combine(Path.GetDirectoryName(pPath), String.Format("{0}_HCAs", Path.GetFileNameWithoutExtension(pPath)));
 
-                while ((offset = ParseFile.GetNextOffset(fs, offset, HCA_SIG_BYTES)) > -1)
+                while ((offset = ParseFile.GetNextOffsetMasked(fs, offset, HCA_SIG_BYTES, MASK_BYTES)) > -1)
                 {
                     if (!this.CancellationPending)
                     {
@@ -68,7 +69,7 @@ namespace VGMToolbox.tools.extract
                         dataOffset = ParseFile.ReadUshortBE(fs, offset + 6);
 
                         // get 'fmt' chunk offset
-                        fmtChunkOffset = ParseFile.GetNextOffset(fs, offset, FMT_CHUNK_BYTES);
+                        fmtChunkOffset = ParseFile.GetNextOffsetMasked(fs, offset, FMT_CHUNK_BYTES, MASK_BYTES);
 
                         if (fmtChunkOffset > -1)
                         {
@@ -126,8 +127,8 @@ namespace VGMToolbox.tools.extract
             //----------------
 
             // get 'dec' chunk offset, if exists (v1.3, maybe others?)
-            decChunkOffset = ParseFile.GetNextOffsetWithLimit(inStream, hcaOffset, 
-                hcaOffset + MAX_HEADER_SIZE, DEC_CHUNK_BYTES, true);
+            decChunkOffset = ParseFile.GetNextOffsetWithLimitMasked(inStream, hcaOffset, 
+                hcaOffset + MAX_HEADER_SIZE, DEC_CHUNK_BYTES, MASK_BYTES, true);
 
             if (decChunkOffset > -1)
             {
@@ -140,8 +141,8 @@ namespace VGMToolbox.tools.extract
                 //----------------
 
                 // get 'comp' chunk offset, if exists (v1.3, maybe others?)
-                compChunkOffset = ParseFile.GetNextOffsetWithLimit(inStream, hcaOffset,
-                    hcaOffset + MAX_HEADER_SIZE, COMP_CHUNK_BYTES, true);
+                compChunkOffset = ParseFile.GetNextOffsetWithLimitMasked(inStream, hcaOffset,
+                    hcaOffset + MAX_HEADER_SIZE, COMP_CHUNK_BYTES, MASK_BYTES, true);
 
                 if (compChunkOffset > -1)
                 {
