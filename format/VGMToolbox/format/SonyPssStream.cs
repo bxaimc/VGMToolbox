@@ -25,8 +25,15 @@ namespace VGMToolbox.format
 
         protected override byte GetStreamId(Stream readStream, long currentOffset)
         {
+            byte[] streamIdBytes;
             byte streamId;
-            streamId = ParseFile.ParseSimpleOffset(readStream, currentOffset + 0x14, 1)[0];
+
+            // old way
+            //streamId = ParseFile.ParseSimpleOffset(readStream, currentOffset + 0x14, 1)[0];
+
+            // new way
+            streamIdBytes = ParseFile.ParseSimpleOffset(readStream, currentOffset + 0x14, 3);
+            streamId = (byte)(streamIdBytes[0] + streamIdBytes[2]);
 
             return streamId;
         }
