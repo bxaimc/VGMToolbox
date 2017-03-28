@@ -17,7 +17,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.forms
 {
-    public partial class Genh_CreatorForm : AVgmtForm
+    public partial class Genh_CreatorForm : VgmtForm
     {
         public const int NO_LABEL_SELECTED = -1;
         public const int LOOP_START_LABEL_SELECTED = 1;
@@ -72,7 +72,9 @@ namespace VGMToolbox.forms
             // setup looping section
             this.doLoopCheckboxes();
 
+            this.doInterleaveCheckbox();
             this.doFrequencyCheckbox();
+            this.doChannelCheckbox();
 
             this.selectedLabel = NO_LABEL_SELECTED;
 
@@ -299,9 +301,15 @@ namespace VGMToolbox.forms
             genhStruct.DoExtract = this.rbExtract.Checked;
             genhStruct.Format = Convert.ToUInt16(drv.Row.ItemArray[0]).ToString();
             genhStruct.HeaderSkip = this.cbHeaderSkip.Text;
+
             genhStruct.Interleave = this.cbInterleave.Text;
+            genhStruct.UseInterleaveOffset = this.cbUseInterleaveOffset.Checked;
+            genhStruct.InterleaveOffsetDescription = this.interleaveOffsetDescription.GetOffsetValues();
+
             genhStruct.Channels = this.cbChannels.Text;
-            
+            genhStruct.UseChannelsOffset = this.cbUseChannelsOffset.Checked;
+            genhStruct.ChannelsOffsetDescription = this.channelsOffsetDescription.GetOffsetValues();
+
             genhStruct.Frequency = this.cbFrequency.Text;
             genhStruct.UseFrequencyOffset = this.cbUseFrequencyOffset.Checked;
             genhStruct.FrequencyOffsetDescription = this.frequencyOffsetDescription.GetOffsetValues();
@@ -341,8 +349,12 @@ namespace VGMToolbox.forms
         {
             this.comboFormat.SelectedValue = genhStruct.Format;
             this.cbHeaderSkip.Text = genhStruct.HeaderSkip;
+
             this.cbInterleave.Text = genhStruct.Interleave;
+            this.cbUseInterleaveOffset.Checked = genhStruct.UseInterleaveOffset;
+
             this.cbChannels.Text = genhStruct.Channels;
+            this.cbUseChannelsOffset.Checked = genhStruct.UseChannelsOffset;
 
             this.cbFrequency.Text = genhStruct.Frequency;
             this.cbUseFrequencyOffset.Checked = genhStruct.UseFrequencyOffset;
@@ -785,22 +797,30 @@ namespace VGMToolbox.forms
 
                     if (loopValue >= 0)
                     {
-                        long channelCount = ByteConversion.GetLongValueFromString(this.cbChannels.Text);
-                        DataRowView drv = (DataRowView)this.comboFormat.SelectedItem;
-                        UInt16 formatId = Convert.ToUInt16(drv.Row.ItemArray[0]);
-                        long interleave = ByteConversion.GetLongValueFromString(this.cbInterleave.Text);
-                        
-                        long samplesValue = GenhUtil.BytesToSamples((int)formatId, (int)loopValue, (int)channelCount, (int)interleave);
-
-                        if (this.selectedLabel == LOOP_START_LABEL_SELECTED)
+                        if (!String.IsNullOrWhiteSpace(this.cbInterleave.Text) &&
+                            !String.IsNullOrWhiteSpace(this.cbChannels.Text))
                         {
-                            this.tbLoopStart.Text = samplesValue.ToString();
-                        }
-                        else if (this.selectedLabel == LOOP_END_LABEL_SELECTED)
-                        {
-                            this.tbLoopEnd.Text = samplesValue.ToString();
-                        }
+                            DataRowView drv = (DataRowView)this.comboFormat.SelectedItem;
+                            UInt16 formatId = Convert.ToUInt16(drv.Row.ItemArray[0]);
 
+                            long interleave = ByteConversion.GetLongValueFromString(this.cbInterleave.Text);
+                            long channelCount = ByteConversion.GetLongValueFromString(this.cbChannels.Text);
+
+                            long samplesValue = GenhUtil.BytesToSamples((int)formatId, (int)loopValue, (int)channelCount, (int)interleave);
+
+                            if (this.selectedLabel == LOOP_START_LABEL_SELECTED)
+                            {
+                                this.tbLoopStart.Text = samplesValue.ToString();
+                            }
+                            else if (this.selectedLabel == LOOP_END_LABEL_SELECTED)
+                            {
+                                this.tbLoopEnd.Text = samplesValue.ToString();
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Cannot convert bytes to samples: Please enter values for Interleave and Channels.", "Error");
+                        }
                     }
                 }
                 catch
@@ -811,6 +831,26 @@ namespace VGMToolbox.forms
         }
 
         #endregion
+
+        private void doInterleaveCheckbox()
+        {
+            this.interleaveOffsetDescription.Enabled = this.cbUseInterleaveOffset.Checked;
+            this.cbInterleave.Enabled = !this.cbUseInterleaveOffset.Checked;
+        }
+        private void cbUseInterleaveOffset_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doInterleaveCheckbox();
+        }
+
+        private void doChannelCheckbox()
+        {
+            this.channelsOffsetDescription.Enabled = this.cbUseChannelsOffset.Checked;
+            this.cbChannels.Enabled = !this.cbUseChannelsOffset.Checked;
+        }
+        private void cbUseChannelOffset_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doChannelCheckbox();
+        }
 
         private void doFrequencyCheckbox()
         {

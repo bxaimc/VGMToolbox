@@ -15,9 +15,15 @@ namespace VGMToolbox.format.util
         
         public string Format;
         public string HeaderSkip;
+
         public string Interleave;
+        public bool UseInterleaveOffset { set; get; }
+        public OffsetDescription InterleaveOffsetDescription { set; get; }
+
         public string Channels;
-        
+        public bool UseChannelsOffset { set; get; }
+        public OffsetDescription ChannelsOffsetDescription { set; get; }
+
         public string Frequency;
         public bool UseFrequencyOffset { set; get; }
         public OffsetDescription FrequencyOffsetDescription { set; get; }
@@ -114,43 +120,72 @@ namespace VGMToolbox.format.util
             //---------------------
             if (pGenhCreationStruct.UseLoopStartOffset || 
                 pGenhCreationStruct.UseLoopEndOffset ||
+                pGenhCreationStruct.UseInterleaveOffset ||
+                pGenhCreationStruct.UseChannelsOffset ||
                 pGenhCreationStruct.UseFrequencyOffset)
             {
                 int formatId = (int)VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.Format);
-                int channels = (int)VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.Channels);
-                int interleave = (int)VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.Interleave);
-                
+                long interleave = VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.Interleave);
+                long channels = VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.Channels);
+
                 using (FileStream inputFs = File.Open(pSourcePath, FileMode.Open, FileAccess.Read))
                 {
+                    //------------
+                    // Interleave
+                    //------------
+                    if (pGenhCreationStruct.UseInterleaveOffset)
+                    {
+                        interleave = ParseFile.GetVaryingByteValueAtAbsoluteOffset(inputFs, pGenhCreationStruct.InterleaveOffsetDescription);
+                        pGenhCreationStruct.Interleave = ((int)interleave).ToString();
+                    }
+
+                    //----------
+                    // Channels
+                    //----------
+                    if (pGenhCreationStruct.UseChannelsOffset)
+                    {
+                        channels = ParseFile.GetVaryingByteValueAtAbsoluteOffset(inputFs, pGenhCreationStruct.ChannelsOffsetDescription);
+                        pGenhCreationStruct.Channels = ((int)channels).ToString();
+                    }
+
+                    //-----------
+                    // Frequency
+                    //-----------
+                    if (pGenhCreationStruct.UseFrequencyOffset)
+                    {
+                        long frequency = ParseFile.GetVaryingByteValueAtAbsoluteOffset(inputFs, pGenhCreationStruct.FrequencyOffsetDescription);
+                        pGenhCreationStruct.Frequency = ((int)frequency).ToString();
+                    }
+
+                    //------------
+                    // Loop Start
+                    //------------
                     if (pGenhCreationStruct.UseLoopStartOffset)
                     {
                         long loopStart = ParseFile.GetVaryingByteValueAtAbsoluteOffset(inputFs, pGenhCreationStruct.LoopStartOffsetDescription);
 
                         if (pGenhCreationStruct.DoLoopStartBytesToSamples)
                         {
-                            loopStart = BytesToSamples(formatId, (int)loopStart, channels, interleave);
+                            loopStart = BytesToSamples(formatId, (int)loopStart, (int)channels, (int)interleave);
                         }
 
                         pGenhCreationStruct.LoopStart = ((int)loopStart).ToString();
                     }
 
+                    //----------
+                    // Loop End
+                    //----------
                     if (pGenhCreationStruct.UseLoopEndOffset)
                     {
                         long loopEnd = ParseFile.GetVaryingByteValueAtAbsoluteOffset(inputFs, pGenhCreationStruct.LoopEndOffsetDescription);
 
                         if (pGenhCreationStruct.DoLoopEndBytesToSamples)
                         {
-                            loopEnd = BytesToSamples(formatId, (int)loopEnd, channels, interleave);
+                            loopEnd = BytesToSamples(formatId, (int)loopEnd, (int)channels, (int)interleave);
                         }
                         
                         pGenhCreationStruct.LoopEnd = ((int)loopEnd).ToString();
-                    }
-
-                    if (pGenhCreationStruct.UseFrequencyOffset)
-                    {
-                        long frequency = ParseFile.GetVaryingByteValueAtAbsoluteOffset(inputFs, pGenhCreationStruct.FrequencyOffsetDescription);
-                        pGenhCreationStruct.Frequency = ((int)frequency).ToString();                    
-                    }
+                    }                   
                 }
             }
 

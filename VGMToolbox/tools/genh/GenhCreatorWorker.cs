@@ -14,9 +14,15 @@ namespace VGMToolbox.tools.genh
     {
         public string Format { set; get; }
         public string HeaderSkip { set; get; }
+
         public string Interleave { set; get; }
+        public bool UseInterleaveOffset { set; get; }
+        public OffsetDescription InterleaveOffsetDescription { set; get; }
+
         public string Channels { set; get; }
-        
+        public bool UseChannelsOffset { set; get; }
+        public OffsetDescription ChannelsOffsetDescription { set; get; }
+
         public string Frequency { set; get; }
         public bool UseFrequencyOffset { set; get; }
         public OffsetDescription FrequencyOffsetDescription { set; get; }
@@ -49,9 +55,15 @@ namespace VGMToolbox.tools.genh
 
             genhCreationStruct.Format = this.Format;
             genhCreationStruct.HeaderSkip = this.HeaderSkip;
+
             genhCreationStruct.Interleave = this.Interleave;
+            genhCreationStruct.UseInterleaveOffset = this.UseInterleaveOffset;
+            genhCreationStruct.InterleaveOffsetDescription = this.InterleaveOffsetDescription;
+
             genhCreationStruct.Channels = this.Channels;
-            
+            genhCreationStruct.UseChannelsOffset = this.UseChannelsOffset;
+            genhCreationStruct.ChannelsOffsetDescription = this.ChannelsOffsetDescription;
+
             genhCreationStruct.Frequency = this.Frequency;
             genhCreationStruct.UseFrequencyOffset = this.UseFrequencyOffset;
             genhCreationStruct.FrequencyOffsetDescription = this.FrequencyOffsetDescription;

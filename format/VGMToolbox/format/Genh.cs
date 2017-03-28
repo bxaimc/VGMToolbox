@@ -67,7 +67,7 @@ namespace VGMToolbox.format
 
         private const int SPLIT_COEF2_OFFSET = 0x38;
         private const int SPLIT_COEF2_LENGTH = 0x04;
-
+       
         private const int ORIG_FILENAME_OFFSET = 0x200;
         private const int ORIG_FILENAME_LENGTH = 0x100;
 
@@ -76,6 +76,30 @@ namespace VGMToolbox.format
 
         private const int GENH_VERSION_OFFSET = 0x304;
         private const int GENH_VERSION_LENGTH = 0x04;
+
+        //--------------------------------------------
+        // Updates from March, 2017 - BEGIN
+        //--------------------------------------------
+        private const int TOTAL_SAMPLES_OFFSET = 0x40;
+        private const int TOTAL_SAMPLES_LENGTH = 0x04;
+
+        private const int SKIP_SAMPLES_OFFSET = 0x44;
+        private const int SKIP_SAMPLES_LENGTH = 0x04;
+
+        private const int SKIP_SAMPLES_MODE_OFFSET = 0x48;
+        private const int SKIP_SAMPLES_MODE_LENGTH = 0x01;
+
+        private const int ATRAC3_STEREO_MODE_OFFSET = 0x49;
+        private const int ATRAC3_STEREO_MODE_LENGTH = 0x01;
+
+        private const int XMA_STREAM_MODE_OFFSET = 0x4A;
+        private const int XMA_STREAM_MODE_LENGTH = 0x01;
+
+        private const int RAW_DATA_SIZE_OFFSET = 0x50;
+        private const int RAW_DATA_SIZE_LENGTH = 0x04;
+        //--------------------------------------------
+        // Updates from March, 2017 - END
+        //--------------------------------------------
 
         private byte[] asciiSignature;
         private byte[] channels;
@@ -116,6 +140,13 @@ namespace VGMToolbox.format
         public byte[] SplitCoef1 { get; set; }
         public byte[] SplitCoef2 { get; set; }
 
+        public byte[] TotalSamples { get; set; }
+        public byte[] SkipSamples { get; set; }
+        public byte SkipSamplesMode { get; set; }
+        public byte Atrac3StereoMode { get; set; }
+        public byte XmaStreamMode { get; set; }
+        public byte[] RawStreamSize { get; set; }
+
         Dictionary<string, string> tagHash = new Dictionary<string, string>();
 
         #region IFormat
@@ -142,6 +173,13 @@ namespace VGMToolbox.format
             this.CoefficientType = ParseFile.ParseSimpleOffset(pStream, COEFFICIENT_TYPE_OFFSET, COEFFICIENT_TYPE_LENGTH);
             this.SplitCoef1  = ParseFile.ParseSimpleOffset(pStream, SPLIT_COEF1_OFFSET, SPLIT_COEF1_LENGTH);
             this.SplitCoef2 = ParseFile.ParseSimpleOffset(pStream, SPLIT_COEF2_OFFSET, SPLIT_COEF2_LENGTH);
+
+            this.TotalSamples = ParseFile.ParseSimpleOffset(pStream, TOTAL_SAMPLES_OFFSET, TOTAL_SAMPLES_LENGTH);
+            this.SkipSamples = ParseFile.ParseSimpleOffset(pStream, SKIP_SAMPLES_OFFSET, SKIP_SAMPLES_LENGTH);
+            this.SkipSamplesMode = ParseFile.ReadByte(pStream, SKIP_SAMPLES_MODE_OFFSET);
+            this.Atrac3StereoMode = ParseFile.ReadByte(pStream, ATRAC3_STEREO_MODE_OFFSET);
+            this.XmaStreamMode = ParseFile.ReadByte(pStream, XMA_STREAM_MODE_OFFSET);
+            this.RawStreamSize = ParseFile.ParseSimpleOffset(pStream, RAW_DATA_SIZE_OFFSET, RAW_DATA_SIZE_LENGTH);
 
             this.initializeTagHash();
         }
