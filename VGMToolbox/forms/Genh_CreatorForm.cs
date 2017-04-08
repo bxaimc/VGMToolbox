@@ -17,7 +17,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.forms
 {
-    public partial class Genh_CreatorForm : VgmtForm
+    public partial class Genh_CreatorForm : AVgmtForm
     {
         public const int NO_LABEL_SELECTED = -1;
         public const int LOOP_START_LABEL_SELECTED = 1;
@@ -126,6 +126,8 @@ namespace VGMToolbox.forms
                 this.cbChannels.Items.Add(i.ToString());
 
             }
+
+            this.channelsOffsetDescription.OffsetSize = "2";
         }
         private void loadFrequencies()
         {
