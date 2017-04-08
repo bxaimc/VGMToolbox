@@ -40,6 +40,12 @@ namespace VGMToolbox.tools.genh
         public bool NoLoops { set; get; }
         public bool UseFileEnd { set; get; }
         public bool FindLoop { set; get; }
+
+        public string TotalSamples { set; get; }
+        public bool UseTotalSamplesOffset { set; get; }
+        public OffsetDescription TotalSamplesOffsetDescription { set; get; }
+        public bool DoTotalSamplesBytesToSamples { set; get; }
+
         public string CoefRightChannel { set; get; }
         public string CoefLeftChannel { set; get; }
         public byte CoefficientType { set; get; }
@@ -76,11 +82,17 @@ namespace VGMToolbox.tools.genh
             genhCreationStruct.LoopEnd = this.LoopEnd;
             genhCreationStruct.UseLoopEndOffset = this.UseLoopEndOffset;
             genhCreationStruct.LoopEndOffsetDescription = this.LoopEndOffsetDescription;
-            genhCreationStruct.DoLoopEndBytesToSamples = this.DoLoopEndBytesToSamples;            
-                                        
+            genhCreationStruct.DoLoopEndBytesToSamples = this.DoLoopEndBytesToSamples;
+
             genhCreationStruct.NoLoops = this.NoLoops;
             genhCreationStruct.UseFileEnd = this.UseFileEnd;
             genhCreationStruct.FindLoop = this.FindLoop;
+
+            genhCreationStruct.TotalSamples = this.TotalSamples;
+            genhCreationStruct.UseTotalSamplesOffset = this.UseTotalSamplesOffset;
+            genhCreationStruct.TotalSamplesOffsetDescription = this.TotalSamplesOffsetDescription;
+            genhCreationStruct.DoTotalSamplesBytesToSamples = this.DoTotalSamplesBytesToSamples;
+
             genhCreationStruct.CoefRightChannel = this.CoefRightChannel;
             genhCreationStruct.CoefLeftChannel = this.CoefLeftChannel;
             genhCreationStruct.CoefficientType = this.CoefficientType;

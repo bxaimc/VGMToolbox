@@ -38,6 +38,11 @@ namespace VGMToolbox.format.util
         public OffsetDescription LoopEndOffsetDescription { set; get; }
         public bool DoLoopEndBytesToSamples { set; get; }
 
+        public string TotalSamples;
+        public bool UseTotalSamplesOffset { set; get; }
+        public OffsetDescription TotalSamplesOffsetDescription { set; get; }
+        public bool DoTotalSamplesBytesToSamples { set; get; }
+
         public bool NoLoops;
         public bool UseFileEnd;
         public bool FindLoop;
@@ -122,7 +127,8 @@ namespace VGMToolbox.format.util
                 pGenhCreationStruct.UseLoopEndOffset ||
                 pGenhCreationStruct.UseInterleaveOffset ||
                 pGenhCreationStruct.UseChannelsOffset ||
-                pGenhCreationStruct.UseFrequencyOffset)
+                pGenhCreationStruct.UseFrequencyOffset ||
+                pGenhCreationStruct.UseTotalSamplesOffset)
             {
                 int formatId = (int)VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.Format);
                 long interleave = VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.Interleave);
@@ -185,7 +191,22 @@ namespace VGMToolbox.format.util
                         }
                         
                         pGenhCreationStruct.LoopEnd = ((int)loopEnd).ToString();
-                    }                   
+                    }
+
+                    //---------------
+                    // Total Samples 
+                    //---------------
+                    if (pGenhCreationStruct.UseTotalSamplesOffset)
+                    {
+                        long totalSamples = ParseFile.GetVaryingByteValueAtAbsoluteOffset(inputFs, pGenhCreationStruct.TotalSamplesOffsetDescription);
+
+                        if (pGenhCreationStruct.DoTotalSamplesBytesToSamples)
+                        {
+                            totalSamples = BytesToSamples(formatId, (int)totalSamples, (int)channels, (int)interleave);
+                        }
+
+                        pGenhCreationStruct.TotalSamples = ((int)totalSamples).ToString();
+                    }
                 }
             }
 
@@ -245,8 +266,14 @@ namespace VGMToolbox.format.util
                             bw.Write(new byte[] { 0x00 });
                         }
                     }
-                    
-                    
+
+                    // Total Samples
+                    if (!String.IsNullOrWhiteSpace(pGenhCreationStruct.TotalSamples))
+                    {
+                        bw.BaseStream.Position = Genh.TOTAL_SAMPLES_OFFSET;
+                        bw.Write((UInt32)VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.TotalSamples));
+                    }
+
                     bw.BaseStream.Position = 0x200;
                     bw.Write(enc.GetBytes(Path.GetFileName(pSourcePath).Trim()));
 
@@ -624,9 +651,10 @@ namespace VGMToolbox.format.util
             gcStruct.Format = formatValue.ToString();
             gcStruct.HeaderSkip = "0x" + ((BitConverter.ToInt32(genhItem.AudioStart, 0) - BitConverter.ToInt32(genhItem.HeaderLength, 0))).ToString("X4");
             gcStruct.Interleave = "0x" + BitConverter.ToInt32(genhItem.Interleave, 0).ToString("X4");
-            gcStruct.Channels = BitConverter.ToInt32(genhItem.Channels, 0).ToString();
-        
+            gcStruct.Channels = BitConverter.ToInt32(genhItem.Channels, 0).ToString();        
             gcStruct.Frequency = BitConverter.ToInt32(genhItem.Frequency, 0).ToString();
+            gcStruct.TotalSamples = BitConverter.ToInt32(genhItem.TotalSamples, 0).ToString();
+
 
             int loopStartValue = BitConverter.ToInt32(genhItem.LoopStart, 0);
             if (loopStartValue > -1)

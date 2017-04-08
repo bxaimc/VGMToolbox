@@ -22,7 +22,8 @@ namespace VGMToolbox.forms
         public const int NO_LABEL_SELECTED = -1;
         public const int LOOP_START_LABEL_SELECTED = 1;
         public const int LOOP_END_LABEL_SELECTED = 2;
-        
+        public const int TOTAL_SAMPLES_LABEL_SELECTED = 3;
+
         private int selectedLabel;
 
         private static readonly string DB_PATH =
@@ -75,6 +76,7 @@ namespace VGMToolbox.forms
             this.doInterleaveCheckbox();
             this.doFrequencyCheckbox();
             this.doChannelCheckbox();
+            this.doTotalSamplesCheckbox();
 
             this.selectedLabel = NO_LABEL_SELECTED;
 
@@ -326,6 +328,11 @@ namespace VGMToolbox.forms
             genhStruct.LoopEndOffsetDescription = this.loopEndOffsetDescription.GetOffsetValues();
             genhStruct.DoLoopEndBytesToSamples = this.cbLoopEndBytesToSamples.Checked;
 
+            genhStruct.TotalSamples = this.tbTotalSamples.Text;
+            genhStruct.UseTotalSamplesOffset = this.cbUseTotalSamplesOffset.Checked;
+            genhStruct.TotalSamplesOffsetDescription = this.totalSamplesOffsetDescription.GetOffsetValues();
+            genhStruct.DoTotalSamplesBytesToSamples = this.cbTotalSamplesBytesToSamples.Checked;
+
             drv = (DataRowView)this.cbCoefficientType.SelectedItem;
 
             genhStruct.NoLoops = this.cbNoLoops.Checked;
@@ -366,6 +373,9 @@ namespace VGMToolbox.forms
 
             this.tbLoopEnd.Text = genhStruct.LoopEnd;
             this.cbLoopEndBytesToSamples.Checked = false;
+
+            this.tbTotalSamples.Text = genhStruct.TotalSamples;
+            this.cbTotalSamplesBytesToSamples.Checked = false;
 
             this.tbRightCoef.Text = genhStruct.CoefRightChannel;
             this.tbLeftCoef.Text = genhStruct.CoefLeftChannel;
@@ -772,6 +782,23 @@ namespace VGMToolbox.forms
                 }
             }
         }
+        private void lblTotalSamples_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                // Point where the mouse is clicked.
+                Point p = new Point(e.X, e.Y);
+
+                if (tbTotalSamples.Enabled && !tbTotalSamples.ReadOnly &&
+                    !String.IsNullOrWhiteSpace(this.tbTotalSamples.Text))
+                {
+                    this.selectedLabel = TOTAL_SAMPLES_LABEL_SELECTED;
+
+                    // show menu
+                    contextMenuBytesToSamples.Show(lblTotalSamples, p);
+                }
+            }
+        }
         private void bytesToSamplesToolStripMenuItem_MouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -781,21 +808,27 @@ namespace VGMToolbox.forms
                     long loopValue = 0;
                     long headerValue = 0;
 
-                    if (this.selectedLabel == LOOP_START_LABEL_SELECTED)
+                    if (this.selectedLabel == TOTAL_SAMPLES_LABEL_SELECTED)
                     {
-                        loopValue = ByteConversion.GetLongValueFromString(this.tbLoopStart.Text);
+                        loopValue = ByteConversion.GetLongValueFromString(this.tbTotalSamples.Text);
                     }
-                    else if (this.selectedLabel == LOOP_END_LABEL_SELECTED)
+                    else
                     {
-                        loopValue = ByteConversion.GetLongValueFromString(this.tbLoopEnd.Text);
-                    }
+                        if (this.selectedLabel == LOOP_START_LABEL_SELECTED)
+                        {
+                            loopValue = ByteConversion.GetLongValueFromString(this.tbLoopStart.Text);
+                        }
+                        else if (this.selectedLabel == LOOP_END_LABEL_SELECTED)
+                        {
+                            loopValue = ByteConversion.GetLongValueFromString(this.tbLoopEnd.Text);
+                        }
 
-                    if (!String.IsNullOrEmpty(this.cbHeaderSkip.Text))
-                    {
-                        headerValue = ByteConversion.GetLongValueFromString(this.cbHeaderSkip.Text);
-                        loopValue -= headerValue;
+                        if (!String.IsNullOrEmpty(this.cbHeaderSkip.Text))
+                        {
+                            headerValue = ByteConversion.GetLongValueFromString(this.cbHeaderSkip.Text);
+                            loopValue -= headerValue;
+                        }
                     }
-
 
                     if (loopValue >= 0)
                     {
@@ -817,6 +850,10 @@ namespace VGMToolbox.forms
                             else if (this.selectedLabel == LOOP_END_LABEL_SELECTED)
                             {
                                 this.tbLoopEnd.Text = samplesValue.ToString();
+                            }
+                            else if (this.selectedLabel == TOTAL_SAMPLES_LABEL_SELECTED)
+                            {
+                                this.tbTotalSamples.Text = samplesValue.ToString();
                             }
                         }
                         else
@@ -933,5 +970,16 @@ namespace VGMToolbox.forms
                 }
             }
         }
+
+        private void doTotalSamplesCheckbox()
+        {
+            this.totalSamplesOffsetDescription.Enabled = this.cbUseTotalSamplesOffset.Checked;
+            this.cbTotalSamplesBytesToSamples.Enabled = this.cbUseTotalSamplesOffset.Checked;
+            this.tbTotalSamples.Enabled = !this.cbUseTotalSamplesOffset.Checked;
+        }
+        private void cbUseTotalSamplesOffset_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doTotalSamplesCheckbox();
+        }        
     }
 }
