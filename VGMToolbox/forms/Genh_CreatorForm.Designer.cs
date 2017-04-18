@@ -49,8 +49,18 @@
             this.tbLeftCoef = new System.Windows.Forms.TextBox();
             this.lblLeftCoef = new System.Windows.Forms.Label();
             this.tbRightCoef = new System.Windows.Forms.TextBox();
+            this.grpXmaOptions = new System.Windows.Forms.GroupBox();
+            this.cbXmaStreamMode = new System.Windows.Forms.ComboBox();
+            this.lblXmaStreamMode = new System.Windows.Forms.Label();
+            this.grpAtracOptions = new System.Windows.Forms.GroupBox();
+            this.lblAtrac3StereoMode = new System.Windows.Forms.Label();
+            this.cbAtrac3StereoMode = new System.Windows.Forms.ComboBox();
+            this.grpSkipSamples = new System.Windows.Forms.GroupBox();
+            this.tbForceSkipSamplesNumber = new System.Windows.Forms.TextBox();
+            this.cbForceSkipSamples = new System.Windows.Forms.CheckBox();
             this.grpLoopOptions = new System.Windows.Forms.GroupBox();
             this.cbTotalSamplesBytesToSamples = new System.Windows.Forms.CheckBox();
+            this.totalSamplesOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
             this.cbUseTotalSamplesOffset = new System.Windows.Forms.CheckBox();
             this.lblTotalSamples = new System.Windows.Forms.Label();
             this.tbTotalSamples = new System.Windows.Forms.TextBox();
@@ -59,15 +69,19 @@
             this.lblLoopStart = new System.Windows.Forms.Label();
             this.cbUseLoopEndOffset = new System.Windows.Forms.CheckBox();
             this.lblLoopEnd = new System.Windows.Forms.Label();
+            this.loopEndOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
             this.tbLoopEnd = new System.Windows.Forms.TextBox();
             this.cbUseLoopStartOffset = new System.Windows.Forms.CheckBox();
             this.tbLoopStart = new System.Windows.Forms.TextBox();
+            this.loopStartOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
             this.cbManualEntry = new System.Windows.Forms.RadioButton();
             this.cbFindLoop = new System.Windows.Forms.RadioButton();
             this.cbNoLoops = new System.Windows.Forms.RadioButton();
             this.cbLoopFileEnd = new System.Windows.Forms.RadioButton();
             this.grpGeneralOptions = new System.Windows.Forms.GroupBox();
             this.cbUseInterleaveOffset = new System.Windows.Forms.CheckBox();
+            this.interleaveOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
+            this.channelsOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
             this.cbUseChannelsOffset = new System.Windows.Forms.CheckBox();
             this.lblHeaderSkip = new System.Windows.Forms.Label();
             this.cbHeaderSkip = new System.Windows.Forms.ComboBox();
@@ -77,6 +91,7 @@
             this.lblFrequency = new System.Windows.Forms.Label();
             this.cbUseFrequencyOffset = new System.Windows.Forms.CheckBox();
             this.cbFrequency = new System.Windows.Forms.ComboBox();
+            this.frequencyOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
             this.lblChannels = new System.Windows.Forms.Label();
             this.grpFunction = new System.Windows.Forms.GroupBox();
             this.lblFilenameFilter = new System.Windows.Forms.Label();
@@ -84,15 +99,6 @@
             this.tbSourceDirectory = new System.Windows.Forms.TextBox();
             this.lbFiles = new System.Windows.Forms.ListBox();
             this.btnBrowseDirectory = new System.Windows.Forms.Button();
-            this.grpSkipSamples = new System.Windows.Forms.GroupBox();
-            this.grpAtracOptions = new System.Windows.Forms.GroupBox();
-            this.grpXmaOptions = new System.Windows.Forms.GroupBox();
-            this.totalSamplesOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
-            this.loopEndOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
-            this.loopStartOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
-            this.interleaveOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
-            this.channelsOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
-            this.frequencyOffsetDescription = new VGMToolbox.controls.OffsetDescriptionControl();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -102,6 +108,9 @@
             this.grpOptions.SuspendLayout();
             this.pnlOptions.SuspendLayout();
             this.grpCoefOptions.SuspendLayout();
+            this.grpXmaOptions.SuspendLayout();
+            this.grpAtracOptions.SuspendLayout();
+            this.grpSkipSamples.SuspendLayout();
             this.grpLoopOptions.SuspendLayout();
             this.grpGeneralOptions.SuspendLayout();
             this.grpFunction.SuspendLayout();
@@ -277,7 +286,7 @@
             this.grpCoefOptions.Controls.Add(this.lblLeftCoef);
             this.grpCoefOptions.Controls.Add(this.tbRightCoef);
             this.grpCoefOptions.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpCoefOptions.Location = new System.Drawing.Point(0, 628);
+            this.grpCoefOptions.Location = new System.Drawing.Point(0, 594);
             this.grpCoefOptions.Name = "grpCoefOptions";
             this.grpCoefOptions.Size = new System.Drawing.Size(925, 67);
             this.grpCoefOptions.TabIndex = 37;
@@ -333,6 +342,94 @@
             this.tbRightCoef.Size = new System.Drawing.Size(100, 20);
             this.tbRightCoef.TabIndex = 14;
             // 
+            // grpXmaOptions
+            // 
+            this.grpXmaOptions.Controls.Add(this.cbXmaStreamMode);
+            this.grpXmaOptions.Controls.Add(this.lblXmaStreamMode);
+            this.grpXmaOptions.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpXmaOptions.Location = new System.Drawing.Point(0, 540);
+            this.grpXmaOptions.Name = "grpXmaOptions";
+            this.grpXmaOptions.Size = new System.Drawing.Size(925, 54);
+            this.grpXmaOptions.TabIndex = 39;
+            this.grpXmaOptions.TabStop = false;
+            this.grpXmaOptions.Text = "XMA Options";
+            // 
+            // cbXmaStreamMode
+            // 
+            this.cbXmaStreamMode.FormattingEnabled = true;
+            this.cbXmaStreamMode.Location = new System.Drawing.Point(90, 17);
+            this.cbXmaStreamMode.Name = "cbXmaStreamMode";
+            this.cbXmaStreamMode.Size = new System.Drawing.Size(102, 21);
+            this.cbXmaStreamMode.TabIndex = 1;
+            // 
+            // lblXmaStreamMode
+            // 
+            this.lblXmaStreamMode.AutoSize = true;
+            this.lblXmaStreamMode.Location = new System.Drawing.Point(15, 20);
+            this.lblXmaStreamMode.Name = "lblXmaStreamMode";
+            this.lblXmaStreamMode.Size = new System.Drawing.Size(70, 13);
+            this.lblXmaStreamMode.TabIndex = 0;
+            this.lblXmaStreamMode.Text = "Stream Mode";
+            // 
+            // grpAtracOptions
+            // 
+            this.grpAtracOptions.Controls.Add(this.lblAtrac3StereoMode);
+            this.grpAtracOptions.Controls.Add(this.cbAtrac3StereoMode);
+            this.grpAtracOptions.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpAtracOptions.Location = new System.Drawing.Point(0, 492);
+            this.grpAtracOptions.Name = "grpAtracOptions";
+            this.grpAtracOptions.Size = new System.Drawing.Size(925, 48);
+            this.grpAtracOptions.TabIndex = 38;
+            this.grpAtracOptions.TabStop = false;
+            this.grpAtracOptions.Text = "ATRAC3 Options";
+            // 
+            // lblAtrac3StereoMode
+            // 
+            this.lblAtrac3StereoMode.AutoSize = true;
+            this.lblAtrac3StereoMode.Location = new System.Drawing.Point(12, 16);
+            this.lblAtrac3StereoMode.Name = "lblAtrac3StereoMode";
+            this.lblAtrac3StereoMode.Size = new System.Drawing.Size(68, 13);
+            this.lblAtrac3StereoMode.TabIndex = 1;
+            this.lblAtrac3StereoMode.Text = "Stereo Mode";
+            // 
+            // cbAtrac3StereoMode
+            // 
+            this.cbAtrac3StereoMode.FormattingEnabled = true;
+            this.cbAtrac3StereoMode.Location = new System.Drawing.Point(90, 13);
+            this.cbAtrac3StereoMode.Name = "cbAtrac3StereoMode";
+            this.cbAtrac3StereoMode.Size = new System.Drawing.Size(102, 21);
+            this.cbAtrac3StereoMode.TabIndex = 0;
+            // 
+            // grpSkipSamples
+            // 
+            this.grpSkipSamples.Controls.Add(this.tbForceSkipSamplesNumber);
+            this.grpSkipSamples.Controls.Add(this.cbForceSkipSamples);
+            this.grpSkipSamples.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpSkipSamples.Location = new System.Drawing.Point(0, 447);
+            this.grpSkipSamples.Name = "grpSkipSamples";
+            this.grpSkipSamples.Size = new System.Drawing.Size(925, 45);
+            this.grpSkipSamples.TabIndex = 21;
+            this.grpSkipSamples.TabStop = false;
+            this.grpSkipSamples.Text = "Skip Samples";
+            // 
+            // tbForceSkipSamplesNumber
+            // 
+            this.tbForceSkipSamplesNumber.Location = new System.Drawing.Point(139, 17);
+            this.tbForceSkipSamplesNumber.Name = "tbForceSkipSamplesNumber";
+            this.tbForceSkipSamplesNumber.Size = new System.Drawing.Size(100, 20);
+            this.tbForceSkipSamplesNumber.TabIndex = 1;
+            // 
+            // cbForceSkipSamples
+            // 
+            this.cbForceSkipSamples.AutoSize = true;
+            this.cbForceSkipSamples.Location = new System.Drawing.Point(14, 19);
+            this.cbForceSkipSamples.Name = "cbForceSkipSamples";
+            this.cbForceSkipSamples.Size = new System.Drawing.Size(120, 17);
+            this.cbForceSkipSamples.TabIndex = 0;
+            this.cbForceSkipSamples.Text = "Force Skip Samples";
+            this.cbForceSkipSamples.UseVisualStyleBackColor = true;
+            this.cbForceSkipSamples.CheckedChanged += new System.EventHandler(this.cbForceSkipSamples_CheckedChanged);
+            // 
             // grpLoopOptions
             // 
             this.grpLoopOptions.Controls.Add(this.cbTotalSamplesBytesToSamples);
@@ -371,6 +468,16 @@
             this.cbTotalSamplesBytesToSamples.TabIndex = 41;
             this.cbTotalSamplesBytesToSamples.Text = "Bytes to Samples";
             this.cbTotalSamplesBytesToSamples.UseVisualStyleBackColor = true;
+            // 
+            // totalSamplesOffsetDescription
+            // 
+            this.totalSamplesOffsetDescription.Location = new System.Drawing.Point(108, 159);
+            this.totalSamplesOffsetDescription.Name = "totalSamplesOffsetDescription";
+            this.totalSamplesOffsetDescription.OffsetByteOrder = "Little Endian";
+            this.totalSamplesOffsetDescription.OffsetSize = "4";
+            this.totalSamplesOffsetDescription.OffsetValue = "";
+            this.totalSamplesOffsetDescription.Size = new System.Drawing.Size(372, 27);
+            this.totalSamplesOffsetDescription.TabIndex = 40;
             // 
             // cbUseTotalSamplesOffset
             // 
@@ -451,6 +558,16 @@
             this.lblLoopEnd.Text = "Loop End (Samples)";
             this.lblLoopEnd.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lblLoopEnd_MouseUp);
             // 
+            // loopEndOffsetDescription
+            // 
+            this.loopEndOffsetDescription.Location = new System.Drawing.Point(108, 83);
+            this.loopEndOffsetDescription.Name = "loopEndOffsetDescription";
+            this.loopEndOffsetDescription.OffsetByteOrder = "Little Endian";
+            this.loopEndOffsetDescription.OffsetSize = "4";
+            this.loopEndOffsetDescription.OffsetValue = "";
+            this.loopEndOffsetDescription.Size = new System.Drawing.Size(372, 24);
+            this.loopEndOffsetDescription.TabIndex = 33;
+            // 
             // tbLoopEnd
             // 
             this.tbLoopEnd.Location = new System.Drawing.Point(123, 62);
@@ -475,6 +592,16 @@
             this.tbLoopStart.Name = "tbLoopStart";
             this.tbLoopStart.Size = new System.Drawing.Size(100, 20);
             this.tbLoopStart.TabIndex = 8;
+            // 
+            // loopStartOffsetDescription
+            // 
+            this.loopStartOffsetDescription.Location = new System.Drawing.Point(108, 35);
+            this.loopStartOffsetDescription.Name = "loopStartOffsetDescription";
+            this.loopStartOffsetDescription.OffsetByteOrder = "Little Endian";
+            this.loopStartOffsetDescription.OffsetSize = "4";
+            this.loopStartOffsetDescription.OffsetValue = "";
+            this.loopStartOffsetDescription.Size = new System.Drawing.Size(372, 24);
+            this.loopStartOffsetDescription.TabIndex = 31;
             // 
             // cbManualEntry
             // 
@@ -556,6 +683,26 @@
             this.cbUseInterleaveOffset.Text = "Use Offset";
             this.cbUseInterleaveOffset.UseVisualStyleBackColor = true;
             this.cbUseInterleaveOffset.CheckedChanged += new System.EventHandler(this.cbUseInterleaveOffset_CheckedChanged);
+            // 
+            // interleaveOffsetDescription
+            // 
+            this.interleaveOffsetDescription.Location = new System.Drawing.Point(104, 70);
+            this.interleaveOffsetDescription.Name = "interleaveOffsetDescription";
+            this.interleaveOffsetDescription.OffsetByteOrder = "Little Endian";
+            this.interleaveOffsetDescription.OffsetSize = "4";
+            this.interleaveOffsetDescription.OffsetValue = "";
+            this.interleaveOffsetDescription.Size = new System.Drawing.Size(372, 27);
+            this.interleaveOffsetDescription.TabIndex = 33;
+            // 
+            // channelsOffsetDescription
+            // 
+            this.channelsOffsetDescription.Location = new System.Drawing.Point(104, 125);
+            this.channelsOffsetDescription.Name = "channelsOffsetDescription";
+            this.channelsOffsetDescription.OffsetByteOrder = "Little Endian";
+            this.channelsOffsetDescription.OffsetSize = "4";
+            this.channelsOffsetDescription.OffsetValue = "";
+            this.channelsOffsetDescription.Size = new System.Drawing.Size(372, 27);
+            this.channelsOffsetDescription.TabIndex = 32;
             // 
             // cbUseChannelsOffset
             // 
@@ -644,6 +791,16 @@
             this.cbFrequency.TabIndex = 24;
             this.cbFrequency.SelectedValueChanged += new System.EventHandler(this.cbFrequency_SelectedValueChanged);
             // 
+            // frequencyOffsetDescription
+            // 
+            this.frequencyOffsetDescription.Location = new System.Drawing.Point(104, 180);
+            this.frequencyOffsetDescription.Name = "frequencyOffsetDescription";
+            this.frequencyOffsetDescription.OffsetByteOrder = "Little Endian";
+            this.frequencyOffsetDescription.OffsetSize = "4";
+            this.frequencyOffsetDescription.OffsetValue = "";
+            this.frequencyOffsetDescription.Size = new System.Drawing.Size(372, 24);
+            this.frequencyOffsetDescription.TabIndex = 29;
+            // 
             // lblChannels
             // 
             this.lblChannels.AutoSize = true;
@@ -724,96 +881,6 @@
             this.btnBrowseDirectory.UseVisualStyleBackColor = true;
             this.btnBrowseDirectory.Click += new System.EventHandler(this.btnBrowseDirectory_Click);
             // 
-            // grpSkipSamples
-            // 
-            this.grpSkipSamples.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpSkipSamples.Location = new System.Drawing.Point(0, 447);
-            this.grpSkipSamples.Name = "grpSkipSamples";
-            this.grpSkipSamples.Size = new System.Drawing.Size(925, 63);
-            this.grpSkipSamples.TabIndex = 21;
-            this.grpSkipSamples.TabStop = false;
-            this.grpSkipSamples.Text = "Skip Samples";
-            // 
-            // grpAtracOptions
-            // 
-            this.grpAtracOptions.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpAtracOptions.Location = new System.Drawing.Point(0, 510);
-            this.grpAtracOptions.Name = "grpAtracOptions";
-            this.grpAtracOptions.Size = new System.Drawing.Size(925, 58);
-            this.grpAtracOptions.TabIndex = 38;
-            this.grpAtracOptions.TabStop = false;
-            this.grpAtracOptions.Text = "ATRAC3 Options";
-            // 
-            // grpXmaOptions
-            // 
-            this.grpXmaOptions.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpXmaOptions.Location = new System.Drawing.Point(0, 568);
-            this.grpXmaOptions.Name = "grpXmaOptions";
-            this.grpXmaOptions.Size = new System.Drawing.Size(925, 60);
-            this.grpXmaOptions.TabIndex = 39;
-            this.grpXmaOptions.TabStop = false;
-            this.grpXmaOptions.Text = "XMA Options";
-            // 
-            // totalSamplesOffsetDescription
-            // 
-            this.totalSamplesOffsetDescription.Location = new System.Drawing.Point(108, 159);
-            this.totalSamplesOffsetDescription.Name = "totalSamplesOffsetDescription";
-            this.totalSamplesOffsetDescription.OffsetByteOrder = "Little Endian";
-            this.totalSamplesOffsetDescription.OffsetSize = "4";
-            this.totalSamplesOffsetDescription.OffsetValue = "";
-            this.totalSamplesOffsetDescription.Size = new System.Drawing.Size(372, 27);
-            this.totalSamplesOffsetDescription.TabIndex = 40;
-            // 
-            // loopEndOffsetDescription
-            // 
-            this.loopEndOffsetDescription.Location = new System.Drawing.Point(108, 83);
-            this.loopEndOffsetDescription.Name = "loopEndOffsetDescription";
-            this.loopEndOffsetDescription.OffsetByteOrder = "Little Endian";
-            this.loopEndOffsetDescription.OffsetSize = "4";
-            this.loopEndOffsetDescription.OffsetValue = "";
-            this.loopEndOffsetDescription.Size = new System.Drawing.Size(372, 24);
-            this.loopEndOffsetDescription.TabIndex = 33;
-            // 
-            // loopStartOffsetDescription
-            // 
-            this.loopStartOffsetDescription.Location = new System.Drawing.Point(108, 35);
-            this.loopStartOffsetDescription.Name = "loopStartOffsetDescription";
-            this.loopStartOffsetDescription.OffsetByteOrder = "Little Endian";
-            this.loopStartOffsetDescription.OffsetSize = "4";
-            this.loopStartOffsetDescription.OffsetValue = "";
-            this.loopStartOffsetDescription.Size = new System.Drawing.Size(372, 24);
-            this.loopStartOffsetDescription.TabIndex = 31;
-            // 
-            // interleaveOffsetDescription
-            // 
-            this.interleaveOffsetDescription.Location = new System.Drawing.Point(104, 70);
-            this.interleaveOffsetDescription.Name = "interleaveOffsetDescription";
-            this.interleaveOffsetDescription.OffsetByteOrder = "Little Endian";
-            this.interleaveOffsetDescription.OffsetSize = "4";
-            this.interleaveOffsetDescription.OffsetValue = "";
-            this.interleaveOffsetDescription.Size = new System.Drawing.Size(372, 27);
-            this.interleaveOffsetDescription.TabIndex = 33;
-            // 
-            // channelsOffsetDescription
-            // 
-            this.channelsOffsetDescription.Location = new System.Drawing.Point(104, 125);
-            this.channelsOffsetDescription.Name = "channelsOffsetDescription";
-            this.channelsOffsetDescription.OffsetByteOrder = "Little Endian";
-            this.channelsOffsetDescription.OffsetSize = "4";
-            this.channelsOffsetDescription.OffsetValue = "";
-            this.channelsOffsetDescription.Size = new System.Drawing.Size(372, 27);
-            this.channelsOffsetDescription.TabIndex = 32;
-            // 
-            // frequencyOffsetDescription
-            // 
-            this.frequencyOffsetDescription.Location = new System.Drawing.Point(104, 180);
-            this.frequencyOffsetDescription.Name = "frequencyOffsetDescription";
-            this.frequencyOffsetDescription.OffsetByteOrder = "Little Endian";
-            this.frequencyOffsetDescription.OffsetSize = "4";
-            this.frequencyOffsetDescription.OffsetValue = "";
-            this.frequencyOffsetDescription.Size = new System.Drawing.Size(372, 24);
-            this.frequencyOffsetDescription.TabIndex = 29;
-            // 
             // Genh_CreatorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -843,6 +910,12 @@
             this.pnlOptions.ResumeLayout(false);
             this.grpCoefOptions.ResumeLayout(false);
             this.grpCoefOptions.PerformLayout();
+            this.grpXmaOptions.ResumeLayout(false);
+            this.grpXmaOptions.PerformLayout();
+            this.grpAtracOptions.ResumeLayout(false);
+            this.grpAtracOptions.PerformLayout();
+            this.grpSkipSamples.ResumeLayout(false);
+            this.grpSkipSamples.PerformLayout();
             this.grpLoopOptions.ResumeLayout(false);
             this.grpLoopOptions.PerformLayout();
             this.grpGeneralOptions.ResumeLayout(false);
@@ -920,5 +993,11 @@
         private System.Windows.Forms.GroupBox grpXmaOptions;
         private System.Windows.Forms.GroupBox grpAtracOptions;
         private System.Windows.Forms.GroupBox grpSkipSamples;
+        private System.Windows.Forms.Label lblAtrac3StereoMode;
+        private System.Windows.Forms.ComboBox cbAtrac3StereoMode;
+        private System.Windows.Forms.TextBox tbForceSkipSamplesNumber;
+        private System.Windows.Forms.CheckBox cbForceSkipSamples;
+        private System.Windows.Forms.ComboBox cbXmaStreamMode;
+        private System.Windows.Forms.Label lblXmaStreamMode;
     }
 }

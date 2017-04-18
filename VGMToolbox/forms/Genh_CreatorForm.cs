@@ -17,7 +17,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.forms
 {
-    public partial class Genh_CreatorForm : AVgmtForm
+    public partial class Genh_CreatorForm : VgmtForm
     {
         public const int NO_LABEL_SELECTED = -1;
         public const int LOOP_START_LABEL_SELECTED = 1;
@@ -63,6 +63,8 @@ namespace VGMToolbox.forms
             this.loadChannels();
             this.loadFrequencies();
             this.loadCoefficientTypes();
+            this.loadAtrac3StereoModes();
+            this.loadXmaStreamModes();
 
             rbCreate.Checked = true;
             this.updateFormForTask();
@@ -77,6 +79,8 @@ namespace VGMToolbox.forms
             this.doFrequencyCheckbox();
             this.doChannelCheckbox();
             this.doTotalSamplesCheckbox();
+            this.cbForceSkipSamples.Checked = false;
+            this.doForceSkipSamplesCheckbox();
 
             this.selectedLabel = NO_LABEL_SELECTED;
 
@@ -147,7 +151,24 @@ namespace VGMToolbox.forms
             this.cbFrequency.Items.Add("48000");
 
         }
-        
+        private void loadAtrac3StereoModes()
+        {
+            //this.cbAtrac3StereoMode.Items.Add(String.Empty);
+            this.cbAtrac3StereoMode.Items.Add("Autodetect");
+            this.cbAtrac3StereoMode.Items.Add("Joint Stereo");
+            this.cbAtrac3StereoMode.Items.Add("Full Stereo");
+
+            this.cbAtrac3StereoMode.SelectedIndex = 0;
+        }
+        private void loadXmaStreamModes()
+        {
+            //this.cbXmaStreamMode.Items.Add(String.Empty);
+            this.cbXmaStreamMode.Items.Add("Default");
+            this.cbXmaStreamMode.Items.Add("Single");
+
+            this.cbXmaStreamMode.SelectedIndex = 0;
+        }
+
         #endregion
 
         private void comboFormat_KeyDown(object sender, KeyEventArgs e)
@@ -170,9 +191,10 @@ namespace VGMToolbox.forms
         private void comboFormat_SelectedValueChanged(object sender, EventArgs e)
         {
             DataRowView drv = (DataRowView)this.comboFormat.SelectedItem;
+            ushort formatID = Convert.ToUInt16(drv.Row.ItemArray[0]);
 
-            if ((Convert.ToUInt16(drv.Row.ItemArray[0]) == 0) || 
-                (Convert.ToUInt16(drv.Row.ItemArray[0]) == 14))
+            if ((formatID == 0) || 
+                (formatID == 14))
             {
                 this.cbFindLoop.Enabled = true;
             }
@@ -182,7 +204,7 @@ namespace VGMToolbox.forms
                 this.cbFindLoop.Checked = false;
             }
 
-            if (Convert.ToUInt16(drv.Row.ItemArray[0]) == 12)
+            if (formatID == 12)
             {
                 this.grpCoefOptions.Show();
                 lblRightCoef.Show();
@@ -202,6 +224,50 @@ namespace VGMToolbox.forms
                 //cbCapcomHack.Hide();
                 cbCoefficientType.Show();
             }
+
+            // ATRAC3 Options
+            if ((formatID == 18) || (formatID == 19))
+            {
+                this.grpAtracOptions.Show();
+                this.lblAtrac3StereoMode.Show();
+                this.cbAtrac3StereoMode.Show();
+            }
+            else
+            {
+                this.grpAtracOptions.Hide();
+                this.lblAtrac3StereoMode.Hide();
+                this.cbAtrac3StereoMode.Hide();
+            }
+
+            // XMA Options
+            if ((formatID == 20) || (formatID == 21))
+            {
+                this.grpXmaOptions.Show();
+                this.lblXmaStreamMode.Show();
+                this.cbXmaStreamMode.Show();
+            }
+            else
+            {
+                this.grpXmaOptions.Hide();
+                this.lblXmaStreamMode.Hide();
+                this.cbXmaStreamMode.Hide();
+            }
+
+            // Skip Samples (AT3, XMA, FFMPEG only)
+            if ((formatID >= 18) && (formatID <= 22))
+            {
+                this.grpSkipSamples.Show();
+                this.cbForceSkipSamples.Show();
+                this.tbForceSkipSamplesNumber.Show();
+            }
+            else
+            {
+                this.grpSkipSamples.Hide();
+                this.cbForceSkipSamples.Hide();
+                this.tbForceSkipSamplesNumber.Hide();
+            }
+
+
 
             this.showLoopPointsForSelectedFile();
 
@@ -333,6 +399,10 @@ namespace VGMToolbox.forms
             genhStruct.TotalSamplesOffsetDescription = this.totalSamplesOffsetDescription.GetOffsetValues();
             genhStruct.DoTotalSamplesBytesToSamples = this.cbTotalSamplesBytesToSamples.Checked;
 
+            genhStruct.SkipSamplesMode = 
+                this.cbForceSkipSamples.Checked ? Genh.SKIP_SAMPLES_MODE_FORCE : Genh.SKIP_SAMPLES_MODE_AUTODETECT;
+            genhStruct.SkipSamples = this.tbForceSkipSamplesNumber.Text;
+
             drv = (DataRowView)this.cbCoefficientType.SelectedItem;
 
             genhStruct.NoLoops = this.cbNoLoops.Checked;
@@ -376,6 +446,9 @@ namespace VGMToolbox.forms
 
             this.tbTotalSamples.Text = genhStruct.TotalSamples;
             this.cbTotalSamplesBytesToSamples.Checked = false;
+
+            this.tbForceSkipSamplesNumber.Text = genhStruct.SkipSamples;
+            this.cbForceSkipSamples.Checked = genhStruct.SkipSamplesMode == Genh.SKIP_SAMPLES_MODE_FORCE ? true : false;
 
             this.tbRightCoef.Text = genhStruct.CoefRightChannel;
             this.tbLeftCoef.Text = genhStruct.CoefLeftChannel;
@@ -980,6 +1053,15 @@ namespace VGMToolbox.forms
         private void cbUseTotalSamplesOffset_CheckedChanged(object sender, EventArgs e)
         {
             this.doTotalSamplesCheckbox();
-        }        
+        }
+
+        private void doForceSkipSamplesCheckbox()
+        {
+            this.tbForceSkipSamplesNumber.Enabled = this.cbForceSkipSamples.Checked;
+        }
+        private void cbForceSkipSamples_CheckedChanged(object sender, EventArgs e)
+        {
+            this.doForceSkipSamplesCheckbox();
+        }
     }
 }

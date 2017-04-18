@@ -68,13 +68,13 @@ namespace VGMToolbox.format
         private const int SPLIT_COEF2_OFFSET = 0x38;
         private const int SPLIT_COEF2_LENGTH = 0x04;
        
-        private const int ORIG_FILENAME_OFFSET = 0x200;
+        public const int ORIG_FILENAME_OFFSET = 0x200;
         private const int ORIG_FILENAME_LENGTH = 0x100;
 
-        private const int ORIG_FILESIZE_OFFSET = 0x300;
+        public const int ORIG_FILESIZE_OFFSET = 0x300;
         private const int ORIG_FILESIZE_LENGTH = 0x04;
 
-        private const int GENH_VERSION_OFFSET = 0x304;
+        public const int GENH_VERSION_OFFSET = 0x304;
         private const int GENH_VERSION_LENGTH = 0x04;
 
         //--------------------------------------------
@@ -83,19 +83,21 @@ namespace VGMToolbox.format
         public  const int TOTAL_SAMPLES_OFFSET = 0x40;
         private const int TOTAL_SAMPLES_LENGTH = 0x04;
 
-        private const int SKIP_SAMPLES_OFFSET = 0x44;
+        public const int SKIP_SAMPLES_OFFSET = 0x44;
         private const int SKIP_SAMPLES_LENGTH = 0x04;
 
-        private const int SKIP_SAMPLES_MODE_OFFSET = 0x48;
+        public const int SKIP_SAMPLES_MODE_OFFSET = 0x48;
         private const int SKIP_SAMPLES_MODE_LENGTH = 0x01;
+        public const byte SKIP_SAMPLES_MODE_AUTODETECT = 0;
+        public const byte SKIP_SAMPLES_MODE_FORCE = 0;
 
-        private const int ATRAC3_STEREO_MODE_OFFSET = 0x49;
+        public const int ATRAC3_STEREO_MODE_OFFSET = 0x49;
         private const int ATRAC3_STEREO_MODE_LENGTH = 0x01;
 
-        private const int XMA_STREAM_MODE_OFFSET = 0x4A;
+        public const int XMA_STREAM_MODE_OFFSET = 0x4A;
         private const int XMA_STREAM_MODE_LENGTH = 0x01;
 
-        private const int RAW_DATA_SIZE_OFFSET = 0x50;
+        public const int RAW_DATA_SIZE_OFFSET = 0x50;
         private const int RAW_DATA_SIZE_LENGTH = 0x04;
         //--------------------------------------------
         // Updates from March, 2017 - END

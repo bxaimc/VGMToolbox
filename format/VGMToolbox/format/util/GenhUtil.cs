@@ -47,6 +47,13 @@ namespace VGMToolbox.format.util
         public bool UseFileEnd;
         public bool FindLoop;
 
+        public string SkipSamples;
+        public byte SkipSamplesMode;        
+
+        public byte Atrac3StereoMode;
+        public byte XmaStreamMode;
+        public string RawStreamSize;
+
         public string CoefRightChannel;
         public string CoefLeftChannel;
         public byte CoefficientType;
@@ -274,11 +281,37 @@ namespace VGMToolbox.format.util
                         bw.Write((UInt32)VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.TotalSamples));
                     }
 
-                    bw.BaseStream.Position = 0x200;
+                    // Skip Samples
+                    if ((pGenhCreationStruct.SkipSamplesMode != Genh.SKIP_SAMPLES_MODE_AUTODETECT) && 
+                        !String.IsNullOrWhiteSpace(pGenhCreationStruct.SkipSamples))
+                    {
+                        bw.BaseStream.Position = Genh.SKIP_SAMPLES_OFFSET;
+                        bw.Write((UInt32)VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.SkipSamples));
+
+                        // Skip Samples Mode
+                        bw.BaseStream.Position = Genh.SKIP_SAMPLES_MODE_OFFSET;
+                        bw.Write((byte)pGenhCreationStruct.SkipSamplesMode);
+                    }
+
+                    // ATRAC3 Stereo Mode
+                    bw.BaseStream.Position = Genh.ATRAC3_STEREO_MODE_OFFSET;
+                    bw.Write((byte)pGenhCreationStruct.Atrac3StereoMode);
+
+                    // XMA Stream Mode
+                    bw.BaseStream.Position = Genh.XMA_STREAM_MODE_OFFSET;
+                    bw.Write((byte)pGenhCreationStruct.XmaStreamMode);
+
+                    // RAW DATA SIZE
+                    bw.BaseStream.Position = Genh.RAW_DATA_SIZE_OFFSET;
+                    bw.Write((UInt32)VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.RawStreamSize));
+
+                    bw.BaseStream.Position = Genh.ORIG_FILENAME_OFFSET;
                     bw.Write(enc.GetBytes(Path.GetFileName(pSourcePath).Trim()));
 
-                    bw.BaseStream.Position = 0x300;
+                    bw.BaseStream.Position = Genh.ORIG_FILESIZE_OFFSET;
                     bw.Write(fileLength);
+
+                    bw.BaseStream.Position = Genh.GENH_VERSION_OFFSET;
                     bw.Write(Genh.CURRENT_VERSION);
 
                     bw.BaseStream.Position = 0xFFC;
@@ -655,6 +688,12 @@ namespace VGMToolbox.format.util
             gcStruct.Frequency = BitConverter.ToInt32(genhItem.Frequency, 0).ToString();
             gcStruct.TotalSamples = BitConverter.ToInt32(genhItem.TotalSamples, 0).ToString();
 
+            gcStruct.SkipSamplesMode = genhItem.SkipSamplesMode;
+            gcStruct.SkipSamples = BitConverter.ToInt32(genhItem.SkipSamples, 0).ToString();
+
+            gcStruct.Atrac3StereoMode = genhItem.Atrac3StereoMode;
+            gcStruct.XmaStreamMode = genhItem.XmaStreamMode;
+            gcStruct.RawStreamSize = gcStruct.SkipSamples = BitConverter.ToInt32(genhItem.RawStreamSize, 0).ToString();
 
             int loopStartValue = BitConverter.ToInt32(genhItem.LoopStart, 0);
             if (loopStartValue > -1)

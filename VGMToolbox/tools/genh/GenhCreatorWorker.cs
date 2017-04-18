@@ -46,6 +46,13 @@ namespace VGMToolbox.tools.genh
         public OffsetDescription TotalSamplesOffsetDescription { set; get; }
         public bool DoTotalSamplesBytesToSamples { set; get; }
 
+        public byte SkipSamplesMode { set; get; }
+        public string SkipSamples { set; get; }
+
+        public byte Atrac3StereoMode { set; get; }
+        public byte XmaStreamMode { set; get; }
+        public string RawStreamSize { set; get; }
+
         public string CoefRightChannel { set; get; }
         public string CoefLeftChannel { set; get; }
         public byte CoefficientType { set; get; }
@@ -92,6 +99,13 @@ namespace VGMToolbox.tools.genh
             genhCreationStruct.UseTotalSamplesOffset = this.UseTotalSamplesOffset;
             genhCreationStruct.TotalSamplesOffsetDescription = this.TotalSamplesOffsetDescription;
             genhCreationStruct.DoTotalSamplesBytesToSamples = this.DoTotalSamplesBytesToSamples;
+
+            genhCreationStruct.SkipSamples = this.SkipSamples;
+            genhCreationStruct.SkipSamplesMode = this.SkipSamplesMode;
+
+            genhCreationStruct.Atrac3StereoMode = this.Atrac3StereoMode;
+            genhCreationStruct.XmaStreamMode = this.XmaStreamMode;
+            genhCreationStruct.RawStreamSize = this.RawStreamSize;
 
             genhCreationStruct.CoefRightChannel = this.CoefRightChannel;
             genhCreationStruct.CoefLeftChannel = this.CoefLeftChannel;
