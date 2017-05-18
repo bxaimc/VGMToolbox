@@ -8,6 +8,7 @@ namespace VGMToolbox.format
     {
         new public const string DefaultAudioExtension = ".ss2";
         new public const string DefaultVideoExtension = ".m2v";
+        public const string Ac3FileExtension = ".ac3";
 
         public SonyPssStream(string path)
             : base(path)
@@ -57,6 +58,10 @@ namespace VGMToolbox.format
             if ((streamId & 0xF0) == 0xA0)
             {
                 fileExtension = DefaultAudioExtension;                
+            }
+            if ((streamId & 0xF0) == 0x90)
+            {
+                fileExtension = Ac3FileExtension;
             }
             else
             {
