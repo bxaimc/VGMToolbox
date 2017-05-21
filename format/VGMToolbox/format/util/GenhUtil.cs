@@ -305,12 +305,14 @@ namespace VGMToolbox.format.util
                     bw.BaseStream.Position = Genh.RAW_DATA_SIZE_OFFSET;
                     bw.Write((UInt32)VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.RawStreamSize));
 
+                    // Original File Size
                     bw.BaseStream.Position = Genh.ORIG_FILENAME_OFFSET;
                     bw.Write(enc.GetBytes(Path.GetFileName(pSourcePath).Trim()));
 
                     bw.BaseStream.Position = Genh.ORIG_FILESIZE_OFFSET;
                     bw.Write(fileLength);
 
+                    // GENH Version
                     bw.BaseStream.Position = Genh.GENH_VERSION_OFFSET;
                     bw.Write(Genh.CURRENT_VERSION);
 
@@ -693,7 +695,7 @@ namespace VGMToolbox.format.util
 
             gcStruct.Atrac3StereoMode = genhItem.Atrac3StereoMode;
             gcStruct.XmaStreamMode = genhItem.XmaStreamMode;
-            gcStruct.RawStreamSize = gcStruct.SkipSamples = BitConverter.ToInt32(genhItem.RawStreamSize, 0).ToString();
+            gcStruct.RawStreamSize = BitConverter.ToInt32(genhItem.RawStreamSize, 0).ToString();
 
             int loopStartValue = BitConverter.ToInt32(genhItem.LoopStart, 0);
             if (loopStartValue > -1)

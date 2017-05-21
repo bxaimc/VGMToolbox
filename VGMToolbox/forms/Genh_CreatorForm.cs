@@ -154,17 +154,17 @@ namespace VGMToolbox.forms
         private void loadAtrac3StereoModes()
         {
             //this.cbAtrac3StereoMode.Items.Add(String.Empty);
-            this.cbAtrac3StereoMode.Items.Add("Autodetect");
-            this.cbAtrac3StereoMode.Items.Add("Joint Stereo");
-            this.cbAtrac3StereoMode.Items.Add("Full Stereo");
+            this.cbAtrac3StereoMode.Items.Add(Genh.ATRAC3_STEREO_MODE_AUTODETECT_DESCRIPTION);
+            this.cbAtrac3StereoMode.Items.Add(Genh.ATRAC3_STEREO_MODE_FORCE_JOINT_STEREO_DESCRIPTION);
+            this.cbAtrac3StereoMode.Items.Add(Genh.ATRAC3_STEREO_MODE_FORCE_FULL_STEREO_DESCRIPTION);
 
             this.cbAtrac3StereoMode.SelectedIndex = 0;
         }
         private void loadXmaStreamModes()
         {
             //this.cbXmaStreamMode.Items.Add(String.Empty);
-            this.cbXmaStreamMode.Items.Add("Default");
-            this.cbXmaStreamMode.Items.Add("Single");
+            this.cbXmaStreamMode.Items.Add(Genh.XMA_STREAM_MODE_DEFAULT_DESCRIPTION);
+            this.cbXmaStreamMode.Items.Add(Genh.XMA_STREAM_MODE_SINGLE_DESCRIPTION);
 
             this.cbXmaStreamMode.SelectedIndex = 0;
         }
@@ -403,6 +403,8 @@ namespace VGMToolbox.forms
                 this.cbForceSkipSamples.Checked ? Genh.SKIP_SAMPLES_MODE_FORCE : Genh.SKIP_SAMPLES_MODE_AUTODETECT;
             genhStruct.SkipSamples = this.tbForceSkipSamplesNumber.Text;
 
+            // @TODO: Add ATRAC3, XMA, RAW DATA
+
             drv = (DataRowView)this.cbCoefficientType.SelectedItem;
 
             genhStruct.NoLoops = this.cbNoLoops.Checked;
@@ -449,6 +451,8 @@ namespace VGMToolbox.forms
 
             this.tbForceSkipSamplesNumber.Text = genhStruct.SkipSamples;
             this.cbForceSkipSamples.Checked = genhStruct.SkipSamplesMode == Genh.SKIP_SAMPLES_MODE_FORCE ? true : false;
+
+            // @ TODO: Add ATRAC, XMA, and RAW DATA 
 
             this.tbRightCoef.Text = genhStruct.CoefRightChannel;
             this.tbLeftCoef.Text = genhStruct.CoefLeftChannel;

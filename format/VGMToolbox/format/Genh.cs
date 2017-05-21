@@ -89,13 +89,25 @@ namespace VGMToolbox.format
         public const int SKIP_SAMPLES_MODE_OFFSET = 0x48;
         private const int SKIP_SAMPLES_MODE_LENGTH = 0x01;
         public const byte SKIP_SAMPLES_MODE_AUTODETECT = 0;
-        public const byte SKIP_SAMPLES_MODE_FORCE = 0;
+        public const byte SKIP_SAMPLES_MODE_FORCE = 1;
 
         public const int ATRAC3_STEREO_MODE_OFFSET = 0x49;
         private const int ATRAC3_STEREO_MODE_LENGTH = 0x01;
 
+        public const byte ATRAC3_STEREO_MODE_AUTODETECT_VALUE = 0x00;
+        public const string ATRAC3_STEREO_MODE_AUTODETECT_DESCRIPTION = "Autodetect";
+        public const byte ATRAC3_STEREO_MODE_FORCE_JOINT_STEREO_VALUE = 0x01;
+        public const string ATRAC3_STEREO_MODE_FORCE_JOINT_STEREO_DESCRIPTION = "Joint Stereo";
+        public const byte ATRAC3_STEREO_MODE_FORCE_FULL_STEREO_VALUE = 0x02;
+        public const string ATRAC3_STEREO_MODE_FORCE_FULL_STEREO_DESCRIPTION = "Full Stereo";
+
         public const int XMA_STREAM_MODE_OFFSET = 0x4A;
         private const int XMA_STREAM_MODE_LENGTH = 0x01;
+
+        public const byte XMA_STREAM_MODE_DEFAULT_VALUE = 0x00;
+        public const string XMA_STREAM_MODE_DEFAULT_DESCRIPTION = "Default";
+        public const byte XMA_STREAM_MODE_SINGLE_VALUE = 0x01;
+        public const string XMA_STREAM_MODE_SINGLE_DESCRIPTION = "Single";
 
         public const int RAW_DATA_SIZE_OFFSET = 0x50;
         private const int RAW_DATA_SIZE_LENGTH = 0x04;
