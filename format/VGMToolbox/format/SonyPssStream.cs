@@ -59,7 +59,7 @@ namespace VGMToolbox.format
             {
                 fileExtension = DefaultAudioExtension;                
             }
-            if ((streamId & 0xF0) == 0x90)
+            else if ((streamId & 0xF0) == 0x90)
             {
                 fileExtension = Ac3FileExtension;
             }
