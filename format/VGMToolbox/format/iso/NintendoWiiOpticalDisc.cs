@@ -753,38 +753,52 @@ namespace VGMToolbox.format.iso
             {
                 while (size > 0)
                 {
-                    // get block offset info
-                    NintendoWiiOpticalDisc.WiiBlockStructure blockStructure =
-                        NintendoWiiOpticalDisc.GetWiiBlockStructureForOffset(blockOffset);
-
-                    // read current block
-                    //encryptedPartitionCluster = ParseFile.ParseSimpleOffset(isoStream,
-                    //    volumeOffset + dataOffset + (blockStructure.BlockNumber * 0x8000),
-                    //    0x8000);
-
-                    if (this.CurrentDecryptedBlockNumber != blockStructure.BlockNumber)
+                    try
                     {
-                        encryptedPartitionCluster = ParseFile.ParseSimpleOffset(isoStream,
-                            volumeOffset + dataOffset + (blockStructure.BlockNumber * 0x8000),
-                            0x8000);
-                        
-                        clusterIV = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x03D0, 0x10);
-                        encryptedClusterDataSection = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x400, 0x7C00);
-                        decryptedClusterDataSection = AESEngine.Decrypt(this.Algorithm, encryptedClusterDataSection,
-                                        partitionKey, clusterIV, CipherMode.CBC, PaddingMode.Zeros);
+                        // get block offset info
+                        NintendoWiiOpticalDisc.WiiBlockStructure blockStructure =
+                            NintendoWiiOpticalDisc.GetWiiBlockStructureForOffset(blockOffset);
 
-                        this.CurrentDecryptedBlock = decryptedClusterDataSection;
-                        this.CurrentDecryptedBlockNumber = blockStructure.BlockNumber;
+                        // read current block
+                        //encryptedPartitionCluster = ParseFile.ParseSimpleOffset(isoStream,
+                        //    volumeOffset + dataOffset + (blockStructure.BlockNumber * 0x8000),
+                        //    0x8000);
+
+                        if (this.CurrentDecryptedBlockNumber != blockStructure.BlockNumber)
+                        {
+                            encryptedPartitionCluster = ParseFile.ParseSimpleOffset(isoStream,
+                                volumeOffset + dataOffset + (blockStructure.BlockNumber * 0x8000),
+                                0x8000);
+
+                            if (encryptedPartitionCluster.Length == 0)
+                            {
+                                throw new Exception(String.Format("Encrypted cluster 0x{0) has size zero.  This image is probably corrupt.", blockStructure.BlockNumber.ToString("X8")));
+                            }
+                            else
+                            {
+                                clusterIV = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x03D0, 0x10);
+                                encryptedClusterDataSection = ParseFile.ParseSimpleOffset(encryptedPartitionCluster, 0x400, 0x7C00);
+                                decryptedClusterDataSection = AESEngine.Decrypt(this.Algorithm, encryptedClusterDataSection,
+                                                partitionKey, clusterIV, CipherMode.CBC, PaddingMode.Zeros);
+
+                                this.CurrentDecryptedBlock = decryptedClusterDataSection;
+                                this.CurrentDecryptedBlockNumber = blockStructure.BlockNumber;
+                            }
+                        }
+
+                        // copy the encrypted data
+                        maxCopySize = 0x7C00 - blockStructure.BlockOffset;
+                        copySize = (size > maxCopySize) ? maxCopySize : size;
+                        outStream.Write(this.CurrentDecryptedBlock, (int)blockStructure.BlockOffset, (int)copySize);
+
+                        // update counters
+                        size -= copySize;
+                        blockOffset += copySize;
                     }
-
-                    // copy the encrypted data
-                    maxCopySize = 0x7C00 - blockStructure.BlockOffset;
-                    copySize = (size > maxCopySize) ? maxCopySize : size;
-                    outStream.Write(this.CurrentDecryptedBlock, (int)blockStructure.BlockOffset, (int)copySize);
-
-                    // update counters
-                    size -= copySize;
-                    blockOffset += copySize;
+                    catch (Exception ie)
+                    {
+                        throw ie;
+                    }
                 }
             }
         }

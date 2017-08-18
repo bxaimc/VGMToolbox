@@ -51,7 +51,7 @@ namespace VGMToolbox.tools.genh
 
         public byte Atrac3StereoMode { set; get; }
         public byte XmaStreamMode { set; get; }
-        public string RawStreamSize { set; get; }
+        public string RawDataSize { set; get; }
 
         public string CoefRightChannel { set; get; }
         public string CoefLeftChannel { set; get; }
@@ -105,7 +105,7 @@ namespace VGMToolbox.tools.genh
 
             genhCreationStruct.Atrac3StereoMode = this.Atrac3StereoMode;
             genhCreationStruct.XmaStreamMode = this.XmaStreamMode;
-            genhCreationStruct.RawStreamSize = this.RawStreamSize;
+            genhCreationStruct.RawDataSize = this.RawDataSize;
 
             genhCreationStruct.CoefRightChannel = this.CoefRightChannel;
             genhCreationStruct.CoefLeftChannel = this.CoefLeftChannel;

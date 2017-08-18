@@ -17,7 +17,7 @@ using VGMToolbox.util;
 
 namespace VGMToolbox.forms
 {
-    public partial class Genh_CreatorForm : VgmtForm
+    public partial class Genh_CreatorForm : AVgmtForm
     {
         public const int NO_LABEL_SELECTED = -1;
         public const int LOOP_START_LABEL_SELECTED = 1;
@@ -59,6 +59,7 @@ namespace VGMToolbox.forms
 
             this.loadFormats();
             this.loadHeaderSkip();
+            this.tbRawDataSize.Text = "0";
             this.loadInterleave();
             this.loadChannels();
             this.loadFrequencies();
@@ -313,6 +314,7 @@ namespace VGMToolbox.forms
                 this.cbUseLoopStartOffset.Checked = false;
                 this.cbUseLoopStartOffset.Enabled = false;
 
+                // @TODO: Cannot calculate total samples for XMA.  Not sure how to handle for editing.
                 this.tbLoopEnd.Clear();
                 this.tbLoopEnd.ReadOnly = true;
                 this.cbUseLoopEndOffset.Checked = false;
@@ -403,7 +405,9 @@ namespace VGMToolbox.forms
                 this.cbForceSkipSamples.Checked ? Genh.SKIP_SAMPLES_MODE_FORCE : Genh.SKIP_SAMPLES_MODE_AUTODETECT;
             genhStruct.SkipSamples = this.tbForceSkipSamplesNumber.Text;
 
-            // @TODO: Add ATRAC3, XMA, RAW DATA
+            genhStruct.Atrac3StereoMode = (byte)this.cbAtrac3StereoMode.SelectedIndex;
+            genhStruct.XmaStreamMode = (byte)this.cbXmaStreamMode.SelectedIndex;
+            genhStruct.RawDataSize = String.IsNullOrWhiteSpace(this.tbRawDataSize.Text)? "0": this.tbRawDataSize.Text;
 
             drv = (DataRowView)this.cbCoefficientType.SelectedItem;
 
@@ -453,6 +457,9 @@ namespace VGMToolbox.forms
             this.cbForceSkipSamples.Checked = genhStruct.SkipSamplesMode == Genh.SKIP_SAMPLES_MODE_FORCE ? true : false;
 
             // @ TODO: Add ATRAC, XMA, and RAW DATA 
+            this.cbAtrac3StereoMode.SelectedIndex = genhStruct.Atrac3StereoMode;
+            this.cbXmaStreamMode.SelectedIndex = genhStruct.XmaStreamMode;
+            this.tbRawDataSize.Text = genhStruct.RawDataSize;
 
             this.tbRightCoef.Text = genhStruct.CoefRightChannel;
             this.tbLeftCoef.Text = genhStruct.CoefLeftChannel;

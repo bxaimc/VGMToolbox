@@ -99,6 +99,8 @@
             this.tbSourceDirectory = new System.Windows.Forms.TextBox();
             this.lbFiles = new System.Windows.Forms.ListBox();
             this.btnBrowseDirectory = new System.Windows.Forms.Button();
+            this.lblRawDataSize = new System.Windows.Forms.Label();
+            this.tbRawDataSize = new System.Windows.Forms.TextBox();
             this.pnlLabels.SuspendLayout();
             this.pnlTitle.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -118,31 +120,31 @@
             // 
             // pnlLabels
             // 
-            this.pnlLabels.Location = new System.Drawing.Point(0, 498);
-            this.pnlLabels.Size = new System.Drawing.Size(948, 19);
+            this.pnlLabels.Location = new System.Drawing.Point(0, 426);
+            this.pnlLabels.Size = new System.Drawing.Size(812, 19);
             // 
             // pnlTitle
             // 
-            this.pnlTitle.Size = new System.Drawing.Size(948, 20);
+            this.pnlTitle.Size = new System.Drawing.Size(812, 20);
             // 
             // tbOutput
             // 
-            this.tbOutput.Location = new System.Drawing.Point(0, 421);
-            this.tbOutput.Size = new System.Drawing.Size(948, 77);
+            this.tbOutput.Location = new System.Drawing.Point(0, 349);
+            this.tbOutput.Size = new System.Drawing.Size(812, 77);
             this.toolTip1.SetToolTip(this.tbOutput, "Double-Click to view in your default text editor.");
             // 
             // pnlButtons
             // 
-            this.pnlButtons.Location = new System.Drawing.Point(0, 401);
-            this.pnlButtons.Size = new System.Drawing.Size(948, 20);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 329);
+            this.pnlButtons.Size = new System.Drawing.Size(812, 20);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(888, 0);
+            this.btnCancel.Location = new System.Drawing.Point(752, 0);
             // 
             // btnDoTask
             // 
-            this.btnDoTask.Location = new System.Drawing.Point(828, 0);
+            this.btnDoTask.Location = new System.Drawing.Point(692, 0);
             this.btnDoTask.Click += new System.EventHandler(this.btnDoTask_Click);
             // 
             // grpFormat
@@ -151,7 +153,7 @@
             this.grpFormat.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFormat.Location = new System.Drawing.Point(0, 0);
             this.grpFormat.Name = "grpFormat";
-            this.grpFormat.Size = new System.Drawing.Size(925, 41);
+            this.grpFormat.Size = new System.Drawing.Size(789, 41);
             this.grpFormat.TabIndex = 7;
             this.grpFormat.TabStop = false;
             this.grpFormat.Text = "Format";
@@ -255,7 +257,7 @@
             this.grpOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpOptions.Location = new System.Drawing.Point(0, 178);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(948, 223);
+            this.grpOptions.Size = new System.Drawing.Size(812, 151);
             this.grpOptions.TabIndex = 12;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
@@ -274,7 +276,7 @@
             this.pnlOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlOptions.Location = new System.Drawing.Point(3, 16);
             this.pnlOptions.Name = "pnlOptions";
-            this.pnlOptions.Size = new System.Drawing.Size(942, 204);
+            this.pnlOptions.Size = new System.Drawing.Size(806, 132);
             this.pnlOptions.TabIndex = 0;
             // 
             // grpCoefOptions
@@ -288,7 +290,7 @@
             this.grpCoefOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpCoefOptions.Location = new System.Drawing.Point(0, 594);
             this.grpCoefOptions.Name = "grpCoefOptions";
-            this.grpCoefOptions.Size = new System.Drawing.Size(925, 67);
+            this.grpCoefOptions.Size = new System.Drawing.Size(789, 67);
             this.grpCoefOptions.TabIndex = 37;
             this.grpCoefOptions.TabStop = false;
             this.grpCoefOptions.Text = "Coefficients";
@@ -349,7 +351,7 @@
             this.grpXmaOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpXmaOptions.Location = new System.Drawing.Point(0, 540);
             this.grpXmaOptions.Name = "grpXmaOptions";
-            this.grpXmaOptions.Size = new System.Drawing.Size(925, 54);
+            this.grpXmaOptions.Size = new System.Drawing.Size(789, 54);
             this.grpXmaOptions.TabIndex = 39;
             this.grpXmaOptions.TabStop = false;
             this.grpXmaOptions.Text = "XMA Options";
@@ -378,7 +380,7 @@
             this.grpAtracOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpAtracOptions.Location = new System.Drawing.Point(0, 492);
             this.grpAtracOptions.Name = "grpAtracOptions";
-            this.grpAtracOptions.Size = new System.Drawing.Size(925, 48);
+            this.grpAtracOptions.Size = new System.Drawing.Size(789, 48);
             this.grpAtracOptions.TabIndex = 38;
             this.grpAtracOptions.TabStop = false;
             this.grpAtracOptions.Text = "ATRAC3 Options";
@@ -407,7 +409,7 @@
             this.grpSkipSamples.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSkipSamples.Location = new System.Drawing.Point(0, 447);
             this.grpSkipSamples.Name = "grpSkipSamples";
-            this.grpSkipSamples.Size = new System.Drawing.Size(925, 45);
+            this.grpSkipSamples.Size = new System.Drawing.Size(789, 45);
             this.grpSkipSamples.TabIndex = 21;
             this.grpSkipSamples.TabStop = false;
             this.grpSkipSamples.Text = "Skip Samples";
@@ -454,7 +456,7 @@
             this.grpLoopOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpLoopOptions.Location = new System.Drawing.Point(0, 254);
             this.grpLoopOptions.Name = "grpLoopOptions";
-            this.grpLoopOptions.Size = new System.Drawing.Size(925, 193);
+            this.grpLoopOptions.Size = new System.Drawing.Size(789, 193);
             this.grpLoopOptions.TabIndex = 36;
             this.grpLoopOptions.TabStop = false;
             this.grpLoopOptions.Text = "Looping";
@@ -651,6 +653,8 @@
             // 
             // grpGeneralOptions
             // 
+            this.grpGeneralOptions.Controls.Add(this.tbRawDataSize);
+            this.grpGeneralOptions.Controls.Add(this.lblRawDataSize);
             this.grpGeneralOptions.Controls.Add(this.cbUseInterleaveOffset);
             this.grpGeneralOptions.Controls.Add(this.interleaveOffsetDescription);
             this.grpGeneralOptions.Controls.Add(this.channelsOffsetDescription);
@@ -668,7 +672,7 @@
             this.grpGeneralOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpGeneralOptions.Location = new System.Drawing.Point(0, 41);
             this.grpGeneralOptions.Name = "grpGeneralOptions";
-            this.grpGeneralOptions.Size = new System.Drawing.Size(925, 213);
+            this.grpGeneralOptions.Size = new System.Drawing.Size(789, 213);
             this.grpGeneralOptions.TabIndex = 35;
             this.grpGeneralOptions.TabStop = false;
             this.grpGeneralOptions.Text = "General";
@@ -824,7 +828,7 @@
             this.grpFunction.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFunction.Location = new System.Drawing.Point(0, 23);
             this.grpFunction.Name = "grpFunction";
-            this.grpFunction.Size = new System.Drawing.Size(948, 155);
+            this.grpFunction.Size = new System.Drawing.Size(812, 155);
             this.grpFunction.TabIndex = 13;
             this.grpFunction.TabStop = false;
             this.grpFunction.Text = "Functions";
@@ -881,11 +885,27 @@
             this.btnBrowseDirectory.UseVisualStyleBackColor = true;
             this.btnBrowseDirectory.Click += new System.EventHandler(this.btnBrowseDirectory_Click);
             // 
+            // lblRawDataSize
+            // 
+            this.lblRawDataSize.AutoSize = true;
+            this.lblRawDataSize.Location = new System.Drawing.Point(251, 16);
+            this.lblRawDataSize.Name = "lblRawDataSize";
+            this.lblRawDataSize.Size = new System.Drawing.Size(124, 13);
+            this.lblRawDataSize.TabIndex = 35;
+            this.lblRawDataSize.Text = "Raw Data Size (optional)";
+            // 
+            // tbRawDataSize
+            // 
+            this.tbRawDataSize.Location = new System.Drawing.Point(382, 13);
+            this.tbRawDataSize.Name = "tbRawDataSize";
+            this.tbRawDataSize.Size = new System.Drawing.Size(94, 20);
+            this.tbRawDataSize.TabIndex = 36;
+            // 
             // Genh_CreatorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(948, 539);
+            this.ClientSize = new System.Drawing.Size(812, 467);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpFunction);
             this.Name = "Genh_CreatorForm";
@@ -999,5 +1019,7 @@
         private System.Windows.Forms.CheckBox cbForceSkipSamples;
         private System.Windows.Forms.ComboBox cbXmaStreamMode;
         private System.Windows.Forms.Label lblXmaStreamMode;
+        private System.Windows.Forms.TextBox tbRawDataSize;
+        private System.Windows.Forms.Label lblRawDataSize;
     }
 }

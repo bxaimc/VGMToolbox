@@ -52,7 +52,7 @@ namespace VGMToolbox.format.util
 
         public byte Atrac3StereoMode;
         public byte XmaStreamMode;
-        public string RawStreamSize;
+        public string RawDataSize;
 
         public string CoefRightChannel;
         public string CoefLeftChannel;
@@ -303,7 +303,7 @@ namespace VGMToolbox.format.util
 
                     // RAW DATA SIZE
                     bw.BaseStream.Position = Genh.RAW_DATA_SIZE_OFFSET;
-                    bw.Write((UInt32)VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.RawStreamSize));
+                    bw.Write((UInt32)VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.RawDataSize));
 
                     // Original File Size
                     bw.BaseStream.Position = Genh.ORIG_FILENAME_OFFSET;
@@ -511,6 +511,14 @@ namespace VGMToolbox.format.util
                     sampleCount = (byteValue / 0x800) * (0x800 - 4 * channels) * 2 / channels + ((byteValue % 0x800) != 0 ? (byteValue % 0x800 - 4 * channels) * 2 / channels : 0);
                     break;
 
+                case 0x12: // 0x12 - ATRAC3 
+                    sampleCount = (byteValue / interleave) * 1024;
+                    break;
+
+                case 0x13: // 0x13 - ATRAC3+ 
+                    sampleCount = (byteValue / interleave) * 2048;
+                    break;
+
                 default:
                     sampleCount = UNKNOWN_SAMPLE_COUNT;
                     break;
@@ -695,7 +703,7 @@ namespace VGMToolbox.format.util
 
             gcStruct.Atrac3StereoMode = genhItem.Atrac3StereoMode;
             gcStruct.XmaStreamMode = genhItem.XmaStreamMode;
-            gcStruct.RawStreamSize = BitConverter.ToInt32(genhItem.RawStreamSize, 0).ToString();
+            gcStruct.RawDataSize = BitConverter.ToInt32(genhItem.RawStreamSize, 0).ToString();
 
             int loopStartValue = BitConverter.ToInt32(genhItem.LoopStart, 0);
             if (loopStartValue > -1)
