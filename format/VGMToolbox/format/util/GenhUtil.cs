@@ -102,11 +102,11 @@ namespace VGMToolbox.format.util
             if (pGenhCreationStruct.NoLoops)
             {
                 pGenhCreationStruct.LoopStart = Genh.EMPTY_SAMPLE_COUNT;
-                pGenhCreationStruct.LoopEnd = GetFileEndLoopEnd(pSourcePath, pGenhCreationStruct);
+                pGenhCreationStruct.LoopEnd = Genh.EMPTY_SAMPLE_COUNT;
             }
             else if (pGenhCreationStruct.UseFileEnd)
             {
-                pGenhCreationStruct.LoopEnd = GetFileEndLoopEnd(pSourcePath, pGenhCreationStruct);
+                pGenhCreationStruct.LoopEnd = GetTotalSamples(pSourcePath, pGenhCreationStruct);
             }
             else if (pGenhCreationStruct.FindLoop)
             {
@@ -123,8 +123,14 @@ namespace VGMToolbox.format.util
                 else
                 {
                     pGenhCreationStruct.LoopStart = Genh.EMPTY_SAMPLE_COUNT;
-                    pGenhCreationStruct.LoopEnd = GetFileEndLoopEnd(pSourcePath, pGenhCreationStruct);
+                    pGenhCreationStruct.LoopEnd = GetTotalSamples(pSourcePath, pGenhCreationStruct);
                 }
+            }
+
+            // set total samples if no loop end found
+            if (pGenhCreationStruct.LoopEnd == Genh.EMPTY_SAMPLE_COUNT)
+            {
+                pGenhCreationStruct.TotalSamples = GetTotalSamples(pSourcePath, pGenhCreationStruct);
             }
 
             //---------------------
@@ -373,7 +379,28 @@ namespace VGMToolbox.format.util
             return dspInterleave;
         }
 
-        public static string GetFileEndLoopEnd(string pSourcePath, GenhCreationStruct pGenhCreationStruct)
+        public static bool CanConvertBytesToSamples(long pFormatId)
+        {
+            bool ret = true;
+
+            if (pFormatId == 8 ||  // MPEG
+                pFormatId == 20 || // XMA
+                pFormatId == 21 || // XMA2
+                pFormatId == 22)   // FFMPEG
+            {
+                ret = false;
+            }
+
+            return ret;
+        }
+
+        public static bool CanConvertBytesToSamples(string pFormatId)
+        {
+            long value = Convert.ToInt32(pFormatId);
+            return CanConvertBytesToSamples(value);
+        }
+
+        public static string GetTotalSamples(string pSourcePath, GenhCreationStruct pGenhCreationStruct)
         {
             int formatId = (int)VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.Format);
             int headerSkip = (int)VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.HeaderSkip);
@@ -381,74 +408,11 @@ namespace VGMToolbox.format.util
             int interleave = (int)VGMToolbox.util.ByteConversion.GetLongValueFromString(pGenhCreationStruct.Interleave);
             int loopEnd = -1;
 
-            //int frames;
-            //int lastFrame;
-            //int dataSize;
-
             FileInfo fi = new FileInfo(Path.GetFullPath(pSourcePath));
             int fileLength = (int)fi.Length;
             
             loopEnd = BytesToSamples(formatId, (fileLength - headerSkip), channels, interleave);
             
-            /*
-            switch (formatId)
-            {
-                case 0x00: // "0x00 - PlayStation 4-bit ADPCM"
-                case 0x0E: // "0x0E - PlayStation 4-bit ADPCM (with bad flags)
-                    loopEnd = ((fileLength - headerSkip) / 16 / channels * 28);
-                    break;
-                
-                case 0x01: // "0x01 - XBOX 4-bit IMA ADPCM"
-                    loopEnd = ((fileLength - headerSkip) / 36 / channels * 64);
-                    break;
-                
-                case 0x02: // "0x02 - GameCube ADP/DTK 4-bit ADPCM"
-                    loopEnd = ((fileLength - headerSkip) / 32 * 28);
-                    break;
-
-                case 0x03: // "0x03 - PCM RAW (Big Endian)"
-                case 0x04: // "0x04 - PCM RAW (Little Endian)
-                    loopEnd = ((fileLength - headerSkip) / 2 / channels);
-                    break;
-
-                case 0x05: // "0x05 - PCM RAW (8-Bit)"
-                case 0x0D: // "0x05 - PCM RAW (8-Bit unsigned)"
-                    loopEnd = ((fileLength - headerSkip) / channels);
-                    break;
-
-                case 0x06: // "0x06 - Squareroot-delta-exact 8-bit DPCM"
-                    loopEnd = ((fileLength - headerSkip) / 1 / channels);
-                    break;
-
-                case 0x08: // "0x08 - MPEG Layer Audio File (MP1/2/3)"
-                    // Not Implemented
-                    break;
-
-                case 0x07: // "0x07 - Interleaved DVI 4-Bit IMA ADPCM"
-                case 0x09: // "0x09 - 4-bit IMA ADPCM"
-                case 0x0A: // "0x0A - Yamaha AICA 4-bit ADPCM"    
-                    loopEnd = ((fileLength - headerSkip) / channels * 2);
-                    break;
-
-                case 0x0B: // 0x0B - Microsoft 4-bit ADPCM
-                    frames = (fileLength - headerSkip) / interleave;
-                    lastFrame = (fileLength - headerSkip) - (frames * interleave);
-                    loopEnd = (frames * (interleave - (14 - 2))) + (lastFrame - (14 - 2));                    
-                    break;
-
-                case 0x0C: // "0x0C - Nintendo GameCube DSP 4-bit ADPCM"
-                    loopEnd = ((fileLength - headerSkip) / channels / 8 * 14);
-                    break;
-
-                case 0x0F: // "0x0F - Microsoft 4-bit IMA ADPCM"
-                    dataSize = (fileLength - headerSkip);
-                    loopEnd = (dataSize / 0x800) * (0x800 - 4 * channels) * 2 / channels + ((dataSize % 0x800) != 0 ? (dataSize % 0x800 - 4 * channels) * 2 / channels : 0);
-                    break;
-
-                default:
-                    break;
-            }
-            */
             return loopEnd.ToString();
         }
 

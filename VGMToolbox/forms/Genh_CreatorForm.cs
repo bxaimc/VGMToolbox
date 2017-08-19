@@ -490,6 +490,7 @@ namespace VGMToolbox.forms
             out string pErrorMessages)
         {
             bool isValid = true;
+            long dummy;
             StringBuilder errorBuffer = new StringBuilder();
 
             // Paths
@@ -506,6 +507,19 @@ namespace VGMToolbox.forms
                 isValid = false;
                 errorBuffer.Append(ConfigurationManager.AppSettings["Form_GenhCreator_MessageHeaderSkip"]);
                 errorBuffer.Append(Environment.NewLine);
+            }
+
+            // Raw Data Size
+            if (!String.IsNullOrWhiteSpace(pGenhCreatorStruct.RawDataSize))
+            {
+                dummy = ByteConversion.GetLongValueFromString(pGenhCreatorStruct.RawDataSize);
+
+                if (dummy < 1)
+                {
+                    isValid = false;
+                    errorBuffer.Append("Raw Data Size must be greater than zero.");
+                    errorBuffer.Append(Environment.NewLine);
+                }
             }
 
             // Interleave
@@ -562,6 +576,27 @@ namespace VGMToolbox.forms
             {
                 isValid = false;
                 errorBuffer.Append(ConfigurationManager.AppSettings["Form_GenhCreator_MessageLoopEnd"]);
+                errorBuffer.Append(Environment.NewLine);
+            }
+
+            // Total Samples
+            if (pGenhCreatorStruct.NoLoops &&
+                ((String.IsNullOrWhiteSpace(pGenhCreatorStruct.TotalSamples) &&
+                  String.IsNullOrWhiteSpace(pGenhCreatorStruct.TotalSamplesOffsetDescription.OffsetValue)) ||
+                 ByteConversion.GetLongValueFromString(pGenhCreatorStruct.TotalSamples) < 1) &&                                
+                !GenhUtil.CanConvertBytesToSamples(pGenhCreatorStruct.Format))                
+            {
+                isValid = false;
+                errorBuffer.Append("The following formats require a value greater than 0 (or Offset) for 'Total Samples' if no 'Loop End' is identified: MPEG, XMA, XMA2, FFMPEG.");
+                errorBuffer.Append(Environment.NewLine);
+            }
+
+            // Skip Samples
+            if (pGenhCreatorStruct.SkipSamplesMode == Genh.SKIP_SAMPLES_MODE_FORCE &&
+                String.IsNullOrWhiteSpace(pGenhCreatorStruct.SkipSamples))
+            {
+                isValid = false;
+                errorBuffer.Append("Skip Samples cannot be empty if 'Force Skip Samples' is checked.");
                 errorBuffer.Append(Environment.NewLine);
             }
 
@@ -738,7 +773,7 @@ namespace VGMToolbox.forms
                     {
                         if (genhStruct.UseFileEnd)
                         {
-                            loopEndFound = GenhUtil.GetFileEndLoopEnd(genhStruct.SourcePaths[0], genhStruct.ToGenhCreationStruct());
+                            loopEndFound = GenhUtil.GetTotalSamples(genhStruct.SourcePaths[0], genhStruct.ToGenhCreationStruct());
                         }
                         else if (genhStruct.FindLoop)
                         {
@@ -788,7 +823,21 @@ namespace VGMToolbox.forms
                         if ((String.IsNullOrEmpty(gcStruct.LoopStart)) ||
                             (gcStruct.LoopStart.Equals(Genh.EMPTY_SAMPLE_COUNT)))
                         {
+                            if (this.cbNoLoops.Checked == true)
+                            {
+                                this.cbNoLoops.Checked = false; // do this to trigger event if already checked.
+                            }
+
                             this.cbNoLoops.Checked = true;
+                            
+
+                            // for some formats (MPEG, XMA, FFMPEG) I cannot calculate the exact number of samples, 
+                            //    so copy current loop end to total samples.  However, do not overwrite if it exists.
+                            if (String.IsNullOrWhiteSpace(this.tbTotalSamples.Text) ||
+                                ByteConversion.GetLongValueFromString(this.tbTotalSamples.Text) == 0)
+                            {
+                                this.tbTotalSamples.Text = ByteConversion.GetLongValueFromString(gcStruct.LoopEnd) > 0 ? gcStruct.LoopEnd : "0";
+                            }
                         }
                         else
                         {
@@ -817,6 +866,8 @@ namespace VGMToolbox.forms
         }
 
         #region BYTES TO SAMPLES
+
+        // @TODO - Filter Bytes to Samples per Format (block XMA, MPEG, etc.)
 
         private bool isPs2AdpcmSelected()
         {
