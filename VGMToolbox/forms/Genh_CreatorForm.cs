@@ -25,6 +25,7 @@ namespace VGMToolbox.forms
         public const int TOTAL_SAMPLES_LABEL_SELECTED = 3;
 
         private int selectedLabel;
+        private int selectedInterleave;
 
         private static readonly string DB_PATH =
             Path.Combine(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "db"), "collection.s3db");
@@ -123,6 +124,38 @@ namespace VGMToolbox.forms
                 cbInterleave.Items.Add(
                     String.Format("0x{0}", ((int)Math.Pow(2, i)).ToString("X2")));
             }
+
+            // add ATRAC3 commons
+            cbInterleave.Items.Add("--- ATRAC3 ---");
+
+            cbInterleave.Items.Add("0xC0");
+            cbInterleave.Items.Add("0x180");
+            cbInterleave.Items.Add("0x240");
+
+            cbInterleave.Items.Add("0x130");
+            cbInterleave.Items.Add("0x260");
+            cbInterleave.Items.Add("0x390");
+
+            cbInterleave.Items.Add("0x180");
+            cbInterleave.Items.Add("0x300");
+            cbInterleave.Items.Add("0x480");
+
+            // ATRAC3+
+            cbInterleave.Items.Add("--- ATRAC3+ ---");
+
+            cbInterleave.Items.Add("0x178");
+            cbInterleave.Items.Add("0x2F0");
+            cbInterleave.Items.Add("0x468");
+
+            cbInterleave.Items.Add("0x2E8");
+            cbInterleave.Items.Add("0x5D0");
+            cbInterleave.Items.Add("0x8B8");
+
+            cbInterleave.Items.Add("0x400");
+            cbInterleave.Items.Add("0x800");
+            cbInterleave.Items.Add("0xC00");
+
+            selectedInterleave = cbInterleave.SelectedIndex;
         }
         private void loadChannels()
         {
@@ -854,7 +887,19 @@ namespace VGMToolbox.forms
         }
         private void cbInterleave_SelectedValueChanged(object sender, EventArgs e)
         {
-            this.showLoopPointsForSelectedFile();
+            // check for labels
+            string dummy = (string)cbInterleave.Items[cbInterleave.SelectedIndex];
+
+            if (!String.IsNullOrWhiteSpace(dummy) && 
+                dummy.StartsWith("-")) // label
+            {
+                cbInterleave.SelectedIndex = selectedInterleave; // switch back to previous
+            }
+            else
+            {
+                selectedInterleave = cbInterleave.SelectedIndex;  // update "old" value
+                this.showLoopPointsForSelectedFile();
+            }
         }
         private void cbChannels_SelectedValueChanged(object sender, EventArgs e)
         {

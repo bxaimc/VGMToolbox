@@ -1,3 +1,15 @@
+*** VGMToolbox r1040 (2017-08-19)
+[CRI CPK] Update to evaluate code page in file names.
+[CRI HCA] Add Kode54's patch for masked HCA signature.
+[VIDEO DEMUXER] 
+- PSS: Updated audio stream ID identification for multi-stream audio.
+- PSS: Added output detection for AC3 audio.
+- SFD: Added output detection for AC3 audio.
+[GENH] 
+- Updated GENH to support new format additions and formats: ATRAC3, ATRAC3+, XMA, XMA2, FFMPEG.
+- Can now use offsets for channels and interleave/block size.
+[WII WUD] Add quick check for bad file table pointers. i.e. Sam Warrior 3 sample.
+
 *** VGMToolbox r1026 (2016-11-28)
 [ADVANCED CUTTER] Add some 3DS, PS2, and WMA plugins.
 [CRI ACB/AWB ARCHIVES] 
