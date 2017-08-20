@@ -866,9 +866,6 @@ namespace VGMToolbox.forms
         }
 
         #region BYTES TO SAMPLES
-
-        // @TODO - Filter Bytes to Samples per Format (block XMA, MPEG, etc.)
-
         private bool isPs2AdpcmSelected()
         {
             bool ret = false;
@@ -973,22 +970,29 @@ namespace VGMToolbox.forms
                             DataRowView drv = (DataRowView)this.comboFormat.SelectedItem;
                             UInt16 formatId = Convert.ToUInt16(drv.Row.ItemArray[0]);
 
-                            long interleave = ByteConversion.GetLongValueFromString(this.cbInterleave.Text);
-                            long channelCount = ByteConversion.GetLongValueFromString(this.cbChannels.Text);
+                            if (GenhUtil.CanConvertBytesToSamples(formatId))
+                            {
+                                long interleave = ByteConversion.GetLongValueFromString(this.cbInterleave.Text);
+                                long channelCount = ByteConversion.GetLongValueFromString(this.cbChannels.Text);
 
-                            long samplesValue = GenhUtil.BytesToSamples((int)formatId, (int)loopValue, (int)channelCount, (int)interleave);
+                                long samplesValue = GenhUtil.BytesToSamples((int)formatId, (int)loopValue, (int)channelCount, (int)interleave);
 
-                            if (this.selectedLabel == LOOP_START_LABEL_SELECTED)
-                            {
-                                this.tbLoopStart.Text = samplesValue.ToString();
+                                if (this.selectedLabel == LOOP_START_LABEL_SELECTED)
+                                {
+                                    this.tbLoopStart.Text = samplesValue.ToString();
+                                }
+                                else if (this.selectedLabel == LOOP_END_LABEL_SELECTED)
+                                {
+                                    this.tbLoopEnd.Text = samplesValue.ToString();
+                                }
+                                else if (this.selectedLabel == TOTAL_SAMPLES_LABEL_SELECTED)
+                                {
+                                    this.tbTotalSamples.Text = samplesValue.ToString();
+                                }
                             }
-                            else if (this.selectedLabel == LOOP_END_LABEL_SELECTED)
+                            else
                             {
-                                this.tbLoopEnd.Text = samplesValue.ToString();
-                            }
-                            else if (this.selectedLabel == TOTAL_SAMPLES_LABEL_SELECTED)
-                            {
-                                this.tbTotalSamples.Text = samplesValue.ToString();
+                                MessageBox.Show("Cannot convert bytes to samples for the following formats: MPEG, XMA, XMA2, FFMPEG.", "Error");
                             }
                         }
                         else
@@ -1124,6 +1128,35 @@ namespace VGMToolbox.forms
         private void cbForceSkipSamples_CheckedChanged(object sender, EventArgs e)
         {
             this.doForceSkipSamplesCheckbox();
+        }
+
+        private void validateBytesToSamplesCheckbox(CheckBox chk)
+        {
+            DataRowView drv = (DataRowView)this.comboFormat.SelectedItem;
+            UInt16 formatId = Convert.ToUInt16(drv.Row.ItemArray[0]);
+
+            if (chk.Checked)
+            {
+                if (!GenhUtil.CanConvertBytesToSamples(formatId))
+                {
+                    MessageBox.Show("Cannot convert bytes to samples for the following formats: MPEG, XMA, XMA2, FFMPEG.", "Error");
+                    chk.Checked = false;
+                }
+            }
+        }
+        private void cbLoopStartBytesToSamples_CheckedChanged(object sender, EventArgs e)
+        {
+            this.validateBytesToSamplesCheckbox(cbLoopStartBytesToSamples);
+        }
+
+        private void cbLoopEndBytesToSamples_CheckedChanged(object sender, EventArgs e)
+        {
+            this.validateBytesToSamplesCheckbox(cbLoopEndBytesToSamples);
+        }
+
+        private void cbTotalSamplesBytesToSamples_CheckedChanged(object sender, EventArgs e)
+        {
+            this.validateBytesToSamplesCheckbox(cbTotalSamplesBytesToSamples);
         }
     }
 }
