@@ -28,6 +28,7 @@ namespace VGMToolbox.format
     {
         public const string EXTRACTION_FOLDER_FORMAT = "_vgmt_acb_ext_{0}";
         public static readonly string ACB_AWB_EXTRACTION_FOLDER = "acb" + Path.DirectorySeparatorChar + "awb";
+        public static readonly string ACB_CPK_EXTRACTION_FOLDER = "acb" + Path.DirectorySeparatorChar + "cpk";
         public static readonly string EXT_AWB_EXTRACTION_FOLDER = "awb";
 
         public const byte WAVEFORM_ENCODE_TYPE_ADX = 0;
@@ -56,7 +57,15 @@ namespace VGMToolbox.format
             // initialize internal AWB
             if (this.InternalAwbFileSize > 0)
             {
-                this.InternalAwb = new CriAfs2Archive(fs, (long)this.InternalAwbFileOffset);
+                if (CriAfs2Archive.IsCriAfs2Archive(fs, (long)this.InternalAwbFileOffset))
+                {
+                    this.InternalAwb = new CriAfs2Archive(fs, (long)this.InternalAwbFileOffset);
+                }
+                else if (CriCpkArchive.IsCriCpkArchive(fs, (long)this.InternalAwbFileOffset))
+                {
+                    this.InternalCpk = new CriCpkArchive();
+                    this.InternalCpk.Initialize(fs, (long)this.InternalAwbFileOffset, true);
+                }
             }
 
             // initialize external AWB
@@ -145,6 +154,7 @@ namespace VGMToolbox.format
             }        
         }
         public CriAfs2Archive InternalAwb { set; get; }
+        public CriCpkArchive InternalCpk { set; get; }
 
         public byte[] StreamAwbHash
         {
@@ -387,6 +397,7 @@ namespace VGMToolbox.format
 
             string acbAwbDestinationFolder = Path.Combine(destinationFolder, ACB_AWB_EXTRACTION_FOLDER);
             string extAwbDestinationFolder = Path.Combine(destinationFolder, EXT_AWB_EXTRACTION_FOLDER);
+            string acbCpkDestinationFolder = Path.Combine(destinationFolder, ACB_CPK_EXTRACTION_FOLDER);
 
             try
             {
@@ -394,6 +405,10 @@ namespace VGMToolbox.format
                 if (this.InternalAwb != null)
                 {
                     internalFs = File.Open(this.InternalAwb.SourceFile, FileMode.Open, FileAccess.Read, FileShare.Read);
+                }
+                else if (this.InternalCpk != null)
+                {
+                    internalFs = File.Open(this.InternalCpk.SourceFileName, FileMode.Open, FileAccess.Read, FileShare.Read);
                 }
 
                 if (this.ExternalAwb != null)
@@ -419,10 +434,20 @@ namespace VGMToolbox.format
                         }
                         else // internal AWB file (inside ACB)
                         {
-                            ParseFile.ExtractChunkToFile64(internalFs,
-                                (ulong)this.InternalAwb.Files[cue.WaveformId].FileOffsetByteAligned,
-                                (ulong)this.InternalAwb.Files[cue.WaveformId].FileLength,
-                                Path.Combine(acbAwbDestinationFolder, FileUtil.CleanFileName(cue.CueName)), false, false);
+                            if (this.InternalAwb != null)
+                            {
+                                ParseFile.ExtractChunkToFile64(internalFs,
+                                    (ulong)this.InternalAwb.Files[cue.WaveformId].FileOffsetByteAligned,
+                                    (ulong)this.InternalAwb.Files[cue.WaveformId].FileLength,
+                                    Path.Combine(acbAwbDestinationFolder, FileUtil.CleanFileName(cue.CueName)), false, false);
+                            }
+                            else if (this.InternalCpk != null)
+                            {
+                                ParseFile.ExtractChunkToFile64(internalFs,
+                                    (ulong)this.InternalCpk.ItocFiles[cue.WaveformId].FileOffsetByteAligned,
+                                    (ulong)this.InternalCpk.ItocFiles[cue.WaveformId].FileLength,
+                                    Path.Combine(acbCpkDestinationFolder, FileUtil.CleanFileName(cue.CueName)), false, false);
+                            }
 
                             internalIdsExtracted.Add(cue.WaveformId);
                         }
@@ -475,6 +500,26 @@ namespace VGMToolbox.format
                             (ulong)this.InternalAwb.Files[key].FileOffsetByteAligned,
                             (ulong)this.InternalAwb.Files[key].FileLength,
                             Path.Combine(acbAwbDestinationFolder, rawFileName), false, false);
+                    }
+                }
+                else if (this.InternalCpk != null)
+                {
+                    var unextractedInternalFiles = this.InternalCpk.ItocFiles.Keys.Where(x => !internalIdsExtracted.Contains(x));
+                    foreach (ushort key in unextractedInternalFiles)
+                    {
+                        waveformIndex = GetWaveformRowIndexForWaveformId(waveformTableUtf, key, false);
+
+                        encodeType = (byte)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, waveformIndex, "EncodeType");
+
+                        rawFileName = String.Format(rawFileFormat,
+                            Path.GetFileName(this.InternalCpk.SourceFileName), key.ToString("D5"),
+                            CriAcbFile.GetFileExtensionForEncodeType(encodeType));
+
+                        // extract file
+                        ParseFile.ExtractChunkToFile64(internalFs,
+                            (ulong)this.InternalCpk.ItocFiles[key].FileOffsetByteAligned,
+                            (ulong)this.InternalCpk.ItocFiles[key].FileLength,
+                            Path.Combine(acbCpkDestinationFolder, rawFileName), false, false);
                     }
                 }
             }

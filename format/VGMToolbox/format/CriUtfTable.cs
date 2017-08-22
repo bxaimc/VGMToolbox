@@ -51,18 +51,20 @@ namespace VGMToolbox.format
             switch (maskedType)
             {
                 case CriUtfTable.COLUMN_TYPE_DATA:
-                    if (utfStream == null)
-                    {
-                        stringValue = this.Value.ToString();
-                    }
-                    else
-                    {
-                        if (CriUtfTable.IsUtfTable(utfStream, (long)this.Offset))
-                        {
-                            CriUtfTable newUtf = new CriUtfTable();
-                            newUtf.Initialize(utfStream, (long)this.Offset);
-                        }
-                    }
+                    //if (utfStream == null)
+                    //{
+                    //    stringValue = this.Value.ToString();
+                    //}
+                    //else
+                    //{
+                    //    if (CriUtfTable.IsUtfTable(utfStream, (long)this.Offset))
+                    //    {
+                    //        CriUtfTable newUtf = new CriUtfTable();
+                    //        newUtf.Initialize(utfStream, (long)this.Offset);
+                    //    }
+                    //}
+
+                    stringValue = this.Value.ToString();
                     break;
                 case CriUtfTable.COLUMN_TYPE_STRING:
                     stringValue = (string)this.Value;

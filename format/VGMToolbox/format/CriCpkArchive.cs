@@ -28,7 +28,22 @@ namespace VGMToolbox.format
         public CriUtfTable TocUtf { set; get; }
         public CriUtfTable EtocUtf { set; get; }
         public CriUtfTable ItocUtf { set; get; }
-        public CriUtfTable GtocUtf { set; get; } 
+        public CriUtfTable GtocUtf { set; get; }
+
+        public Dictionary<ushort, CriAfs2File> ItocFiles { set; get; }     // for use by ACB extraction
+
+        public static bool IsCriCpkArchive(FileStream fs, long offset)
+        {
+            bool ret = false;
+            byte[] checkBytes = ParseFile.ParseSimpleOffset(fs, offset, STANDARD_IDENTIFIER.Length);
+
+            if (ParseFile.CompareSegment(checkBytes, 0, STANDARD_IDENTIFIER))
+            {
+                ret = true;
+            }
+
+            return ret;
+        }
 
         public void Initialize(FileStream fs, long offset, bool isRawDump)
         {
@@ -42,20 +57,24 @@ namespace VGMToolbox.format
             this.SourceFileName = fs.Name;            
 
             CriUtfTable cpkUtf = new CriUtfTable();
-            cpkUtf.Initialize(fs, 0x10);
+            cpkUtf.Initialize(fs, this.VolumeBaseOffset + 0x10);
 
             this.VolumeIdentifier = cpkUtf.TableName;
+
+            this.ItocFiles = new Dictionary<ushort, CriAfs2File>();
 
             this.TocUtf = InitializeToc(fs, cpkUtf, "TocOffset");
             // this.EtocUtf = InitializeToc(fs, cpkUtf, "EtocOffset");
             this.ItocUtf = InitializeToc(fs, cpkUtf, "ItocOffset");
             // this.GtocUtf = InitializeToc(fs, cpkUtf, "GtocOffset");
 
+
+
             CriCpkDirectory dummy = new CriCpkDirectory(this.SourceFileName, String.Empty, String.Empty);
 
             if (this.TocUtf != null)
             {
-                CriCpkDirectory tocDir = this.GetDirectoryForToc(fs, cpkUtf, "TOC");
+                CriCpkDirectory tocDir = this.GetDirectoryForToc(fs, cpkUtf, "TOC", this.VolumeBaseOffset);
 
                 if ((tocDir.FileArray.Count > 0) || (tocDir.SubDirectoryArray.Count > 0))
                 {
@@ -77,7 +96,7 @@ namespace VGMToolbox.format
 
             if (this.ItocUtf != null)
             {
-                CriCpkDirectory itocDir = this.GetDirectoryForItoc(fs, cpkUtf, "ITOC");
+                CriCpkDirectory itocDir = this.GetDirectoryForItoc(fs, cpkUtf, "ITOC", this.VolumeBaseOffset);
 
                 if ((itocDir.FileArray.Count > 0) || (itocDir.SubDirectoryArray.Count > 0))
                 {
@@ -158,7 +177,7 @@ namespace VGMToolbox.format
                 cpkUtf.Rows[0][tocIdentifierString].Value != null)
             {
                 toc = new CriUtfTable();
-                toc.Initialize(fs, (long)((ulong)cpkUtf.Rows[0][tocIdentifierString].Value) + 0x10);
+                toc.Initialize(fs, (long)((ulong)cpkUtf.BaseOffset + (ulong)cpkUtf.Rows[0][tocIdentifierString].Value));
             }
 
             return toc;
@@ -225,7 +244,7 @@ namespace VGMToolbox.format
             return gtocDirectory;       
         }
 
-        public CriCpkDirectory GetDirectoryForToc(FileStream fs, CriUtfTable cpkUtf, string BaseDirectoryName)
+        public CriCpkDirectory GetDirectoryForToc(FileStream fs, CriUtfTable cpkUtf, string BaseDirectoryName, long volumeBaseOffset)
         {
             CriUtfTocFileInfo fileInfo = new CriUtfTocFileInfo();
 
@@ -331,10 +350,11 @@ namespace VGMToolbox.format
             return baseDirectory;
         }
 
-        public CriCpkDirectory GetDirectoryForItoc(FileStream fs, CriUtfTable cpkUtf, string BaseDirectoryName)
+        public CriCpkDirectory GetDirectoryForItoc(FileStream fs, CriUtfTable cpkUtf, string BaseDirectoryName, long volumeBaseOffset)
         {
             ulong currentOffset = 0;
             CriUtfTocFileInfo fileInfo = new CriUtfTocFileInfo();
+            CriAfs2File afs2File = new CriAfs2File();
 
             // get content offset and align
             ulong contentOffset = (ulong)CriUtfTable.GetUtfFieldForRow(cpkUtf, 0, "ContentOffset");
@@ -400,6 +420,11 @@ namespace VGMToolbox.format
 
                 foreach (string key in keys)
                 {
+                    // afs2 file for ACB extraction
+                    afs2File = new CriAfs2File();
+                    afs2File.CueId = Convert.ToUInt16(fileList[key].FileName); // ??? @TODO maybe key is enough?  need to check.
+                    afs2File.FileOffsetRaw = volumeBaseOffset + (long)currentOffset;
+
                     // align offset
                     if (currentOffset % align != 0)
                     {
@@ -407,8 +432,12 @@ namespace VGMToolbox.format
                     }
 
                     // update file info
-                    fileList[key].FileOffset = currentOffset;
+                    fileList[key].FileOffset = (ulong)volumeBaseOffset + currentOffset;
                     fileList[key].FileName += ".bin";
+
+                    // afs2 file for ACB extraction
+                    afs2File.FileOffsetByteAligned = (long)fileList[key].FileOffset;
+                    afs2File.FileLength = fileList[key].FileSize;
 
                     // increment current offset
                     currentOffset += fileList[key].FileSize;
@@ -419,6 +448,10 @@ namespace VGMToolbox.format
                         fileList[key].FileSize, fileList[key].ExtractSize);
 
                     baseDirectory.FileArray.Add(tempFile);
+
+                    // add afs2 file to ItocFiles for ACB extraction
+                    this.ItocFiles.Add(afs2File.CueId, afs2File);
+
                 } // foreach (string key in keys)
             } // if ((filesH > 0) || (filesL > 0))       
             
