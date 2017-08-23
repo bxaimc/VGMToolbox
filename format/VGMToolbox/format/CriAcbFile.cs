@@ -30,10 +30,12 @@ namespace VGMToolbox.format
         public static readonly string ACB_AWB_EXTRACTION_FOLDER = "acb" + Path.DirectorySeparatorChar + "awb";
         public static readonly string ACB_CPK_EXTRACTION_FOLDER = "acb" + Path.DirectorySeparatorChar + "cpk";
         public static readonly string EXT_AWB_EXTRACTION_FOLDER = "awb";
+        public static readonly string EXT_CPK_EXTRACTION_FOLDER = "cpk";
 
         public const byte WAVEFORM_ENCODE_TYPE_ADX = 0;
         public const byte WAVEFORM_ENCODE_TYPE_HCA = 2;
-        public const byte WAVEFORM_ENCODE_TYPE_VAG = 7;
+        public const byte WAVEFORM_ENCODE_TYPE_HCA_ALT = 6;
+        public const byte WAVEFORM_ENCODE_TYPE_VAG = 7;        
         public const byte WAVEFORM_ENCODE_TYPE_ATRAC3 = 8;
         public const byte WAVEFORM_ENCODE_TYPE_BCWAV = 9;
         public const byte WAVEFORM_ENCODE_TYPE_ATRAC9 = 11;
@@ -44,6 +46,7 @@ namespace VGMToolbox.format
         public const string AWB_FORMAT3 = "{0}_STR.awb";
 
         protected enum AwbToExtract { Internal, External };
+
 
         public CriAcbFile(FileStream fs, long offset, bool includeCueIdInFileName)
         {
@@ -57,6 +60,7 @@ namespace VGMToolbox.format
             // initialize internal AWB
             if (this.InternalAwbFileSize > 0)
             {
+                // @TODO: Should probably do an Interface for AWB and CPK.
                 if (CriAfs2Archive.IsCriAfs2Archive(fs, (long)this.InternalAwbFileOffset))
                 {
                     this.InternalAwb = new CriAfs2Archive(fs, (long)this.InternalAwbFileOffset);
@@ -69,9 +73,28 @@ namespace VGMToolbox.format
             }
 
             // initialize external AWB
+
+            // @TODO: This isn't correct for files with CPKs
             if (this.StreamAwbAfs2HeaderSize > 0)
             {
-                this.ExternalAwb = this.InitializeExternalAwbArchive();
+                // get external file name
+                this.StreamfilePath = this.GetStreamfilePath();
+
+                // get file type
+                using (FileStream awbFs = File.Open(this.StreamfilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    // AWB
+                    if (CriAfs2Archive.IsCriAfs2Archive(awbFs, 0))
+                    {
+                        this.ExternalAwb = new CriAfs2Archive(fs, 0);
+                    }
+                    // CPK
+                    else if (CriCpkArchive.IsCriCpkArchive(awbFs, 0))
+                    {
+                        this.ExternalCpk = new CriCpkArchive();
+                        this.ExternalCpk.Initialize(awbFs, 0, true);
+                    }
+                }
             }
         }
 
@@ -177,7 +200,9 @@ namespace VGMToolbox.format
                 return (ulong)CriUtfTable.GetSizeForUtfFieldForRow(this, 0, "StreamAwbAfs2Header");
             }
         }
+        public string StreamfilePath { set; get; }
         public CriAfs2Archive ExternalAwb { set; get; }
+        public CriCpkArchive ExternalCpk { set; get; }
 
         public void ExtractAll()
         { 
@@ -323,6 +348,8 @@ namespace VGMToolbox.format
             }
         }
 
+
+        // @TODO: Need to update this for Internal/External CPK
         protected void ExtractAwbWithCueNames(string destinationFolder, AwbToExtract whichAwb)
         {
             CriUtfTable waveformTableUtf;
@@ -398,6 +425,7 @@ namespace VGMToolbox.format
             string acbAwbDestinationFolder = Path.Combine(destinationFolder, ACB_AWB_EXTRACTION_FOLDER);
             string extAwbDestinationFolder = Path.Combine(destinationFolder, EXT_AWB_EXTRACTION_FOLDER);
             string acbCpkDestinationFolder = Path.Combine(destinationFolder, ACB_CPK_EXTRACTION_FOLDER);
+            string extCpkDestinationFolder = Path.Combine(destinationFolder, EXT_CPK_EXTRACTION_FOLDER);
 
             try
             {
@@ -415,7 +443,11 @@ namespace VGMToolbox.format
                 {
                     externalFs = File.Open(this.ExternalAwb.SourceFile, FileMode.Open, FileAccess.Read, FileShare.Read);
                 }
-
+                else if (this.ExternalCpk != null)
+                {
+                    externalFs = File.Open(this.ExternalCpk.SourceFileName, FileMode.Open, FileAccess.Read, FileShare.Read);
+                }
+                
                 // loop through cues and extract
                 for (int i = 0; i < CueList.Length; i++)
                 {
@@ -425,10 +457,20 @@ namespace VGMToolbox.format
                     {
                         if (cue.IsStreaming) // external AWB file
                         {
-                            ParseFile.ExtractChunkToFile64(externalFs,
-                                (ulong)this.ExternalAwb.Files[cue.WaveformId].FileOffsetByteAligned,
-                                (ulong)this.ExternalAwb.Files[cue.WaveformId].FileLength,
-                                Path.Combine(extAwbDestinationFolder, FileUtil.CleanFileName(cue.CueName)), false, false);
+                            if (this.ExternalAwb != null)
+                            {
+                                ParseFile.ExtractChunkToFile64(externalFs,
+                                    (ulong)this.ExternalAwb.Files[cue.WaveformId].FileOffsetByteAligned,
+                                    (ulong)this.ExternalAwb.Files[cue.WaveformId].FileLength,
+                                    Path.Combine(extAwbDestinationFolder, FileUtil.CleanFileName(cue.CueName)), false, false);
+                            }
+                            else if (this.ExternalCpk != null)
+                            {
+                                ParseFile.ExtractChunkToFile64(externalFs,
+                                    (ulong)this.ExternalCpk.ItocFiles[cue.WaveformId].FileOffsetByteAligned,
+                                    (ulong)this.ExternalCpk.ItocFiles[cue.WaveformId].FileLength,
+                                    Path.Combine(extCpkDestinationFolder, FileUtil.CleanFileName(cue.CueName)), false, false);
+                            }
 
                             externalIdsExtracted.Add(cue.WaveformId);
                         }
@@ -479,6 +521,26 @@ namespace VGMToolbox.format
                             (ulong)this.ExternalAwb.Files[key].FileOffsetByteAligned,
                             (ulong)this.ExternalAwb.Files[key].FileLength,
                             Path.Combine(extAwbDestinationFolder, rawFileName), false, false);
+                    }
+                }
+                else if (this.ExternalCpk != null)
+                {
+                    var unextractedExternalFiles = this.ExternalCpk.ItocFiles.Keys.Where(x => !externalIdsExtracted.Contains(x));
+                    foreach (ushort key in unextractedExternalFiles)
+                    {
+                        waveformIndex = GetWaveformRowIndexForWaveformId(waveformTableUtf, key, true);
+
+                        encodeType = (byte)CriUtfTable.GetUtfFieldForRow(waveformTableUtf, waveformIndex, "EncodeType");
+
+                        rawFileName = String.Format(rawFileFormat,
+                            Path.GetFileName(this.ExternalCpk.SourceFileName), key.ToString("D5"),
+                            CriAcbFile.GetFileExtensionForEncodeType(encodeType));
+
+                        // extract file
+                        ParseFile.ExtractChunkToFile64(externalFs,
+                            (ulong)this.ExternalCpk.ItocFiles[key].FileOffsetByteAligned,
+                            (ulong)this.ExternalCpk.ItocFiles[key].FileLength,
+                            Path.Combine(extCpkDestinationFolder, rawFileName), false, false);
                     }
                 }
 
@@ -543,7 +605,75 @@ namespace VGMToolbox.format
 
             }        
         }
-        
+
+        protected string GetStreamfilePath()
+        {
+            string streamfilePath;
+
+            string awbDirectory;
+            string awbMask;
+            string acbBaseFileName;
+            string[] awbFiles;
+
+            byte[] awbHashStored;
+            byte[] awbHashCalculated;
+
+            awbDirectory = Path.GetDirectoryName(this.SourceFile);
+
+            // try format 1
+            acbBaseFileName = Path.GetFileNameWithoutExtension(this.SourceFile);
+            awbMask = String.Format(AWB_FORMAT1, acbBaseFileName);
+            awbFiles = Directory.GetFiles(awbDirectory, awbMask, SearchOption.TopDirectoryOnly);
+
+            if (awbFiles.Length < 1)
+            {
+                // try format 2
+                awbMask = String.Format(AWB_FORMAT2, acbBaseFileName);
+                awbFiles = Directory.GetFiles(awbDirectory, awbMask, SearchOption.TopDirectoryOnly);
+            }
+
+            if (awbFiles.Length < 1)
+            {
+                // try format 3
+                awbMask = String.Format(AWB_FORMAT3, acbBaseFileName);
+                awbFiles = Directory.GetFiles(awbDirectory, awbMask, SearchOption.TopDirectoryOnly);
+            }
+
+            // file not found
+            if (awbFiles.Length < 1)
+            {
+                throw new FileNotFoundException(String.Format("Cannot find AWB file. Please verify corresponding AWB file is named '{0}', '{1}', or '{2}'.",
+                    String.Format(AWB_FORMAT1, acbBaseFileName), String.Format(AWB_FORMAT2, acbBaseFileName), String.Format(AWB_FORMAT3, acbBaseFileName)));
+            }
+
+            if (awbFiles.Length > 1)
+            {
+                throw new FileNotFoundException(String.Format("More than one matching AWB file for this ACB. Please verify only one AWB file is named '{1}' or '{2}'.",
+                    String.Format(AWB_FORMAT1, acbBaseFileName), String.Format(AWB_FORMAT2, acbBaseFileName)));
+            }
+
+            // initialize AFS2 file                        
+            using (FileStream fs = File.Open(awbFiles[0], FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                awbHashStored = this.StreamAwbHash;
+
+                if (awbHashStored.Length == 0x10) // MD5, hash in newer format unknown
+                {
+                    // validate MD5 checksum
+                    awbHashCalculated = ByteConversion.GetBytesFromHexString(ChecksumUtil.GetMd5OfFullFile(fs));
+
+                    if (!ParseFile.CompareSegment(awbHashCalculated, 0, awbHashStored))
+                    {
+                        throw new FormatException(String.Format("AWB file, <{0}>, did not match checksum inside ACB file.", Path.GetFileName(fs.Name)));
+                    }
+                }
+
+                streamfilePath = awbFiles[0];
+            }
+
+            return streamfilePath;
+        }
+
         protected CriAfs2Archive InitializeExternalAwbArchive()
         {
             CriAfs2Archive afs2 = null;
@@ -652,6 +782,7 @@ namespace VGMToolbox.format
                     ext = ".adx";
                     break;
                 case WAVEFORM_ENCODE_TYPE_HCA:
+                case WAVEFORM_ENCODE_TYPE_HCA_ALT:
                     ext = ".hca";
                     break;
                 case WAVEFORM_ENCODE_TYPE_ATRAC3:

@@ -51,18 +51,18 @@ namespace VGMToolbox.format
             switch (maskedType)
             {
                 case CriUtfTable.COLUMN_TYPE_DATA:
-                    //if (utfStream == null)
-                    //{
-                    //    stringValue = this.Value.ToString();
-                    //}
-                    //else
-                    //{
-                    //    if (CriUtfTable.IsUtfTable(utfStream, (long)this.Offset))
-                    //    {
-                    //        CriUtfTable newUtf = new CriUtfTable();
-                    //        newUtf.Initialize(utfStream, (long)this.Offset);
-                    //    }
-                    //}
+                    if (utfStream == null)
+                    {
+                        stringValue = this.Value.ToString();
+                    }
+                    else
+                    {
+                        if (CriUtfTable.IsUtfTable(utfStream, (long)this.Offset))
+                        {
+                            CriUtfTable newUtf = new CriUtfTable();
+                            newUtf.Initialize(utfStream, (long)this.Offset);
+                        }
+                    }
 
                     stringValue = this.Value.ToString();
                     break;
@@ -139,7 +139,8 @@ namespace VGMToolbox.format
         public string UtfTableFile { set; get; }
 
         public byte[] MagicBytes { set; get; }
-        public bool IsEncrypted { set; get; } 
+        public bool IsEncrypted { set; get; }
+        public Dictionary<string, byte> LcgEncryptionKeys { set; get; }
         public uint TableSize { set; get; }
 
         public ushort Unknown1 { set; get; }
@@ -248,15 +249,16 @@ namespace VGMToolbox.format
             else
             {
                 this.IsEncrypted = true;
-                Dictionary<string, byte> lcgKeys = GetKeysForEncryptedUtfTable(this.MagicBytes);
+                this.LcgEncryptionKeys = GetKeysForEncryptedUtfTable(this.MagicBytes);
 
-                if (lcgKeys.Count != 2)
+                if (this.LcgEncryptionKeys.Count != 2)
                 {
                     throw new FormatException(String.Format("Unable to decrypt UTF table at offset: 0x{0}", this.BaseOffset.ToString("X8")));
                 }
                 else
                 {
-                    this.UtfReader = new CriUtfReader(lcgKeys[LCG_SEED_KEY], lcgKeys[LCG_INCREMENT_KEY], this.IsEncrypted);
+                    this.UtfReader = new CriUtfReader(this.LcgEncryptionKeys[LCG_SEED_KEY], 
+                                                      this.LcgEncryptionKeys[LCG_INCREMENT_KEY], this.IsEncrypted);
                 }
 
                 this.MagicBytes = this.UtfReader.GetBytes(fs, this.BaseOffset, 4, 0);
