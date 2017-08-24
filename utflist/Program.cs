@@ -13,8 +13,8 @@ namespace utflist
     {
         static void Main(string[] args)
         {
-            string inFile = args[0];
-            string outFile = args[1];
+            string inFile = Path.GetFullPath(args[0]);
+            string outFile = Path.GetFullPath(args[1]);
             long startOffset = long.Parse(args[2]);
 
             CriUtfTable topUtf = new CriUtfTable();
@@ -36,10 +36,13 @@ namespace utflist
                 //    }
                 //}
 
-                Console.WriteLine(topUtf.ToString());
+                //Console.WriteLine(topUtf.GetTableAsString(true));
+
+                File.WriteAllText(outFile, topUtf.GetTableAsString(true));
 
             }
 
+            Console.WriteLine("Complete.  Press any key.");
             Console.ReadKey();
         }
 

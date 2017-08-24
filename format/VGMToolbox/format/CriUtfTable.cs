@@ -29,7 +29,9 @@ namespace VGMToolbox.format
             return sb.ToString();
         }
 
-        public string ToString(FileStream fs)
+        public string ToString(FileStream fs,
+                               bool useIncomingKeys = false,
+                               Dictionary < string, byte> lcgEncryptionKeys = null)
         {
             StringBuilder sb = new StringBuilder();
             string value = String.Empty;
@@ -38,11 +40,13 @@ namespace VGMToolbox.format
                                 this.Offset.ToString("X8"),
                                 this.Type.ToString("X2"),
                                 this.Name,
-                                this.GetStringValue(fs));
+                                this.GetStringValue(fs, useIncomingKeys, lcgEncryptionKeys));
             return sb.ToString();
         }
 
-        public string GetStringValue(FileStream utfStream = null)
+        public string GetStringValue(FileStream utfStream = null,
+                                     bool useIncomingKeys = false,
+                                     Dictionary<string, byte> lcgEncryptionKeys = null)
         {
             ulong numericValue;
             byte maskedType = (byte)(this.Type & CriUtfTable.COLUMN_TYPE_MASK);
@@ -55,16 +59,17 @@ namespace VGMToolbox.format
                     {
                         stringValue = this.Value.ToString();
                     }
+                    else if (CriUtfTable.IsUtfTable(utfStream, (long)this.Offset, useIncomingKeys, lcgEncryptionKeys))
+                    {
+                        CriUtfTable newUtf = new CriUtfTable();
+                        newUtf.Initialize(utfStream, (long)this.Offset);
+                        stringValue = newUtf.GetTableAsString(true);
+                    }
                     else
                     {
-                        if (CriUtfTable.IsUtfTable(utfStream, (long)this.Offset))
-                        {
-                            CriUtfTable newUtf = new CriUtfTable();
-                            newUtf.Initialize(utfStream, (long)this.Offset);
-                        }
+                        stringValue = FileUtil.GetStringFromFileChunk(utfStream, this.Offset, this.Size);
                     }
-
-                    stringValue = this.Value.ToString();
+                    
                     break;
                 case CriUtfTable.COLUMN_TYPE_STRING:
                     stringValue = (string)this.Value;
@@ -218,7 +223,7 @@ namespace VGMToolbox.format
         
         }
 
-        public override string ToString()
+        public string GetTableAsString(bool useExistingKeys = false)
         {
             CriField field;
             StringBuilder sb = new StringBuilder();
@@ -232,16 +237,18 @@ namespace VGMToolbox.format
                     foreach (var key in d.Keys)
                     {
                         field = d[key];
-                        sb.AppendLine(field.ToString(fs));
+                        sb.AppendLine(field.ToString(fs, useExistingKeys, this.LcgEncryptionKeys));
                     }
                 }
             }
             return sb.ToString();
         }
 
-        private void checkEncryption(FileStream fs)
+        private void checkEncryption(FileStream fs, bool useIncomingKeys = false, Dictionary<string, byte> incomingLcgEncryptionKeys = null)
         {
-            if (ParseFile.CompareSegment(this.MagicBytes, 0, SIGNATURE_BYTES))
+            if (ParseFile.CompareSegment(this.MagicBytes, 0, SIGNATURE_BYTES) ||
+                ((useIncomingKeys) && (incomingLcgEncryptionKeys == null))
+                )
             {
                 this.IsEncrypted = false;
                 this.UtfReader = new CriUtfReader();
@@ -249,7 +256,18 @@ namespace VGMToolbox.format
             else
             {
                 this.IsEncrypted = true;
-                this.LcgEncryptionKeys = GetKeysForEncryptedUtfTable(this.MagicBytes);
+
+                if (useIncomingKeys) // use incoming keys if available
+                {
+                    if (incomingLcgEncryptionKeys != null) 
+                    {
+                        this.LcgEncryptionKeys = incomingLcgEncryptionKeys;
+                    }
+                }
+                else if (this.LcgEncryptionKeys == null) // use keys found earlier, assume same keys for entire file
+                {
+                    this.LcgEncryptionKeys = GetKeysForEncryptedUtfTable(this.MagicBytes);
+                }
 
                 if (this.LcgEncryptionKeys.Count != 2)
                 {
@@ -461,7 +479,7 @@ namespace VGMToolbox.format
             } // for (uint i = 0; i < this.NumberOfRows; i++)
         }
 
-        public string WriteTableToTempFile(FileStream fs, long offsetToUtfTable)
+        public string WriteTableToTempFile(FileStream fs, long offsetToUtfTable, int? maxTableSize = null)
         {
             string pathToUtf = null;
 
@@ -469,7 +487,16 @@ namespace VGMToolbox.format
             int maxRead;
             byte[] buffer = new byte[Constants.FileReadChunkSize];
             
-            int tableSize = (int)this.UtfReader.ReadUint(fs, offsetToUtfTable, 4) + 8;
+            int tableSize;
+
+            if (maxTableSize != null) // typically used for isUtf function
+            {
+                tableSize = (int)maxTableSize;
+            }
+            else
+            {
+                tableSize = (int)this.UtfReader.ReadUint(fs, offsetToUtfTable, 4) + 8;
+            }
 
             pathToUtf = Path.Combine(Path.GetTempPath(), TEMP_UTF_TABLE_FILE);
             
@@ -610,7 +637,9 @@ namespace VGMToolbox.format
             return keys;
         }
 
-        public static bool IsUtfTable(FileStream fs, long offset)
+        public static bool IsUtfTable(FileStream fs, long offset,
+                                      bool useIncomingKeys = false,
+                                      Dictionary<string, byte> incomingLcgEncryptionKeys = null)
         {
             bool ret = false;
             CriUtfTable utf = new CriUtfTable();
@@ -623,14 +652,23 @@ namespace VGMToolbox.format
                 utf.MagicBytes = ParseFile.ParseSimpleOffset(fs, utf.BaseOffset, 4);
 
                 // check if file is decrypted and get decryption keys if needed
-                utf.checkEncryption(fs);
+                utf.checkEncryption(fs, useIncomingKeys, incomingLcgEncryptionKeys);
 
-                // write (decrypted) utf header to file 
-                utf.UtfTableFile = utf.WriteTableToTempFile(fs, offset);
+                if (utf.IsEncrypted)
+                {
+                    // write (decrypted) utf header to file 
+                    utf.UtfTableFile = utf.WriteTableToTempFile(fs, offset, 4);
 
-                utf.IsEncrypted = false; // since we've decrypted to a temp file
-                utf.UtfReader.IsEncrypted = false;
+                    using (FileStream checkFs = File.Open(utf.UtfTableFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    {
+                        utf.MagicBytes = ParseFile.ParseSimpleOffset(checkFs, utf.BaseOffset, 4);
+                    }
 
+
+                    //utf.IsEncrypted = false; // since we've decrypted to a temp file
+                    // utf.UtfReader.IsEncrypted = false;
+                }
+                
                 if (ParseFile.CompareSegment(utf.MagicBytes, 0, SIGNATURE_BYTES))
                 {
                     ret = true;

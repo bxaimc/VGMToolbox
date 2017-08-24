@@ -663,5 +663,44 @@ namespace VGMToolbox.util
                 }
             }
         }
+
+        public static string GetStringFromFileChunk(FileStream fs, ulong offset, ulong size)
+        {
+            StringBuilder sb = new StringBuilder();
+        
+            int read = 0;
+            ulong totalBytes = 0;
+            byte[] bytes = new byte[Constants.FileReadChunkSize];
+
+            // reset location
+            fs.Seek(0, SeekOrigin.Begin);
+
+            // move stream pointer in long size chunks
+            while (offset > long.MaxValue) //
+            {
+                fs.Seek(long.MaxValue, SeekOrigin.Current);
+                offset -= long.MaxValue;
+            }
+
+            // less than a long now, should be ok
+            fs.Seek((long)offset, SeekOrigin.Current);
+
+            int maxread = size > (ulong)bytes.Length ? bytes.Length : (int)size;
+
+            while ((read = fs.Read(bytes, 0, maxread)) > 0)
+            {
+                for (int i = 0; i < read; i++)
+                {
+                    sb.AppendFormat("{0} ", bytes[i].ToString("X2"));
+                }
+
+                totalBytes += (ulong)read;
+
+                maxread = (size - totalBytes) > (ulong)bytes.Length ? bytes.Length : (int)(size - totalBytes);
+            }
+
+            return sb.ToString();
+
+        }
     }
 }

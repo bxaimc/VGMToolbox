@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Collections.Generic;
 using System.Text;
 
 namespace VGMToolbox.util
@@ -247,6 +246,5 @@ namespace VGMToolbox.util
                     ((xTime & 0x1F) * 2));
             }
         }
-
     }
 }
