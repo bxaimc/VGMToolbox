@@ -691,7 +691,7 @@ namespace VGMToolbox.util
             {
                 for (int i = 0; i < read; i++)
                 {
-                    sb.AppendFormat("{0} ", bytes[i].ToString("X2"));
+                    sb.Append(bytes[i].ToString("X2"));
                 }
 
                 totalBytes += (ulong)read;

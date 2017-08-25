@@ -38,7 +38,7 @@ namespace utflist
 
                 //Console.WriteLine(topUtf.GetTableAsString(true));
 
-                File.WriteAllText(outFile, topUtf.GetTableAsString(true));
+                File.WriteAllText(outFile, topUtf.GetTableAsString(0, true));
 
             }
 

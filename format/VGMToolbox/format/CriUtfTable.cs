@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-
+using System.Text.RegularExpressions;
 using VGMToolbox.util;
 
 namespace VGMToolbox.format
@@ -16,41 +16,48 @@ namespace VGMToolbox.format
         public ulong Offset { set; get; }
         public ulong Size { set; get; }
 
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder();
-            string value = String.Empty;
+        //public override string ToString()
+        //{
+        //    StringBuilder sb = new StringBuilder();
+        //    string value = String.Empty;
 
-            sb.AppendFormat("0x{0} {1} {2} = {3}", 
-                                this.Offset.ToString("X8"),
-                                this.Type.ToString("X2"),
-                                this.Name,
-                                this.GetStringValue());
-            return sb.ToString();
-        }
+        //    sb.AppendFormat("0x{0} {1} {2} = {3}", 
+        //                        this.Offset.ToString("X8"),
+        //                        this.Type.ToString("X2"),
+        //                        this.Name,
+        //                        this.GetStringValue());
+        //    return sb.ToString();
+        //}
 
         public string ToString(FileStream fs,
+                               int currentIdent,
                                bool useIncomingKeys = false,
                                Dictionary < string, byte> lcgEncryptionKeys = null)
         {
             StringBuilder sb = new StringBuilder();
-            string value = String.Empty;
+            string frontPad = new string(' ', currentIdent);
 
             sb.AppendFormat("0x{0} {1} {2} = {3}",
                                 this.Offset.ToString("X8"),
                                 this.Type.ToString("X2"),
                                 this.Name,
-                                this.GetStringValue(fs, useIncomingKeys, lcgEncryptionKeys));
-            return sb.ToString();
+                                this.GetStringValue(currentIdent, fs, useIncomingKeys, lcgEncryptionKeys));
+
+            return frontPad + sb.ToString();
         }
 
-        public string GetStringValue(FileStream utfStream = null,
+        public string GetStringValue(int currentIdent,
+                                     FileStream utfStream = null,                                     
                                      bool useIncomingKeys = false,
                                      Dictionary<string, byte> lcgEncryptionKeys = null)
         {
             ulong numericValue;
+            long signedNumericValue;
             byte maskedType = (byte)(this.Type & CriUtfTable.COLUMN_TYPE_MASK);
             string stringValue = String.Empty;
+
+            string frontPad = new string(' ', currentIdent);
+            string formattedString;
 
             switch (maskedType)
             {
@@ -63,11 +70,17 @@ namespace VGMToolbox.format
                     {
                         CriUtfTable newUtf = new CriUtfTable();
                         newUtf.Initialize(utfStream, (long)this.Offset);
-                        stringValue = newUtf.GetTableAsString(true);
+                        stringValue = newUtf.GetTableAsString((currentIdent + 4), true);
                     }
                     else
                     {
                         stringValue = FileUtil.GetStringFromFileChunk(utfStream, this.Offset, this.Size);
+
+                        if (stringValue.Length > 0x20)
+                        {
+                            formattedString = Regex.Replace(stringValue, ".{8}(?!$)", "$0 ");
+                            stringValue = Environment.NewLine + formattedString;
+                        }
                     }
                     
                     break;
@@ -78,16 +91,18 @@ namespace VGMToolbox.format
                     stringValue = Convert.ToSingle(this.Value).ToString();
                     break;
                 case CriUtfTable.COLUMN_TYPE_8BYTE:                    
-                case CriUtfTable.COLUMN_TYPE_4BYTE2:
                 case CriUtfTable.COLUMN_TYPE_4BYTE:
-                case CriUtfTable.COLUMN_TYPE_2BYTE2:
                 case CriUtfTable.COLUMN_TYPE_2BYTE:
-                case CriUtfTable.COLUMN_TYPE_1BYTE2:
                 case CriUtfTable.COLUMN_TYPE_1BYTE:
                     numericValue = Convert.ToUInt64(this.Value);
-                    stringValue = String.Format("0x{0}", numericValue.ToString("X8"));
+                    stringValue = String.Format("0x{0} ({1})", numericValue.ToString("X8"), numericValue.ToString());
                     break;
-
+                case CriUtfTable.COLUMN_TYPE_4BYTE2:
+                case CriUtfTable.COLUMN_TYPE_2BYTE2:
+                case CriUtfTable.COLUMN_TYPE_1BYTE2:
+                    signedNumericValue = Convert.ToInt64(this.Value);
+                    stringValue = String.Format("0x{0} ({1})", signedNumericValue.ToString("X8"), signedNumericValue.ToString());
+                    break;
             }
 
             return stringValue;
@@ -223,24 +238,40 @@ namespace VGMToolbox.format
         
         }
 
-        public string GetTableAsString(bool useExistingKeys = false)
+        public string GetTableAsString(int currentIdent, bool useExistingKeys = false)
         {
             CriField field;
             StringBuilder sb = new StringBuilder();
+
+            string frontPad = new string(' ', currentIdent);
+
+            sb.AppendLine();
+            sb.AppendLine(frontPad + "---------------------------");
+            sb.AppendLine(frontPad + "-------- UTF START --------".PadLeft(currentIdent));
+            sb.AppendLine(frontPad + "---------------------------".PadLeft(currentIdent));
 
             using (FileStream fs = File.Open(this.SourceFile, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 for (int i = 0; i < this.Rows.Length; i++)
                 {
+                    sb.AppendFormat("{0}{1}[0x{2}]{3}", frontPad, this.TableName, i.ToString("X4"), Environment.NewLine);
+
                     var d = this.Rows[i];
 
                     foreach (var key in d.Keys)
                     {
                         field = d[key];
-                        sb.AppendLine(field.ToString(fs, useExistingKeys, this.LcgEncryptionKeys));
+                        sb.AppendLine(field.ToString(fs, (currentIdent + 2), useExistingKeys, this.LcgEncryptionKeys));
                     }
+
+                    sb.AppendLine();
                 }
             }
+
+            sb.AppendLine(frontPad + "---------------------------");
+            sb.AppendLine(frontPad + "--------- UTF END ---------");
+            sb.AppendLine(frontPad + "---------------------------");
+
             return sb.ToString();
         }
 
