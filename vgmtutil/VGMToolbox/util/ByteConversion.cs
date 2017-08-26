@@ -246,5 +246,21 @@ namespace VGMToolbox.util
                     ((xTime & 0x1F) * 2));
             }
         }
+
+        public static bool IsZeroFilledByteArray(byte[] value)
+        {
+            bool ret = true;
+
+            for (int i = 0; i < value.Length; i++)
+            {
+                if (value[i] != 0)
+                {
+                    ret = false;
+                    break;
+                }
+            }
+
+            return ret;
+        }
     }
 }

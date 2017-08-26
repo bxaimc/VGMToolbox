@@ -60,7 +60,6 @@ namespace VGMToolbox.format
             // initialize internal AWB
             if (this.InternalAwbFileSize > 0)
             {
-                // @TODO: Should probably do an Interface for AWB and CPK.
                 if (CriAfs2Archive.IsCriAfs2Archive(fs, (long)this.InternalAwbFileOffset))
                 {
                     this.InternalAwb = new CriAfs2Archive(fs, (long)this.InternalAwbFileOffset);
@@ -75,7 +74,8 @@ namespace VGMToolbox.format
             // initialize external AWB
 
             // @TODO: This isn't correct for files with CPKs
-            if (this.StreamAwbAfs2HeaderSize > 0)
+            if ((this.StreamAwbAfs2HeaderSize > 0) ||
+                (!ByteConversion.IsZeroFilledByteArray(this.StreamAwbHash)))
             {
                 // get external file name
                 this.StreamfilePath = this.GetStreamfilePath();
@@ -86,7 +86,7 @@ namespace VGMToolbox.format
                     // AWB
                     if (CriAfs2Archive.IsCriAfs2Archive(awbFs, 0))
                     {
-                        this.ExternalAwb = new CriAfs2Archive(fs, 0);
+                        this.ExternalAwb = new CriAfs2Archive(awbFs, 0);
                     }
                     // CPK
                     else if (CriCpkArchive.IsCriCpkArchive(awbFs, 0))
